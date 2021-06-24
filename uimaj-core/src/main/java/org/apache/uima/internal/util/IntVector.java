@@ -299,6 +299,7 @@ public class IntVector implements Serializable {
    * @return <code>true</code> if the <code>IntVector</code>s are equal, <code>false</code>
    *         otherwise.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -537,6 +538,7 @@ public class IntVector implements Serializable {
   }
 
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('[');
@@ -558,6 +560,7 @@ public class IntVector implements Serializable {
     }
   }
 
+  @Override
   public int hashCode() {
     if (this.array == null) {
       return 0;

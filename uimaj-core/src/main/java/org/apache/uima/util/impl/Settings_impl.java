@@ -63,6 +63,7 @@ public class Settings_impl implements Settings {
   
   // Thread-local map of properties being resolved +for detecting circular references.
   private ThreadLocal<HashMap<String, Integer>> tlResolving = new ThreadLocal<HashMap<String, Integer>>() {
+    @Override
     protected synchronized HashMap<String, Integer> initialValue() {
       return new HashMap<>();
     }
@@ -98,6 +99,7 @@ public class Settings_impl implements Settings {
    * @param in - Stream holding properties
    * @throws IOException if name characters illegal
    */
+  @Override
   public void load(InputStream in) throws IOException {
     // Process each logical line (after blanks & comments removed and continuations extended)
     rdr = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
@@ -148,6 +150,7 @@ public class Settings_impl implements Settings {
    * 
    * @throws ResourceConfigurationException wraps IOException
    */
+  @Override
   public void loadSystemDefaults() throws ResourceConfigurationException {
     String fnames = System.getProperty("UimaExternalOverrides");
     if (fnames != null) {
@@ -205,6 +208,7 @@ public class Settings_impl implements Settings {
    * @return     - value of property
    * @throws ResourceConfigurationException if the value references an undefined property
    */
+  @Override
   public String lookUp(String name) throws ResourceConfigurationException {
     return lookUp(name, name);
   }

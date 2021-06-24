@@ -46,6 +46,7 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
 
   private IStructuredSelection mCurrentResourceSelection;
 
+  @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     mCurrentResourceSelection = selection; // if corpus set as import corpus
 

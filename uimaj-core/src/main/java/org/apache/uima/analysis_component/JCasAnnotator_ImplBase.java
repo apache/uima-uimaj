@@ -34,6 +34,7 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
+  @Override
   public Class<JCas> getRequiredCasInterface() {
     return JCas.class;
   }
@@ -44,6 +45,7 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
    * @see
    * org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof JCas) {
       process((JCas) aCAS);

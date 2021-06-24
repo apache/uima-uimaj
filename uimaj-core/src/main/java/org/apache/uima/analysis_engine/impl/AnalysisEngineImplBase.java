@@ -106,6 +106,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
 
   }
@@ -115,6 +116,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
   }
 
@@ -125,6 +127,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.
    * CAS)
    */
+  @Override
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     return null;
   }
@@ -227,6 +230,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#getAnalysisEngineMetaData()
    */
+  @Override
   public AnalysisEngineMetaData getAnalysisEngineMetaData() {
     return (AnalysisEngineMetaData) getMetaData();
   }
@@ -234,6 +238,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -241,6 +246,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#newCAS()
    */
+  @Override
   public synchronized CAS newCAS() throws ResourceInitializationException {
     CasDefinition casDef = getCasManager().getCasDefinition();
     return CasCreationUtils.createCas(casDef, getPerformanceTuningSettings());
@@ -249,6 +255,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#newJCas()
    */
+  @Override
   public JCas newJCas() throws ResourceInitializationException {
     try {
       return newCAS().getJCas();
@@ -261,6 +268,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
@@ -271,6 +279,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
@@ -281,6 +290,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     }
   }
 
+  @Override
   public ProcessTrace process(CAS aCAS) throws AnalysisEngineProcessException {
     CasIterator iter = processAndOutputNewCASes(aCAS);
     // step through all output CASes which lets the AE finish all processing
@@ -297,6 +307,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.JCas)
    */
+  @Override
   public ProcessTrace process(JCas aJCas) throws AnalysisEngineProcessException {
     return process(aJCas.getCas());
   }
@@ -305,6 +316,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.JCas,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     return process(aJCas.getCas(), aResultSpec);
@@ -314,11 +326,13 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.JCas,
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
 
+  @Override
   @Deprecated
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
           ResultSpecification aResultSpec)
@@ -331,6 +345,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       process(aCAS);
@@ -342,6 +357,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS[])
    */
+  @Override
   public void processCas(CAS[] aCASes) throws ResourceProcessException {
     for (int i = 0; i < aCASes.length; i++) {
       if (aCASes[i] != null) {
@@ -354,6 +370,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * Default implementation of processAndOutputNewCASes(JCas) method. Calls the version of this
    * method that takes a CAS, then wraps the resulting CasIterator in a JCasIterator.
    */
+  @Override
   public JCasIterator processAndOutputNewCASes(JCas aJCas) throws AnalysisEngineProcessException {
     return new JCasIteratorWrapper(processAndOutputNewCASes(aJCas.getCas()));
   }
@@ -361,6 +378,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#createResultSpecification()
    */
+  @Override
   public ResultSpecification createResultSpecification() {
     return new ResultSpecification_impl();
   }
@@ -368,6 +386,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see AnalysisEngine#createResultSpecification(TypeSystem)
    */
+  @Override
   public ResultSpecification createResultSpecification(TypeSystem aTypeSystem) {
     return new ResultSpecification_impl(aTypeSystem);
   }
@@ -375,6 +394,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#getFeatureNamesForType(java.lang.String)
    */
+  @Override
   public synchronized String[] getFeatureNamesForType(String aTypeName) {
     // build CAS and populate mFirstTypeSystem
     CASImpl cas = (CASImpl) getCasManager()
@@ -392,6 +412,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
+  @Override
   public boolean isStateless() {
     return false;
   }
@@ -401,6 +422,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
+  @Override
   public boolean isReadOnly() {
     OperationalProperties opProps = getAnalysisEngineMetaData().getOperationalProperties();
     return opProps == null ? false : !opProps.getModifiesCas();
@@ -413,6 +435,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
     // does not need to do anything since the annotators' typeSystemInit methods are automatically
     // called prior to processing whenever it is necessary.
@@ -423,6 +446,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @return performance tuning settings
    */
+  @Override
   public Properties getPerformanceTuningSettings() {
     return mPerformanceTuningSettings;
   }
@@ -433,6 +457,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.
    * analysis_engine.ResultSpecification)
    */
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     // does nothing by default (for service adapters)
     // overridden in both primitive and aggregate AE implementations
@@ -444,17 +469,20 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     setResultSpecification(resultSpec);
   }
 
+  @Override
   public AnalysisEngineManagement getManagementInterface() {
     UimaContextAdmin uc = getUimaContextAdmin();
     return uc == null ? null : uc.getManagementInterface();
   }
 
+  @Override
   public void batchProcessComplete(ProcessTrace aTrace)
           throws ResourceProcessException, IOException {
     batchProcessComplete();
 
   }
 
+  @Override
   public void collectionProcessComplete(ProcessTrace aTrace)
           throws ResourceProcessException, IOException {
     collectionProcessComplete();

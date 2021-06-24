@@ -61,6 +61,7 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#initialize(org.apache.uima.flow.FlowControllerContext)
    */
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mLogger = aContext.getLogger();
@@ -71,6 +72,7 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
     // No need to do the following as of release 2.3.0
@@ -89,6 +91,7 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
     /**
      * Get the next AnalyisEngine that should receive the CAS.
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       // Get the CAS that this Flow object is responsible for routing.
       // Each Flow instance is responsible for a single CAS.

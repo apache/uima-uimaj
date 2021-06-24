@@ -185,7 +185,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
       return new Log4jLogger_impl(null);
    }
    
-   public Log4jLogger_impl getLimitedLogger(int aLimit) {
+   @Override
+  public Log4jLogger_impl getLimitedLogger(int aLimit) {
      if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
        return this;
      }
@@ -242,7 +243,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
     * 
     * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
     */
-   public boolean isLoggable(Level level) {
+   @Override
+  public boolean isLoggable(Level level) {
      if (level == Level.CONFIG) {
        Result r = filterTest(org.apache.logging.log4j.Level.INFO, LOG4J_CONFIG);       
        return r == Result.ACCEPT ||
@@ -257,7 +259,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
      return coreLogger.isEnabled(getLog4jLevel(level));
    }
    
-   public boolean isLoggable(Level level, Marker marker) {
+   @Override
+  public boolean isLoggable(Level level, Marker marker) {
      return coreLogger.isEnabled(getLog4jLevel(level), m(marker));
    }
    
@@ -280,7 +283,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
    /*
     * ONLY FOR TEST CASE USE
     */
-   public void setLevel(Level level) {    
+   @Override
+  public void setLevel(Level level) {    
      if (level == Level.CONFIG) {
        // next seems to do nothing...
 //       coreLogger.getContext().getConfiguration().getLoggerConfig(coreLogger.getName()).addFilter(FILTER_CONFIG);
@@ -302,7 +306,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
      coreLogger.getContext().updateLoggers();
    }
 
-   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+   @Override
+  public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
      log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
    }  
 
@@ -311,7 +316,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
      logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, thrown);
    }
 
-   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+   @Override
+  public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
      if (thrown != null) {
        assert args == null;
        logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, thrown);

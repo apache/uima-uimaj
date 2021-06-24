@@ -96,6 +96,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    *           or wraps invalid xml exception when processing imports
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // AnalysisEngine can be build from any ResourceCreationSpecifier-
@@ -188,6 +189,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     return true;
   }
 
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
@@ -201,6 +203,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     if (mAnnotator != null)
       mAnnotator.destroy();
@@ -209,6 +212,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     super.destroy();
   }
 
+  @Override
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     enterProcess();
     try {
@@ -225,6 +229,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
   }
 
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     enterBatchProcessComplete();
     try {
@@ -234,6 +239,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     }
   }
 
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     enterCollectionProcessComplete();
     try {
@@ -246,6 +252,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     // do base resource reconfiguration
     super.reconfigure();
@@ -478,6 +485,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
      * 
      * @see org.apache.uima.core.CasIterator#hasNext()
      */
+    @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
       try {
@@ -492,6 +500,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
      * 
      * @see org.apache.uima.core.CasIterator#next(java.lang.Class)
      */
+    @Override
     public CAS next() throws AnalysisEngineProcessException {
       enterProcess();
       try {
@@ -523,6 +532,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
      * 
      * @see org.apache.uima.analysis_engine.CasIterator#release()
      */
+    @Override
     public void release() {
       // nothing to do
     }

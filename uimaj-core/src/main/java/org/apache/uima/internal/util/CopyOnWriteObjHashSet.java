@@ -91,6 +91,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
     return ohs.moveToPreviousFilled(pos);
   }
   
+  @Override
   public Iterator<T> iterator() {
     return new Iterator<T>() {
       /**
@@ -168,6 +169,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
    * @see ObjHashSet#size()
    * @return the size
    */
+  @Override
   final public int size() {
     return original_size;
   }

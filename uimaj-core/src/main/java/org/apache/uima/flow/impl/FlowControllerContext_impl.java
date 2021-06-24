@@ -63,6 +63,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
    * 
    * @see org.apache.uima.flow.FlowControllerContext#getAnalysisEngineMetaDataMap()
    */
+  @Override
   public Map<String, AnalysisEngineMetaData> getAnalysisEngineMetaDataMap() {
     return mAnalysisEngineMetaDataMap;
   }
@@ -72,6 +73,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
    * 
    * @see org.apache.uima.flow.FlowControllerContext#getAggregateMetadata()
    */
+  @Override
   public AnalysisEngineMetaData getAggregateMetadata() {
     return mAggregateMetadata;
   }

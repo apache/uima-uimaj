@@ -42,6 +42,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }

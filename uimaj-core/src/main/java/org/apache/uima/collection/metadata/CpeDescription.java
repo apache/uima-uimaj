@@ -266,6 +266,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aStream -
    *          stream to write
    */
+  @Override
   void toXML(OutputStream aStream) throws SAXException, IOException;
 
   void setCpeConfiguration(CpeConfiguration aConfiguration);

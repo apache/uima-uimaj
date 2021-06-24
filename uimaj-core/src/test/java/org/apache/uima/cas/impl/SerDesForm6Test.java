@@ -113,6 +113,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
     // TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures,
     // OneTypeSubsetFeatures, NoFeatures,
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       if (kind == EqTwoTypes) {
         throw new RuntimeException();
@@ -175,6 +176,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
       m.addType(tsm.getType(CAS.TYPE_NAME_TOP), "Fs");
     }
 
+    @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     }
   }
@@ -282,6 +284,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     return m;
   }
 
+    @Override
     @BeforeEach
     public void setUp() {
 //    long startTime = System.nanoTime();
@@ -299,6 +302,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
   }
 
+    @Override
     @AfterEach
     public void tearDown() {
     remoteCas = null;
@@ -775,19 +779,32 @@ public class SerDesForm6Test extends SerDesTstCommon {
 //    setupRunTeardown(this::testArrayAux);
     
     // Java 7 style
-    setupRunTeardown(new Runnable() {public void run() {testDocText();}});     
-    setupRunTeardown(new Runnable() {public void run() {testDocumentText();}});
-    setupRunTeardown(new Runnable() {public void run() {testAllKinds();}});
-    setupRunTeardown(new Runnable() {public void run() {testRefThroughFilteredType();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithStringArrayMod();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithDblArrayMod();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithByteArrayMod();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithStrArrayMod();}});
-    setupRunTeardown(new Runnable() {public void run() {testDelta();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithRefsBelow();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithMods();}});
-    setupRunTeardown(new Runnable() {public void run() {testDeltaWithIndexMods();}});
-    setupRunTeardown(new Runnable() {public void run() {testArrayAux();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDocText();}});     
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDocumentText();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testAllKinds();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testRefThroughFilteredType();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithStringArrayMod();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithDblArrayMod();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithByteArrayMod();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithStrArrayMod();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDelta();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithRefsBelow();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithMods();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testDeltaWithIndexMods();}});
+    setupRunTeardown(new Runnable() {@Override
+    public void run() {testArrayAux();}});
 
   }
 

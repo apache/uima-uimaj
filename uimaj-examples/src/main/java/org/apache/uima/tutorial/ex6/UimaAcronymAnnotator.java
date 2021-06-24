@@ -43,6 +43,7 @@ public class UimaAcronymAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see AnalysisComponent#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // get a reference to the String Map Resource
@@ -56,6 +57,7 @@ public class UimaAcronymAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
    */
+  @Override
   public void process(JCas aJCas) {
     // go through document word-by-word
     String text = aJCas.getDocumentText();

@@ -37,6 +37,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 public class ParallelFlowController extends CasFlowController_ImplBase {
   
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
   }
@@ -46,6 +47,7 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     ParallelFlowObject ffo = new ParallelFlowObject();
     ffo.setCas(aCAS);
@@ -68,6 +70,7 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.Flow#next()
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       if (!done) {
         done = true;
@@ -83,6 +86,7 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
     /* (non-Javadoc)
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(org.apache.uima.cas.CAS, java.lang.String)
      */
+    @Override
     protected Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
       //for this test, new segments don't continue in the flow
       return new EmptyFlow();
@@ -90,6 +94,7 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
   }
   
   class EmptyFlow extends CasFlow_ImplBase {
+    @Override
     public Step next() {
       return new FinalStep();
     }

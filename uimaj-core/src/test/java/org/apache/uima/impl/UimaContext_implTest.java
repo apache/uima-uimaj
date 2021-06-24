@@ -903,6 +903,7 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
     setMetaData(new ResourceMetaData_impl());
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

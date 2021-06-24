@@ -44,6 +44,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.search.IndexBuildItem#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -53,6 +54,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.search.IndexBuildItem#setName(java.lang.String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -62,6 +64,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.search.IndexBuildItem#getIndexRule()
    */
+  @Override
   public IndexRule getIndexRule() {
     return mRule;
   }
@@ -71,6 +74,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.search.IndexBuildItem#setIndexRule(org.apache.uima.search.IndexRule)
    */
+  @Override
   public void setIndexRule(IndexRule aRule) {
     mRule = aRule;
   }
@@ -80,6 +84,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.search.IndexBuildItem#getFilter()
    */
+  @Override
   public Filter getFilter() {
     return mFilter;
   }
@@ -89,6 +94,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.search.IndexBuildItem#setFilter(org.apache.uima.search.Filter)
    */
+  @Override
   public void setFilter(Filter aFilter) {
     mFilter = aFilter;
   }
@@ -98,6 +104,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

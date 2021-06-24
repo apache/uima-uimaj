@@ -352,6 +352,7 @@ public class CppUimajEngine {
     return null;
   }
 
+  @Override
   protected void finalize() throws Throwable {
     if (ae != null) {
       destroy();

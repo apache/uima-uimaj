@@ -73,6 +73,7 @@ public abstract class ResourceServiceAdapter extends Resource_ImplBase {
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     try {
       if (mCachedMetaData == null) {
@@ -87,6 +88,7 @@ public abstract class ResourceServiceAdapter extends Resource_ImplBase {
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
   }
 }

@@ -33,6 +33,7 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 @Deprecated
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
+  @Override
   protected FSGenerator<?> getFSGenerator() {
     return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }

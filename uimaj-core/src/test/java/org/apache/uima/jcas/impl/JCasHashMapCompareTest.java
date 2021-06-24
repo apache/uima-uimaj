@@ -99,6 +99,7 @@ public class JCasHashMapCompareTest {
     }
     MultiThreadUtils.Run2isb run2isb= new MultiThreadUtils.Run2isb() {
       
+      @Override
       public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
@@ -141,6 +142,7 @@ public class JCasHashMapCompareTest {
     long start = System.currentTimeMillis();
     MultiThreadUtils.tstMultiThread("JCasHashMapTestCompConcur",  numberOfThreads, 10, run2isb,
         new Runnable() {
+          @Override
           public void run() {
             m.clear();
         }});
@@ -153,6 +155,7 @@ public class JCasHashMapCompareTest {
 
     MultiThreadUtils.Run2isb run2isb= new MultiThreadUtils.Run2isb() {
       
+      @Override
       public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
@@ -175,6 +178,7 @@ public class JCasHashMapCompareTest {
     long start = System.currentTimeMillis();
     MultiThreadUtils.tstMultiThread("JCasHashMapTestComp0",  numberOfThreads,  10, run2isb,
         new Runnable() {
+          @Override
           public void run() {
             m.clear();
         }});

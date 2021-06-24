@@ -54,6 +54,7 @@ public final class FloatArray extends TOP
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -113,6 +114,7 @@ public final class FloatArray extends TOP
   /**
    * return the indexed value from the corresponding Cas FloatArray as a float,
    */
+  @Override
   public float get(int i) {
     return theArray[i];
   }
@@ -125,6 +127,7 @@ public final class FloatArray extends TOP
    * @param v
    *          value to set
    */
+  @Override
   public void set(int i, float v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -133,6 +136,7 @@ public final class FloatArray extends TOP
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyFromArray(float[], int, int, int)
    */
+  @Override
   public void copyFromArray(float[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos, length);
@@ -141,6 +145,7 @@ public final class FloatArray extends TOP
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyToArray(int, float[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, float[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -148,6 +153,7 @@ public final class FloatArray extends TOP
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
+  @Override
   public float[] toArray() {
     return Arrays.copyOf(theArray, theArray.length);
   }
@@ -158,6 +164,7 @@ public final class FloatArray extends TOP
    * @return size of array
    */
 
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -165,6 +172,7 @@ public final class FloatArray extends TOP
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
@@ -175,6 +183,7 @@ public final class FloatArray extends TOP
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     _casView.checkArrayBounds(theArray.length, destOffset, length);
     for (int i = 0; i < length; i++) {

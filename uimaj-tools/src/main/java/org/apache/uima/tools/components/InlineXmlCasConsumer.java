@@ -87,6 +87,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
   
   private boolean mTEXT;
 
+  @Override
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File(((String) getConfigParameterValue(PARAM_OUTPUTDIR)).trim());
@@ -110,6 +111,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     JCas jcas;
     try {

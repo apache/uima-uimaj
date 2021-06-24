@@ -48,6 +48,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * 
    * @see org.apache.uima.flow.FlowController#initialize(org.apache.uima.flow.FlowControllerContext)
    */
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     mContext = aContext;
   }
@@ -57,6 +58,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * 
    * @see org.apache.uima.flow.FlowController#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceInitializationException, ResourceConfigurationException {
     destroy();
     initialize(mContext);
@@ -67,6 +69,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * 
    * @see org.apache.uima.flow.FlowController#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
   }
 
@@ -75,6 +78,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * 
    * @see org.apache.uima.flow.FlowController#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
   }
 
@@ -83,6 +87,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * 
    * @see org.apache.uima.flow.FlowController#destroy()
    */
+  @Override
   public void destroy() {
   }
   
@@ -93,6 +98,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * AnalysisEngines to the flow.
    * @see org.apache.uima.flow.FlowController#addAnalysisEngines(java.util.Collection)
    */
+  @Override
   public void addAnalysisEngines(Collection<String> aKeys) {
     //does nothing by default
   }
@@ -102,6 +108,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * this to support removing AnalysisEngines from the flow.
    * @see org.apache.uima.flow.FlowController#removeAnalysisEngines(java.util.Collection)
    */
+  @Override
   public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     throw new AnalysisEngineProcessException(
             AnalysisEngineProcessException.REMOVE_AE_FROM_FLOW_NOT_SUPPORTED,

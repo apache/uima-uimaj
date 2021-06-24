@@ -525,6 +525,7 @@ public class UimacppEngine {
   }
 
   // //////////////////////////////////////////////////
+  @Override
   protected void finalize() throws Throwable {
     synchronized (this) {
       if (cppEnginePointer != 0) {
@@ -555,6 +556,7 @@ class InternalTafException extends Exception {
     return errorCode;
   }
 
+  @Override
   public String getMessage() {
     return super.getMessage();
   }

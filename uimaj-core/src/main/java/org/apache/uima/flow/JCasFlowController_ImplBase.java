@@ -32,6 +32,7 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * 
    * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
    */
+  @Override
   public Class<JCas> getRequiredCasInterface() {
     return JCas.class;
   }
@@ -40,6 +41,7 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * Overriden to check that <code>aCAS</code> is an instanceof {@link JCas}. If it is, then
    * {@link #computeFlow(JCas)} is called. If not, an exception is thrown.
    */
+  @Override
   public final Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof JCas) {
       return computeFlow((JCas) aCAS);

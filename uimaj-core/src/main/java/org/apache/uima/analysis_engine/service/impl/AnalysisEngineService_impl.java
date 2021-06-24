@@ -59,6 +59,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(ResourceSpecifier,
    *      Map)
    */
+  @Override
   public void initialize(ResourceSpecifier aResourceSpecifier,
           Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     super.initialize(aResourceSpecifier, aResourceInitParams);
@@ -167,6 +168,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * @see org.apache.uima.resource.service.impl.ResourceService_impl#getResourceClass()
    */
+  @Override
   protected Class<? extends Resource> getResourceClass() {
     return AnalysisEngine.class;
   }

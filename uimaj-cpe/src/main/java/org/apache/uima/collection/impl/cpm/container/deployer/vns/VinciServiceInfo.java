@@ -59,6 +59,7 @@ public class VinciServiceInfo {
     return available;
   }
 
+  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer("SERVICE:").append(serviceName).append("\nIP:").append(host)
             .append("\nPORT:").append(port);

@@ -51,6 +51,7 @@ public abstract class CasFlow_ImplBase implements Flow {
    * 
    * @see Flow#newCasProduced(AbstractCas, String)
    */
+  @Override
   public final Flow newCasProduced(AbstractCas newCas, String producedBy)
           throws AnalysisEngineProcessException {
     if (newCas instanceof CAS) {
@@ -69,6 +70,7 @@ public abstract class CasFlow_ImplBase implements Flow {
    * May be overridden by subclasses to allow processing to continue.
    * @see org.apache.uima.flow.Flow#continueOnFailure(String, java.lang.Exception)
    */
+  @Override
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
     return false;
   }
@@ -78,6 +80,7 @@ public abstract class CasFlow_ImplBase implements Flow {
    * when a flow is aborted.
    * @see Flow#aborted()
    */
+  @Override
   public void aborted() {
     // does nothing by default
   }  

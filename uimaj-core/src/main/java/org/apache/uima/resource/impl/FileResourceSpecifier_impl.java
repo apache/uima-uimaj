@@ -53,6 +53,7 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.FileResourceSpecifier#getFileUrl()
    */
+  @Override
   public String getFileUrl() {
     if (mFileUrl != null && mFileUrl.contains("${")) {
       String value = resolveSettings(mFileUrl);
@@ -66,6 +67,7 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   /**
    * @see org.apache.uima.resource.FileResourceSpecifier#setFileUrl(String)
    */
+  @Override
   public void setFileUrl(String aUrl) {
     mFileUrl = aUrl;
   }
@@ -73,6 +75,7 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   /**
    * @see org.apache.uima.resource.FileResourceSpecifier#getLocalCache()
    */
+  @Override
   public String getLocalCache() {
     return mLocalCache;
   }
@@ -80,10 +83,12 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   /**
    * @see org.apache.uima.resource.FileResourceSpecifier#setLocalCache(String)
    */
+  @Override
   public void setLocalCache(String aFileName) {
     mLocalCache = aFileName;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

@@ -47,9 +47,11 @@ class JCasHashMapSubMap implements Iterable<TOP> {
 
   
   static final ThreadLocal<int[]> probeInfoGet = new ThreadLocal<int[]>() {
+    @Override
     protected int[] initialValue() { return new int[2]; } };
       
   static final ThreadLocal<int[]> probeInfoPutInner = new ThreadLocal<int[]>() {
+    @Override
     protected int[] initialValue() { return new int[2]; } };
 
   //These are for tuning measurements

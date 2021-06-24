@@ -38,6 +38,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CustomResourceSpecifier#getParameters()
    */
+  @Override
   public Parameter[] getParameters() {
     return mParameters;
   }
@@ -45,6 +46,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CustomResourceSpecifier#getResourceClassName()
    */
+  @Override
   public String getResourceClassName() {
     return mResourceClassName;
   }
@@ -52,6 +54,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CustomResourceSpecifier#setParameters(org.apache.uima.resource.Parameter[])
    */
+  @Override
   public void setParameters(Parameter[] aParameters) {
     if (aParameters != null) {
       mParameters = aParameters;
@@ -64,6 +67,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CustomResourceSpecifier#setResourceClassName(java.lang.String)
    */
+  @Override
   public void setResourceClassName(String aResourceClassName) {
     mResourceClassName = aResourceClassName;
   }
@@ -71,6 +75,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

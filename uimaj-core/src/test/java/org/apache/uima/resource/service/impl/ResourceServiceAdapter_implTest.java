@@ -41,6 +41,7 @@ public class ResourceServiceAdapter_implTest {
     try {
       mServiceStub = new TestResourceServiceStub();
       mAdapter = new ResourceServiceAdapter() {
+        @Override
         public boolean initialize(ResourceSpecifier p1, Map p2) {
           return false;
         }

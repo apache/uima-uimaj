@@ -36,6 +36,7 @@ public class SomeCustomResource extends Resource_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams) throws ResourceInitializationException {
     Assert.assertTrue(aSpecifier instanceof CustomResourceSpecifier);
     Parameter[] params = ((CustomResourceSpecifier)aSpecifier).getParameters();

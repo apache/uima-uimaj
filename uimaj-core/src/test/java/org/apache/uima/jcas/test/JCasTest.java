@@ -437,7 +437,8 @@ public class JCasTest {
 	}
 
 	MakeAndTest root1 = new MakeAndTest() {
-		public void make() {
+		@Override
+    public void make() {
 			Root r1 = new Root(jcas);
 			// Note: Java 7 can return -ve hashcodes so must avoid -ve remainders.
 			int k = System.identityHashCode(r1);
@@ -455,6 +456,7 @@ public class JCasTest {
 			r1.addToIndexes();
 		}
 
+    @Override
     @org.junit.jupiter.api.Test
     public void test(Object o1) {
 			assertTrue(o1 instanceof Root);

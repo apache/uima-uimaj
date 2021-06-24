@@ -39,6 +39,7 @@ public class BooleanConstraint extends PathConstraint implements FSMatchConstrai
     this.cons = constraint;
   }
 
+  @Override
   public boolean match(FeatureStructure fs) {
     final int max = this.featNames.size() - 1; // The last position in the
     // path!

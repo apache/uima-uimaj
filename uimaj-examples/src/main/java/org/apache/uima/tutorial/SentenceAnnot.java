@@ -55,6 +55,7 @@ public class SentenceAnnot extends Annotation {
      * @return the type index ID
      * @generated 
      */
+    @Override
     public int getTypeIndexID() {
         return typeIndexID;
     }

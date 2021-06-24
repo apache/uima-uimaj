@@ -70,6 +70,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -77,6 +78,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -84,6 +86,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getExternalOverrideName()
    */
+  @Override
   public String getExternalOverrideName() {
     return mExternalOverrideName;
   }
@@ -91,6 +94,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setExternalOverrideName(String)
    */
+  @Override
   public void setExternalOverrideName(String aExternalOverrideName) {
     mExternalOverrideName = aExternalOverrideName;
   }
@@ -98,6 +102,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -105,6 +110,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -112,6 +118,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getType()
    */
+  @Override
   public String getType() {
     return mType;
   }
@@ -119,6 +126,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setType(String)
    */
+  @Override
   public void setType(String aType) throws UIMA_IllegalArgumentException {
     // check to make sure value is legal
     if (!isValidDataTypeName(aType)) {
@@ -132,6 +140,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#isMultiValued()
    */
+  @Override
   public boolean isMultiValued() {
     return mMultiValued;
   }
@@ -139,6 +148,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setMultiValued(boolean)
    */
+  @Override
   public void setMultiValued(boolean aMultiValued) {
     mMultiValued = aMultiValued;
   }
@@ -146,6 +156,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#isMandatory()
    */
+  @Override
   public boolean isMandatory() {
     return mMandatory;
   }
@@ -153,6 +164,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setMandatory(boolean)
    */
+  @Override
   public void setMandatory(boolean aMandatory) {
     mMandatory = aMandatory;
   }
@@ -175,6 +187,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#getOverrides()
    */
+  @Override
   public String[] getOverrides() {
     return mOverrides.clone();
   }
@@ -184,6 +197,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#setOverrides(java.lang.String[])
    */
+  @Override
   public void setOverrides(String[] aOverrides) {
     if (aOverrides == null)
       mOverrides = Constants.EMPTY_STRING_ARRAY;
@@ -196,6 +210,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#addOverride(java.lang.String)
    */
+  @Override
   public void addOverride(String aOverride) {
     String[] current = getOverrides();
     String[] newArr = new String[current.length + 1];
@@ -209,6 +224,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#removeOverride(java.lang.String)
    */
+  @Override
   public void removeOverride(String aOverride) {
     String[] current = getOverrides();
     for (int i = 0; i < current.length; i++) {
@@ -293,6 +309,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * @param aOptions
    *          option settings
    */
+  @Override
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
           Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
           throws InvalidXMLException {
@@ -330,6 +347,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

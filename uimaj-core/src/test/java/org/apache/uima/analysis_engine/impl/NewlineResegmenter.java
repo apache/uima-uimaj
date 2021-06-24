@@ -49,6 +49,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     mCurrentInputCas = aJCas;
     mDoc = aJCas.getDocumentText();
@@ -60,6 +61,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return mHasNext;
   }
@@ -69,6 +71,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     // we should already have a JCas ready to return
     JCas toReturn = mJCases[mActiveJCas];
@@ -93,6 +96,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.JCasSegmenter_ImplBase#getCasInstancesRequired()
    */
+  @Override
   public int getCasInstancesRequired() {
     return 2;
   }

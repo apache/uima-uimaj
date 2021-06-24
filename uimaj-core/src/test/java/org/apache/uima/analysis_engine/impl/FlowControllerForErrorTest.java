@@ -48,6 +48,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
   public static List<String> abortedDocuments = new ArrayList<>();
   public static List<String> failedAEs = new ArrayList<>();
 
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
@@ -61,6 +62,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     FixedFlowObject ffo = new FixedFlowObject(aCAS, 0, false);
     ffo.setCas(aCAS);
@@ -91,6 +93,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.Flow#next()
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       if (currentStep >= mSequence.length) {
         return new FinalStep(); // this CAS has finished the sequence
@@ -110,6 +113,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
+    @Override
     public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       wasSegmented = true;
@@ -125,6 +129,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     /* (non-Javadoc)
      * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String, java.lang.Exception)
      */
+    @Override
     public boolean continueOnFailure(String failedAeKey, Exception failure) {
       failedAEs.add(failedAeKey);
       return mContinueOnFailure;
@@ -133,6 +138,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     /* (non-Javadoc)
      * @see org.apache.uima.flow.CasFlow_ImplBase#aborted()
      */
+    @Override
     public void aborted() {
       abortedDocuments.add(getCas().getDocumentText());
     }

@@ -59,16 +59,19 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
   private String mXmlTagContainingText = null;
 
     
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config param setting
     mXmlTagContainingText  = (String) getContext().getConfigParameterValue(PARAM_XMLTAG);
   }
 
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
     sourceDocInfoType = aTypeSystem.getType("org.apache.uima.examples.SourceDocumentInformation");
   }
 
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     // get handle to CAS view containing XML document
     CAS xmlCas = aCAS.getView("xmlDocument");
@@ -110,24 +113,28 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
       insideTextTag = (mXmlTagContainingText == null);
     }
         
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       if (qName.equalsIgnoreCase(mXmlTagContainingText)) {
         insideTextTag = true;
       }
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       if (qName.equalsIgnoreCase(mXmlTagContainingText)) {
         insideTextTag = false;
       }
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       if (insideTextTag) {
         detaggedText.append(ch, start, length);        
       }
     }
     
+    @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
       if (insideTextTag) {
         detaggedText.append(ch, start, length);        

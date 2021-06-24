@@ -139,7 +139,8 @@ public class Sofa extends TOP implements SofaFSImpl {
    * getter for sofaNum
    * @return the sofa number
    */
-	public int getSofaNum() { return _getIntValueNc(wrapGetIntCatchException(_FH_sofaNum)); }
+	@Override
+  public int getSofaNum() { return _getIntValueNc(wrapGetIntCatchException(_FH_sofaNum)); }
 	
 	// *--------------*
 	// * Feature: sofaID

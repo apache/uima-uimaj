@@ -63,6 +63,7 @@ public class Meeting extends Annotation {
      * @return the type index ID
      * @generated 
      */
+    @Override
     public int getTypeIndexID() {return typeIndexID;}
  
  
@@ -248,6 +249,7 @@ public class Meeting extends Annotation {
     /* (non-Javadoc)
      * @see org.apache.uima.cas.impl.FeatureStructureImplC#toString()
      */
+    @Override
     public String toString() {
         return "Meeting in " + getRoom().getCoveredText() + " on " + getDate().getCoveredText() + ", " + getStartTime().getCoveredText() + " - " + getEndTime().getCoveredText();
     }

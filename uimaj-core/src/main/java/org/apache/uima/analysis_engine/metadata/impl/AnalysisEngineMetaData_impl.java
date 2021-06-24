@@ -72,6 +72,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
    * 
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports()
    */
+  @Override
   public void resolveImports() throws InvalidXMLException {
     resolveImports(UIMAFramework.newDefaultResourceManager());
   }
@@ -83,6 +84,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
    * org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports(org.apache.uima.
    * resource.ResourceManager)
    */
+  @Override
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     if (getTypeSystem() != null) {
       getTypeSystem().resolveImports(aResourceManager);
@@ -98,6 +100,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getCapabilities()
    */
+  @Override
   public Capability[] getCapabilities() {
     return mCapabilities;
   }
@@ -105,6 +108,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setCapabilities(Capability[])
    */
+  @Override
   public void setCapabilities(Capability[] aCapabilities) {
     if (aCapabilities == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -116,6 +120,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getTypeSystem()
    */
+  @Override
   public TypeSystemDescription getTypeSystem() {
     return mTypeSystem;
   }
@@ -123,6 +128,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setTypeSystem(TypeSystemDescription)
    */
+  @Override
   public void setTypeSystem(TypeSystemDescription aTypeSystem) {
     mTypeSystem = aTypeSystem;
   }
@@ -130,6 +136,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getTypePriorities()
    */
+  @Override
   public TypePriorities getTypePriorities() {
     return mTypePriorities;
   }
@@ -137,6 +144,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setTypePriorities(TypePriorities)
    */
+  @Override
   public void setTypePriorities(TypePriorities aTypePriorities) {
     mTypePriorities = aTypePriorities;
   }
@@ -144,6 +152,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getFsIndexCollection()
    */
+  @Override
   public FsIndexCollection getFsIndexCollection() {
     return mFsIndexCollection;
   }
@@ -151,6 +160,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setFsIndexCollection(FsIndexCollection)
    */
+  @Override
   public void setFsIndexCollection(FsIndexCollection aFsIndexCollection) {
     mFsIndexCollection = aFsIndexCollection;
   }
@@ -158,6 +168,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getFsIndexes()
    */
+  @Override
   public FsIndexDescription[] getFsIndexes() {
     return mFsIndexCollection == null ? null : mFsIndexCollection.getFsIndexes();
   }
@@ -165,6 +176,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setFsIndexes(FsIndexDescription[])
    */
+  @Override
   public void setFsIndexes(FsIndexDescription[] aFsIndexes) {
     if (mFsIndexCollection == null) {
       mFsIndexCollection = new FsIndexCollection_impl();
@@ -172,10 +184,12 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
     mFsIndexCollection.setFsIndexes(aFsIndexes);
   }
 
+  @Override
   public OperationalProperties getOperationalProperties() {
     return mOperationalProperties;
   }
 
+  @Override
   public void setOperationalProperties(OperationalProperties aOperationalProperties) {
     mOperationalProperties = aOperationalProperties;
   }
@@ -197,6 +211,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
     }
   }
 
+  @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
@@ -210,6 +225,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
     super.readPropertyValueFromXMLElement(aPropXmlInfo, aElement, aParser, aOptions);
   }
 
+  @Override
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
           ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
@@ -226,6 +242,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#isAsynchronousModeSupported()
    */
+  @Override
   public boolean isAsynchronousModeSupported() {
     return mAsynchronousModeSupported;
   }
@@ -233,6 +250,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setAsynchronousModeSupported(boolean)
    */
+  @Override
   public void setAsynchronousModeSupported(boolean aSupported) {
     mAsynchronousModeSupported = aSupported;
   }
@@ -240,6 +258,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getFlowConstraints()
    */
+  @Override
   public FlowConstraints getFlowConstraints() {
     return mFlowConstraints;
   }
@@ -247,6 +266,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setFlowConstraints(FlowConstraints)
    */
+  @Override
   public void setFlowConstraints(FlowConstraints aFlowConstraints) {
     mFlowConstraints = aFlowConstraints;
   }
@@ -254,6 +274,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getDelegateAnalysisEngineMetaData()
    */
+  @Override
   public AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData() {
     return mDelegateAnalysisEngineMetaData;
   }
@@ -275,6 +296,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
    * 
    * @return true if this component is sofa-aware, false if it is sofa-unaware.
    */
+  @Override
   public boolean isSofaAware() {
     Capability[] capabilities = getCapabilities();
     if (capabilities != null) {
@@ -288,6 +310,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
     return false;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

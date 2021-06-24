@@ -62,6 +62,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
     getCollectionReaderMetaData().setOperationalProperties(opProps);
   }
 
+  @Override
   public ProcessingResourceMetaData getCollectionReaderMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -71,6 +72,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
    * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // check that user class was specified
@@ -106,6 +108,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
   /**
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -119,6 +122,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

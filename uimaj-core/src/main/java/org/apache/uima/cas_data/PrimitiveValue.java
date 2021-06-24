@@ -31,6 +31,7 @@ public interface PrimitiveValue extends FeatureValue {
    * 
    * @return string value
    */
+  @Override
   String toString();
 
   /**

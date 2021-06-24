@@ -84,6 +84,7 @@ public class XMLToVinci {
   private static class VinciFrameHandler extends DefaultHandler {
     protected StackEntry top = null;
 
+    @Override
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts) {
       StackEntry entry = new StackEntry();
       entry.ename_or_pcdata = qName;
@@ -101,6 +102,7 @@ public class XMLToVinci {
      * @pre top != null
      * @pre top.sub_entries != null
      */
+    @Override
     public void endElement(String uri, String name, String qName) {
       // Debug.p("End element: " + qName);
       if (top.sub_entries.size() == 0) {
@@ -139,6 +141,7 @@ public class XMLToVinci {
      * @pre top != null
      * @pre top.sub_entries != null
      */
+    @Override
     public void characters(char[] ch, int start, int length) {
       if (top.sub_entries.size() != 0) {
         StackEntry entry = (StackEntry) top.sub_entries.get(top.sub_entries.size() - 1);
@@ -162,6 +165,7 @@ public class XMLToVinci {
     AFrameHandler() {
     }
 
+    @Override
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes a) {
       // Debug.p("Attributes: " + qName + " : " + atts.getLength());
       AStackEntry entry = new AStackEntry();
@@ -184,6 +188,7 @@ public class XMLToVinci {
       }
     }
 
+    @Override
     public void endElement(String uri, String name, String qName) {
       if (top.sub_entries.size() == 0) {
         AFrame c = new AFrame();

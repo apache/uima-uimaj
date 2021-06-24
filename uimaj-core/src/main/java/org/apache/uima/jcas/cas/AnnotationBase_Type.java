@@ -43,6 +43,7 @@ public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
 
   final int casFeatCode_sofa;
   
+  @Override
   protected FSGenerator<?> getFSGenerator() {
     return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }

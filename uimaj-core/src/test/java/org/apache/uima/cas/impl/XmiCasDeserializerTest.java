@@ -504,7 +504,8 @@ public class XmiCasDeserializerTest {
   		cas = aCas;
   	}
   	
-		public void run() {
+		@Override
+    public void run() {
 			try {
 			  while (true) {
   			  if (!MultiThreadUtils.wait4go((ThreadM) Thread.currentThread())) {

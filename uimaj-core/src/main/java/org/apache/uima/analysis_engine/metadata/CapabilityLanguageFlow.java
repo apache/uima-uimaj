@@ -39,6 +39,7 @@ public interface CapabilityLanguageFlow extends FlowConstraints {
    * 
    * @return {@link #FLOW_CONSTRAINTS_TYPE}
    */
+  @Override
   String getFlowConstraintsType();
 
   /**

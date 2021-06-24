@@ -208,6 +208,7 @@ public class IntBitSet implements PositiveIntSet {
 
     protected IntBitSetIterator() {}
 
+    @Override
     public final boolean hasNext() {
       return (curKey >= 0);
     }
@@ -222,6 +223,7 @@ public class IntBitSet implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
+    @Override
     public boolean hasPrevious() {
       throw new UnsupportedOperationException();
     }
@@ -234,6 +236,7 @@ public class IntBitSet implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */
+    @Override
     public void moveToEnd() {
       throw new UnsupportedOperationException();
     }
@@ -241,6 +244,7 @@ public class IntBitSet implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToStart()
      */
+    @Override
     public void moveToStart() {
       curKey = set.nextSetBit(0);
     }

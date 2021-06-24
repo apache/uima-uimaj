@@ -131,6 +131,7 @@ public class FeatureImpl implements Feature {
    * 
    * @return The domain type. This can not be <code>null</code>.
    */
+  @Override
   public Type getDomain() {
     return this.highestDefiningType;
   }
@@ -139,6 +140,7 @@ public class FeatureImpl implements Feature {
    * Get the range type for this feature.
    *   * @return The range type. This can not be <code>null</code>.
    */
+  @Override
   public Type getRange() {
     return this.rangeType;
   }
@@ -157,10 +159,12 @@ public class FeatureImpl implements Feature {
    * 
    * @return The name. This can not be <code>null</code>.
    */
+  @Override
   public String getName() {
     return highestDefiningType.getName() + TypeSystem.FEATURE_SEPARATOR + shortName;
   }
 
+  @Override
   public String getShortName() {
     return this.shortName;
   }
@@ -180,6 +184,7 @@ public class FeatureImpl implements Feature {
 //    return (isGet ? "get" : "set")  + shortName1stLetterUpperCase;
 //  }
   
+  @Override
   public boolean isMultipleReferencesAllowed() {
     return this.isMultipleRefsAllowed;
   }

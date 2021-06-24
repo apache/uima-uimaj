@@ -96,25 +96,30 @@ public class ArrayIndexTest implements TextAnnotator {
     this.ae.destroy();
   }
 
+  @Override
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // Do nothing.
   }
 
+  @Override
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
           AnnotatorConfigurationException {
     // do nothing
   }
 
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
           AnnotatorConfigurationException {
     // do nothing
   }
 
+  @Override
   public void reconfigure() throws AnnotatorConfigurationException,
           AnnotatorInitializationException {
     // do nothing
   }
 
+  @Override
   public void destroy() {
     // do nothing
   }

@@ -164,6 +164,7 @@ public class MessageRouter implements Runnable {
   /**
    * Implements the main service method that runs in a separate thread.
    */
+  @Override
   public void run() {
     boolean terminated = false;
     String errMessage = null;

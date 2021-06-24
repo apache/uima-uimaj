@@ -351,6 +351,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @see org.apache.uima.resource.metadata.MetaDataObject#listAttributes()
    * @deprecated - use getAttributes
    */
+  @Override
   @Deprecated
   public List<NameClassPair> listAttributes() {
 
@@ -396,6 +397,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#getAttributeValue(String)
    */
+  @Override
   public Object getAttributeValue(String aName) {
     try {
       MetaDataAttr[] attrs = getUnfilteredAttributes();
@@ -438,6 +440,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @see org.apache.uima.resource.metadata.MetaDataObject#isModifiable()
    */
+  @Override
   public boolean isModifiable() {
     return true;
   }
@@ -460,6 +463,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#setAttributeValue(String, Object)
    */
+  @Override
   public void setAttributeValue(String aName, Object aValue) {
     try {
       MetaDataAttr[] attrs = getUnfilteredAttributes();
@@ -524,6 +528,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return the source URL from which this object was parsed
    */
+  @Override
   public URL getSourceUrl() {
     return mSourceUrl;
   }
@@ -534,6 +539,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return the source URL as a string, or "&lt;unknown&gt;"
    */
+  @Override
   public String getSourceUrlString() {
     return mSourceUrl != null ? mSourceUrl.toString() : "<unknown>";
   }
@@ -561,6 +567,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aUrl
    *          the location of the XML file from which this object was parsed
    */
+  @Override
   public void setSourceUrl(URL aUrl) {
     mSourceUrl = aUrl;
 
@@ -592,6 +599,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @see org.apache.uima.resource.metadata.MetaDataObject#clone()
    * multi-core: could be cloning while another thread is modifying?
    */
+  @Override
   public Object clone() {
     // System.out.println("MetaDataObject_impl: clone");
     MetaDataObject_impl clone = null;
@@ -632,6 +640,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * Dump this metadata object's attributes and values to a String. This is useful for debugging.
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getClass().getName()).append(": \n");
@@ -664,6 +673,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return true if and only if this object is equal to <code>aObj</code>
    */
+  @Override
   public boolean equals(Object aObj) {
     if (!(aObj instanceof MetaDataObject_impl)) {
       return false;
@@ -765,6 +775,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return the hash code for this object
    */
+  @Override
   public int hashCode() {
     int hashCode = 0;
 
@@ -802,6 +813,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aWriter
    *          a Writer to which the XML string will be written
    */
+  @Override
   public void toXML(Writer aWriter) throws SAXException, IOException {
     toXML(new XMLSerializer(aWriter));
   }
@@ -812,6 +824,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aOutputStream
    *          an OutputStream to which the XML string will be written
    */
+  @Override
   public void toXML(OutputStream aOutputStream) throws SAXException, IOException {
     toXML(new XMLSerializer(aOutputStream));
   }
@@ -827,6 +840,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * This is called internally, also for JSon serialization
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
+  @Override
   public void toXML(ContentHandler aContentHandler) throws SAXException {
     toXML(aContentHandler, false);
   }
@@ -838,6 +852,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * If this is the first call to serialize, create a serialContext (and clean up afterwards)
    * Other callers (e.g. JSON) must set the serialContext first before calling
    */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     if (null == serialContext.get()) {
@@ -1183,6 +1198,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws InvalidXMLException
    *           if the input XML element does not specify a valid object
    */
+  @Override
   public final void buildFromXMLElement(Element aElement, XMLParser aParser)
           throws InvalidXMLException {
     buildFromXMLElement(aElement, aParser, new XMLParser.ParsingOptions(true));
@@ -1206,6 +1222,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws InvalidXMLException
    *           if the input XML element does not specify a valid object
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // check element type

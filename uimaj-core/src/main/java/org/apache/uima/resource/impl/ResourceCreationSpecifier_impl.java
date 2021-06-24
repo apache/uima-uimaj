@@ -65,6 +65,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see ResourceCreationSpecifier#getFrameworkImplementation()
    */
+  @Override
   public String getFrameworkImplementation() {
     return mFrameworkImplementation;
   }
@@ -72,6 +73,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see ResourceCreationSpecifier#setFrameworkImplementation(java.lang.String)
    */
+  @Override
   public void setFrameworkImplementation(String aFrameworkImplementation) {
     mFrameworkImplementation = aFrameworkImplementation;
   }
@@ -79,6 +81,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see ResourceCreationSpecifier#getImplementationName()
    */
+  @Override
   public String getImplementationName() {
     return mImplementationName;
   }
@@ -86,6 +89,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see ResourceCreationSpecifier#setImplementationName(java.lang.String)
    */
+  @Override
   public void setImplementationName(String aImplementationName) {
     mImplementationName = aImplementationName;
 
@@ -94,6 +98,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see ResourceCreationSpecifier#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return mMetaData;
   }
@@ -106,6 +111,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @param aMetaData
    *          metadata to assign
    */
+  @Override
   public void setMetaData(ResourceMetaData aMetaData) {
     mMetaData = aMetaData;
   }
@@ -113,6 +119,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getExternalResourceDependencies()
    */
+  @Override
   public ExternalResourceDependency[] getExternalResourceDependencies() {
     ExternalResourceDependency[] result = new ExternalResourceDependency[mExternalResourceDependencies
             .size()];
@@ -123,6 +130,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setExternalResourceDependencies(ExternalResourceDependency[])
    */
+  @Override
   public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies) {
     // can't just clear the ArrayList since that breaks clone(). Create a new list.
     mExternalResourceDependencies = new ArrayList<>();
@@ -136,6 +144,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getExternalResourceDependency(java.lang.String)
    */
+  @Override
   public ExternalResourceDependency getExternalResourceDependency(String aKey) {
     for (ExternalResourceDependency dep : mExternalResourceDependencies) {
       if (aKey.equals(dep.getKey()))
@@ -149,6 +158,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#getResourceManagerConfiguration()
    */
+  @Override
   public ResourceManagerConfiguration getResourceManagerConfiguration() {
     return mResourceManagerConfiguration;
   }
@@ -158,6 +168,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#setResourceManagerConfiguration(org.apache.uima.resource.metadata.ResourceManagerConfiguration)
    */
+  @Override
   public void setResourceManagerConfiguration(
           ResourceManagerConfiguration aResourceManagerConfiguration) {
     mResourceManagerConfiguration = aResourceManagerConfiguration;
@@ -168,6 +179,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation()
    */
+  @Override
   public void doFullValidation() throws ResourceInitializationException {
     doFullValidation(UIMAFramework.newDefaultResourceManager());
   }
@@ -177,6 +189,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // try to instantiate dummy resource - this checks config params
@@ -201,6 +214,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
+  @Override
   public final void validate() throws ResourceInitializationException, ResourceConfigurationException {
     validate(UIMAFramework.newDefaultResourceManager());
   }
@@ -210,6 +224,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   /* (non-Javadoc)
    * @see org.apache.uima.resource.ResourceCreationSpecifier#validate(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void validate(ResourceManager aResourceManager) throws ResourceInitializationException, ResourceConfigurationException {
     // Validate configuration parameter declarations (but not settings)
     validateConfigurationParameters(aResourceManager); 
@@ -338,6 +353,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

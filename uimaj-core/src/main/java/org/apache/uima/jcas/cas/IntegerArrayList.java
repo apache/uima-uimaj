@@ -308,6 +308,7 @@ public class IntegerArrayList extends TOP implements
    * @param destPos -
    * @param length -
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
   }
@@ -328,6 +329,7 @@ public class IntegerArrayList extends TOP implements
    *                    <code>length &gt; size()</code> or
    *                    <code>destPos + length &gt; destArray.length</code>.
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(size(), srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -539,6 +541,7 @@ public class IntegerArrayList extends TOP implements
     }
   }
   
+  @Override
   public Spliterator.OfInt spliterator() {
     return (null == intArrayAsList) 
         ? Arrays.spliterator(intArrayList.toIntArray())

@@ -506,6 +506,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     return indexType == FSIndex.SET_INDEX || indexType == FSIndex.SORTED_INDEX;
   }
 
+  @Override
   public boolean isSorted() {
     return indexType == FSIndex.SORTED_INDEX;
   }

@@ -84,6 +84,7 @@ public interface ProcessTraceEvent extends java.io.Serializable {
    * 
    * @return the String representation of this event and its sub-events
    */
+  @Override
   String toString();
 
   /**

@@ -129,6 +129,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#enableSchemaValidation(boolean)
    */
+  @Override
   public void enableSchemaValidation(boolean aEnable) {
     mSchemaValidationEnabled = aEnable;
   }
@@ -150,6 +151,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid object
    */
+  @Override
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     URL urlToParse = aInput.getURL();
@@ -237,6 +239,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid object
    */
+  @Override
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl)
           throws InvalidXMLException {
     return parse(aInput, aNamespaceForSchema, aSchemaUrl, DEFAULT_PARSING_OPTIONS);
@@ -253,6 +256,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid object
    */
+  @Override
   public XMLizable parse(XMLInputSource aInput) throws InvalidXMLException {
     return parse(aInput, null, null, DEFAULT_PARSING_OPTIONS);
   }
@@ -263,6 +267,7 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#parse(org.apache.uima.util.XMLInputSource,
    *      org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public XMLizable parse(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     return parse(aInput, null, null, aOptions);
   }
@@ -278,6 +283,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    */
+  @Override
   public XMLizable buildObject(Element aElement) throws InvalidXMLException {
     return buildObject(aElement, new ParsingOptions(true));
   }
@@ -293,6 +299,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    */
+  @Override
   public XMLizable buildObject(Element aElement, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate a Class that can be built from the element
@@ -332,6 +339,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#buildObjectOrPrimitive(Element, ParsingOptions)
    */
+  @Override
   public Object buildObjectOrPrimitive(Element aElement, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate a Class that can be built from the element
@@ -375,6 +383,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid ResourceSpecifier
    */
+  @Override
   public ResourceSpecifier parseResourceSpecifier(XMLInputSource aInput) throws InvalidXMLException {
     return parseResourceSpecifier(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -391,6 +400,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid ResourceSpecifier
    */
+  @Override
   public ResourceSpecifier parseResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -415,6 +425,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid ResourceSpecifier
    */
+  @Override
   public ResourceMetaData parseResourceMetaData(XMLInputSource aInput) throws InvalidXMLException {
     return parseResourceMetaData(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -431,6 +442,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid ResourceSpecifier
    */
+  @Override
   public ResourceMetaData parseResourceMetaData(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -456,6 +468,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid URISpecifier
    */
+  @Override
   public URISpecifier parseURISpecifier(XMLInputSource aInput) throws InvalidXMLException {
     return parseURISpecifier(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -472,6 +485,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid URISpecifier
    */
+  @Override
   public URISpecifier parseURISpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -497,6 +511,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid AnalysisEngineDescription
    */
+  @Override
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseAnalysisEngineDescription(aInput, DEFAULT_PARSING_OPTIONS);
@@ -514,6 +529,7 @@ public class XMLParser_impl implements XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid AnalysisEngineDescription
    */
+  @Override
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -541,6 +557,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @deprecated since v2.0
    */
+  @Override
   @Deprecated
   public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException {
     return parseTaeDescription(aInput, DEFAULT_PARSING_OPTIONS);
@@ -560,6 +577,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @deprecated since v2.0
    */
+  @Override
   @Deprecated
   public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
@@ -577,6 +595,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#parseResultSpecification(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public ResultSpecification parseResultSpecification(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseResultSpecification(aInput, DEFAULT_PARSING_OPTIONS);
@@ -585,6 +604,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#parseResultSpecification(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public ResultSpecification parseResultSpecification(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, null, aOptions);
@@ -600,6 +620,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#parseCasConsumerDescription(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseCasConsumerDescription(aInput, DEFAULT_PARSING_OPTIONS);
@@ -608,6 +629,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#parseCasConsumerDescription(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -621,12 +643,14 @@ public class XMLParser_impl implements XMLParser {
     }
   }
 
+  @Override
   @Deprecated
   public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseCasInitializerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
+  @Override
   @Deprecated
   public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
@@ -641,11 +665,13 @@ public class XMLParser_impl implements XMLParser {
     }
   }
 
+  @Override
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseCollectionReaderDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
+  @Override
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -664,6 +690,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseCpeDescription(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public CpeDescription parseCpeDescription(XMLInputSource aInput) throws InvalidXMLException {
     XMLizable object = parse(aInput);
 
@@ -680,6 +707,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseTypePriorities(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public TypePriorities parseTypePriorities(XMLInputSource aInput) throws InvalidXMLException {
     return parseTypePriorities(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -689,6 +717,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseTypePriorities(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public TypePriorities parseTypePriorities(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -707,6 +736,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseTypeSystemDescription(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseTypeSystemDescription(aInput, DEFAULT_PARSING_OPTIONS);
@@ -717,6 +747,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseTypeSystemDescription(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -735,6 +766,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseFsIndexCollection(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public FsIndexCollection parseFsIndexCollection(XMLInputSource aInput) throws InvalidXMLException {
     return parseFsIndexCollection(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -744,6 +776,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseFsIndexCollection(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public FsIndexCollection parseFsIndexCollection(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -762,6 +795,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseResourceManagerConfiguration(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseResourceManagerConfiguration(aInput, DEFAULT_PARSING_OPTIONS);
@@ -772,6 +806,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseResourceManagerConfiguration(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
@@ -788,6 +823,7 @@ public class XMLParser_impl implements XMLParser {
   /* (non-Javadoc)
    * @see org.apache.uima.util.XMLParser#parseFlowControllerDescription(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput) throws InvalidXMLException {
     return parseFlowControllerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -795,6 +831,7 @@ public class XMLParser_impl implements XMLParser {
   /* (non-Javadoc)
    * @see org.apache.uima.util.XMLParser#parseFlowControllerDescription(org.apache.uima.util.XMLInputSource, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
@@ -810,6 +847,7 @@ public class XMLParser_impl implements XMLParser {
   /* (non-Javadoc)
    * @see org.apache.uima.util.XMLParser#parseCustomResourceSpecifier(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput) throws InvalidXMLException {
     return parseCustomResourceSpecifier(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -817,6 +855,7 @@ public class XMLParser_impl implements XMLParser {
   /* (non-Javadoc)
    * @see org.apache.uima.util.XMLParser#parseCustomResourceSpecifier(org.apache.uima.util.XMLInputSource, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
@@ -832,6 +871,7 @@ public class XMLParser_impl implements XMLParser {
   /* (non-Javadoc)
    * @see org.apache.uima.util.XMLParser#parsePearSpecifier(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput) throws InvalidXMLException {
     return parsePearSpecifier(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -839,6 +879,7 @@ public class XMLParser_impl implements XMLParser {
   /* (non-Javadoc)
    * @see org.apache.uima.util.XMLParser#parsePearSpecifier(org.apache.uima.util.XMLInputSource, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
@@ -856,6 +897,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @see org.apache.uima.util.XMLParser#parseIndexBuildSpecification(org.apache.uima.util.XMLInputSource)
    */
+  @Override
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseIndexBuildSpecification(aInput, DEFAULT_PARSING_OPTIONS);
@@ -867,6 +909,7 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#parseIndexBuildSpecification(org.apache.uima.util.XMLInputSource,
    *      org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     XMLizable object = parse(aInput, aOptions);
@@ -896,6 +939,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the class named by <code>aClassName</code> does not implement
    * <code>XMLIzable</code>. @
    */
+  @Override
   @SuppressWarnings("unchecked")
   public void addMapping(String aElementName, String aClassName) throws ClassNotFoundException {
     if (aElementName == null) {
@@ -915,6 +959,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#newSaxDeserializer()
    */
+  @Override
   public SaxDeserializer newSaxDeserializer() {
     return new SaxDeserializer_impl(this, new XMLParser.ParsingOptions(true));
   }
@@ -922,6 +967,7 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @see org.apache.uima.util.XMLParser#newSaxDeserializer(org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public SaxDeserializer newSaxDeserializer(XMLParser.ParsingOptions aOptions) {
     return new SaxDeserializer_impl(this, aOptions);
   }
@@ -933,16 +979,19 @@ public class XMLParser_impl implements XMLParser {
   static class ParseErrorHandler extends DefaultHandler {
     private SAXParseException mException = null;
 
+    @Override
     public void error(SAXParseException aError) {
       if (mException == null)
         mException = aError;
     }
 
+    @Override
     public void fatalError(SAXParseException aError) {
       if (mException == null)
         mException = aError;
     }
 
+    @Override
     public void warning(SAXParseException aWarning) {
       System.err.println("XML Warning: " + aWarning.getMessage());
     }

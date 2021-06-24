@@ -113,20 +113,24 @@ public class RsFeats implements Iterable<RsFeat> {
     return null;
   }
 
+  @Override
   public Iterator<RsFeat> iterator() {
     return (null == features) ? nullIterator : features.iterator();
   }
 
   final static Iterator<RsFeat> nullIterator = new Iterator<RsFeat>() {
 
+    @Override
     public boolean hasNext() {
       return false;
     }
 
+    @Override
     public RsFeat next() {
       return null;
     }
 
+    @Override
     public void remove() {
     }
   };

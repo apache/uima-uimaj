@@ -40,6 +40,7 @@ public class ReplaceStringInFiles {
       this.ext = extension;
     }
 
+    @Override
     public boolean accept(File file) {
       return (file.isFile() && file.getName().endsWith(this.ext));
     }
@@ -48,6 +49,7 @@ public class ReplaceStringInFiles {
 
   private static class DirFileFilter implements FileFilter {
 
+    @Override
     public boolean accept(File file) {
       return file.isDirectory();
     }

@@ -53,6 +53,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a FileLanguageResourceSpecifier
@@ -80,12 +81,14 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.ParameterizedDataResource#getDataResource(java.lang.String[])
    */
+  @Override
   public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
     // one parameter - the language - is required
     if (aParams.length != 1) {

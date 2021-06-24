@@ -64,6 +64,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#getName()
    */
+  @Override
   public String getName() {
     if (mName != null && mName.contains("${")) {
       String value = resolveSettings(mName);
@@ -79,6 +80,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#setName(java.lang.String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -88,6 +90,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#getLocation()
    */
+  @Override
   public String getLocation() {
     if (mLocation != null && mLocation.contains("${")) {
       String value = resolveSettings(mLocation);
@@ -103,6 +106,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#setLocation(java.lang.String)
    */
+  @Override
   public void setLocation(String aUri) {
     mLocation = aUri;
   }
@@ -119,6 +123,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
     String location, name;
     if ((location=getLocation()) != null) {
@@ -163,6 +168,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String name = aElement.getAttribute("name");
@@ -184,6 +190,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
   
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute) throws SAXException {
     if (null == serialContext.get()) {
       getSerialContext(aContentHandler);  
@@ -222,6 +229,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   /**
    * @see MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);
     // this object has custom XMLization routines

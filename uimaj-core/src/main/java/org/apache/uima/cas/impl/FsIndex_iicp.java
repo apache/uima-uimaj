@@ -280,6 +280,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     return (span == -1) ? Integer.MAX_VALUE : span;
   }
   
+  @Override
   public boolean isEmpty() {
     createIndexIteratorCache();  
     for (FsIndex_singletype<TOP> index : cachedSubFsLeafIndexes) {

@@ -66,6 +66,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -73,6 +74,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -80,6 +82,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#getVersion()
    */
+  @Override
   public String getVersion() {
     return mVersion;
   }
@@ -87,6 +90,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#setVersion(String)
    */
+  @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
@@ -94,6 +98,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -101,6 +106,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -108,6 +114,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#getVendor()
    */
+  @Override
   public String getVendor() {
     return mVendor;
   }
@@ -115,6 +122,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /**
    * @see ResourceMetaData#setVendor(String)
    */
+  @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
@@ -124,6 +132,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * 
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
    */
+  @Override
   public Import[] getImports() {
     // don't allow this to return null
     return (mImports == null) ? Import.EMPTY_IMPORTS : mImports;
@@ -134,6 +143,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * 
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
    */
+  @Override
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -147,6 +157,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * 
    * @see org.apache.uima.resource.metadata.FsIndexCollection#getFsIndexes()
    */
+  @Override
   public FsIndexDescription[] getFsIndexes() {
     // don't allow this to return null
     if (mFsIndexes == null)
@@ -159,6 +170,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * 
    * @see org.apache.uima.resource.metadata.FsIndexCollection#setFsIndexes(org.apache.uima.resource.metadata.FsIndexDescription[])
    */
+  @Override
   public void setFsIndexes(FsIndexDescription[] aFSIndexes) {
     if (aFSIndexes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -167,6 +179,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     mFsIndexes = aFSIndexes;
   }
 
+  @Override
   public void addFsIndex(FsIndexDescription aFsIndexDescription) {
     FsIndexDescription[] current = getFsIndexes();
     FsIndexDescription[] newArr = new FsIndexDescription[current.length + 1];
@@ -175,6 +188,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     setFsIndexes(newArr);
   }
 
+  @Override
   public void removeFsIndex(FsIndexDescription aFsIndexDescription) {
     FsIndexDescription[] current = getFsIndexes();
     for (int i = 0; i < current.length; i++) {
@@ -194,6 +208,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
   // support multi-threading, avoid object creation if no imports
+  @Override
   public synchronized void resolveImports() throws InvalidXMLException {
     if (getImports().length == 0) {
       resolveImports(null, null);
@@ -202,10 +217,12 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     }
   }
 
+  @Override
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
+  @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedFsIndexURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     List<FsIndexDescription> importedIndexes = null;
@@ -284,6 +301,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     aResults.addAll(Arrays.asList(desc.getFsIndexes()));
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

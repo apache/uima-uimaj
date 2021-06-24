@@ -93,6 +93,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * @throws ResourceInitializationException wraps exceptions thrown from called routines
    * @see org.apache.uima.analysis_component.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
     try {
       this.uimaContext = context;
@@ -184,6 +185,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   /**
    * @see org.apache.uima.analysis_component.AnalysisComponent#reconfigure()
    */
+  @Override
   public void reconfigure() {
     // destroy engine; it will be reinitialized on next call to process
     destroy();
@@ -242,6 +244,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.cas.AbstractCas)
    */
+  @Override
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     this.process((CAS) aCAS);
   }
@@ -251,6 +254,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {
@@ -269,6 +273,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
 
     try {
@@ -289,6 +294,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
+  @Override
   public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
@@ -298,11 +304,13 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
    */
+  @Override
   public int getCasInstancesRequired() {
     return 1;
   }
 
   
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {
@@ -315,6 +323,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {
@@ -329,6 +338,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   /**
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#destroy()
    */
+  @Override
   public void destroy() {
     try {
       if (engine != null) {
@@ -347,6 +357,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see java.lang.Object#finalize()
    */
+  @Override
   protected void finalize() throws Throwable {
     destroy();
   }

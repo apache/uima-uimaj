@@ -46,6 +46,7 @@ public class UimacppException extends Exception {
   /**
    * Returns a detail message. If present, this will also include the nested exception.
    */
+  @Override
   public String getMessage() {
     if (detail == null) {
       return super.getMessage();
@@ -60,6 +61,7 @@ public class UimacppException extends Exception {
    * @param ps
    *          the print stream
    */
+  @Override
   public void printStackTrace(PrintStream ps) {
     if (detail == null) {
       super.printStackTrace(ps);
@@ -74,6 +76,7 @@ public class UimacppException extends Exception {
   /**
    * Prints the composite message to <code>System.err</code>.
    */
+  @Override
   public void printStackTrace() {
     printStackTrace(System.err);
   }
@@ -85,6 +88,7 @@ public class UimacppException extends Exception {
    * @param pw
    *          the print writer
    */
+  @Override
   public void printStackTrace(PrintWriter pw) {
     if (detail == null) {
       super.printStackTrace(pw);

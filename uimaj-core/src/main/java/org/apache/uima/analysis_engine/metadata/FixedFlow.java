@@ -45,6 +45,7 @@ public interface FixedFlow extends FlowConstraints {
    * 
    * @return {@link #FLOW_CONSTRAINTS_TYPE}
    */
+  @Override
   String getFlowConstraintsType();
 
   /**

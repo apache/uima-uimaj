@@ -74,6 +74,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * @see ConfigurationParameterSettings#getParameterSettings()
    */
+  @Override
   public NameValuePair[] getParameterSettings() {
     return mParameterSettings;
   }
@@ -81,6 +82,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * @see ConfigurationParameterSettings#setParameterSettings(NameValuePair[])
    */
+  @Override
   public void setParameterSettings(NameValuePair[] aSettings) {
     if (aSettings == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -92,6 +94,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * @see ConfigurationParameterSettings#getSettingsForGroups()
    */
+  @Override
   public Map<String, NameValuePair[]> getSettingsForGroups() {
     return mSettingsForGroups;
   }
@@ -99,6 +102,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * @see ConfigurationParameterSettings#getParameterValue(String)
    */
+  @Override
   public Object getParameterValue(String aParamName) {
     NameValuePair[] nvps = getParameterSettings();
     if (nvps != null) {
@@ -115,6 +119,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * @see ConfigurationParameterSettings#getParameterValue(java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public Object getParameterValue(String aGroupName, String aParamName) {
     if (aGroupName == null) {
       return getParameterValue(aParamName);
@@ -135,6 +140,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * @see ConfigurationParameterSettings#setParameterValue(java.lang.String,
    *      java.lang.Object)
    */
+  @Override
   public void setParameterValue(String aParamName, Object aValue) {
     if (aValue != null) // setting a value
     {
@@ -178,6 +184,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * @see ConfigurationParameterSettings#setParameterValue(java.lang.String,
    *      java.lang.String, java.lang.Object)
    */
+  @Override
   public void setParameterValue(String aGroupName, String aParamName, Object aValue) {
     if (aGroupName == null) {
       setParameterValue(aParamName, aValue);
@@ -224,6 +231,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * @see MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -246,6 +254,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * @see MetaDataObject#listAttributes()
    * @deprecated - use getAdditionalAttributes instead
    */
+  @Override
   @Deprecated
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
@@ -260,6 +269,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * @see XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     List<XMLizable> nvps = new ArrayList<>();

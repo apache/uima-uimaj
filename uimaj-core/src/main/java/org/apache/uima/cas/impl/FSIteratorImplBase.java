@@ -55,6 +55,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * 
    * @see java.util.Iterator#hasNext()
    */
+  @Override
   public boolean hasNext() {
     return isValid();
   }
@@ -64,6 +65,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * 
    * @see java.util.Iterator#next()
    */
+  @Override
   public T next() {
     T result = get();
     moveToNext();
@@ -75,6 +77,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * 
    * @see java.util.Iterator#remove()
    */
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }
@@ -101,6 +104,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
   /**
    * default implementation of getComparator
    */
+  @Override
   public Comparator<TOP> getComparator() {
     return ll_getIndex().getComparator();
   }

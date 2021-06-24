@@ -467,6 +467,7 @@ public class MultiprocessingAnalysisEngine_implTest {
       mAE = aAE;
     }
 
+    @Override
     public void run() {
       Random r = new Random();
       while (true) {
@@ -531,6 +532,7 @@ public class MultiprocessingAnalysisEngine_implTest {
       super(aAE);
     }
 
+    @Override
     public void run() {
       
       while (true) {
@@ -578,6 +580,7 @@ public class MultiprocessingAnalysisEngine_implTest {
       }
     }
 
+    @Override
     public synchronized Throwable getFailure() {
       return mFailure;
     }

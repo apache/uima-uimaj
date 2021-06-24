@@ -62,6 +62,7 @@ public interface CasDataConsumer extends ConfigurableResource, CasDataProcessor 
    * @throws IOException
    *           if an I/O failure occurs
    */
+  @Override
   void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException;
 
@@ -76,6 +77,7 @@ public interface CasDataConsumer extends ConfigurableResource, CasDataProcessor 
    * @throws IOException
    *           if an I/O failure occurs
    */
+  @Override
   void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException;
 

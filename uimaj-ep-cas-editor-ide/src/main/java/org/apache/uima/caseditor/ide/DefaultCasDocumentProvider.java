@@ -86,10 +86,12 @@ public class DefaultCasDocumentProvider extends
       this.fileInput = fileInput;
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
       IResourceDelta delta = event.getDelta();
       try {
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+          @Override
           public boolean visit(IResourceDelta delta) throws CoreException {
             if (delta.getFlags() != IResourceDelta.MARKERS
                     && delta.getResource().getType() == IResource.FILE) {
@@ -132,6 +134,7 @@ public class DefaultCasDocumentProvider extends
       this.element = element;
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
       IResource tsFile = ResourcesPlugin.getWorkspace().getRoot()
               .findMember((getTypesystemId(element)));
@@ -539,6 +542,7 @@ public class DefaultCasDocumentProvider extends
     Button retryButton = new Button(provideTypeSystemForm, SWT.NONE);
     retryButton.setText("Choose Type System ...");
     retryButton.addSelectionListener(new SelectionListener() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
 
         // Open a dialog to let the user choose a type system
@@ -558,6 +562,7 @@ public class DefaultCasDocumentProvider extends
         }
       }
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         throw new IllegalStateException("Never be called!");
       }

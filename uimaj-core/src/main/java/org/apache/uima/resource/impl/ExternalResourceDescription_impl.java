@@ -53,6 +53,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -60,6 +61,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#getResourceSpecifier()
    */
+  @Override
   public ResourceSpecifier getResourceSpecifier() {
     return mResourceSpecifier;
   }
@@ -67,6 +69,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#getImplementationName()
    */
+  @Override
   public String getImplementationName() {
     return mImplementationName;
   }
@@ -74,6 +77,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -81,6 +85,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#setResourceSpecifier(ResourceSpecifier)
    */
+  @Override
   public void setResourceSpecifier(ResourceSpecifier aSpecifier) {
     mResourceSpecifier = aSpecifier;
   }
@@ -88,6 +93,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#setImplementationName(String)
    */
+  @Override
   public void setImplementationName(String aName) {
     mImplementationName = aName;
   }
@@ -95,6 +101,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -102,10 +109,12 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   /**
    * @see org.apache.uima.resource.ExternalResourceDescription#setDescription(java.lang.String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

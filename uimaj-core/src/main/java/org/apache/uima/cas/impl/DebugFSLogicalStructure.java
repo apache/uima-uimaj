@@ -82,6 +82,7 @@ public class DebugFSLogicalStructure {
       isIndex = true;
     }
 
+    @Override
     public String toString() {
       if (isIndex) {
         return "" + fsIndex.size() + " entries";
@@ -120,6 +121,7 @@ public class DebugFSLogicalStructure {
     /**
      * Return a label to identify the view.
      */
+    @Override
     public String toString() {
       SofaFS sofaFS = cas.getSofa();
       if (null == sofaFS)
@@ -205,6 +207,7 @@ public class DebugFSLogicalStructure {
      * 
      * @return the label string.
      */
+    @Override
     public String toString() {
       return indexName + "[" + fsIndex.getType().getName() + ", " + fsIndex.size() + " entries]";
     }

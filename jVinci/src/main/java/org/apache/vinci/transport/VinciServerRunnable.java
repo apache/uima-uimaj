@@ -33,6 +33,7 @@ public class VinciServerRunnable extends BaseServerRunnable {
   /**
    * Handle shutdown requests, and PING commands.
    */
+  @Override
   public Transportable handleHeader(KeyValuePair header) {
     VinciFrame out = null;
     if (header != null) {

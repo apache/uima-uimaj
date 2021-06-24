@@ -174,6 +174,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return the String representation of all events in this <code>ProcessTrace</code>.
    */
+  @Override
   String toString();
 
 }

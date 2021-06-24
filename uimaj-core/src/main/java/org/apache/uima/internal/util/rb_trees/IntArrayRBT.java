@@ -548,6 +548,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     return false;
   }
 
+  @Override
   public int getKeyForNode(int node) { // is public
     return super.getKeyForNode(node);  // is protected
   }

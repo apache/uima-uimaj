@@ -343,6 +343,7 @@ public interface FeatureStructure extends Cloneable {
    * @exception ClassCastException
    *              If <code>o</code> is not a FS.
    */
+  @Override
   boolean equals(Object o) throws ClassCastException;
 
   /**
@@ -351,6 +352,7 @@ public interface FeatureStructure extends Cloneable {
    * 
    * @return The hash code.
    */
+  @Override
   int hashCode();
 
 }

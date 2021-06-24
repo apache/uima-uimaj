@@ -63,6 +63,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -70,6 +71,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -77,6 +79,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getVersion()
    */
+  @Override
   public String getVersion() {
     return mVersion;
   }
@@ -84,6 +87,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setVersion(String)
    */
+  @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
@@ -91,6 +95,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -98,6 +103,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -105,6 +111,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getVendor()
    */
+  @Override
   public String getVendor() {
     return mVendor;
   }
@@ -112,6 +119,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setVendor(String)
    */
+  @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
@@ -121,6 +129,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
    */
+  @Override
   public Import[] getImports() {
     return mImports;
   }
@@ -130,6 +139,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
    */
+  @Override
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -143,6 +153,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getExternalResources()
    */
+  @Override
   public ExternalResourceDescription[] getExternalResources() {
     return mExternalResources;
   }
@@ -152,6 +163,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setExternalResources(org.apache.uima.resource.ExternalResourceDescription[])
    */
+  @Override
   public void setExternalResources(ExternalResourceDescription[] aDescriptions) {
     mExternalResources = (aDescriptions != null) ? aDescriptions
             : ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS;
@@ -162,6 +174,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getExternalResourceBindings()
    */
+  @Override
   public ExternalResourceBinding[] getExternalResourceBindings() {
     return mBindings;
   }
@@ -171,6 +184,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setExternalResourceBindings(org.apache.uima.resource.metadata.ExternalResourceBinding[])
    */
+  @Override
   public void setExternalResourceBindings(ExternalResourceBinding[] aBindings) {
     mBindings = (aBindings != null) ? aBindings : ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS;
   }
@@ -180,6 +194,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#addExternalResource(org.apache.uima.resource.ExternalResourceDescription)
    */
+  @Override
   public void addExternalResource(ExternalResourceDescription aExternalResourceDescription) {
     ExternalResourceDescription[] current = getExternalResources();
     ExternalResourceDescription[] newArr = new ExternalResourceDescription[current.length + 1];
@@ -193,6 +208,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#addExternalResourceBinding(org.apache.uima.resource.metadata.ExternalResourceBinding)
    */
+  @Override
   public void addExternalResourceBinding(ExternalResourceBinding aExternalResourceBinding) {
     ExternalResourceBinding[] current = getExternalResourceBindings();
     ExternalResourceBinding[] newArr = new ExternalResourceBinding[current.length + 1];
@@ -206,6 +222,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#removeExternalResource(org.apache.uima.resource.ExternalResourceDescription)
    */
+  @Override
   public void removeExternalResource(ExternalResourceDescription aExternalResourceDescription) {
     ExternalResourceDescription[] current = getExternalResources();
     for (int i = 0; i < current.length; i++) {
@@ -224,6 +241,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#removeExternalResourceBinding(org.apache.uima.resource.metadata.ExternalResourceBinding)
    */
+  @Override
   public void removeExternalResourceBinding(ExternalResourceBinding aExternalResourceBinding) {
     ExternalResourceBinding[] current = getExternalResourceBindings();
     for (int i = 0; i < current.length; i++) {
@@ -240,6 +258,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @deprecated {@link ResourceManagerConfiguration#getImport()}
    */
+  @Override
   @Deprecated
   public Import getImport() {
     if (mImports.length > 0) {
@@ -252,6 +271,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   /**
    * @deprecated {@link ResourceManagerConfiguration#setImport(Import)}
    */
+  @Override
   @Deprecated
   public void setImport(Import aImport) {
     mImports = new Import[] { aImport };
@@ -263,6 +283,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
   // support multi-threading, avoid object creation if no imports
+  @Override
   public synchronized void resolveImports() throws InvalidXMLException {
     if (getImports().length == 0) {
       resolveImports(null, null);
@@ -271,10 +292,12 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     }
   }
 
+  @Override
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
+  @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
           throws InvalidXMLException {
     List<ExternalResourceDescription> importedResources = null;
@@ -366,6 +389,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

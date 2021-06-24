@@ -43,6 +43,7 @@ class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
     this.cons = (FSMatchConstraint) cons;
   }
 
+  @Override
   public boolean match(FeatureStructure fs) {
     // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
     final int max = this.featNames.size();
@@ -60,6 +61,7 @@ class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
     return this.cons.match(fs);
   }
 
+  @Override
   public String toString() {
     return super.toString() + ".( " + this.cons.toString() + " )";
   }

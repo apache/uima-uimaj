@@ -44,6 +44,7 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
 
   int cpcDelay = 0;
   
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     
@@ -76,9 +77,11 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
     logger.log(Level.CONFIG, "NAnnotator initialized");
   }
 
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
   }
 
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     System.out
             .println("NoOpAnnotator.collectionProcessComplete() Called -------------------------------------");
@@ -102,6 +105,7 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
     counter = 0;
   }
 
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     ++counter;
     try {

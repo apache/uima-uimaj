@@ -126,6 +126,7 @@ public class PearCasPoolTest {
     // create and register a status callback listener
     TestStatusCallbackListener listener = new TestStatusCallbackListener() {
       TypeSystem sts = null;
+      @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
         super.entityProcessComplete(aCas, aStatus);
         if (sts == null) {

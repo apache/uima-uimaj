@@ -64,6 +64,7 @@ public interface SimplePrecondition extends Precondition {
    * 
    * @return {@link #PRECONDITION_TYPE}
    */
+  @Override
   String getPreconditionType();
 
   /**

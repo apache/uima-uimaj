@@ -82,6 +82,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * @seeorg.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.
    * UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     lastDocument = null;
@@ -122,6 +123,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * 
    * @see JCasMultiplier_ImplBase#process(JCas)
    */
+  @Override
   public void process(CAS aCas) throws AnalysisEngineProcessException {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.
@@ -136,6 +138,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return this.mCount < this.nToGen;
   }
@@ -145,6 +148,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
 
     CAS cas = getEmptyCAS();

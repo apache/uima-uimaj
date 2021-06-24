@@ -134,6 +134,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.apache.uima.util.SaxDeserializer#getObject()
    */
+  @Override
   public XMLizable getObject() throws InvalidXMLException {
     // COMMENT NODEs may be present, and getDocumentElement would skip it...
     Node rootDomNode = ((Document) mDOMResult.getNode()).getDocumentElement();
@@ -151,6 +152,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
+  @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
 //    System.out.format("SaxDeserializer_impl::characters: %s%n", new String(ch, start, length));
     mTransformerHandler.characters(ch, start, length);
@@ -159,6 +161,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#endDocument()
    */
+  @Override
   public void endDocument() throws SAXException {
     // System.out.println("SaxDeserializer_impl::endDocument");
     mTransformerHandler.endDocument();
@@ -168,6 +171,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
     // System.out.println("SaxDeserializer_impl::endElement");
     mTransformerHandler.endElement(namespaceURI, localName, qName);
@@ -176,6 +180,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#endPrefixMapping(java.lang.String)
    */
+  @Override
   public void endPrefixMapping(String prefix) throws SAXException {
     // System.out.println("SaxDeserializer_impl::endPrefixMapping");
     mTransformerHandler.endPrefixMapping(prefix);
@@ -184,6 +189,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
    */
+  @Override
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
 //    System.out.format("SaxDeserializer_impl::ignorableWS: %s%n", new String(ch, start, length));
     if (mOptions.preserveComments) {
@@ -199,6 +205,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#processingInstruction(java.lang.String, java.lang.String)
    */
+  @Override
   public void processingInstruction(String target, String data) throws SAXException {
     // System.out.println("SaxDeserializer_impl::processingInstruction");
     mTransformerHandler.processingInstruction(target, data);
@@ -207,6 +214,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
    */
+  @Override
   public void setDocumentLocator(Locator locator) {
     // System.out.println("SaxDeserializer_impl::setDocumentLocator");
     mTransformerHandler.setDocumentLocator(locator);
@@ -215,6 +223,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
    */
+  @Override
   public void skippedEntity(String name) throws SAXException {
     mTransformerHandler.skippedEntity(name);
   }
@@ -222,6 +231,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#startDocument()
    */
+  @Override
   public void startDocument() throws SAXException {
     // System.out.println("SaxDeserializer_impl::startDocument");
     mTransformerHandler.startDocument();
@@ -231,6 +241,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
    *      java.lang.String, org.xml.sax.Attributes)
    */
+  @Override
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
           throws SAXException {
     // System.out.println("SaxDeserializer_impl::startElement("+namespaceURI+","+localName+","+qName+","+atts+")");
@@ -260,6 +271,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   /**
    * @see org.xml.sax.ContentHandler#startPrefixMapping(java.lang.String, java.lang.String)
    */
+  @Override
   public void startPrefixMapping(String prefix, String uri) throws SAXException {
     // System.out.println("SaxDeserializer_impl::startPrefixMapping("+prefix+","+uri+")");
     mTransformerHandler.startPrefixMapping(prefix, uri);
@@ -267,19 +279,26 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
 
   //==============================================
   // Methods for LexicalHandler interface
+  @Override
   public void comment(char[] arg0, int arg1, int arg2) throws SAXException {
     mTransformerHandler.comment(arg0, arg1, arg2);
   }
 
+  @Override
   public void endCDATA() throws SAXException {}
 
+  @Override
   public void endDTD() throws SAXException {}
 
+  @Override
   public void endEntity(String name) throws SAXException {}
 
+  @Override
   public void startCDATA() throws SAXException {}
 
+  @Override
   public void startDTD(String name, String publicId, String systemId) throws SAXException {}
 
+  @Override
   public void startEntity(String name) throws SAXException {}
 }

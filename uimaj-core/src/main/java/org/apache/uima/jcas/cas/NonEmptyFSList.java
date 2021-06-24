@@ -41,6 +41,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -135,6 +136,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
     setTail((FSList) v);
   }
   
+  @Override
   public T getNthElement(int i) {
     return ((NonEmptyFSList<T>)getNonEmptyNthNode(i)).getHead();
   }

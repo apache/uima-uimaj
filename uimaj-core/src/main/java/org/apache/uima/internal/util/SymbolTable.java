@@ -186,6 +186,7 @@ public class SymbolTable {
    * 
    * @return A string representing the symbol table.
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append("{ ");

@@ -192,6 +192,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    * 
    * @return An FSIterator positioned at the beginning, or an invalid iterator.
    */
+  @Override
   default LowLevelIterator<T> iterator() {
     return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }

@@ -52,6 +52,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#dec()
      */
+    @Override
     public void dec() {
       this.currentNode = previousNode(this.currentNode);
     }
@@ -59,6 +60,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#get()
      */
+    @Override
     public int get() {
       if (!isValid()) {
         throw new NoSuchElementException();
@@ -66,6 +68,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       return Int2IntRBT.this.getKeyForNode(this.currentNode);
     }
     
+    @Override
     public int getValue() {
       if (!isValid()) {
         throw new NoSuchElementException();
@@ -76,6 +79,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#inc()
      */
+    @Override
     public void inc() {
       this.currentNode = nextNode(this.currentNode);
     }
@@ -83,6 +87,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#isValid()
      */
+    @Override
     public boolean isValid() {
       return (this.currentNode != NIL);
     }
@@ -90,6 +95,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#moveToFirst()
      */
+    @Override
     public void moveToFirst() {
       this.currentNode = getFirstNode();
     }
@@ -97,6 +103,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#moveToLast()
      */
+    @Override
     public void moveToLast() {
       this.currentNode = Int2IntRBT.this.greatestNode;
     }
@@ -104,6 +111,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#copy()
      */
+    @Override
     public Object copy() {
       KeyValueIterator it = new KeyValueIterator();
       it.currentNode = this.currentNode;
@@ -113,6 +121,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
+    @Override
     public void moveTo(int i) {
       this.currentNode = findInsertionPointNoDups(i);
     }
@@ -127,6 +136,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       this.currentNode = getFirstNode();
     }
 
+    @Override
     public final boolean hasNext() {
       return this.currentNode != NIL;
     }
@@ -141,6 +151,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
+    @Override
     public boolean hasPrevious() {
       return this.currentNode != NIL && this.currentNode != getFirstNode();
     }
@@ -154,6 +165,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */
+    @Override
     public void moveToEnd() {
       this.currentNode = Int2IntRBT.this.greatestNode;
     }
@@ -161,6 +173,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToStart()
      */
+    @Override
     public void moveToStart() {
       this.currentNode = NIL;
     }
@@ -188,6 +201,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     super(initialSize);
   }
     
+  @Override
   protected void setupArrays() {
     super.setupArrays();
     this.values = new int[initialSize];
@@ -212,6 +226,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     flush();
   }
 
+  @Override
   public void flush() {
     super.flush();
     lastNodeGotten = NIL;

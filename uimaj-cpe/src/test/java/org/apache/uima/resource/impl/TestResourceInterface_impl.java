@@ -42,6 +42,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
+  @Override
   public void load(DataResource aData) throws ResourceInitializationException {
     InputStream inStr = null;
     try {
@@ -67,6 +68,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.impl.TestResourceInterface#readString()
    */
+  @Override
   public String readString() {
     return mString;
   }
@@ -74,12 +76,14 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return null;
   }
@@ -87,6 +91,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     return true;

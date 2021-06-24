@@ -64,6 +64,7 @@ public class StringSubtypeTest {
 
   public static class Annotator extends JCasAnnotator_ImplBase {
 
+    @Override
     public void process(JCas aJCas) {
       // Does nothing, not used in this test.
     }

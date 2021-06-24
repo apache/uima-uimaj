@@ -185,6 +185,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     /* (non-Javadoc)
      * @see org.xml.sax.helpers.DefaultHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       try {
         os.write(XTalkTransporter.HEADER);
@@ -243,6 +244,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     /* (non-Javadoc)
      * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
+    @Override
     public void endElement(String uri, String name, String qName) throws SAXException {
       // Debug only
       // Debug.p("Ending element: " + qName);
@@ -251,6 +253,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     /* (non-Javadoc)
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
             throws SAXException {
       try {
@@ -276,6 +279,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     /* (non-Javadoc)
      * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       // Debug.p("Chars: " + new String(ch, start, length));
       try {
@@ -290,6 +294,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /* (non-Javadoc)
    * @see org.apache.vinci.transport.Transportable#fromStream(java.io.InputStream)
    */
+  @Override
   public KeyValuePair fromStream(InputStream is) throws IOException {
     // Debug.p("CASTransportable.fromStream");
     boolean done = false;
@@ -323,6 +328,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @param os the os
    * @throws IOException Signals that an I/O exception has occurred.
    */
+  @Override
   public void toStream(OutputStream os) throws IOException {
     try {
       UIMAFramework.getLogger().log(Level.FINEST, "Serializing CAS.");
@@ -365,6 +371,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /* (non-Javadoc)
    * @see java.lang.Object#finalize()
    */
+  @Override
   protected void finalize() {
     // Though unlikely, there could be unusual cases where
     // toStream is not ever invoked, so in these cases this
@@ -379,6 +386,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /* (non-Javadoc)
    * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
    */
+  @Override
   public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
           throws SAXException {
     // Debug.p("Start element: " + qName);
@@ -419,6 +427,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /* (non-Javadoc)
    * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
    */
+  @Override
   public void endElement(String uri, String name, String qName) throws SAXException {
     // Debug.p("End element: " + qName);
     if (Constants.KEYS.equals(qName)) {
@@ -436,6 +445,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /* (non-Javadoc)
    * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
    */
+  @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
     // Debug.p("characters: " + new String(ch, start, length) + " : " + incomingCommand);
     if (ready > 0) {
@@ -457,6 +467,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * 
    * @see org.xml.sax.helpers.DefaultHandler#startDocument()
    */
+  @Override
   public void startDocument() throws SAXException {
     this.ready = 0;
   }
@@ -466,6 +477,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * 
    * @see org.xml.sax.helpers.DefaultHandler#endDocument()
    */
+  @Override
   public void endDocument() throws SAXException {
   }
   

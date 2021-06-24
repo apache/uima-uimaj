@@ -97,6 +97,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getComponentName()
    */
+  @Override
   public String getComponentName() {
     return mComponentName;
   }
@@ -111,6 +112,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getType()
    */
+  @Override
   public String getType() {
     return mType;
   }
@@ -125,6 +127,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -139,6 +142,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getDuration()
    */
+  @Override
   public int getDuration() {
     return mDuration;
   }
@@ -160,6 +164,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getResultMessage()
    */
+  @Override
   public String getResultMessage() {
     return mResultMessage;
   }
@@ -174,6 +179,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getSubEvents()
    */
+  @Override
   public List<ProcessTraceEvent> getSubEvents() {
     if (mSubEvents == null) {
       return Collections.emptyList();
@@ -195,6 +201,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#toString()
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     toString(buf, 0);
@@ -204,6 +211,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#toString(StringBuffer,int)
    */
+  @Override
   public void toString(StringBuffer aBuf, int aIndentLevel) {
     toString(aBuf, aIndentLevel, 0);
   }
@@ -211,6 +219,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#toString(java.lang.StringBuffer, int, int)
    */
+  @Override
   public void toString(StringBuffer aBuf, int aIndentLevel, int aTotalTime) {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");
 
@@ -255,6 +264,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getDurationExcludingSubEvents()
    */
+  @Override
   public int getDurationExcludingSubEvents() {
     int result = getDuration();
     for (ProcessTraceEvent evt : getSubEvents()) {

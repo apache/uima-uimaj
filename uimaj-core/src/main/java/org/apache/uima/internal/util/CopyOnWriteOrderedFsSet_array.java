@@ -91,6 +91,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
    * @see OrderedFsSet_array#size()
    * @return the size of this version of the index (maybe not the current index size)
    */
+  @Override
   final public int size() {
     return original_size;
   }

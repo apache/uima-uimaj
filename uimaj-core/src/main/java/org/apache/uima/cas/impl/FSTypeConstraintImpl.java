@@ -42,7 +42,8 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 
 	private transient TypeSystem ts;
 
-	public boolean match(FeatureStructure fs) {
+	@Override
+  public boolean match(FeatureStructure fs) {
     final FeatureStructureImplC fsi = (FeatureStructureImplC) fs;
 		compile(fsi.getCAS().getTypeSystem());
 		final int typeCode = fsi._getTypeCode();
@@ -71,17 +72,20 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 		}
 	}
 
-	public void add(Type type) {
+	@Override
+  public void add(Type type) {
 		this.ts = null; // This will force a recompile.
 		nameSet.add(type.getName());
 	}
 
-	public void add(String type) {
+	@Override
+  public void add(String type) {
 		ts = null; // Will force recompile.
 		nameSet.add(type);
 	}
 
-	public String toString() {
+	@Override
+  public String toString() {
 		StringBuilder buf = new StringBuilder();
 		buf.append("isa ( ");
 		boolean start = true;

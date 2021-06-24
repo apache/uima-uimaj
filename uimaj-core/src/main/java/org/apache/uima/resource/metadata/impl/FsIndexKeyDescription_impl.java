@@ -51,6 +51,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   /**
    * @see FsIndexKeyDescription#isTypePriority()
    */
+  @Override
   public boolean isTypePriority() {
     return mTypePriority;
   }
@@ -58,6 +59,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   /**
    * @see FsIndexKeyDescription#setTypePriority(boolean)
    */
+  @Override
   public void setTypePriority(boolean aTypePriority) {
     mTypePriority = aTypePriority;
   }
@@ -65,6 +67,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   /**
    * @see FsIndexKeyDescription#getFeatureName()
    */
+  @Override
   public String getFeatureName() {
     return mFeatureName;
   }
@@ -72,6 +75,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   /**
    * @see FsIndexKeyDescription#setFeatureName(String)
    */
+  @Override
   public void setFeatureName(String aName) {
     mFeatureName = aName;
   }
@@ -79,6 +83,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   /**
    * @see FsIndexKeyDescription#getComparator()
    */
+  @Override
   public int getComparator() {
     return mComparator;
   }
@@ -86,6 +91,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   /**
    * @see FsIndexKeyDescription#setComparator(int)
    */
+  @Override
   public void setComparator(int aComparator) {
     mComparator = aComparator;
   }
@@ -140,6 +146,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * 
    * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     if ("typePriority".equals(aPropXmlInfo.propertyName)) {
@@ -168,6 +175,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

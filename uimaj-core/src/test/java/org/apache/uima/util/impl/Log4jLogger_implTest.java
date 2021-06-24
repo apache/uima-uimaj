@@ -282,6 +282,7 @@ public class Log4jLogger_implTest {
       logger.log(Level.INFO, "My fourth test message", thrown);
 
       new Runnable() {
+        @Override
         public void run() {
           logger.log(getClass().getName(), Level.INFO, "Message from wrapper", null);
         }

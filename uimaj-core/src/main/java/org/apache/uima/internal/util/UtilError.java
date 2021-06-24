@@ -78,6 +78,7 @@ public class UtilError extends RuntimeException {
   /**
    * @return The message of the exception. Useful for including the text in another exception.
    */
+  @Override
   public String getMessage() {
     if (this.resource == null) {
       try {
@@ -96,6 +97,7 @@ public class UtilError extends RuntimeException {
   /**
    * @return The same as getMessage(), but prefixed with <code>"UtilError: "</code>.
    */
+  @Override
   public String toString() {
     return "UtilError: " + this.getMessage();
   }

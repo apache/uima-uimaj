@@ -66,6 +66,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
 
@@ -140,6 +141,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     AnalysisEngine ae = null;
@@ -157,6 +159,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     AnalysisEngine ae = null;
@@ -170,6 +173,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
     }
   }
 
+  @Override
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     // https://issues.apache.org/jira/browse/UIMA-5191
     final long startTime = System.currentTimeMillis();
@@ -327,6 +331,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.
    * analysis_engine.ResultSpecification)
    */
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mPool.setResultSpecification(aResultSpec);
   }
@@ -334,6 +339,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
   /**
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     mPool.reconfigure();
   }
@@ -341,6 +347,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     mPool.destroy();
     super.destroy();
@@ -349,15 +356,18 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setLogger(org.apache.uima.util.Logger)
    */
+  @Override
   public void setLogger(Logger aLogger) {
     super.setLogger(aLogger);
     mPool.setLogger(aLogger);
   }
 
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     mPool.batchProcessComplete();
   }
 
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     mPool.collectionProcessComplete();
   }

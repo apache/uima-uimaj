@@ -257,6 +257,7 @@ public class VinciServer extends BaseServer {
   /**
    * @pre client != null
    */
+  @Override
   protected Runnable getRunnable(Socket client) {
     return new VinciServerRunnable(client, this);
   }
@@ -289,6 +290,7 @@ public class VinciServer extends BaseServer {
     Debug.printDebuggingMessage("VinciServer.shutdown()", "Accepted shutdown request: "
             + shutdown_message);
     new Thread(new Runnable() {
+      @Override
       public void run() {
         try {
           Thread.sleep(3000);

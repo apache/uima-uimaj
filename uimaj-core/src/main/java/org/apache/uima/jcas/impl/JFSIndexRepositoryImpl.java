@@ -51,6 +51,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getIndex(java.lang.String)
    */
+  @Override
   public <T extends TOP> FSIndex<T> getIndex(String label) {
     return fsIndexRepository.getIndex(label);
   }
@@ -60,6 +61,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getIndex(java.lang.String, int)
    */
+  @Override
   public <T extends TOP> FSIndex<T> getIndex(String label, int type) {
     return fsIndexRepository.getIndex(label, jcas.getCasType(type));
   }
@@ -69,6 +71,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getAnnotationIndex()
    */
+  @Override
   public AnnotationIndex<Annotation> getAnnotationIndex() {
     return this.jcas.getCas().getAnnotationIndex();
   }
@@ -78,6 +81,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getAnnotationIndex(int)
    */
+  @Override
   public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) {
       return this.jcas.getCas().getAnnotationIndex(this.jcas.getCasType(type));
   }
@@ -87,6 +91,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getLabels()
    */
+  @Override
   public Iterator<String> getLabels() {
     return fsIndexRepository.getLabels();
   }
@@ -107,6 +112,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getFSIndexRepository()
    */
+  @Override
   public FSIndexRepository getFSIndexRepository() {
     return fsIndexRepository;
   }
@@ -114,6 +120,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
+  @Override
   public <T extends TOP> FSIterator<T> getAllIndexedFS(Type aType) {
     return fsIndexRepository.getAllIndexedFS(aType);
   }
@@ -121,6 +128,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(int)
    */
+  @Override
   public <T extends TOP> FSIterator<T> getAllIndexedFS(int aType) {
     return fsIndexRepository.getAllIndexedFS(jcas.getCasType(aType));
   }

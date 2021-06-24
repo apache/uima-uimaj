@@ -138,6 +138,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    * 
    * @return a new <code>AnalysisSequenceNode</code> object that is an exact clone of this one.
    */
+  @Override
   public Object clone() {
     try {
       return super.clone();

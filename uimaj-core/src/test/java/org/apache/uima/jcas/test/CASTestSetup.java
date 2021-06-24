@@ -131,6 +131,7 @@ public class CASTestSetup implements AnnotatorInitializer {
   /**
    * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
    */
+  @Override
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type topType = tsm.getTopType();
@@ -244,6 +245,7 @@ public class CASTestSetup implements AnnotatorInitializer {
     tsm.addFeature("intArray",  int2FSType,  typeArrayInt);     
   }
 
+  @Override
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);

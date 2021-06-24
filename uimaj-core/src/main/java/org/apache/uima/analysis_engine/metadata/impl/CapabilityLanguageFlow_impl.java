@@ -54,6 +54,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#getFlowConstraintsType()
    */
+  @Override
   public String getFlowConstraintsType() {
     return FLOW_CONSTRAINTS_TYPE;
   }
@@ -61,6 +62,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow#getCapabilityLanguageFlow()
    */
+  @Override
   public String[] getCapabilityLanguageFlow() {
     return mCapabilityLanguageFlow;
   }
@@ -68,6 +70,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow#setCapabilityLanguageFlow(String[])
    */
+  @Override
   public void setCapabilityLanguageFlow(String[] aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -79,6 +82,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#remapIDs(Map)
    */
+  @Override
   public void remapIDs(Map<String, String> aIDMap) {
     // Can't just overwrite existing array because cloned CapabilityLanguageFlow objects
     // share the same array. Needs more thought.
@@ -97,6 +101,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
     setCapabilityLanguageFlow(newFlow);
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

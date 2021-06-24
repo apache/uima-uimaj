@@ -48,6 +48,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     moveToFirst();
   }
   
+  @Override
   public boolean maybeReinitIterator() {
     if (!bag.isOriginal()) {
       bag = (CopyOnWriteObjHashSet<T>) fsBagIndex.getNonNullCow();

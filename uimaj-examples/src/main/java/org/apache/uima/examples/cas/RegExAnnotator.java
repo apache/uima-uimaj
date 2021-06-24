@@ -97,6 +97,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * 
    * @see CasAnnotator_ImplBase#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     try {
@@ -216,6 +217,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * 
    * @see CasAnnotator_ImplBase#typeSystemInit(TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
     // get references to annotation types we will create
     mCASTypes = new Type[mTypeNames.size()];
@@ -255,6 +257,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * 
    * @see CasAnnotator_ImplBase#process(CAS)
    */
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     try {
       String docText = aCAS.getDocumentText();

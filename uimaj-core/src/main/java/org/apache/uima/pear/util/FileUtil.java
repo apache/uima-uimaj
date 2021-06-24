@@ -78,6 +78,7 @@ public class FileUtil {
      *           if the arguments' types prevent them from being compared by this
      *           <code>Comparator</code>.
      */
+    @Override
     public int compare(File o1, File o2) throws ClassCastException {
       long t1 = o1.lastModified();
       long t2 = o2.lastModified();
@@ -91,6 +92,7 @@ public class FileUtil {
      *         <code>FileTimeComparator</code>, and it imposes the same ordering as this
      *         comparator.
      */
+    @Override
     public boolean equals(Object obj) {
       return (obj instanceof FileTimeComparator);
     }
@@ -128,6 +130,7 @@ public class FileUtil {
      * @return <code>true</code> if the given file should be accepted, <code>false</code>
      *         otherwise.
      */
+    @Override
     public boolean accept(File file) {
       boolean dirAccepted = true;
       boolean extAccepted = true;
@@ -166,6 +169,7 @@ public class FileUtil {
      * @return <code>true</code> if the given file should be accepted, <code>false</code>
      *         otherwise.
      */
+    @Override
     public boolean accept(File file) {
       String filePath = file.getAbsolutePath().replace('\\', '/');
       if (filePath.endsWith(_fileName)) {
@@ -231,6 +235,7 @@ public class FileUtil {
      * @return <code>true</code>, if the given file should be included in the list,
      *         <code>false</code> otherwise.
      */
+    @Override
     public boolean accept(File dir, String name) {
       String fileName = _ignoreCase ? name.toLowerCase() : name;
       return fileName.endsWith(_fileExt);

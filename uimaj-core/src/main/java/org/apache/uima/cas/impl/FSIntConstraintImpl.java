@@ -51,6 +51,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
     this.values = new IntVector();
   }
 
+  @Override
   public boolean match(int j) {
     final int max = this.codes.size();
     for (int i = 0; i < max; i++) {
@@ -100,6 +101,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
    * @param i
    *          Matched value must be equal to this.
    */
+  @Override
   public void eq(int i) {
     this.codes.add(EQ);
     this.values.add(i);
@@ -111,6 +113,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
    * @param i
    *          Matched value must be less than this.
    */
+  @Override
   public void lt(int i) {
     this.codes.add(LT);
     this.values.add(i);
@@ -122,6 +125,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
    * @param i
    *          Matched value must be less than or equal to this.
    */
+  @Override
   public void leq(int i) {
     this.codes.add(LEQ);
     this.values.add(i);
@@ -133,6 +137,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
    * @param i
    *          Matched value must be greater than this.
    */
+  @Override
   public void gt(int i) {
     this.codes.add(GT);
     this.values.add(i);
@@ -144,11 +149,13 @@ class FSIntConstraintImpl implements FSIntConstraint {
    * @param i
    *          Matched value must be greater than or equal to this.
    */
+  @Override
   public void geq(int i) {
     this.codes.add(GEQ);
     this.values.add(i);
   }
 
+  @Override
   public String toString() {
     if (this.codes.size() == 1) {
       return FSFloatConstraintImpl.toString(this.codes.get(0)) + " "

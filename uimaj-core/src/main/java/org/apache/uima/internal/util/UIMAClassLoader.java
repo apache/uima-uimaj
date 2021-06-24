@@ -202,6 +202,7 @@ public class UIMAClassLoader extends URLClassLoader {
    * Try to load the class itself before delegate the class loading to its parent
    * String is like x.y.Foo
    */
+  @Override
   protected Class<?> loadClass(String name, boolean resolve)
           throws ClassNotFoundException {
  

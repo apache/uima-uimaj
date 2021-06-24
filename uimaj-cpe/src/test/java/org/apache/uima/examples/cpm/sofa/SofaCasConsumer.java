@@ -40,6 +40,7 @@ public class SofaCasConsumer extends CasConsumer_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS cas) throws ResourceProcessException {
 
     // print out annotations of the Source SofA

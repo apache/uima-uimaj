@@ -867,12 +867,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#commit()
    */
+  @Override
   public void commit() {
     // Will create the default type order if it doesn't exist at this point.
     getDefaultTypeOrder();
     this.locked = true;
   }
 
+  @Override
   public LinearTypeOrder getDefaultTypeOrder() {
     if (this.sii.defaultTypeOrder == null) {
       if (this.sii.defaultOrderBuilder == null) {
@@ -889,6 +891,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return this.sii.defaultTypeOrder;
   }
 
+  @Override
   public LinearTypeOrderBuilder getDefaultOrderBuilder() {
     if (this.sii.defaultOrderBuilder == null) {
       this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
@@ -938,6 +941,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#getIndexes()
    */
+  @Override
   public Iterator<FSIndex<TOP>> getIndexes() {
     final ArrayList<FSIndex<TOP>> indexList = new ArrayList<>();
     final Iterator<String> it = this.getLabels();
@@ -949,6 +953,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return indexList.iterator();
   }
   
+  @Override
   public Iterator<LowLevelIndex> ll_getIndexes() {
     ArrayList<LowLevelIndex> indexList = new ArrayList<>();
     final Iterator<String> it = this.getLabels();
@@ -963,6 +968,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#getLabels()
    */
+  @Override
   public Iterator<String> getLabels() {
     return this.name2indexMap.keySet().iterator();
   }
@@ -1000,6 +1006,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * Search all iicps for the type to find the one with same indexing strategy and keys as the iicp for the label  
    */
 
+  @Override
   public <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type) {
     
     // iicp is for the type the index was defined for
@@ -1033,6 +1040,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String)
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <T extends FeatureStructure> LowLevelIndex<T> getIndex(String label) {
     return (LowLevelIndex<T>) this.name2indexMap.get(label);
@@ -1042,6 +1050,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * Remove all instances of a particular type (but not its subtypes) from all indexes
    * @param type -
    */
+  @Override
   public void removeAllExcludingSubtypes(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
 //    incrementIllegalIndexUpdateDetector(typeCode);
@@ -1057,6 +1066,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * Remove all instances of a particular type (including its subtypes) from all indexes
    * @param type  Type to remove (including all its subtypes) from this particular view.
    */
+  @Override
   public void removeAllIncludingSubtypes(Type type) {
     removeAllExcludingSubtypes(type);
     List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
@@ -1069,6 +1079,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createComparator()
    */
+  @Override
   public FSIndexComparator createComparator() {
     return new FSIndexComparatorImpl();
   }
@@ -1076,6 +1087,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#isCommitted()
    */
+  @Override
   public boolean isCommitted() {
     return this.locked;
   }
@@ -1084,6 +1096,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createIndex(org.apache.uima.cas.admin.FSIndexComparator,
    *      java.lang.String)
    */
+  @Override
   public boolean createIndex(FSIndexComparator comp, String label) throws CASAdminException {
     return createIndex(comp, label, FSIndex.SORTED_INDEX);
   }
@@ -1205,16 +1218,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     ll_addFS(fsRef);
   }
   
+  @Override
   public void ll_addFS(int fsRef) {
     addFS_common(cas.getFsFromId_checked(fsRef), false);  // false === is not an addback call
   }
 
+  @Override
   public void ll_removeFS(int fsRef) {
     removeFS(cas.getFsFromId_checked(fsRef));
   }
   /**
    * @see org.apache.uima.cas.FSIndexRepository#addFS(org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public <T extends FeatureStructure> void addFS(T fs) {
     addFS_common((TOP)fs, false);
   }
@@ -1226,6 +1242,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.FSIndexRepository#removeFS(org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public void removeFS(FeatureStructure fs) {
     removeFS_ret((TOP) fs, INCLUDE_BAG_INDEXES);
     if (fs instanceof AnnotationBase) {
@@ -1249,6 +1266,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * 
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createTypeSortOrder()
    */
+  @Override
   public LinearTypeOrderBuilder createTypeSortOrder() {
     final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
     if (this.sii.defaultOrderBuilder == null) {
@@ -1257,10 +1275,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return orderBuilder;
   }
 
+  @Override
   public <T extends FeatureStructure> LowLevelIndex<T> ll_getIndex(String indexName) {
     return (LowLevelIndex<T>) getIndex(indexName);
   }
 
+  @Override
   public <T extends FeatureStructure> LowLevelIndex<T> ll_getIndex(String indexName, int typeCode) {
     final TypeSystemImpl tsi = this.sii.tsi;
     if (!tsi.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
@@ -1269,6 +1289,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return (LowLevelIndex<T>) getIndex(indexName, tsi.ll_getTypeForCode(typeCode));
   }
 
+  @Override
   public final void ll_addFS(int fsRef, boolean doChecks) {
     ll_addFS(fsRef);
   }
@@ -1461,6 +1482,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * 
    * @see org.apache.uima.cas.FSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
+  @Override
   public <T extends FeatureStructure> LowLevelIterator<T> getAllIndexedFS(Type type) {
     final ArrayList<LowLevelIterator<T>> iteratorList = new ArrayList<>();
 
@@ -1533,6 +1555,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // needed for backwards compatibility
   // https://issues.apache.org/jira/browse/UIMA-5603 see comment toward end
   
+  @Override
   public Collection<TOP> getIndexedFSs() {
     final ArrayList<CopyOnWriteIndexPart<TOP>> indexes = new ArrayList<>(); 
     for (int i = 0; i < this.usedIndexes.size(); i++) {
@@ -1544,6 +1567,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return getCollectionFromCows(indexes);
   }
   
+  @Override
   public <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
     return getIndexedFSs(cas.getCasType(clazz));
   }
@@ -1553,6 +1577,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @return an unmodifiable, unordered set of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
+  @Override
   public <T extends TOP> Collection<T> getIndexedFSs(Type type) {
     // collect CopyOnWriteIndexPart s for all index parts for type and its subtypes
     final ArrayList<CopyOnWriteIndexPart<T>> indexes = new ArrayList<>(); 

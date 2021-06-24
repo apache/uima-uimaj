@@ -51,6 +51,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
     moveToFirst();
   }
 
+  @Override
   public boolean isValid() {
     // We always make sure that the underlying iterator is either pointing
     // at an FS
@@ -74,26 +75,31 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   }
   
 
+  @Override
   public void moveToFirstNoReinit() {
     this.it.moveToFirstNoReinit();
     adjustForConstraintForward();
   }
 
+  @Override
   public void moveToLastNoReinit() {
     this.it.moveToLast();
     adjustForConstraintBackward();
   }
 
+  @Override
   public void moveToNextNvc() {
     this.it.moveToNextNvc();
     adjustForConstraintForward();
   }
 
+  @Override
   public void moveToPreviousNvc() {
     this.it.moveToPreviousNvc();
     adjustForConstraintBackward();
   }
 
+  @Override
   public T getNvc() {
     return this.it.getNvc();
   }
@@ -101,6 +107,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
+  @Override
   public FilteredIterator<T> copy() {
     return new FilteredIterator<>(this.it.copy(), this.cons);
   }
@@ -108,6 +115,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   /**
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
+  @Override
   public void moveToNoReinit(FeatureStructure fs) {
     this.it.moveToNoReinit(fs);
     adjustForConstraintForward();

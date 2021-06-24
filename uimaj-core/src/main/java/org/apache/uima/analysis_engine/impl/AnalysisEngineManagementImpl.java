@@ -81,6 +81,7 @@ public class AnalysisEngineManagementImpl
   private long threadId = Thread.currentThread().getId(); // Thread id which created this instance
   private long initializationTime;
 
+  @Override
   public long getInitializationTime() {
     return initializationTime;
   }
@@ -89,10 +90,12 @@ public class AnalysisEngineManagementImpl
     this.initializationTime = initializationTime;
   }
 
+  @Override
   public long getThreadId() {
     return threadId;
   }
 
+  @Override
   public String getState() {
     return this.status.toString();
   }
@@ -121,18 +124,22 @@ public class AnalysisEngineManagementImpl
     numProcessed.incrementAndGet();
   }
 
+  @Override
   public long getBatchProcessCompleteTime() {
     return batchProcessCompleteTime.get();
   }
 
+  @Override
   public long getCollectionProcessCompleteTime() {
     return collectionProcessCompleteTime.get();
   }
 
+  @Override
   public long getAnalysisTime() {
     return analysisTime.get() + serviceCallTime.get();
   }
 
+  @Override
   public long getServiceCallTime() {
     return serviceCallTime.get();
   }
@@ -187,10 +194,12 @@ public class AnalysisEngineManagementImpl
     return serviceCallTime.get() - markedServiceCallTime.get();
   }
 
+  @Override
   public long getNumberOfCASesProcessed() {
     return numProcessed.get();
   }
 
+  @Override
   public String getCASesPerSecond() {
     long analysisTime = getAnalysisTime();
     if (analysisTime == 0)
@@ -199,6 +208,7 @@ public class AnalysisEngineManagementImpl
     return format.format(docsPerSecond);
   }
 
+  @Override
   public Map<String, AnalysisEngineManagement> getComponents() {
     return Collections.unmodifiableMap(components);
   }
@@ -207,14 +217,17 @@ public class AnalysisEngineManagementImpl
     components.put(key, component);
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public String getUniqueMBeanName() {
     return uniqueMBeanName;
   }
 
+  @Override
   public void resetStats() {
     numProcessed.set(0);
     analysisTime.set(0);

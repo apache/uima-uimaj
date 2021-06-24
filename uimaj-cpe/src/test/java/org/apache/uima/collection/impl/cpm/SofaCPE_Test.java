@@ -110,14 +110,17 @@ public class SofaCPE_Test {
 
     volatile boolean finished = false;
 
+    @Override
     public void initializationComplete() {
       if (debug)
         System.out.println(" Collection Processsing managers initialization " + "is complete ");
     }
 
+    @Override
     public synchronized void batchProcessComplete() {
     }
 
+    @Override
     public synchronized void collectionProcessComplete() {
       if (debug)
         System.out.println(" Completed " + entityCount + " documents  ; " + size / 1000 + " kB");
@@ -128,22 +131,26 @@ public class SofaCPE_Test {
       notifyAll();
     }
 
+    @Override
     public synchronized void paused() {
       if (debug)
         System.out.println("Paused");
     }
 
+    @Override
     public synchronized void resumed() {
       if (debug)
         System.out.println("Resumed");
     }
 
+    @Override
     public void aborted() {
       if (debug)
         System.out.println("Stopped");
       fail();
     }
 
+    @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       // if there is an error, record and we will fail on CPE completion
       if (aStatus.getExceptions().size() > 0) {

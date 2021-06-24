@@ -68,6 +68,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
    * @throws ResourceInitializationException tbd
    * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
@@ -219,6 +220,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     allContexts  = allContexts + contextName.substring(1);
   }
 
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) {
     typeSystemInitCalled = true;
   }
@@ -226,6 +228,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
   /**
    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
    */
+  @Override
   public void process(CAS aCAS) {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.

@@ -104,6 +104,7 @@ public class Logger_impl extends Logger_common_impl {
     return defaultLogger;
   }
 
+  @Override
   public Logger_impl getLimitedLogger(int aLimit) {
     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
       return this;
@@ -116,6 +117,7 @@ public class Logger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
    */
+  @Override
   @Deprecated
   public void setOutputStream(OutputStream out) {
     if (out == null || out instanceof PrintStream) {
@@ -130,6 +132,7 @@ public class Logger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
    */
+  @Override
   @Deprecated
   public void setOutputStream(PrintStream out) {
     mOut = out;
@@ -140,14 +143,17 @@ public class Logger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
    */
+  @Override
   public boolean isLoggable(Level level) {
     return configLevel.isGreaterOrEqual(level);
   }
   
+  @Override
   public boolean isLoggable(Level level, Marker marker) {
     return configLevel.isGreaterOrEqual(level);
   }
     
+  @Override
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
   }
@@ -164,6 +170,7 @@ public class Logger_impl extends Logger_common_impl {
     }
   }
 
+  @Override
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     if (mOut != null) {
       mOut.print(new Date());
@@ -182,6 +189,7 @@ public class Logger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
    */
+  @Override
   public void setLevel(Level level) {
     // set new config level
     configLevel = level;

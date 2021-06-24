@@ -58,6 +58,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     if (aSpecifier instanceof ResourceCreationSpecifier) {
@@ -88,6 +89,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     try {
       close();
@@ -102,6 +104,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @see org.apache.uima.collection.CollectionReader#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
     if (getCasInitializer() != null) {
       getCasInitializer().typeSystemInit(aTypeSystem);
@@ -114,6 +117,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @see org.apache.uima.collection.CollectionReader#getProcessingResourceMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -123,6 +127,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @see org.apache.uima.collection.CollectionReader#isConsuming()
    */
+  @Override
   public boolean isConsuming() {
     return false;
   }
@@ -135,6 +140,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
+  @Override
   @Deprecated
   public CasInitializer getCasInitializer() {
     return mCasInitializer;
@@ -148,6 +154,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
+  @Override
   @Deprecated
   public void setCasInitializer(CasInitializer aCasInitializer) {
     mCasInitializer = aCasInitializer;
@@ -162,6 +169,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     super.reconfigure();
     destroy();

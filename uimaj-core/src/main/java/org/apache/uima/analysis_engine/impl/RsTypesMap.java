@@ -240,6 +240,7 @@ public class RsTypesMap implements Iterable<RsType> {
     return types.size();
   }
 
+  @Override
   public Iterator<RsType> iterator() {
     return types.values().iterator();
   }

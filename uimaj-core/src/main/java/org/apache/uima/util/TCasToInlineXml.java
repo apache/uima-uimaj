@@ -63,6 +63,7 @@ public class TCasToInlineXml implements TCasFormatter {
   /*
    * @see org.apache.uima.util.TCasFormatter#format(CAS)
    */
+  @Override
   public String format(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
   }
@@ -70,6 +71,7 @@ public class TCasToInlineXml implements TCasFormatter {
   /*
    * @see org.apache.uima.util.TCasFormatter#format(CAS, FSMatchConstraint)
    */
+  @Override
   public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     return generateXML(aCAS, aFilter);
   }

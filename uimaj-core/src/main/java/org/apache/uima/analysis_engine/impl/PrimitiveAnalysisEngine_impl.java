@@ -104,6 +104,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
@@ -265,6 +266,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     if (mAnalysisComponent != null) {
       withContextHolder(() -> mAnalysisComponent.destroy());
@@ -280,6 +282,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.
    * analysis_engine.ResultSpecification)
    */
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
@@ -292,6 +295,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see AnalysisEngine#processAndOutputNewCASes(CAS)
    */
+  @Override
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     enterProcess();
     try {
@@ -306,6 +310,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
   }
 
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     enterBatchProcessComplete();
     UimaContext prevContext = setContextHolder(); // for use by POJOs
@@ -317,6 +322,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
   }
 
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     enterCollectionProcessComplete();
     UimaContext prevContext = setContextHolder(); // for use by POJOs
@@ -564,6 +570,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     // do base resource reconfiguration
     super.reconfigure();
@@ -602,6 +609,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      * 
      * @see org.apache.uima.core.CasIterator#hasNext()
      */
+    @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
       if (casAvailable) {
@@ -637,6 +645,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      * 
      * @see org.apache.uima.core.CasIterator#next(java.lang.Class)
      */
+    @Override
     public CAS next() throws AnalysisEngineProcessException {
       enterProcess();
       try {
@@ -670,6 +679,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      * 
      * @see org.apache.uima.analysis_engine.CasIterator#release()
      */
+    @Override
     public void release() {
       // nothing to do
     }

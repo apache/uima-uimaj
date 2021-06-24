@@ -32,6 +32,7 @@ public class TestAnnotator extends CasAnnotator_ImplBase {
   public TestAnnotator() {
   }
 
+  @Override
   public void process(CAS cas) {
     FeatureStructure fs = cas.createFS(cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION_BASE));
     cas.addFsToIndexes(fs);

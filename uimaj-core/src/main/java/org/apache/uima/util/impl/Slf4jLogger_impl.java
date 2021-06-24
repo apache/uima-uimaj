@@ -141,6 +141,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     return getInstance(null);
   }
   
+  @Override
   public Slf4jLogger_impl getLimitedLogger(int aLimit) {
     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
       return this;
@@ -167,6 +168,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
    */
+  @Override
   public boolean isLoggable(Level level) {
     switch (level.toInteger()) {
     case org.apache.uima.util.Level.OFF_INT:
@@ -190,6 +192,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     }
   }
 
+  @Override
   public boolean isLoggable(Level level, Marker marker) {
     switch (level.toInteger()) {
     case org.apache.uima.util.Level.OFF_INT:
@@ -218,11 +221,13 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
    */
+  @Override
   public void setLevel(Level level) {    
     // allow nop operation
   }
   
   // does the uima-logger style of message formatting
+  @Override
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
   }
@@ -267,6 +272,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   // does the slf4j style of message formatting
+  @Override
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     m = (m == null) 
         ? getMarkerForLevel(level) 
@@ -314,6 +320,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return the logger name
    * @see org.slf4j.Logger#getName()
    */
+  @Override
   public String getName() {
     return logger.getName();
   }
@@ -322,6 +329,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return -
    * @see org.slf4j.Logger#isTraceEnabled()
    */
+  @Override
   public boolean isTraceEnabled() {
     return logger.isTraceEnabled();
   }
@@ -331,6 +339,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return true if trace is enabled for this marker
    * @see org.slf4j.Logger#isTraceEnabled(org.slf4j.Marker)
    */
+  @Override
   public boolean isTraceEnabled(Marker marker) {
     return logger.isTraceEnabled(marker);
   }
@@ -340,6 +349,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return -
    * @see org.slf4j.Logger#isDebugEnabled()
    */
+  @Override
   public boolean isDebugEnabled() {
     return logger.isDebugEnabled();
   }
@@ -349,6 +359,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isDebugEnabled(org.slf4j.Marker)
    */
+  @Override
   public boolean isDebugEnabled(Marker marker) {
     return logger.isDebugEnabled(marker);
   }
@@ -358,6 +369,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return -
    * @see org.slf4j.Logger#isInfoEnabled()
    */
+  @Override
   public boolean isInfoEnabled() {
     return logger.isInfoEnabled();
   }
@@ -368,6 +380,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isInfoEnabled(org.slf4j.Marker)
    */
+  @Override
   public boolean isInfoEnabled(Marker marker) {
     return logger.isInfoEnabled(marker);
   }
@@ -377,6 +390,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return -
    * @see org.slf4j.Logger#isWarnEnabled()
    */
+  @Override
   public boolean isWarnEnabled() {
     return logger.isWarnEnabled();
   }
@@ -386,6 +400,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isWarnEnabled(org.slf4j.Marker)
    */
+  @Override
   public boolean isWarnEnabled(Marker marker) {
     return logger.isWarnEnabled(marker);
   }
@@ -394,6 +409,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return -
    * @see org.slf4j.Logger#isErrorEnabled()
    */
+  @Override
   public boolean isErrorEnabled() {
     return logger.isErrorEnabled();
   }
@@ -403,6 +419,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isErrorEnabled(org.slf4j.Marker)
    */
+  @Override
   public boolean isErrorEnabled(Marker marker) {
     return logger.isErrorEnabled(marker);
   }

@@ -32,6 +32,7 @@ public class TaeDescription_impl extends AnalysisEngineDescription_impl implemen
 
   static final long serialVersionUID = 7829820134797529630L;
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

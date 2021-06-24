@@ -145,6 +145,7 @@ public class Descriptor extends DefaultHandler {
   /* (non-Javadoc)
    * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
    */
+  @Override
   public void startElement(String uri, String localName, String qName, Attributes attribs) {
     String elementName = getName(localName, qName);
     // if next element is complex, push a new instance on the stack

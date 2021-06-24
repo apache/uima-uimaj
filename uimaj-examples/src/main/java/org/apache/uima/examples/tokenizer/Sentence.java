@@ -45,6 +45,7 @@ public class Sentence extends Annotation {
     /* (non-Javadoc)
      * @see org.apache.uima.jcas.tcas.Annotation#getTypeIndexID()
      */
+    @Override
     public int getTypeIndexID() {
         return typeIndexID;
     }

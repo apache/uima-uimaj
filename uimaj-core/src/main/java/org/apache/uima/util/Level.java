@@ -114,6 +114,7 @@ public class Level {
   /**
    * @see java.lang.Object#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object o) {
     // check if current object o is an instance of Level
     if (o instanceof Level) {
@@ -130,6 +131,7 @@ public class Level {
   /**
    * @see java.lang.Object#hashCode()
    */
+  @Override
   public int hashCode() {
     return this.level;
   }
@@ -164,6 +166,7 @@ public class Level {
    * 
    * @see java.lang.Object#toString()
    */
+  @Override
   public final String toString() {
     return levelText;
   }

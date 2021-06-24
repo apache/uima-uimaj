@@ -209,6 +209,7 @@ public class CharArrayString {
    * 
    * @return The string version of this CharArrayString.
    */
+  @Override
   public String toString() {
     return new String(this.chars, this.start, this.len);
   }
@@ -335,6 +336,7 @@ public class CharArrayString {
    * 
    * @return The hash code.
    */
+  @Override
   public int hashCode() {
     return hashCode(this.chars, this.start, this.end);
   }
@@ -393,6 +395,7 @@ public class CharArrayString {
    *          The other string.
    * @return <code>true</code> iff the two strings are equal.
    */
+  @Override
   public boolean equals(Object o) {
     if (o == this) {
       return true;

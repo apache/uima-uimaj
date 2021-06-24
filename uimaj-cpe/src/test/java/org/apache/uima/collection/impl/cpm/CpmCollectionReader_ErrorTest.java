@@ -772,6 +772,7 @@ public class CpmCollectionReader_ErrorTest {
       /**
        * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
        */
+      @Override
       public void aborted() {
          super.aborted();
          // System.out.println("abort was called.");
@@ -785,6 +786,7 @@ public class CpmCollectionReader_ErrorTest {
        * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
        *      org.apache.uima.collection.EntityProcessStatus)
        */
+      @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
          super.entityProcessComplete(aCas, aStatus);
          // check for a failure in processing...

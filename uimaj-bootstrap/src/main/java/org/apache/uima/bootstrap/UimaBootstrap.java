@@ -105,6 +105,7 @@ public class UimaBootstrap {
   }
 
   private static FilenameFilter jarFilter = new FilenameFilter() {
+    @Override
     public boolean accept(File dir, String name) {
       name = name.toLowerCase();
       return (name.endsWith(".jar"));

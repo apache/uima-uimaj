@@ -68,6 +68,7 @@ public class PMController {
   static class PMLogFormatter extends SimpleFormatter {
     private boolean _firstTime = true;
 
+    @Override
     public String format(LogRecord record) {
       if (_firstTime) {
         // 1st time - print with header

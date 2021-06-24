@@ -42,6 +42,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#getModifiesCas()
    */
+  @Override
   public boolean getModifiesCas() {
     return mModifiesCas;
   }
@@ -51,6 +52,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#isMultipleDeploymentAllowed()
    */
+  @Override
   public boolean isMultipleDeploymentAllowed() {
     return mMultipleDeploymentAllowed;
   }
@@ -60,6 +62,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#setModifiesCas(boolean)
    */
+  @Override
   public void setModifiesCas(boolean aModifiesCas) {
     mModifiesCas = aModifiesCas;
 
@@ -70,18 +73,22 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#setMultipleDeploymentAllowed(boolean)
    */
+  @Override
   public void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed) {
     mMultipleDeploymentAllowed = aMultipleDeploymentAllowed;
   }
 
+  @Override
   public boolean getOutputsNewCASes() {
     return mOutputsNewCASes;
   }
 
+  @Override
   public void setOutputsNewCASes(boolean aOutputsNewCASes) {
     mOutputsNewCASes = aOutputsNewCASes;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

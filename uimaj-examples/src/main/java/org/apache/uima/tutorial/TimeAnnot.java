@@ -58,6 +58,7 @@ public class TimeAnnot extends DateTimeAnnot {
      * @return the type index ID
      * @generated 
      */
+    @Override
     public int getTypeIndexID() {return typeIndexID;}
  
  

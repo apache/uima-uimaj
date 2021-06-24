@@ -36,18 +36,22 @@ final class ByteHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
+  @Override
   void initMemory() {
     this.heap = new byte[this.heapBaseSize];
   }
   
+  @Override
   void initMemory(int size) {
     this.heap = new byte[size];
   }
 
+  @Override
   int getCapacity() {
     return this.heap.length;
   }
 
+  @Override
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
       return;
@@ -58,6 +62,7 @@ final class ByteHeap extends CommonAuxHeap {
     heap = new_array;
   }
 
+  @Override
   void resetToZeros() {
     Arrays.fill(this.heap, 0, this.heapPos, (byte) NULL);
   }

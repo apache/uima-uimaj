@@ -147,6 +147,7 @@ public class IndexComparitorTest {
     /**
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
      */
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       // Add new types and features.
       topType = tsm.getTopType();
@@ -192,6 +193,7 @@ public class IndexComparitorTest {
     }
 
     
+    @Override
     public void initIndexes(FSIndexRepositoryMgr parmIrm, TypeSystem parmTs) {
       IndexComparitorTest.this.ts = parmTs;
       IndexComparitorTest.this.irm = parmIrm;

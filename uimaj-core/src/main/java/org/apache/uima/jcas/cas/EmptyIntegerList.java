@@ -35,6 +35,7 @@ public class EmptyIntegerList extends IntegerList implements EmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }

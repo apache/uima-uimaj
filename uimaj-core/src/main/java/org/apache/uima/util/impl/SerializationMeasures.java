@@ -178,6 +178,7 @@ public class SerializationMeasures {
       lengthTotal += v * bytesPerCount;
     }
     
+    @Override
     public String toString() {
       long tot = lengthTotal;
       if (tot == 0) {
@@ -252,6 +253,7 @@ public class SerializationMeasures {
       }            
     }
 
+    @Override
     public String toString() {
       StringBuilder sb = new StringBuilder();
       for (StatDetail h : allStatDetails) {
@@ -363,6 +365,7 @@ public class SerializationMeasures {
     stringsSavedSubstr += o.stringsSavedSubstr;
   }
   
+  @Override
   public String toString() {
     // Strings
     

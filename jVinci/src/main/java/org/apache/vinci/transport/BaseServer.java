@@ -87,6 +87,7 @@ public class BaseServer {
       return which;
     }
 
+    @Override
     public void run() {
       try {
         while (isServing) {
@@ -264,6 +265,7 @@ public class BaseServer {
   public void startServing(int port) throws IOException {
     configureServerSocket(port);
     new Thread(new Runnable() {
+      @Override
       public void run() {
         shutdown = false;
         isServing = true;

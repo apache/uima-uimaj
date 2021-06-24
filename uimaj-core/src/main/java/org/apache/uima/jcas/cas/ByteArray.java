@@ -51,6 +51,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -99,6 +100,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#get(int)
    */
+  @Override
   public byte get(int i) {
     return theArray[i];
   }
@@ -106,6 +108,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#set(int , byte)
    */
+  @Override
   public void set(int i, byte v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i); 
@@ -114,6 +117,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#copyFromArray(byte[], int, int, int)
    */
+  @Override
   public void copyFromArray(byte[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos, length);
@@ -122,6 +126,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#copyToArray(int, byte[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, byte[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
    }
@@ -129,11 +134,13 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#toArray()
    */
+  @Override
   public byte[] toArray() {
     return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -141,6 +148,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -151,6 +159,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {

@@ -39,6 +39,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
    * @see TypePriorityList#getTypes()
    * synchronized to prevent concurrent modification exceptions
    */
+  @Override
   public synchronized String[] getTypes() {
     String[] result = new String[mTypeNames.size()];
     mTypeNames.toArray(result);
@@ -48,6 +49,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /**
    * @see TypePriorityList#setTypes(java.lang.String[])
    */
+  @Override
   public synchronized void setTypes(String[] aTypeNames) {
     mTypeNames.clear();
     for (int i = 0; i < aTypeNames.length; i++) {
@@ -58,6 +60,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /**
    * @see TypePriorityList#addType(java.lang.String)
    */
+  @Override
   public synchronized void addType(String aTypeName) {
     mTypeNames.add(aTypeName);
   }
@@ -65,6 +68,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /**
    * @see TypePriorityList#removeType(java.lang.String)
    */
+  @Override
   public synchronized void removeType(String aTypeName) {
     mTypeNames.remove(aTypeName);
   }
@@ -72,6 +76,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /*
    * (non-Javadoc) Special purpose clone method to deal with ArrayList.
    */
+  @Override
   public synchronized Object clone() {
     //surprise: super.clone sets the final field to the same array list as the original
     TypePriorityList_impl clone = (TypePriorityList_impl) super.clone();
@@ -87,6 +92,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /**
    * @see MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("priorityList", new PropertyXmlInfo[] { new PropertyXmlInfo("types",
             null, false, "type") });

@@ -154,6 +154,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
      *   akofArrayRef 
      */
 
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       // Add new types and features.
       topType = tsm.getTopType();
@@ -202,6 +203,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
       akofAstring = tsm.addFeature("akofAstring", akof, typeArrayString);
     }
 
+    @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem typeSystem) {
     }
 
@@ -256,6 +258,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   public SerDesForm4Test() {
   }
 
+    @Override
     @BeforeEach
     public void setUp() {
 //    long seed = 1_449_257_605_347_913_923L;
@@ -279,6 +282,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
+    @Override
     @AfterEach
     public void tearDown() {
     this.cas = null;

@@ -66,6 +66,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a FileResourceSpecifier
@@ -134,6 +135,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   /**
    * @see org.apache.uima.resource.DataResource#getInputStream()
    */
+  @Override
   public InputStream getInputStream() throws IOException {
     return mFileUrl.openStream();
   }
@@ -141,6 +143,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   /**
    * @see org.apache.uima.resource.DataResource#getUrl()
    */
+  @Override
   public URL getUrl() {
     return mFileUrl;
   }
@@ -150,6 +153,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    * 
    * @see org.apache.uima.resource.DataResource#getUri()
    */
+  @Override
   public URI getUri() {
     try {
       return UriUtils.quote(mFileUrl);
@@ -170,6 +174,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   /**
    * @see DataResource#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object obj) {
     // obj must be a DataResource_impl
     if (!(obj instanceof DataResource_impl))
@@ -194,6 +199,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   /**
    * @see DataResource#hashCode()
    */
+  @Override
   public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;

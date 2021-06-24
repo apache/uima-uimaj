@@ -1242,11 +1242,13 @@ public class InstallationController {
     if (msgListener == null) {
       // set default standard message channel listener
       _defaultMsgListener = new MessageRouter.StdChannelListener() {
+        @Override
         public void errMsgPosted(String errMsg) {
           System.err.print(errMsg);
           System.err.flush();
         }
 
+        @Override
         public void outMsgPosted(String outMsg) {
           System.out.print(outMsg);
           System.out.flush();
@@ -1537,6 +1539,7 @@ public class InstallationController {
   /**
    * Overrides standard <code>finalize</code> method.
    */
+  @Override
   protected void finalize() {
     _msgRouter.terminate();
   }

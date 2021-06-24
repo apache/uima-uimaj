@@ -340,6 +340,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 //    }
 //  }
   
+  @Override
   protected void copy_to_new_table(
       /* ignored */int newCapacity,
       /* ignored */int oldCapacity,
@@ -585,6 +586,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 
   }
 
+  @Override
   protected int keys_length() {
     return keys.length;
   }

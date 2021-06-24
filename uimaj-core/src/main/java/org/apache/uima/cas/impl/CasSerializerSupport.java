@@ -161,6 +161,7 @@ public class CasSerializerSupport {
    * https://issues.apache.org/jira/browse/UIMA-5171
    */
   public final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
+    @Override
     public int compare(TypeImpl object1, TypeImpl object2) {
       return object1.getShortName().compareTo(object2.getShortName());
     }
@@ -586,14 +587,17 @@ public class CasSerializerSupport {
     
     private Iterable<TypeImpl> getUsedTypesIterable() {
       return new Iterable<TypeImpl>() {
+        @Override
         public Iterator<TypeImpl> iterator() {
           return new Iterator<TypeImpl>() {
             private int i = 0;
             
+            @Override
             public boolean hasNext() {
               return typeUsed.nextSetBit(i) >= 0;
             }
 
+            @Override
             public TypeImpl next() {
               final int next_i = typeUsed.nextSetBit(i);
               if (next_i < 0) {
@@ -603,6 +607,7 @@ public class CasSerializerSupport {
               return (TypeImpl) tsi.ll_getTypeForCode(next_i);
             }
 
+            @Override
             public void remove() {
               throw new UnsupportedOperationException();
             } 
@@ -1161,6 +1166,7 @@ public class CasSerializerSupport {
      */
     public final Comparator<TOP> sortFssByType = 
         new Comparator<TOP>() {
+          @Override
           public int compare(TOP fs1, TOP fs2) {
             int c = Integer.compare(fs1._getTypeImpl().getCode(), fs2._getTypeImpl().getCode());
             if (c != 0) {

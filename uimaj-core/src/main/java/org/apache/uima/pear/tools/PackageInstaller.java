@@ -181,14 +181,16 @@ public class PackageInstaller {
 
       // create message listener for the pear installer
       MessageRouter.StdChannelListener msgListener = new MessageRouter.StdChannelListener() {
-         public void errMsgPosted(String errMsg) {
+         @Override
+        public void errMsgPosted(String errMsg) {
             UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.SEVERE,
                   "PackageInstaller", "installPackage",
                   PEAR_MESSAGE_RESOURCE_BUNDLE, "package_installer_error",
                   errMsg);
          }
 
-         public void outMsgPosted(String outMsg) {
+         @Override
+        public void outMsgPosted(String outMsg) {
             UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.INFO,
                   "PackageInstaller", "installPackage",
                   PEAR_MESSAGE_RESOURCE_BUNDLE, "package_installer_message",

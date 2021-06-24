@@ -102,6 +102,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * 
    * @see org.apache.uima.resource.ConfigurationManager#setSession(org.apache.uima.resource.Session)
    */
+  @Override
   public void setSession(Session aSession) {
     mSession = aSession;
   }
@@ -114,6 +115,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *      
    * Could be called multiple times on different threads - first one does the context creation
    */
+  @Override
   public synchronized void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalOverrides)
           throws ResourceConfigurationException {
     if (mContextNameToParamDeclsMap.containsKey(aContextName)) {
@@ -173,6 +175,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * 
    * @see org.apache.uima.resource.ConfigurationManager#getConfigParameterValue(java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aQualifiedParameterName) {
     // try to look up parameter in no group
     Object val = lookup(aQualifiedParameterName);
@@ -200,6 +203,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * 
    * @see org.apache.uima.resource.ConfigurationManager#getConfigParameterValue(java.lang.String,java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName) {
     // get parameter search strategy for this context
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
@@ -218,6 +222,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @see org.apache.uima.resource.ConfigurationManager#setConfigParameterValue(java.lang.String,
    *      java.lang.Object)
    */
+  @Override
   public void setConfigParameterValue(String aQualifiedParamName, Object aValue) {
     // see if there is the specified parameter is linked; if so, set the linked parameter instead
     // String linkedTo = getLink(aQualifiedParamName);
@@ -232,6 +237,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @see org.apache.uima.resource.ConfigurationManager#setConfigParameterValue(java.lang.String,
    *      java.lang.String, java.lang.Object)
    */
+  @Override
   public void setConfigParameterValue(String aQualifiedParamName, String aGroupName, Object aValue) {
     if (aGroupName == null) {
       setConfigParameterValue(aQualifiedParamName, aValue);
@@ -251,6 +257,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @see org.apache.uima.resource.ConfigurationManager#reconfigure(java.lang.String,
    *      org.apache.uima.resource.metadata.ConfigurationParameterDeclarations)
    */
+  @Override
   public void reconfigure(String aContextName) throws ResourceConfigurationException {
     // This ConfigurationManager implementation sets parameter immediately on the calls to
     // setConfigParameterValue.
@@ -263,6 +270,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * 
    * @see org.apache.uima.resource.ConfigurationManager#getConfigParameterDeclarations(java.lang.String)
    */
+  @Override
   public ConfigurationParameterDeclarations getConfigParameterDeclarations(String aContextName) {
     return mContextNameToParamDeclsMap.get(aContextName);
   }
@@ -273,6 +281,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @see org.apache.uima.resource.ConfigurationManager#getCurrentConfigParameterSettings(java.lang.String,
    *      org.apache.uima.resource.metadata.ConfigurationParameterDeclarations)
    */
+  @Override
   public ConfigurationParameterSettings getCurrentConfigParameterSettings(String aContextName) {
     // get declarations
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap

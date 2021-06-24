@@ -66,6 +66,7 @@ public class OutOfTypeSystemData {
   /**
    * For debugging purposes only.
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append("FeatureStructures\n-----------------\n");
@@ -114,6 +115,7 @@ class FSData {
   /** map from feature name to value which is a string or a ref to a not-out-of-type-system FS */
   Map<String, Object> featVals = new HashMap<>();
   
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(type).append('[');

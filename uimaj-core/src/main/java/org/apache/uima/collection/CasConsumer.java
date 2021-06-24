@@ -52,6 +52,7 @@ public interface CasConsumer extends ConfigurableResource, CasObjectProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
+  @Override
   boolean isReadOnly();
 
 }

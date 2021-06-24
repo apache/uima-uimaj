@@ -260,6 +260,7 @@ public class ConfigurableResource_implTest {
  * A simple concrete Resource class used for testing.
  */
 class MyTestResource extends ConfigurableResource_ImplBase {
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aParams)
           throws ResourceInitializationException {
     return super.initialize(aSpecifier, aParams);
@@ -272,6 +273,7 @@ class MyTestResource extends ConfigurableResource_ImplBase {
     // return false;
   }
 
+  @Override
   public void destroy() {
     //do nothing
   }
@@ -282,6 +284,7 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
     setMetaData(new ResourceMetaData_impl());
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

@@ -40,6 +40,7 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getKey()
    */
+  @Override
   public String getKey() {
     return mKey;
   }
@@ -49,6 +50,7 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#setKey(java.lang.String)
    */
+  @Override
   public void setKey(String aKey) {
     mKey = aKey;
   }
@@ -58,6 +60,7 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getResourceName()
    */
+  @Override
   public String getResourceName() {
     return mResourceName;
   }
@@ -67,10 +70,12 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#setResourceName(java.lang.String)
    */
+  @Override
   public void setResourceName(String aName) {
     mResourceName = aName;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

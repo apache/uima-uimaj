@@ -115,6 +115,7 @@ public class CasPoolTest {
     
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
       
+      @Override
       public void call(int i, int r, StringBuilder sb) {
         Random random = new Random();
         for (int k = 0; k < 5; k++) {
@@ -125,6 +126,7 @@ public class CasPoolTest {
     };  
     MultiThreadUtils.tstMultiThread("CasPoolTest",  numberOfThreads,  10, run2isb,
         new Runnable() {
+          @Override
           public void run() {
             try {
               analysisEngine = UIMAFramework.produceAnalysisEngine(aed);

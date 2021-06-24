@@ -26,6 +26,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 
 public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
+  @Override
   public String generate(Object argument) {
     StringBuilder stringBuilder = new StringBuilder();
 

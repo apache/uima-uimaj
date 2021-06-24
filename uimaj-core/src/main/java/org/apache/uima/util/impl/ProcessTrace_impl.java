@@ -122,6 +122,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#startEvent(java.lang.String, java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public void startEvent(String aComponentName, String aEventType, String aDescription) {
     if (mEnabled) {
       // DEBUG System.out.println("startEvent(" + aComponentName + "," + aEventType + ")");
@@ -136,6 +137,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#endEvent(java.lang.String, java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public void endEvent(String aComponentName, String aEventType, String aResultMessage) {
     if (mEnabled) {
       // DEBUG System.out.println("endEvent(" + aComponentName + "," + aEventType + ")");
@@ -192,6 +194,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#addEvent(String, String, String, int, String)
    */
+  @Override
   public void addEvent(String aComponentName, String aType, String aDescription, int aDuration,
           String aResultMsg) {
     if (mEnabled) {
@@ -208,6 +211,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#addEvent(org.apache.uima.util.ProcessTraceEvent)
    */
+  @Override
   public void addEvent(ProcessTraceEvent aEvent) {
     if (mEnabled) {
       if (!mOpenEvents.isEmpty()) {
@@ -223,6 +227,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#addAll(java.util.List)
    */
+  @Override
   public void addAll(List<ProcessTraceEvent> aEventList) {
     for (ProcessTraceEvent evt : aEventList) {
       addEvent(evt);
@@ -232,6 +237,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#getEvents()
    */
+  @Override
   public List<ProcessTraceEvent> getEvents() {
     return mEventList;
   }
@@ -239,6 +245,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String, boolean)
    */
+  @Override
   public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
     List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
@@ -250,6 +257,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#getEventsByType(String, boolean)
    */
+  @Override
   public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseAfterMatch) {
     List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
@@ -262,6 +270,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#getEvent(String, String)
    */
+  @Override
   public ProcessTraceEvent getEvent(String aComponentName, String aType) {
     List<ProcessTraceEvent> events = getEvents();
     return getEvent(events, aComponentName, aType);
@@ -286,6 +295,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#clear()
    */
+  @Override
   public void clear() {
     mEventList.clear();
   }
@@ -293,6 +303,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#aggregate(org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void aggregate(ProcessTrace aProcessTrace) {
     if (mEnabled) {
       List<ProcessTraceEvent> newEventList = aProcessTrace.getEvents();
@@ -316,6 +327,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#toString()
    */
+  @Override
   public String toString() {
     // count total time so we can do percentages
     int totalTime = 0;

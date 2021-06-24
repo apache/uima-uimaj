@@ -51,6 +51,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#initialize(org.apache.uima.
    * AnalysisComponent.AnalysisComponentContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     mContext = aContext;
   }
@@ -62,6 +63,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     destroy();
     initialize(getContext());
@@ -72,6 +74,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     // no default behavior
   }
@@ -81,6 +84,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     // no default behavior
   }
@@ -90,6 +94,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#destroy()
    */
+  @Override
   public void destroy() {
     // no default behavior
   }
@@ -102,6 +107,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#setResultSpecification(ResultSpecification)
    */
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mResultSpecification = aResultSpec;
   }

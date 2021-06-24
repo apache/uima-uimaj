@@ -35,6 +35,7 @@ public class EmptyFSList<T extends TOP> extends FSList<T> implements EmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }

@@ -71,7 +71,8 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
    /**
     * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
     */
-   public void initialize(AnnotatorContext context)
+   @Override
+  public void initialize(AnnotatorContext context)
          throws AnnotatorInitializationException,
          AnnotatorConfigurationException {
 
@@ -89,7 +90,8 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
     * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.CAS,
     *      org.apache.uima.analysis_engine.ResultSpecification)
     */
-   public void process(CAS tcas, ResultSpecification resultSpec)
+   @Override
+  public void process(CAS tcas, ResultSpecification resultSpec)
          throws AnnotatorProcessException {
       if (true) {
          try {
@@ -106,6 +108,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
                TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
                // sort by name to ensure consistent output for testing purposes
                Arrays.sort(tofs, new Comparator<TypeOrFeature>() {
+                  @Override
                   public int compare(TypeOrFeature o1, TypeOrFeature o2) {
                      return o1.getName().compareTo(o2.getName());
                   }

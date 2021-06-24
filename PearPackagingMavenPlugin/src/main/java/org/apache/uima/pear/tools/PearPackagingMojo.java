@@ -111,7 +111,8 @@ public class PearPackagingMojo extends AbstractMojo {
     * 
     * @see org.apache.maven.plugin.AbstractMojo#execute()
     */
-   public void execute() throws MojoExecutionException {
+   @Override
+  public void execute() throws MojoExecutionException {
 
       // create the PEAR packaging directory in the target directory
       this.pearPackagingDir = new File(this.targetDir, "pearPackaging");
@@ -202,7 +203,8 @@ public class PearPackagingMojo extends AbstractMojo {
          File libDir = new File(this.pearPackagingDir, InstallationController.PACKAGE_LIB_DIR);
          if (libDir.isDirectory()) {
            FileFilter jarFilter = new FileFilter() {
-             public boolean accept(File pathname) {
+             @Override
+            public boolean accept(File pathname) {
                return pathname.isFile() && pathname.getAbsolutePath().toLowerCase().endsWith(".jar");
              }
            };

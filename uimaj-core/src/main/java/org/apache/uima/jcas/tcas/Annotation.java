@@ -49,6 +49,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -103,6 +104,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * getter for begin - gets beginning of span of annotation
    */
 //  public int getBegin() { return _F_begin; }
+  @Override
   public final int getBegin() { 
     try {
       return _getIntValueNc((int)_FH_begin.invokeExact());
@@ -116,6 +118,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * setter for begin - sets beginning of span of annotation
    */
 //  public final void setBegin(int v) { _setIntValueNfcCJ(BEGIN_OFFSET, v);
+  @Override
   public final void setBegin(int v) {
     try {
       _setIntValueNfcCJ((int)_FH_begin.invokeExact(), v);
@@ -131,6 +134,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   /*
    * getter for end - gets ending of span of annotation
    */
+  @Override
   public final int getEnd() {
     try {
       return this._getIntValueNc((int) _FH_end.invokeExact());
@@ -143,6 +147,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   /*
    * setter for end - sets ending of span of annotation
    */
+  @Override
   public final void setEnd(int v) {
     try {
       this._setIntValueNfc((int) _FH_end.invokeExact(),  v);
@@ -168,6 +173,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
    * @return -
    */
+  @Override
   public String getCoveredText() {
 
     final String text = _casView.getDocumentText();

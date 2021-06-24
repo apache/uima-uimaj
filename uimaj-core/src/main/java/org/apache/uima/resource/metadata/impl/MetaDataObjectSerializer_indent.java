@@ -173,6 +173,7 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
     cc.lastOutputNodeAddLevel();
   }
   
+  @Override
   public void outputStartElement(Node node, String aNamespace,
       String localname, String qname, Attributes attributes) throws SAXException {
     if (null == localname) { // happens for <flowConstraints>

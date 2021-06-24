@@ -51,6 +51,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -102,6 +103,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#get(int)
    */
+  @Override
   public boolean get(int i) {
     return theArray[i];
   }
@@ -109,6 +111,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#set(int , boolean)
    */
+  @Override
   public void set(int i, boolean v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -117,6 +120,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyFromArray(boolean[], int, int, int)
    */
+  @Override
   public void copyFromArray(boolean[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos, length);
@@ -125,6 +129,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyToArray(int, boolean[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, boolean[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -132,11 +137,13 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#toArray()
    */
+  @Override
   public boolean[] toArray() {
     return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -144,6 +151,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -154,6 +162,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {

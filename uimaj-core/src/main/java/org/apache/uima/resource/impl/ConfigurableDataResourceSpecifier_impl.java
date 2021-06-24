@@ -49,6 +49,7 @@ public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl 
   /**
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#getUrl()
    */
+  @Override
   public String getUrl() {
     return mUrl;
   }
@@ -56,6 +57,7 @@ public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl 
   /**
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#setUrl(String)
    */
+  @Override
   public void setUrl(String aUrl) {
     mUrl = aUrl;
   }
@@ -65,6 +67,7 @@ public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl 
    * 
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return mMetaData;
   }
@@ -74,10 +77,12 @@ public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl 
    * 
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
    */
+  @Override
   public void setMetaData(ResourceMetaData aMetaData) {
     mMetaData = aMetaData;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

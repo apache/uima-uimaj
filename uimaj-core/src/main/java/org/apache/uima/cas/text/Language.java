@@ -80,6 +80,7 @@ public class Language {
     }
   }
 
+  @Override
   public String toString() {
     return "Full language string: " + this.getFullLanguage() + ", language part: "
             + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();

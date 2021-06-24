@@ -87,6 +87,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    * 
    * @see org.apache.uima.ResourceFactory#produceResource(Class, ResourceSpecifier,Map)
    */
+  @Override
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     ResourceInitializationException lastException = null;

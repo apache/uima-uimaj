@@ -115,6 +115,7 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
   /**
    * @see AnalysisEnginePool#getResourceClass()
    */
+  @Override
   protected Class getResourceClass() {
     return TextAnalysisEngine.class;
   }

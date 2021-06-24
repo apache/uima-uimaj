@@ -110,6 +110,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * 
    * @return true if and only if this object equals <code>aObj</code>
    */
+  @Override
   boolean equals(Object aObj);
 
   /**

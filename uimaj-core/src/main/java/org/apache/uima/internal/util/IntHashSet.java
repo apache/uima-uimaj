@@ -694,6 +694,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     return mostNegative;
   }
    
+  @Override
   public void showHistogram() {
     if (TUNE) {
       int sumI = 0;
@@ -818,11 +819,13 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
       this.curPosition = 0;
     }
 
+    @Override
     public final boolean hasNext() {
       curPosition = moveToNextFilled(curPosition);
       return curPosition < getCapacity();
     }
 
+    @Override
     public final int nextNvc() {
       curPosition = moveToNextFilled(curPosition);
       int r = get(curPosition);
@@ -833,6 +836,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
+    @Override
     public boolean hasPrevious() {
       int prev = moveToPreviousFilled(curPosition - 1);
       return (prev >= 0);
@@ -856,6 +860,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */
+    @Override
     public void moveToEnd() {
       curPosition = getCapacity() - 1;
     }
@@ -863,6 +868,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToStart()
      */
+    @Override
     public void moveToStart() {
       curPosition = 0;
     }

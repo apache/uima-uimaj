@@ -41,6 +41,7 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
+  @Override
   public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
@@ -51,6 +52,7 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
    * @see
    * org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof CAS) {
       checkTypeSystemChange((CAS) aCAS);

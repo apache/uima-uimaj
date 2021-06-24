@@ -51,6 +51,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CollectionReaderDescription
@@ -79,6 +80,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     try {
       close();
@@ -90,6 +92,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
   /**
    * @see org.apache.uima.collection.CollectionReader#getProcessingResourceMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -97,6 +100,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
   /**
    * @see org.apache.uima.collection.CollectionReader#isConsuming()
    */
+  @Override
   public boolean isConsuming() {
     return false;
   }

@@ -69,6 +69,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    * 
    * @see org.apache.uima.flow.FlowController#initialize(FlowControllerContext)
    */
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mComponentMetaDataMap = aContext.getAnalysisEngineMetaDataMap();
@@ -94,6 +95,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     CapabilityLanguageFlowObject flow = new CapabilityLanguageFlowObject(mFlowTable, this);
     flow.setCas(aCAS);

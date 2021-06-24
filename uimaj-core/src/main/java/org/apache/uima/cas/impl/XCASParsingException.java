@@ -152,6 +152,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   /**
    * @return The message of the exception. Useful for including the text in another exception.
    */
+  @Override
   public String getMessage() {
     if (resource == null) {
       try {
@@ -167,6 +168,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   }
 
   /** @return The same as getMessage(), but prefixed with <code>"XCASParsingException: "</code>. */
+  @Override
   public String toString() {
     return "XCASParsingException: " + this.getMessage();
   }

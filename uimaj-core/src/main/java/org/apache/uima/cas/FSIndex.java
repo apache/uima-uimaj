@@ -106,6 +106,7 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    * 
    * @return The number of FSs in this index.
    */
+  @Override
   int size();
 
   /**
@@ -265,6 +266,7 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
   /**
    * @return a Stream over all the elements in the index (including subtypes)
    */
+  @Override
   default Stream<T> stream() {
     return this.select();
   }

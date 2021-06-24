@@ -164,6 +164,7 @@ public class SimpleRunCPM extends Thread {
      * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
      */
+    @Override
     public void initializationComplete() {
       System.out.println("CPM Initialization Complete");
     }
@@ -174,6 +175,7 @@ public class SimpleRunCPM extends Thread {
      * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
      * 
      */
+    @Override
     public void batchProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
       if (size > 0) {
@@ -189,6 +191,7 @@ public class SimpleRunCPM extends Thread {
      * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
      */
+    @Override
     public void collectionProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
       if (size > 0) {
@@ -206,6 +209,7 @@ public class SimpleRunCPM extends Thread {
      * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
      */
+    @Override
     public void paused() {
       System.out.println("Paused");
     }
@@ -215,6 +219,7 @@ public class SimpleRunCPM extends Thread {
      * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
      */
+    @Override
     public void resumed() {
       System.out.println("Resumed");
     }
@@ -224,6 +229,7 @@ public class SimpleRunCPM extends Thread {
      * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
      */
+    @Override
     public void aborted() {
       System.out.println("Aborted");
     }
@@ -237,6 +243,7 @@ public class SimpleRunCPM extends Thread {
      * @param aStatus
      *          EntityProcessStatus that holds the status of all the events for aEntity
      */
+    @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       if (aStatus.isException()) {
         List exceptions = aStatus.getExceptions();

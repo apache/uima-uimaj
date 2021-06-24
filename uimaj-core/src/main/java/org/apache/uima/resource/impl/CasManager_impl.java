@@ -95,6 +95,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#addMetaData(org.apache.uima.resource.metadata.ProcessingResourceMetaData)
    */
+  @Override
   public synchronized void addMetaData(ProcessingResourceMetaData aMetaData) {
     if (mCasDefinition != null) {
       if (containsSameTypeAndIndexInfo(aMetaData)) { //UIMA-1249
@@ -153,6 +154,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#getCasDefinition()
    */
+  @Override
   public synchronized CasDefinition getCasDefinition() throws ResourceInitializationException {
     if (mCasDefinition == null) {
       mCasDefinition = new CasDefinition(mMetaDataList, mResourceManager);
@@ -166,6 +168,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#getCAS(org.apache.uima.analysis_engine.AnalysisEngine)
    */
+  @Override
   public CAS getCas(String aRequestorContextName) {
     CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
     if (pool == null) {
@@ -180,6 +183,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#releaseCAS(org.apache.uima.cas.CAS)
    */
+  @Override
   public void releaseCas(AbstractCas aCAS) {
     if (!(aCAS instanceof CASImpl) &&
         !(aCAS instanceof JCas)) {
@@ -215,6 +219,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#setMinimumCasPoolSize(java.lang.String, int)
    */
+  @Override
   public void defineCasPool(String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     defineCasPool(null, aRequestorContextName, aMinimumSize, aPerformanceTuningSettings);
@@ -225,6 +230,7 @@ public class CasManager_impl implements CasManager {
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CasManager#defineCasPool(org.apache.uima.UimaContextAdmin, int, java.util.Properties)
    */
+  @Override
   public void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     defineCasPool(aRequestorContext, aRequestorContext.getUniqueName(), aMinimumSize, aPerformanceTuningSettings);
   }
@@ -256,6 +262,7 @@ public class CasManager_impl implements CasManager {
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CasManager#createNewCas(java.util.Properties)
    */
+  @Override
   public CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException {
 
     if (mCurrentTypeSystem != null) {
@@ -281,6 +288,7 @@ public class CasManager_impl implements CasManager {
    * @param requiredInterface
    *          interface to get. Currently must be one of CAS or JCas.
    */
+  @Override
   public AbstractCas getCasInterface(CAS cas, Class<? extends AbstractCas> requiredInterface) {
     if (requiredInterface == CAS.class) {
       return cas;
@@ -333,6 +341,7 @@ public class CasManager_impl implements CasManager {
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CasManager#setJmxInfo(java.lang.Object, java.lang.String)
    */
+  @Override
   public void setJmxInfo(Object aMBeanServer, String aRootMBeanName) {
     mMBeanServer = aMBeanServer;
     if (aRootMBeanName.endsWith("\"")) {
@@ -401,6 +410,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see java.lang.Object#finalize()
    */
+  @Override
   protected void finalize() throws Throwable {
     // unregister MBeans from MBeanServer when GC occurs.
     for (CasPoolManagementImpl mbean : casPoolMBeans) {

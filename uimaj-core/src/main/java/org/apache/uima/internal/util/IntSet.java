@@ -120,6 +120,7 @@ public class IntSet implements PositiveIntSet {
    *          the set to be tested for equality with this set.
    * @return <code>true</code> if the sets are equal, <code>false</code> otherwise.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -151,6 +152,7 @@ public class IntSet implements PositiveIntSet {
     return false;
   }
 
+  @Override
   public int hashCode() {
     if (this.iVec == null) {
       return 0;

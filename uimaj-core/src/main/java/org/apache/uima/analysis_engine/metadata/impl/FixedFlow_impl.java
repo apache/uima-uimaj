@@ -43,6 +43,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFlowConstraintsType()
    */
+  @Override
   public String getFlowConstraintsType() {
     return FLOW_CONSTRAINTS_TYPE;
   }
@@ -50,6 +51,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFixedFlow()
    */
+  @Override
   public String[] getFixedFlow() {
     return mFixedFlow;
   }
@@ -57,6 +59,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#setFixedFlow(String[])
    */
+  @Override
   public void setFixedFlow(String[] aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -68,6 +71,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   /**
    * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#remapIDs(Map)
    */
+  @Override
   public void remapIDs(Map<String, String> aIDMap) {
     // Can't just overwrite existing array because cloned FixedFlow_impl objects
     // share the same array. Needs more thought.
@@ -86,6 +90,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
     setFixedFlow(newFlow);
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

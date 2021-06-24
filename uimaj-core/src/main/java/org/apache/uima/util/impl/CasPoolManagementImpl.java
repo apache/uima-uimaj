@@ -39,6 +39,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
   /* (non-Javadoc)
    * @see org.apache.uima.util.CasPoolManagement#getAvailableInstances()
    */
+  @Override
   public int getAvailableInstances() {
     CasPool casPool = mCasPoolRef.get();
     if (casPool != null) {
@@ -59,6 +60,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
   /* (non-Javadoc)
    * @see org.apache.uima.util.CasPoolManagement#getPoolSize()
    */
+  @Override
   public int getPoolSize() {
     CasPool casPool = mCasPoolRef.get();
     if (casPool != null) {
@@ -71,6 +73,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
   /* (non-Javadoc)
    * @see org.apache.uima.resource.impl.ManagementObject_ImplBase#getUniqueMBeanName()
    */
+  @Override
   public String getUniqueMBeanName() {
     return mUniqueMBeanName;
   }  

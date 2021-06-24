@@ -35,6 +35,7 @@ public class UIMAStreamHandler extends StreamHandler {
    * 
    * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
    */
+  @Override
   public synchronized void publish(LogRecord record) {
     if (record != null) {
       super.publish(record);

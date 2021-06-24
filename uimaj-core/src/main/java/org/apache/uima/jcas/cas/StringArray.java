@@ -53,6 +53,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -101,6 +102,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   /**
    * @see org.apache.uima.cas.StringArrayFS#get(int)
    */
+  @Override
   public String get(int i) {
     return theArray[i];
   }
@@ -108,6 +110,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   /**
    * @see org.apache.uima.cas.StringArrayFS#set(int, String)
    */
+  @Override
   public void set(int i, String v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -116,6 +119,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos, length);
@@ -124,6 +128,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -131,11 +136,13 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   /**
    * @see org.apache.uima.cas.StringArrayFS#toArray()
    */
+  @Override
   public String[] toArray() {
     return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }

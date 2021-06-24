@@ -50,6 +50,7 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
+  @Override
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // check for factories registered for this resource specifier type
@@ -71,6 +72,7 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
   /**
    * @see org.apache.uima.CompositeResourceFactory#registerFactory(Class,ResourceFactory)
    */
+  @Override
   public void registerFactory(Class aResourceSpecifierInterface, ResourceFactory aFactory) {
     mRegisteredFactories.add(new Registration(aResourceSpecifierInterface, aFactory));
   }

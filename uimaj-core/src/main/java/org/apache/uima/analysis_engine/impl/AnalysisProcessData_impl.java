@@ -77,6 +77,7 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
   /**
    * @see org.apache.uima.analysis_engine.AnalysisProcessData#getCAS()
    */
+  @Override
   public CAS getCAS() {
     return mCAS;
   }
@@ -85,6 +86,7 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
    * @see org.apache.uima.analysis_engine.AnalysisProcessData#getProcessTrace()
    * @return -
    */
+  @Override
   public ProcessTrace getProcessTrace() {
     return mProcessTrace;
   }

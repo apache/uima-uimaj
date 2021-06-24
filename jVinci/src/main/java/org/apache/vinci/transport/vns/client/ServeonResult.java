@@ -35,6 +35,7 @@ import org.apache.vinci.transport.vns.VNSConstants;
 public class ServeonResult extends Frame {
 
   static public TransportableFactory factory = new TransportableFactory() {
+    @Override
     public Transportable makeTransportable() {
       return new ServeonResult();
     }
@@ -110,6 +111,7 @@ public class ServeonResult extends Frame {
    * @pre value != null
    * @pre (!key.equals(VNSConstants.PORT_KEY) || (value instanceof FrameLeaf))
    */
+  @Override
   public void add(String key, FrameComponent value) {
     if (VNSConstants.PORT_KEY.equals(key)) {
       port = ((FrameLeaf) value).toInt();

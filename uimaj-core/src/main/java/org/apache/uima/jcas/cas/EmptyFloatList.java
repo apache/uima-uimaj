@@ -35,6 +35,7 @@ public class EmptyFloatList extends FloatList implements EmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }

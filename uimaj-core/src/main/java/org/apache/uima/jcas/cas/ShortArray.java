@@ -51,6 +51,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -99,6 +100,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#get(int)
    */
+  @Override
   public short get(int i) {
     return theArray[i];
   }
@@ -106,6 +108,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#set(int , short)
    */
+  @Override
   public void set(int i, short v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -114,6 +117,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(short[], int, int, int)
    */
+  @Override
   public void copyFromArray(short[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos, length);
@@ -122,6 +126,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyToArray(int, short[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, short[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -129,11 +134,13 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#toArray()
    */
+  @Override
   public short[] toArray() {
     return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -141,6 +148,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -151,6 +159,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {
@@ -175,6 +184,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   }
 
   // used by deserializers
+  @Override
   public void setArrayValueFromString(int i, String v) {
     set(i, Short.parseShort(v));
   }

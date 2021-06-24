@@ -35,6 +35,7 @@ public class TabSegmenter extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     String doc = aCAS.getCurrentView().getDocumentText();
     mStringTok = new StringTokenizer(doc, "\t");
@@ -45,6 +46,7 @@ public class TabSegmenter extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return mStringTok.hasMoreTokens();
   }
@@ -54,6 +56,7 @@ public class TabSegmenter extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     String nextSeg = mStringTok.nextToken();
     CAS cas = getContext().getEmptyCas(CAS.class);

@@ -45,7 +45,8 @@ public class MultiThreadUtils extends TestCase {
     void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception;
   }
   
-  public static Runnable emptyReset = new Runnable() {public void run() {}};
+  public static Runnable emptyReset = new Runnable() {@Override
+  public void run() {}};
 
   // also serves as a lock
   
@@ -161,6 +162,7 @@ public class MultiThreadUtils extends TestCase {
       
       // We make the runnable inside this loop to capture the thread number
       Runnable runnable = new Runnable() {         
+        @Override
         public void run() {
           // sb is for debugging; it's passed into the runnable which can choose to print it or not
           StringBuilder sb = new StringBuilder(80);

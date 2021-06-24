@@ -89,6 +89,7 @@ public class Service implements ServiceInterface {
   }
 
   // Equivalent to the __getattr__ method
+  @Override
   public Object getAttr(String name) {
 
     if (name.equals("name"))
@@ -132,6 +133,7 @@ public class Service implements ServiceInterface {
   }
 
   // Equivalent to the __cmp__ method
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof Service))
       return false;
@@ -139,6 +141,7 @@ public class Service implements ServiceInterface {
     return (o.toString().equals(toString()));
   }
 
+  @Override
   public int hashCode() {
     return toString().hashCode();
   }
@@ -284,6 +287,7 @@ public class Service implements ServiceInterface {
     }
   }
 
+  @Override
   public String toString() {
     return "NAME/REALHOST/LEVEL/INSTANCE=" + name + "/" + getHostByName(host) + "/" + level + "/"
             + instance;

@@ -41,6 +41,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -125,6 +126,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); 
   }
 
+  @Override
   public void setTail(CommonList v) { setTail((FloatList) v); }
   
   /* (non-Javadoc)

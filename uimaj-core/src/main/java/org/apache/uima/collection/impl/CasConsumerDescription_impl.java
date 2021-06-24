@@ -69,6 +69,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
   /**
    * @see org.apache.uima.collection.CasConsumerDescription#getCasConsumerMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getCasConsumerMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -78,6 +79,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
    * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // check that user class was specified
@@ -110,6 +112,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
   /**
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -123,6 +126,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

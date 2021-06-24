@@ -51,6 +51,7 @@ public class MarkerImpl implements Marker {
 
   
   
+  @Override
   public boolean isNew(FeatureStructure fs) {
   	//check if same CAS instance
   	if (!isValid || !cas.isInCAS(fs)) {
@@ -59,6 +60,7 @@ public class MarkerImpl implements Marker {
   	return isNew(fs._id());
   }
 
+  @Override
   public boolean isModified(FeatureStructure fs) {
 	  if (isNew(fs)) {
 	    return false;  // new fs's are not modified ones
@@ -70,6 +72,7 @@ public class MarkerImpl implements Marker {
 	  return (id >= nextFSId);
   }
     
+  @Override
   public boolean isValid() {
     return isValid;
   }

@@ -119,6 +119,7 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
+  @Override
   public synchronized void addAnalysisEngines(Collection<String> aKeys) {
     // Append new keys as a ParallelStep at end of Sequence
     // This is just an example of what could be done.
@@ -129,6 +130,7 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
+  @Override
   public synchronized void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     // Remove keys from Sequence ... replace with null so step indices are still valid
     for (int i = 0; i < mSequence.size(); ++i) {

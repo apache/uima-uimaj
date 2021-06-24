@@ -140,6 +140,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
    *     Group2
    *   Lang_pair [LANG1(Group1), LANG2(Group2), DESCR_FEAT(string)  
    */
+  @Override
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
@@ -209,6 +210,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     return comp;
   }
 
+  @Override
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator compNoTypeOrder = makeComp(irm, ts);
     FSIndexComparator comp = makeComp(irm, ts);

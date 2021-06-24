@@ -104,6 +104,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     try {
       // wrap UimaContext in AnnotatorContext
@@ -116,6 +117,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
     }
   }
 
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mDefaultResultSpecification = aResultSpec;
     mLanguageToResultSpecMap = new HashMap<>();
@@ -126,6 +128,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (!mCasInterface.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
@@ -220,6 +223,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     // v1.x annotators cannot implement batchProcessComplete
   }
@@ -229,6 +233,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     // v1.x annotators cannot implement collectionProcessComplete
   }
@@ -238,6 +243,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#destroy()
    */
+  @Override
   public void destroy() {
     mAnnotator.destroy();
   }
@@ -247,6 +253,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     try {
       mAnnotator.reconfigure();
@@ -262,6 +269,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
@@ -271,6 +279,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
@@ -282,6 +291,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @return the CAS interface required by this annotator
    */
+  @Override
   public Class<? extends AbstractCas> getRequiredCasInterface() {
     return mCasInterface;
   }
@@ -293,6 +303,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @return the number of instances required
    */
+  @Override
   public int getCasInstancesRequired() {
     return 0;
   }

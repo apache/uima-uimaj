@@ -40,6 +40,7 @@ public class UIMALogFormatter extends Formatter {
 
   private static final String CRLF = System.getProperties().getProperty("line.separator");
 
+  @Override
   public synchronized String format(LogRecord record) {
     // if record is null, return an empty String
     if (record == null) {

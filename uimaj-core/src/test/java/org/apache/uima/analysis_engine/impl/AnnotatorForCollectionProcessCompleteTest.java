@@ -36,6 +36,7 @@ public class AnnotatorForCollectionProcessCompleteTest extends CasAnnotator_Impl
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     testValue = (String)aContext.getConfigParameterValue("TestValue");
@@ -44,6 +45,7 @@ public class AnnotatorForCollectionProcessCompleteTest extends CasAnnotator_Impl
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     //does nothing
   }
@@ -51,6 +53,7 @@ public class AnnotatorForCollectionProcessCompleteTest extends CasAnnotator_Impl
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     lastValue = testValue;
   }

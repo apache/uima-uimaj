@@ -131,6 +131,7 @@ public class AnalysisEnginePerformanceReports {
     return mProcessTrace.toString();
   }
 
+  @Override
   public String toString() {
     int total = getTotalTime();
     int analysis = getAnalysisTime();

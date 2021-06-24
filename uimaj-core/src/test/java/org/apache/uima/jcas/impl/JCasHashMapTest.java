@@ -117,6 +117,7 @@ public class JCasHashMapTest {
       final JCasHashMap m = new JCasHashMap(200);   
       MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
         
+        @Override
         public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
           for (int k = 0; k < 4; k++) {
             for (int i = 0; i < SIZE / 4; i++) {
@@ -140,6 +141,7 @@ public class JCasHashMapTest {
       };  
       MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb,
           new Runnable() {
+            @Override
             public void run() {
               m.clear();
             }});
@@ -162,6 +164,7 @@ public class JCasHashMapTest {
   
       MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
         
+        @Override
         public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
           for (int k = 0; k < 4; k++) {
             for (int i = 0; i < SIZE / 4; i++) {
@@ -199,6 +202,7 @@ public class JCasHashMapTest {
       };  
       MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb, 
           new Runnable() {
+            @Override
             public void run() {
               check.clear();
               m.clear();
@@ -250,6 +254,7 @@ public class JCasHashMapTest {
              * 
              * loop above until terminate thread
              */
+            @Override
             public void run() {
               while (true) {
 //                System.err.println("in loop about to wait4go " + this.getName() );

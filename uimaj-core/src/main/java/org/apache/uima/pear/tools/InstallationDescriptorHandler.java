@@ -420,6 +420,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    * @exception org.xml.sax.SAXException
    *              Any SAX exception, possibly wrapping another exception.
    */
+  @Override
   public void characters(char ch[], int start, int length) throws SAXException {
     _activeBuffer.append(ch, start, length);
   }
@@ -430,6 +431,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    * @exception org.xml.sax.SAXException
    *              Any SAX exception, possibly wrapping another exception.
    */
+  @Override
   public void endDocument() throws SAXException {
     _insdLoaded = true;
   }
@@ -446,6 +448,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    * @exception org.xml.sax.SAXException
    *              Any SAX exception, possibly wrapping another exception.
    */
+  @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
     String elemValue = _activeBuffer.toString().trim();
     if (OS_TAG.equals(_activeSection)) {
@@ -555,6 +558,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
   /**
    * XML parser error handler.
    */
+  @Override
   public void error(SAXParseException ex) throws SAXException {
     XMLUtil.printError("Error", ex);
   }
@@ -562,6 +566,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
   /**
    * XML parser fatal error handler.
    */
+  @Override
   public void fatalError(SAXParseException ex) throws SAXException {
     XMLUtil.printError("Fatal Error", ex);
     throw ex;
@@ -651,6 +656,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    * @exception org.xml.sax.SAXException
    *              Any SAX exception, possibly wrapping another exception.
    */
+  @Override
   public void startDocument() throws SAXException {
   }
 
@@ -668,6 +674,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    * @exception org.xml.sax.SAXException
    *              Any SAX exception, possibly wrapping another exception.
    */
+  @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes)
           throws SAXException {
     _mainTag = localName;
@@ -724,6 +731,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
   /**
    * XML parser warning handler.
    */
+  @Override
   public void warning(SAXParseException ex) throws SAXException {
     XMLUtil.printError("Warning", ex);
   }

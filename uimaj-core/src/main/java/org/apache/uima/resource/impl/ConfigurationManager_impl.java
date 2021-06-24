@@ -60,6 +60,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * org.apache.uima.resource.metadata.ConfigurationParameter[],
    * org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String, java.lang.String)
    */
+  @Override
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
           ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
           throws ResourceConfigurationException {
@@ -132,6 +133,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * 
    * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#lookupSharedParamNoLinks(java.lang.String)
    */
+  @Override
   protected Object lookupSharedParamNoLinks(String aCompleteName) {
     return mSharedParamMap.get(aCompleteName);
   }

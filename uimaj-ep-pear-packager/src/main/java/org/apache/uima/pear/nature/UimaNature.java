@@ -39,6 +39,7 @@ public class UimaNature implements IProjectNature {
    * 
    * @see org.eclipse.core.resources.IProjectNature#configure()
    */
+  @Override
   public void configure() throws CoreException {
     try {
       ProjectCustomizer.customizeProject(project);
@@ -54,6 +55,7 @@ public class UimaNature implements IProjectNature {
    * 
    * @see org.eclipse.core.resources.IProjectNature#deconfigure()
    */
+  @Override
   public void deconfigure() throws CoreException {
   }
 
@@ -62,6 +64,7 @@ public class UimaNature implements IProjectNature {
    * 
    * @see org.eclipse.core.resources.IProjectNature#getProject()
    */
+  @Override
   public IProject getProject() {
     return project;
   }
@@ -71,6 +74,7 @@ public class UimaNature implements IProjectNature {
    * 
    * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
    */
+  @Override
   public void setProject(IProject value) {
     project = value;
   }

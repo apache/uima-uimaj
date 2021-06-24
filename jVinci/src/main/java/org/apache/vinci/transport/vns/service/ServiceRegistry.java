@@ -520,6 +520,7 @@ public class ServiceRegistry {
       maxPort = max;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (!(o instanceof PortRange))
         return false;

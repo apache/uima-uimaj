@@ -304,6 +304,7 @@ public class TimeSpan {
   /**
    * @return String representation of object. See class comments.
    */
+  @Override
   public String toString() {
     ensureFull();
     if (!this.knowsFull) {

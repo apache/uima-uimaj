@@ -35,6 +35,7 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    * 
    * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
    */
+  @Override
   public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
@@ -45,6 +46,7 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    * 
    * @see FlowController#computeFlow(AbstractCas)
    */
+  @Override
   public final Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof CAS) {
       checkTypeSystemChange((CAS) aCAS);

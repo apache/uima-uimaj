@@ -31,6 +31,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     // empty method
 
@@ -39,6 +40,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
+  @Override
   public boolean hasNext() throws IOException, CollectionException {
     // empty method
     return false;
@@ -47,6 +49,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     // empty method
     return null;
@@ -55,6 +58,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
     // empty method
 

@@ -41,6 +41,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.MimeTypePrecondition#getMimeTypes()
    */
+  @Override
   public String[] getMimeTypes() {
     return (String[]) getComparisonValue();
   }
@@ -48,6 +49,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.MimeTypePrecondition#setMimeTypes(java.lang.String[])
    */
+  @Override
   public void setMimeTypes(String[] aMimeTypes) {
     setComparisonValue(aMimeTypes);
   }
@@ -55,6 +57,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setComparisonValue(java.lang.Object)
    */
+  @Override
   public void setComparisonValue(Object aValue) {
     // value must be a string array
     if (!(aValue instanceof String[])) {
@@ -67,6 +70,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
    */
+  @Override
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
@@ -76,6 +80,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
    */
+  @Override
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
@@ -85,6 +90,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
    */
+  @Override
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
@@ -105,6 +111,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setPredicate(java.lang.String)
    */
+  @Override
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {

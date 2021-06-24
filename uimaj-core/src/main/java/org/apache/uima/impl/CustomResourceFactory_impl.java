@@ -36,6 +36,7 @@ public class CustomResourceFactory_impl implements ResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
+  @Override
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     

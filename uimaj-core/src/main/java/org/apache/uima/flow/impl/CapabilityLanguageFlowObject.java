@@ -120,6 +120,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
     mParentController = aParentController;
   }
 
+  @Override
   public Step next() {
     // check if CAS is set
     CAS cas = getCas();
@@ -289,6 +290,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
    * 
    * @return a new <code>AnalysisSequence</code> object that is an exact clone of this one.
    */
+  @Override
   public Object clone() {
     try {
       return super.clone();

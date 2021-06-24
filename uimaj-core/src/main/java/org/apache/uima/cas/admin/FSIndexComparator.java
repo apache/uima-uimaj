@@ -112,6 +112,7 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
    *  <code>true</code> iff the
    * comparators have the same keys and comparators.
    */
+  @Override
   boolean equals(Object o);
 
   /**

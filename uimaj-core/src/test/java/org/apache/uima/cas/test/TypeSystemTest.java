@@ -68,6 +68,7 @@ public class TypeSystemTest {
     /**
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(org.apache.uima.cas.admin.TypeSystemMgr)
      */
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
 
       // ///////////////////////////////////////////////////////////////////////
@@ -285,6 +286,7 @@ public class TypeSystemTest {
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initIndexes(org.apache.uima.cas.admin.FSIndexRepositoryMgr,
      *      org.apache.uima.cas.TypeSystem)
      */
+    @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ats) {
       // Do nothing for the purposes of this test.
     }

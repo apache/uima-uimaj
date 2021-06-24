@@ -52,6 +52,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CasInitializerDescription
@@ -90,6 +91,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    * 
    * @see org.apache.uima.collection.base_cpm.CasDataInitializer#getCasInitializerMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getCasInitializerMetaData() {
     return getProcessingResourceMetaData();
   }

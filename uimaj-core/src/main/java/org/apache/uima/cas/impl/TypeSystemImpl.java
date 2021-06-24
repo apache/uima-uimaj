@@ -915,6 +915,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *          The type node under which the new type should be attached.
    * @return The new type, or <code>null</code> if <code>typeName</code> is already in use.
    */  
+  @Override
   public TypeImpl addType(String typeName, Type superType) throws CASAdminException {
 
     newTypeChecks(typeName, superType);

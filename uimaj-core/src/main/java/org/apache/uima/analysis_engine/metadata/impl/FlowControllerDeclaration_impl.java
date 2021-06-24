@@ -57,6 +57,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#getKey()
    */
+  @Override
   public String getKey() {
     return mKey;
   }
@@ -67,6 +68,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * @see
    * org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#setKey(java.lang.String)
    */
+  @Override
   public void setKey(String aKey) {
     mKey = aKey;
   }
@@ -76,6 +78,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see FlowControllerDeclaration#getImport()
    */
+  @Override
   public Import getImport() {
     return mImport;
   }
@@ -85,6 +88,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see FlowControllerDeclaration#setImport(org.apache.uima.resource.metadata.Import)
    */
+  @Override
   public void setImport(Import aImport) {
     mImport = aImport;
   }
@@ -94,6 +98,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see FlowControllerDeclaration#getSpecifier()
    */
+  @Override
   public ResourceSpecifier getSpecifier() {
     return mSpecifier;
   }
@@ -103,6 +108,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see FlowControllerDeclaration#setSpecifier(org.apache.uima.resource.ResourceSpecifier)
    */
+  @Override
   public void setSpecifier(ResourceSpecifier aSpecifier) {
     mSpecifier = aSpecifier;
   }
@@ -112,6 +118,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see FlowControllerDeclaration#resolveImports()
    */
+  @Override
   public void resolveImports() throws InvalidXMLException {
     if (getImport() != null) {
       resolveImports(UIMAFramework.newDefaultResourceManager());
@@ -125,6 +132,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * Synchronized to support parallel initialization calls on primitive AEs, sharing a common
    * Resource Manager, and perhaps common UIMA Contexts
    */
+  @Override
   public synchronized void resolveImports(ResourceManager aResourceManager)
           throws InvalidXMLException {
     Import theImport = getImport();
@@ -158,6 +166,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.
    * Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -170,6 +179,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     // write key as attribute
     AttributesImpl attrs = new AttributesImpl();
@@ -179,6 +189,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
     return attrs;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

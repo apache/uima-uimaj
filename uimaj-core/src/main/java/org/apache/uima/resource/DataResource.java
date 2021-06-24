@@ -84,6 +84,7 @@ public interface DataResource extends Resource {
    * @return true if and only if <code>aObj</code> is a <code>DataResource</code> and provides
    *         access to the same data as this object.
    */
+  @Override
   boolean equals(Object aObj);
 
   /**
@@ -93,6 +94,7 @@ public interface DataResource extends Resource {
    * 
    * @return the hash code for this object
    */
+  @Override
   int hashCode();
 
   /**

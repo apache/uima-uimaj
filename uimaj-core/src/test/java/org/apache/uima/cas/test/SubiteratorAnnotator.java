@@ -27,6 +27,7 @@ public class SubiteratorAnnotator extends JCasAnnotator_ImplBase {
   public SubiteratorAnnotator() {
   }
 
+  @Override
   public void process(JCas jCas) {
     String text = jCas.getDocumentText();
     boolean isInToken = false;

@@ -90,6 +90,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     return cleanedString.toString();
   }
 
+  @Override
   public List<Object> getChildren(Object element) {
     return null;
   }
@@ -136,6 +137,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     return new ByteArrayInputStream(out.toByteArray());
   }
 
+  @Override
   public InputStream getContents(Object element) {
     File fileToImport = (File) element;
 
@@ -183,10 +185,12 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     return textDocument;
   }
 
+  @Override
   public String getFullPath(Object element) {
     return "";
   }
 
+  @Override
   public String getLabel(Object element) {
     File fileToImport = (File) element;
 
@@ -203,6 +207,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     }
   }
 
+  @Override
   public boolean isFolder(Object element) {
     return ((File) element).isDirectory();
   }

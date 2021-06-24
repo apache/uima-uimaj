@@ -75,6 +75,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#resolveImports()
    */
+  @Override
   public void resolveImports() throws InvalidXMLException {
     // does nothing by default; may be overriden in subclasses
 
@@ -83,6 +84,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#resolveImports(ResourceManager)
    */
+  @Override
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     // does nothing by default; may be overriden in subclasses
   }
@@ -96,6 +98,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getUUID()
    */
+  @Override
   public String getUUID() {
     return mUUID;
   }
@@ -103,6 +106,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setUUID(String)
    */
+  @Override
   public void setUUID(String aUUID) {
     mUUID = aUUID;
   }
@@ -110,6 +114,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -117,6 +122,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -124,6 +130,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getVersion()
    */
+  @Override
   public String getVersion() {
     return mVersion;
   }
@@ -131,6 +138,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setVersion(String)
    */
+  @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
@@ -138,6 +146,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -145,6 +154,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -152,6 +162,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getVendor()
    */
+  @Override
   public String getVendor() {
     return mVendor;
   }
@@ -159,6 +170,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setVendor(String)
    */
+  @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
@@ -166,6 +178,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getCopyright()
    */
+  @Override
   public String getCopyright() {
     return mCopyright;
   }
@@ -173,6 +186,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setCopyright(String)
    */
+  @Override
   public void setCopyright(String aCopyright) {
     mCopyright = aCopyright;
   }
@@ -180,6 +194,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getConfigurationParameterSettings()
    */
+  @Override
   public ConfigurationParameterSettings getConfigurationParameterSettings() {
     return mConfigurationParameterSettings;
   }
@@ -187,6 +202,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setConfigurationParameterSettings(ConfigurationParameterSettings)
    */
+  @Override
   public void setConfigurationParameterSettings(ConfigurationParameterSettings aSettings) {
     mConfigurationParameterSettings = aSettings;
   }
@@ -194,6 +210,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#getConfigurationParameterDeclarations()
    */
+  @Override
   public ConfigurationParameterDeclarations getConfigurationParameterDeclarations() {
     return mConfigurationParameterDeclarations;
   }
@@ -201,6 +218,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /**
    * @see ResourceMetaData#setConfigurationParameterDeclarations(ConfigurationParameterDeclarations)
    */
+  @Override
   public void setConfigurationParameterDeclarations(ConfigurationParameterDeclarations aDeclarations) {
     mConfigurationParameterDeclarations = aDeclarations;
   }
@@ -224,6 +242,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    * 
    * @see ResourceMetaData#validateConfigurationParameterSettings()
    */
+  @Override
   public void validateConfigurationParameterSettings() throws ResourceConfigurationException {
     ConfigurationParameterDeclarations cfgParamDecls = getConfigurationParameterDeclarations();
     ConfigurationParameterSettings cfgParamSettings = getConfigurationParameterSettings();
@@ -382,6 +401,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -392,6 +412,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

@@ -67,6 +67,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -74,6 +75,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -81,6 +83,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#getVersion()
    */
+  @Override
   public String getVersion() {
     return mVersion;
   }
@@ -88,6 +91,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#setVersion(String)
    */
+  @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
@@ -95,6 +99,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -102,6 +107,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -109,6 +115,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#getVendor()
    */
+  @Override
   public String getVendor() {
     return mVendor;
   }
@@ -116,6 +123,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see ResourceMetaData#setVendor(String)
    */
+  @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
@@ -123,6 +131,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see TypeSystemDescription#getImports()
    */
+  @Override
   public Import[] getImports() {
     return mImports;
   }
@@ -130,6 +139,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see TypeSystemDescription#setImports(Import[])
    */
+  @Override
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -142,6 +152,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see TypePriorities#getPriorityLists()
    * synchronized to prevent concurrent mod exceptions
    */
+  @Override
   public TypePriorityList[] getPriorityLists() {
     synchronized (mPriorityLists) { // saw concurrent mod exception 3/2014
       TypePriorityList[] result = new TypePriorityList[mPriorityLists.size()];
@@ -155,6 +166,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * could be called by thread doing resolve imports,
    * while another thread was iterating over them
    */
+  @Override
   public void setPriorityLists(TypePriorityList[] aPriorityLists) {
     synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014      
       mPriorityLists.clear();
@@ -167,6 +179,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see TypePriorities#addPriorityList(TypePriorityList)
    */
+  @Override
   public void addPriorityList(TypePriorityList aPriorityList) {
     synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014 
       mPriorityLists.add(aPriorityList);
@@ -176,6 +189,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see TypePriorities#addPriorityList()
    */
+  @Override
   public TypePriorityList addPriorityList() {
     TypePriorityList newPriorityList = new TypePriorityList_impl();
     synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
@@ -187,6 +201,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see TypePriorities#removePriorityList(TypePriorityList)
    */
+  @Override
   public void removePriorityList(TypePriorityList aPriorityList) {
     synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
       mPriorityLists.remove(aPriorityList);
@@ -198,6 +213,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   // support multithreading,
   // avoid object creation if already resolved
+  @Override
   public synchronized void resolveImports() throws InvalidXMLException {
     if (getImports().length == 0) {
       resolveImports(null, null);
@@ -206,10 +222,12 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     }
   }
 
+  @Override
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
+  @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypePrioritiesURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     List<TypePriorityList> importedPriorityLists = null;
@@ -313,6 +331,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /*
    * (non-Javadoc) Special purpose clone method to deal with ArrayList.
    */
+  @Override
   public Object clone() {
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
     clone.mPriorityLists = new ArrayList<>();
@@ -328,6 +347,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   /**
    * @see MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("typePriorities", new PropertyXmlInfo[] {
         new PropertyXmlInfo("name", true), new PropertyXmlInfo("description", true),

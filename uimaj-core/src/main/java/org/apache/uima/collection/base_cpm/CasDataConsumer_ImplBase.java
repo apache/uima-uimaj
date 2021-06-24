@@ -43,6 +43,7 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CasConsumerDescription
@@ -70,6 +71,7 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     // no default behavior
   }
@@ -77,6 +79,7 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
+  @Override
   public boolean isStateless() {
     return false;
   }
@@ -84,6 +87,7 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
+  @Override
   public boolean isReadOnly() {
     return true;
   }
@@ -91,6 +95,7 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }

@@ -177,6 +177,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
+  @Override
   void resolveImports() throws InvalidXMLException;
 
   /**
@@ -193,6 +194,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
+  @Override
   void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
 
   /**

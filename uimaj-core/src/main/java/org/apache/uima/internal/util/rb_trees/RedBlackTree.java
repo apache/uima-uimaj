@@ -225,6 +225,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return An iterator over the elements in the tree. The elements are returned in ascending order
    *         of the corresponding keys.
    */
+  @Override
   public Iterator<T> iterator() {
     return new RBTIterator<>(this);
   }
@@ -238,10 +239,12 @@ public class RedBlackTree<T> implements Iterable<T> {
       this.current = tree.getFirstNode();
     }
 
+    @Override
     public boolean hasNext() {
       return (this.current != null);
     }
 
+    @Override
     public T next() {
       if (this.current == null) {
         throw new java.util.NoSuchElementException();
@@ -251,6 +254,7 @@ public class RedBlackTree<T> implements Iterable<T> {
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }

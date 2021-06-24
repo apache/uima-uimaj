@@ -519,6 +519,7 @@ public class CasTypeSystemMapperTest {
      *   akofArrayRef 
      */
     
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       initBuiltInTypes(tsm);
 
@@ -649,6 +650,7 @@ public class CasTypeSystemMapperTest {
       typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
     }
     
+    @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     }
     

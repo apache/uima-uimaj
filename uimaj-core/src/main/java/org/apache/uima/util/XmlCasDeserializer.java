@@ -124,6 +124,7 @@ public abstract class XmlCasDeserializer {
       mLenient = lenient;
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
       if (mDelegateHandler == null) {
@@ -148,26 +149,32 @@ public abstract class XmlCasDeserializer {
       mDelegateHandler.startElement(uri, localName, qName, attributes);
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       mDelegateHandler.characters(ch, start, length);
     }
 
+    @Override
     public void endDocument() throws SAXException {
       mDelegateHandler.endDocument();
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       mDelegateHandler.endElement(uri, localName, qName);
     }
 
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw e;
     }
 
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
 
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       throw e;
     }

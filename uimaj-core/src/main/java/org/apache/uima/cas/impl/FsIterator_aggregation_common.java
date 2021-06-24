@@ -101,6 +101,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
    * But since this is unordered, there's not much point in doing this 
    *   
    */
+  @Override
   public void moveToNoReinit(FeatureStructure fs) {
     Misc.decreasingWithTrace(moveTo_error_msg_count, "MoveTo operations on unsorted iterators are likely mistakes." , UIMAFramework.getLogger());
     
@@ -155,6 +156,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
 
   
   /** moves to the first non-empty iterator at its start position */
+  @Override
   public void moveToFirstNoReinit() {
     current_it_idx = -1; // no valid index
     for (LowLevelIterator<T> it : nonEmptyIterators) {
@@ -166,6 +168,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
     }        
   }
 
+  @Override
   public void moveToLastNoReinit() {
     for (int i = nonEmptyIterators.length -1; i >= 0; i--) {
       LowLevelIterator<T> it = nonEmptyIterators[i];
@@ -178,6 +181,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
     current_it_idx = -1; // no valid index
   }
 
+  @Override
   public void moveToNextNvc() {
     FSIterator<T> it = nonEmptyIterators[current_it_idx];
     it.moveToNextNvc();
@@ -219,6 +223,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
     current_it_idx = -1;  // invalid position
   }
 
+  @Override
   public int ll_indexSizeMaybeNotCurrent() {
     int sum = 0;
     for (int i = nonEmptyIterators.length - 1; i >=  0; i--) {
@@ -229,6 +234,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
   }
   
   
+  @Override
   public int ll_maxAnnotSpan() {
     throw Misc.internalError();  // should never be called, because this operation isn't useful
                                  // in unordered indexes

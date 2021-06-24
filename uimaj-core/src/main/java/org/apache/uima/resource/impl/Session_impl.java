@@ -37,6 +37,7 @@ public class Session_impl implements Session {
    * 
    * @see org.apache.uima.resource.Session#put(java.lang.String, java.lang.Object)
    */
+  @Override
   public void put(String aKey, Object aValue) {
     mMap.put(aKey, aValue);
 
@@ -47,6 +48,7 @@ public class Session_impl implements Session {
    * 
    * @see org.apache.uima.resource.Session#get(java.lang.String)
    */
+  @Override
   public Object get(String aKey) {
     return mMap.get(aKey);
   }

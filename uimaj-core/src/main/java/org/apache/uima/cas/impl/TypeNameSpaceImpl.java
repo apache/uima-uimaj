@@ -40,6 +40,7 @@ public class TypeNameSpaceImpl implements TypeNameSpace {
   /**
    * @see org.apache.uima.cas.TypeNameSpace#getType(java.lang.String)
    */
+  @Override
   public Type getType(String typeName) {
     return this.ts.getType(this.name + TypeSystem.NAMESPACE_SEPARATOR + typeName);
   }

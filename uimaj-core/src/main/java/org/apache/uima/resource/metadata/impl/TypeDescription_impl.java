@@ -76,6 +76,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -83,6 +84,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -90,6 +92,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -97,6 +100,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#setDescription(java.lang.String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -104,6 +108,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#getSupertypeName()
    */
+  @Override
   public String getSupertypeName() {
     return mSupertypeName;
   }
@@ -111,6 +116,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#setSupertypeName(String)
    */
+  @Override
   public void setSupertypeName(String aTypeName) {
     mSupertypeName = aTypeName;
   }
@@ -118,6 +124,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#getFeatures()
    */
+  @Override
   public FeatureDescription[] getFeatures() {
     return mFeatures;
   }
@@ -125,6 +132,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#setFeatures(FeatureDescription[])
    */
+  @Override
   public void setFeatures(FeatureDescription[] aFeatures) {
     if (aFeatures == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -136,6 +144,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#getAllowedValues()
    */
+  @Override
   public AllowedValue[] getAllowedValues() {
     return mAllowedValues;
   }
@@ -143,6 +152,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#setAllowedValues(AllowedValue[])
    */
+  @Override
   public void setAllowedValues(AllowedValue[] aAllowedValues) {
     mAllowedValues = aAllowedValues;
   }
@@ -150,6 +160,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#addFeature(String, String, String)
    */
+  @Override
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName) {
     return addFeature(aFeatureName, aDescription, aRangeTypeName, null, null);
@@ -158,6 +169,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   /**
    * @see TypeDescription#addFeature(String, String, String, String, Boolean)
    */
+  @Override
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {
     // create new feature description
@@ -178,6 +190,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
     return newFeature;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

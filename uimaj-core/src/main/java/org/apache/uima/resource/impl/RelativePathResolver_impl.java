@@ -88,6 +88,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#getDataPath()
    */
+  @Override
   public String getDataPath() {
     return mDataPath;
   }
@@ -95,6 +96,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#setDataPath(java.lang.String)
    */
+  @Override
   public void setDataPath(String aPath) throws MalformedURLException {
     List<URL> urls = new ArrayList<>();
 
@@ -118,6 +120,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#resolveRelativePath(java.net.URL)
    */
+  @Override
   public URL resolveRelativePath(URL aRelativeUrl) {
     // try each base URL
     URL[] baseUrls = getBaseUrls();
@@ -156,6 +159,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#setPathResolverClassLoader(java.lang.ClassLoader)
    */
+  @Override
   public void setPathResolverClassLoader(ClassLoader aClassLoader) {
     // set ClassLoader
     mClassLoader = aClassLoader;

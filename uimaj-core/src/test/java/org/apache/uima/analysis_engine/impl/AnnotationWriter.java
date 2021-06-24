@@ -60,6 +60,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @throws ResourceInitializationException
    *           if there is error in initializing the resources
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
 
     File testBaseDir = JUnitExtension.getFile("TextAnalysisEngineImplTest").getParentFile();
@@ -79,6 +80,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.collection.CasConsumer_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
     typeSystemInitCalled = true;
   }
@@ -94,6 +96,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(CAS)
    */
+  @Override
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // iterate and print annotations
@@ -124,6 +127,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
+  @Override
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
@@ -141,6 +145,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    *           if there is an IO Error
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
+  @Override
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     if (this.fileWriter != null) {
@@ -158,6 +163,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     //do nothing
   }
@@ -167,6 +173,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     if (this.fileWriter != null) {
       try {
