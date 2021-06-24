@@ -1159,8 +1159,8 @@ public class CasCompare {
     return () -> System.arraycopy(a, 0, stringArray._getTheArray(), 0, stringArray.size());
   }
 
-  // ******************************************************************************* 
-  //     Convert UIMA Lists to arrays, to make the compare go faster
+  // *******************************************************************************
+  // Convert UIMA Lists to arrays, to make the compare go faster
   // *******************************************************************************
 
   private void convert_linear_lists_to_arrays(ArrayList<TOP> fss) {

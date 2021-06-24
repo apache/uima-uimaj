@@ -241,7 +241,7 @@ public class CasSerializerSupport {
   }
 
   // **********************************************
-  // Methods used to serialize items 
+  // Methods used to serialize items
   // Separate implementations for JSON and Xmi
   // **********************************************/
   public static abstract class CasSerializerSupportSerialize {
@@ -364,11 +364,12 @@ public class CasSerializerSupport {
     public final boolean isDynamicMultiRef;
 
     // *********************************************
-    // FSs that need to be serialized because they're 
-    //   a) in an index
-    //   b) in the set of previously serialized FS which have ids (that is, they weren't previously embedded)
-    //   c) (delta only) have a feature which has an embedded value some part of which changed (no id)
-    // 
+    // FSs that need to be serialized because they're
+    // a) in an index
+    // b) in the set of previously serialized FS which have ids (that is, they weren't previously
+    // embedded)
+    // c) (delta only) have a feature which has an embedded value some part of which changed (no id)
+    //
     // d) the set of FSs that are reachable via FSrefs from the above 3 sets
     public List<TOP> previouslySerializedFSs = null;
 

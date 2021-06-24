@@ -213,7 +213,7 @@ public class BinaryCasSerDes {
   }
 
   // *********************************
-  //      D e s e r i a l i z e r s 
+  // D e s e r i a l i z e r s
   // *********************************
 
   /**
@@ -494,9 +494,8 @@ public class BinaryCasSerDes {
   }
 
   /**
-   * Deserialize a binary input stream, after reading the header, 
-   * and optionally an externally provided type system and index spec 
-   * used in compressed form 6 serialization previously
+   * Deserialize a binary input stream, after reading the header, and optionally an externally
+   * provided type system and index spec used in compressed form 6 serialization previously
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be needed if the blob
    * is from C++ -- C++ blob serialization writes data in native byte order.
@@ -630,9 +629,9 @@ public class BinaryCasSerDes {
   }
 
   // **********************************************************
-  // ------   NON COMPRESSED BINARY DESEERIALIZATION   ------ *
-  //  For corresponding serialization code, see CASSerializer *
-  //***********************************************************
+  // ------ NON COMPRESSED BINARY DESEERIALIZATION ------ *
+  // For corresponding serialization code, see CASSerializer *
+  // ***********************************************************
   /**
    * build a model of the heap, string and aux heaps. For delta deserialization, this is presumed to
    * be in response to a previous serialization for delta - these can be just for the new ones read
@@ -771,14 +770,14 @@ public class BinaryCasSerDes {
       // if delta, handle modified fs heap cells
       if (delta) {
         // Delta Binary Deserialization
-        // 
-        // At this point, we have 
-        //   - not yet converted the main heap array into FSs.
-        //   - not yet read in Aux Heaps (except for strings)
-        // 
-        // So, we do this in 2 phases.  
-        //   - This phase just reads in the data but does not act on it.
-        //   - Phase 2 happens after the FSs are created from the heap data.
+        //
+        // At this point, we have
+        // - not yet converted the main heap array into FSs.
+        // - not yet read in Aux Heaps (except for strings)
+        //
+        // So, we do this in 2 phases.
+        // - This phase just reads in the data but does not act on it.
+        // - Phase 2 happens after the FSs are created from the heap data.
         fsmodssz2 = 2 * r.readInt();
         modWords = new int[fsmodssz2];
 
@@ -868,12 +867,15 @@ public class BinaryCasSerDes {
       }
 
       if (delta) {
-          // The modifications are all to existing FSs.  
-          // The modifications consist of an address (offset in an aux array) which is an array element.
-          //   We don't update the aux array, but instead update the actual FS below the line representing the array.
-          //   To identify the fs, we use the xxAuxAddr2fsa sorted list forms and do a binary search to find the item to update,
-          //     with a fast path for the same or next item. 
-          //       Same - use case is multiple updates into the same array
+        // The modifications are all to existing FSs.
+        // The modifications consist of an address (offset in an aux array) which is an array
+        // element.
+        // We don't update the aux array, but instead update the actual FS below the line
+        // representing the array.
+        // To identify the fs, we use the xxAuxAddr2fsa sorted list forms and do a binary search to
+        // find the item to update,
+        // with a fast path for the same or next item.
+        // Same - use case is multiple updates into the same array
 
         // modified Byte Heap
         heapsz = updateAuxArrayMods(r, byteAuxAddr2fsa, (ba, arrayIndex) -> {
@@ -909,9 +911,9 @@ public class BinaryCasSerDes {
       } // of delta - modified processing
 
       // *********************************************
-      // Convert model heap added FS into real FS    *
-      //   update addr2fs and fs2addr                *
-      //   update byte/short/long/string auxAddr2fsa *
+      // Convert model heap added FS into real FS *
+      // update addr2fs and fs2addr *
+      // update byte/short/long/string auxAddr2fsa *
       // *********************************************
 
       // build the new FSs and record in addr2FSs
@@ -1012,8 +1014,9 @@ public class BinaryCasSerDes {
   }
 
   /**
-   * Called 3 times to process non-compressed binary deserialization of aux array modifications
-   *   - once for byte/boolean, short, and long/double
+   * Called 3 times to process non-compressed binary deserialization of aux array modifications -
+   * once for byte/boolean, short, and long/double
+   * 
    * @return heapsz (used by caller to do word alignment)
    * @throws IOException
    */

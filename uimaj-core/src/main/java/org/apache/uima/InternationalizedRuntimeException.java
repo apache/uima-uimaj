@@ -204,13 +204,14 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * "TEST_KEY", objects); e.setResourceBundle(my_locale); // call this method, pass in the needed
    * locale object throw e; // or whatever should be done with it
    * 
-   * then do something like this
-   * <code><pre>
+   * then do something like this <code><pre>
    *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
    *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
    *   throw e;  // or whatever should be done with it
    * </pre></code>
-   * @param aLocale the locale to use when getting the message from the message bundle at a later time
+   * 
+   * @param aLocale
+   *          the locale to use when getting the message from the message bundle at a later time
    */
   public void setResourceBundle(Locale aLocale) {
     c.setResourceBundle(aLocale);

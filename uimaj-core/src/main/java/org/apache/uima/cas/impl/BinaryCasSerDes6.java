@@ -763,7 +763,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
 
   // ********************************************************************************************
-  // S e r i a l i z e r   Class for sharing variables among routines
+  // S e r i a l i z e r Class for sharing variables among routines
   // Class instantiated once per serialization
   // Multiple serializations in parallel supported, with multiple instances of this
   // ********************************************************************************************/
@@ -810,10 +810,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
       // *****************************************************************
       // Find all FSs to be serialized via the indexes
-      //   including those FSs referenced  
+      // including those FSs referenced
       // For Delta Serialization - excludes those FSs below the line
       // *****************************************************************
-  
+
       // @formatter:off
       /** 
        * Skip this, and use the reuse-info, only for the case of:
@@ -1251,7 +1251,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
       }
     } // end of for loop
-    
+
     // @formatter:off
     /** 
      * format of serialized data, as DataOutputStream:
@@ -1470,9 +1470,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
 
     final int absV = Math.abs(v);
-    if (((v > 0) && (prev > 0)) ||
-        ((v < 0) && (prev < 0))) {
-      final int diff = v - prev;  // guaranteed to not overflow because signs are the same
+    if (((v > 0) && (prev > 0)) || ((v < 0) && (prev < 0))) {
+      final int diff = v - prev; // guaranteed to not overflow because signs are the same
       // @formatter:off
 //      // handle strange behavior after JIT where the Math.abs(0x7fffffff) gives Integer.MIN_VALUE
 //      // for arguments v = 0xffffffff, and prev = Integer.MIN_VALUE
@@ -1483,7 +1482,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //      final int absDiff = Math.abs(diff);
       // this seems to work around
       // @formatter:on
-      final int absDiff = (diff < 0) ? -diff : diff; 
+      final int absDiff = (diff < 0) ? -diff : diff;
       // @formatter:off
 //      // debug failure in Math.abs
 //      if (absDiff < 0) {
@@ -1499,12 +1498,11 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //            Integer.toHexString(absV));
 //      }
       // @formatter:on
-      assert(absDiff >= 0);
-      assert(absV >= 0);
-      
-      final long v2write = (absV <= absDiff) ? 
-          ((long)absV << 2)    + ((v < 0) ? 2L : 0L) :
-          ((long)absDiff << 2) + ((diff < 0) ? 3L : 1L);
+      assert (absDiff >= 0);
+      assert (absV >= 0);
+
+      final long v2write = (absV <= absDiff) ? ((long) absV << 2) + ((v < 0) ? 2L : 0L)
+              : ((long) absDiff << 2) + ((diff < 0) ? 3L : 1L);
 
       writeVnumber(kind, v2write);
       if (doMeasurements) {
@@ -2057,7 +2055,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
         if (currentFs == null) {
 
-            // @formatter:off
+          // @formatter:off
           /**
            * Create single deferred FS
            *   Either: Sofa (has final fields) or
@@ -2806,7 +2804,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
                   numberOfModsInThisFs, srcType.getShortName());
         }
         if (srcType.isAuxStoredArray()) {
-            // @formatter:off
+          // @formatter:off
           /**************************************************
            * *** This strange split is to be compatible with v2 form 6 ***
            * 

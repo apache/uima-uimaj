@@ -200,26 +200,27 @@ public class InternationalizedException extends Exception {
     return this;
   }
 
-   /**
-    * For the case where the default locale is not being used for getting messages,
-    * and the lookup path in the classpath for the resource bundle needs to be set 
-    * at a specific point, call this method to set the resource bundle at that point in the call stack.
-    * 
-    * Example: If in a Pear, and you are throwing an exception, which is defined in a bundle
-    * in the Pear context, but the catcher of the throw is up the stack above where the pear context
-    * exists (and therefore, is no longer present at "catch" time), and
-    * you don't want to use the default-locale for getting the message out of the message bundle,
-    * 
-    * then do something like this:
-    * <code><pre>
-    *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
-    *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
-    *   throw e;  // or whatever should be done with it
-    * </pre></code>
-    * @param aLocale the locale to use when getting the message from the message bundle at a later time
-    */
-   public void setResourceBundle(Locale aLocale) {
-     c.setResourceBundle(aLocale);
-   }
+  /**
+   * For the case where the default locale is not being used for getting messages, and the lookup
+   * path in the classpath for the resource bundle needs to be set at a specific point, call this
+   * method to set the resource bundle at that point in the call stack.
+   * 
+   * Example: If in a Pear, and you are throwing an exception, which is defined in a bundle in the
+   * Pear context, but the catcher of the throw is up the stack above where the pear context exists
+   * (and therefore, is no longer present at "catch" time), and you don't want to use the
+   * default-locale for getting the message out of the message bundle,
+   * 
+   * then do something like this: <code><pre>
+   *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
+   *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
+   *   throw e;  // or whatever should be done with it
+   * </pre></code>
+   * 
+   * @param aLocale
+   *          the locale to use when getting the message from the message bundle at a later time
+   */
+  public void setResourceBundle(Locale aLocale) {
+    c.setResourceBundle(aLocale);
+  }
 
 }

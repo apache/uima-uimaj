@@ -322,7 +322,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   /**
    * Instances are put into a Stack, to remember previous state to switch back to, when switching
-   * class loaders and locking the CAS 
+   * class loaders and locking the CAS
    * 
    * https://issues.apache.org/jira/browse/UIMA-6057
    */
@@ -4086,9 +4086,8 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
-  
   // **********************************
-  //    A R R A Y   C R E A T I O N
+  // A R R A Y C R E A T I O N
   // **********************************
 
   @Override

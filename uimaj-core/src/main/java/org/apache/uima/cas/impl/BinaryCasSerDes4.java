@@ -546,8 +546,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
         // *************************
         // Strings
-        // For delta, to determine "new" strings that should be serialized, 
-        //   use the same method as used in Binary (plain) serialization.
+        // For delta, to determine "new" strings that should be serialized,
+        // use the same method as used in Binary (plain) serialization.
         // *************************
         for (TOP fs : newSortedFSs) {
           extractStrings(fs);
@@ -1291,12 +1291,13 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     // *****************************************************************************
     // Modified Values
     // Output:
-    //   For each FS that has 1 or more modified values,
-    //     write the heap addr of the FS
-    //     
-    //     For all modified values within the FS:
-    //       if it is an aux array element, write the index in the individual array instance and the new value
-    //       otherwise, write the slot offset and the new value
+    // For each FS that has 1 or more modified values,
+    // write the heap addr of the FS
+    //
+    // For all modified values within the FS:
+    // if it is an aux array element, write the index in the individual array instance and the new
+    // value
+    // otherwise, write the slot offset and the new value
     // *****************************************************************************
     public class SerializeModifiedFSs {
 
@@ -1731,7 +1732,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       only1CommonString = lenCmnStrs == 1;
       // **************************
       // Prepare to walk main heap
-      // The csds must be either empty (for receiving non- delta) 
+      // The csds must be either empty (for receiving non- delta)
       // or the same as when the CAS was previous sent out (for receiving delta)
       // **************************
 
