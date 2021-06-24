@@ -62,7 +62,6 @@ public interface ResourceFactory {
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource
    */
-  public Resource produceResource(Class<? extends Resource> aResourceClass,
-          ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
-          throws ResourceInitializationException;
+  Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException;
 }

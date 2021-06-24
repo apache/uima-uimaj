@@ -40,6 +40,6 @@ public interface CompositeResourceFactory extends ResourceFactory {
    * @param aFactory
    *          the factory used to create resources from resource specifiers of the given type
    */
-  public void registerFactory(Class<? extends ResourceSpecifier> aResourceSpecifierInterface,
+  void registerFactory(Class<? extends ResourceSpecifier> aResourceSpecifierInterface,
           ResourceFactory aFactory);
 }
