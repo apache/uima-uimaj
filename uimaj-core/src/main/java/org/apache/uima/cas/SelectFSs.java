@@ -438,15 +438,17 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   SelectFSs<T> between(AnnotationFS fs1, AnnotationFS fs2); // requires Annotation Index, implies a
                                                             // coveredBy style
 
-  /*
-   * --------------------------------- Semantics: - following uimaFIT - must be annotation subtype,
-   * annotation index - following: move to first fs where begin > pos.end - preceding: move to first
-   * fs where end < pos.begin
-   * 
-   * - return the limit() or all - for preceding, return in forward order (unless backward is
-   * specified) - for preceding, skips FSs whose end >= begin (adjusted by offset)
-   * ---------------------------------
-   */
+  // ---------------------------------
+  // Semantics: 
+  //   - following uimaFIT
+  //   - must be annotation subtype, annotation index
+  //   - following: move to first fs where begin > pos.end
+  //   - preceding: move to first fs where end < pos.begin
+  // 
+  //   - return the limit() or all
+  //   - for preceding, return in forward order (unless backward is specified)
+  //   - for preceding, skips FSs whose end >= begin (adjusted by offset)
+  // ---------------------------------
   /**
    * For AnnotationIndex, position to first Annotation whose begin &gt;= fs.getEnd();
    * 

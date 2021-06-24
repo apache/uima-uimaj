@@ -24,8 +24,11 @@ package org.apache.uima;
  * method may be used by any plain Java class invoked by an annotator, The POJO must run in the same
  * thread or a child thread of the annotator.
  * 
- * For example a POJO can access the shared External Override Settings with: String paramValue =
- * UimaContextHolder.getContext().getSetting(paramName);
+ * For example a POJO can access the shared External Override Settings with:
+ * 
+ * <code><pre>
+ * String paramValue = UimaContextHolder.getContext().getSetting(paramName);
+ * </pre></code>
  */
 public class UimaContextHolder {
 

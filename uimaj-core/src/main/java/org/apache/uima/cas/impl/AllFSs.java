@@ -32,8 +32,11 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.IteratorNvc;
 
 /**
- * support for collecting all FSs in a CAS - over all views - both indexed, and (optionally)
- * reachable
+ * support for collecting all FSs in a CAS
+ * <ul>
+ * <li>over all views</li>
+ * <li>both indexed, and (optionally) reachable</li>
+ * </ul>
  */
 class AllFSs {
 

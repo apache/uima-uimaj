@@ -21,6 +21,7 @@ package org.apache.uima.cas;
 
 import org.apache.uima.jcas.JCas;
 
+// @formatter:off
 /**
  * Interface for feature structures.
  *
@@ -28,10 +29,18 @@ import org.apache.uima.jcas.JCas;
  * the feature. There are multiple versions of these, corresponding to the consolidated types of the
  * feature range.
  *
- * Here are the types: FeatureStructure - reference to another Feature structure String float int
- * byte boolean short long double
- *
+ *   Here are the types:
+ *     FeatureStructure - reference to another Feature structure
+ *     String
+ *     float
+ *     int
+ *     byte
+ *     boolean
+ *     short
+ *     long
+ *     double
  */
+//@formatter:on
 public interface FeatureStructure extends Cloneable {
 
   /**

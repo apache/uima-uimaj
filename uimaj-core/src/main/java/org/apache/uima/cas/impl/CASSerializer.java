@@ -48,40 +48,43 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.CasIOUtils;
 
+// @formatter:off
 /**
- * This object has 2 purposes. - it can hold a collection of individually Java-object-serializable
- * objects representing a CAS + the list of FS's indexed in the CAS
- * 
- * - it has special methods (versions of addCAS) to do a custom binary serialization (no
- * compression) of a CAS + lists of its indexed FSs.
+ * This object has 2 purposes.
+ *   - it can hold a collection of individually Java-object-serializable objects representing a CAS +
+ *     the list of FS's indexed in the CAS
+ *     
+ *   - it has special methods (versions of addCAS) to do a custom binary serialization (no compression) of a CAS + lists
+ *     of its indexed FSs.  
  * 
  * One use of this class follows this form:
  * 
- * 1) create an instance of this class 2) add a Cas to it (via addCAS methods) 3) use the instance
- * of this class as the argument to anObjectOutputStream.writeObject(anInstanceOfThisClass) In UIMA
- * this is done in the SerializationUtils class; it appears to be used for SOAP and Vinci service
- * adapters.
+ * 1) create an instance of this class
+ * 2) add a Cas to it (via addCAS methods)
+ * 3) use the instance of this class as the argument to anObjectOutputStream.writeObject(anInstanceOfThisClass)
+ *    In UIMA this is done in the SerializationUtils class; it appears to be used for SOAP and Vinci service adapters.
  * 
  * There are also custom serialization methods that serialize to outputStreams.
  * 
- * The format of the serialized data is in one of several formats: normal Java object serialization
- * / custom binary serialization
+ * The format of the serialized data is in one of several formats:
+ *   normal Java object serialization / custom binary serialization
  *
- * The custom binary serialization is in several formats: full / delta: full - the entire cas delta
- * - only differences from a previous "mark" are serialized
- * 
- * This class only does uncompressed forms of custom binary serialization.
- * 
- * This class is for internal use. Some of the serialized formats are readable by the C++
- * implementation, and used for efficiently transferring CASes between Java frameworks and other
- * ones. Others are used with Vinci or SOAP to communicate to remote annotators.
+ *   The custom binary serialization is in several formats:
+ *     full / delta:
+ *       full - the entire cas
+ *       delta - only differences from a previous "mark" are serialized
+ *       
+ *   This class only does uncompressed forms of custom binary serialization.    
+ *     
+ * This class is for internal use.  Some of the serialized formats are readable by the C++
+ * implementation, and used for efficiently transferring CASes between Java frameworks and other ones.
+ * Others are used with Vinci or SOAP to communicate to remote annotators.
  * 
  * To serialize the type definition and index specifications for a CAS
  * 
  * @see org.apache.uima.cas.impl.CASMgrSerializer
- * 
- * 
  */
+// @formatter:on
 public class CASSerializer implements Serializable {
 
   static final long serialVersionUID = -7972011651957420295L;
@@ -243,16 +246,30 @@ public class CASSerializer implements Serializable {
 
   }
 
+  // @formatter:off
   /**
    * Serializes the CAS data and writes it to the output stream.
-   * --------------------------------------------------------------------- Blob Format Element Size
-   * Number of Description (bytes) Elements ------------ --------- --------------------------------
-   * 4 1 Blob key = "UIMA" in utf-8 4 1 Version (currently = 1) 4 1 size of 32-bit FS Heap array =
-   * s32H 4 s32H 32-bit FS heap array 4 1 size of 16-bit string Heap array = sSH 2 sSH 16-bit string
-   * heap array 4 1 size of string Ref Heap zrray = sSRH 4 2*sSRH string ref offsets and lengths 4 1
-   * size of FS index array = sFSI 4 sFSI FS index array 4 1 size of 8-bit Heap array = s8H 1 s8H
-   * 8-bit Heap array 4 1 size of 16-bit Heap array = s16H 2 s16H 16-bit Heap array 4 1 size of
-   * 64-bit Heap array = s64H 8 s64H 64-bit Heap array
+   * ---------------------------------------------------------------------
+   * Blob         Format    Element 
+   * Size         Number of Description 
+   * (bytes)      Elements 
+   * ------------ --------- -------------------------------- 
+   * 4            1         Blob key = "UIMA" in utf-8 
+   * 4            1         Version (currently = 1) 
+   * 4            1         size of 32-bit FS Heap array = s32H 
+   * 4            s32H      32-bit FS heap array 
+   * 4            1         size of 16-bit string Heap array = sSH  
+   * 2            sSH       16-bit string heap array 
+   * 4            1         size of string Ref Heap zrray = sSRH 
+   * 4            2*sSRH    string ref offsets and lengths 
+   * 4            1         size of FS index array = sFSI 
+   * 4            sFSI      FS index array
+   * 4            1         size of 8-bit Heap array = s8H  
+   * 1            s8H       8-bit Heap array 
+   * 4            1         size of 16-bit Heap array = s16H 
+   * 2            s16H      16-bit Heap array 
+   * 4            1         size of 64-bit Heap array = s64H 
+   * 8            s64H      64-bit Heap array
    * ---------------------------------------------------------------------
    * 
    * @param cas
@@ -260,6 +277,7 @@ public class CASSerializer implements Serializable {
    * @param ostream
    *          -
    */
+  // @formatter:on
   public void addCAS(CASImpl cas, OutputStream ostream) {
     addCAS(cas, ostream, false);
   }
@@ -412,27 +430,41 @@ public class CASSerializer implements Serializable {
     }
   }
 
+  // @formatter:off
   /**
    * Serializes only new and modified FS and index operations made after the tracking mark is
    * created. Serializes CAS data in binary Delta format described below and writes it to the output
    * stream.
    * 
-   * ElementSize NumberOfElements Description ----------- ----------------
-   * --------------------------------------------------------- 4 1 Blob key = "UIMA" in utf-8 (byte
-   * order flag) 4 1 Version (1 = complete cas, 2 = delta cas) 4 1 size of 32-bit heap array = s32H
-   * 4 s32H 32-bit FS heap array (new elements) 4 1 size of 16-bit string Heap array = sSH 2 sSH
-   * 16-bit string heap array (new strings) 4 1 size of string Ref Heap array = sSRH 4 2*sSRH string
-   * ref offsets and lengths (for new strings) 4 1 number of modified, preexisting 32-bit modified
-   * FS heap elements = sM32H 4 2*sM32H 32-bit heap offset and value (preexisting cells modified) 4
-   * 1 size of FS index array = sFSI 4 sFSI FS index array in Delta format 4 1 size of 8-bit Heap
-   * array = s8H 1 s8H 8-bit Heap array (new elements) 4 1 size of 16-bit Heap array = s16H 2 s16H
-   * 16-bit Heap array (new elements) 4 1 size of 64-bit Heap array = s64H 8 s64H 64-bit Heap array
-   * (new elements) 4 1 number of modified, preexisting 8-bit heap elements = sM8H 4 sM8H 8-bit heap
-   * offsets (preexisting cells modified) 1 sM8H 8-bit heap values (preexisting cells modified) 4 1
-   * number of modified, preexisting 16-bit heap elements = sM16H 4 sM16H 16-bit heap offsets
-   * (preexisting cells modified) 2 sM16H 16-bit heap values (preexisting cells modified) 4 1 number
-   * of modified, preexisting 64-bit heap elements = sM64H 4 sM64H 64-bit heap offsets (preexisting
-   * cells modified) 2 sM64H 64-bit heap values (preexisting cells modified)
+   * ElementSize NumberOfElements Description
+   * ----------- ---------------- ---------------------------------------------------------
+   * 4				   1				        Blob key = "UIMA" in utf-8 (byte order flag)
+   * 4				   1				        Version (1 = complete cas, 2 = delta cas)
+   * 4				   1				        size of 32-bit heap array = s32H
+   * 4           s32H             32-bit FS heap array (new elements) 
+   * 4           1 				        size of 16-bit string Heap array = sSH 
+   * 2 			     sSH 				      16-bit string heap array (new strings)
+   * 4 				   1 				        size of string Ref Heap array = sSRH 
+   * 4 			     2*sSRH				    string ref offsets and lengths (for new strings)
+   * 4           1        				number of modified, preexisting 32-bit modified FS heap elements = sM32H
+   * 4			     2*sM32H          32-bit heap offset and value (preexisting cells modified)	 
+   * 4 	         1 	        			size of FS index array = sFSI 
+   * 4		       sFSI 	    			FS index array in Delta format
+   * 4 		 	  	 1 			        	size of 8-bit Heap array = s8H 
+   * 1 			     s8H 			      	8-bit Heap array (new elements)
+   * 4 			  	 1 			        	size of 16-bit Heap array = s16H
+   * 2 			     s16H 				    16-bit Heap array (new elements) 
+   * 4 			  	 1 			        	size of 64-bit Heap array = s64H 
+   * 8 			     s64H 				    64-bit Heap array (new elements)
+   * 4				   1			        	number of modified, preexisting 8-bit heap elements = sM8H
+   * 4			     sM8H             8-bit heap offsets (preexisting cells modified)
+   * 1			     sM8H             8-bit heap values  (preexisting cells modified)
+   * 4			  	 1				        number of modified, preexisting 16-bit heap elements = sM16H
+   * 4			     sM16H            16-bit heap offsets (preexisting cells modified)
+   * 2			     sM16H            16-bit heap values  (preexisting cells modified)
+   * 4			  	 1				        number of modified, preexisting 64-bit heap elements = sM64H
+   * 4			     sM64H            64-bit heap offsets (preexisting cells modified)
+   * 2			     sM64H            64-bit heap values  (preexisting cells modified)
    * 
    * 
    * @param cas
@@ -442,6 +474,7 @@ public class CASSerializer implements Serializable {
    * @param trackingMark
    *          -
    */
+  // @formatter:on
   public void addCAS(CASImpl cas, OutputStream ostream, Marker trackingMark) {
     if (!trackingMark.isValid()) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");

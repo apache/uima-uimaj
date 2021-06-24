@@ -27,22 +27,31 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.jcas.cas.TOP;
 
+// @formatter:off
 /**
- * Common de/serialization for plain binary and compressed binary form 4 which both used to walk the
- * cas using the sequential, incrementing id approach
+ * Common de/serialization for plain binary and compressed binary form 4
+ * which both used to walk the cas using the sequential, incrementing id approach
  * 
- * Lifecycle: There is 0/1 instance per CAS, representing the FSs at some point in time in that CAS.
+ * Lifecycle:  
+ *   There is 0/1 instance per CAS, representing the FSs at some point in time in that CAS.
  * 
- * Creation: serialization (for delta serialization, the csds made when deserialization was done is
- * reused, if available Updates cannot add to the reachables). non-delta deserialization delta
- * deserialization uses previous one
+ *   Creation:  
+ *     serialization (for delta serialization, 
+ *       the csds made when deserialization was done is reused, if available
+ *       Updates cannot add to the reachables).
+ *     non-delta deserialization
+ *     delta deserialization uses previous one
  * 
- * Reset: CAS Reset API call (for optimization - used after all delta deserializations into a
- * particular CAS are complete.
+ *   Reset: 
+ *     CAS Reset
+ *     API call (for optimization - used after all delta deserializations into a particular CAS are complete.
  * 
- * Logical constraints: - delta de/serialization must use an existing version of this, -- set during
- * a previous non-delta de/serialization -- or created just in time via a scan of the cas
+ *   Logical constraints:
+ *     - delta de/serialization must use an existing version of this,
+ *        -- set during a previous non-delta de/serialization
+ *        -- or created just in time via a scan of the cas
  */
+// @formatter:on
 public class CommonSerDesSequential {
 
   public static final boolean TRACE_SETUP = false;
@@ -133,17 +142,17 @@ public class CommonSerDesSequential {
     heapEnd = 0;
   }
 
+  // @formatter:off
   /**
-   * Scan all indexed + reachable FSs, sorted, and - create two maps from those to/from the int
-   * offsets in the simulated main heap - add all the (filtered - above the mark) FSs to the
-   * sortedFSs - set the heapEnd
-   * 
-   * @param mark
-   *          null or the mark
-   * @param fromAddr
-   *          often 1 but sometimes the mark next fsid
+   * Scan all indexed + reachable FSs, sorted, and
+   *   - create two maps from those to/from the int offsets in the simulated main heap
+   *   - add all the (filtered - above the mark) FSs to the sortedFSs
+   *   - set the heapEnd
+   * @param mark null or the mark
+   * @param fromAddr often 1 but sometimes the mark next fsid
    * @return all (not filtered) FSs sorted
    */
+  // @formatter:on
   List<TOP> setup(MarkerImpl mark, int fromAddr) {
     if (mark == null) {
       clear();

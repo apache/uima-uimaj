@@ -61,6 +61,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasLoadMode;
 
+// @formatter:off
 /**
  * Binary (mostly non compressed) CAS deserialization The methods in this class were originally part
  * of the CASImpl, and were moved here to this class for v3
@@ -77,27 +78,30 @@ import org.apache.uima.util.CasLoadMode;
  * 
  * The data is computed lazily, and reset with cas reset.
  * 
- * Lifecycle: created when a CAS (any view) is first created, as part of the shared view data for
- * that CAS. never re-created.
+ * Lifecycle: 
+ *   created when a CAS (any view) is first created, as part of the shared view data for that CAS.
+ *   never re-created.
  * 
  * Data created when non-delta serializing, in case needed when delta-deserializing later:
- * xxxAuxAddr2fsa maps aux arrays to FSs heaps and nextXXXHeapAddrAfterMark (in this case mark is
- * the end).
+ *     xxxAuxAddr2fsa maps aux arrays to FSs
+ *     heaps and nextXXXHeapAddrAfterMark (in this case mark is the end).
  * 
  * Reset:
  * 
- * Instance Data: baseCas - ref to the corresponding CAS (final) tsi - the CAS's type system impl
- * (can change; each use sets it from CAS API)
+ * Instance Data:
+ *   baseCas - ref to the corresponding CAS (final)
+ *   tsi - the CAS's type system impl (can change; each use sets it from CAS API)
  * 
- * heaps - there is 1 main heap, and 4 aux heaps (Byte, Short, Long, and String Some uses of this
- * class require these be materialized. (May be input or output)
+ *   heaps - there is 1 main heap, and 4 aux heaps (Byte, Short, Long, and String
+ *     Some uses of this class require these be materialized. (May be input or output)
  * 
- * for Delta deserialization: 5 ints - representing the first free address in the above 5 heaps,
- * after the mark
+ *   for Delta deserialization:
+ *     5 ints - representing the first free address in the above 5 heaps, after the mark
  * 
- * For delta deserialization: Maps for Aux arrays representing updatable arrays (not String): From
- * starting addr in the aux array to the corresponding V3 FS object
+ *   For delta deserialization: Maps for Aux arrays representing updatable arrays (not String):
+ *     From starting addr in the aux array to the corresponding V3 FS object    
  */
+//@formatter:on
 public class BinaryCasSerDes {
 
   private static final boolean TRACE_DESER = false;
@@ -182,16 +186,19 @@ public class BinaryCasSerDes {
   // final Obj2IntIdentityHashMap<TOP> fsa2auxAddr = new Obj2IntIdentityHashMap<>(TOP.class,
   // TOP.singleton);
 
+//@formatter:off
   /**
-   * Map from an aux addr starting address for an array of boolean/byte/short/long/double to the V3
-   * FS. key = simulated starting address in aux heap for the array value = FS having that array
-   * When deserializing a modification, used to find the v3 FS and the offset in the array to
-   * modify.
+   * Map from an aux addr starting address for an array of boolean/byte/short/long/double to the V3 FS.
+   *   key = simulated starting address in aux heap for the array
+   *   value = FS having that array
+   * When deserializing a modification, used to find the v3 FS and the offset in the array to modify.
    * 
-   * created when serializing (in case receive delta deser back). created when delta deserializing
-   * if not available from previous serialization. updated when delta deserializing. reset at end of
-   * delta deserializings because multiple mods not supported
+   * created when serializing (in case receive delta deser back).
+   * created when delta deserializing if not available from previous serialization.
+   * updated when delta deserializing.
+   * reset at end of delta deserializings because multiple mods not supported
    */
+//@formatter:on
   final private Int2ObjHashMap<TOP, TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
   final private Int2ObjHashMap<TOP, TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
   final private Int2ObjHashMap<TOP, TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
@@ -205,9 +212,9 @@ public class BinaryCasSerDes {
     this.baseCas = baseCAS;
   }
 
-  /*
-   * ********************************* D e s e r i a l i z e r s
-   ***********************************/
+  // *********************************
+  //      D e s e r i a l i z e r s 
+  // *********************************
 
   /**
    * Deserializer for Java-object serialized instance of CASSerializer Used by Soap
@@ -456,8 +463,7 @@ public class BinaryCasSerDes {
   }
 
   /**
-   * --------------------------------------------------------------------- see Blob Format in
-   * CASSerializer
+   * see Blob Format in CASSerializer
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be needed if the blob
    * is from C++ -- C++ blob serialization writes data in native byte order.
@@ -471,7 +477,6 @@ public class BinaryCasSerDes {
    * @throws CASRuntimeException
    *           wraps IOException
    */
-
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
 
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
@@ -489,9 +494,9 @@ public class BinaryCasSerDes {
   }
 
   /**
-   * --------------------------------------------------------------------- Deserialize a binary
-   * input stream, after reading the header, and optionally an externally provided type system and
-   * index spec used in compressed form 6 serialization previously
+   * Deserialize a binary input stream, after reading the header, 
+   * and optionally an externally provided type system and index spec 
+   * used in compressed form 6 serialization previously
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be needed if the blob
    * is from C++ -- C++ blob serialization writes data in native byte order.
@@ -624,10 +629,10 @@ public class BinaryCasSerDes {
     return null;
   }
 
-  /************************************************************
-   * ------ NON COMPRESSED BINARY DESEERIALIZATION ------ * For corresponding serialization code,
-   * see CASSerializer *
-   ************************************************************/
+  // **********************************************************
+  // ------   NON COMPRESSED BINARY DESEERIALIZATION   ------ *
+  //  For corresponding serialization code, see CASSerializer *
+  //***********************************************************
   /**
    * build a model of the heap, string and aux heaps. For delta deserialization, this is presumed to
    * be in response to a previous serialization for delta - these can be just for the new ones read
@@ -765,16 +770,15 @@ public class BinaryCasSerDes {
       final int[] modWords;
       // if delta, handle modified fs heap cells
       if (delta) {
-        /**
-         * Delta Binary Deserialization
-         * 
-         * At this point, we have - not yet converted the main heap array into FSs. - not yet read
-         * in Aux Heaps (except for strings)
-         * 
-         * So, we do this in 2 phases. - This phase just reads in the data but does not act on it. -
-         * Phase 2 happens after the FSs are created from the heap data.
-         * 
-         */
+        // Delta Binary Deserialization
+        // 
+        // At this point, we have 
+        //   - not yet converted the main heap array into FSs.
+        //   - not yet read in Aux Heaps (except for strings)
+        // 
+        // So, we do this in 2 phases.  
+        //   - This phase just reads in the data but does not act on it.
+        //   - Phase 2 happens after the FSs are created from the heap data.
         fsmodssz2 = 2 * r.readInt();
         modWords = new int[fsmodssz2];
 
@@ -864,14 +868,12 @@ public class BinaryCasSerDes {
       }
 
       if (delta) {
-        /**
-         * The modifications are all to existing FSs. The modifications consist of an address
-         * (offset in an aux array) which is an array element. We don't update the aux array, but
-         * instead update the actual FS below the line representing the array. To identify the fs,
-         * we use the xxAuxAddr2fsa sorted list forms and do a binary search to find the item to
-         * update, with a fast path for the same or next item. Same - use case is multiple updates
-         * into the same array
-         */
+          // The modifications are all to existing FSs.  
+          // The modifications consist of an address (offset in an aux array) which is an array element.
+          //   We don't update the aux array, but instead update the actual FS below the line representing the array.
+          //   To identify the fs, we use the xxAuxAddr2fsa sorted list forms and do a binary search to find the item to update,
+          //     with a fast path for the same or next item. 
+          //       Same - use case is multiple updates into the same array
 
         // modified Byte Heap
         heapsz = updateAuxArrayMods(r, byteAuxAddr2fsa, (ba, arrayIndex) -> {
@@ -906,10 +908,11 @@ public class BinaryCasSerDes {
         });
       } // of delta - modified processing
 
-      /***********************************************
-       * Convert model heap added FS into real FS * update addr2fs and fs2addr * update
-       * byte/short/long/string auxAddr2fsa *
-       ***********************************************/
+      // *********************************************
+      // Convert model heap added FS into real FS    *
+      //   update addr2fs and fs2addr                *
+      //   update byte/short/long/string auxAddr2fsa *
+      // *********************************************
 
       // build the new FSs and record in addr2FSs
       createFSsFromHeaps(delta, startPos == 0 ? 1 : startPos, csds);
@@ -1009,9 +1012,8 @@ public class BinaryCasSerDes {
   }
 
   /**
-   * Called 3 times to process non-compressed binary deserialization of aux array modifications -
-   * once for byte/boolean, short, and long/double
-   * 
+   * Called 3 times to process non-compressed binary deserialization of aux array modifications
+   *   - once for byte/boolean, short, and long/double
    * @return heapsz (used by caller to do word alignment)
    * @throws IOException
    */
@@ -1098,20 +1100,27 @@ public class BinaryCasSerDes {
   // }
   // }
 
+  // @formatter:off
   /**
-   * This routine is used by several of the deserializers. Each one may have a different way to go
-   * from the addr to the fs e.g. Compressed form 6: fsStartIndexes.getSrcFsFromTgtSeq(...) plain
-   * binary: addr2fs.get(...)
+   * This routine is used by several of the deserializers.
+   *   Each one may have a different way to go from the addr to the fs
+   *     e.g. Compressed form 6: fsStartIndexes.getSrcFsFromTgtSeq(...)
+   *          plain binary:      addr2fs.get(...)
    * 
-   * gets number of views, number of sofas, For all sofas, adds them to the index repo in the base
-   * index registers the sofa insures initial view created for all views: does the view action and
-   * updates the documentannotation
+   * gets number of views, number of sofas,
+   * For all sofas, 
+   *   adds them to the index repo in the base index
+   *   registers the sofa
+   * insures initial view created
+   * for all views:
+   *   does the view action and updates the documentannotation
    * 
    * @param fsIndex
    *          - array of fsRefs and counts, for sofas, and all views
    * @param isDeltaMods
    *          - true for calls which are for delta mods - these have adds/removes
    */
+  // @formatter:on
   void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr) {
     int idx = reinitIndexedFSsSofas(fsIndex, isDeltaMods, getFsFromAddr);
     reinitIndexedFSs(fsIndex, isDeltaMods, getFsFromAddr, fsIndex[0], idx);
@@ -1398,41 +1407,40 @@ public class BinaryCasSerDes {
   // return bb.getChar();
   // }
 
+  // @formatter:off
   /**
-   * Called when serializing a cas, or deserializing a delta CAS, if not saved in that case from a
-   * previous binary serialization (in that case, the scan is done as if it is doing a non-delta
-   * serialization).
+   * Called when serializing a cas, or deserializing a delta CAS, if not saved in that case from a previous 
+   * binary serialization (in that case, the scan is done as if it is doing a non-delta serialization).
    * 
-   * Initialize the serialization model for binary serialization in CASSerializer from a CAS Do 2
-   * scans, each by walking all the reachable FSs - The first one processes all fs (including for
-   * delta, those below the line) -- computes the fs to addr map and its inverse, based on the size
-   * of each FS. -- done by CommonSerDesSequential class's "setup" method
+   * Initialize the serialization model for binary serialization in CASSerializer from a CAS
+   * Do 2 scans, each by walking all the reachable FSs
+   *   - The first one processes all fs (including for delta, those below the line)
+   *      -- computes the fs to addr map and its inverse, based on the size of each FS.
+   *      -- done by CommonSerDesSequential class's "setup" method
    * 
-   * - The second one computes the values of the main and aux heaps and string heaps except for
-   * delta mods -- for delta, the heaps only have "new" values that binary serialization will write
-   * out as arrays --- mods are computed from FsChange info and added to the appropriate heaps,
-   * later
+   *   - The second one computes the values of the main and aux heaps and string heaps except for delta mods
+   *      -- for delta, the heaps only have "new" values that binary serialization will write out as arrays
+   *         --- mods are computed from FsChange info and added to the appropriate heaps, later  
    *
-   * - for byte/short/long/string array use, compute auxAddr2fsa maps. This is used when
-   * deserializing delta mod info, to locate the fs to update
+   *         - for byte/short/long/string array use, compute auxAddr2fsa maps. 
+   *           This is used when deserializing delta mod info, to locate the fs to update
    * 
-   * For delta serialization, the heaps are populated only with the new values. - Values
-   * "nextXXHeapAddrAfterMark" are added to main heap refs to aux heaps and to string tables, so
-   * they are correct after deserialization does delta deserialization and adds the aux heap and
-   * string heap info to the existing heaps.
+   * For delta serialization, the heaps are populated only with the new values.
+   *   - Values "nextXXHeapAddrAfterMark" are added to main heap refs to aux heaps and to string tables,
+   *     so they are correct after deserialization does delta deserialization and adds the aux heap and string heap
+   *     info to the existing heaps.
    * 
-   * This is also done for the main heap refs, so that refs to existing FSs below the line and above
-   * the line are treated uniformly.
+   *     This is also done for the main heap refs, so that refs to existing FSs below the line and above the line
+   *     are treated uniformly.
    * 
    * The results must be retained for the use case of subsequently receiving back a delta cas.
    * 
-   * @param cs
-   *          the CASSerializer instance used to record the results of the scan
-   * @param mark
-   *          null or the mark to use for separating the new from from the previously existing used
-   *          by delta cas.
+   * @param cs the CASSerializer instance used to record the results of the scan
+   * @param mark null or the mark to use for separating the new from from the previously existing 
+   *        used by delta cas.
    * @return null or for delta, all the found FSs
    */
+  // @formatter:on
   List<TOP> scanAllFSsForBinarySerialization(MarkerImpl mark, CommonSerDesSequential csds) {
     final boolean isMarkSet = mark != null;
 
@@ -1619,28 +1627,33 @@ public class BinaryCasSerDes {
     } // end of if-is-not-array
   }
 
+  // @formatter:off
   /**
-   * Given the deserialized main heap, byte heap, short heap, long heap and string heap, a) create
-   * the corresponding FSs, populating a b) addr2fs map, key = fsAddr, value = FS c) auxAddr2fs map,
-   * key = aux Array Start addr, value = FS corresponding to that primitive
-   * bool/byte/short/long/double array
+   * Given the deserialized main heap, byte heap, short heap, long heap and string heap,
+   *   a) create the corresponding FSs, populating a
+   *   b) addr2fs    map, key = fsAddr, value = FS
+   *   c) auxAddr2fs map, key = aux Array Start addr, 
+   *                      value = FS corresponding to that primitive bool/byte/short/long/double array 
    * 
-   * For some use cases, the byte / short / long heaps have not yet been initialized. - when data is
-   * available, deserialization will update the values in the fs directly
+   * For some use cases, the byte / short / long heaps have not yet been initialized.
+   *   - when data is available, deserialization will update the values in the fs directly
    * 
-   * Each new fs created augments the addr2fs map. - forward fs refs are put into deferred update
-   * list deferModFs Each new fs created which is a Boolean/Byte/Short/Long/Double array updates
-   * auxAddr2fsa map if the aux data is not available (update is put on deferred list). deferModByte
-   * deferModShort deferModLong Each new fs created which has a slot referencing a long/double not
-   * yet read in creates a deferred update specifying the fs, the slot, indexed by the addr in the
-   * aux table. see deferModStr deferModLong deferModDouble Notes: Subtypes of AnnotationBase
-   * created in the right view DocumentAnnotation - update out-of-indexes
+   * Each new fs created augments the addr2fs map.
+   *   - forward fs refs are put into deferred update list  deferModFs
+   * Each new fs created which is a Boolean/Byte/Short/Long/Double array updates auxAddr2fsa map
+   *   if the aux data is not available (update is put on deferred list).   deferModByte  deferModShort  deferModLong
+   * Each new fs created which has a slot referencing a long/double not yet read in creates a 
+   *   deferred update specifying the fs, the slot, indexed by the addr in the aux table. 
+   *      see deferModStr  deferModLong   deferModDouble   
+   * Notes:  
+   *   Subtypes of AnnotationBase created in the right view
+   *     DocumentAnnotation - update out-of-indexes
    * 
    * FSs not subtypes of AnnotationBase are **all** associated with the initial view.
    * 
-   * Delta serialization: this routine adds just the new (above-the-line) FSs, and augments existing
-   * addr2fs and auxAddr2fsa
+   *   Delta serialization: this routine adds just the new (above-the-line) FSs, and augments existing addr2fs and auxAddr2fsa
    */
+  // @formatter:on
   private void createFSsFromHeaps(boolean isDelta, int startPos, CommonSerDesSequential csds) {
     final int heapsz = heap.getCellsUsed();
     final Int2ObjHashMap<TOP, TOP> addr2fs = csds.addr2fs;
@@ -1912,24 +1925,26 @@ public class BinaryCasSerDes {
     return (Sofa) sofa;
   }
 
+  // @formatter:off
   /**
-   * Doing updates for delta cas for existing objects. Cases: - item in heap-stored-array = update
-   * the corresponding item in the FS - non-ref in feature slot - update the corresponding feature -
-   * ref (to long/double value, to string) -- these always reference entries in long/string tables
-   * that are new (above the line) -- these have already been deserialized - ref (to main heap) -
-   * can update this directly NOTE: entire aux arrays never have their refs to the aux heaps
-   * updated, for arrays of boolean, byte, short, long, double NOTE: Slot updates for FS refs always
-   * point to addr which are in the addr2fs table or are 0 (null), because if the ref is to a new
-   * one, those have been already deserialized by this point, and if the ref is to a below-the-line
-   * one, those are already put into the addr2fs table
-   * 
-   * @param bds
-   *          - helper data
-   * @param slotAddr
-   *          - the main heap slot addr being updated
-   * @param slotValue
-   *          - the new value
+   * Doing updates for delta cas for existing objects.
+   * Cases:
+   *   - item in heap-stored-array = update the corresponding item in the FS
+   *   - non-ref in feature slot - update the corresponding feature
+   *   - ref (to long/double value, to string)
+   *       -- these always reference entries in long/string tables that are new (above the line)
+   *       -- these have already been deserialized
+   *   - ref (to main heap) - can update this directly       
+   *   NOTE: entire aux arrays never have their refs to the aux heaps updated, for 
+   *           arrays of boolean, byte, short, long, double
+   *   NOTE: Slot updates for FS refs always point to addr which are in the addr2fs table or are 0 (null),
+   *           because if the ref is to a new one, those have been already deserialized by this point, and
+   *                   if the ref is to a below-the-line one, those are already put into the addr2fs table
+   * @param bds - helper data
+   * @param slotAddr - the main heap slot addr being updated
+   * @param slotValue - the new value
    */
+  // @formatter:on
   private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue,
           Int2ObjHashMap<TOP, TOP> addr2fs) {
     TOP fs = bds.fs;

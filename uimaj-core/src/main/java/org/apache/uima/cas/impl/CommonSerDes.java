@@ -40,27 +40,36 @@ public class CommonSerDes {
   boolean isDelta;
   boolean isCompressed;
 
+  // @formatter:off
   /*********************************************
-   * HEADERS Serialization versioning There are 1 or 2 words used for versioning. Compressed formats
-   * and plain formats with bit xx on in first word use 2nd word
+   * HEADERS
+   * Serialization versioning
+   *   There are 1 or 2 words used for versioning.
+   *     Compressed formats and plain formats with bit xx on in first word use 2nd word
    * 
    * First word:
    * 
-   * - bit in 0x01 position: on for binary non-delta (redundant) - bit in 0x02 position: on means
-   * delta, off - not delta - bit in 0x04 position: on means compressed, off means plain binary -
-   * bit in 0x08 position: on means type system + indexes def included - bit in 0x10 position: on
-   * means type system (only) included - bits 0xF0 reserved
+   *     - bit in 0x01 position: on for binary non-delta (redundant)   
+   *     - bit in 0x02 position: on means delta, off - not delta
+   *     - bit in 0x04 position: on means compressed, off means plain binary
+   *     - bit in 0x08 position: on means type system + indexes def included
+   *     - bit in 0x10 position: on means type system (only) included
+   *     - bits  0xF0 reserved
    * 
-   * - byte in 0xFF 00 position: a sequential version number, incrementing (starting w/ 0)
+   *     - byte in 0xFF 00 position: 
+   *               a sequential version number, incrementing (starting w/ 0)
    * 
-   * 0 = original (UIMA v2) 1 = fixes to original found during V3 development 2 = V3
+   *                  0 = original (UIMA v2)
+   *                  1 = fixes to original found during V3 development
+   *                  2 = V3
    * 
-   * - byte in 0xFF 00 00 position: special flags with some shared meaning -- bit 0x01 00 00: V3
-   * formats
+   *     - byte in 0xFF 00 00  position: special flags with some shared meaning
+   *       -- bit 0x01 00 00: V3 formats
    * 
-   * Second word: - bit in 0x01 position: on means form6, off = form 4
+   *   Second word:
+   *     - bit in 0x01 position: on means form6, off = form 4 
    *********************************************/
-
+  // @formatter:on
   public static class Header {
     boolean isDelta;
     boolean isCompressed;

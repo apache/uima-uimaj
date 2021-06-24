@@ -58,64 +58,85 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+// @formatter:off
 /**
  * CAS serializer support for XMI and JSON formats.
  * 
- * There are multiple use cases. 1) normal - the consumer is independent of UIMA - (maybe) support
- * for delta serialization 2) service calls: - support deserialization with out-of-type-system
- * set-aside, and subsequent serialization with re-merging - guarantee of using same xmi:id's as
- * were deserialized when serializing - support for delta serialization
+ * There are multiple use cases.
+ *   1) normal - the consumer is independent of UIMA
+ *        - (maybe) support for delta serialization
+ *   2) service calls:  
+ *        - support deserialization with out-of-type-system set-aside, and subsequent serialization with re-merging
+ *        - guarantee of using same xmi:id's as were deserialized when serializing
+ *        - support for delta serialization
  * 
- * There is an outer class (one instance per "configuration" - reusable after configuration, and an
- * inner class - one per serialize call.
+ * There is an outer class (one instance per "configuration" - reusable after configuration, and
+ * an inner class - one per serialize call.
  * 
- * These classes are the common parts of serialization between XMI and JSON, mainly having to do
- * with 1) enqueueing the FS to be serialized 2) serializing according to their types and features
- * 
- * 
- * Methods marked public are not for public use but are that way to permit other users of this class
- * in other packages to "see" these methods.
- * 
- * XmiCasSerializer JsonCasSerializer Instance Instance css ref -------&gt; CasSerializerSupport
- * &lt;------ css ref
+ * These classes are the common parts of serialization between XMI and JSON, mainly having to do with
+ *   1) enqueueing the FS to be serialized
+ *   2) serializing according to their types and features
  * 
  * 
- * XmiDocSerializer JsonDocSerializer Instance Instance (1 per serialize action) (1 per serialize
- * action) cds ref -------&gt; CasDocSerializer &lt;------- cds ref csss points back
+ * Methods marked public are not for public use but are that way to permit
+ * other users of this class in other packages to "see" these methods.
+ * 
+ *   XmiCasSerializer                              JsonCasSerializer
+ *       Instance                                      Instance
+ *      css ref -------&gt;   CasSerializerSupport   &lt;------ css ref
  * 
  * 
- * Construction: new Xmi/JsonCasSerializer initializes css with new CasSerializerSupport
+ *   XmiDocSerializer                                JsonDocSerializer            
+ *       Instance                                       Instance 
+ * (1 per serialize action)                         (1 per serialize action)
+ *       cds ref -------&gt;     CasDocSerializer  &lt;-------   cds ref
+ *                           csss points back
  * 
- * serialize method creates a new Xmi/JsonDocSerializer inner class constructor creates a new
- * CasDocSerializer,
  * 
- * Use Cases and Algorithms Support set-aside for out-of-type-system FS on deserialization (record
- * in shareData) implies can't determine sharing status of things ref'd by features; need to depend
- * on multiple-refs-allowed flag. If multiple-refs found during serialization for feat marked
- * non-shared, unshare these (make 2 serializations, one or more inplace, for example. Perhaps not
- * considered an error. implies need (for non-delta case) to send all FSs that were deserialized -
- * some may be ref'd by oots elements ** Could ** not do this if no oots elements, but could break
- * some assumptions and this only would apply to non-delta - not worth doing
+ * Construction:
+ *   new Xmi/JsonCasSerializer 
+ *      initializes css with new CasSerializerSupport
  * 
- * Enqueuing: There are two styles - enqueueCommon: does **NOT** recursively enqueue features -
- * enqueue: calls enqueueCommon and then recursively enqueues features
+ *   serialize method creates a new Xmi/JsonDocSerializer inner class
+ *      constructor creates a new CasDocSerializer,    
+ * 
+ * Use Cases and Algorithms
+ *   Support set-aside for out-of-type-system FS on deserialization (record in shareData)
+ *     implies can't determine sharing status of things ref'd by features; need to depend on 
+ *       multiple-refs-allowed flag.
+ *       If multiple-refs found during serialization for feat marked non-shared, unshare these (make
+ *         2 serializations, one or more inplace, for example.  
+ *         Perhaps not considered an error.
+ *     implies need (for non-delta case) to send all FSs that were deserialized - some may be ref'd by oots elements
+ *       ** Could ** not do this if no oots elements, but could break some assumptions
+ *       and this only would apply to non-delta - not worth doing
+ * 
+ * Enqueuing:
+ *   There are two styles
+ *     - enqueueCommon: does **NOT** recursively enqueue features
+ *     - enqueue: calls enqueueCommon and then recursively enqueues features
  * 
  * enqueueCommon is called (bypassing enqueue) to defer scanning references
  * 
- * Order and target of enqueuing: - things in the index -- put on "queue" -- first, the sofa's
- * (which are the only things indexed in base view) -- next, for each view, for each item, the FSs,
- * but **NOT** following any feature/array refs - things not in the index, but deserialized
- * (incoming) -- put on previouslySerializedFSs, no recursive descent for features - (delta)
- * enqueueNonsharedMultivaluedFS (lists and arrays) -- put on modifiedEmbeddedValueFSs, no recursive
- * descent for features
+ *   Order and target of enqueuing:
+ *     - things in the index 
+ *       -- put on "queue"
+ *       -- first, the sofa's (which are the only things indexed in base view)
+ *       -- next, for each view, for each item, the FSs, but **NOT** following any feature/array refs
+ *     - things not in the index, but deserialized (incoming)
+ *       -- put on previouslySerializedFSs, no recursive descent for features  
+ *     - (delta) enqueueNonsharedMultivaluedFS (lists and arrays)
+ *       -- put on modifiedEmbeddedValueFSs, no recursive descent for features
  * 
- * - recursive descent for -- things in previouslySerializedFSs, -- things in
- * modifiedEmbeddedValueFSs -- things in the index
+ *     - recursive descent for        
+ *       -- things in previouslySerializedFSs,
+ *       -- things in modifiedEmbeddedValueFSs
+ *       -- things in the index
  *
  * The recursive descent is recursive, and an arbitrary long chain can get stack overflow error.
  * TODO Probably should fix this someday. See https://issues.apache.org/jira/browse/UIMA-106 *
  */
-
+// @formatter:on
 public class CasSerializerSupport {
 
   // Special "type class" codes for list types. The LowLevelCAS.ll_getTypeClass() method
@@ -219,10 +240,10 @@ public class CasSerializerSupport {
     return this;
   }
 
-  /***********************************************
-   * Methods used to serialize items Separate implementations for JSON and Xmi
-   *
-   ***********************************************/
+  // **********************************************
+  // Methods used to serialize items 
+  // Separate implementations for JSON and Xmi
+  // **********************************************/
   public static abstract class CasSerializerSupportSerialize {
 
     abstract protected void initializeNamespaces();
@@ -281,49 +302,60 @@ public class CasSerializerSupport {
 
     public final TypeSystemImpl tsi;
 
+    // @formatter:off
     /**
-     * set of FSs that have been visited and enqueued to be serialized - exception: arrays and lists
-     * which are "inline" are put into this set, but are not enqueued to be serialized.
+     * set of FSs that have been visited and enqueued to be serialized
+     *   - exception: arrays and lists which are "inline" are put into this set,
+     *     but are not enqueued to be serialized.
      * 
      * - FSs added to this, during "enqueue" phase, prior to encoding
      * 
-     * uses: - for Arrays and Lists, used to detect multi-refs - for Lists, used to detect loops -
-     * during enqueuing phase, prevent multiple enqueuings - during encoding phase, to prevent
-     * multiple encodings
+     * uses:    
+     *   - for Arrays and Lists, used to detect multi-refs
+     *   - for Lists, used to detect loops
+     *   - during enqueuing phase, prevent multiple enqueuings
+     *   - during encoding phase, to prevent multiple encodings 
      * 
      * Public for use by JsonCasSerializer
      */
+    // @formatter:on
     public final Set<TOP> visited_not_yet_written = Collections
             .newSetFromMap(new IdentityHashMap<>());
 
+    // @formatter:off
     /**
-     * Set of array or list FSs referenced from features marked as multipleReferencesAllowed, -
-     * which have previously been serialized "inline" - which now need to be serialized as separate
-     * items
+     * Set of array or list FSs referenced from features marked as multipleReferencesAllowed,
+     *   - which have previously been serialized "inline"
+     *   - which now need to be serialized as separate items
      * 
-     * Set during enqueue scanning, to handle the case where the "visited_not_yet_written" set may
-     * have already recorded that this FS is already processed for enqueueing, but it is an array or
-     * list item which was being put "in-line" and no element is being written.
+     * Set during enqueue scanning, to handle the case where the
+     * "visited_not_yet_written" set may have already recorded that this FS is 
+     * already processed for enqueueing, but it is an array or list item which was being
+     * put "in-line" and no element is being written.
      * 
      * It has array or list elements where the item needs to be enqueued onto the "queue" list.
      * 
      * Use: limit the put-onto-queue list to one time
      */
+    // @formatter:on
     private final Set<TOP> enqueued_multiRef_arrays_or_lists = Collections
             .newSetFromMap(new IdentityHashMap<>());
 
+    // @formatter:off
     /**
-     * Set of FSs that have multiple references Has an entry for each FS (not just array or list
-     * FSs) which is (from some point on) being serialized as a multi-ref, that is, is **not** being
-     * serialized (any more) using the special notation for arrays and lists or, for JSON, **not**
-     * being serialized using the embedded notation This is for JSON which is computing the
-     * multi-refs, not depending on the setting in a feature. This is also for xmi, to enable adding
-     * to "queue" (once) for each FSs of this kind.
+     * Set of FSs that have multiple references
+     * Has an entry for each FS (not just array or list FSs) which is (from some point on) being serialized as a multi-ref,
+     *   that is, is **not** being serialized (any more) using the special notation for arrays and lists
+     *   or, for JSON, **not** being serialized using the embedded notation
+     * This is for JSON which is computing the multi-refs, not depending on the setting in a feature.
+     * This is also for xmi, to enable adding to "queue" (once) for each FSs of this kind.
      * 
-     * Used: - limit the number of times this is put onto the queue to 1. - skip encoding of items
-     * on "queue" if not in this Set (maybe not needed? 8/2017 mis) - serialize if not in indexed
-     * set, dynamic ref == true, and in this set (otherwise serialize only from ref)
+     * Used: 
+     *   - limit the number of times this is put onto the queue to 1.
+     *   - skip encoding of items on "queue" if not in this Set (maybe not needed? 8/2017 mis)
+     *   - serialize if not in indexed set, dynamic ref == true, and in this set (otherwise serialize only from ref)
      */
+    // @formatter:on
     public final Set<TOP> multiRefFSs;
 
     /**
@@ -331,15 +363,13 @@ public class CasSerializerSupport {
      */
     public final boolean isDynamicMultiRef;
 
-    /*
-     * ********************************************* FSs that need to be serialized because they're
-     * a) in an index b) in the set of previously serialized FS which have ids (that is, they
-     * weren't previously embedded) c) (delta only) have a feature which has an embedded value some
-     * part of which changed (no id)
-     * 
-     * d) the set of FSs that are reachable via FSrefs from the above 3 sets
-     */
-
+    // *********************************************
+    // FSs that need to be serialized because they're 
+    //   a) in an index
+    //   b) in the set of previously serialized FS which have ids (that is, they weren't previously embedded)
+    //   c) (delta only) have a feature which has an embedded value some part of which changed (no id)
+    // 
+    // d) the set of FSs that are reachable via FSrefs from the above 3 sets
     public List<TOP> previouslySerializedFSs = null;
 
     public List<TOP> modifiedEmbeddedValueFSs = null;
@@ -852,21 +882,25 @@ public class CasSerializerSupport {
       // }
     }
 
+    // @formatter:off
     /**
-     * For lists, see if this is a plain list - no loops - no other refs to list elements from
-     * outside the list -- if so, return false;
+     * For lists, 
+     *   see if this is a plain list
+     *     - no loops
+     *     - no other refs to list elements from outside the list
+     *     -- if so, return false;
      * 
-     * add all the elements of the list to visited_not_yet_written, noting if they've already been
-     * added -- this indicates either a loop or another ref from outside, -- in either case, return
-     * true - t
-     * 
-     * @param curNode
-     *          -
-     * @param featCode
-     *          -
-     * @return false if no list element is multiply-referenced, true if there is a loop or another
-     *         ref from outside the list, for one or more list element nodes
+     *   add all the elements of the list to visited_not_yet_written,
+     *     noting if they've already been added 
+     *     -- this indicates either a loop or another ref from outside,
+     *     -- in either case, return true - t
+     * @param curNode -
+     * @param featCode -
+     * @return false if no list element is multiply-referenced,
+     *         true if there is a loop or another ref from outside the list, for 
+     *         one or more list element nodes
      */
+    // @formatter:on
     private boolean isListElementsMultiplyReferenced(TOP listNode) {
       boolean foundCycle = false;
       CommonList curNode = (CommonList) listNode;
@@ -880,17 +914,19 @@ public class CasSerializerSupport {
       return foundCycle;
     }
 
+    // @formatter:off
     /**
-     * ordinary FSs referenced as features are not checked by this routine; this is only called for
-     * FSlists of various kinds, and fs arrays of various kinds
+     * ordinary FSs referenced as features are not checked by this routine;
+     * this is only called for FSlists of various kinds, and fs arrays of various kinds
      * 
-     * Not all featValues should be enqueued; list or array features which are marked **NOT**
-     * multiple-refs-allowed are serialized in-line for JSON, when using dynamicMultiRef (the
-     * default), list / array FSs are serialized by ref (not in-line) if there are multiple refs to
-     * them
+     * Not all featValues should be enqueued;
+     *   list or array features which are marked **NOT** multiple-refs-allowed 
+     *     are serialized in-line
+     *   for JSON, when using dynamicMultiRef (the default), list / array FSs 
+     *     are serialized by ref (not in-line) if there are multiple refs to them
      * 
-     * for XMI and JSON, any FS ref marked as multiple-refs-allowed forces the item onto the ref
-     * "queue".
+     *   for XMI and JSON, any FS ref marked as multiple-refs-allowed forces
+     *     the item onto the ref "queue".
      * 
      * (not handled here: ordinary FSs are serialized in-line in JSON with isDynamicMultiRef)
      * 
@@ -908,6 +944,7 @@ public class CasSerializerSupport {
      * @throws SAXException
      *           -
      */
+    // @formatter:on
     private boolean isMultiRef_enqueue(FeatureImpl fi, TOP featVal, boolean alreadyVisited,
             boolean isListNode, boolean isListFeat) throws SAXException {
       if (!isDynamicMultiRef) {
@@ -1215,22 +1252,31 @@ public class CasSerializerSupport {
       }
     };
 
+    // @formatter:off
     /**
      * Encode an individual FS.
      * 
-     * Json has 2 encodings For type: "typeName" : [ { "@id" : 123, feat : value .... }, { "@id" :
-     * 456, feat : value .... }, ... ], ...
+     * Json has 2 encodings   
+     *  For type:
+     *  "typeName" : [ { "@id" : 123,  feat : value .... },
+     *                 { "@id" : 456,  feat : value .... },
+     *                 ...
+     *               ],
+     *      ... 
      * 
-     * For id: "nnnn" : {"@type" : typeName ; feat : value ...}
+     *  For id:
+     *  "nnnn" : {"@type" : typeName ; feat : value ...}
      * 
-     * For cases where the top level type is an array or list, there is a generated feature name,
-     * "@collection" whose value is the list or array of values associated with that type.
+     *  For cases where the top level type is an array or list, there is
+     *  a generated feature name, "@collection" whose value is 
+     *  the list or array of values associated with that type.
      * 
      * @param fs
      *          the FS to be encoded.
      * @throws SAXException
      *           passthru
      */
+    // @formatter:on
     public void encodeFS(TOP fs) throws Exception {
       final int typeCode = fs._getTypeImpl().getCode();
 

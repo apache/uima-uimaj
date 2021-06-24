@@ -527,10 +527,9 @@ public interface CAS extends AbstractCas {
    */
   <T extends FeatureStructure> T createFS(Type type) throws CASRuntimeException;
 
-  /*
-   * =============== These next methods might be deprecated in favor of =============== new
-   * FSArray(jcas, length) etc. =============== except that these run with the CAS, not JCas
-   */
+  // =============== These next methods might be deprecated in favor of
+  // =============== new FSArray(jcas, length) etc.
+  // =============== except that these run with the CAS, not JCas
 
   /**
    * Create a new feature structure array.

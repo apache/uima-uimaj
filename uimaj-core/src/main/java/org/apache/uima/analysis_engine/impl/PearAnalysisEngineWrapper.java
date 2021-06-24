@@ -141,19 +141,23 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     return rsrcMgr;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#initialize(org.apache.uima.resource
-   * .ResourceSpecifier, java.util.Map)
-   * 
-   * (Nov 2008) initialize is called as a normal part of produceResource. There are 2 cases: 1) The
-   * Pear is the top level component 2) The Pear is contained in an aggregate.
-   * 
-   * In Case (1), the aAdditionalParams passed in does *not* contain a UIMA_CONTEXT In Case (2), the
-   * aAdditionalParams passed in contains a child UIMA_CONTEXT created for this component.
-   */
+  // @formatter:off
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
+    *      java.util.Map)
+    *      
+    * (Nov 2008) initialize is called as a normal part of produceResource.  
+    * There are 2 cases: 
+    *   1) The Pear is the top level component
+    *   2) The Pear is contained in an aggregate.
+    *   
+    *   In Case (1), the aAdditionalParams passed in does *not* contain a UIMA_CONTEXT
+    *   In Case (2), the aAdditionalParams passed in contains a child UIMA_CONTEXT 
+    *     created for this component.
+    */
+  // @formatter:on
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {

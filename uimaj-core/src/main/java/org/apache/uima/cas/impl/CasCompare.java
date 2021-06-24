@@ -69,70 +69,96 @@ import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.IntEntry;
 
+// @formatter:off
 /**
- * Used by tests for Binary Compressed de/serialization code. Used by test app: XmiCompare.
+ * Used by tests for Binary Compressed de/serialization code.
+ * Used by test app: XmiCompare.
  * 
- * Compare 2 CASes, with perhaps different type systems. If the type systems are different,
- * construct a type mapper and use that to selectively ignore types or features not in other type
- * system
+ * Compare 2 CASes, with perhaps different type systems.
+ * If the type systems are different, construct a type mapper and use that
+ *   to selectively ignore types or features not in other type system
  * 
  * The Mapper is from CAS1 -&gt; CAS2
  * 
- * When computing the things to compare from CAS1, filter to remove feature structures not reachable
- * via indexes or refs
+ * When computing the things to compare from CAS1, filter to remove
+ * feature structures not reachable via indexes or refs
  * 
- * The index definitions are not compared. The indexes are used to locate the FSs to be compared.
+ * The index definitions are not compared.
+ * The indexes are used to locate the FSs to be compared.
  * 
- * Reports are produced to System.out and System.err as a side effect System.out: status messages,
- * type system comparison System.err: mismatch comparison information
+ * Reports are produced to System.out and System.err as a side effect
+ *   System.out: status messages, type system comparison
+ *   System.err: mismatch comparison information
  * 
- * Usage: Use the static compareCASes method for default comparisons Use the multi-step approach for
- * more complex comparisons: - Make an instance of this class, passing in the two CASes. - Set any
- * additional configuration cc.compareAll(true) - continue comparing if mismatch found
- * cc.compardIds(true) - compare ids (require ids to be ==) - Do any transformations needed on the
- * CASes to account for known but allowed differences: -- These are transformations done on the CAS
- * Feature Structures outside of this routine -- example: for certain type:feature string values,
- * normalize to the same canonical value -- example: for certain type:feature string arrays, where
- * the order is not important, sort them -- example: for certain type:feature FSArrays, where the
- * order is not important, sort them --- using the sortFSArray method - Do any configuration to
- * specify congruence sets for String values -- example: addStringCongruenceSet( type, feature,
- * set-of-strings, -1 or int index if array) -- these are specific to type / feature specs -- range
- * can be string or string array - if string array, the spec includes the index or -1 to indicate
- * all indexes
+ * Usage:  
+ *   Use the static compareCASes method for default comparisons
+ *   Use the multi-step approach for more complex comparisons:
+ *     - Make an instance of this class, passing in the two CASes.
+ *     - Set any additional configuration 
+ *         cc.compareAll(true) - continue comparing if mismatch found
+ *         cc.compardIds(true) - compare ids (require ids to be ==)
+ *     - Do any transformations needed on the CASes to account for known but allowed differences:
+ *         -- These are transformations done on the CAS Feature Structures outside of this routine
+ *         -- example: for certain type:feature string values, normalize to the same canonical value
+ *         -- example: for certain type:feature string arrays, where the order is not important, sort them
+ *         -- example: for certain type:feature FSArrays, where the order is not important, sort them
+ *            --- using the sortFSArray method
+ *     - Do any configuration to specify congruence sets for String values
+ *        -- example: addStringCongruenceSet( type, feature, set-of-strings, -1 or int index if array)
+ *        -- these are specific to type / feature specs
+ *        -- range can be string or string array - if string array, the spec includes the index or -1
+ *           to indicate all indexes
  * 
- * How it works Prepare arrays of all the FSs in the CAS - for each of 2 CASes to be compared - 2
- * arrays: -- all FSs in any index in any view -- the above, plus all FSs reachable via references
- * -- but omit some types: only of interest when reached via ref, e.g. String/Int/Float/Boolean
- * arrays
+ * How it works
+ *   Prepare arrays of all the FSs in the CAS
+ *     - for each of 2 CASes to be compared
+ *     - 2 arrays: 
+ *        -- all FSs in any index in any view
+ *        -- the above, plus all FSs reachable via references
+ *        -- but omit some types: only of interest when reached via ref, 
+ *             e.g. String/Int/Float/Boolean arrays  
  * 
- * The comparison of FSs is done, one FS at a time. - in order to determine the right FSs to compare
- * with each other, the FSs for each CAS are sorted.
+ *   The comparison of FSs is done, one FS at a time.  
+ *     - in order to determine the right FSs to compare with each other, the FSs for each CAS
+ *       are sorted.
  * 
- * The sort and the CAS compare both use a Compare method. - sorting skips items not in the other
- * type system, including features - (only possible if comparing two CASes with different type
- * systems, of course)
+ *   The sort and the CAS compare both use a Compare method.
+ *     - sorting skips items not in the other type system, including features
+ *     -   (only possible if comparing two CASes with different type systems, of course)
  * 
- * Compare - used for two purposes: a) sorting FSs belonging to one CAS - can be used by caller to
- * pre-sort any array values where the compare should be for set equality (in other words, ignore
- * the order) b) comparing a FS in one CAS with a FS in the other CAS
+ *   Compare
+ *     - used for two purposes:
+ *       a) sorting FSs belonging to one CAS
+ *          - can be used by caller to pre-sort any array values where the 
+ *            compare should be for set equality (in other words, ignore the order)
+ *       b) comparing a FS in one CAS with a FS in the other CAS
  * 
- * sort keys, in order: 1) type 2) if primitive array: sort based on - size - iterating thru all
- * array items 3) All the features, considered in an order where non-refs are sorted before refs.
+ *     sort keys, in order:
+ *       1) type
+ *       2) if primitive array: sort based on 
+ *           - size
+ *           - iterating thru all array items
+ *       3) All the features, considered in an order where non-refs are sorted before refs. 
  * 
- * comparing values: primitives - value comparison refs - compare the ref'd FS, while recording
- * reference paths - stop when reach a compare point where the pair being compared has been seen -
- * stop at any point if the two FSs compare unequal - at the stop point, if compare is equal, check
- * the reference paths, and report unequal reference paths (different cycle lengths, or different
- * total lengths, see the Prev data structure)
+ *     comparing values:
+ *       primitives - value comparison
+ *       refs - compare the ref'd FS, while recording reference paths
+ *            - stop when reach a compare point where the pair being compared has been seen
+ *            - stop at any point if the two FSs compare unequal
+ *            - at the stop point, if compare is equal, check the reference paths, and 
+ *                report unequal reference paths (different cycle lengths, or different total lengths,
+ *                see the Prev data structure)
  * 
- * Context information, reused across compares: prevCompare - if a particular pair of FSs compared
- * equal -- used to speed up comparison -- used to stop recursive loops of references
+ *     Context information, reused across compares:
+ *       prevCompare - if a particular pair of FSs compared equal
+ *                      -- used to speed up comparison
+ *                      -- used to stop recursive loops of references
  * 
- * prev1, prev2 - reset for each top level FS compare - not reset for inner FS compares of
- * fs-reference values) holds information about the reference path for chains of FS references
- * 
+ *       prev1, prev2 - reset for each top level FS compare
+ *                    - not reset for inner FS compares of fs-reference values)
+ *                      holds information about the reference path for chains of FS references           
  */
-
+// @formatter:on
 public class CasCompare {
 
   private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = false;
@@ -155,18 +181,24 @@ public class CasCompare {
     return new CasCompare(c1, c2).compareCASes();
   }
 
+  // @formatter:off
   /**
-   * hold info about previous compares, to break cycles in references The comparison records cycles
-   * and can distinguish different cyclic graphs. When a cycle exists, it looks like: a b c d e f g
-   * h i a cycle starting with a, with refs ending up at i ^ v and then looping back to f *-----*
+   * hold info about previous compares, to break cycles in references
+   * The comparison records cycles and can distinguish different cyclic graphs.
+   * When a cycle exists, it looks like:
+   *    a b c d e f g h i     a cycle starting with a, with refs ending up at i
+   *              ^     v     and then looping back to f
+   *              *-----*
    * 
-   * This data structure measures both the cycle Length (in this example, 4) and the size of the
-   * starting part before hitting the loop (in this case 5)
+   * This data structure measures both the cycle Length (in this example, 4)
+   * and the size of the starting part before hitting the loop (in this case 5)  
    * 
-   * Note: when using, if two FSs end up comparing equal, the instances must be rolled back 1 item
-   * to allow further items to be compared in the chain. Example: a -&gt; b -> c -&gt; d d's
-   * compared equal, c may have ref next to "e".
+   * Note: when using, if two FSs end up comparing equal, the instances must be
+   *       rolled back 1 item to allow further items to be compared in the chain.
+   *       Example:  a -&gt; b -> c -&gt; d
+   *         d's compared equal, c may have ref next to "e".
    */
+  // @formatter:on
   private static class Prev {
 
     /** ordered list of traversed FSs, including duplicates */
@@ -340,10 +372,9 @@ public class CasCompare {
   // must always be true, need to rework convert lists to arrays if not
   private static final boolean IS_CANONICAL_EMPTY_LISTS = true;
 
-  /*
-   * **************************************************** Data Structures for converting lists to
-   * arrays
-   ****************************************************/
+  // ****************************************************
+  // Data Structures for converting lists to arrays
+  // ****************************************************
   private static final CommonList removed_list_marker = new NonEmptyFSList<>();
 
   /**
@@ -594,9 +625,11 @@ public class CasCompare {
             (fs, feat) -> sortStringArray((StringArray) fs.getFeatureValue(feat)));
   }
 
+  // @formatter:off
   /**
-   * The compare can find FeatureStructures to compare either from - being in some index in some
-   * view, or - being referenced through some chain which starts with the above.
+   * The compare can find FeatureStructures to compare either from 
+   *   - being in some index in some view, or
+   *   - being referenced through some chain which starts with the above.
    * 
    * It sometimes helps to exclude miscompares of FeatureStructure like StringArrays which (for some
    * reason) are indexed, in favor of finding these only via refs.
@@ -609,14 +642,17 @@ public class CasCompare {
    * @param excluded_typeNames
    *          type names to exclude
    */
+  // @formatter:on
   public void excludeRootTypesFromIndexes(Set<String> excluded_typeNames) {
     includedTypeNames.clear();
     excludedRootNames.addAll(excluded_typeNames);
   }
 
+  // @formatter:off
   /**
-   * The compare can find FeatureStructures to compare either from - being in some index in some
-   * view, or - being referenced through some chain which starts with the above.
+   * The compare can find FeatureStructures to compare either from 
+   *   - being in some index in some view, or
+   *   - being referenced through some chain which starts with the above.
    * 
    * It sometimes helps to exclude miscompares of FeatureStructure like StringArrays which (for some
    * reason) are indexed, in favor of finding these only via refs.
@@ -626,8 +662,8 @@ public class CasCompare {
    * other Feature Structures.
    * 
    * Calling this disables any includeOnlyTheseTypesFromIndexes call;
-   * 
    */
+  // @formatter:on
   public void excludeCollectionsTypesFromIndexes() {
     includedTypeNames.clear();
     excludedRootNames.addAll(Arrays.asList(CAS.TYPE_NAME_BOOLEAN_ARRAY, CAS.TYPE_NAME_BYTE_ARRAY,
@@ -638,9 +674,11 @@ public class CasCompare {
             "org.apache.uima.jcas.cas.FSLinkedHashSet", "org.apache.uima.jcas.cas.Int2FS"));
   }
 
+  // @formatter:off
   /**
-   * The compare can find FeatureStructures to compare either from - being in some index in some
-   * view, or - being referenced through some chain which starts with the above.
+   * The compare can find FeatureStructures to compare either from 
+   *   - being in some index in some view, or
+   *   - being referenced through some chain which starts with the above.
    * 
    * It sometimes helps to exclude miscompares of List FeatureStructures like StringLists which (for
    * some reason) are indexed, in favor of finding these only via refs.
@@ -649,17 +687,19 @@ public class CasCompare {
    * found in the index. They could still be found via refs from other Feature Structures.
    * 
    * Calling this disables any includeOnlyTheseTypesFromIndexes call;
-   * 
    */
+  // @formatter:on
   public void excludeListTypesFromIndexes() {
     includedTypeNames.clear();
     excludedRootNames.addAll(Arrays.asList(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST,
             CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, CAS.TYPE_NAME_NON_EMPTY_STRING_LIST));
   }
 
+  // @formatter:off
   /**
-   * The compare can find FeatureStructures to compare either from - being in some index in some
-   * view, or - being referenced through some chain which starts with the above.
+   * The compare can find FeatureStructures to compare either from 
+   *   - being in some index in some view, or
+   *   - being referenced through some chain which starts with the above.
    * 
    * It sometimes helps to exclude all types except for a few selected ones which are indexed, in
    * favor of finding these only via refs.
@@ -670,6 +710,7 @@ public class CasCompare {
    *          fully qualified type names to include when finding Feature Structures to compare via
    *          the indexes.
    */
+  // @formatter:on
   public void includeOnlyTheseTypesFromIndexes(List<String> includedTypeNames) {
     excludedRootNames.clear();
     this.includedTypeNames.addAll(includedTypeNames);
@@ -1118,10 +1159,9 @@ public class CasCompare {
     return () -> System.arraycopy(a, 0, stringArray._getTheArray(), 0, stringArray.size());
   }
 
-  /*
-   * ******************************************************************************* Convert UIMA
-   * Lists to arrays, to make the compare go faster
-   *******************************************************************************/
+  // ******************************************************************************* 
+  //     Convert UIMA Lists to arrays, to make the compare go faster
+  // *******************************************************************************
 
   private void convert_linear_lists_to_arrays(ArrayList<TOP> fss) {
     map_e_to_a_list.clear();
@@ -1188,15 +1228,18 @@ public class CasCompare {
     node_indexes.clear();
   }
 
+  // @formatter:off
   /**
-   * Convert an array list to a uima array (int, float, fs, string) - add to fss - go thru fss and
-   * null out list elements
+   * Convert an array list to a uima array  (int, float, fs, string) 
+   *   - add to fss
+   *   - go thru fss and null out list elements
    * 
    * @param al
    *          -
    * @param fss
    *          -
    */
+  // @formatter:on
   private void convert_to_array(ArrayList<CommonList> al, ArrayList<TOP> fss, CASImpl view,
           TypeSystemImpl tsi) {
 
@@ -1241,19 +1284,19 @@ public class CasCompare {
 
   }
 
+  // @formatter:off
   /**
-   * walk down list, adding successors, looking for loops - each element is added to the array list,
-   * and also to the map from id -> array list - if loop found, stop and return false
+   * walk down list, adding successors, looking for loops
+   *   - each element is added to the array list, and also to the map from id -> array list
+   *   - if loop found, stop and return false
    * 
-   * - before adding element, see if already in map from id -> array list -- if so, couple the array
-   * lists
-   * 
-   * @param node
-   *          -
-   * @param al
-   *          -
+   *   - before adding element, see if already in map from id -> array list
+   *     -- if so, couple the array lists
+   * @param node -
+   * @param al -
    * @return false if loop found
    */
+  // @formatter:on
   private boolean addSuccessors(CommonList node, ArrayList<CommonList> al) {
     try {
       list_successor_seen.add(node._id()); // starts reset, reset at end
@@ -1323,13 +1366,17 @@ public class CasCompare {
     prev2.clear();
   }
 
+  // @formatter:off
   /**
-   * To work with Java sort, must implement the comparator contract: - compare(x, y) must be
-   * opposite compare(y, x) - compare(x, y) < 0 && compare(y, z) < 0 implies compare(x, z) < 0 -
-   * compare(x, y) == 0 implies compare(x, z) same as compare(y, z) for any z
+   * To work with Java sort, must implement the comparator contract:
+   *   - compare(x, y) must be opposite compare(y, x)
+   *   - compare(x, y) < 0 && compare(y, z) < 0 implies compare(x, z) < 0
+   *   - compare(x, y) == 0 implies compare(x, z) same as compare(y, z) for any z
    * 
-   * Inner part of compareRefs; that other method adds: null-check type-mapping skips loop
-   * determination
+   * Inner part of compareRefs; that other method adds: 
+   *   null-check
+   *   type-mapping skips
+   *   loop determination 
    * 
    * If not in a sort context, a miscompare generates messaging information.
    * 
@@ -1340,8 +1387,8 @@ public class CasCompare {
    *          testing
    * 
    * @return the compare result
-   * 
    */
+  // @formatter:on
   private int compareFss(TOP fs1, TOP fs2, TypeImpl callerTi, FeatureImpl callerFi) {
 
     if (fs1 == fs2) {
@@ -1659,48 +1706,61 @@ public class CasCompare {
     }
   }
 
+  // @formatter:off
   /**
-   * Two uses cases supported: - comparing for sorting (within on type system) -- goal is to be able
-   * to compare two CASes --- ordering must guarantee that the equal FSs appear in the --- same
-   * order - comparing two FSs (maybe from different CASes) -- supporting missing types and features
-   * -- happens when the two type systems are different -- the missing types and features are
-   * ignored in the comparison
+   * Two uses cases supported:
+   *   - comparing for sorting (within on type system)
+   *      -- goal is to be able to compare two CASes
+   *         --- ordering must guarantee that the equal FSs appear in the
+   *         --- same order
+   *   - comparing two FSs (maybe from different CASes)
+   *     -- supporting missing types and features 
+   *        -- happens when the two type systems are different
+   *        -- the missing types and features are ignored in the comparison
    * 
-   * Different reference chains This compare routine may be called recursively - use case: FS(a) has
-   * slot which is ref to FS(b) which has slot which is ref to FS(c) -- the type of a, b, c may all
-   * be different.
+   * Different reference chains
+   *   This compare routine may be called recursively
+   *     - use case: FS(a) has slot which is ref to 
+   *                   FS(b) which has slot which is ref to
+   *                     FS(c) 
+   *       -- the type of a, b, c may all be different.
    * 
-   * Two reference chains for the two arguments may have different structures - Difference in two
-   * ways: -- length of unique (same fs_id) FSs -- length of loop (if one exists at the end reached
-   * so far)
+   *   Two reference chains for the two arguments may have different structures
+   *     - Difference in two ways:  
+   *       -- length of unique (same fs_id) FSs
+   *       -- length of loop (if one exists at the end reached so far)
    * 
-   * IMPORTANT: the following 2 chains have different lengths, but this won't be discovered if the
-   * recursive descent stops too soon: - a -> b -> c ( -> b ) - c -> b ( -> c) At the 2nd recursion,
-   * we have b vs b, but haven't explored the chain deeply enough to know the first one has length
-   * 3, and the 2nd length 2.
+   *   IMPORTANT: the following 2 chains have different lengths, but this
+   *   won't be discovered if the recursive descent stops too soon:
+   *     - a -> b -> c  ( -> b )
+   *     - c -> b ( -> c)
+   *   At the 2nd recursion, we have b vs b, but haven't explored the chain 
+   *   deeply enough to know the first one has length 3, and the 2nd length 2.            
    * 
-   * Meaning of comparision of two refs: - recursively defined - captures notion of reference chain
-   * differences -- means if two refs compare 0, the result may still be non-0 if the reference
-   * chains to get to these are different -- first compare on length of unique FSs -- if ==, compare
-   * on length of loop - if comparing (use case 2, two different type systems) with type not
-   * existing in other type system, skip (treat as 0).
+   * Meaning of comparision of two refs:  
+   *   - recursively defined
+   *   - captures notion of reference chain differences
+   *     -- means if two refs compare 0, the result may still be
+   *        non-0 if the reference chains to get to these are different
+   *       -- first compare on length of unique FSs
+   *       -- if ==, compare on length of loop
+   *   - if comparing (use case 2, two different type systems) with 
+   *     type not existing in other type system, skip (treat as 0).
    * 
-   * If comparing two FSs in 1 CAS, where there is type mapping, if the mapping to the other CAS is
-   * null, change the value of the FS to null to match the sort order the other CAS will haveand
-   * that mapping is to null (because the type is missing), use null for the argument(s).
+   * If comparing two FSs in 1 CAS, where there is type mapping, if the mapping to
+   *   the other CAS is null, change the value of the FS to null to match the sort order
+   *   the other CAS will haveand that mapping is
+   *   to null (because the type is missing), use null for the argument(s).
    * 
-   * Complexities: the type rfs1 may not be in the target type system. For this case - treat rfs2 ==
-   * null as "equal", rfs2 != null as not equal (always gt) Is assymetrical (?) - same logic isn't
-   * applied for reverse case.
-   * 
-   * @param rfs1
-   *          -
-   * @param rfs2
-   *          -
-   * @param fi
-   *          -
+   * Complexities: the type rfs1 may not be in the target type system.
+   *   For this case - treat rfs2 == null as "equal", rfs2 != null as not equal (always gt)
+   *   Is assymetrical (?) - same logic isn't applied for reverse case.
+   * @param rfs1 -
+   * @param rfs2 -
+   * @param fi -
    * @return -
    */
+  // @formatter:on
   private int compareRefs(TOP rfs1, TOP rfs2, TypeImpl callerTi, FeatureImpl callerFi) {
     if (inSortContext && isTypeMapping) {
       if (isSrcCas) {
@@ -1824,19 +1884,19 @@ public class CasCompare {
     }
   }
 
+  // @formatter:off
   /**
    * Returning because recursion detected a loop.
    * 
-   * @param rfs1
-   *          -
-   * @param rfs2
-   *          -
-   * @return - -1 if ref chain 1 length < ref chain 2 length or is the same length but loop length 1
-   *         < 2 1 if ref chain 1 length > ref chain 2 length or is the same length but loop length
-   *         1 > 2 0 if ref chain lengths are the same and loop length is the same Exception: if one
-   *         of the items is a canonical "empty" list element, and the other is a non-canonical one
-   *         - treat as equal.
+   * @param rfs1 -
+   * @param rfs2 -
+   * @return - -1 if ref chain 1 length < ref chain 2 length or is the same length but loop length 1 < 2
+   *            1 if ref chain 1 length > ref chain 2 length or is the same length but loop length 1 > 2
+   *            0 if ref chain lengths are the same and loop length is the same
+   *            Exception: if one of the items is a canonical "empty" list element, and the other 
+   *              is a non-canonical one - treat as equal.
    */
+  // @formatter:on
   private int compareRefResult(TOP rfs1, TOP rfs2) {
 
     // exception: treat canonical empty lists

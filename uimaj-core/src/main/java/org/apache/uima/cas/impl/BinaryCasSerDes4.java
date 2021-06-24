@@ -76,52 +76,61 @@ import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
 
+// @formatter:off
 /**
  * User callable serialization and deserialization of the CAS in a compressed Binary Format
  * 
- * This serializes/deserializes the state of the CAS, assuming that the type information remains
- * constant.
+ * This serializes/deserializes the state of the CAS, assuming that the type
+ * information remains constant.
  * 
  * Header specifies to reader the format, and the compression level.
  * 
- * How to Serialize:
- * 
- * 1) create an instance of this class, specifying some options that don't change very much 2) call
- * serialize(CAS) to serialize the cas *
+ * How to Serialize:  
  * 
  * You can reuse the instance for a different CAS (as long as the type system is the same); this
  * will save setup time.
  * 
- * This class lazily constructs customized TypeInfo instances for each type encountered in
- * serializing. These are preserved across multiple serialization calls, so their setup /
- * initialization is only needed the first time.
+ * You can reuse the instance for a different CAS (as long as the type system is the same);
+ * this will save setup time.
  * 
- * The form of the binary CAS is inserted at the beginning so that receivers can do the proper
- * deserialization.
+ * This class lazily constructs customized TypeInfo instances for each type encountered in serializing.
+ * These are preserved across multiple serialization calls, so their setup / initialization is only
+ * needed the first time.
  * 
- * Binary format requires that the exact same type system be used when deserializing
+ * The form of the binary CAS is inserted at the beginning so that receivers can do the
+ * proper deserialization.  
+ *     
+ * Binary format requires that the exact same type system be used when deserializing 
  * 
  * How to Deserialize:
  * 
- * 1) get an appropriate CAS to deserialize into. For delta CAS, it does not have to be empty. 2)
- * call CASImpl: cas.reinit(inputStream) This is the existing method for binary deserialization, and
- * it now handles this compressed version, too. Delta cas is also supported.
+ * 1) get an appropriate CAS to deserialize into.  For delta CAS, it does not have to be empty.
+ * 2) call CASImpl: cas.reinit(inputStream)  This is the existing method
+ *    for binary deserialization, and it now handles this compressed version, too.
+ *    Delta cas is also supported.
  * 
- * Compression/Decompression Works in two stages: application of Zip/Unzip to particular
- * sub-collections of CAS data, grouped according to similar data distribution collection of like
- * kinds of data (to make the zipping more effective) There can be up to ~20 of these collections,
- * such as control info, float-exponents, string chars Deserialization: Read all bytes, create
- * separate ByteArrayInputStreams for each segment, sharing byte bfr create appropriate unzip data
- * input streams for these
- * 
- * Properties of Form 4: 1) (Change from V2) Indexes are used to determine what gets serialized,
- * because there's no "heap" to walk, unless the v2-id-mode is in effect.
- * 
- * 2) The number used for references to FSs is a sequentially incrementing one, starting at 1 This
- * allows better compression.
- * 
- * 
+ * Compression/Decompression
+ * Works in two stages:
+ *   application of Zip/Unzip to particular sub-collections of CAS data, 
+ *     grouped according to similar data distribution
+ *   collection of like kinds of data (to make the zipping more effective)
+ *   There can be up to ~20 of these collections, such as
+ *      control info, float-exponents, string chars
+ * Deserialization:
+ *   Read all bytes, 
+ *   create separate ByteArrayInputStreams for each segment, sharing byte bfr
+ *   create appropriate unzip data input streams for these
+ *   
+ * Properties of Form 4:
+ *   1) (Change from V2) Indexes are used to determine what gets serialized, because there's no "heap" to walk,
+ *      unless the v2-id-mode is in effect.
+ *      
+ *   2) The number used for references to FSs is a sequentially incrementing one, starting at 1
+ *       This allows better compression.
+ *   
+ *   
  */
+// @formatter:on
 public class BinaryCasSerDes4 implements SlotKindsConstants {
   private static final boolean TRACE_SER = false;
   private static final boolean TRACE_DES = false;
@@ -141,28 +150,43 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   public static final boolean IGNORED = true;
   public static final boolean IN_MAIN_HEAP = true;
 
-  /**
-   * The kinds of slots that can exist an index for getting type-code specific values, flag -
-   * whether or not they should be diff encoded flag - if they can be negative (and need their sign
-   * moved)
+  // @formatter:off
+  /*
+   * The kinds of slots that can exist 
+   *   an index for getting type-code specific values, 
+   *   flag - whether or not they should be diff encoded
+   *   flag - if they can be negative (and need their sign moved)
+   *   
+   * Some are real slots in the heap; others are descriptions of
+   *   parts of values, eg. float exponent
+   *   
+   * Difference encoding costs 1 bit.  
+   *   Measurements show it can lessen zip's effectiveness 
+   *     (especially for single byte values (?)),
+   *     probably because it causes more dispersion in 
+   *     the value kinds.  
+   *   Because of this 2-fold cost (1 bit and less zip),
+   *     differencing being tried only for multi-byte 
+   *     values (short, int, long), and heap refs
+   *     - for array values, diff is with prev array value
+   *       (for 1st value in array, diff is with prev FeatureStructure
+   *       of the same type in the heap's 1st value if it exists
+   *     - for non-array values or 1st array value, diff is with
+   *       prev heap value for same type in heap  
    * 
-   * Some are real slots in the heap; others are descriptions of parts of values, eg. float exponent
+   *   Not done for float parts - exponent too short, and
+   *     mantissa too random.
    * 
-   * Difference encoding costs 1 bit. Measurements show it can lessen zip's effectiveness
-   * (especially for single byte values (?)), probably because it causes more dispersion in the
-   * value kinds. Because of this 2-fold cost (1 bit and less zip), differencing being tried only
-   * for multi-byte values (short, int, long), and heap refs - for array values, diff is with prev
-   * array value (for 1st value in array, diff is with prev FeatureStructure of the same type in the
-   * heap's 1st value if it exists - for non-array values or 1st array value, diff is with prev heap
-   * value for same type in heap
-   * 
-   * Not done for float parts - exponent too short, and mantissa too random.
-   * 
-   * CanBeNegative Many values are only positive e.g., array lengths Some values can be negative
-   * (all difference-encoded things can be negative) Represent as 1 bit + positive number, sign bit
-   * in least sig. bit position. This allows the bits to cluster closer to 0 on the positive side,
-   * which can make for fewer bytes to represent the number.
+   * CanBeNegative
+   *   Many values are only positive e.g., array lengths
+   *   Some values can be negative
+   *     (all difference-encoded things can be negative)
+   *   Represent as 1 bit + positive number, sign bit in 
+   *     least sig. bit position.  This allows the
+   *     bits to cluster closer to 0 on the positive side,
+   *     which can make for fewer bytes to represent the number.
    */
+  // @formatter:on
 
   /**
    * Compression alternatives
@@ -520,10 +544,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
                                                                                      // if mark not
                                                                                      // set
 
-        /**************************
-         * Strings For delta, to determine "new" strings that should be serialized, use the same
-         * method as used in Binary (plain) serialization.
-         **************************/
+        // *************************
+        // Strings
+        // For delta, to determine "new" strings that should be serialized, 
+        //   use the same method as used in Binary (plain) serialization.
+        // *************************
         for (TOP fs : newSortedFSs) {
           extractStrings(fs);
         }
@@ -919,16 +944,26 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     // writeDiff(kind.ordinal(), heap[iHeap + offset], prev);
     // }
 
+    // @formatter:off
     /**
-     * Method: write with deflation into a single byte array stream skip if not worth deflating skip
-     * the Slot_Control stream record in the Slot_Control stream, for each deflated stream: the Slot
-     * index the number of compressed bytes the number of uncompressed bytes add to header: nbr of
-     * compressed entries the Slot_Control stream size the Slot_Control stream all the zipped
-     * streams
+     * Method:
+     *   write with deflation into a single byte array stream
+     *     skip if not worth deflating
+     *     skip the Slot_Control stream
+     *     record in the Slot_Control stream, for each deflated stream:
+     *       the Slot index
+     *       the number of compressed bytes
+     *       the number of uncompressed bytes
+     *   add to header:  
+     *     nbr of compressed entries
+     *     the Slot_Control stream size
+     *     the Slot_Control stream
+     *     all the zipped streams
      *
      * @throws IOException
      *           passthru
      */
+    // @formatter:on
     private void collectAndZip() throws IOException {
       ByteArrayOutputStream baosZipped = new ByteArrayOutputStream(4096);
       Deflater deflater = new Deflater(compressLevel.lvl, true);
@@ -981,17 +1016,20 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       writeDiff(long_Low_i, (int) v, (int) prev);
     }
 
+    // @formatter:off
     /**
-     * String encoding Length = 0 - used for null, no offset written Length = 1 - used for "", no
-     * offset written Length &gt; 0 (subtract 1): used for actual string length
-     * 
-     * Length &lt; 0 - use (-length) as slot index (minimum is 1, slot 0 is NULL)
-     * 
-     * For length &gt; 0, write also the offset.
-     * 
-     * @throws IOException
-     *           passthru
+     * String encoding
+     *   Length = 0 - used for null, no offset written
+     *   Length = 1 - used for "", no offset written 
+     *   Length &gt; 0 (subtract 1): used for actual string length
+     *   
+     *   Length &lt; 0 - use (-length) as slot index  (minimum is 1, slot 0 is NULL)
+     *   
+     *   For length &gt; 0, write also the offset.
+     *   
+     * @throws IOException passthru  
      */
+    // @formatter:on
     private void writeString(final String s) throws IOException {
       if (null == s) {
         writeVnumber(strLength_dos, 0);
@@ -1041,16 +1079,19 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
     }
 
+    // @formatter:off
     /**
-     * Need to support NAN sets, 0x7fc.... for NAN 0xff8.... for NAN, negative infinity 0x7f8 for
-     * NAN, positive infinity
+     * Need to support NAN sets, 
+     * 0x7fc.... for NAN
+     * 0xff8.... for NAN, negative infinity
+     * 0x7f8     for NAN, positive infinity
      * 
-     * Because 0 occurs frequently, we reserve exp of 0 for the value 0
-     * 
-     * @param raw
-     *          the number to write
+     * Because 0 occurs frequently, we reserve 
+     * exp of 0 for the value 0
+     *  
+     * @param raw the number to write
      */
-
+    // @formatter:on
     private void writeFloat(int raw) throws IOException {
       if (raw == 0) {
         writeUnsignedByte(float_Exponent_dos, 0);
@@ -1135,16 +1176,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       return (v << 1);
     }
 
+    // @formatter:off
     /**
-     * Encoding: bit 6 = sign: 1 = negative bit 7 = delta: 1 = delta
-     * 
-     * @param kind
-     *          the kind of slot
-     * @param i
-     *          runs from iHeap + 3 to end of array
-     * @throws IOException
-     *           passthru
+     * Encoding:
+     *    bit 6 = sign:   1 = negative
+     *    bit 7 = delta:  1 = delta
+     * @param kind the kind of slot
+     * @param i  runs from iHeap + 3 to end of array
+     * @throws IOException passthru
      */
+    // @formatter:on
     private void writeDiff(int kind, int v, int prev) throws IOException {
       if (v == 0) {
         writeVnumber(kind, 0); // a speedup, not a new encoding
@@ -1247,14 +1288,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       } // end of is-not-array
     }
 
-    /******************************************************************************
-     * Modified Values Output: For each FS that has 1 or more modified values, write the heap addr
-     * of the FS
-     * 
-     * For all modified values within the FS: if it is an aux array element, write the index in the
-     * individual array instance and the new value otherwise, write the slot offset and the new
-     * value
-     ******************************************************************************/
+    // *****************************************************************************
+    // Modified Values
+    // Output:
+    //   For each FS that has 1 or more modified values,
+    //     write the heap addr of the FS
+    //     
+    //     For all modified values within the FS:
+    //       if it is an aux array element, write the index in the individual array instance and the new value
+    //       otherwise, write the slot offset and the new value
+    // *****************************************************************************
     public class SerializeModifiedFSs {
 
       // previous value - for things diff encoded
@@ -1277,12 +1320,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         // write out number of modified Feature Structures
         writeVnumber(control_dos, fsChanges.length);
         // iterate over all modified feature structures
-        /**
-         * Theorems about these data 1) Assumption: if an AuxHeap array is modified, its heap FS is
-         * in the list of modFSs 2) FSs with AuxHeap values have increasing ref values into the Aux
-         * heap as FS addr increases (because the ref is not updateable). 3) Assumption: String
-         * array element modifications are main heap slot changes and recorded as such
+        // @formatter:off
+        /*
+         * Theorems about these data
+         *   1) Assumption: if an AuxHeap array is modified, its heap FS is in the list of modFSs
+         *   2) FSs with AuxHeap values have increasing ref values into the Aux heap as FS addr increases
+         *      (because the ref is not updateable).
+         *   3) Assumption: String array element modifications are main heap slot changes
+         *      and recorded as such
          */
+        // @formatter:on
 
         for (FsChange fsChange : fsChanges) {
 
@@ -1572,6 +1619,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     final private DataInputStream control_dis;
     final private DataInputStream strSeg_dis;
 
+    // @formatter:off
     /**
      * For differencing when reading. Also used for arrays to difference the 0th element.
      * 
@@ -1579,13 +1627,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * 
      * Hold prev instance of FS which have FSRef slots
      * 
-     * for each target typecode, only set if the type - has 1 or more non-array fsref - is a
-     * (subtype of) FSArray set for both 0 and non-0 values !! Different from form6 first index: key
-     * is type code 2nd index: key is slot-offset number (0-based)
+     *   for each target typecode, only set if the type 
+     *     - has 1 or more non-array fsref
+     *     - is a (subtype of) FSArray
+     *   set for both 0 and non-0 values !! Different from form6
+     * first index: key is type code
+     * 2nd index: key is slot-offset number (0-based)
      * 
      * Also used for array refs, for the 1st entry in the array - feature slot 0 is used for this
      * when reading (not when writing - could be made more uniform)
      */
+    // @formatter:on
     final private int[][] prevFsRefsByType = new int[ts.getTypeArraySize()][];
     private int[] prevFsRefs;
 
@@ -1677,10 +1729,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         readCommonString[i] = DataIO.readUTFv(strChars_dis);
       }
       only1CommonString = lenCmnStrs == 1;
-      /***************************
-       * Prepare to walk main heap The csds must be either empty (for receiving non- delta) or the
-       * same as when the CAS was previous sent out (for receiving delta)
-       ***************************/
+      // **************************
+      // Prepare to walk main heap
+      // The csds must be either empty (for receiving non- delta) 
+      // or the same as when the CAS was previous sent out (for receiving delta)
+      // **************************
 
       int seq = 1;
       for (TOP fs : csds.getSortedFSs()) { // only non-empty if delta; and then it's from prev
@@ -1718,10 +1771,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       // }
       // fixupsNeeded = new IntVector(Math.max(16, heap.length / 10));
 
+      // @formatter:off
       /*******************************
-       * walk main heap - deserialize FS Creation: - creatCurrentFs -> createFs - createSofa -
-       * createArray
+       * walk main heap - deserialize
+       *   FS Creation:
+       *     - creatCurrentFs -> createFs
+       *     - createSofa
+       *     - createArray
        *******************************/
+      // @formatter:on
       TypeImpl type;
       int arraySize = 0;
       Arrays.fill(prevFsByType, null);
@@ -1764,13 +1822,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
         if (currentFs == null) {
 
-          /**
-           * Create single deferred FS Either: Sofa (has final fields) or Subtype of AnnotationBase
-           * - needs to be in the right view
+          // @formatter:off
+          /*
+           * Create single deferred FS 
+           * Either: Sofa (has final fields) or 
+           *         Subtype of AnnotationBase - needs to be in the right view
            * 
            * For the latter, handle document annotation specially
            */
-
+          // @formatter:on
           if (ts.sofaType == type) {
             if (baseCas.hasView(sofaName)) {
               // sofa was already created, by an annotationBase subtype deserialized prior to this
@@ -2237,20 +2297,22 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
     }
 
+    // @formatter:off
     /**
-     * Difference with previously deserialized value of corresponding slot of previous FS for this
-     * type. Special handling: if the slot is a heap ref, we can't use the prevFs because the value
-     * may be a forward reference, not yet deserialized, and therefore unknown. For this case, we
-     * preserve the actual deserialized value in a lazyly constructed prevFsRef and use that. For
-     * arrays, only the prev 0 value is used (if available - otherwise 0 is used)
-     * 
-     * @param kind
-     *          - the slot kind being deserialized
-     * @param feat
-     *          - the feature (null for arrays)
+     * Difference with previously deserialized value of corresponding slot of
+     * previous FS for this type.
+     *   Special handling: if the slot is a heap ref, we can't use the prevFs
+     *   because the value may be a forward reference, not yet deserialized, and
+     *   therefore unknown.
+     *     For this case, we preserve the actual deserialized value in a lazyly 
+     *     constructed prevFsRef and use that.
+     *     For arrays, only the prev 0 value is used (if available - otherwise 0 is used)
+     * @param kind - the slot kind being deserialized
+     * @param feat - the feature (null for arrays)
      * @return - the previous value, for differencing
      * @throws IOException
      */
+    // @formatter:on
     private int readDiffWithPrevTypeSlot(SlotKind kind, FeatureImpl feat) throws IOException {
       int prev = getPrevIntValue(kind, feat);
       int v = readDiff(kind, prev);
@@ -2643,10 +2705,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     // }
   }
 
-  /*
-   * ****************************************************************** methods common to
-   * serialization / deserialization etc.
-   ********************************************************************/
+  // ******************************************************************
+  // methods common to serialization / deserialization etc.
+  // ******************************************************************
 
   // private int incrToNextFs(int[] heap, int iHeap, TypeInfo typeInfo) {
   // if (typeInfo.isHeapStoredArray) {

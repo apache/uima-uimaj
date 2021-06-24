@@ -322,7 +322,9 @@ public class CASImpl extends AbstractCas_ImplBase
 
   /**
    * Instances are put into a Stack, to remember previous state to switch back to, when switching
-   * class loaders and locking the CAS https://issues.apache.org/jira/browse/UIMA-6057
+   * class loaders and locking the CAS 
+   * 
+   * https://issues.apache.org/jira/browse/UIMA-6057
    */
   static class SwitchControl {
     final boolean wasLocked;
@@ -358,14 +360,19 @@ public class CASImpl extends AbstractCas_ImplBase
     // these numbers are dense, and start with 1. 1 is the initial view. 0 is the base cas
     ArrayList<FSIndexRepositoryImpl> sofa2indexMap;
 
+    // @formatter:off
     /**
-     * A map from Sofa numbers to CAS views. number 0 - not used number 1 - used for view named
-     * "_InitialView" number 2-n used for other views
+     * A map from Sofa numbers to CAS views.
+     * number 0 - not used
+     * number 1 - used for view named "_InitialView"
+     * number 2-n used for other views
      * 
      * Note: this is not reset with "Cas Reset" because views (really, their associated index repos)
-     * take a lot of setup for the indexes. However, the maximum view count is reset; so creation of
-     * new views "reuses" these pre-setup indexRepos associated with these views.
+     * take a lot of setup for the indexes.
+     * However, the maximum view count is reset; so creation of new views "reuses" these pre-setup indexRepos 
+     * associated with these views.
      */
+    // @formatter:on
     ArrayList<CASImpl> sofaNbr2ViewMap;
 
     /**
@@ -410,22 +417,29 @@ public class CASImpl extends AbstractCas_ImplBase
     private JCasHashMap id2base = null;
     private final Map<ClassLoader, JCasHashMap> cl2id2tramp = new IdentityHashMap<>();
 
+    // @formatter:off
     /**
      * The current (active, switches at Pear boundaries) FsGenerators (excluding array-generators)
-     * key = type code read-only, unsynchronized for this CAS Cache for setting this kept in
-     * TypeSystemImpl, by classloader - shared among all CASs that use that Type System and class
-     * loader -- in turn, initialized from FSClassRegistry, once per classloader / typesystem combo
+     * key = type code
+     * read-only, unsynchronized for this CAS
+     * Cache for setting this kept in TypeSystemImpl, by classloader 
+     *   - shared among all CASs that use that Type System and class loader
+     *   -- in turn, initialized from FSClassRegistry, once per classloader / typesystem combo 
      * 
      * Pear generators are mostly null except for instances where the PEAR has redefined the JCas
      * cover class
      */
+    // @formatter:on
     private FsGenerator3[] generators;
+
+    // @formatter:off
     /**
      * When generating a new instance of a FS in a PEAR where there's an alternate JCas class impl,
-     * generate the base version, and make the alternate a trampoline to it. Note: in future, if it
-     * is known that this FS is never used outside of this PEAR, then can skip generating the double
-     * version
+     * generate the base version, and make the alternate a trampoline to it.
+     *   Note: in future, if it is known that this FS is never used outside of this PEAR, then can
+     *         skip generating the double version
      */
+    // @formatter:on
     private FsGenerator3[] baseGenerators;
 
     // If this CAS can be flushed (reset) or not.
@@ -544,15 +558,24 @@ public class CASImpl extends AbstractCas_ImplBase
     /*************************************************
      * VERSION 2 LOW_LEVEL_API COMPATIBILITY SUPPORT *
      *************************************************/
+    // @formatter:off
     /**
-     * A StringSet used only to support ll_get/setInt api get adds string to this and returns the
-     * int handle set retrieves the string, given the handle lazy initialized
+     * A StringSet used only to support ll_get/setInt api
+     *   get adds string to this and returns the int handle
+     *   set retrieves the string, given the handle
+     * lazy initialized
      */
+    // @formatter:on
     private StringSet llstringSet = null;
+
+    // @formatter:off
     /**
-     * A LongSet used only to support v2 ll_get/setInt api get adds long to this and returns the int
-     * handle set retrieves the long, given the handle lazy initialized
+     * A LongSet used only to support v2 ll_get/setInt api
+     *   get adds long to this and returns the int handle
+     *   set retrieves the long, given the handle
+     * lazy initialized
      */
+    // @formatter:on
     private LongSet lllongSet = null;
 
     // For tracing FS creation and updating, normally disabled
@@ -563,13 +586,16 @@ public class CASImpl extends AbstractCas_ImplBase
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
     private int nextId2Addr = 1; // only for tracing, to convert id's to v2 addresses
     final private int initialHeapSize;
-    /**
-     * if true, modify fs creation to save in id2fs map modify deserializers to create fss with ids
-     * the same as the serialized form ( or the V2 "address" imputed from that) modify serializers
-     * to include reachables only found via id2fs table
+    // @formatter:off
+    /** if true, 
+     *    modify fs creation to save in id2fs map
+     *    modify deserializers to create fss with ids the same as the serialized form (
+     *      or the V2 "address" imputed from that)
+     *    modify serializers to include reachables only found via id2fs table
      * 
      * not static because is updated (see ll_enableV2IdRefs)
      */
+    // @formatter:on
     private boolean isId2Fs;
 
     /**
@@ -578,13 +604,16 @@ public class CASImpl extends AbstractCas_ImplBase
      */
     private final Deque<SwitchControl> switchControl = new ArrayDeque<>();
 
+    // @formatter:off
     /******************************************************************************************
-     * C A S S T A T E management * Cas state is implemented in a way to allow the Java to
-     * efficiently * access the state test without synchronization or "voliatile" memory accessing,
-     * * while at the same time, allowing for an occasional cross-thread memory invalidation * when
-     * the state is changed. This is done using a MutableCallSite plus that * objects "syncAll"
-     * method. *
+     * C A S   S T A T E    management                                                        *
+     *    Cas state is implemented in a way to allow the Java to efficiently                  * 
+     *    access the state test without synchronization or "voliatile" memory accessing,      *
+     *    while at the same time, allowing for an occasional cross-thread memory invalidation *
+     *    when the state is changed.  This is done using a MutableCallSite plus that          *
+     *    objects "syncAll" method.                                                           *
      ******************************************************************************************/
+    // @formatter:on
     private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class);
 
     private static final MethodType noArgBoolean = MethodType.methodType(boolean.class);
@@ -767,16 +796,18 @@ public class CASImpl extends AbstractCas_ImplBase
       initialSofaCreated = false;
     }
 
+    // @formatter:off
     /**
      * Called from CasComplete deserialization (reinit).
      * 
      * Skips the resetNoQuestions operation of flushing the indexes, since these will be
      * reinitialized with potentially new definitions.
      * 
-     * Clears additional data related to having the - type system potentially change - the features
-     * belonging to indexes change
-     * 
+     * Clears additional data related to having the
+     *   - type system potentially change
+     *   - the features belonging to indexes change
      */
+    // @formatter:on
     void clear() {
       resetNoQuestions(false); // false - skip flushing the index repos
 
@@ -930,19 +961,25 @@ public class CASImpl extends AbstractCas_ImplBase
       }
     }
 
+    // @formatter:off
     /**
-     * The logic for this is: - normal - add 1 to the value of the previous which is kept in
-     * fsIdGenerator Update fsIdGenerator to be this id. (maybe) set lastFsV2Size to the size of
-     * this FS in v2 - pear trampolines: use the exact same id as the main fs. This value is in
-     * reuseId. In this case, no computation of "next" is done - isId2Fs This is set if in special
-     * mode to emulate v2 addresses. - used for backwards compatibility when LowLevelCas getFSForRef
-     * calls in use - used for debugging v2 vs v3 runs - causes fsId to be set to a value which
-     * should match the v2 address Side effect: when doing v2 emulation, updates the lastFsV2Size
-     * 
-     * @param fs
-     *          - the fs, used to compute its "size" on the v2 heap when emulating v2 addresses
+     * The logic for this is:
+     *   - normal - add 1 to the value of the previous 
+     *              which is kept in fsIdGenerator
+     *              Update fsIdGenerator to be this id.
+     *              (maybe) set lastFsV2Size to the size of this FS in v2
+     *   - pear trampolines: use the exact same id as the main fs.
+     *            This value is in reuseId.  
+     *            In this case, no computation of "next" is done
+     *   - isId2Fs This is set if in special mode to emulate v2 addresses.  
+     *       - used for backwards compatibility when LowLevelCas getFSForRef calls in use
+     *       - used for debugging v2 vs v3 runs
+     *       - causes fsId to be set to a value which should match the v2 address
+     * Side effect: when doing v2 emulation, updates the lastFsV2Size
+     * @param fs - the fs, used to compute its "size" on the v2 heap when emulating v2 addresses
      * @return the id to use
      */
+    // @formatter:on
     private int getNextFsId(TOP fs) {
       if (reuseId != 0) { // for pear use
         // l.setStrongRef(fs, reuseId);
@@ -1091,20 +1128,27 @@ public class CASImpl extends AbstractCas_ImplBase
   // private int nextRefDataOffsetForAlloc = 0;
   // private int nextIntDataOffsetForAlloc = 0;
 
+  // @formatter:off
   /**
-   * The Feature Structure for the sofa FS for this view, or null //-1 if the sofa FS is for the
-   * initial view, or // 0 if there is no sofa FS - for instance, in the "base cas"
+   * The Feature Structure for the sofa FS for this view, or
+   * null
+   * //-1 if the sofa FS is for the initial view, or
+   * // 0 if there is no sofa FS - for instance, in the "base cas"
    */
+  // @formatter:on
   private Sofa mySofaRef = null;
 
   /** the corresponding JCas object */
   JCasImpl jcas = null;
 
+  // @formatter:off
   /**
-   * Copies of frequently accessed data pulled up for locality of reference - only an optimization -
-   * each value needs to be reset appropriately - getters check for null, and if null, do the get.
+   * Copies of frequently accessed data pulled up for 
+   * locality of reference - only an optimization
+   *   - each value needs to be reset appropriately 
+   *   - getters check for null, and if null, do the get.
    */
-
+  // @formatter:on
   private TypeSystemImpl tsi_local;
 
   /**
@@ -1113,10 +1157,13 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   FeatureStructureImplC pearBaseFs = null;
 
+  // @formatter:off
   /**
    * Optimization - keep a documentAnnotationIterator handy for getting a ref to the doc annot
-   * Initialized lazily, synchronized One per cas view
+   *   Initialized lazily, synchronized
+   *   One per cas view
    */
+  // @formatter:on
   private volatile FSIterator<Annotation> docAnnotIter = null;
 
   // UIMA-6199 provides access to non-indexed doc annot
@@ -3010,17 +3057,18 @@ public class CASImpl extends AbstractCas_ImplBase
     return getFsFromId_checked(id);
   }
 
+  // @formatter:off
   /**
-   * Handle some unusual backwards compatibility cases featureCode = 0 - implies getting the type
-   * code feature range is int - normal feature range is a fs reference, return the id feature range
-   * is a string: add the string if not already present to the string heap, return the int handle.
-   * 
-   * @param fsRef
-   *          -
-   * @param featureCode
-   *          -
+   * Handle some unusual backwards compatibility cases
+   *   featureCode = 0 - implies getting the type code
+   *   feature range is int - normal
+   *   feature range is a fs reference, return the id 
+   *   feature range is a string: add the string if not already present to the string heap, return the int handle.
+   * @param fsRef -
+   * @param featureCode -
    * @return -
    */
+  // @formatter:on
   @Override
   public final int ll_getIntValue(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
@@ -3307,16 +3355,18 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
+  // @formatter:off
   /**
    * Only called if there was something removed that needs to be added back
    * 
-   * skip the addback (to defer it until later) if: - running in block mode (you can tell this if
-   * svd.fssTobeAddedback.size() &gt; 0) or if running in block mode, the add back is delayed until
-   * the end of the block
+   * skip the addback (to defer it until later) if:
+   *   - running in block mode (you can tell this if svd.fssTobeAddedback.size() &gt; 0) or
+   * if running in block mode, the add back is delayed until the end of the block
    * 
    * @param fs
    *          the fs to add back
    */
+  // @formatter:on
   public void maybeAddback(TOP fs) {
     if (svd.fssTobeAddedback.size() == 0) {
       assert (svd.fsTobeAddedbackSingleInUse);
@@ -3388,11 +3438,18 @@ public class CASImpl extends AbstractCas_ImplBase
     return wasRemoved;
   }
 
+  // @formatter:off
   /**
-   * Special considerations: Interface with corruption checking For backwards compatibility: handle
-   * cases where feature is: int - normal 0 - change type code a ref: treat int as FS "addr" not an
-   * int: handle like v2 where reasonable
+   * Special considerations:
+   *   Interface with corruption checking
+   *   For backwards compatibility:
+   *     handle cases where feature is:
+   *       int - normal
+   *       0 - change type code
+   *       a ref: treat int as FS "addr"
+   *       not an int: handle like v2 where reasonable
    */
+  // @formatter:on
   @Override
   public final void ll_setIntValue(int fsRef, int featureCode, int value) {
     TOP fs = getFsFromId_checked(fsRef);
@@ -3757,15 +3814,18 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
+  // @formatter:off
   /**
-   * Check that the fsRef is valid. Check that the fs is featureCode belongs to the fs Check that
-   * the featureCode is one of the features of the domain type of the fsRef feat could be primitive,
-   * string, ref to another feature
+   * Check that the fsRef is valid.
+   * Check that the fs is featureCode belongs to the fs 
+   * Check that the featureCode is one of the features of the domain type of the fsRef
+   * feat could be primitive, string, ref to another feature
    * 
    * @param fsRef
    * @param typeCode
    * @param featureCode
    */
+  // @formatter:on
   private final void checkNonArrayConditions(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
 
@@ -3876,9 +3936,9 @@ public class CASImpl extends AbstractCas_ImplBase
     ll_setRefArrayValue(fsRef, position, value);
   }
 
-  /*
-   * ************************ Low Level Array Setters
-   ************************/
+  // ************************
+  // Low Level Array Setters
+  // ************************
 
   @Override
   public void ll_setIntArrayValue(int fsRef, int position, int value) {
@@ -4026,9 +4086,10 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
-  /*
-   * ********************************** A R R A Y C R E A T I O N
-   ************************************/
+  
+  // **********************************
+  //    A R R A Y   C R E A T I O N
+  // **********************************
 
   @Override
   public ByteArrayFS createByteArrayFS(int length) throws CASRuntimeException {
@@ -4436,12 +4497,15 @@ public class CASImpl extends AbstractCas_ImplBase
 
   // For the "built-in" instance of Document Annotation, set the
   // "end" feature to be the length of the sofa string
+  // @formatter:off
   /**
-   * updates the document annotation (only if the sofa's local string data != null) setting the end
-   * feature to be the length of the sofa string, if any. creates the document annotation if not
-   * present only works if not in the base cas
+   * updates the document annotation (only if the sofa's local string data != null)
+   *   setting the end feature to be the length of the sofa string, if any.
+   *   creates the document annotation if not present
+   *   only works if not in the base cas
    * 
    */
+  // @formatter:on
   public void updateDocumentAnnotation() {
     if (!mySofaIsValid() || this == this.svd.baseCAS) {
       return;
@@ -4935,22 +4999,30 @@ public class CASImpl extends AbstractCas_ImplBase
     svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() - 1);
   }
 
+  // @formatter:off
   /**
-   * This design is to support normal operations where the addbacks could be nested It also handles
-   * cases where nested ones were inadvertently left open Three cases: 1) the addbacks are the last
-   * element in the stack - remove it from the stack 2) the addbacks are (no longer) in the list -
-   * leave stack alone 3) the addbacks are in the list but not at the end - remove it and all later
-   * ones, calling addback on each
+   * This design is to support normal operations where the
+   *   addbacks could be nested
+   * It also handles cases where nested ones were inadvertently left open
+   * Three cases:
+   *    1) the addbacks are the last element in the stack
+   *         - remove it from the stack
+   *    2) the addbacks are (no longer) in the list
+   *         - leave stack alone
+   *    3) the addbacks are in the list but not at the end
+   *         - remove it and all later ones, calling addback on each     
    * 
-   * If the "withProtectedindexes" approach is used, it guarantees proper nesting, but the Runnable
-   * can't throw checked exceptions.
+   * If the "withProtectedindexes" approach is used, it guarantees proper 
+   * nesting, but the Runnable can't throw checked exceptions.
    * 
-   * You can do your own try-finally blocks (or use the try with resources form in Java 8 to do a
-   * similar thing with no restrictions on what the body can contain.
+   * You can do your own try-finally blocks (or use the try with resources
+   * form in Java 8 to do a similar thing with no restrictions on what the
+   * body can contain.
    * 
    * @param addbacks
    *          -
    */
+  // @formatter:on
   void addbackModifiedFSs(FSsTobeAddedback addbacks) {
     final List<FSsTobeAddedback> listOfAddbackInfos = svd.fssTobeAddedback;
 
@@ -5512,20 +5584,26 @@ public class CASImpl extends AbstractCas_ImplBase
     svd.csds = null;
   }
 
+  // @formatter:off
   /******************************************
-   * PEAR support Don't modify the type system because it is in use on multiple threads
+   * PEAR support
+   *   Don't modify the type system because it is in use on multiple threads
    * 
-   * Handling of id2fs for low level APIs: FSs in id2fs map are the outer non-pear ones Any gets do
-   * pear conversion if needed.
+   *   Handling of id2fs for low level APIs:
+   *     FSs in id2fs map are the outer non-pear ones
+   *     Any gets do pear conversion if needed.
    * 
    ******************************************/
   /**
-   * Convert base FS to Pear equivalent 3 cases: 1) no trampoline needed, no conversion, return the
-   * original fs 2) trampoline already exists - return that one 3) create new trampoline
-   * 
+   * Convert base FS to Pear equivalent
+   * 3 cases:
+   *   1) no trampoline needed, no conversion, return the original fs
+   *   2) trampoline already exists - return that one
+   *   3) create new trampoline
    * @param aFs
    * @return
    */
+  // @formatter:on
   static <T extends FeatureStructure> T pearConvert(T aFs) {
     if (null == aFs) {
       return null;
@@ -5588,9 +5666,9 @@ public class CASImpl extends AbstractCas_ImplBase
     return (T) r;
   }
 
-  /*
-   * ***************************************** DEBUGGING and TRACING
-   ******************************************/
+  // *****************************************
+  // DEBUGGING and TRACING
+  // *****************************************
 
   public void traceFSCreate(FeatureStructureImplC fs) {
     StringBuilder b = svd.traceFScreationSb;
@@ -5991,9 +6069,10 @@ public class CASImpl extends AbstractCas_ImplBase
     svd.bcsd.reinit(casCompSer);
   }
 
+  // @formatter:off
   /**
-   * --------------------------------------------------------------------- see Blob Format in
-   * CASSerializer
+   * --------------------------------------------------------------------- 
+   * see Blob Format in CASSerializer
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be needed if the blob
    * is from C++ -- C++ blob serialization writes data in native byte order.
@@ -6007,7 +6086,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * @throws CASRuntimeException
    *           wraps IOException
    */
-
+  // @formatter:on
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
     return svd.bcsd.reinit(istream);
   }

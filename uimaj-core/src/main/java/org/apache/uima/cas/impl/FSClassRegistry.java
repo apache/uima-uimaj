@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+// @formatter:off
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,56 +52,63 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
+// @formatter:off
 /**
- * There is one **class** instance of this per UIMA core class loader. The class loader is the
- * loader for the UIMA core classes, not any UIMA extension class loader - **Builtin** JCas Types
- * are loaded and shared among all type systems, once, when this class is loaded.
+ * There is one **class** instance of this per UIMA core class loader.
+ *   The class loader is the loader for the UIMA core classes, not any UIMA extension class loader
+ *   - **Builtin** JCas Types are loaded and shared among all type systems, once, when this class is loaded.
  * 
- * There are no instances of this class. - The type system impl instances at commit time initialize
- * parts of their Impl from data in this class - Some of the data kept in this class in static
- * values, is constructed when the type system is committed
+ * There are no instances of this class.  
+ *   - The type system impl instances at commit time initialize parts of their Impl from data in this class
+ *   - Some of the data kept in this class in static values, is constructed when the type system is committed
  * 
- * The class instance is shared - by multiple type systems - by multiple CASes (in a CAS pool, for
- * instance, when these CASes are sharing the same type system). - by all views of those CASes. - by
- * multiple different pipelines, built using the same merged type system instance - by non-built-in
- * JCas classes, loaded under possibly different extension class loaders
+ * The class instance is shared
+ *   - by multiple type systems 
+ *   - by multiple CASes (in a CAS pool, for instance, when these CASes are sharing the same type system).
+ *   - by all views of those CASes.
+ *   - by multiple different pipelines, built using the same merged type system instance
+ *   - by non-built-in JCas classes, loaded under possibly different extension class loaders
  * 
- * PEAR support Multiple PEAR contexts can be used. - hierarchy (each is parent of kind below --
- * UIMA core class loader (built-ins, not redefinable by user JCas classes) --- a new limitation of
- * UIMA V3 to allow sharing of built-in JCas classes, which also have custom impl, and don't fit the
- * model used for PEAR Trampolines -- outer (non Pear) class loader (optional, known as base
- * extension class loader) --- possible multiple, for different AE pipelines -- Within PEAR class
- * loader - when running within a PEAR, operations which return Feature Structures potentially
- * return JCas instances of classes loaded from the Pear's class loader. - These instances share the
- * same int[] and Object[] and _typeImpl and _casView refs with the outer class loader's FS
+ * PEAR support
+ *   Multiple PEAR contexts can be used.
+ *   - hierarchy (each is parent of kind below
+ *     -- UIMA core class loader (built-ins, not redefinable by user JCas classes) 
+ *         --- a new limitation of UIMA V3 to allow sharing of built-in JCas classes, which also
+ *             have custom impl, and don't fit the model used for PEAR Trampolines
+ *     -- outer (non Pear) class loader (optional, known as base extension class loader)
+ *         --- possible multiple, for different AE pipelines
+ *     -- Within PEAR class loader
+ *   - when running within a PEAR, operations which return Feature Structures potentially return
+ *     JCas instances of classes loaded from the Pear's class loader. 
+ *       - These instances share the same int[] and Object[] and _typeImpl and _casView refs with the outer class loader's FS
  * 
- * Timing / life cycle Built-in classes loaded and initialized at first type system commit time.
- * non-pear classes loaded and initialized at type system commit time (if not already loaded) -
- * special checks for conformability if some types loaded later, due to requirements for computing
- * feature offsets at load time pear classes loaded and initialized at first entry to Pear, for a
- * given type system and class loader.
+ * Timing / life cycle
+ *   Built-in classes loaded and initialized at first type system commit time.
+ *   non-pear classes loaded and initialized at type system commit time (if not already loaded)
+ *     - special checks for conformability if some types loaded later, due to requirements for computing feature offsets at load time
+ *   pear classes loaded and initialized at first entry to Pear, for a given type system and class loader.        
  *
  * 
- * At typeSystemCommit time, this class is created and initialized: - The built-in JCas types are
- * loaded
+ *   At typeSystemCommit time, this class is created and initialized: 
+ *     - The built-in JCas types are loaded
  * 
- * - The user-defined non-PEAR JCas classes are loaded (not lazy, but eager), provided the type
- * system is a new one. (If the type system is "equal" to an existing committed one, that one is
- * used instead).
+ *     - The user-defined non-PEAR JCas classes are loaded (not lazy, but eager), provided the type system is a new one.
+ *       (If the type system is "equal" to an existing committed one, that one is used instead).
  * 
- * -- User classes defined with the name of UIMA types, but which are not JCas definitions, are not
- * used as JCas types. This permits uses cases where users define a class which (perhaps at a later
- * integration time) has the same name as a UIMA type, but is not a JCas class. -- These classes,
- * once loaded, remain loaded because of Java's design, unless the ClassLoader used to load them is
- * Garbage Collected. --- The ClassLoader used is the CAS's JCasClassLoader, set from the UIMA
- * Extension class loader if specified.
+ *       -- User classes defined with the name of UIMA types, but which are not JCas definitions, are not used as 
+ *          JCas types.  This permits uses cases where users define a class which (perhaps at a later integration time)
+ *          has the same name as a UIMA type, but is not a JCas class.
+ *       -- These classes, once loaded, remain loaded because of Java's design, unless the ClassLoader
+ *          used to load them is Garbage Collected.
+ *          --- The ClassLoader used is the CAS's JCasClassLoader, set from the UIMA Extension class loader if specified.
  * 
- * Assigning slots for features: - each type being loaded runs static final initializers to set for
- * (a subset of) all features the offset in the int or ref storage arrays for those values. - These
- * call a static method in JCasRegistry: register[Int/Ref]Feature, which assigns the next available
- * slot via accessing/updating a thread local instance of TypeSystemImpl.SlotAllocate.
+ *   Assigning slots for features:
+ *     - each type being loaded runs static final initializers to set for (a subset of) all features the offset
+ *       in the int or ref storage arrays for those values. 
+ *     - These call a static method in JCasRegistry: register[Int/Ref]Feature, which assigns the next available slot
+ *       via accessing/updating a thread local instance of TypeSystemImpl.SlotAllocate.
  */
-
+// @formatter:on
 public abstract class FSClassRegistry { // abstract to prevent instantiating; this class only has
                                         // static methods
 
@@ -136,10 +144,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // private static final MethodType fsGeneratorArrayType = methodType(TOP.class, TypeImpl.class,
   // CASImpl.class, int.class); // NO LONGER USED
 
+  // @formatter:off
   /**
-   * precomputed generators for built-in types These instances are shared for all type systems Key =
-   * index = typecode
+   * precomputed generators for built-in types
+   * These instances are shared for all type systems
+   * Key = index = typecode
    */
+  // @formatter:on
   private static final JCasClassInfo[] jcasClassesInfoForBuiltins;
 
   /* =================================== */
@@ -149,16 +160,18 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   /** a cache for constant int method handles */
   private static final List<MethodHandle> methodHandlesForInt = new ArrayList<>();
 
+  // @formatter:off
   /**
-   * Map from class loaders used to load JCas Classes, both PEAR and non-Pear cases, to
-   * JCasClassInfo for that loaded JCas class instance. key is the class loader value is a plain
-   * HashMapmap from string form of typenames to JCasClassInfo corresponding to the JCas class
-   * covering that type (which may be a supertype of the type name).
+   * Map from class loaders used to load JCas Classes, both PEAR and non-Pear cases, to JCasClassInfo for that loaded JCas class instance.
+   *   key is the class loader
+   *   value is a plain HashMapmap from string form of typenames to JCasClassInfo corresponding to the JCas class covering that type
+   *     (which may be a supertype of the type name).
    * 
-   * Key is JCas fully qualified name (not UIMA type name). Is a String, since different type
-   * systems may use the same JCas classes. value is the JCasClassInfo for that class - this may be
-   * for that actual JCas class, if one exists for that UIMA type name - or it is null, signalling
-   * that there is no JCas for this type, and a supertype should be used
+   *     Key is JCas fully qualified name (not UIMA type name).
+   *       Is a String, since different type systems may use the same JCas classes.
+   *     value is the JCasClassInfo for that class
+   *       - this may be for that actual JCas class, if one exists for that UIMA type name
+   *       - or it is null, signalling that there is no JCas for this type, and a supertype should be used
    * 
    * Cache of FsGenerator[]s kept in TypeSystemImpl instance, since it depends on type codes.
    * Current FsGenerator[] kept in CASImpl shared view data, switched as needed for PEARs.
@@ -166,6 +179,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * <b>NOTE:</b> Access this map in a thread-safe way only via {@link #get_className_to_jcci} which
    * synchronizes on the map object.
    */
+  // @formatter:on
   private static final WeakIdentityMap<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = WeakIdentityMap
           .newHashMap(); // identity: key is classloader
 
@@ -191,21 +205,25 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // public static final Map<Class<? extends TOP>, ArrayList<Entry<String, MutableCallSite>>>
   // callSites_all_JCasClasses = new HashMap<>();
 
+  // @formatter:off
   /**
-   * One instance per JCas class defined for it, per class loader - per class loader, because
-   * different JCas class definitions for the same name are possible, per class loader
+   * One instance per JCas class defined for it, per class loader
+   *   - per class loader, because different JCas class definitions for the same name are possible, per class loader
    * 
-   * Kept in maps, per class loader. Created when potentially loading JCas classes.
+   * Kept in maps, per class loader.  
+   * Created when potentially loading JCas classes.
    * 
-   * Entries kept in potentially multiple global static hashmaps, with key = the string form of the
-   * typename - string form of key allows sharing the same named JCas definition among different
-   * type system type-impls. - one hashmap per classloader Entries reused potentially by multiple
-   * type systems.
+   * Entries kept in potentially multiple global static hashmaps, with key = the string form of the typename
+   *   - string form of key allows sharing the same named JCas definition among different type system type-impls. 
+   *   - one hashmap per classloader
+   *   Entries reused potentially by multiple type systems.
    * 
-   * Info used for - identifying the target of a "new" operator - could be generator for superclass.
-   * - remembering the results of getting all the features this JCas class defines One entry per
-   * defined JCas class per classloader; no instance if no JCas class is defined.
+   * Info used for 
+   *   - identifying the target of a "new" operator - could be generator for superclass.
+   *   - remembering the results of getting all the features this JCas class defines
+   * One entry per defined JCas class per classloader; no instance if no JCas class is defined.
    */
+  // @formatter:on
   public static class JCasClassInfo {
 
     final FsGenerator3 generator;
@@ -354,10 +372,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // }
     // }
 
+    // @formatter:off
     /**
-     * copy in built-ins update t2jcci (if not already loaded) with load info for type update type
-     * system's map from unique JCasID to the type in this type system
+     * copy in built-ins
+     *   update t2jcci (if not already loaded) with load info for type
+     *   update type system's map from unique JCasID to the type in this type system
      */
+    // @formatter:on
 
     /* ============================== */
     /* BUILT-INS */
@@ -380,13 +401,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     /* ========================================================= */
 
     if (isDoUserJCasLoading) {
+      // @formatter:off
       /**
-       * Two passes are needed loading is needed. - The first one loads the JCas Cover Classes
-       * initializes everything -- some of the classes might already be loaded (including the
-       * builtins which are loaded once per class loader) - The second pass performs the conformance
-       * checks between the loaded JCas cover classes, and the current type system. This depends on
-       * having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
+       * Two passes are needed loading is needed.  
+       *   - The first one loads the JCas Cover Classes initializes everything
+       *      -- some of the classes might already be loaded (including the builtins which are loaded once per class loader)
+       *   - The second pass performs the conformance checks between the loaded JCas cover classes, and the current type system.
+       *     This depends on having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
        */
+      // @formatter:on
 
       // this is this here rather than in a static initializer, because
       // we want to use the "cl" parameter to get a version of the
@@ -420,16 +443,17 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
+  // @formatter:off
   /**
-   * Called for all the types, including the built-ins, but the built-ins have already been set up
-   * by the caller. Saves the results in two places type system independent spot: JCasClassInfo
-   * instance indexed by JCasClassName type system spot: the JCasIndexID -> type table in the type
-   * system
+   * Called for all the types, including the built-ins, but the built-ins have already been set up by the caller.
+   * Saves the results in two places
+   *   type system independent spot: JCasClassInfo instance indexed by JCasClassName
+   *   type system spot: the JCasIndexID -> type table in the type system
    * 
-   * Looks up by classname to see if there is an associated JCas class for this type. - all types of
-   * that name (perhaps from different loaded type systems) will share that one JCas class -
-   * copyDowns are excluded from this requirement - because there are no JCas class definitions for
-   * this type (in that case).
+   * Looks up by classname to see if there is an associated JCas class for this type.
+   *   - all types of that name (perhaps from different loaded type systems) will share that one JCas class
+   *   - copyDowns are excluded from this requirement - because there are no JCas class definitions
+   *     for this type (in that case).
    * 
    * @param tsi
    *          the type system
@@ -442,6 +466,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param type2JCas
    *          map holding the results of loading JCas classes
    */
+  // @formatter:on
   private static void maybeLoadJCasAndSubtypes(TypeSystemImpl tsi, TypeImpl ti,
           JCasClassInfo copyDownDefault_jcasClassInfo, ClassLoader cl,
           Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync,
@@ -544,20 +569,20 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
+  // @formatter:off
   /**
-   * For a particular type name, get the JCasClassInfo - by fetching the cached value - by loading
-   * the class - return null if no JCas class for this name only called for non-Pear callers
-   * 
-   * @param ti
-   *          -
-   * @param cl
-   *          -
-   * @param type2jcci
-   *          -
-   * @param lookup
-   *          -
+   * For a particular type name, get the JCasClassInfo
+   *   - by fetching the cached value
+   *   - by loading the class
+   *   - return null if no JCas class for this name 
+   * only called for non-Pear callers
+   * @param ti -
+   * @param cl -
+   * @param type2jcci -
+   * @param lookup -
    * @return - jcci or null, if no JCas class for this type was able to be loaded
    */
+  // @formatter:on
   public static JCasClassInfo getOrCreateJCasClassInfo(TypeImpl ti, ClassLoader cl,
           Map<String, JCasClassInfo> type2jcci, Lookup lookup) {
 
@@ -848,10 +873,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   //
   // }
 
+  // @formatter:off
   /**
-   * Called to load (if possible) a corresponding JCas class for a UIMA type. Called at Class Init
-   * time for built-in types Called at TypeSystemCommit for non-built-in types Runs the static
-   * initializers in the loaded JCas classes - doing resolve
+   * Called to load (if possible) a corresponding JCas class for a UIMA type.
+   * Called at Class Init time for built-in types
+   * Called at TypeSystemCommit for non-built-in types
+   *   Runs the static initializers in the loaded JCas classes - doing resolve
    * 
    * Synchronization: done outside this class
    * 
@@ -861,6 +888,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    *          the class loader to use
    * @return the loaded / resolved class
    */
+  // @formatter:on
   private static Class<? extends TOP> maybeLoadJCas(TypeImpl ti, ClassLoader cl) {
     Class<? extends TOP> clazz = null;
     String className = ti.getJCasClassName();
@@ -1041,10 +1069,11 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // }
 
   // static for setting up static builtin values
+  // @formatter:off
   /**
-   * Called after succeeding at loading, once per load for an exact matching JCas Class - class was
-   * already checked to insure is of proper type for JCas - skips creating-generator-for-Sofa -
-   * since "new Sofa(...)" is not a valid way to create a sofa
+   * Called after succeeding at loading, once per load for an exact matching JCas Class 
+   *   - class was already checked to insure is of proper type for JCas
+   *   - skips creating-generator-for-Sofa - since "new Sofa(...)" is not a valid way to create a sofa   
    * 
    * @param jcasClass
    *          the JCas class that corresponds to the type
@@ -1052,6 +1081,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    *          the type
    * @return the info for this JCas that is shared across all type systems under this class loader
    */
+  // @formatter:on
   private static JCasClassInfo createJCasClassInfo(Class<? extends TOP> jcasClass, TypeImpl ti,
           int jcasType, Lookup lookup) {
     boolean noGenerator = ti.getCode() == TypeSystemConstants.sofaTypeCode
@@ -1136,15 +1166,16 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
+  // @formatter:off
   /**
    * Inner check
    * 
    * Never called for "built-ins", or for uima types not having a JCas loaded class
    * 
    * Checks that a JCas class definition conforms to the current type in the current type system.
-   * Checks that the superclass chain contains some match to the super type chain. Checks that the
-   * return value for the getters for features matches the feature's range. Checks that static
-   * _FC_xxx values from the JCas class == the adjusted feature offsets in the type system
+   * Checks that the superclass chain contains some match to the super type chain.
+   * Checks that the return value for the getters for features matches the feature's range.
+   * Checks that static _FC_xxx values from the JCas class == the adjusted feature offsets in the type system
    * 
    * @param clazz
    *          - the JCas class to check
@@ -1153,6 +1184,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param ti
    *          -
    */
+  // @formatter:on
   private static void checkConformance(Class<?> clazz, TypeSystemImpl tsi, TypeImpl ti,
           Map<String, JCasClassInfo> type2jcci) {
 
@@ -1378,13 +1410,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
+  // @formatter:off
   /**
-   * called infrequently to set up cache Only called when a type system has not had generators for a
-   * particular class loader.
+   * called infrequently to set up cache
+   * Only called when a type system has not had generators for a particular class loader.
    * 
-   * For PEAR generators: Populates only for those classes the PEAR has overriding implementations -
-   * other entries are null; this serves as a boolean indicator that no pear override exists for
-   * that type and therefore no trampoline is needed
+   * For PEAR generators: 
+   *   Populates only for those classes the PEAR has overriding implementations
+   *     - other entries are null; this serves as a boolean indicator that no pear override exists for that type
+   *       and therefore no trampoline is needed
    * 
    * @param cl
    *          identifies which set of jcas cover classes
@@ -1394,6 +1428,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    *          the type system being used
    * @return the generators for that set, as an array indexed by type code
    */
+  // @formatter:on
   static FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear,
           TypeSystemImpl tsi) {
     Map<String, JCasClassInfo> type2jcci = get_className_to_jcci(cl, isPear);
@@ -1467,18 +1502,19 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     return true;
   }
 
+  // @formatter:off
   /**
-   * Called once when the JCasClassInfo is created. Once set, the offsets are never changed
-   * (although they could be...)
+   * Called once when the JCasClassInfo is created.
+   * Once set, the offsets are never changed (although they could be...)
    * 
-   * New type systems are checked for conformance to existing settings in the JCas class. Type
-   * System types are augmented by features defined in the JCas but missing in the type, before this
-   * routine is called.
+   * New type systems are checked for conformance to existing settings in the JCas class.
+   * Type System types are augmented by features defined in the JCas
+   *   but missing in the type, before this routine is called.
    * 
-   * Iterate over all fields named _FC_ followed by a feature name. If that feature doesn't exist in
-   * this type system - skip init, will cause runtime error if used Else, set the callSite's method
-   * Handle to one that returns the int constant for type system's offset of that feature. If
-   * already set, check that the offset didn't change.
+   * Iterate over all fields named _FC_  followed by a feature name.  
+   *   If that feature doesn't exist in this type system - skip init, will cause runtime error if used
+   *   Else, set the callSite's method Handle to one that returns the int constant for type system's offset of that feature.
+   *     If already set, check that the offset didn't change.
    * 
    * 
    * @param clazz
@@ -1486,6 +1522,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param type
    *          -
    */
+  // @formatter:on
   private static void updateOrValidateAllCallSitesForJCasClass(Class<? extends TOP> clazz,
           TypeImpl type, ArrayList<MutableCallSite> callSites_toSync) {
     try {

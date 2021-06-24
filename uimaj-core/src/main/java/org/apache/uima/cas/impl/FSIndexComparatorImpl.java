@@ -28,12 +28,13 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.IntVector;
 
+// @formatter:off
 /**
- * Specifies the comparison to be used for an index, in terms of - the keys and the typeorder, in an
- * order - the standard/reverse ordering
- *
- * 
+ * Specifies the comparison to be used for an index, in terms of 
+ * - the keys and the typeorder, in an order 
+ * - the standard/reverse ordering
  */
+// @formatter:on
 public class FSIndexComparatorImpl implements FSIndexComparator {
 
   private Type type;

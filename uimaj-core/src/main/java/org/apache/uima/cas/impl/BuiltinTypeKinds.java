@@ -50,16 +50,20 @@ import org.apache.uima.jcas.tcas.Annotation;
  * under the License.
  */
 
+// @formatter:off
 /**
  * Constants representing Built in type collections
  *
  * String Sets:
  * 
- * creatableArrays primitiveTypeNames == noncreatable primitives creatableBuiltinJcas (e.g.
- * empty/non-empty FloatList non creatable primitives (e.g. can't do createFS for primitive int)
+ *     creatableArrays
+ *     primitiveTypeNames == noncreatable primitives
+ *     creatableBuiltinJcas (e.g. empty/non-empty FloatList
+ *     non creatable primitives (e.g. can't do createFS for primitive int)
  * 
  * non creatable and builtin Arrays
  */
+// @formatter:on
 public class BuiltinTypeKinds {
 
   private static final Set<String> primitiveTypeNames = new HashSet<>();

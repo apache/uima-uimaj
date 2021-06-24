@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.internal.util.Misc;
 
+// @formatter:off
 /**
  * This class gets initialized with two type systems, and then provides resources to map type and
  * feature codes between them.
@@ -35,16 +36,23 @@ import org.apache.uima.internal.util.Misc;
  * 
  * Use cases:
  * 
- * Serializing: Source ts -%gt; generate serialized form in Target ts Deserializing: Target ts -%gt;
- * generate deserialized form in Source ts - either from remote or - from disk-stored-form
+ * Serializing:  Source ts -%gt; generate serialized form in Target ts 
+ * Deserializing: Target ts -%gt; generate deserialized form in Source ts
+ *   - either from remote or
+ *   - from disk-stored-form
  * 
- * Mapping details: Types are mapped by name. Same-named types do not need to have the same number
- * of features. Same-named features must have same Range - otherwise, not mapped. Types with 0
- * features mapped allowed. LifeCycle: Instance of this are created for a CAS when needed, and then
- * kept in the (source) TypeSystemImpl, in a map indexed by the target type system (identity map)
+ * Mapping details:
+ *   Types are mapped by name. 
+ *     Same-named types do not need to have the same number of features.
+ *     Same-named features must have same Range - otherwise, not mapped.
+ *     Types with 0 features mapped allowed.
+ * LifeCycle:
+ *   Instance of this are created for a CAS when needed, and then
+ *   kept in the (source) TypeSystemImpl, in a map indexed by
+ *   the target type system (identity map)
  * 
  */
-
+// @formatter:on
 public class CasTypeSystemMapper {
 
   public final TypeSystemImpl tsSrc; // source type system
@@ -69,12 +77,16 @@ public class CasTypeSystemMapper {
    */
   final private FeatureImpl[][] fSrc2Tgt;
 
+  // @formatter:off
   /**
-   * Feature mapping from target to source first key is the tgt type code, 2nd is the tgt feature
-   * offset Only used for type codes that are not arrays. Use: When serializing a source type that
-   * exists in the target, have to output the slots in the target feature order Also, when comparing
-   * the slots in the target with a given source
+   * Feature mapping from target to source 
+   *   first key is the tgt type code, 2nd is the tgt feature offset 
+   * Only used for type codes that are not arrays.
+   * Use: When serializing a source type that exists in the target, have to output
+   *   the slots in the target feature order
+   *   Also, when comparing the slots in the target with a given source
    */
+  // @formatter:on
   final private FeatureImpl[][] fTgt2Src;
 
   final private boolean typeSystemsSame;
@@ -213,21 +225,20 @@ public class CasTypeSystemMapper {
     return r;
   }
 
+  // @formatter:off
   /**
-   * Create the map from tsFrom to tsTo for all the features, by type -- map created using type and
-   * feature name equality -- note: the features may have different definitions; map is by name only
-   * --- e.g., one may have String range, the other float range. --- in this case, the return is set
-   * to false.
-   * 
-   * @param map
-   *          the map to update
-   * @param tsFrom
-   *          the From type system
-   * @param tsTo
-   *          the to type system
+   * Create the map from tsFrom to tsTo for all the features, by type
+   *   -- map created using type and feature name equality
+   *   -- note: the features may have different definitions; map is by name only
+   *     --- e.g., one may have String range, the other float range.
+   *     --- in this case, the return is set to false.
+   * @param map the map to update
+   * @param tsFrom the From type system
+   * @param tsTo the to type system
    * @return true if all the tsFrom features are found in tsTo and following fields are the same:
    *         rangeType.name, featureOffset, isMultipleRefsAllowed
    */
+  // @formatter:on
   private boolean addFeatures(FeatureImpl[][] map, TypeSystemImpl tsFrom, TypeSystemImpl tsTo) {
     boolean r = true;
 

@@ -273,6 +273,7 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    */
   boolean containsType(String aTypeName);
 
+  // @formatter:off
   /**
    * Determines whether this <code>ResultSpecification</code> contains the specified Type for the
    * specified language. A type is considered to be contained in the result spec, also, if it is a
@@ -281,16 +282,23 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    * @param aTypeName
    *          the name of the type
    * @param aLanguage
-   *          the language to search for. A null value or the value x-unspecified for this argument
-   *          only matches ResultSpecifications having x-unspecified as their type. A language value
-   *          that is contained within a language in the ResultSpecification is considered to match.
-   *          In particular: Language ResultSpecification Result x-unspecified x-unspecified match
-   *          x-unspecified en no match en x-unspecified match en en-us no match en-us en match
-   * 
+   *          the language to search for.  
+   *          A null value or the value x-unspecified for this argument only
+   *            matches ResultSpecifications having x-unspecified as their type.
+   *          A language value that is contained within a language in the ResultSpecification
+   *            is considered to match.  In particular:
+   *               Language          ResultSpecification      Result
+   *               x-unspecified     x-unspecified             match
+   *               x-unspecified     en                        no match
+   *               en                x-unspecified             match
+   *               en                en-us                     no match
+   *               en-us             en                        match
+   *               
    * 
    * @return true if and only if this <code>ResultSpecification</code> contains the type with name
    *         <code>aTypeName</code> for a matching language.
    */
+  // @formatter:on
   boolean containsType(String aTypeName, String aLanguage);
 
   /**
@@ -309,6 +317,7 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    */
   boolean containsFeature(String aFullFeatureName);
 
+  // @formatter:off
   /**
    * Determines whether this <code>ResultSpecification</code> contains the specified Feature for the
    * specified language. Feature names are fully qualified, consisting of the type name plus the
@@ -320,15 +329,22 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    * @param aFullFeatureName
    *          the fully-qualified name of the feature, in the form MyTypeName:MyFeatureName.
    * @param aLanguage
-   *          the language to search for. A null value or the value x-unspecified for this argument
-   *          only matches ResultSpecifications having x-unspecified as their type. A language value
-   *          that is contained within a language in the ResultSpecification is considered to match.
-   *          In particular: Language ResultSpecification Result x-unspecified x-unspecified match
-   *          x-unspecified en no match en x-unspecified match en en-us no match en-us en match
+   *          the language to search for.  
+   *          A null value or the value x-unspecified for this argument only
+   *            matches ResultSpecifications having x-unspecified as their type.
+   *          A language value that is contained within a language in the ResultSpecification
+   *            is considered to match.  In particular:
+   *               Language          ResultSpecification      Result
+   *               x-unspecified     x-unspecified             match
+   *               x-unspecified     en                        no match
+   *               en                x-unspecified             match
+   *               en                en-us                     no match
+   *               en-us             en                        match
    * 
    * @return true if and only if this <code>ResultSpecification</code> contains the feature with
    *         name <code>aFullFeatureName</code> for a matching language.
    */
+  // @formatter:on
   boolean containsFeature(String aFullFeatureName, String aLanguage);
 
   /**

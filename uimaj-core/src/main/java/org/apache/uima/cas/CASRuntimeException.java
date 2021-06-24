@@ -385,15 +385,15 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
   public static final String DESER_FORM_6_BAD_TYPE_CODE = "DESER_FORM_6_BAD_TYPE_CODE";
 
-  /**
-   * The constructors are organized
-   * 
-   * 0 args - an exception, no message 1 to n args, first arg is String: - the message key, array of
-   * args, Throwable (backwards compatibility) - the resource bundle name, message key, array of
-   * args - the message key, followed by 0 or more Object args (variable arity) 2 to n args, first
-   * is Throwable cause, 2nd is message key, rest are args 1 arg - throwable cause
-   * 
-   */
+  // The constructors are organized
+  // 
+  //   0 args - an exception, no message
+  //   1 to n args, first arg is String:
+  //     - the message key, array of args, Throwable   (backwards compatibility)
+  //     - the resource bundle name, message key, array of args 
+  //     - the message key, followed by 0 or more Object args (variable arity)
+  //   2 to n args, first is Throwable cause, 2nd is message key, rest are args
+  //   1 arg - throwable cause 
   public CASRuntimeException() {
   }
 

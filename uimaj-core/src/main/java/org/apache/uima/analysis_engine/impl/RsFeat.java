@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.impl;
 
 /**
@@ -50,5 +49,4 @@ public class RsFeat {
   boolean subsumes(String language) {
     return RsLangs.subsumes(languages, language);
   }
-
 }

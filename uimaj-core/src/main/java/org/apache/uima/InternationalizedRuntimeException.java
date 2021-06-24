@@ -40,8 +40,6 @@ import org.apache.uima.internal.util.I18nx_impl;
  * This version of this class works with JDK versions prior to 1.4, since it does not assume support
  * for exception chaining. The file <code>InternationalizedException.java_1_4</code> is a version
  * that uses the exception chaining support built-in to JDK1.4.
- * 
- * 
  */
 public class InternationalizedRuntimeException extends RuntimeException {
 
@@ -206,8 +204,13 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * "TEST_KEY", objects); e.setResourceBundle(my_locale); // call this method, pass in the needed
    * locale object throw e; // or whatever should be done with it
    * 
-   * @param aLocale
-   *          the locale to use when getting the message from the message bundle at a later time
+   * then do something like this
+   * <code><pre>
+   *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
+   *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
+   *   throw e;  // or whatever should be done with it
+   * </pre></code>
+   * @param aLocale the locale to use when getting the message from the message bundle at a later time
    */
   public void setResourceBundle(Locale aLocale) {
     c.setResourceBundle(aLocale);
