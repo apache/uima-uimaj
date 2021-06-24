@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -86,8 +85,8 @@ import org.apache.uima.util.Settings;
  * A factory used to create {@link org.apache.uima.resource.ResourceSpecifier} instances and
  * instances of other objects needed to compose <code>ResourceSpecifier</code>s.
  * <p>
- * The primary method on this class is {@link #createObject(Class)}. Given the <code>Class</code>
- * of a UIMA interface related to Resource Specifiers, this method will construct an instance that
+ * The primary method on this class is {@link #createObject(Class)}. Given the <code>Class</code> of
+ * a UIMA interface related to Resource Specifiers, this method will construct an instance that
  * implements that interface. Other methods are provided as a convenience for creating specific
  * types of objects.
  * <p>
@@ -104,8 +103,8 @@ public interface ResourceSpecifierFactory {
    *          the <code>Class</code> object representing the type of interface to be instantiated.
    * 
    * @return an <code>Object</code> that implements <code>aInterface</code>. Returns
-   *         <code>null</code> if no object that implements <code>aInterface</code> is known to
-   *         this factory.
+   *         <code>null</code> if no object that implements <code>aInterface</code> is known to this
+   *         factory.
    */
   public Object createObject(Class aInterface);
 
@@ -233,7 +232,7 @@ public interface ResourceSpecifierFactory {
    * @return an instance of an object implementing <code>ConfigurationParameterSettings</code>.
    */
   public ConfigurationParameterSettings createConfigurationParameterSettings();
-  
+
   /**
    * Creates an empty <code>Settings</code> for External Override parameters.
    * 
