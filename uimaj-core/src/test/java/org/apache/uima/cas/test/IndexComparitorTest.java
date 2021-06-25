@@ -107,10 +107,13 @@ public class IndexComparitorTest {
 
   FSIndexRepository ir;
 
+  //@formatter:off
   /**
-   * first index: 0 = Type1, 1 = Type1Sub1, 2 = Type1Sub2 second index: value of f1 = 0 or 1 thrid
-   * index: value of f2 = 0 or 1
+   * first  index: 0 = Type1, 1 = Type1Sub1, 2 = Type1Sub2
+   * second index: value of f1 = 0 or 1
+   * thrid  index: value of f2 = 0 or 1
    */
+  //@formatter:on
   FeatureStructure fss[][][];
 
   FSIndex<FeatureStructure> sortedType1;
@@ -533,10 +536,15 @@ public class IndexComparitorTest {
 
   }
 
+  //@formatter:off
   /*
-   * test set index: put the same FS (by set comparator) into type and typeSub1 See if index
-   * contains both see if moveTo finds both see if iterator returns both
+   * test set index:
+   *   put the same FS (by set comparator) into type and typeSub1
+   *   See if index contains both
+   *      see if moveTo finds both
+   *      see if iterator returns both  
    */
+  //@formatter:on
   @Test
   public void testSetUsesType() throws Exception {
     cas.reset();

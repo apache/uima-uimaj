@@ -214,17 +214,22 @@ public class JCasHashMapTest {
     }
   }
 
+//@formatter:off
   /**
-   * Create situation // * make a set of indexed fs instances, no JCas // * on multiple threads,
-   * simultaneously, attempt to get the jcas cover object for this // * one getReserve should
-   * succeed, but reserve, and the others should "wait". // * then put // * then the others should
-   * "wakeup" and return the same instance on multiple threads, attempt to putIfAbsent a special
-   * search key instance, simultaneously one thread should succeed, the others should block while
-   * the succeeding one is awaiting an external "go" signal. Once that go signal happens, the other
-   * threads should succeed, and return the == fs to the first one.
-   * 
+   * Create situation
+//   *   make a set of indexed fs instances, no JCas
+//   *   on multiple threads, simultaneously, attempt to get the jcas cover object for this
+//   *     one getReserve should succeed, but reserve, and the others should "wait".
+//   *     then put
+//   *     then the others should "wakeup" and return the same instance 
+   *   on multiple threads, attempt to putIfAbsent a special search key instance, simultaneously
+   *     one thread should succeed, the others should block while the succeeding one is
+   *     awaiting an external "go" signal.  
+   *     Once that go signal happens, the other threads should succeed, and return the 
+   *     == fs to the first one.   
    * @throws Exception
    */
+//@formatter:on
   @Test
   public void testMultiThreadCollide() throws Exception {
     int numberOfThreads = Misc.numberOfCores;
@@ -246,12 +251,17 @@ public class JCasHashMapTest {
     for (int i = 0; i < numberOfThreads; i++) {
       final int finalI = i;
       threads[i] = new MultiThreadUtils.ThreadM() {
+       // @formatter:off
         /**
-         * for thread 0 -> nbr of threads -1: wait, sleep, do a putIfAbsent of "fs" - first one will
-         * succeed, others should wait till success set found[thread#] to m.putIfAbsent(hashkey);
+         * for thread 0 -> nbr of threads -1:
+         * wait,
+         * sleep,
+         * do a putIfAbsent of "fs" - first one will succeed, others should wait till success
+         * set found[thread#] to m.putIfAbsent(hashkey);
          * 
          * loop above until terminate thread
          */
+       // @formatter:on
         @Override
         public void run() {
           while (true) {

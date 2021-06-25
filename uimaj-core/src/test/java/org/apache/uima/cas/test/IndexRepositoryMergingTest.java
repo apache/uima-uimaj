@@ -38,13 +38,13 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+//@formatter:off
 /**
- * Check these use cases: 1) two identical index definitions, with different names: merged? 2) two
- * index definitions with the same kind and comparator, but different starting types - subindexes
- * merged?
- * 
- *
+ * Check these use cases:
+ *   1) two identical index definitions, with different names: merged?
+ *   2) two index definitions with the same kind and comparator, but different starting types - subindexes merged?
  */
+//@formatter:on
 public class IndexRepositoryMergingTest {
 
   CASImpl cas;

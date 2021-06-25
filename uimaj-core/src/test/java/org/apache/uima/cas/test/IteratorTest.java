@@ -522,11 +522,13 @@ public class IteratorTest {
     // fastFailTst(sortedIndex, true);
     // fastFailTst(ssSortedIndex, false);
 
+ // @formatter:off
     /**
-     * Test copy-on-write - insure that index mods are ignored in normal iteration insure that index
-     * mods are picked up for moveTo, moveToFirst, moveToLast
+     * Test copy-on-write - 
+     *   insure that index mods are ignored in normal iteration
+     *   insure that index mods are picked up for moveTo, moveToFirst, moveToLast
      */
-
+ // @formatter:on
     createFSsU();
 
     cowTst(setIndex, true);

@@ -16,13 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+//@formatter:off
 /* Apache UIMA v3 - First created by JCasGen Fri Dec 04 14:44:18 CET 2020 */
 
 package org.apache.uima.cas.test;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -31,134 +29,118 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
 
-/**
- * Used in testing FeatureMap serialization. Updated by JCasGen Fri Dec 04 14:44:18 CET 2020 XML
- * source: ExampleCas/CustomSerializable.xml
- * 
- * @generated
- */
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+
+/** Used in testing FeatureMap serialization.
+ * Updated by JCasGen Fri Dec 04 14:44:18 CET 2020
+ * XML source: ExampleCas/CustomSerializable.xml
+ * @generated */
 public class EnrichedEntity extends Annotation {
-
-  /**
-   * @generated
-   * @ordered
+ 
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static String _TypeName = "org.apache.uima.cas.test.EnrichedEntity";
-
-  /**
-   * @generated
-   * @ordered
+  
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(EnrichedEntity.class);
-  /**
-   * @generated
-   * @ordered
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /**
-   * @generated
-   * @return index of the type
+  /** @generated
+   * @return index of the type  
    */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /*
-   * ******************* Feature Offsets *
-   *******************/
-
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
   public final static String _FeatName_features = "features";
 
+
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_features = TypeSystemImpl.createCallSite(EnrichedEntity.class,
-          "features");
+  private final static CallSite _FC_features = TypeSystemImpl.createCallSite(EnrichedEntity.class, "features");
   private final static MethodHandle _FH_features = _FC_features.dynamicInvoker();
 
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
-   */
+   
+  /** Never called.  Disable default constructor
+   * @generated */
   @Deprecated
-  @SuppressWarnings("deprecation")
-  protected EnrichedEntity() {
-    /* intentionally empty block */}
-
-  /**
-   * Internal - constructor used by generator
-   * 
+  @SuppressWarnings ("deprecation")
+  protected EnrichedEntity() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
    * @generated
-   * @param casImpl
-   *          the CAS this Feature Structure belongs to
-   * @param type
-   *          the type of this Feature Structure
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
   public EnrichedEntity(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     readObject();
   }
-
-  /**
-   * @generated
-   * @param jcas
-   *          JCas to which this Feature Structure belongs
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public EnrichedEntity(JCas jcas) {
     super(jcas);
-    readObject();
-  }
+    readObject();   
+  } 
 
-  /**
-   * @generated
-   * @param jcas
-   *          JCas to which this Feature Structure belongs
-   * @param begin
-   *          offset to the begin spot in the SofA
-   * @param end
-   *          offset to the end spot in the SofA
-   */
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
   public EnrichedEntity(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }
+  }   
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
    *
-   * @generated modifiable
+   * @generated modifiable 
    */
-  private void readObject() {
-    /* default - does nothing empty block */}
+  private void readObject() {/*default - does nothing empty block */}
+     
+ 
+    
+  //*--------------*
+  //* Feature: features
 
-  // *--------------*
-  // * Feature: features
-
-  /**
-   * getter for features - gets
-   * 
+  /** getter for features - gets 
    * @generated
-   * @return value of the feature
+   * @return value of the feature 
    */
-  public FeatureMap getFeatures() {
-    return (FeatureMap) (_getFeatureValueNc(wrapGetIntCatchException(_FH_features)));
+  public FeatureMap getFeatures() { 
+    return (FeatureMap)(_getFeatureValueNc(wrapGetIntCatchException(_FH_features)));
   }
-
-  /**
-   * setter for features - sets
-   * 
+    
+  /** setter for features - sets  
    * @generated
-   * @param v
-   *          value to set into the feature
+   * @param v value to set into the feature 
    */
   public void setFeatures(FeatureMap v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_features), v);
+  }    
+    
   }
 
-}
+    

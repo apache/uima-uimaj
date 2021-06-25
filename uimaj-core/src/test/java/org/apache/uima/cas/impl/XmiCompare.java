@@ -51,25 +51,30 @@ import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
+//@formatter:off
 /**
  * This is a utility that compares two xmi CASs and prints out the differences.
  * 
  * It is run as a Java Application, not as a test
  * 
- * It takes two directories, with the xmi CASs to compare (must be named the same): each directory
- * has 1 special file named: CAS_typeSystem_desc.xml - this is the type system each has n other
- * files: xmi CASes to compare It takes an int "skip" argument, to skip over that many CASs before
- * starting comparison.
+ * It takes two directories, with the xmi CASs to compare (must be named the same):
+ *   each directory has 1 special file named: CAS_typeSystem_desc.xml - this is the type system
+ *   each has n other files: xmi CASes to compare
+ * It takes an int "skip" argument, to skip over that many CASs before starting comparison.
  * 
- * It supports comparing results of UIMA V2 with V3, using a convention: The input directories must
- * have names that start with uv2-out or uv3-out
+ * It supports comparing results of UIMA V2 with V3, using a convention:
+ *   The input directories must have names that start with uv2-out  or uv3-out
  * 
- * Compare technique: Get a set of roots - the items that are in any index Sort that by type, and
- * then by content.
+ * Compare technique:
+ *   Get a set of roots - the items that are in any index
+ *   Sort that by type, and then by content.  
  * 
- * There are 3 sets of compare-relaxers. - uv2 to uv2 - uv3 to uv3 - uv2 to uv3
- * 
+ *   There are 3 sets of compare-relaxers.
+ *     - uv2 to uv2 
+ *     - uv3 to uv3   
+ *     - uv2 to uv3
  */
+//@formatter:on
 public class XmiCompare {
 
   private static final String BLANKS_89 = Misc.blanks.substring(0, 89);
@@ -131,12 +136,15 @@ public class XmiCompare {
 
       System.out.println("Comparing " + d1String + " to " + d2String);
 
-      if (isV2V2)
+      if (isV2V2) {
         System.out.println("\napplying fixups for v2 versus v2 comparison");
-      if (isV2V3)
+      }
+      if (isV2V3) {
         System.out.println("\napplying fixups for v2 versus v3 comparison");
-      if (isV3V3)
+      }
+      if (isV3V3) {
         System.out.println("\napplying fixups for v3 versus v3 comparison");
+      }
 
       // read the type system descriptor
       File typeSystemFile = Paths.get(d2String, "CAS_typeSystem_desc.xml").toFile();

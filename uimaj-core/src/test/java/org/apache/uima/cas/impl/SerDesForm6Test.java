@@ -601,16 +601,20 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDeserFilter(remoteCas, "WithDeserFilter" + kind);
   }
 
+  //@formatter:off
   /**
-   * 1) create a base cas with some data 2) serialize it out and then back into a remoteCas This is
-   * needed to get the proper ordering in the remote cas of the feature structures - they will be
-   * ordered by their fs addr, but omitting "skipped" FSs (not in the index or reachable, and not in
-   * the target ts) 2) create the mark in the remoteCAS: cas.createMarker() 3) add more cas data to
-   * the remoteCas 4) serialize with marker 5) deserialize back into base cas 6) check resulting
-   * base cas = remote cas
-   * 
-   * 
+   * 1) create a base cas with some data
+   * 2) serialize it out and then back into a remoteCas
+   *    This is needed to get the proper ordering in the remote cas of the 
+   *    feature structures - they will be ordered by their fs addr, but omitting
+   *    "skipped" FSs (not in the index or reachable, and not in the target ts)
+   * 2) create the mark in the remoteCAS: cas.createMarker()
+   * 3) add more cas data to the remoteCas
+   * 4) serialize with marker
+   * 5) deserialize back into base cas
+   * 6) check resulting base cas = remote cas
    */
+  //@formatter:on
   @Test
   public void testDelta() {
     if (doPlain) {
@@ -686,14 +690,18 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
+  //@formatter:off
   /**
-   * Variations to cover: all kinds of slots multiple sets of values test diffs multiple orders (try
-   * reverse and random order)
+   * Variations to cover:
+   *   all kinds of slots
+   *   multiple sets of values
+   *     test diffs
+   * multiple orders (try reverse and random order)
    * 
-   * Driver for random values pick among random and "interesting" edge case values
-   * 
-   * 
+   * Driver for random values
+   *   pick among random and "interesting" edge case values
    */
+  //@formatter:on
   @Test
   public void testDeltaWithAllMods() {
 

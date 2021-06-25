@@ -39,8 +39,9 @@ import org.apache.uima.util.IntEntry;
 import org.apache.uima.util.impl.Constants;
 
 /**
- * A map from ints to Feature Structures Is Pear aware - stores non-pear versions but may return
- * pear version in pear contexts
+ * A map from ints to Feature Structures
+ * 
+ * Is Pear aware - stores non-pear versions but may return pear version in pear contexts
  */
 public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, Cloneable {
 
@@ -69,8 +70,10 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
    * @return index of the type
    */
   @Override
-  public              int getTypeIndexID() {return typeIndexID;}
- 
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
 //@formatter:off
   /** 
    * lifecycle   
@@ -328,8 +331,9 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
     builder.append("[");
     int i = 0;
     for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
-      if (i > 0)
+      if (i > 0) {
         builder.append(", ");
+      }
       builder.append(iterator.next());
     }
     builder.append("]");
@@ -381,8 +385,9 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
   }
 
   public void clear() {
-    if (size() == 0)
+    if (size() == 0) {
       return;
+    }
     maybeLazyInit();
     isSaveNeeded = true;
     int2FS.clear();

@@ -42,11 +42,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+//@formatter:off
 /**
- * The setup: Token (super = Annotation) Sentence (super = Annotation)
- * 
- * Annotator: (in descr) SubIteratorAnnotator
+ * The setup:
+ *   Token (super = Annotation)
+ *   Sentence (super = Annotation)
+ *   
+ *   Annotator:  (in descr) SubIteratorAnnotator
  */
+//@formatter:on
 public class SubiteratorTest {
 
   private AnalysisEngine ae = null;

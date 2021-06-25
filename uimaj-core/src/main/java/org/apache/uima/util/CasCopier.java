@@ -254,8 +254,11 @@ public class CasCopier {
                                  // defined in the destination CAS
 
   /**
-   * key is source FS, value is target FS Target not set for SofaFSs Target not set if lenient
-   * specified and src type isn't in target
+   * key is source FS, value is target FS
+   * 
+   * Target not set for SofaFSs
+   * 
+   * Target not set if lenient specified and src type isn't in target
    */
   final private Map<TOP, TOP> mFsMap; // is identity hash map
 

@@ -142,7 +142,7 @@ public class OptimizeStrings {
   }
 
   /**
-   * null strings not added 
+   * null strings not added
    * 
    * 0 length strings added
    * 
@@ -179,7 +179,7 @@ public class OptimizeStrings {
    * @param s
    *          must not be null
    * @return a (positive or 0) or negative number. If positive, it is the offset in the common
-   *         string If negative, -v is the index (starting at 1) that sequentially increases, for
+   *         string. If negative, -v is the index (starting at 1) that sequentially increases, for
    *         each new unique string fetched using this method.
    */
   public int getIndexOrSeqIndex(String s) {

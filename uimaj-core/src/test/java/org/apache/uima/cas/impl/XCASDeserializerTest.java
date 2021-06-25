@@ -331,10 +331,17 @@ public class XCASDeserializerTest {
 
   @Test
   public void testMultipleSofas() throws Exception {
+      //@formatter:off
     /*************************************************
-     * Make CAS with 2 sofas, initial and OtherSofa * * Add instance of TOP and index in both views
-     * * * Serialize to string "xml" * * Deserialize from string *
+     * Make CAS with 2 sofas, initial and OtherSofa  *
+     *                                               *
+     * Add instance of TOP and index in both views   *
+     *                                               *
+     * Serialize to string "xml"                     *
+     *                                               *
+     * Deserialize from string                       *
      *************************************************/
+      //@formatter:on
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     // set document text for the initial view
     cas.setDocumentText("This is a test");

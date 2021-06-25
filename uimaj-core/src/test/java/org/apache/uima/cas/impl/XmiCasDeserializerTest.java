@@ -1503,41 +1503,72 @@ public class XmiCasDeserializerTest {
     }
   }
 
+  //@formatter:off
   /**
    * This test looks at delta cas serialization and deserialization.
    * 
-   * First it makes 3 CASs cas1, cas2, cas3, with shared typesystem. Sets up types and features:
-   * Person { componentId, confidence } super is EntityAnnotation Organization Owner { relationArgs
-   * EntityAnnotation { mentionType BinaryRelationArgs { domainValue, rangeValue } Entity { classes,
-   * links, canonicalForm
-   * 
-   * NonEmptyFSList { head, tail EmptyFSList
-   * 
-   * cas1: _InitialView: docText = "This is a test document in the initial view" annot1 = Annotation
-   * 0, 4, -> index annot2 = Annotation 5, 6 -> index annot3 = Annotation 8, 13 -> index annot4 =
-   * Annotation 15, 30 -> index
-   * 
-   * Entity classes={"class1"} -> index links= FsList: {annot1, annot2} View1:
-   * 
-   * preexistingView: docText = "John Smith blah blah blah" person1Annot = Person 0, 10,
-   * componentId: "deltacas1" -> index person2Annot = Person 0, 5 -> index orgAnnot = Organization
-   * 16, 24 -> index ownerAnnot = Owner 0, 24 relationArgs: -> index BinaryRelArg domain:
-   * person1Annot --------------------------------------------------------------------------
-   * serialize cas1 (sharedData initially empty) -> xml deser xml -> cas2, using sharedData2,
-   * compare. ---------------------------- In cas2: create Marker. _InitialView: annot5 = Annotation
-   * 6, 8, -> index View1: docText = "This is the View1 document." c2v1Annot = Annotation 1, 5 ->
-   * index ---------------------------- modify existing annotation: _InitialView: documentAnnotation
-   * - modify language to "en" remove annot1 from index, mod annot1 end to 4 (was 4), add back to
-   * index remove annot2 from index _PreexistingView person1Annot: confidence = 99.99 person2Annot:
-   * mentionType = "FIRSTNAME" orgAnnot: mentionType = "ORGNAME" ownerAnnot: args: rangeFeat:
-   * orgAnnot ---------------------------------------------- _InitialView: entityFS: classes: set
-   * string array 1-4: class2, 3, 4, 5 links: add a 3rd node to the list, head: annot5
-   * ---------------------------------------------- serialize cas2 -> deltaxml1 using sharedData2,
-   * marker deserialize -> cas1 using it's sharedData
-   * 
+   * First it makes 3 CASs cas1, cas2, cas3, with shared typesystem.
+   * Sets up types and features:
+   *    Person  { componentId, confidence }  super is EntityAnnotation
+   *    Organization
+   *    Owner            { relationArgs
+   *    EntityAnnotation { mentionType
+   *    BinaryRelationArgs { domainValue, rangeValue }
+   *    Entity             { classes, links, canonicalForm
+   *    
+   *    NonEmptyFSList     { head, tail
+   *    EmptyFSList
+   *    
+   * cas1:
+   *     _InitialView: docText = "This is a test document in the initial view"
+   *       annot1 = Annotation  0,  4, -> index
+   *       annot2 = Annotation  5,  6  -> index
+   *       annot3 = Annotation  8, 13  -> index
+   *       annot4 = Annotation 15, 30  -> index
+   *       
+   *       Entity  classes={"class1"}           -> index
+   *               links= FsList: {annot1, annot2} 
+   *     View1:
+   *     
+   *     preexistingView: docText = "John Smith blah blah blah"
+   *       person1Annot = Person 0, 10, componentId: "deltacas1" -> index
+   *       person2Annot = Person 0, 5                            -> index
+   *       orgAnnot     = Organization 16, 24                    -> index
+   *       ownerAnnot   = Owner 0, 24 relationArgs:              -> index 
+   *                                    BinaryRelArg 
+   *                                      domain: person1Annot
+   * -------------------------------------------------------------------------- 
+   * serialize cas1 (sharedData initially empty) -> xml  
+   * deser  xml -> cas2, using sharedData2, compare.
+   * ----------------------------
+   * In cas2:
+   *   create Marker.   
+   *     _InitialView: 
+   *       annot5 = Annotation  6,  8, -> index
+   *     View1: docText = "This is the View1 document." 
+   *       c2v1Annot = Annotation 1, 5                          -> index
+   * ----------------------------      
+   * modify existing annotation:
+   *     _InitialView:
+   *       documentAnnotation - modify language to "en"
+   *       remove annot1 from index, mod annot1 end to 4 (was 4), add back to index
+   *       remove annot2 from index
+   *     _PreexistingView
+   *       person1Annot: confidence = 99.99
+   *       person2Annot: mentionType = "FIRSTNAME"
+   *       orgAnnot:     mentionType = "ORGNAME"
+   *       ownerAnnot:   args: rangeFeat: orgAnnot
+   * ----------------------------------------------
+   *    _InitialView:
+   *      entityFS: classes: set string array 1-4: class2, 3, 4, 5
+   *                links: add a 3rd node to the list, head: annot5
+   * ----------------------------------------------
+   * serialize cas2 -> deltaxml1 using sharedData2, marker
+   * deserialize -> cas1 using it's sharedData  
    * 
    * @throws Exception
    */
+  //@formatter:on
   @Test
   public void testDeltaCasAllowPreexistingFS() throws Exception {
     try {

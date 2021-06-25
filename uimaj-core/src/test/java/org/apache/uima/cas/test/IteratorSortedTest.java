@@ -38,6 +38,7 @@ import org.apache.uima.jcas.cas.TOP;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// @formatter:off
 /**
  * Test many variations of rattling iterators (sorted)
  * 
@@ -53,19 +54,23 @@ import org.junit.jupiter.api.Test;
  * 
  * Each FS: has simple incrementing begin / end (or not - for testing equality operations)
  * 
- * Movement alternatives: at start, move to first/last/FS template. move from arbitrary starting
- * spot to end (detect end, don't move past), then reverse to beginning. -- or reverse of above.
+ * Movement alternatives:
+ *   at start, move to first/last/FS template.  
+ *   move from arbitrary starting spot to end (detect end, don't move past), 
+ *     then reverse to beginning.
+ *     -- or reverse of above.
  * 
- * validation: incremental moves: check next id is sequentially +- 1. need map from begin to
- * left-most FS of equal set, for testing moveTo. need to record 1st and last id. validate leftmost
- * for moveTo
+ * validation: incremental moves: check next id is sequentially +- 1.
+ * need map from begin to left-most FS of equal set, for testing moveTo.
+ * need to record 1st and last id.
+ * validate leftmost for moveTo
  * 
- * Variations: number of levels, levels that are "skipped" adding random new elements while
- * iterating, then moveTo
- * 
- * 
- * 
+ * Variations:  
+ *   number of levels, 
+ *   levels that are "skipped"
+ *   adding random new elements while iterating, then moveTo
  */
+//@formatter:on
 public class IteratorSortedTest {
   static final int REPETITIONS = // 100_000_000; 1000 secs = 17 min
           100_000; // 1 second + startup time ~ .8 sec
@@ -277,13 +282,17 @@ public class IteratorSortedTest {
     }
   }
 
+//@formatter:off
   /**
-   * Make a random collection of FSs to iterate over Random order among types/subtypes random number
-   * of types/subtypes used, from 2 - 6 if number of types < max, the type(s) omitted chosen
-   * randomly Random creation of equals fss to check moving to "leftmost"
+   * Make a random collection of FSs to iterate over
+   *   Random order among types/subtypes
+   *     random number of types/subtypes used, from 2 - 6
+   *     if number of types < max, the type(s) omitted chosen randomly
+   *   Random creation of equals fss to check moving to "leftmost"
    * 
    * @param lvls
    */
+//@formatter:on
   void makeFSs(int lvls) {
     int begin = 0;
 

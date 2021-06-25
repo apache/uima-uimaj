@@ -627,19 +627,28 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     it.moveToNext();
   }
 
+  // @formatter:off
   /*********************************
-   * terminal operations returning other than SelectFSs
+   * terminal operations
+   * returning other than SelectFSs
    * 
-   * Hierarchy of interpretation of setup: - index - type
+   * Hierarchy of interpretation of setup:
+   *   - index
+   *   - type
    * 
-   * - allViews: ignored: things only with annotation index order among views is arbitrary, each
-   * view done together base view skipped
+   *   - allViews: ignored: things only with annotation index
+   *               order among views is arbitrary, each view done together
+   *               base view skipped
    * 
    *********************************/
+  // @formatter:on
 
+  // @formatter:off
   /**
-   * F S I t e r a t o r -------------------
+   * F S I t e r a t o r
+   * -------------------
    */
+  // @formatter:on
   @Override
   public FSIterator<T> fsIterator() {
     if (isFollowing && isBackwards) {

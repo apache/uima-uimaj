@@ -158,10 +158,14 @@ public class SerializationReinitTest {
   @BeforeEach
   public void setUp() throws Exception {
 
+   // @formatter:off
     /*
-     * sets up two type systems: One defined via API calls, and set into the global var cas = casMgr
-     * One defined by parsing ExampleCas/testTypeSystem and setting typeSystem and indexes
+     * sets up two type systems:
+     *   One defined via API calls, and set into the global var cas = casMgr
+     *   One defined by parsing ExampleCas/testTypeSystem and setting
+     *     typeSystem and indexes
      */
+   // @formatter:on
     casMgr = initCAS();
     cas = (CASImpl) casMgr;
 
@@ -530,15 +534,16 @@ public class SerializationReinitTest {
   @Test
   public void testBlob() throws Exception {
 
+   // @formatter:off
     /*
-     * Test that FS, indexes and strings work after repeated blob serialization For each iteration,
-     * add two new FS, serialize and test all created so The first FS sets the string feature using
-     * standard API => goes into stringlist The second FS sets the string feature using lowlevel API
-     * => goes into stringheap
+     * Test that FS, indexes and strings work after repeated blob serialization
+     * For each iteration, add two new FS, serialize and test all created so
+     * The first FS sets the string feature using standard API => goes into stringlist
+     * The second FS sets the string feature using lowlevel API => goes into stringheap 
      * 
      * Throw in tests of the byte, short and long heaps as well
-     * 
      */
+   // @formatter:on
     String testString = "testString";
     cas.reset();
     LowLevelCAS ll_cas = cas.getLowLevelCAS();

@@ -51,10 +51,13 @@ public class JCasRegistry {
   private JCasRegistry() {
   }; // never instantiated.
 
+  // @formatter:off
   /**
-   * A WeakReference class holding - a ref to a JCas class - an assigned int for that class
-   *
+   * A WeakReference class holding 
+   *   - a ref to a JCas class 
+   *   - an assigned int for that class 
    */
+  // @formatter:on
   private static class WeakRefInt<T> extends WeakReference<T> {
     int index;
 

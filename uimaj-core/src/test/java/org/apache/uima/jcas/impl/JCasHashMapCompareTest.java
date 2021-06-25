@@ -32,13 +32,14 @@ import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.jcas.cas.TOP;
 import org.junit.jupiter.api.Test;
 
+//@formatter:off
 /**
  * Run this as a single test with yourkit, and look at the retained storage for both maps.
  * 
- * Java 8 test: Concurrent Hash Map impl showed ~2.25 MB * 8 (concurrency level) JCasHashmap showed
- * ~0.835 MB * 8
- *
+ *   Java 8 test: Concurrent Hash Map impl showed ~2.25 MB * 8 (concurrency level)
+ *                JCasHashmap              showed ~0.835 MB * 8 
  */
+//@formatter:on
 public class JCasHashMapCompareTest {
 
   private static final long rm = 0x5deece66dL;

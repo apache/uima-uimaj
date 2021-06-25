@@ -33,27 +33,32 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
+//@formatter:off
 /**
- * Serializer and Deserializer testing Common code for testing
+ * Serializer and Deserializer testing
+ * Common code for testing
  * 
- * Has main method for creating resources to use in testing will update resources in SerDes4 or 6.
- * If you do this by mistake, just revert those resources.
+ * Has main method for creating resources to use in testing
+ *   will update resources in SerDes4 or 6.  If you do this by mistake, just revert those resources.
  * 
- * Multi-threading: Create one instance of this class per instance of using class ** Not one
- * instance per "setup" call **
+ * Multi-threading:  
+ * Create one instance of this class per instance of using class
+ *   ** Not one instance per "setup" call **
  */
+//@formatter:on
 public abstract class SerDesTstCommon extends TestCase {
 
   // FIXME need to understand why includeUid is false, seems to be disabling some testing Nov 2016
   private static final boolean includeUid = false;
   private static final AtomicInteger aint = includeUid ? new AtomicInteger(0) : null;
 
+  //@formatter:off
   /**
-   * A version of Random that can pull numbers from a stream instead - useful for reproducing a
-   * previously generated set of random numbers - used when running against previously generated
-   * serialized data
-   *
+   * A version of Random that can pull numbers from a stream instead
+   *   - useful for reproducing a previously generated set of random numbers
+   *   - used when running against previously generated serialized data
    */
+  //@formatter:on
   class MyRandom extends Random {
 
     @Override
@@ -131,20 +136,24 @@ public abstract class SerDesTstCommon extends TestCase {
     System.out.format("SerDesTstCommon Initial RandomSeed: %d%n", seed);
   }
 
+  //@formatter:off
   /**
-   * The random number generator - used throughout. Can return a pre-computed stream of random
-   * numbers if usePrevData is true Can save the stream of random numbers if capture is true
-   * 
+   * The random number generator - used throughout.
+   * Can return a pre-computed stream of random numbers if usePrevData is true
+   * Can save the stream of random numbers if capture is true
    */
+  //@formatter:on
   protected final Random random = new MyRandom();
   {
     random.setSeed(randomseed.nextLong());
   }
 
   /**
-   * set to true to change FS creation to keep references to all created FS needed for testing
-   * backward compatibility with delta cas Done by adding to indexes FSs which otherwise would be
-   * lost
+   * set to true to change FS creation to keep references to all created FS. 
+   * 
+   * Needed for testing backward compatibility with delta CAS.
+   * 
+   * Done by adding to indexes FSs which otherwise would be lost.
    */
   protected boolean isKeep = false;
 

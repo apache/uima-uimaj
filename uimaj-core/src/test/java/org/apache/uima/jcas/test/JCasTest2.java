@@ -23,25 +23,44 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
 
+//@formatter:off
 /**
  * Test for adjusted offset computation between varieties of JCas implementations and type systems.
  *
- * The supertype hierarchy for JCas and Type System: 1 /\ 2 3 /\ 4 5 /|\ 6 7 8 | 9 | 10
+ *  The supertype hierarchy for JCas and Type System:
+ *      1
+ *     /\ 
+ *    2  3
+ *   /\ 
+ *  4  5
+ *    /|\    
+ *   6 7 8
+ *     |
+ *     9
+ *     |
+ *     10
  * 
- * This test tests for correct operation when one of (JCas, Type System) has the above full
- * hierarchy, and the other implements a partial view.
+ *  This test tests for correct operation when one of (JCas, Type System) has the above full hierarchy, and the other
+ *  implements a partial view.
  * 
- * 1 2 5 10
+ *     1
+ *     2
+ *     5
+ *     10
  * 
- * The intent is to support use cases: Within one class loader (loading JCas classes), - the JCas
- * classes are missing many types -- the type system loaded with these defines various subsets of
- * the types, but --- starting with the type system with the most types and features - the JCas
- * class impl all the types, -- the type system loaded with these defines various subsets of the
- * types --- not starting with the type system with the most types and features (types/features
- * should be picked up from reflection on JCas classes; no support for new types or features not
- * defined in the JCas hierarchy)
+ *  The intent is to support use cases:
+ *     Within one class loader (loading JCas classes), 
+ *       - the JCas classes are missing many types
+ *           -- the type system loaded with these defines various subsets of the types, but
+ *               --- starting with the type system with the most types and features
+ *       - the JCas class impl all the types, 
+ *           -- the type system loaded with these defines various subsets of the types
+ *               --- not starting with the type system with the most types and features
+ *                   (types/features should be picked up from reflection on JCas classes;
+ *                    no support for new types or features not defined in the JCas hierarchy)
  * 
  */
+//@formatter:on
 public class JCasTest2 {
 
   private CAS cas;

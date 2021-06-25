@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+//@formatter:off
 /* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
@@ -44,12 +44,12 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
+
 /** an expandable array of ints
  * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
  * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
  * @generated */
 
-//@formatter:off
 /**
  * An ArrayList type containing ints, for UIMA
  *   - implements a subset of the List API, Iterable&lt;Integer&gt;, IntListIterator.
@@ -66,81 +66,73 @@ import org.apache.uima.jcas.JCasRegistry;
  *   - This enables operation without creating the Java Object in use cases of deserializing and
  *     referencing when updating is not being used.    
  */
-//@formatter:on
-public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSerializable,
-        CommonArrayFS<Integer>, RandomAccess, Cloneable {
 
-  /**
-   * @generated
-   * @ordered
+public class IntegerArrayList extends TOP implements 
+                          Iterable<Integer>,
+                          UimaSerializable, CommonArrayFS<Integer>, 
+                          RandomAccess, Cloneable {
+ 
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static String _TypeName = "org.apache.uima.jcas.cas.IntegerArrayList";
-
-  /**
-   * @generated
-   * @ordered
+  
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(IntegerArrayList.class);
-  /**
-   * @generated
-   * @ordered
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /**
-   * @generated
-   * @return index of the type
+  /** @generated
+   * @return index of the type  
    */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
   /**
-   * lifecycle - starts as empty array list - becomes non-empty when updated (add) -- used from that
-   * point on
+   * lifecycle
+   *   - starts as empty array list
+   *   - becomes non-empty when updated (add)
+   *       -- used from that point on
    */
   private final IntVector intArrayList;
-
+  
   /**
-   * lifecycle - starts as the empty list - set when _init_from_cas_data() - set to null when update
-   * (add/remove) happens
+   * lifecycle
+   *   - starts as the empty list
+   *   - set when _init_from_cas_data()
+   *   - set to null when update (add/remove) happens
    */
   private List_of_ints intArrayAsList = List_of_ints.EMPTY_LIST();
 
-//@formatter:off
   /* *******************
    *   Feature Offsets *
    * *******************/ 
-//@formatter:on
+   
   public final static String _FeatName_intArray = "intArray";
 
+
   /* Feature Adjusted Offsets */
-  // public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
-  private final static CallSite _FC_intArray = TypeSystemImpl
-          .createCallSiteForBuiltIn(IntegerArrayList.class, "intArray");
+//  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
+  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(IntegerArrayList.class, "intArray");
   private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
 
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
-   */
+   
+  /** Never called.  Disable default constructor
+   * @generated */
   protected IntegerArrayList() {
     intArrayList = null;
   }
-
-  /**
-   * Internal - constructor used by generator
-   * 
+    
+  /** Internal - constructor used by generator 
    * @generated
-   * @param casImpl
-   *          the CAS this Feature Structure belongs to
-   * @param type
-   *          the type of this Feature Structure
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
   public IntegerArrayList(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
@@ -149,11 +141,9 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
       _casView.traceFSCreate(this);
     }
   }
-
-  /**
-   * @generated
-   * @param jcas
-   *          JCas to which this Feature Structure belongs
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public IntegerArrayList(JCas jcas) {
     super(jcas);
@@ -161,15 +151,12 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-  }
+  } 
 
   /**
-   * Make a new ArrayList with an initial size
-   * 
-   * @param jcas
-   *          The JCas
-   * @param length
-   *          initial size
+   * Make a new ArrayList with an initial size 
+   * @param jcas The JCas
+   * @param length initial size
    */
   public IntegerArrayList(JCas jcas, int length) {
     super(jcas);
@@ -179,50 +166,43 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-  }
+  } 
+    
+  //*--------------*
+  //* Feature: intArray
 
-  // *--------------*
-  // * Feature: intArray
-
-  /**
-   * getter for intArray - gets internal use - holds the ints
-   * 
+  /** getter for intArray - gets internal use - holds the ints
    * @generated
-   * @return value of the feature
+   * @return value of the feature 
    */
-  private IntegerArray getIntArray() {
-    return (IntegerArray) (_getFeatureValueNc(wrapGetIntCatchException(_FH_intArray)));
-  }
-
-  /**
-   * setter for intArray - sets internal use - holds the ints
-   * 
+  private IntegerArray getIntArray() { return (IntegerArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_intArray)));}
+    
+  /** setter for intArray - sets internal use - holds the ints 
    * @generated
-   * @param v
-   *          value to set into the feature
+   * @param v value to set into the feature 
    */
   private void setIntArray(IntegerArray v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_intArray), v);
-  }
-
+  }    
+    
   private void maybeStartUsingIntegerArrayList() {
     if (intArrayAsList != null) {
       intArrayList.removeAllElements();
-      intArrayList.copyFromArray(intArrayAsList.toArrayMinCopy(), 0, 0, size());
-      intArrayAsList = null; // stop using this one
-      setIntArray(null); // clear
+      intArrayList.copyFromArray(intArrayAsList.toArrayMinCopy(), 0, 0, size()); 
+      intArrayAsList = null;  // stop using this one
+      setIntArray(null);  // clear
     }
   }
-
+  
   @Override
   public void _init_from_cas_data() {
-
+    
   }
-
+  
   @Override
   public void _save_to_cas_data() {
     if (null != intArrayAsList) {
-      return; // nothing to do
+      return;  // nothing to do
     }
     IntegerArray ia = getIntArray();
     final int size = intArrayList.size();
@@ -230,26 +210,24 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
       ia = new IntegerArray(_casView.getJCasImpl(), size);
       setIntArray(ia);
     }
-    ia.copyFromArray(intArrayList.getArray(), 0, 0, size());
+    ia.copyFromArray(intArrayList.getArray(), 0,  0, size());
     intArrayAsList = List_of_ints.newInstance(getIntArray()._getTheArray());
   }
-
+  
   /**
-   * @param i
-   *          -
+   * @param i -
    * @return the indexed value from the corresponding Cas IntegerArray as a Java Model object.
    */
   public int get(int i) {
-    return (null == intArrayAsList) ? intArrayList.get(i) : intArrayAsList.get(i);
+    return (null == intArrayAsList)
+      ? intArrayList.get(i)
+      : intArrayAsList.get(i);
   }
 
   /**
    * updates the i-th value of the IntegerArrayList
-   * 
-   * @param i
-   *          -
-   * @param v
-   *          -
+   * @param i -
+   * @param v -
    */
   public void set(int i, int v) {
     if (null == intArrayAsList) {
@@ -258,63 +236,59 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
       intArrayAsList.set(i, v);
     }
   }
-
+  
   /** return the size of the array. */
   @Override
   public int size() {
-    return (null == intArrayAsList) ? intArrayList.size() : intArrayAsList.size();
+    return (null == intArrayAsList) 
+        ? intArrayList.size()
+        : intArrayAsList.size();
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
-   * @param src
-   *          -
-   * @param srcPos
-   *          -
-   * @param destPos
-   *          -
-   * @param length
-   *          -
+   * @param src -
+   * @param srcPos -
+   * @param destPos -
+   * @param length -
    */
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
-    if (srcPos < 0 || srcEnd > src.length || destEnd > size()) {
+    if (srcPos < 0 ||
+        srcEnd > src.length ||
+        destEnd > size()) {
       throw new ArrayIndexOutOfBoundsException(
-              String.format("IntegerArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",
-                      srcPos, destPos, length));
+          String.format("IntegerArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     if (null == intArrayAsList) {
       intArrayList.copyFromArray(src, srcPos, destPos, length);
     } else {
       intArrayAsList.copyFromArray(src, srcPos, destPos, length);
-    }
+    }      
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
-   * @param srcPos
-   *          -
-   * @param dest
-   *          -
-   * @param destPos
-   *          -
-   * @param length
-   *          -
+   * @param srcPos -
+   * @param dest -
+   * @param destPos -
+   * @param length -
    */
   public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
-    if (srcPos < 0 || srcEnd > size() || destEnd > dest.length) {
+    if (srcPos < 0 ||
+        srcEnd > size() ||
+        destEnd > dest.length) {
       throw new ArrayIndexOutOfBoundsException(
-              String.format("IntegerArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",
-                      srcPos, destPos, length));
+          String.format("IntegerArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     if (null == intArrayAsList) {
       intArrayList.copyToArray(srcPos, dest, destPos, length);
     } else {
       intArrayAsList.copyToArray(srcPos, dest, destPos, length);
-    }
+    }          
   }
 
   /**
@@ -329,37 +303,31 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
 
   /**
    * Not supported, will throw UnsupportedOperationException
-   * 
-   * @param src
-   *          -
-   * @param srcPos
-   *          -
-   * @param destPos
-   *          -
-   * @param length
-   *          -
+   * @param src -
+   * @param srcPos -
+   * @param destPos -
+   * @param length -
    */
-  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
   }
-
+    
   /**
    * Copies an array of ints to an Array of Strings.
    * 
    * @param srcPos
-   *          The index of the first element to copy.
+   *                The index of the first element to copy.
    * @param dest
-   *          The array to copy to.
+   *                The array to copy to.
    * @param destPos
-   *          Where to start copying into <code>dest</code>.
+   *                Where to start copying into <code>dest</code>.
    * @param length
-   *          The number of elements to copy.
+   *                The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *              If <code>srcPos &lt; 0</code> or <code>length &gt; size()</code> or
-   *              <code>destPos + length &gt; destArray.length</code>.
+   *                    If <code>srcPos &lt; 0</code> or
+   *                    <code>length &gt; size()</code> or
+   *                    <code>destPos + length &gt; destArray.length</code>.
    */
-  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(size(), srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -367,17 +335,16 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
     }
   }
 
-  /*
+  /* 
    * 
    * (non-Javadoc)
-   * 
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
   public void copyValuesFrom(CommonArrayFS<Integer> v) {
     clear();
     Spliterator.OfInt si;
-
+    
     if (v instanceof IntegerArrayList) {
       si = ((IntegerArrayList) v).spliterator();
     } else if (v instanceof IntegerArray) {
@@ -385,17 +352,14 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
     } else {
       throw new ClassCastException("argument must be of class IntegerArray or IntegerArrayList");
     }
-
-    si.forEachRemaining((int i) -> add(i));
+      
+    si.forEachRemaining((int i) -> add(i));      
   }
-
+  
   /**
    * Convenience - create a IntegerArrayList from an existing array.
-   * 
-   * @param jcas
-   *          -
-   * @param a
-   *          -
+   * @param jcas -
+   * @param a -
    * @return -
    */
   public static IntegerArrayList create(JCas jcas, int[] a) {
@@ -403,15 +367,12 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
     ial.copyFromArray(a, 0, 0, a.length);
     return ial;
   }
-
+  
   @Override
-  public FeatureStructureImplC _superClone() {
-    return clone();
-  } // enable common clone
-
+  public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
+  
   /**
-   * @param i
-   *          -
+   * @param i -
    * @return -
    */
   public boolean contains(int i) {
@@ -419,8 +380,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param i
-   *          -
+   * @param i -
    * @return -
    * @see java.util.ArrayList#indexOf(java.lang.Object)
    */
@@ -432,8 +392,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param i
-   *          -
+   * @param i -
    * @return -
    * @see java.util.ArrayList#lastIndexOf(java.lang.Object)
    */
@@ -445,13 +404,14 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param a
-   *          -
+   * @param a -
    * @return -
    * @see java.util.ArrayList#toArray(java.lang.Object[])
    */
   public int[] toArray(int[] a) {
-    return (null == intArrayAsList) ? intArrayList.toArray() : intArrayAsList.toArray();
+    return (null == intArrayAsList) 
+        ? intArrayList.toArray()
+        : intArrayAsList.toArray();
   }
 
   /**
@@ -464,8 +424,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param e
-   *          -
+   * @param e -
    * @return true
    * @see java.util.ArrayList#add(java.lang.Object)
    */
@@ -476,9 +435,8 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param o
-   *          -
-   * @return true if all elements are the same, and in same order, and same number
+   * @param o -
+   * @return  true if all elements are the same, and in same order, and same number
    * @see java.util.AbstractList#equals(java.lang.Object)
    */
   @Override
@@ -498,10 +456,8 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param index
-   *          -
-   * @param element
-   *          -
+   * @param index -
+   * @param element -
    * @see java.util.ArrayList#add(int, java.lang.Object)
    */
   public void add(int index, int element) {
@@ -510,8 +466,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param index
-   *          -
+   * @param index -
    * @return -
    * @see java.util.ArrayList#remove(int)
    */
@@ -521,8 +476,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
   }
 
   /**
-   * @param o
-   *          - locate and if found remove this object
+   * @param o - locate and if found remove this object
    * @return true if removed
    * @see java.util.ArrayList#remove(java.lang.Object)
    */
@@ -566,12 +520,15 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
    */
   @Override
   public OfInt iterator() {
-    return (null == intArrayAsList) ? intArrayList.iterator() : intArrayAsList.iterator();
+    return (null == intArrayAsList) 
+        ? intArrayList.iterator()
+        : intArrayAsList.iterator();
   }
-
+  
   public IntListIterator intListIterator() {
-    return (null == intArrayAsList) ? intArrayList.intListIterator()
-            : intArrayAsList.intListIterator();
+    return (null == intArrayAsList) 
+        ? intArrayList.intListIterator()
+        : intArrayAsList.intListIterator();
   }
 
   public void sort() {
@@ -581,11 +538,11 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
       intArrayAsList.sort();
     }
   }
-
-  @Override
+  
   public Spliterator.OfInt spliterator() {
-    return (null == intArrayAsList) ? Arrays.spliterator(intArrayList.toIntArray())
-            : Arrays.spliterator(getIntArray()._getTheArray());
+    return (null == intArrayAsList) 
+        ? Arrays.spliterator(intArrayList.toIntArray())
+        : Arrays.spliterator(getIntArray()._getTheArray());
   }
 
   /**
@@ -597,9 +554,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
 
   /**
    * Version of forEach that doesn't box
-   * 
-   * @param action
-   *          -
+   * @param action -
    */
   public void forEach(IntConsumer action) {
     OfInt ii = iterator();
@@ -607,5 +562,7 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
       action.accept(ii.nextInt());
     }
   }
-
+    
 }
+
+    

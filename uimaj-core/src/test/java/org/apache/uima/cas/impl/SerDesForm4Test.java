@@ -137,13 +137,23 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   public class CASTestSetup implements AnnotatorInitializer {
 
+    // @formatter:off
     /**
      * Type system
-     * 
-     * akof - type: all kinds of features akofInt akofFloat akofByte akofBoolean akofShort akofStr
-     * akofLong akofDouble akofHeapRef akofArrayRef
+     *
+     * akof    - type: all kinds of features
+     *   akofInt  
+     *   akofFloat
+     *   akofByte
+     *   akofBoolean
+     *   akofShort
+     *   akofStr
+     *   akofLong
+     *   akofDouble
+     *   akofHeapRef
+     *   akofArrayRef 
      */
-
+      // @formatter:on
     @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       // Add new types and features.
@@ -287,7 +297,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * new cas, compare
    */
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAllKinds() {
     loadCas(lfs);
     // uncomment this to test toString()
@@ -298,7 +308,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verify("AllKinds");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAllKindsV2() {
     try (AutoCloseableNoException a = cas.ll_enableV2IdRefs();
             AutoCloseableNoException b = deserCas.ll_enableV2IdRefs()) {
@@ -317,7 +327,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * 
    * 
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDelta() {
     lfs.clear();
     loadCas(lfs);
@@ -328,15 +338,16 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "Delta");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithRefsBelow() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
 
     FeatureStructure fs = createFS(cas, akof);
-    if (includeUid)
+    if (includeUid) {
       fs.setIntValue(akofUid, aint.getAndAdd(1));
+    }
     fs.setFeatureValue(akofFs, lfs2.get(0));
     ArrayFS<FeatureStructure> fsafs = createArrayFS(cas, 4);
     fsafs.set(1, lfs2.get(1));
@@ -356,8 +367,9 @@ public class SerDesForm4Test extends SerDesTstCommon {
     setupCas2ForDeltaSerialization();
 
     FeatureStructure fs = createFS(cas, akof);
-    if (includeUid)
+    if (includeUid) {
       fs.setIntValue(akofUid, aint.getAndAdd(1));
+    }
 
     lfs2.get(0).setFeatureValue(akofFs, fs);
 
@@ -371,7 +383,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * 
    * Driver for random values pick among random and "interesting" edge case values
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithAllMods() throws IOException {
     boolean prev = isKeep;
     isKeep = true;
@@ -412,14 +424,20 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   }
 
+  // @formatter:off
   /**
-   * Assuming that the delta serialization code has adequate support for the use case of a) create a
-   * CAS cas1 b) fill it c) copy it via serialization/deserialization -> cas2 d) add a mark to cas1
-   * e) delta serialize cas1 << not preceeded by a deserialization into cas1 f) deserialize delta
-   * into cas2 g) compare cas1 and 2.
-   * 
+   * Assuming that the delta serialization code has adequate support for
+   * the use case of 
+   *   a) create a CAS cas1
+   *   b) fill it
+   *   c) copy it via serialization/deserialization -> cas2
+   *   d) add a mark to cas1
+   *   e) delta serialize cas1  << not preceeded by a deserialization into cas1
+   *   f) deserialize delta into cas2
+   *   g) compare cas1 and 2.
    * @param r
    */
+  // @formatter:on
   public void checkDeltaWithAllMods1(Random r) {
     lfs.clear();
     makeRandomFss(7, lfs, r); // not added to indexes unless isKeep
@@ -494,7 +512,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithIndexMods() {
     lfs.clear();
     loadCas(lfs);
@@ -515,13 +533,16 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "DeltaWithIndexMods");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testArrayAux() {
     ArrayList<FeatureStructure> fsl = new ArrayList<>();
+    // @formatter:off
     /**
-     * Strings, non-array Long/Double: Make equal items, ser/deser, update one of the equal items,
-     * insure other not updated
+     * Strings, non-array Long/Double:
+     * Make equal items,
+     * ser/deser, update one of the equal items, insure other not updated
      */
+    // @formatter:on
     FeatureStructure fsAt1 = newAkof(fsl);
     FeatureStructure fsAt2 = newAkof(fsl);
     cas.addFsToIndexes(fsAt1);
@@ -560,7 +581,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     assertEquals(la1.get(2), 123);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testWithOtherSerializer() throws IOException {
     doPlain = true;
     testDeltaWithMods();
@@ -578,15 +599,16 @@ public class SerDesForm4Test extends SerDesTstCommon {
     testArrayAux();
   }
 
+  // @formatter:off
   /**
-   * See if can read Version 2 serialized things and deserialize them Note: Delta won't work unless
-   * the previous v2 test case indexed or ref'd all the FSs, because otherwise, some FSs will be
-   * "deleted" by the modelling V3 does for the CAS layout because they're not findable during
-   * scanning, and therefore, delta mods won't be correct.
-   * 
+   * See if can read Version 2 serialized things and deserialize them
+   * Note: Delta won't work unless the previous v2 test case indexed or ref'd all the FSs,
+   *   because otherwise, some FSs will be "deleted" by the modelling V3 does for the CAS
+   *   layout because they're not findable during scanning, and therefore, delta mods won't be correct.
    * @throws IOException
    */
-  @org.junit.jupiter.api.Test
+  // @formatter:on
+  @Test
   public void testWithPrevGenerated() throws IOException {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
@@ -726,8 +748,9 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   private FeatureStructure newAkof(List<FeatureStructure> fsl) {
     FeatureStructure fs = createFS(cas, akof);
-    if (includeUid)
+    if (includeUid) {
       fs.setIntValue(akofUid, aint.getAndAdd(1));
+    }
     fsl.add(fs);
     return fs;
   }
@@ -736,8 +759,9 @@ public class SerDesForm4Test extends SerDesTstCommon {
   // ** NOT added to index unless isKeep
   private FeatureStructure makeAkof(Random r) {
     FeatureStructure fs = createFS(cas, akof);
-    if (includeUid)
+    if (includeUid) {
       fs.setIntValue(akofUid, aint.getAndAdd(1));
+    }
     fs.setBooleanValue(akofBoolean, r.nextBoolean());
     fs.setByteValue(akofByte, (byte) r.nextInt());
     fs.setShortValue(akofShort, (short) r.nextInt());
@@ -1051,18 +1075,26 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
+  // @formatter:off
   /**
-   * Verifying deltas is somewhat tricky - the deserializing of a delta into a CAS may (?) require
-   * that the base CAS has been serialized out first - in order to set up the proper maps between
-   * serialized id forms and FSs - example:
+   * Verifying deltas is somewhat tricky - the deserializing of a delta into a
+   * CAS may (?) require that the base CAS has been serialized out first - in
+   * order to set up the proper maps between serialized id forms and FSs -
+   * example:
    * 
-   * Caller does the following: create a CAS, fill 1 serialize, deserialize into Cas2 modify Cas2
-   * =========== This routine then does ========== delta serialize Cas2, deserialize into Cas1
-   * compare Cas1 and Cas2
+   * Caller does the following: 
+   *   create a CAS, 
+   *   fill 1 serialize, 
+   *   deserialize into Cas2 
+   *   modify Cas2 
+   *   =========== This routine then does ========== 
+   *   delta serialize Cas2, 
+   *   deserialize into Cas1 compare Cas1 and Cas2
    * 
    * @param mark
    * @param fname
    */
+  // @formatter:on
   private void verifyDelta(MarkerImpl mark, String fname) {
     try {
       ByteArrayInputStream bais;
@@ -1100,15 +1132,16 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
+  // @formatter:off
   /**
-   * This version closer to v2 version delta serialize of "cas" deserialize into "cas2" compare cas
-   * and cas2
-   * 
-   * @param mark
-   *          -
-   * @param fname
-   *          -
+   * This version closer to v2 version
+   *   delta serialize of "cas"
+   *   deserialize into "cas2"
+   *   compare cas and cas2
+   * @param mark -
+   * @param fname -
    */
+  // @formatter:on
   private void verifyDelta1(MarkerImpl mark, String fname) {
     try {
       cas1 = cas;

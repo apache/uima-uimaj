@@ -158,11 +158,16 @@ public class TypePriorityTest {
     assertFalse(lo.lessThan(ts.getType(t1), ts.getType(t2)));
   }
 
+//@formatter:off
   /*
-   * Diagram to figure out what the answers should be a b aa ab ba ... aaa aab aba abb baa ... aaaa
-   * aaab aaba aabb abaa abab abba abbb baaa ... aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb
-   * abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
+   * Diagram to figure out what the answers should be 
+   *                                                a                                                    b
+   *                        aa                                             ab                           ba ... 
+   *            aaa                     aab                   aba                     abb              baa ... 
+   *     aaaa        aaab        aaba        aabb       abaa        abab        abba        abbb      baaa ...
+   * aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
    */
+//@formatter:on
 
   // public void testLearnLto() throws CASException {
   // LinearTypeOrderBuilder order = irm.createTypeSortOrder();

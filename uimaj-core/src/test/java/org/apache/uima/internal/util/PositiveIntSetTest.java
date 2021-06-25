@@ -178,8 +178,13 @@ public class PositiveIntSetTest {
   @Test
   public void testiterators() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
-    int[] e = new int[] { 123, 987, 789, 155, 156, 177, 444, 333, 242, 252, 262, 243, 221, 219, 217,
-        300, 399 };
+ // @formatter:off
+    int [] e = new int [] {123, 987, 789, 155, 
+                           156, 177, 444, 333,
+                           242, 252, 262, 243,
+                           221, 219, 217, 300,
+                           399};
+ // @formatter:on
     int[] eOrdered = Arrays.copyOf(e, e.length);
     Arrays.sort(eOrdered);
     for (int i : e) {
@@ -205,15 +210,17 @@ public class PositiveIntSetTest {
 
   }
 
+//@formatter:off
   /**
    * TODO extra cases to verify (paths)
    * 
-   * 1) Switching from bit set due to lower bound dropping below offset - where result would (?) fit
-   * in "short" hash set - where result would be size < 16
+   * 1) Switching from bit set due to lower bound dropping below offset
+   *   - where result would (?) fit in "short" hash set
+   *   - where result would be size < 16 
    * 
    * 2) Switching from bit set (tiny) to intSet
    */
-
+//@formatter:on
   @Test
   public void testBit2ShortHash() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
@@ -292,23 +299,30 @@ public class PositiveIntSetTest {
     r.estMax = r.estMin + ((choose(.5f)) ? rand.nextInt(1000) : rand.nextInt(100000));
   }
 
+//@formatter:off
   /**
    * Random testing
    * 
    * Do updates to both positiveintset and plain java set<Integer>
    * 
-   * adds and removes (in x % ratio) adds are unique x % of time removes remove existing x % of time
+   *   adds and removes (in x % ratio)
+   *   adds are unique x % of time
+   *   removes remove existing x % of time
    * 
    * clear() done x % of each run.
    * 
-   * clustering: values > offset x % of runs. values in range offset - 32K to offset + 32K x % of
-   * runs values < (offset + n * 32) x % of runs
+   *   clustering:  
+   *     values > offset x % of runs.
+   *     values in range offset - 32K to offset + 32K  x % of runs
+   *     values < (offset + n * 32) x % of runs   
    * 
-   * checks: at end: content as expected via compare to plain java set<integer> style of intSet as
-   * expected iterator: produces values, as expected via compare
-   * 
-   * 
+   *   checks: 
+   *     at end:
+   *       content as expected via compare to plain java set<integer>
+   *       style of intSet as expected
+   *     iterator: produces values, as expected via compare  
    */
+//@formatter:on
   private void runRandomTests() {
     s = r.useInitParms ? new PositiveIntSet_impl(r.initSize, r.estMin, r.estMax)
             : new PositiveIntSet_impl();

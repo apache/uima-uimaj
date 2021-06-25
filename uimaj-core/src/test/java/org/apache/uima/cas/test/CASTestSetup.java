@@ -127,13 +127,24 @@ public class CASTestSetup implements AnnotatorInitializer {
    * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
    */
 
-  /*
-   * Types: TOP token_type_type Word_type Sep_type EOS_type ArrayFSwithSubtype Annotation Sentence
-   * [SEN_LEN_FEAT(int) Phrase (subtype of sentence) Token TOKEN_TYPE
-   * [TOKEN_TYPE_FEAT(TOKEN_TYPE_TYPE), TOKEN_FLOAT_FEAT, LEMMA_FEAT(string),
-   * LEMMA_LIST_FEAT[stringArray] String Group1 Group2 Lang_pair [LANG1(Group1), LANG2(Group2),
-   * DESCR_FEAT(string)
+  //@formatter:off
+  /* Types:
+   * TOP
+   *   token_type_type 
+   *     Word_type
+   *     Sep_type
+   *     EOS_type
+   *   ArrayFSwithSubtype
+   *   Annotation
+   *     Sentence [SEN_LEN_FEAT(int)
+   *       Phrase (subtype of sentence)
+   *     Token  TOKEN_TYPE [TOKEN_TYPE_FEAT(TOKEN_TYPE_TYPE), TOKEN_FLOAT_FEAT, LEMMA_FEAT(string), LEMMA_LIST_FEAT[stringArray]
+   *   String
+   *     Group1
+   *     Group2
+   *   Lang_pair [LANG1(Group1), LANG2(Group2), DESCR_FEAT(string)  
    */
+  //@formatter:on
   @Override
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.

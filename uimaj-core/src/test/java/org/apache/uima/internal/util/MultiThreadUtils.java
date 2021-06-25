@@ -116,18 +116,19 @@ public class MultiThreadUtils extends TestCase {
             numberOfTimers, (System.nanoTime() - startTime) / 1000);
   }
 
+//@formatter:off
   /**
-   * On a 2 GHz i7 running Windows, it seems to take about 1 millisecond to create and start up a
-   * thread.
+   * On a 2 GHz i7 running Windows, it seems to take about 1 millisecond to create and start up a thread.
    * 
-   * To get maximum likelyhood of threads all starting together, the threads are all started, but
-   * then they wait for a "go" signal. Each thread has a "threadControl" value, which is accessed
-   * under a specific lock for the thread to insure memory synchronization; the threads have the
-   * states above.
+   * To get maximum likelyhood of threads all starting together, the threads are all started, but then they wait
+   * for a "go" signal.  Each thread has a "threadControl" value, which is accessed under a specific lock for the thread
+   * to insure memory synchronization; the threads have the states above.
    * 
-   * To reduce the overhead, the logic is: a) make the threads and start them. They go to their wait
-   * point. b) for the repeat loop: b1) release all threads from wait point b2) wait for all threads
-   * to reach their wait point again (at the end of their processing)
+   * To reduce the overhead, the logic is:
+   *   a) make the threads and start them.  They go to their wait point.
+   *   b) for the repeat loop:
+   *       b1) release all threads from wait point
+   *       b2) wait for all threads to reach their wait point again (at the end of their processing) 
    * 
    * b3) repeat b1 and b2 for the repeat count.
    * 
@@ -148,6 +149,7 @@ public class MultiThreadUtils extends TestCase {
    *          a Runnable or null, to run before each outer "repeat".
    * @throws Exception
    */
+//@formatter:on
   public static void tstMultiThread(final String name, // name root for messages and thread ids
           int numberOfThreads, int repeats, final Run2isb run2isb, // the Callable that is run in a
                                                                    // thread, passed in also are the
