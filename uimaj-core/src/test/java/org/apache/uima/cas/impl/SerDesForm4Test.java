@@ -319,14 +319,19 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
+  // @formatter:off
   /**
-   * 1) create a base cas with some data 1a) make a copy of the cas to that point Don't use
-   * CasCopier - it will reorder the fs's in the heap. Instead, use plain binary serialization /
-   * deserialization 2) create the mark: cas.createMarker() 3) add more cas data 4) serialize with
-   * marker 5) using copy, deserialize with marker 6) check resulting cas = original in 4)
-   * 
-   * 
+   * 1) create a base cas with some data
+   * 1a) make a copy of the cas to that point
+   *      Don't use CasCopier - it will reorder the fs's in the heap.
+   *      Instead, use plain binary serialization / deserialization
+   * 2) create the mark: cas.createMarker()
+   * 3) add more cas data
+   * 4) serialize with marker
+   * 5) using copy, deserialize with marker
+   * 6) check resulting cas = original in 4)
    */
+  // @formatter:on
   @Test
   public void testDelta() {
     lfs.clear();
