@@ -41,6 +41,7 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
+  @Override
   public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
@@ -48,16 +49,18 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
+   * @see
+   * org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof CAS) {
       checkTypeSystemChange((CAS) aCAS);
       process((CAS) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
-                  aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { CAS.class, aCAS.getClass() });
     }
   }
 
@@ -74,15 +77,17 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
   public abstract void process(CAS aCAS) throws AnalysisEngineProcessException;
 
   /**
-   * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
-   * from PrimitiveAnalysisEngine_impl which-calls CasAnnotator_ImplBase.process which-calls checkTypeSystemChange
+   * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this from
+   * PrimitiveAnalysisEngine_impl which-calls CasAnnotator_ImplBase.process which-calls
+   * checkTypeSystemChange
    * 
    * <p>
    * In this method, the Annotator should use the {@link TypeSystem} to resolve the names of Type
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @param aTypeSystem the new type system to use as input to your initialization
+   * @param aTypeSystem
+   *          the new type system to use as input to your initialization
    * @throws AnalysisEngineProcessException
    *           if the provided type system is missing types or features required by this annotator
    */

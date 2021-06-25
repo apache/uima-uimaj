@@ -35,6 +35,7 @@ public class EmptyIntegerList extends IntegerList implements EmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -46,20 +47,22 @@ public class EmptyIntegerList extends IntegerList implements EmptyList {
   public EmptyIntegerList(TypeImpl_list ti) {
     super(ti, null);
   }
-  
+
   public EmptyIntegerList(JCas jcas) {
     super(jcas);
   }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public EmptyIntegerList(TypeImpl t, CASImpl c) {
     super(t, c);
   }
-  
+
 }

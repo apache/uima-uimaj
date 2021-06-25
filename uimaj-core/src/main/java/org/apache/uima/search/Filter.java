@@ -42,7 +42,7 @@ import org.apache.uima.util.XMLizable;
  * example, the following are valid filters:
  * <ul>
  * <li>foo = "hello world"</li>
- * <li>foo &lt; 42 </li>
+ * <li>foo &lt; 42</li>
  * <li>bar7 = "\"Blah,\" he said."
  * <li>bar7 &gt;= 0.5</li>
  * </ul>
@@ -58,7 +58,7 @@ public interface Filter extends XMLizable, Serializable {
    * 
    * @return an identifier indicating the syntax used by this filter
    */
-  public String getSyntax();
+  String getSyntax();
 
   /**
    * Sets the declared syntax for this this filter's expression.
@@ -66,7 +66,7 @@ public interface Filter extends XMLizable, Serializable {
    * @param aSyntax
    *          an identifier indicating the syntax used by this filter
    */
-  public void setSyntax(String aSyntax);
+  void setSyntax(String aSyntax);
 
   /**
    * Gets the filter expression. This is a string intended to be interpreted according to the
@@ -74,7 +74,7 @@ public interface Filter extends XMLizable, Serializable {
    * 
    * @return the filter expression
    */
-  public String getExpression();
+  String getExpression();
 
   /**
    * Sets the filter expression. This is a string intended to be interpreted according to the
@@ -83,6 +83,6 @@ public interface Filter extends XMLizable, Serializable {
    * @param aExpression
    *          the filter expression
    */
-  public void setExpression(String aExpression);
+  void setExpression(String aExpression);
 
 }

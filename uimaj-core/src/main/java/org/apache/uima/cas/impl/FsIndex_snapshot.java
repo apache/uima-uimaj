@@ -29,47 +29,59 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * Implementation of light-weight wrapper of normal indexes, which support special kinds of iterators
- *   base on the setting of IteratorExtraFunction
+ * Implementation of light-weight wrapper of normal indexes, which support special kinds of
+ * iterators base on the setting of IteratorExtraFunction
  */
-public class FsIndex_snapshot <T extends FeatureStructure>
-                extends AbstractCollection<T>
-                implements LowLevelIndex<T>, Comparator<FeatureStructure> {
-    
+public class FsIndex_snapshot<T extends FeatureStructure> extends AbstractCollection<T>
+        implements LowLevelIndex<T>, Comparator<FeatureStructure> {
+
   /**
-   * wrapped index 
+   * wrapped index
    */
   private final FsIndex_iicp<T> wrapped;
   private final Comparator<TOP> comparatorWithoutId;
   private final Comparator<TOP> comparatorNoTypeWithoutId;
-  
-  public FsIndex_snapshot(FsIndex_iicp<T> wrapped, 
-                         Comparator<TOP> comparatorWithoutId,
-                         Comparator<TOP> comparatorTypeWithoutId) {
+
+  public FsIndex_snapshot(FsIndex_iicp<T> wrapped, Comparator<TOP> comparatorWithoutId,
+          Comparator<TOP> comparatorTypeWithoutId) {
     this.wrapped = wrapped;
     this.comparatorWithoutId = comparatorWithoutId;
     this.comparatorNoTypeWithoutId = comparatorTypeWithoutId;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIndex#getType()
    */
   @Override
-  public Type getType() { return wrapped.getType(); }
+  public Type getType() {
+    return wrapped.getType();
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIndex#contains(org.apache.uima.cas.FeatureStructure)
    */
   @Override
-  public boolean contains(FeatureStructure fs) { return wrapped.contains(fs); }
+  public boolean contains(FeatureStructure fs) {
+    return wrapped.contains(fs);
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIndex#find(org.apache.uima.cas.FeatureStructure)
    */
   @Override
-  public T find(FeatureStructure fs) { return wrapped.find(fs); }
-  
-  /* (non-Javadoc)
+  public T find(FeatureStructure fs) {
+    return wrapped.find(fs);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
   @Override
@@ -77,49 +89,63 @@ public class FsIndex_snapshot <T extends FeatureStructure>
     return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIndex#iterator(boolean, boolean)
    */
   @Override
   public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
-    Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutId : comparatorWithoutId;
-    return new FsIterator_subtypes_snapshot<>(new FsIndex_flat<>(wrapped), comparatorMaybeNoTypeWithoutID);
+    Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutId
+            : comparatorWithoutId;
+    return new FsIterator_subtypes_snapshot<>(new FsIndex_flat<>(wrapped),
+            comparatorMaybeNoTypeWithoutID);
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIndex#getIndexingStrategy()
    */
   @Override
-  public int getIndexingStrategy() { return wrapped.getIndexingStrategy(); }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIndex#withSnapshotIterators()
-   * acts like a copy
+  public int getIndexingStrategy() {
+    return wrapped.getIndexingStrategy();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#withSnapshotIterators() acts like a copy
    */
   @Override
   public FSIndex<T> withSnapshotIterators() {
     return new FsIndex_snapshot<>(wrapped, comparatorWithoutId, comparatorNoTypeWithoutId);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIndex#size()
    */
   @Override
-  public int size() { return wrapped.size(); }
+  public int size() {
+    return wrapped.size();
+  }
 
-  
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
    */
   @Override
-  public int compare(FeatureStructure o1, FeatureStructure o2) { return wrapped.compare(o1,  o2); }
-  
+  public int compare(FeatureStructure o1, FeatureStructure o2) {
+    return wrapped.compare(o1, o2);
+  }
+
   @Override
   public LowLevelIterator<T> ll_iterator(boolean ambiguous) {
     LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
-    return ambiguous 
-            ? it
-            : new LLUnambiguousIteratorImpl<>(it);
+    return ambiguous ? it : new LLUnambiguousIteratorImpl<>(it);
   }
 
   @Override
@@ -132,7 +158,9 @@ public class FsIndex_snapshot <T extends FeatureStructure>
     return wrapped.getCasImpl();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIndex#getComparator()
    */
   @Override
@@ -149,10 +177,10 @@ public class FsIndex_snapshot <T extends FeatureStructure>
   public int ll_maxAnnotSpan() {
     return wrapped.ll_maxAnnotSpan();
   }
-  
-  @Override 
+
+  @Override
   public boolean isSorted() {
     return wrapped.isSorted();
-  }  
-  
+  }
+
 }

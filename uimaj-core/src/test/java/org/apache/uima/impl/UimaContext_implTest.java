@@ -19,6 +19,11 @@
 
 package org.apache.uima.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -42,21 +47,17 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
-
+import org.junit.jupiter.api.Test;
 
 public class UimaContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
-  protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension.getFile(
-          "ResourceTest/spaces in dir name").getPath();
+  protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension
+          .getFile("ResourceTest/spaces in dir name").getPath();
 
   private UimaContext mContext;
 
@@ -65,11 +66,11 @@ public class UimaContext_implTest {
   private UimaContext mContext3;
 
   private UimaContext mContext4;
-  
+
   private UimaContext mContext5;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       // configure ResourceManager to allow test components to locate their resources
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
@@ -78,37 +79,41 @@ public class UimaContext_implTest {
 
       // create a UimaContext with Config Params and Resources
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
-      CasConsumerDescription ccDesc = UIMAFramework.getXMLParser().parseCasConsumerDescription(
-              new XMLInputSource(JUnitExtension
-                      .getFile("UimaContextTest/CasConsumerForUimaContextTest.xml")));
+      CasConsumerDescription ccDesc = UIMAFramework.getXMLParser()
+              .parseCasConsumerDescription(new XMLInputSource(
+                      JUnitExtension.getFile("UimaContextTest/CasConsumerForUimaContextTest.xml")));
       CasConsumer cc = UIMAFramework.produceCasConsumer(ccDesc, rm, null);
       mContext = cc.getUimaContext();
 
       // create a UimaContext with Config Params in Groups but no resources
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
+      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in);
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(taeDesc, rm, null);
       mContext2 = ae.getUimaContext();
 
       // create a UimaContext with Groups and Groupless Parameters
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml"));
-      AnalysisEngineDescription taeDesc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in2);
+      AnalysisEngineDescription taeDesc2 = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in2);
       AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(taeDesc2, rm, null);
       mContext3 = ae2.getUimaContext();
 
       // create a UimaContext with duplicate configuration groups
       XMLInputSource in3 = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml"));
-      AnalysisEngineDescription taeDesc3 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in3);
+      AnalysisEngineDescription taeDesc3 = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in3);
       AnalysisEngine ae3 = UIMAFramework.produceAnalysisEngine(taeDesc3, rm, null);
       mContext4 = ae3.getUimaContext();
 
       // create a UimaContext for a CAS Multiplier
-      XMLInputSource in4 = new XMLInputSource(JUnitExtension
-              .getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml"));
-      AnalysisEngineDescription taeDesc4 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in4);
+      XMLInputSource in4 = new XMLInputSource(
+              JUnitExtension.getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml"));
+      AnalysisEngineDescription taeDesc4 = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in4);
       AnalysisEngine ae4 = UIMAFramework.produceAnalysisEngine(taeDesc4);
       mContext5 = ae4.getUimaContext();
     } catch (Exception e) {
@@ -119,13 +124,13 @@ public class UimaContext_implTest {
   /*
    * @see TestCase#tearDown()
    */
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @Test
-    public void testGetConfigParameterValueString() throws Exception {
+  @Test
+  public void testGetConfigParameterValueString() throws Exception {
     try {
       String str = (String) mContext.getConfigParameterValue("StringParam");
       Assert.assertEquals("myString", str);
@@ -134,8 +139,7 @@ public class UimaContext_implTest {
       Integer integer = (Integer) mContext.getConfigParameterValue("IntegerParam");
       Assert.assertEquals(Integer.valueOf(42), integer);
       Integer[] intArr = (Integer[]) mContext.getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(Arrays.asList(new Integer[] {1, 2,
-          3}), Arrays.asList(intArr));
+      Assert.assertEquals(Arrays.asList(new Integer[] { 1, 2, 3 }), Arrays.asList(intArr));
       Float flt = (Float) mContext.getConfigParameterValue("FloatParam");
       Assert.assertEquals(Float.valueOf(3.14F), flt);
 
@@ -157,8 +161,8 @@ public class UimaContext_implTest {
   /*
    * Test for Object getConfigParameterValue(String, String)
    */
-    @Test
-    public void testGetConfigParameterValueStringString() throws Exception {
+  @Test
+  public void testGetConfigParameterValueStringString() throws Exception {
     try {
       // en-US group
       String str = (String) mContext2.getConfigParameterValue("en-US", "StringParam");
@@ -175,8 +179,8 @@ public class UimaContext_implTest {
       Integer intVal = (Integer) mContext2.getConfigParameterValue("en-US", "IntegerParam");
       Assert.assertEquals(1776, intVal.intValue());
 
-      Integer[] intArr = (Integer[]) mContext2
-              .getConfigParameterValue("en-US", "IntegerArrayParam");
+      Integer[] intArr = (Integer[]) mContext2.getConfigParameterValue("en-US",
+              "IntegerArrayParam");
       Assert.assertEquals(3, intArr.length); // language fallback
       Assert.assertEquals(1, intArr[0].intValue());
       Assert.assertEquals(2, intArr[1].intValue());
@@ -242,8 +246,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
-    public void testGetConfigurationGroupNames() {
+  @Test
+  public void testGetConfigurationGroupNames() {
     String[] names = mContext2.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
     ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
@@ -268,8 +272,8 @@ public class UimaContext_implTest {
     Assert.assertEquals(0, names.length);
   }
 
-    @Test
-    public void testGetConfigParameterNames() {
+  @Test
+  public void testGetConfigParameterNames() {
     String[] names = mContext.getConfigParameterNames();
     Assert.assertEquals(6, names.length);
     Assert.assertEquals("StringParam", names[0]);
@@ -290,8 +294,8 @@ public class UimaContext_implTest {
     Assert.assertEquals("GrouplessParam2", names[1]);
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetConfigParameterNamesString() {
+  @org.junit.jupiter.api.Test
+  public void testGetConfigParameterNamesString() {
     String[] names = mContext2.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
     ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
@@ -319,8 +323,8 @@ public class UimaContext_implTest {
 
   }
 
-    @Test
-    public void testGetResourceObjectString() throws Exception {
+  @Test
+  public void testGetResourceObjectString() throws Exception {
     try {
       // custom object
       Object r = mContext.getResourceObject("TestResourceObject");
@@ -357,8 +361,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetResourceURLString() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
       URL url = mContext.getResourceURL("TestFileResource");
@@ -412,8 +416,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetResourceURIString() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
       URI uri = mContext.getResourceURI("TestFileResource");
@@ -466,8 +470,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetResourceFilePathString() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
       String path = mContext.getResourceFilePath("TestFileResource");
@@ -521,8 +525,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetResourceAsStreamString() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
       InputStream strm = mContext.getResourceAsStream("TestFileResource");
@@ -574,8 +578,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
-    public void testGetResourceObjectStringStringArray() throws Exception {
+  @Test
+  public void testGetResourceObjectStringStringArray() throws Exception {
     try {
       // standard data resource
       Object r = mContext.getResourceObject("TestFileLanguageResource", new String[] { "en" });
@@ -637,8 +641,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
-    public void testGetResourceAsStreamStringStringArray() throws Exception {
+  @Test
+  public void testGetResourceAsStreamStringStringArray() throws Exception {
     try {
       // standard data resource
       InputStream strm = mContext.getResourceAsStream("TestFileLanguageResource",
@@ -697,8 +701,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetResourceURLStringStringArray() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetResourceURLStringStringArray() throws Exception {
     try {
       // standard data resource
       URL url = mContext.getResourceURL("TestFileLanguageResource", new String[] { "en" });
@@ -754,8 +758,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
-    public void testGetResourceURIStringStringArray() throws Exception {
+  @Test
+  public void testGetResourceURIStringStringArray() throws Exception {
     try {
       // standard data resource
       URI uri = mContext.getResourceURI("TestFileLanguageResource", new String[] { "en" });
@@ -811,15 +815,15 @@ public class UimaContext_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetResourceFilePathStringStringArray() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetResourceFilePathStringStringArray() throws Exception {
     try {
       // standard data resource
       String path = mContext.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
       Assert.assertNotNull(path);
 
-      String path2 = mContext
-              .getResourceFilePath("TestFileLanguageResource", new String[] { "de" });
+      String path2 = mContext.getResourceFilePath("TestFileLanguageResource",
+              new String[] { "de" });
       Assert.assertNotNull(path2);
       Assert.assertFalse(path2.equals(path));
 
@@ -870,8 +874,8 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
-    public void testGetDataPath() throws Exception {
+  @Test
+  public void testGetDataPath() throws Exception {
     try {
       Assert.assertEquals(TEST_DATAPATH, mContext.getDataPath());
       Assert.assertEquals(TEST_DATAPATH, mContext2.getDataPath());
@@ -879,19 +883,19 @@ public class UimaContext_implTest {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @org.junit.jupiter.api.Test
-    public void testGetEmptyCas() throws Exception {
+
+  @org.junit.jupiter.api.Test
+  public void testGetEmptyCas() throws Exception {
     try {
       CAS emptyCas = mContext5.getEmptyCas(CAS.class);
-      //should be allowed to release this CAS 
+      // should be allowed to release this CAS
       emptyCas.release();
-      //and then get it again
+      // and then get it again
       emptyCas = mContext5.getEmptyCas(CAS.class);
-      emptyCas.release();      
+      emptyCas.release();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
-    }    
+    }
   }
 
 }
@@ -901,6 +905,7 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
     setMetaData(new ResourceMetaData_impl());
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

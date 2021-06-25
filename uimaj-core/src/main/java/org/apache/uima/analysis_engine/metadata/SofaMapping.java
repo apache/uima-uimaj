@@ -27,9 +27,9 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * another component.
  * 
  * <p>
- * A <code>SofaMapping</code> object represents mapping of a Sofa name assigned by a component to
- * a Sofa name assigned by an aggregate which could be either an aggregate AE or a CPE. This
- * interface provides methods to set the attributes that define a mapping.
+ * A <code>SofaMapping</code> object represents mapping of a Sofa name assigned by a component to a
+ * Sofa name assigned by an aggregate which could be either an aggregate AE or a CPE. This interface
+ * provides methods to set the attributes that define a mapping.
  * 
  * <p>
  * If the component Sofa Name is not set, it defaults to ({@link CAS#NAME_DEFAULT_SOFA}).
@@ -42,7 +42,7 @@ public interface SofaMapping extends MetaDataObject {
    * 
    * @return the key
    */
-  public String getComponentKey();
+  String getComponentKey();
 
   /**
    * Set the component key. This identifies the component for which this mapping is defined.
@@ -50,14 +50,14 @@ public interface SofaMapping extends MetaDataObject {
    * @param aComponentKey
    *          the key
    */
-  public void setComponentKey(String aComponentKey);
+  void setComponentKey(String aComponentKey);
 
   /**
    * Gets the sofa name assigned by the component.
    * 
    * @return the component's sofa name
    */
-  public String getComponentSofaName();
+  String getComponentSofaName();
 
   /**
    * Set the component assigned sofa name.
@@ -65,14 +65,14 @@ public interface SofaMapping extends MetaDataObject {
    * @param aComponentSofaName
    *          the component's sofa name
    */
-  public void setComponentSofaName(String aComponentSofaName);
+  void setComponentSofaName(String aComponentSofaName);
 
   /**
    * Get the sofa name assigned by the aggregate.
    * 
    * @return the aggregate's sofa name
    */
-  public String getAggregateSofaName();
+  String getAggregateSofaName();
 
   /**
    * Set the sofa name assigned by the aggregate.
@@ -80,5 +80,5 @@ public interface SofaMapping extends MetaDataObject {
    * @param aAggregateSofaName
    *          the aggregate's sofa name
    */
-  public void setAggregateSofaName(String aAggregateSofaName);
+  void setAggregateSofaName(String aAggregateSofaName);
 }

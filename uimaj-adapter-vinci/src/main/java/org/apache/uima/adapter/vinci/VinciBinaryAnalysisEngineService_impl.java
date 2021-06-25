@@ -251,6 +251,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * @throws ServiceException the service exception
    */
 
+  @Override
   public Transportable eval(Transportable doc) throws ServiceException {
     AFrame frame = (AFrame) doc;
     String op = frame.fgetString(Constants.VINCI_COMMAND);
@@ -430,6 +431,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     /* (non-Javadoc)
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
       server.stop();
     }
@@ -441,6 +443,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * @return the transportable
    * @see org.apache.vinci.transport.TransportableFactory#makeTransportable()
    */
+  @Override
   public Transportable makeTransportable() {
     return new AFrame();
   }

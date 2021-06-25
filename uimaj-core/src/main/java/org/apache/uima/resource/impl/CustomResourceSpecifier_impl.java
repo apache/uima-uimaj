@@ -27,55 +27,71 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * Implementation of {@link CustomResourceSpecifier}.
  */
-public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
-        CustomResourceSpecifier {
+public class CustomResourceSpecifier_impl extends MetaDataObject_impl
+        implements CustomResourceSpecifier {
   private static final long serialVersionUID = 8922306013278525153L;
-  
+
   private static final Parameter[] EMPTY_PARAMETERS = new Parameter[0];
   private Parameter[] mParameters = EMPTY_PARAMETERS;
   private String mResourceClassName;
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CustomResourceSpecifier#getParameters()
    */
+  @Override
   public Parameter[] getParameters() {
     return mParameters;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CustomResourceSpecifier#getResourceClassName()
    */
+  @Override
   public String getResourceClassName() {
     return mResourceClassName;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.CustomResourceSpecifier#setParameters(org.apache.uima.resource.Parameter[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.CustomResourceSpecifier#setParameters(org.apache.uima.resource.
+   * Parameter[])
    */
+  @Override
   public void setParameters(Parameter[] aParameters) {
     if (aParameters != null) {
       mParameters = aParameters;
     } else {
       mParameters = EMPTY_PARAMETERS;
     }
-    
+
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CustomResourceSpecifier#setResourceClassName(java.lang.String)
    */
+  @Override
   public void setResourceClassName(String aResourceClassName) {
     mResourceClassName = aResourceClassName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("customResourceSpecifier",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("resourceClassName"),
-              new PropertyXmlInfo("parameters")});
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+          "customResourceSpecifier", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("resourceClassName"), new PropertyXmlInfo("parameters") });
 }

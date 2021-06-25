@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -29,32 +31,29 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
-
 
 public class ResourceManagerConfiguration_implTest {
   /*
    * @see TestCase#setUp()
    */
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
   /*
    * @see TestCase#tearDown()
    */
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @Test
-    public void testBuildFromXmlElement() throws Exception {
+  @Test
+  public void testBuildFromXmlElement() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("ResourceManagerConfigurationImplTest/TestResourceManagerConfiguration.xml");
@@ -69,10 +68,10 @@ public class ResourceManagerConfiguration_implTest {
       assertEquals("0.1", rmc.getVersion());
       assertEquals("The Apache Software Foundation", rmc.getVendor());
 
-      descriptor = JUnitExtension
-              .getFile("ResourceManagerConfigurationImplTest/ResourceManagerConfigurationWithImports.xml");
-      rmc = UIMAFramework.getXMLParser().parseResourceManagerConfiguration(
-              new XMLInputSource(descriptor));
+      descriptor = JUnitExtension.getFile(
+              "ResourceManagerConfigurationImplTest/ResourceManagerConfigurationWithImports.xml");
+      rmc = UIMAFramework.getXMLParser()
+              .parseResourceManagerConfiguration(new XMLInputSource(descriptor));
       Import[] imports = rmc.getImports();
       resources = rmc.getExternalResources();
       bindings = rmc.getExternalResourceBindings();
@@ -84,11 +83,11 @@ public class ResourceManagerConfiguration_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testResolveImports() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testResolveImports() throws Exception {
     try {
-      File descriptor = JUnitExtension
-              .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
+      File descriptor = JUnitExtension.getFile(
+              "ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(descriptor));
       ResourceManagerConfiguration rmc = aeDesc.getResourceManagerConfiguration();
@@ -101,10 +100,10 @@ public class ResourceManagerConfiguration_implTest {
       assertEquals(4, rmc.getExternalResourceBindings().length);
 
       // test old single-import style
-      descriptor = JUnitExtension
-              .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
-      aeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(descriptor));
+      descriptor = JUnitExtension.getFile(
+              "ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
+      aeDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(descriptor));
       rmc = aeDesc.getResourceManagerConfiguration();
       assertEquals(0, rmc.getExternalResources().length);
       assertEquals(0, rmc.getExternalResourceBindings().length);
@@ -119,11 +118,11 @@ public class ResourceManagerConfiguration_implTest {
     }
   }
 
-    @Test
-    public void testClone() throws Exception {
+  @Test
+  public void testClone() throws Exception {
     try {
-      File descriptor = JUnitExtension
-              .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
+      File descriptor = JUnitExtension.getFile(
+              "ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(descriptor));
       ResourceManagerConfiguration rmc = aeDesc.getResourceManagerConfiguration();

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
 import java.text.MessageFormat;
@@ -39,8 +38,8 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   private static final int MESSAGES_NOT_FOUND = -1;
 
   /**
-   * Error parsing XCAS from source {0} at line {1}, column {2}: expected &lt;CAS&gt; root tag but found:
-   * &lt;{3}&gt;.
+   * Error parsing XCAS from source {0} at line {1}, column {2}: expected &lt;CAS&gt; root tag but
+   * found: &lt;{3}&gt;.
    */
   public static final int WRONG_ROOT_TAG = 0;
 
@@ -51,14 +50,14 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   public static final int TEXT_EXPECTED = 1;
 
   /**
-   * Error parsing XCAS from source {0} at line {1}, column {2}: expected array element &lt;i&gt; but
-   * found: &lt;{3}&gt;.
+   * Error parsing XCAS from source {0} at line {1}, column {2}: expected array element &lt;i&gt;
+   * but found: &lt;{3}&gt;.
    */
   public static final int ARRAY_ELE_EXPECTED = 2;
 
   /**
-   * Error parsing XCAS from source {0} at line {1}, column {2}: array element &lt;i&gt; may not have
-   * attributes.
+   * Error parsing XCAS from source {0} at line {1}, column {2}: array element &lt;i&gt; may not
+   * have attributes.
    */
   public static final int ARRAY_ELE_ATTRS = 3;
 
@@ -72,8 +71,8 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   public static final int ILLEGAL_ID = 5;
 
   /**
-   * Error parsing XCAS from source {0} at line {1}, column {2}: size of array must be &gt;= 0, but is:
-   * {3}.
+   * Error parsing XCAS from source {0} at line {1}, column {2}: size of array must be &gt;= 0, but
+   * is: {3}.
    */
   public static final int ILLEGAL_ARRAY_SIZE = 6;
 
@@ -92,7 +91,6 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
    */
   public static final int INTEGER_EXPECTED = 9;
 
-  
   /**
    * Error parsing XCAS from source {0} at line {1}, column {2}: expected numeric value, but found:
    * {3}.
@@ -107,20 +105,26 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
 
   /**
    * Error parsing XMI-CAS from source {0} at line {1}, column {2}: xmi id {3} is referenced but not
-   *  defined.
+   * defined.
    */
   public static final int UNKNOWN_ID = 12;
-  
-  /** Error parsing XCAS or XMI-CAS from source {0} at line {1}, column {2}: in subtype of AnnotationBase, sofa reference is missing. */
+
+  /**
+   * Error parsing XCAS or XMI-CAS from source {0} at line {1}, column {2}: in subtype of
+   * AnnotationBase, sofa reference is missing.
+   */
   public static final int SOFA_REF_MISSING = 13;
-    
-  /** Error parsing XMI-CAS from source {0} at line {1}, column {2}: A byte array value must have an even number of hex characters.*/
+
+  /**
+   * Error parsing XMI-CAS from source {0} at line {1}, column {2}: A byte array value must have an
+   * even number of hex characters.
+   */
   public static final int BYTE_ARRAY_LENGTH_NOT_EVEN = 14;
-  
+
   private static final String[] identifiers = { "WRONG_ROOT_TAG", "TEXT_EXPECTED",
-      "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", 
-      "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE", "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", 
-      "FLOAT_EXPECTED", "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING", "BYTE_ARRAY_LENGTH_NOT_EVEN"};
+      "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE",
+      "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", "FLOAT_EXPECTED",
+      "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING", "BYTE_ARRAY_LENGTH_NOT_EVEN" };
 
   private int error;
 
@@ -152,6 +156,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   /**
    * @return The message of the exception. Useful for including the text in another exception.
    */
+  @Override
   public String getMessage() {
     if (resource == null) {
       try {
@@ -167,6 +172,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   }
 
   /** @return The same as getMessage(), but prefixed with <code>"XCASParsingException: "</code>. */
+  @Override
   public String toString() {
     return "XCASParsingException: " + this.getMessage();
   }
@@ -178,8 +184,11 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
    * on). Adding a <code>null String</code> has no effect! So if you don't know the value of an
    * argument, use something like <code>""</code> or <code>"UNKNOWN"</code>, but not
    * <code>null</code>.
-   * @param s the argument to add
-   * @return true if the argument was added, false if the argument was already added or was out of range
+   * 
+   * @param s
+   *          the argument to add
+   * @return true if the argument was added, false if the argument was already added or was out of
+   *         range
    */
   public boolean addArgument(String s) {
     int i = 0;
@@ -192,5 +201,4 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
     }
     return false;
   }
-
 }

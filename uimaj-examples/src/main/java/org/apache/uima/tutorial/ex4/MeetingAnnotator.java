@@ -44,6 +44,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see AnalysisComponent#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter value
@@ -53,6 +54,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
    */
+  @Override
   public void process(JCas aJCas) {
     // get annotation indexes
     FSIndex<RoomNumber> roomNumberIndex = aJCas.getAnnotationIndex(RoomNumber.class);

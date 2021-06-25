@@ -146,6 +146,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @pre is != null
    */
+  @Override
   public KeyValuePair fromStream(InputStream is) throws IOException, EOFException {
     return parser.fromStream(is, this);
   }
@@ -162,6 +163,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @pre os != null
    */
+  @Override
   public void toStream(OutputStream os) throws IOException {
     parser.toStream(os, this);
   }
@@ -173,6 +175,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * @throws UnsupportedOperationException
    *           if this document model does not support key iteration.
    */
+  @Override
   public String toString() {
     return toXML();
   }

@@ -20,6 +20,7 @@
 package org.apache.uima.resource.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -29,18 +30,14 @@ import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 public class URISpecifier_implTest {
   URISpecifier_impl uriSpec;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     uriSpec = new URISpecifier_impl();
     uriSpec.setProtocol("Vinci");
     uriSpec.setUri("foo.bar");
@@ -48,14 +45,13 @@ public class URISpecifier_implTest {
         new Parameter_impl("VNS_PORT", "42") });
   }
 
-    @Test
-    public void testXmlization() throws Exception {
+  @Test
+  public void testXmlization() throws Exception {
     try {
       StringWriter sw = new StringWriter();
       uriSpec.toXML(sw);
-      URISpecifier uriSpec2 = (URISpecifier) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)),
-                      null));
+      URISpecifier uriSpec2 = (URISpecifier) UIMAFramework.getXMLParser().parse(new XMLInputSource(
+              new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)), null));
       assertEquals(uriSpec, uriSpec2);
     } catch (Exception e) {
       JUnitExtension.handleException(e);

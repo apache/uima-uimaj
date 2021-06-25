@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.Feature;
@@ -24,14 +23,19 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * <p>Writable version of type system.</p>
+ * <p>
+ * Writable version of type system.
+ * </p>
  * 
- * <p>Public API for the UIMA Type System during pipe-line startup, while
- * type system is being constructed from merge of type specifications of components.</p>
+ * <p>
+ * Public API for the UIMA Type System during pipe-line startup, while type system is being
+ * constructed from merge of type specifications of components.
+ * </p>
  * 
- * <p>For use by applications, not for use by annotator components (because they work with 
- * merged type system).</p>
- * 
+ * <p>
+ * For use by applications, not for use by annotator components (because they work with merged type
+ * system).
+ * </p>
  */
 public interface TypeSystemMgr extends TypeSystem {
 
@@ -42,8 +46,8 @@ public interface TypeSystemMgr extends TypeSystem {
    *          The name of the new type.
    * @param mother
    *          The type node under which the new type should be attached. This must not be null.
-   * @return The new type, or <code>null</code> if <code>typeName</code> is already in use (so
-   *         check for null return values).
+   * @return The new type, or <code>null</code> if <code>typeName</code> is already in use (so check
+   *         for null return values).
    * @exception CASAdminException
    *              If <code>typeName</code> is not a legal type name, type system is locked, or
    *              <code>mother</code> is inheritance final.
@@ -67,12 +71,10 @@ public interface TypeSystemMgr extends TypeSystem {
   Type addStringSubtype(String typeName, String[] stringList) throws CASAdminException;
 
   /**
-   * Add an feature to the type system.
-   * Note: A subtype may define a feature that is also defined by a supertype. 
-   *   If the supertype definition is already present, then the subtype definition is 
-   *   "merged":  using the merging criteria: ranges must match.
-   *      Different isMultipleReferencesAllowed settings are OK;
-   *      The supertype's setting takes precedence.
+   * Add an feature to the type system. Note: A subtype may define a feature that is also defined by
+   * a supertype. If the supertype definition is already present, then the subtype definition is
+   * "merged": using the merging criteria: ranges must match. Different isMultipleReferencesAllowed
+   * settings are OK; The supertype's setting takes precedence.
    * 
    * @param featureName
    *          The name of the new feature.
@@ -80,14 +82,14 @@ public interface TypeSystemMgr extends TypeSystem {
    *          The type that defines the domain of the feature.
    * @param rangeType
    *          The type that defines the range of the feature.
-   * @return The new feature object, or <code>null</code> if <code>featureName</code> is already
-   *         in use for <code>domainType</code> with the same range (if the range is different, an
+   * @return The new feature object, or <code>null</code> if <code>featureName</code> is already in
+   *         use for <code>domainType</code> with the same range (if the range is different, an
    *         exception is thrown).
    * @exception CASAdminException
-   *              If <code>featureName</code> is not a legal feature name, the type system is
-   *              locked or <code>domainType</code> is feature final. Also if
-   *              <code>featureName</code> has already been defined on <code>domainType</code>
-   *              (or a supertype) with a different range than <code>rangeType</code>.
+   *              If <code>featureName</code> is not a legal feature name, the type system is locked
+   *              or <code>domainType</code> is feature final. Also if <code>featureName</code> has
+   *              already been defined on <code>domainType</code> (or a supertype) with a different
+   *              range than <code>rangeType</code>.
    */
   Feature addFeature(String featureName, Type domainType, Type rangeType) throws CASAdminException;
 
@@ -101,54 +103,54 @@ public interface TypeSystemMgr extends TypeSystem {
    * @param rangeType
    *          The type that defines the range of the feature.
    * @param multipleReferencesAllowed
-   *          If the <code>rangeType</code> is an array type, you can use this flag to enforce
-   *          that the feature value is not referenced anywhere else. This is currently only used
-   *          for XMI serialization. Defaults to <code>true</code>.
-   * @return The new feature object, or <code>null</code> if <code>featureName</code> is already
-   *         in use for <code>domainType</code> with the same range (if the range is different, an
+   *          If the <code>rangeType</code> is an array type, you can use this flag to enforce that
+   *          the feature value is not referenced anywhere else. This is currently only used for XMI
+   *          serialization. Defaults to <code>true</code>.
+   * @return The new feature object, or <code>null</code> if <code>featureName</code> is already in
+   *         use for <code>domainType</code> with the same range (if the range is different, an
    *         exception is thrown).
    * @exception CASAdminException
-   *              If <code>featureName</code> is not a legal feature name, the type system is
-   *              locked or <code>domainType</code> is feature final. Also if
-   *              <code>featureName</code> has already been defined on <code>domainType</code>
-   *              (or a supertype) with a different range than <code>rangeType</code>.
+   *              If <code>featureName</code> is not a legal feature name, the type system is locked
+   *              or <code>domainType</code> is feature final. Also if <code>featureName</code> has
+   *              already been defined on <code>domainType</code> (or a supertype) with a different
+   *              range than <code>rangeType</code>.
    */
   Feature addFeature(String featureName, Type domainType, Type rangeType,
           boolean multipleReferencesAllowed) throws CASAdminException;
 
   /**
-   * Commit the type system, and load JCas Classes from the UIMA Framework's classloader. 
-   * The type system will be locked and no longer writable. 
+   * Commit the type system, and load JCas Classes from the UIMA Framework's classloader. The type
+   * system will be locked and no longer writable.
    * 
-   * WARNING: Users
-   * should not call this, but instead call ((CASImpl) theAssociatedCAS).commitTypeSystem() in order
-   * to set up the parts of the CAS that should be set up when the type system is committed.
+   * WARNING: Users should not call this, but instead call ((CASImpl)
+   * theAssociatedCAS).commitTypeSystem() in order to set up the parts of the CAS that should be set
+   * up when the type system is committed.
    * 
-   * WARNING: This API will use the UIMA Framework's class loader to find a load JCas classes.
-   * If you have JCas classes under some other class loader you wish to use (perhaps you are 
-   * setting a ResourceManager's extension classpath, which creates a class loader), use the
-   * commit which takes a class loader as an argument, and pass in the class loader where the
-   * JCas classes are.  
+   * WARNING: This API will use the UIMA Framework's class loader to find a load JCas classes. If
+   * you have JCas classes under some other class loader you wish to use (perhaps you are setting a
+   * ResourceManager's extension classpath, which creates a class loader), use the commit which
+   * takes a class loader as an argument, and pass in the class loader where the JCas classes are.
    * 
-   * @return the committed type system.  Note that this may be the same object as "this" or a 
-   *         different (but equal) object.  Type systems are cached and recreating the exact same type system
-   *         repeatedly will return the original one.
+   * @return the committed type system. Note that this may be the same object as "this" or a
+   *         different (but equal) object. Type systems are cached and recreating the exact same
+   *         type system repeatedly will return the original one.
    */
   TypeSystem commit();
-  
+
   /**
-   * Commit the type system, and load JCas classes from the passed in classloader. 
-   * The type system will be locked and no longer writable. 
+   * Commit the type system, and load JCas classes from the passed in classloader. The type system
+   * will be locked and no longer writable.
    * 
-   * WARNING: Users
-   * should not call this, but instead call ((CASImpl) theAssociatedCAS).commitTypeSystem() in order
-   * to set up the parts of the CAS that should be set up when the type system is committed.
+   * WARNING: Users should not call this, but instead call ((CASImpl)
+   * theAssociatedCAS).commitTypeSystem() in order to set up the parts of the CAS that should be set
+   * up when the type system is committed.
    * 
-   * @param cl the JCas class loader
-   *  
-   * @return the committed type system.  Note that this may be the same object as "this" or a 
-   *         different (but equal) object.  Type systems are cached and recreating the exact same type system
-   *         repeatedly will return the original one.
+   * @param cl
+   *          the JCas class loader
+   * 
+   * @return the committed type system. Note that this may be the same object as "this" or a
+   *         different (but equal) object. Type systems are cached and recreating the exact same
+   *         type system repeatedly will return the original one.
    */
   TypeSystem commit(ClassLoader cl);
 
@@ -173,8 +175,8 @@ public interface TypeSystemMgr extends TypeSystem {
    * Block any further inheritance from this type. Does not mean that the type can have no
    * sub-types, just that no new ones can be introduced.
    * 
-   * @param type the type to block subtypes on
+   * @param type
+   *          the type to block subtypes on
    */
   void setInheritanceFinal(Type type);
-
 }

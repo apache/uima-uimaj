@@ -28,8 +28,7 @@ public final class AnnotationPredicates {
   }
 
   /**
-   * Y is starting before or at the same position as A and ends after or at the
-   * same position as X.
+   * Y is starting before or at the same position as A and ends after or at the same position as X.
    * 
    * @param aX
    *          X
@@ -50,8 +49,7 @@ public final class AnnotationPredicates {
   }
 
   /**
-   * X is starting before or at the same position as Y and ends after or at the
-   * same position as Y.
+   * X is starting before or at the same position as Y and ends after or at the same position as Y.
    * 
    * @param aX
    *          X
@@ -95,9 +93,9 @@ public final class AnnotationPredicates {
   }
 
   /**
-   * The intersection of the spans X and Y is non-empty. If either X or Y have a
-   * zero-width, then the intersection is considered to be non-empty if the begin
-   * of X is either within Y or the same as the begin of Y - and vice versa.
+   * The intersection of the spans X and Y is non-empty. If either X or Y have a zero-width, then
+   * the intersection is considered to be non-empty if the begin of X is either within Y or the same
+   * as the begin of Y - and vice versa.
    * 
    * @param aX
    *          X
@@ -202,7 +200,7 @@ public final class AnnotationPredicates {
   public static boolean preceding(AnnotationFS aX, AnnotationFS aY) {
     return aY.getBegin() >= aX.getEnd();
   }
-  
+
   public static boolean beginningWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin == aYBegin;
   }
@@ -218,6 +216,7 @@ public final class AnnotationPredicates {
   public static boolean endingWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXEnd == aYEnd;
   }
+
   public static boolean endingWith(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aX.getEnd() == aYEnd;
   }

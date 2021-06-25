@@ -57,6 +57,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre is != null
    * @pre f != null
    */
+  @Override
   public KeyValuePair fromStream(InputStream is, Frame f) throws IOException, EOFException {
     char[] cbuffer = new char[128];
     byte[] buffer = new byte[128];
@@ -398,6 +399,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre os != null
    * @pre f != null
    */
+  @Override
   public void toStream(OutputStream os, Frame f) throws IOException {
     byte[] workbuf = new byte[256]; // reduces allocations in string sending
     os.write(HEADER);

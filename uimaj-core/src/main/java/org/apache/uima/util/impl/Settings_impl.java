@@ -39,9 +39,10 @@ import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 
+//@formatter:off
 /**
- * Class that reads properties files containing external parameter overrides used by the ExternalOverrideSettings_impl
- * class.
+ * Class that reads properties files containing external parameter overrides used by the
+ * ExternalOverrideSettings_impl class.
  * 
  * Similar to java.util.Properties but: 
  *    supports UTF-8 files 
@@ -50,9 +51,8 @@ import org.apache.uima.util.Settings;
  *    '\' can be used to escape $ [ , ] and the line-end
  * 
  * @author burn
- * 
  */
-
+//@formatter:on
 public class Settings_impl implements Settings {
 
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
@@ -60,17 +60,17 @@ public class Settings_impl implements Settings {
   private BufferedReader rdr;
 
   private Map<String, String> map;
-  
+
   // Thread-local map of properties being resolved +for detecting circular references.
   private ThreadLocal<HashMap<String, Integer>> tlResolving = new ThreadLocal<HashMap<String, Integer>>() {
+    @Override
     protected synchronized HashMap<String, Integer> initialValue() {
       return new HashMap<>();
     }
   };
 
   /*
-   * Regex that matches ${...}
-   * non-greedy so stops on first '}' -- hence key cannot contain '}'
+   * Regex that matches ${...} non-greedy so stops on first '}' -- hence key cannot contain '}'
    */
   private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
@@ -89,20 +89,22 @@ public class Settings_impl implements Settings {
   }
 
   /**
-   * Load properties from an input stream.  
-   * Existing properties are not changed and a warning is logged if the new value is different.
-   * May be called multiple times, so effective search is in load order.
-   * Arrays are enclosed in [] and the elements may be separated by <code>,</code> or new-line, so 
-   *   can span multiple lines without using a final \ 
+   * Load properties from an input stream. Existing properties are not changed and a warning is
+   * logged if the new value is different. May be called multiple times, so effective search is in
+   * load order. Arrays are enclosed in [] and the elements may be separated by <code>,</code> or
+   * new-line, so can span multiple lines without using a final \
    * 
-   * @param in - Stream holding properties
-   * @throws IOException if name characters illegal
+   * @param in
+   *          - Stream holding properties
+   * @throws IOException
+   *           if name characters illegal
    */
+  @Override
   public void load(InputStream in) throws IOException {
     // Process each logical line (after blanks & comments removed and continuations extended)
     rdr = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
     String line;
-    final String legalPunc = "./-~_";   // Acceptable punctuation characters
+    final String legalPunc = "./-~_"; // Acceptable punctuation characters
     while ((line = getLine()) != null) {
       // Remove surrounding white-space and split on first '=' or ':' or white-space
       String[] parts = line.split("\\s*[:=\\s]\\s*", 2);
@@ -110,10 +112,12 @@ public class Settings_impl implements Settings {
       // Restrict names to alphanumeric plus "joining" punctuation: ./-~_
       boolean validName = name.length() > 0;
       for (int i = 0; i < name.length() && validName; ++i) {
-        validName = Character.isLetterOrDigit(name.charAt(i)) || legalPunc.indexOf(name.charAt(i))>=0;
+        validName = Character.isLetterOrDigit(name.charAt(i))
+                || legalPunc.indexOf(name.charAt(i)) >= 0;
       }
       if (!validName) {
-        throw new IOException("Invalid name '" + name + "' --- characters must be alphanumeric or " + legalPunc);
+        throw new IOException(
+                "Invalid name '" + name + "' --- characters must be alphanumeric or " + legalPunc);
       }
       String value;
       // When RHS is empty get a split only for the := separators
@@ -130,43 +134,47 @@ public class Settings_impl implements Settings {
       } else {
         if (!value.equals(map.get(name))) {
           // Key {0} already in use ... ignoring value "{1}"
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "load",
-                  LOG_RESOURCE_BUNDLE, "UIMA_external_override_ignored__CONFIG", new Object[] { name, value });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                  "load", LOG_RESOURCE_BUNDLE, "UIMA_external_override_ignored__CONFIG",
+                  new Object[] { name, value });
         }
       }
     }
   }
 
   /**
-   * Load properties from the comma-separated list of resources specified in the system property 
-   *   UimaExternalOverrides
-   * Resource names may be specified with a prefix of "file:" or "path:".
-   * If the prefix is "path:" the name must use the Java-style dotted format, similar to an import by name.
-   * The name is converted to a URL with a suffix of ".settings" and is looked up in the datapath and classpath.
-   * If the prefix is "file:" or is omitted the filesystem is searched.
-   * Resources are loaded in list order.  Duplicate properties are ignored so entries in a file override any in following files.
+   * Load properties from the comma-separated list of resources specified in the system property
+   * UimaExternalOverrides Resource names may be specified with a prefix of "file:" or "path:". If
+   * the prefix is "path:" the name must use the Java-style dotted format, similar to an import by
+   * name. The name is converted to a URL with a suffix of ".settings" and is looked up in the
+   * datapath and classpath. If the prefix is "file:" or is omitted the filesystem is searched.
+   * Resources are loaded in list order. Duplicate properties are ignored so entries in a file
+   * override any in following files.
    * 
-   * @throws ResourceConfigurationException wraps IOException
+   * @throws ResourceConfigurationException
+   *           wraps IOException
    */
+  @Override
   public void loadSystemDefaults() throws ResourceConfigurationException {
     String fnames = System.getProperty("UimaExternalOverrides");
     if (fnames != null) {
       RelativePathResolver_impl relativePathResolver = new RelativePathResolver_impl();
       for (String fname : fnames.split(",")) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "loadSystemDefaults",
-                LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "loadSystemDefaults", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
                 new Object[] { fname });
         try {
-          InputStream is = null; 
-          if (fname.startsWith("path:")) {  // Convert to a url and search the datapath & classpath
-            URL relativeUrl = new URL("file", "", fname.substring(5).replace('.', '/')+".settings");
+          InputStream is = null;
+          if (fname.startsWith("path:")) { // Convert to a url and search the datapath & classpath
+            URL relativeUrl = new URL("file", "",
+                    fname.substring(5).replace('.', '/') + ".settings");
             URL relPath = relativePathResolver.resolveRelativePath(relativeUrl);
             if (relPath != null) {
               is = relPath.openStream();
             } else {
               throw new FileNotFoundException(fname + " - not found in the datapath or classpath.");
             }
-          } else {            // Files may have an optional "file:" prefix
+          } else { // Files may have an optional "file:" prefix
             if (fname.startsWith("file:")) {
               fname = fname.substring(5);
             }
@@ -183,32 +191,35 @@ public class Settings_impl implements Settings {
             is.close();
           }
         } catch (IOException e) {
-          throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_ERROR,
-                  new Object[] { fname }, e);
+          throw new ResourceConfigurationException(
+                  ResourceConfigurationException.EXTERNAL_OVERRIDE_ERROR, new Object[] { fname },
+                  e);
         }
       }
     }
   }
-  
+
   /**
-   * Look up the value for a property.
-   * Recursively evaluate the value replacing references ${key} with the value of the key.
-   * Nested references such as ${name-${suffix}} are supported. 
-   * Exceptions are thrown for circular references and undefined references.
-   * To avoid evaluation and get ${key} in the output escape the $ or {, e.g. \${key}
-   * Arrays are returned as a comma-separated string, e.g. "[elem1,elem2]" 
-   * Note: escape characters are not removed as they may affect array separators. 
+   * Look up the value for a property. Recursively evaluate the value replacing references ${key}
+   * with the value of the key. Nested references such as ${name-${suffix}} are supported.
+   * Exceptions are thrown for circular references and undefined references. To avoid evaluation and
+   * get ${key} in the output escape the $ or {, e.g. \${key} Arrays are returned as a
+   * comma-separated string, e.g. "[elem1,elem2]" Note: escape characters are not removed as they
+   * may affect array separators.
    * 
    * Used by getSetting and getSettingArray
    * 
-   * @param name - name to look up
-   * @return     - value of property
-   * @throws ResourceConfigurationException if the value references an undefined property
+   * @param name
+   *          - name to look up
+   * @return - value of property
+   * @throws ResourceConfigurationException
+   *           if the value references an undefined property
    */
+  @Override
   public String lookUp(String name) throws ResourceConfigurationException {
     return lookUp(name, name);
   }
-  
+
   private String lookUp(String from, String name) throws ResourceConfigurationException {
     // Maintain a set of variables being expanded so can recognize infinite recursion
     // Needs to be thread-local as multiple threads may be evaluating properties
@@ -219,7 +230,8 @@ public class Settings_impl implements Settings {
         System.err.println(resolving.get(s) + ": " + s + " = " + map.get(s));
       }
       // Circular reference to external override variable "{0}" when evaluating "{1}"
-      throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_CIRCULAR_REFERENCE,
+      throw new ResourceConfigurationException(
+              ResourceConfigurationException.EXTERNAL_OVERRIDE_CIRCULAR_REFERENCE,
               new Object[] { name, from });
     }
 
@@ -231,13 +243,15 @@ public class Settings_impl implements Settings {
       resolving.remove(name);
     }
   }
-  
+
   /**
    * Replace variable references in a string.
    * 
-   * @param value - String to scan for variable references
+   * @param value
+   *          - String to scan for variable references
    * @return - value with all references resolved and escapes processed
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   public String resolve(String value) throws Exception {
     return unescape(resolve(value, value));
@@ -275,8 +289,10 @@ public class Settings_impl implements Settings {
       String key = remainder.substring(0, end);
       if (end > 0) {
         String val = lookUp(from, key);
-        if (val == null) { // Undefined reference to external override variable "{0}" when evaluating "{1}"
-          throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_INVALID,
+        if (val == null) { // Undefined reference to external override variable "{0}" when
+                           // evaluating "{1}"
+          throw new ResourceConfigurationException(
+                  ResourceConfigurationException.EXTERNAL_OVERRIDE_INVALID,
                   new Object[] { key, from });
         }
         result.append(val);
@@ -285,7 +301,7 @@ public class Settings_impl implements Settings {
     }
     return result.toString();
   }
-  
+
   /**
    * @see org.apache.uima.util.Settings#getSetting(java.lang.String)
    */
@@ -299,10 +315,11 @@ public class Settings_impl implements Settings {
     if (value.length() >= 2 && value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']'
             && value.charAt(value.length() - 2) != '\\') {
       // External override value for "{0}" has the wrong type (scalar or array)
-      throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH, 
+      throw new ResourceConfigurationException(
+              ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH,
               new Object[] { name });
     }
-    return unescape(value);  // Process escape characters after checking for array syntax
+    return unescape(value); // Process escape characters after checking for array syntax
   }
 
   /**
@@ -314,10 +331,11 @@ public class Settings_impl implements Settings {
     if (value == null) {
       return null;
     }
-    if (!(value.length() >= 2 && value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']' && value
-            .charAt(value.length() - 2) != '\\')) {
+    if (!(value.length() >= 2 && value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']'
+            && value.charAt(value.length() - 2) != '\\')) {
       // External override value for "{0}" has the wrong type (scalar or array)
-      throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH, 
+      throw new ResourceConfigurationException(
+              ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH,
               new Object[] { name });
     }
     value = value.substring(1, value.length() - 1);
@@ -376,10 +394,8 @@ public class Settings_impl implements Settings {
     return ((line.length() - i) % 2 != 0);
   }
 
-  
   /*
-   * Create a string representing an array from one or more logical lines
-   * Assert: line length &gt; 0
+   * Create a string representing an array from one or more logical lines Assert: line length &gt; 0
    */
   private String getArray(String line) throws IOException {
     int iend = line.indexOf(']');
@@ -389,8 +405,8 @@ public class Settings_impl implements Settings {
     if (iend >= 0) {
       // Found the closing ']' - remainder of line must be empty
       if (iend + 1 < line.length()) {
-        throw new IOException("Syntax error - invalid character(s) '" +
-                line.substring(iend + 1, line.length()) + "' after end of array");
+        throw new IOException("Syntax error - invalid character(s) '"
+                + line.substring(iend + 1, line.length()) + "' after end of array");
       }
       return line;
     }
@@ -402,8 +418,8 @@ public class Settings_impl implements Settings {
       throw new IOException("Premature EOF - missing ']'");
     }
     iend = line.length() - 1;
-    if ((line.charAt(iend) == ',' && !isEscaped(line, iend)) || 
-            line.equals("[") || nextline.charAt(0) == ']') {
+    if ((line.charAt(iend) == ',' && !isEscaped(line, iend)) || line.equals("[")
+            || nextline.charAt(0) == ']') {
       return line + getArray(nextline);
     } else {
       return line + "," + getArray(nextline);
@@ -411,10 +427,10 @@ public class Settings_impl implements Settings {
   }
 
   /*
-   * Reads a logical line from the input stream following the Java Properties class rules.
-   * Ignore blank lines or comments (first non-blank is '#' or '!').
-   * An un-escaped final '\' marks a continuation line.
-   * Leading and trailing whitespace is removed from each physical line, and hence from the logical line.
+   * Reads a logical line from the input stream following the Java Properties class rules. Ignore
+   * blank lines or comments (first non-blank is '#' or '!'). An un-escaped final '\' marks a
+   * continuation line. Leading and trailing whitespace is removed from each physical line, and
+   * hence from the logical line.
    */
   private String getLine() throws IOException {
     String line = rdr.readLine();
@@ -447,14 +463,14 @@ public class Settings_impl implements Settings {
     // Append the trimmed line but check the untrimmed line for a final \
     line = line.substring(0, ilast) + next.trim();
     if (!isEscaped(next, next.length())) {
-      return line.trim();               // Complete line may need more trimming
+      return line.trim(); // Complete line may need more trimming
     }
     return extendLine(line);
   }
 
   /*
-   * Check if a character in the string is escaped, i.e. preceded by an odd number of '\'s
-   * Correctly returns false if ichar &le; 0
+   * Check if a character in the string is escaped, i.e. preceded by an odd number of '\'s Correctly
+   * returns false if ichar &le; 0
    */
   private boolean isEscaped(String line, int ichar) {
     int i = ichar - 1;

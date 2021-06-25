@@ -35,19 +35,20 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
-
-public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
-        TestResourceInterface {
+public class TestResourceInterface_impl extends Resource_ImplBase
+        implements SharedResourceObject, TestResourceInterface {
   private String mString;
 
   /**
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
+  @Override
   public void load(DataResource aData) throws ResourceInitializationException {
     try {
       // try to get an input stream and read from the file
       InputStream inStr = aData.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, StandardCharsets.UTF_8));
+      BufferedReader bufRdr = new BufferedReader(
+              new InputStreamReader(inStr, StandardCharsets.UTF_8));
       mString = bufRdr.readLine();
       inStr.close();
     } catch (IOException e) {
@@ -58,6 +59,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.impl.TestResourceInterface#readString()
    */
+  @Override
   public String readString() {
     return mString;
   }
@@ -65,13 +67,15 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
-    //do nothing
+    // do nothing
   }
 
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return null;
   }
@@ -79,6 +83,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     return true;
@@ -89,7 +94,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    */
   public void setConfigurationParameters(NameValuePair[] aSettings)
           throws ResourceConfigurationException {
-    //do nothing
+    // do nothing
   }
 
 }

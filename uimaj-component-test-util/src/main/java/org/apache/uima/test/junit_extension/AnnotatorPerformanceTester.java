@@ -24,8 +24,6 @@ import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.logging.LogManager;
 
-import org.junit.Assert;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -36,6 +34,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Assert;
 
 
 /**
@@ -54,7 +53,6 @@ public class AnnotatorPerformanceTester {
      * Instantiates a new file file filter.
      */
     private FileFileFilter() {
-      super();
     }
 
     /* (non-Javadoc)

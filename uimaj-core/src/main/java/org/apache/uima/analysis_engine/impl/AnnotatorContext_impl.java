@@ -58,6 +58,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(String)
    */
+  @Override
   public Object getConfigParameterValue(String aName) {
     return mUimaContext.getConfigParameterValue(aName);
   }
@@ -66,6 +67,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return mUimaContext.getConfigParameterValue(aGroupName, aParamName);
   }
@@ -73,6 +75,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getLogger()
    */
+  @Override
   public Logger getLogger() {
     return mUimaContext.getLogger();
   }
@@ -82,6 +85,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * 
    * @return the InstrumentationFacility to be used within this AnalysisEngine
    */
+  @Override
   public InstrumentationFacility getInstrumentationFacility() {
     return mUimaContext.getInstrumentationFacility();
   }
@@ -91,6 +95,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationGroupNames()
    */
+  @Override
   public String[] getConfigurationGroupNames() {
     return mUimaContext.getConfigurationGroupNames();
   }
@@ -98,8 +103,10 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames()
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames()
    */
+  @Override
   public String[] getConfigParameterNames() {
     return mUimaContext.getConfigParameterNames();
   }
@@ -107,8 +114,11 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames(java.
+   * lang.String)
    */
+  @Override
   public String[] getConfigParameterNames(String aGroup) {
     return mUimaContext.getConfigParameterNames(aGroup);
   }
@@ -118,6 +128,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(String)
    */
+  @Override
   public URL getResourceURL(String aKey) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceURL(aKey);
@@ -129,8 +140,10 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String)
    */
+  @Override
   public URI getResourceURI(String aKey) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceURI(aKey);
@@ -142,8 +155,10 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.
+   * String)
    */
+  @Override
   public String getResourceFilePath(String aKey) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceFilePath(aKey);
@@ -157,6 +172,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(String)
    */
+  @Override
   public InputStream getResourceAsStream(String aKey) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceAsStream(aKey);
@@ -170,6 +186,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(String)
    */
+  @Override
   public Object getResourceObject(String aKey) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceObject(aKey);
@@ -182,6 +199,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws AnnotatorContextException {
     try {
@@ -195,6 +213,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public Object getResourceObject(String aKey, String[] aParams) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceObject(aKey, aParams);
@@ -207,6 +226,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public URL getResourceURL(String aKey, String[] aParams) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceURL(aKey, aParams);
@@ -218,9 +238,11 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String,
-   *      java.lang.String[])
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String,
+   * java.lang.String[])
    */
+  @Override
   public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceURI(aKey, aParams);
@@ -232,10 +254,12 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.String,
-   *      java.lang.String[])
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.
+   * String, java.lang.String[])
    */
-  public String getResourceFilePath(String aKey, String[] aParams) throws AnnotatorContextException {
+  @Override
+  public String getResourceFilePath(String aKey, String[] aParams)
+          throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceFilePath(aKey, aParams);
     } catch (ResourceAccessException e) {
@@ -246,6 +270,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getDataPath()
    */
+  @Override
   public String getDataPath() {
     return mUimaContext.getDataPath();
   }
@@ -256,7 +281,9 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * <p>
    * This method is to be called from the Analysis Engine, not the Annotator, so it is not part of
    * the AnnotatorContext interface.
-   * @param aProcessTrace -
+   * 
+   * @param aProcessTrace
+   *          -
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mUimaContext.setProcessTrace(aProcessTrace);
@@ -266,6 +293,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @deprecated {@link AnnotatorContext#mapToSofaID(java.lang.String)}
    * 
    */
+  @Override
   @Deprecated
   public SofaID mapToSofaID(String aSofaName) {
     return mUimaContext.mapToSofaID(aSofaName);
@@ -274,6 +302,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /**
    * @deprecated {@link AnnotatorContext#getSofaMappings()}
    */
+  @Override
   @Deprecated
   public SofaID[] getSofaMappings() {
     return mUimaContext.getSofaMappings();

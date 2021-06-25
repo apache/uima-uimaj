@@ -19,6 +19,8 @@
 
 package org.apache.uima.internal.util;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -27,20 +29,18 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
-
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * Tests the ResourcePool_impl class.
  * 
  */
 public class ResourcePoolTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       // create resource specifier and a pool containing 3 instances
       mDesc = new AnalysisEngineDescription_impl();
@@ -53,9 +53,9 @@ public class ResourcePoolTest {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @AfterEach
-    public void tearDown() {
+
+  @AfterEach
+  public void tearDown() {
     mDesc = null;
     pool1.destroy();
     pool1 = null;
@@ -64,8 +64,8 @@ public class ResourcePoolTest {
   /*
    * Test for Resource_impl getResource()
    */
-    @Test
-    public void testGetResource() throws Exception {
+  @Test
+  public void testGetResource() throws Exception {
     try {
       Assert.assertEquals(3, pool1.getFreeInstances().size());
 
@@ -95,8 +95,8 @@ public class ResourcePoolTest {
   /*
    * Test for Resource_impl getResource(long)
    */
-    @Test
-    public void testGetResourceJ() throws Exception {
+  @Test
+  public void testGetResourceJ() throws Exception {
     try {
       // ask for resources with timeout of 1 second. should respond quickly
       // until resources are exhausted, then it will pause 1 second before
@@ -130,11 +130,14 @@ public class ResourcePoolTest {
 
       b = pool1.getResource();
       Assert.assertNull(b);
-      b = pool1.getResource(5000);  // wait up to 5 seconds in case machine is sluggish :-(
-      // observe occasional failures - it appears the test machine gets pre-empted for several seconds
-      // and the .2 second delay to release the resource didn't actually get that thread started before
-      // the checking thread timed out. 
-      // Changing the time the main thread waits for the release from 1 sec to 5 secs to reduce spurious failures.
+      b = pool1.getResource(5000); // wait up to 5 seconds in case machine is sluggish :-(
+      // observe occasional failures - it appears the test machine gets pre-empted for several
+      // seconds
+      // and the .2 second delay to release the resource didn't actually get that thread started
+      // before
+      // the checking thread timed out.
+      // Changing the time the main thread waits for the release from 1 sec to 5 secs to reduce
+      // spurious failures.
       Assert.assertNotNull(b);
       releaserThread.join();
       assertEquals(null, exceptionFromReleaserThread[0]);
@@ -143,8 +146,8 @@ public class ResourcePoolTest {
     }
   }
 
-    @Test
-    public void testReleaseResource() throws Exception {
+  @Test
+  public void testReleaseResource() throws Exception {
     try {
       // acquire all the resources
       Assert.assertEquals(3, pool1.getFreeInstances().size());
@@ -159,7 +162,8 @@ public class ResourcePoolTest {
 
       // try to release "foo" again - should not change the free instances count
       // this will log a warning - first we log that this is expected
-      UIMAFramework.getLogger().log(Level.WARNING, "Unit test is expecting to log ResourcePool warning.");
+      UIMAFramework.getLogger().log(Level.WARNING,
+              "Unit test is expecting to log ResourcePool warning.");
       pool1.releaseResource(foo);
       Assert.assertEquals(1, pool1.getFreeInstances().size());
 
@@ -178,8 +182,8 @@ public class ResourcePoolTest {
     }
   }
 
-    @Test
-    public void testDestroy() throws Exception {
+  @Test
+  public void testDestroy() throws Exception {
     try {
       // do some stuff
       Resource foo = pool1.getResource();
@@ -202,8 +206,8 @@ public class ResourcePoolTest {
     }
   }
 
-    @Test
-    public void testGetMetaData() throws Exception {
+  @Test
+  public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData descMetaData = mDesc.getMetaData();
       ResourceMetaData poolMetaData = pool1.getMetaData();
@@ -218,7 +222,7 @@ public class ResourcePoolTest {
   private AnalysisEngineDescription mDesc;
 
   private ResourcePool pool1;
-  
+
   private final Exception[] exceptionFromReleaserThread = new Exception[1];
 
   class ReleaserThread extends Thread {
@@ -228,6 +232,7 @@ public class ResourcePoolTest {
       this.r = r;
     }
 
+    @Override
     public void run() {
       try {
         synchronized (this) {

@@ -46,7 +46,6 @@ public class PearPlugin extends AbstractUIPlugin {
    * The constructor.
    */
   public PearPlugin() {
-    super();
     plugin = this;
   }
 

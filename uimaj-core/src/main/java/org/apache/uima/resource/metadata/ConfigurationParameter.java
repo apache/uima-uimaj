@@ -56,7 +56,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * 
    * @return the name of this configuration parameter.
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of this configuration parameter.
@@ -67,14 +67,14 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Retrieves the external name of this configuration parameter.
    * 
    * @return the external name of this configuration parameter.
    */
-  public String getExternalOverrideName();
+  String getExternalOverrideName();
 
   /**
    * Sets the external name of this configuration parameter.
@@ -85,14 +85,14 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setExternalOverrideName(String aExternalOverrideName);
-  
+  void setExternalOverrideName(String aExternalOverrideName);
+
   /**
    * Retrieves the description of this configuration parameter.
    * 
    * @return the description of this configuration parameter.
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Sets the description of this configuration parameter.
@@ -103,7 +103,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
   /**
    * Retrieves the data type of this configuration parameter.
@@ -111,7 +111,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @return the data type of this configuration parameter. This will be one of the TYPE constants
    *         defined on this interface.
    */
-  public String getType();
+  String getType();
 
   /**
    * Sets the data type of this configuration parameter.
@@ -126,7 +126,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setType(String aType);
+  void setType(String aType);
 
   /**
    * Retrieves whether this parameter is multi-valued. Multi-valued parameters take an array of
@@ -134,7 +134,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * 
    * @return true if and only if this parameter is multi-valued.
    */
-  public boolean isMultiValued();
+  boolean isMultiValued();
 
   /**
    * Sets whether this parameter is multi-valued. Multi-valued parameters take an array of values,
@@ -146,14 +146,14 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setMultiValued(boolean aMultiValued);
+  void setMultiValued(boolean aMultiValued);
 
   /**
    * Retrieves whether this parameter is mandatory.
    * 
    * @return true if and only if this parameter is mandatory.
    */
-  public boolean isMandatory();
+  boolean isMandatory();
 
   /**
    * Sets whether this parameter is mandatory.
@@ -164,7 +164,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setMandatory(boolean aMandatory);
+  void setMandatory(boolean aMandatory);
 
   /**
    * Retrieves whether this parameter is published to clients. A non-published parameter is used
@@ -183,27 +183,30 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
+
   // public void setPublished(boolean aPublished);
   /**
    * Gets the parameters that are this parameter overrides. This is used for aggregate resources
-   * only. Overrides are expressed as strings of the form <i>componentName</i><code>/</code><i>parameterName</i>.
-   * For example the overrides <code>annotator1/parameter1</code> would override the parameter
-   * named <code>parameter1</code> within the component named <code>annotator1</code>.
+   * only. Overrides are expressed as strings of the form
+   * <i>componentName</i><code>/</code><i>parameterName</i>. For example the overrides
+   * <code>annotator1/parameter1</code> would override the parameter named <code>parameter1</code>
+   * within the component named <code>annotator1</code>.
    * 
    * @return the parameters this this parameter overrides
    */
-  public String[] getOverrides();
+  String[] getOverrides();
 
   /**
    * Sets the parameters that are this parameter overrides. This is used for aggregate resources
-   * only. Overrides are expressed as strings of the form <i>componentName</i><code>/</code><i>parameterName</i>.
-   * For example the overrides <code>annotator1/parameter1</code> would override the parameter
-   * named <code>parameter1</code> within the component named <code>annotator1</code>.
+   * only. Overrides are expressed as strings of the form
+   * <i>componentName</i><code>/</code><i>parameterName</i>. For example the overrides
+   * <code>annotator1/parameter1</code> would override the parameter named <code>parameter1</code>
+   * within the component named <code>annotator1</code>.
    * 
    * @param aOverrides
    *          the parameters this this parameter overrides
    */
-  public void setOverrides(String[] aOverrides);
+  void setOverrides(String[] aOverrides);
 
   /**
    * Adds an override to this configuration parameter.
@@ -215,7 +218,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    *           if this object is not modifiable
    * @see #setOverrides(String[])
    */
-  public void addOverride(String aOverride);
+  void addOverride(String aOverride);
 
   /**
    * Removes an override from this configuration parameter.
@@ -228,25 +231,25 @@ public interface ConfigurationParameter extends MetaDataObject {
    *           if this object is not modifiable
    * @see #setOverrides(String[])
    */
-  public void removeOverride(String aOverride);
+  void removeOverride(String aOverride);
 
   /**
    * Identifies the String data type. Values of the parameter will be of type java.lang.String.
    */
-  public static final String TYPE_STRING = "String";
+  String TYPE_STRING = "String";
 
   /**
    * Identifies the Boolean data type. Values of the parameter will be of type java.lang.Boolean.
    */
-  public static final String TYPE_BOOLEAN = "Boolean";
+  String TYPE_BOOLEAN = "Boolean";
 
   /**
    * Identifies the Integer data type. Values of the parameter will be of type java.lang.Integer.
    */
-  public static final String TYPE_INTEGER = "Integer";
+  String TYPE_INTEGER = "Integer";
 
   /**
    * Identifies the Float data type. Values of the parameter will be of type java.lang.Float.
    */
-  public static final String TYPE_FLOAT = "Float";
+  String TYPE_FLOAT = "Float";
 }

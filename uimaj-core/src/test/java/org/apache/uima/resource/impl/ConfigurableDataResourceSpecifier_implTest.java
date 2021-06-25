@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -36,17 +38,11 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-
-
 public class ConfigurableDataResourceSpecifier_implTest {
-    @Test
-    public void testXmlization() throws Exception {
+  @Test
+  public void testXmlization() throws Exception {
     try {
       // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
@@ -73,7 +69,8 @@ public class ConfigurableDataResourceSpecifier_implTest {
       String xmlStr = sw.getBuffer().toString();
 
       // parse back
-      ByteArrayInputStream inStream = new ByteArrayInputStream(xmlStr.getBytes(StandardCharsets.UTF_8));
+      ByteArrayInputStream inStream = new ByteArrayInputStream(
+              xmlStr.getBytes(StandardCharsets.UTF_8));
       XMLInputSource in = new XMLInputSource(inStream, null);
       ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
               .getXMLParser().parse(in);

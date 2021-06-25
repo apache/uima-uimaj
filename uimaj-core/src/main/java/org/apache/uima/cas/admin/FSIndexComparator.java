@@ -16,35 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.FeatureImpl;
 
 /**
- * This interface describes objects which specify the comparison used in indexes for keys. 
+ * This interface describes objects which specify the comparison used in indexes for keys.
  */
 public interface FSIndexComparator extends Comparable<FSIndexComparator> {
-  
 
-  static final int FEATURE_KEY = 0;
+  int FEATURE_KEY = 0;
 
-  static final int TYPE_ORDER_KEY = 1;
+  int TYPE_ORDER_KEY = 1;
 
   /**
    * Compare key1 of fs1 with key2 of fs2 so that the order of fs1 and fs2 is the same as that of
    * key1 and key2 in the standard order for that kind of key. For integer and float values, this is
    * the standard linear order, and for strings it is lexicographic order.
    */
-  static final int STANDARD_COMPARE = 0;
+  int STANDARD_COMPARE = 0;
 
   /**
    * Compare key1 of fs1 with key2 of fs2 so that the order of fs1 and fs2 is the reverse as that of
    * key1 and key2 (with respect to the standard order of that key).
    */
-  static final int REVERSE_STANDARD_COMPARE = 1;
+  int REVERSE_STANDARD_COMPARE = 1;
 
   /**
    * Set the type of this comparator. Note that you can use this method more than once, in case you
@@ -75,8 +72,10 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
 
   /**
    * 
-   * @param typeOrder the type order
-   * @param compareKey the direction
+   * @param typeOrder
+   *          the type order
+   * @param compareKey
+   *          the direction
    * @return the number of the key
    */
   int addKey(LinearTypeOrder typeOrder, int compareKey);
@@ -109,10 +108,10 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
   int getKeyComparator(int key);
 
   /**
-   * Test for equality against another <code>FSIndexComparator</code>
-   *  <code>true</code> iff the
+   * Test for equality against another <code>FSIndexComparator</code> <code>true</code> iff the
    * comparators have the same keys and comparators.
    */
+  @Override
   boolean equals(Object o);
 
   /**
@@ -121,9 +120,7 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
    * method only returns true or false. It doesn't tell you what's actually wrong. Maybe we need to
    * change that?
    * 
-   * @return <code>true</code> iff all key features are appropriate for the type of this
-   *         comparator.
+   * @return <code>true</code> iff all key features are appropriate for the type of this comparator.
    */
   boolean isValid();
-
 }

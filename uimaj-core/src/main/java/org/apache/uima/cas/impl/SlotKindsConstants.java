@@ -42,29 +42,28 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
  * Users "implement" this interface to get access to these constants in their code
  */
 public interface SlotKindsConstants {
-  static final boolean CAN_BE_NEGATIVE = true;
-  static final boolean IGNORED = true;
-  static final boolean IN_MAIN_HEAP = true;
-  
-  final static int arrayLength_i = Slot_ArrayLength.ordinal();
-  final static int heapRef_i = Slot_HeapRef.ordinal();
-  final static int int_i = Slot_Int.ordinal();
-  final static int byte_i = Slot_Byte.ordinal();
-  final static int short_i = Slot_Short.ordinal();
-  final static int typeCode_i = Slot_TypeCode.ordinal();
-  final static int strOffset_i = Slot_StrOffset.ordinal();
-  final static int strLength_i = Slot_StrLength.ordinal();
-  final static int long_High_i = Slot_Long_High.ordinal();
-  final static int long_Low_i = Slot_Long_Low.ordinal();
-  final static int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.ordinal();
-  final static int float_Exponent_i = Slot_Float_Exponent.ordinal();
-  final static int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.ordinal();
-  final static int double_Exponent_i = Slot_Double_Exponent.ordinal();
-  final static int fsIndexes_i = Slot_FsIndexes.ordinal();
-  final static int strChars_i = Slot_StrChars.ordinal();
-  final static int control_i = Slot_Control.ordinal();
-  final static int strSeg_i = Slot_StrSeg.ordinal();
-  
-  final static int NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();
-}
+  boolean CAN_BE_NEGATIVE = true;
+  boolean IGNORED = true;
+  boolean IN_MAIN_HEAP = true;
 
+  int arrayLength_i = Slot_ArrayLength.ordinal();
+  int heapRef_i = Slot_HeapRef.ordinal();
+  int int_i = Slot_Int.ordinal();
+  int byte_i = Slot_Byte.ordinal();
+  int short_i = Slot_Short.ordinal();
+  int typeCode_i = Slot_TypeCode.ordinal();
+  int strOffset_i = Slot_StrOffset.ordinal();
+  int strLength_i = Slot_StrLength.ordinal();
+  int long_High_i = Slot_Long_High.ordinal();
+  int long_Low_i = Slot_Long_Low.ordinal();
+  int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.ordinal();
+  int float_Exponent_i = Slot_Float_Exponent.ordinal();
+  int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.ordinal();
+  int double_Exponent_i = Slot_Double_Exponent.ordinal();
+  int fsIndexes_i = Slot_FsIndexes.ordinal();
+  int strChars_i = Slot_StrChars.ordinal();
+  int control_i = Slot_Control.ordinal();
+  int strSeg_i = Slot_StrSeg.ordinal();
+
+  int NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();
+}

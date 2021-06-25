@@ -19,9 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeCasProcessors;
@@ -33,6 +31,7 @@ import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 import org.apache.uima.collection.metadata.CpeTimer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * this TestCase is testing the cpm API concerning the setting of CasProcessors

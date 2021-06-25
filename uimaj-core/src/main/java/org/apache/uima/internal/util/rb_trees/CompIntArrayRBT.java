@@ -37,16 +37,19 @@ public class CompIntArrayRBT extends IntArrayRBT {
   /**
    * Constructor for CompIntArrayRBT.
    * 
-   * @param comp -
-   * @param initialSize -
+   * @param comp
+   *          -
+   * @param initialSize
+   *          -
    */
   public CompIntArrayRBT(IntComparator comp, int initialSize) {
     super(initialSize);
     this.comp = comp;
   }
-  
+
+  @Override
   protected int compare(int v1, int v2) {
     return this.comp.compare(v1, v2);
   }
-  
+
 }

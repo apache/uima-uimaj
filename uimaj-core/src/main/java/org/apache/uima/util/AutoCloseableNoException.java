@@ -20,12 +20,14 @@
 package org.apache.uima.util;
 
 /**
- * protectIndexes returns instances of this, rather than AutoCloseable, to permit
- * users to use try with resources without a catch for Exception.
+ * protectIndexes returns instances of this, rather than AutoCloseable, to permit users to use try
+ * with resources without a catch for Exception.
  */
 public interface AutoCloseableNoException extends AutoCloseable {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.AutoCloseable#close()
    */
   @Override

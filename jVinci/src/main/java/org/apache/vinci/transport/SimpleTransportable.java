@@ -60,6 +60,7 @@ public final class SimpleTransportable implements Transportable {
   /**
    * @pre os != null
    */
+  @Override
   public void toStream(OutputStream os) throws IOException {
     os.write(document);
   }
@@ -70,6 +71,7 @@ public final class SimpleTransportable implements Transportable {
    * @throws UnsupportedOperationException
    *           thrown unconditionally.
    */
+  @Override
   public KeyValuePair fromStream(InputStream os) throws IOException {
     throw new UnsupportedOperationException("not implemented");
   }

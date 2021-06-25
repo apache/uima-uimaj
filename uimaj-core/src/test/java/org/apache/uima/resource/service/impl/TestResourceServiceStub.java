@@ -42,6 +42,7 @@ public class TestResourceServiceStub implements ResourceServiceStub {
   /**
    * @see org.apache.uima.resource.service.ResourceService#getMetaData()
    */
+  @Override
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     lastMethodName = "callGetMetaData";
     lastMethodArgs = new Object[] {};
@@ -51,8 +52,9 @@ public class TestResourceServiceStub implements ResourceServiceStub {
   /**
    * @see org.apache.uima.resource.service.impl.ResourceServiceStub#destroy()
    */
+  @Override
   public void destroy() {
-    //do nothing
+    // do nothing
   }
 
 }

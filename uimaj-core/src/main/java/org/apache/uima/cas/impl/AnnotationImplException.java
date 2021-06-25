@@ -44,7 +44,9 @@ public class AnnotationImplException extends Exception {
    */
   public static final int CANT_ADD_TOP = 0;
 
-  /** Error parsing types system file "{0}": expected {1} but found "{2}" at line {3}, column {4}. */
+  /**
+   * Error parsing types system file "{0}": expected {1} but found "{2}" at line {3}, column {4}.
+   */
   public static final int PARSING_ERROR = 1;
 
   /**
@@ -116,7 +118,9 @@ public class AnnotationImplException extends Exception {
             .format(this.arguments);
   }
 
-  /** @return The same as getMessage(), but prefixed with <code>"AnnotationImplException: "</code>. */
+  /**
+   * @return The same as getMessage(), but prefixed with <code>"AnnotationImplException: "</code>.
+   */
   @Override
   public String toString() {
     return this.getClass().getSimpleName() + ": " + this.getMessage();
@@ -129,7 +133,9 @@ public class AnnotationImplException extends Exception {
    * on). Adding a <code>null String</code> has no effect! So if you don't know the value of an
    * argument, use something like <code>""</code> or <code>"UNKNOWN"</code>, but not
    * <code>null</code>.
-   * @param s -
+   * 
+   * @param s
+   *          -
    * @return true if found a null spot to insert string s into
    */
   public boolean addArgument(String s) {

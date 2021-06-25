@@ -32,49 +32,51 @@ public interface CpeCheckpoint extends MetaDataObject {
   /**
    * Sets the file where checkpoint information will be stored
    * 
-   * @param aCheckpointFilePath -
-   *          checkpoint file path
-   * @throws CpeDescriptorException tbd
+   * @param aCheckpointFilePath
+   *          - checkpoint file path
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException;
+  void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException;
 
   /**
    * Returns file where checkpoint information is stored
    * 
    * @return - checkpoint file path
    */
-  public String getFilePath();
+  String getFilePath();
 
   /**
    * Sets frequency of checkpoints. Currently only time-based checkpointing is supported.
    * 
-   * @param aFrequency -
-   *          number of millis between checkpoints
-   * @param aTimeBased -
-   *          true if checkpoint is based on time
+   * @param aFrequency
+   *          - number of millis between checkpoints
+   * @param aTimeBased
+   *          - true if checkpoint is based on time
    */
-  public void setFrequency(int aFrequency, boolean aTimeBased);
+  void setFrequency(int aFrequency, boolean aTimeBased);
 
   /**
    * Returns frequency of checkpoints.
    * 
    * @return - number of millis between checkpoints
    */
-  public int getFrequency();
+  int getFrequency();
 
   /**
    * Returns true if frequency of checkpoints is time-based
    * 
    * @return true;
    */
-  public boolean isTimeBased();
+  boolean isTimeBased();
 
   /**
    * 
-   * @param aBatchSize the size of the batch
+   * @param aBatchSize
+   *          the size of the batch
    */
-  public void setBatchSize(int aBatchSize);
+  void setBatchSize(int aBatchSize);
 
-  public int getBatchSize();
+  int getBatchSize();
 
 }

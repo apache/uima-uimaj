@@ -22,9 +22,9 @@ package org.apache.uima.util;
 import org.apache.uima.UIMA_IllegalStateException;
 
 /**
- * The <code>InstrumentationFacility</code> interface defines a standard way for UIMA components
- * to be instrumented for performance evaluation. The UIMA framework will provide each UIMA
- * component with access to an implementation of this interface.
+ * The <code>InstrumentationFacility</code> interface defines a standard way for UIMA components to
+ * be instrumented for performance evaluation. The UIMA framework will provide each UIMA component
+ * with access to an implementation of this interface.
  * 
  * This interface is under development. In its current form, it basically just provides a write-only
  * interface to a {@link ProcessTrace} object.
@@ -46,7 +46,7 @@ public interface InstrumentationFacility {
    * @param aDescription
    *          description of the event
    */
-  public void startEvent(String aComponentName, String aEventType, String aDescription);
+  void startEvent(String aComponentName, String aEventType, String aDescription);
 
   /**
    * Records the end of an event. The event is identified by the component name and type. If there
@@ -65,7 +65,7 @@ public interface InstrumentationFacility {
    *           if there is no open event matching the <code>aComponentName</code> and
    *           <code>aEventType</code> arguments.
    */
-  public void endEvent(String aComponentName, String aEventType, String aResultMessage);
+  void endEvent(String aComponentName, String aEventType, String aResultMessage);
 
   /**
    * Records a completed event with the specified parameters.
@@ -82,6 +82,6 @@ public interface InstrumentationFacility {
    * @param aResultMsg
    *          result message of event
    */
-  public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
+  void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
           String aResultMsg);
 }

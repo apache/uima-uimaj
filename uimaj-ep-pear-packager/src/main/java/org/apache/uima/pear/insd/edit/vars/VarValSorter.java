@@ -55,7 +55,6 @@ class VarValSorter extends ViewerSorter {
    *          the sort criterion to use: one of <code>NAME</code> or <code>TYPE</code>
    */
   public VarValSorter(int criteria) {
-    super();
     this.criteria = criteria;
   }
 

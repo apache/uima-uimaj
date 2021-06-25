@@ -29,8 +29,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class ExternalResourceDependency_impl extends MetaDataObject_impl implements
-        ExternalResourceDependency {
+public class ExternalResourceDependency_impl extends MetaDataObject_impl
+        implements ExternalResourceDependency {
 
   static final long serialVersionUID = 8416783152191685356L;
 
@@ -45,6 +45,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#getKey()
    */
+  @Override
   public String getKey() {
     return mKey;
   }
@@ -52,6 +53,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#getInterfaceName()
    */
+  @Override
   public String getInterfaceName() {
     return mInterfaceName;
   }
@@ -59,6 +61,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#setKey(String)
    */
+  @Override
   public void setKey(String aKey) {
     mKey = aKey;
   }
@@ -66,6 +69,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#setInterfaceName(String)
    */
+  @Override
   public void setInterfaceName(String aName) {
     mInterfaceName = aName;
   }
@@ -73,6 +77,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -80,6 +85,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#isOptional()
    */
+  @Override
   public boolean isOptional() {
     return mOptional;
   }
@@ -87,6 +93,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#setDescription(java.lang.String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
 
@@ -95,16 +102,19 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   /**
    * @see org.apache.uima.resource.ExternalResourceDependency#setOptional(boolean)
    */
+  @Override
   public void setOptional(boolean aOptional) {
     mOptional = aOptional;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "externalResourceDependency", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
+          "externalResourceDependency",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
               new PropertyXmlInfo("description", false), new PropertyXmlInfo("interfaceName"),
               new PropertyXmlInfo("optional"), });
 }

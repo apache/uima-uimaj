@@ -58,6 +58,7 @@ public class AllowedValue_impl extends MetaDataObject_impl implements AllowedVal
   /**
    * @see org.apache.uima.resource.metadata.AllowedValue#getString()
    */
+  @Override
   public String getString() {
     return mString;
   }
@@ -65,6 +66,7 @@ public class AllowedValue_impl extends MetaDataObject_impl implements AllowedVal
   /**
    * @see org.apache.uima.resource.metadata.AllowedValue#setString(java.lang.String)
    */
+  @Override
   public void setString(String aString) {
     mString = aString;
   }
@@ -72,6 +74,7 @@ public class AllowedValue_impl extends MetaDataObject_impl implements AllowedVal
   /**
    * @see org.apache.uima.resource.metadata.AllowedValue#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -79,6 +82,7 @@ public class AllowedValue_impl extends MetaDataObject_impl implements AllowedVal
   /**
    * @see org.apache.uima.resource.metadata.AllowedValue#setDescription(java.lang.String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -86,6 +90,7 @@ public class AllowedValue_impl extends MetaDataObject_impl implements AllowedVal
   /**
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

@@ -28,25 +28,25 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.IntVector;
 
+// @formatter:off
 /**
- * Specifies the comparison to be used for an index, in terms of
- *   - the keys and the typeorder, in an order
- *   - the standard/reverse ordering
- *
- *   
+ * Specifies the comparison to be used for an index, in terms of 
+ * - the keys and the typeorder, in an order 
+ * - the standard/reverse ordering
  */
+// @formatter:on
 public class FSIndexComparatorImpl implements FSIndexComparator {
 
   private Type type;
 
   // the Feature or Linear Type Order, as an ordered collection, one per key
-  private final List<Object> keySpecs;  // Feature or LinearTypeOrder
+  private final List<Object> keySpecs; // Feature or LinearTypeOrder
 
   // Standard or Reverse
   private final IntVector directions;
 
-//  // FEATURE_KEY or TYPE_ORDER_KEY
-//  private IntVector keyTypeVector;
+  // // FEATURE_KEY or TYPE_ORDER_KEY
+  // private IntVector keyTypeVector;
 
   // Public only for testing purposes.
   public FSIndexComparatorImpl() {
@@ -54,7 +54,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     this.keySpecs = new ArrayList<>();
     this.directions = new IntVector();
   }
-  
+
   private FSIndexComparatorImpl(Type type, List<Object> keySpecs, IntVector directions) {
     this.type = type;
     this.keySpecs = keySpecs;
@@ -74,9 +74,9 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   public Type getType() {
     return this.type;
   }
-  
+
   int getTypeCode() {
-    return ((TypeImpl)this.type).getCode();
+    return ((TypeImpl) this.type).getCode();
   }
 
   @Override
@@ -100,9 +100,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
 
   @Override
   public int getKeyType(int key) {
-    return (this.keySpecs.get(key) instanceof Feature) 
-        ? FEATURE_KEY 
-        : TYPE_ORDER_KEY;
+    return (this.keySpecs.get(key) instanceof Feature) ? FEATURE_KEY : TYPE_ORDER_KEY;
   }
 
   @Override
@@ -119,7 +117,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   }
 
   public LinearTypeOrder getKeyTypeOrder(int key) {
-    if (getKeyType(key)  == TYPE_ORDER_KEY) {
+    if (getKeyType(key) == TYPE_ORDER_KEY) {
       return (LinearTypeOrder) this.keySpecs.get(key);
     }
     return null;
@@ -147,10 +145,12 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     }
     return equalsWithoutType(comp);
   }
-  
+
   /**
    * Compare two comparators, ignoring the type
-   * @param comp the other comparator to compare to
+   * 
+   * @param comp
+   *          the other comparator to compare to
    * @return true if they're the same comparator
    */
   boolean equalsWithoutType(FSIndexComparatorImpl comp) {
@@ -163,46 +163,46 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
       Object keySpec2 = comp.keySpecs.get(i);
       if (keySpec1 instanceof LinearTypeOrder) {
         // equals compares the type codes in the ordered arrays for ==
-        if ( ! (((LinearTypeOrder)keySpec1).equals((LinearTypeOrder)keySpec2)) ) {
+        if (!(((LinearTypeOrder) keySpec1).equals((LinearTypeOrder) keySpec2))) {
           return false;
         }
-      } else { 
+      } else {
         FeatureImpl f1 = (FeatureImpl) keySpec1;
         FeatureImpl f2 = (FeatureImpl) keySpec2;
-        boolean featimpl_match = f1.equals(f2)  // this compares 
-                                                //    shortName, 
-                                                //    multiplerefs allowed
-                                                //    highest defining type
-                                                //    range type name
-        // also need to confirm offsets are the same
-            && f1.getOffset() == f2.getOffset()
-            && f1.getAdjustedOffset() == f2.getAdjustedOffset()
-            && this.directions.get(i) == comp.directions.get(i);
-        
-        if (! featimpl_match) {
+        boolean featimpl_match = f1.equals(f2) // this compares
+                                               // shortName,
+                                               // multiplerefs allowed
+                                               // highest defining type
+                                               // range type name
+                // also need to confirm offsets are the same
+                && f1.getOffset() == f2.getOffset()
+                && f1.getAdjustedOffset() == f2.getAdjustedOffset()
+                && this.directions.get(i) == comp.directions.get(i);
+
+        if (!featimpl_match) {
           return false;
         }
       }
     }
-    return true;    
+    return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this.type == null) ? 31 : type.hashCode()); 
+    result = prime * result + ((this.type == null) ? 31 : type.hashCode());
     final int max = this.getNumberOfKeys();
     for (int i = 0; i < max; i++) {
-      Object o = this.keySpecs.get(i);  // LinearTypeOrder or feature
+      Object o = this.keySpecs.get(i); // LinearTypeOrder or feature
       if (o instanceof LinearTypeOrder) {
-        result = prime * result + ((LinearTypeOrderBuilderImpl.TotalTypeOrder)o).hashCode();
+        result = prime * result + ((LinearTypeOrderBuilderImpl.TotalTypeOrder) o).hashCode();
       } else {
-        FeatureImpl f = (FeatureImpl)o;
-        result = prime * result + f.hashCode(); //    only shortName, 
-                                                               //    multiplerefs allowed
-                                                               //    highest defining type
-                                                               //    range type name
+        FeatureImpl f = (FeatureImpl) o;
+        result = prime * result + f.hashCode(); // only shortName,
+                                                // multiplerefs allowed
+                                                // highest defining type
+                                                // range type name
         result = prime * result + f.getOffset();
         result = prime * result + f.getAdjustedOffset();
         result = prime * result + this.directions.get(i);
@@ -275,6 +275,5 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     // They're equal.
     return 0;
   }
-
 
 }

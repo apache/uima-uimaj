@@ -32,12 +32,12 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
- * Simple English to German translator
- * ... expects input "English" view to be delivered to process()
+ * Simple English to German translator ... expects input "English" view to be delivered to process()
  * 
  */
 public class MultiViewAnnotator extends Annotator_ImplBase implements GenericAnnotator {
 
+  @Override
   public void process(CAS aCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     CAS engTcas, germTcas;
 

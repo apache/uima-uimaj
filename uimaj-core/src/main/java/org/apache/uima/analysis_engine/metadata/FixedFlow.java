@@ -20,23 +20,22 @@
 package org.apache.uima.analysis_engine.metadata;
 
 /**
- * A <code>FixedFlow</code> is a simple type of {@link FlowConstraints} that specifies the
- * complete flow as a fixed sequence.
+ * A <code>FixedFlow</code> is a simple type of {@link FlowConstraints} that specifies the complete
+ * flow as a fixed sequence.
  * <p>
  * Each element in the sequence is specified as a String identifier. The <code>FixedFlow</code>
  * object does not assign any particular meaning to these Strings - it is the user of the
- * <code>FixedFlow</code> object that must understand how to map them to AnalysisEngines
- * themselves.
+ * <code>FixedFlow</code> object that must understand how to map them to AnalysisEngines themselves.
  * 
  * 
  */
 public interface FixedFlow extends FlowConstraints {
 
   /**
-   * The type identifier for this class of <code>FlowConstraints</code>. This is the return value
-   * of {@link #getFlowConstraintsType()}.
+   * The type identifier for this class of <code>FlowConstraints</code>. This is the return value of
+   * {@link #getFlowConstraintsType()}.
    */
-  public static final String FLOW_CONSTRAINTS_TYPE = "FIXED";
+  String FLOW_CONSTRAINTS_TYPE = "FIXED";
 
   /**
    * Gets the type of this <code>FlowConstraints</code> object. Each sub-interface of
@@ -46,7 +45,8 @@ public interface FixedFlow extends FlowConstraints {
    * 
    * @return {@link #FLOW_CONSTRAINTS_TYPE}
    */
-  public String getFlowConstraintsType();
+  @Override
+  String getFlowConstraintsType();
 
   /**
    * Returns the flow as an array. Each element of the array is a String that identifies the
@@ -54,7 +54,7 @@ public interface FixedFlow extends FlowConstraints {
    * 
    * @return an array of AE identifiers.
    */
-  public String[] getFixedFlow();
+  String[] getFixedFlow();
 
   /**
    * Sets the fixed flow.
@@ -66,5 +66,5 @@ public interface FixedFlow extends FlowConstraints {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setFixedFlow(String[] aFlow);
+  void setFixedFlow(String[] aFlow);
 }

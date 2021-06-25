@@ -71,17 +71,16 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-    
+
   private static AtomicInteger MDC_NEXT_ID = new AtomicInteger(0);
-  
+
   /**
-   * The ComponentInfoImpl class (an inner non-static class) has no fields and 
-   *   just one method that refers to fields in
-   *   this (containing, outer) class.  So it seems the method could just be used directly,
-   *   and putting it into an inner class is silly.
+   * The ComponentInfoImpl class (an inner non-static class) has no fields and just one method that
+   * refers to fields in this (containing, outer) class. So it seems the method could just be used
+   * directly, and putting it into an inner class is silly.
    */
   final private ComponentInfo mComponentInfo = new ComponentInfoImpl();
-  
+
   /**
    * Fully-qualified name of this context.
    */
@@ -92,23 +91,24 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * component engines. The key is the component sofa name and the value is the absolute sofa name
    * assigned by a top level aggregate in this process.
    * 
-   * Multi-threading:  This map is constructed at Constructor time, and never updated, only referenced, subsequently.
+   * Multi-threading: This map is constructed at Constructor time, and never updated, only
+   * referenced, subsequently.
    */
   final protected Map<String, String> mSofaMappings;
 
   /**
-   * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method.
-   * Note: CASes obtained by a CAS Multiplier, which then leave (exit) the CAS Multiplier, 
-   * are not counted toward this limit.
+   * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method. Note: CASes
+   * obtained by a CAS Multiplier, which then leave (exit) the CAS Multiplier, are not counted
+   * toward this limit.
    * 
    * Rather, this limit limits the number of CASes that can be obtained while inside an annotator.
-   * The (maybe unobvious) use-case:  Consider an annotator that receives hundreds of CASes, and
-   * sorts them into 3 kinds of aggregations, each of which accumulates information in a separate CAS 
-   * for a while, and then releases these CASes for further processing.  The limit would need to 
+   * The (maybe unobvious) use-case: Consider an annotator that receives hundreds of CASes, and
+   * sorts them into 3 kinds of aggregations, each of which accumulates information in a separate
+   * CAS for a while, and then releases these CASes for further processing. The limit would need to
    * be set to 3 for this annotator instance, for this to work.
    * 
    * The value of this max is set by calling the annotator's method getCasInstancesRequired method,
-   * a user-supplied method that is used to configure this.  The default is 1.
+   * a user-supplied method that is used to configure this. The default is 1.
    */
   protected volatile int mCasPoolSize = 0;
 
@@ -116,9 +116,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * Performance tuning settings. Needed to specify CAS heap size for {@link #getEmptyCas(Class)}
    * method.
    * 
-   * Set during initialize calls for Analysis Engine components.
-   * Referenced during later lazy creation of Cas Pool upon first getEmptyCas call.
-   * Not expected to be modified after set.
+   * Set during initialize calls for Analysis Engine components. Referenced during later lazy
+   * creation of Cas Pool upon first getEmptyCas call. Not expected to be modified after set.
    */
   private volatile Properties mPerformanceTuningSettings;
 
@@ -126,41 +125,41 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * Whether the component that accesses the CAS pool is sofa-aware. Needed to determine which view
    * is returned by the {@link #getEmptyCas(Class)} method.
    * 
-   * Set during initialize calls for Analysis Engine components.
-   * Referenced during later lazy creation of Cas Pool upon first getEmptyCas call.
-   * Not expected to be modified after set.
+   * Set during initialize calls for Analysis Engine components. Referenced during later lazy
+   * creation of Cas Pool upon first getEmptyCas call. Not expected to be modified after set.
    */
   private volatile boolean mSofaAware;
 
   /**
    * Keeps track of whether we've created a CAS pool yet, which happens on the first call to
-   * {@link #getEmptyCas(Class)}.
-   *   See http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java for why this is volatile
-   *   
-   * Ref'd and set inside getEmptyCas, part of lazy initialization of cas pool  
+   * {@link #getEmptyCas(Class)}. See
+   * http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java for why this is volatile
+   * 
+   * Ref'd and set inside getEmptyCas, part of lazy initialization of cas pool
    */
   private volatile boolean mCasPoolCreated = false;
 
   /**
-   * CASes that have been requested via {@link #getEmptyCas(Class)} minus the number calls
-   * the framework has made to {@link #returnedCAS(AbstractCas)} (which indicate that the 
-   * AnalysisComponent has returned a CAS from its next() method or released the CAS. 
+   * CASes that have been requested via {@link #getEmptyCas(Class)} minus the number calls the
+   * framework has made to {@link #returnedCAS(AbstractCas)} (which indicate that the
+   * AnalysisComponent has returned a CAS from its next() method or released the CAS.
    * 
-   * If this Set size is at the maximum for this annotator, and the Analysis Component requests any additional
-   * CASes, then the AnalysisComponent has requested more CASes than it is allowed to and we throw 
-   * an exception.
+   * If this Set size is at the maximum for this annotator, and the Analysis Component requests any
+   * additional CASes, then the AnalysisComponent has requested more CASes than it is allowed to and
+   * we throw an exception.
    * 
-   * This was changed from a simple int count to a set, in https://issues.apache.org/jira/browse/UIMA-437
-   * revision 546169 (see history).  CAS Multiplier use counts the CAS as returned after it is produced by the 
-   * next() method when that method returns.  Note that the CAS is not at that point "released" back into the 
-   * CasPool - it is typically following a flow path and will eventually be released at some later point.
-   * The reason it is counted as released in this context's count is that this count limit is for limiting the 
-   * number of CASes that can be requested within one process(), next(), or hasNext() methods, 
-   * simultaneously, before that CAS is set onwards.  Normally this is just 1 (at a time).
+   * This was changed from a simple int count to a set, in
+   * https://issues.apache.org/jira/browse/UIMA-437 revision 546169 (see history). CAS Multiplier
+   * use counts the CAS as returned after it is produced by the next() method when that method
+   * returns. Note that the CAS is not at that point "released" back into the CasPool - it is
+   * typically following a flow path and will eventually be released at some later point. The reason
+   * it is counted as released in this context's count is that this count limit is for limiting the
+   * number of CASes that can be requested within one process(), next(), or hasNext() methods,
+   * simultaneously, before that CAS is set onwards. Normally this is just 1 (at a time).
    * 
-   * The set is managed as a ConcurrentMap, to allow "remove" operations to not interlock with add or size operations.
-   * The size check followed by an add is in one sync block within getEmptyCas(), 
-   * locked on the set object itself (not shared with any other locks).
+   * The set is managed as a ConcurrentMap, to allow "remove" operations to not interlock with add
+   * or size operations. The size check followed by an add is in one sync block within
+   * getEmptyCas(), locked on the set object itself (not shared with any other locks).
    */
   final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -170,53 +169,54 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   final protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
 
   final private String uniqueIdentifier;
-  
+
   final private String mdcUniqueId;
-  
+
   /**
-   * A number to throttle logging from Annotators
-   * If not the max value, it wraps loggers obtained with getLogger() that are 
-   * for Annotator classes, with the ThrottlingLogger.
+   * A number to throttle logging from Annotators If not the max value, it wraps loggers obtained
+   * with getLogger() that are for Annotator classes, with the ThrottlingLogger.
    * 
-   * This value is set from an Additional Parameters key 
-   *   AnalysisEngine.PARAM_SUPPRESS_EXCESSIVE_ANNOTATOR_LOGGING
-   * passed in as part of the additional parameters 
+   * This value is set from an Additional Parameters key
+   * AnalysisEngine.PARAM_SUPPRESS_EXCESSIVE_ANNOTATOR_LOGGING passed in as part of the additional
+   * parameters
    */
   protected int loggingThrottleLimit = Integer.MAX_VALUE;
-  
+
   /**
-   * Default constructor. 
-   * Only Called for creating a "Root" instance.
+   * Default constructor. Only Called for creating a "Root" instance.
    */
-  public UimaContext_ImplBase() { 
-    mQualifiedContextName = "/";  // This constructor for root call only
+  public UimaContext_ImplBase() {
+    mQualifiedContextName = "/"; // This constructor for root call only
     uniqueIdentifier = constructUniqueName();
     mdcUniqueId = String.valueOf(MDC_NEXT_ID.getAndIncrement());
     mSofaMappings = new TreeMap<>();
 
   }
-  
+
   /**
    * Constructor for non Root instances
-   * @param contextName -
-   * @param sofaMappings -
+   * 
+   * @param contextName
+   *          -
+   * @param sofaMappings
+   *          -
    */
   public UimaContext_ImplBase(String contextName, Map<String, String> sofaMappings) {
     mQualifiedContextName = contextName;
     uniqueIdentifier = constructUniqueName();
-    mdcUniqueId = "invalid";  // never referenced
+    mdcUniqueId = "invalid"; // never referenced
     mSofaMappings = sofaMappings;
   }
-  
+
   private String constructUniqueName() {
-    //  Generate unique name for this component
+    // Generate unique name for this component
     // this method generates less garbage than replaceAll, etc.
     String u = new UID().toString();
     StringBuilder sb = new StringBuilder(u.length());
-    sb.append(u);    
+    sb.append(u);
     // replace colons and minus sign because
-    //   this string is used as a JMX Bean name and those chars are not allowed
-    for (int i = u.length() - 1; i >=0; i--) {
+    // this string is used as a JMX Bean name and those chars are not allowed
+    for (int i = u.length() - 1; i >= 0; i--) {
       char c = sb.charAt(i);
       if (c == ':' || c == '-') {
         sb.setCharAt(i, '_');
@@ -224,13 +224,15 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
     return sb.toString();
   }
-  /* Returns a unique name of this component
+
+  /*
+   * Returns a unique name of this component
    * 
    */
   @Override
   public String getUniqueName() {
     // return a unique name of this component
-    return getQualifiedContextName()+"_"+uniqueIdentifier;
+    return getQualifiedContextName() + "_" + uniqueIdentifier;
   }
 
   /*
@@ -242,7 +244,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContextAdmin createChild(String aContextName, Map<String, String> aSofaMappings) {
 
     // create child context with the absolute mappings
-    ChildUimaContext_impl child = new ChildUimaContext_impl(this, aContextName, combineSofaMappings(aSofaMappings));
+    ChildUimaContext_impl child = new ChildUimaContext_impl(this, aContextName,
+            combineSofaMappings(aSofaMappings));
 
     // build a tree of MBeans that parallels the tree of UimaContexts
     mMBean.addComponent(aContextName, child.mMBean);
@@ -251,9 +254,11 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   /**
-   * Create the child sofa map by combining existing mapping from the current context with
-   * any mappings specific for this child, passed in as aSofaMappings
-   * @param aSofaMappings -
+   * Create the child sofa map by combining existing mapping from the current context with any
+   * mappings specific for this child, passed in as aSofaMappings
+   * 
+   * @param aSofaMappings
+   *          -
    * @return the combined absolute sofamappings
    */
   public Map<String, String> combineSofaMappings(Map<String, String> aSofaMappings) {
@@ -281,6 +286,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
     return childSofaMap;
   }
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String)
    */
@@ -304,13 +310,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     Settings settings = getRootContext().getExternalOverrides();
     return (settings == null) ? null : settings.getSetting(name);
   }
-  
+
   @Override
   public String[] getSharedSettingArray(String name) throws ResourceConfigurationException {
     Settings settings = getRootContext().getExternalOverrides();
     return (settings == null) ? null : settings.getSettingArray(name);
   }
-  
+
   @Override
   public String[] getSharedSettingNames() {
     Settings settings = getRootContext().getExternalOverrides();
@@ -320,7 +326,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     Set<String> names = settings.getKeys();
     return names.toArray(new String[names.size()]);
   }
-  
+
   /**
    * Locates Resource URL's using the ResourceManager.
    * 
@@ -347,15 +353,17 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       return null;
     }
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String)
    */
   @Override
   public URI getResourceURI(String aKey) throws ResourceAccessException {
-    return getResourceURIfromURL( getResourceURL(aKey));
+    return getResourceURIfromURL(getResourceURL(aKey));
   }
-  
+
   private URI getResourceURIfromURL(URL resourceUrl) throws ResourceAccessException {
     if (resourceUrl != null) {
       try {
@@ -363,14 +371,14 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       } catch (URISyntaxException e) {
         throw new ResourceAccessException(e);
       }
-    }
-    else {
+    } else {
       return null;
-    } 
+    }
   }
- 
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String)
    */
   @Override
@@ -379,16 +387,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (resourceUri != null) {
       if ("file".equals(resourceUri.getScheme())) {
         return resourceUri.getPath();
-      } 
-      else {
-        throw new ResourceAccessException(); //TODO: error message
+      } else {
+        throw new ResourceAccessException(); // TODO: error message
       }
-    }
-    else {
+    } else {
       return null;
     }
   }
-
 
   /**
    * Acquires Resource InputStreams using the ResourceManager.
@@ -498,16 +503,20 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       return null;
     }
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String, java.lang.String[])
    */
   @Override
   public URI getResourceURI(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceURIfromURL(getResourceURL(aKey, aParams));
-  } 
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String, java.lang.String[])
    */
   @Override
@@ -516,12 +525,10 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (resourceUri != null) {
       if ("file".equals(resourceUri.getScheme())) {
         return resourceUri.getPath();
-      } 
-      else {
-        throw new ResourceAccessException(); //TODO: error message
+      } else {
+        throw new ResourceAccessException(); // TODO: error message
       }
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -550,8 +557,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigurationGroupNames() {
-    ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
-            getQualifiedContextName()).getConfigurationGroups();
+    ConfigurationGroup[] groups = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName()).getConfigurationGroups();
     if (groups == null) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
@@ -572,8 +579,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames() {
-    ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
-            getQualifiedContextName()).getConfigurationParameters();
+    ConfigurationParameter[] params = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName()).getConfigurationParameters();
     if (params == null) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
@@ -592,8 +599,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames(String aGroup) {
-    ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
-            getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
+    ConfigurationGroup[] groups = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName())
+            .getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
@@ -702,9 +710,11 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       i++;
     }
     return sofaArr;
-  }  
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.UimaContextAdmin#getSofaMap()
    */
   @Override
@@ -727,13 +737,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public void returnedCAS(AbstractCas aCAS) {
-    //remove Base CAS from outstanding CASes set
+    // remove Base CAS from outstanding CASes set
     CAS baseCas = null;
     if (aCAS instanceof JCas) {
-      baseCas = ((JCas)aCAS).getCasImpl().getBaseCAS();
-    }
-    else if (aCAS instanceof CASImpl) {
-      baseCas = ((CASImpl)aCAS).getBaseCAS();
+      baseCas = ((JCas) aCAS).getCasImpl().getBaseCAS();
+    } else if (aCAS instanceof CASImpl) {
+      baseCas = ((CASImpl) aCAS).getBaseCAS();
     }
     mOutstandingCASes.remove(baseCas); // mOutstandingCASes is thread-safe (Concurrent hash map)
   }
@@ -741,8 +750,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.UimaContext#getEmptyCas(java.lang.Class)
-   * see http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
+   * @see org.apache.uima.UimaContext#getEmptyCas(java.lang.Class) see
+   * http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
    */
   @Override
   public <T extends AbstractCas> T getEmptyCas(Class<T> aCasInterface) {
@@ -761,15 +770,15 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
     }
 
-    //check if component has exceeded its CAS pool
+    // check if component has exceeded its CAS pool
     CAS cas = null;
-    // note: this sync will block other threads 
-    //  from attempting to get a cas for this instance of UimaContext
-    //  The attempt by the thread to get an instance that gets this
-    //  monitor may, itself, wait for a cas to be available in the pool
-    //    If that happens, the lock on mOutstandingCASes is not released
-    //    during the wait. Because of this, no other request for this
-    //    instance of the cas pool will happen, so no deadlock should result.
+    // note: this sync will block other threads
+    // from attempting to get a cas for this instance of UimaContext
+    // The attempt by the thread to get an instance that gets this
+    // monitor may, itself, wait for a cas to be available in the pool
+    // If that happens, the lock on mOutstandingCASes is not released
+    // during the wait. Because of this, no other request for this
+    // instance of the cas pool will happen, so no deadlock should result.
     synchronized (mOutstandingCASes) {
       if (mOutstandingCASes.size() >= mCasPoolSize) {
         throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
@@ -777,27 +786,23 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
                     Integer.toString(mCasPoolSize) });
       }
       CasManager casManager = getResourceManager().getCasManager();
-//      CAS cas = casManager.getCas(getQualifiedContextName());
+      // CAS cas = casManager.getCas(getQualifiedContextName());
       // this might wait, if the cas pool is empty
       cas = casManager.getCas(getUniqueName());
-      
-      //add to the set of outstanding CASes
-      mOutstandingCASes.add(((CASImpl)cas).getBaseCAS());
+
+      // add to the set of outstanding CASes
+      mOutstandingCASes.add(((CASImpl) cas).getBaseCAS());
     }
 
-    // The CAS returned by this method will not be locked 
-    //   so users can call the reset() method.  This is due to 
-    //   historical reasons, and changing it could break existing
-    //   code.  There's not a serious downside to leaving it unlocked;
-    //   when the CAS enters a flow it will be locked when being
-    //   given as a parameter to further user code.
+    // The CAS returned by this method will not be locked
+    // so users can call the reset() method. This is due to
+    // historical reasons, and changing it could break existing
+    // code. There's not a serious downside to leaving it unlocked;
+    // when the CAS enters a flow it will be locked when being
+    // given as a parameter to further user code.
 
-    return Util.setupViewSwitchClassLoaders(
-        cas, 
-        mSofaAware, 
-        getComponentInfo(), 
-        getResourceManager(), 
-        aCasInterface);    
+    return Util.setupViewSwitchClassLoaders(cas, mSofaAware, getComponentInfo(),
+            getResourceManager(), aCasInterface);
   }
 
   /**
@@ -817,11 +822,10 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public AnalysisEngineManagement getManagementInterface() {
     return mMBean;
   }
-  
+
   protected Logger maybeThrottleLogger(Logger logger) {
-    final int limit = ((UimaContext_ImplBase)getRootContext()).loggingThrottleLimit; 
-    if (limit == Integer.MAX_VALUE ||
-        !logger.isAnnotatorLogger()) {
+    final int limit = ((UimaContext_ImplBase) getRootContext()).loggingThrottleLimit;
+    if (limit == Integer.MAX_VALUE || !logger.isAnnotatorLogger()) {
       return logger;
     }
     return logger.getLimitedLogger(limit);
@@ -862,7 +866,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
 
   }
-  
+
   public void setLoggingThrottleLimit(Integer v) {
     loggingThrottleLimit = v;
   }

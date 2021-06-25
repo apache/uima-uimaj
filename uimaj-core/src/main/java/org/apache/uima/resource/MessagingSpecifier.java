@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource;
 
-
 public interface MessagingSpecifier extends ResourceServiceSpecifier {
 
   /**
@@ -27,63 +26,63 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * 
    * @return String
    */
-  public String getHostAddress();
+  String getHostAddress();
 
   /**
    * Returns the hostMessagingServer.
    * 
    * @return String
    */
-  public String getHostMessagingServer();
+  String getHostMessagingServer();
 
   /**
    * Returns the hostPassword.
    * 
    * @return String
    */
-  public String getHostPassword();
+  String getHostPassword();
 
   /**
    * Returns the hostUser.
    * 
    * @return String
    */
-  public String getHostUser();
+  String getHostUser();
 
   /**
    * Returns the messagingType.
    * 
    * @return String
    */
-  public String getMessagingType();
+  String getMessagingType();
 
   /**
    * Returns the targetAddress.
    * 
    * @return String
    */
-  public String getTargetAddress();
+  String getTargetAddress();
 
   /**
    * Returns the targetMessagingServer.
    * 
    * @return String
    */
-  public String getTargetMessagingServer();
+  String getTargetMessagingServer();
 
   /**
    * Returns the targetPassword.
    * 
    * @return String
    */
-  public String getTargetPassword();
+  String getTargetPassword();
 
   /**
    * Returns the targetUser.
    * 
    * @return String
    */
-  public String getTargetUser();
+  String getTargetUser();
 
   /**
    * Sets the hostAddress.
@@ -91,7 +90,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param hostAddress
    *          The hostAddress to set
    */
-  public void setHostAddress(String hostAddress);
+  void setHostAddress(String hostAddress);
 
   /**
    * Sets the hostMessagingServer.
@@ -99,7 +98,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param hostMessagingServer
    *          The hostMessagingServer to set
    */
-  public void setHostMessagingServer(String hostMessagingServer);
+  void setHostMessagingServer(String hostMessagingServer);
 
   /**
    * Sets the hostPassword.
@@ -107,7 +106,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param hostPassword
    *          The hostPassword to set
    */
-  public void setHostPassword(String hostPassword);
+  void setHostPassword(String hostPassword);
 
   /**
    * Sets the hostUser.
@@ -115,7 +114,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param hostUser
    *          The hostUser to set
    */
-  public void setHostUser(String hostUser);
+  void setHostUser(String hostUser);
 
   /**
    * Sets the messagingType.
@@ -123,7 +122,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param messagingType
    *          The messagingType to set
    */
-  public void setMessagingType(String messagingType);
+  void setMessagingType(String messagingType);
 
   /**
    * Sets the targetAddress.
@@ -131,7 +130,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param targetAddress
    *          The targetAddress to set
    */
-  public void setTargetAddress(String targetAddress);
+  void setTargetAddress(String targetAddress);
 
   /**
    * Sets the targetMessagingServer.
@@ -139,7 +138,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param targetMessagingServer
    *          The targetMessagingServer to set
    */
-  public void setTargetMessagingServer(String targetMessagingServer);
+  void setTargetMessagingServer(String targetMessagingServer);
 
   /**
    * Sets the targetPassword.
@@ -147,7 +146,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param targetPassword
    *          The targetPassword to set
    */
-  public void setTargetPassword(String targetPassword);
+  void setTargetPassword(String targetPassword);
 
   /**
    * Sets the targetUser.
@@ -155,7 +154,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @param targetUser
    *          The targetUser to set
    */
-  public void setTargetUser(String targetUser);
+  void setTargetUser(String targetUser);
 
   /**
    * Gets the timeout period in milliseconds. If a call takes longer than this amount of time, an
@@ -164,7 +163,7 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    * @return the timeout period in milliseconds. A null value indicates that the transport layer's
    *         default value will be used.
    */
-  public Integer getTimeout();
+  Integer getTimeout();
 
   /**
    * Sets the timeout period in milliseconds. If a call takes longer than this amount of time, an
@@ -174,5 +173,5 @@ public interface MessagingSpecifier extends ResourceServiceSpecifier {
    *          the timeout period in milliseconds. A null value indicates that the transport layer's
    *          default value will be used.
    */
-  public void setTimeout(Integer aTimeout);
+  void setTimeout(Integer aTimeout);
 }

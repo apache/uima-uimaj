@@ -46,11 +46,11 @@ import org.apache.uima.util.XMLizable;
  * 
  * 
  */
-public class TypeSystemDescription_impl extends MetaDataObject_impl implements
-        TypeSystemDescription {
+public class TypeSystemDescription_impl extends MetaDataObject_impl
+        implements TypeSystemDescription {
 
   static final long serialVersionUID = -3372766232454730201L;
-    
+
   private String mName;
 
   private String mVersion;
@@ -73,6 +73,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -80,6 +81,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -87,6 +89,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#getVersion()
    */
+  @Override
   public String getVersion() {
     return mVersion;
   }
@@ -94,6 +97,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#setVersion(String)
    */
+  @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
@@ -101,6 +105,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -108,6 +113,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -115,6 +121,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#getVendor()
    */
+  @Override
   public String getVendor() {
     return mVendor;
   }
@@ -122,6 +129,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see ResourceMetaData#setVendor(String)
    */
+  @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
@@ -129,6 +137,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#getImports()
    */
+  @Override
   public Import[] getImports() {
     return mImports;
   }
@@ -136,6 +145,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#setImports(Import[])
    */
+  @Override
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -147,6 +157,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#getTypes()
    */
+  @Override
   public TypeDescription[] getTypes() {
     return mTypes;
   }
@@ -154,6 +165,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#setTypes(TypeDescription[])
    */
+  @Override
   public void setTypes(TypeDescription[] aTypes) {
     if (aTypes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -165,6 +177,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#addType(String, String, String)
    */
+  @Override
   public TypeDescription addType(String aTypeName, String aDescription, String aSupertypeName) {
     // create new type description
     TypeDescription newType = new TypeDescription_impl(aTypeName, aDescription, aSupertypeName);
@@ -186,6 +199,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#getType(java.lang.String)
    */
+  @Override
   public TypeDescription getType(String aTypeName) {
     for (int i = 0; i < mTypes.length; i++) {
       if (aTypeName.equals(mTypes[i].getName()))
@@ -198,6 +212,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
    * @see TypeSystemDescription#resolveImports()
    */
   // allow these calls to be done multiple times on this same object, in different threads
+  @Override
   public synchronized void resolveImports() throws InvalidXMLException {
     if (getImports().length == 0) {
       resolveImports(null, null);
@@ -206,10 +221,13 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     }
   }
 
-  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+  @Override
+  public synchronized void resolveImports(ResourceManager aResourceManager)
+          throws InvalidXMLException {
     resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
+  @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     List<TypeDescription> importedTypes = null;
@@ -218,7 +236,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
       if (getSourceUrl() != null) {
         aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
       }
-  
+
       importedTypes = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
@@ -244,7 +262,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     if (existingTypes == null) {
       this.setTypes(existingTypes = TypeDescription.EMPTY_TYPE_DESCRIPTIONS);
     }
-    if (null != importedTypes) {      
+    if (null != importedTypes) {
       TypeDescription[] newTypes = new TypeDescription[existingTypes.length + importedTypes.size()];
       System.arraycopy(existingTypes, 0, newTypes, 0, existingTypes.length);
       for (int i = 0; i < importedTypes.size(); i++) {
@@ -257,36 +275,38 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypeSystemURLs,
-          Collection<TypeDescription> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
-          IOException {
-    //check the import cache
-    TypeSystemDescription desc;    
+          Collection<TypeDescription> aResults, ResourceManager aResourceManager)
+          throws InvalidXMLException, IOException {
+    // check the import cache
+    TypeSystemDescription desc;
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
-    Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
-    synchronized(importCache) {
+    Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
+    Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl) aResourceManager)
+            .getImportUrlsCache();
+    synchronized (importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof TypeSystemDescription) {
-        desc = (TypeSystemDescription)cachedObject;
+        desc = (TypeSystemDescription) cachedObject;
         // Add the URLs parsed for this cached object to the list already-parsed (UIMA-5058)
         aAlreadyImportedTypeSystemURLs.addAll(importUrlsCache.get(urlString));
-      } else {   
+      } else {
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
         TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
         desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
         importCache.put(urlString, desc);
-        // Save the URLS parsed by this import 
+        // Save the URLS parsed by this import
         TreeSet<String> locallyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
         locallyImported.removeAll(previouslyImported);
         importUrlsCache.put(urlString, locallyImported);
       }
-      
+
     }
     aResults.addAll(Arrays.asList(desc.getTypes()));
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

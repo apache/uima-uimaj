@@ -23,18 +23,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Sets of long values, used to support ll_set/getIntValue that manipulate v2 style long data 
+ * Sets of long values, used to support ll_set/getIntValue that manipulate v2 style long data
  * 
  */
 final class LongSet {
 
   private int lastLongCode = 0;
   final private ArrayList<Long> longs = new ArrayList<>();
-  {longs.add(null);}
+  {
+    longs.add(null);
+  }
   final private HashMap<Long, Integer> long2int = new HashMap<>();
-  
+
   // Reset the long heap (called on CAS reset).
-  final void reset() {
+  void reset() {
     longs.clear();
     longs.add(null);
     long2int.clear();
@@ -51,26 +53,27 @@ final class LongSet {
 
   /**
    * get the code for a long, adding it to the long table if not already there.
-   * @param s The long.
+   * 
+   * @param s
+   *          The long.
    * @return The code corresponding to the long, which can be used in the getLongForCode call above
    */
   int getCodeForLong(Long s) {
     if (s == null) {
       return LowLevelCAS.NULL_FS_REF;
     }
-    
+
     Integer prev = long2int.putIfAbsent(s, lastLongCode + 1);
     if (prev == null) {
       longs.add(s);
       return ++lastLongCode;
     }
-    
-    return prev; 
+
+    return prev;
   }
-  
-  
-  final int getSize() {
-	  return this.longs.size();
+
+  int getSize() {
+    return this.longs.size();
   }
-  
+
 }

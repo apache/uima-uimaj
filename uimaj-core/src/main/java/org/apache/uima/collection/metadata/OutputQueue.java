@@ -32,27 +32,28 @@ public interface OutputQueue extends MetaDataObject {
    * 
    * @return - ms to wait for message
    */
-  public int getDequeueTimeout();
+  int getDequeueTimeout();
 
   /**
    * Class name of the queue object to be used as Output Queue
    * 
    * @return - name of the queue class
    */
-  public String getQueueClass();
+  String getQueueClass();
 
   /**
    * Define the time (in ms) to wait for a new message
    * 
-   * @param i the time (in ms) to wait for a new message
+   * @param i
+   *          the time (in ms) to wait for a new message
    */
-  public void setDequeueTimeout(int i);
+  void setDequeueTimeout(int i);
 
   /**
    * Define a class for a queue object
    * 
-   * @param string -
-   *          name of the queue class
+   * @param string
+   *          - name of the queue class
    */
-  public void setQueueClass(String string);
+  void setQueueClass(String string);
 }

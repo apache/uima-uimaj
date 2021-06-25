@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.text;
 
 public class Language {
@@ -39,9 +38,7 @@ public class Language {
 
   private String territoryPart = null;
 
-  
   public Language(String language) {
-    super();
     this.lang = normalize(language);
     this.parseLanguage();
   }
@@ -81,6 +78,7 @@ public class Language {
     }
   }
 
+  @Override
   public String toString() {
     return "Full language string: " + this.getFullLanguage() + ", language part: "
             + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();
@@ -91,5 +89,4 @@ public class Language {
     System.out.println(Language.ZH_CN);
     System.out.println(new Language("en_US_NY"));
   }
-
 }

@@ -26,44 +26,42 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Implements a combination of {@link java.util.WeakHashMap} and
- * {@link java.util.IdentityHashMap}. Useful for caches that need to key off of
- * a {@code ==} comparison instead of a {@code .equals}.
+ * Implements a combination of {@link java.util.WeakHashMap} and {@link java.util.IdentityHashMap}.
+ * Useful for caches that need to key off of a {@code ==} comparison instead of a {@code .equals}.
  * 
  * <p>
- * This class is not a general-purpose {@link java.util.Map} implementation! It
- * intentionally violates Map's general contract, which mandates the use of the
- * equals method when comparing objects. This class is designed for use only in
- * the rare cases wherein reference-equality semantics are required.
+ * This class is not a general-purpose {@link java.util.Map} implementation! It intentionally
+ * violates Map's general contract, which mandates the use of the equals method when comparing
+ * objects. This class is designed for use only in the rare cases wherein reference-equality
+ * semantics are required.
  * 
  * <p>
- * This implementation was derived from
- * <a href="http://lucene.apache.org/">Apache Lucene</a> Lucene in turn forked
- * this class from from <a href="http://cxf.apache.org/">Apache CXF</a> but
- * modified to <b>not</b> implement the {@link java.util.Map} interface and
- * without any set views on it, as those are error-prone and inefficient, if not
- * implemented carefully. The map only contains {@link Iterator} implementations
- * on the values and not-GCed keys. Lucene's implementation also supports
- * {@code null} keys, but those are never weak!
+ * This implementation was derived from <a href="http://lucene.apache.org/">Apache Lucene</a> Lucene
+ * in turn forked this class from from <a href="http://cxf.apache.org/">Apache CXF</a> but modified
+ * to <b>not</b> implement the {@link java.util.Map} interface and without any set views on it, as
+ * those are error-prone and inefficient, if not implemented carefully. The map only contains
+ * {@link Iterator} implementations on the values and not-GCed keys. Lucene's implementation also
+ * supports {@code null} keys, but those are never weak!
  * 
  * <p>
  * <a id="reapInfo"></a>The map supports two modes of operation:
  * <ul>
- * <li>{@code reapOnRead = true}: This behaves identical to a
- * {@link java.util.WeakHashMap} where it also cleans up the reference queue on
- * every read operation ({@link #get(Object)}, {@link #containsKey(Object)},
- * {@link #size()}, {@link #valueIterator()}), freeing map entries of already
- * GCed keys.</li>
- * <li>{@code reapOnRead = false}: This mode does not call {@link #reap()} on
- * every read operation. In this case, the reference queue is only cleaned up on
- * write operations (like {@link #put(Object, Object)}). This is ideal for maps
- * with few entries where the keys are unlikely be garbage collected, but there
- * are lots of {@link #get(Object)} operations. The code can still call
- * {@link #reap()} to manually clean up the queue without doing a write
+ * <li>{@code reapOnRead = true}: This behaves identical to a {@link java.util.WeakHashMap} where it
+ * also cleans up the reference queue on every read operation ({@link #get(Object)},
+ * {@link #containsKey(Object)}, {@link #size()}, {@link #valueIterator()}), freeing map entries of
+ * already GCed keys.</li>
+ * <li>{@code reapOnRead = false}: This mode does not call {@link #reap()} on every read operation.
+ * In this case, the reference queue is only cleaned up on write operations (like
+ * {@link #put(Object, Object)}). This is ideal for maps with few entries where the keys are
+ * unlikely be garbage collected, but there are lots of {@link #get(Object)} operations. The code
+ * can still call {@link #reap()} to manually clean up the queue without doing a write
  * operation.</li>
  * </ul>
- * @param <K> the key type.
- * @param <V> the value type.
+ * 
+ * @param <K>
+ *          the key type.
+ * @param <V>
+ *          the value type.
  */
 public final class WeakIdentityMap<K, V> {
   private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
@@ -71,9 +69,8 @@ public final class WeakIdentityMap<K, V> {
   private final boolean reapOnRead;
 
   /**
-   * Creates a new {@code WeakIdentityMap} based on a non-synchronized
-   * {@link HashMap}. The map <a href="#reapInfo">cleans up the reference queue on
-   * every read operation</a>.
+   * Creates a new {@code WeakIdentityMap} based on a non-synchronized {@link HashMap}. The map
+   * <a href="#reapInfo">cleans up the reference queue on every read operation</a>.
    * 
    * @return the new map.
    */
@@ -82,12 +79,11 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * Creates a new {@code WeakIdentityMap} based on a non-synchronized
-   * {@link HashMap}.
+   * Creates a new {@code WeakIdentityMap} based on a non-synchronized {@link HashMap}.
    * 
    * @param reapOnRead
-   *          controls if the map <a href="#reapInfo">cleans up the reference
-   *          queue on every read operation</a>.
+   *          controls if the map <a href="#reapInfo">cleans up the reference queue on every read
+   *          operation</a>.
    * @return the new map.
    */
   public static <K, V> WeakIdentityMap<K, V> newHashMap(boolean reapOnRead) {
@@ -95,9 +91,8 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * Creates a new {@code WeakIdentityMap} based on a {@link ConcurrentHashMap}.
-   * The map <a href="#reapInfo">cleans up the reference queue on every read
-   * operation</a>.
+   * Creates a new {@code WeakIdentityMap} based on a {@link ConcurrentHashMap}. The map
+   * <a href="#reapInfo">cleans up the reference queue on every read operation</a>.
    * 
    * @return the new map.
    */
@@ -109,8 +104,8 @@ public final class WeakIdentityMap<K, V> {
    * Creates a new {@code WeakIdentityMap} based on a {@link ConcurrentHashMap}.
    * 
    * @param reapOnRead
-   *          controls if the map <a href="#reapInfo">cleans up the reference
-   *          queue on every read operation</a>.
+   *          controls if the map <a href="#reapInfo">cleans up the reference queue on every read
+   *          operation</a>.
    * @return the new map.
    */
   public static <K, V> WeakIdentityMap<K, V> newConcurrentHashMap(boolean reapOnRead) {
@@ -152,11 +147,14 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * Associates the specified value with the specified key in this map. If the map
-   * previously contained a mapping for this key, the old value is replaced.
+   * Associates the specified value with the specified key in this map. If the map previously
+   * contained a mapping for this key, the old value is replaced.
+   * 
    * @return the previous associated value.
-   * @param key the associate the value with.
-   * @param value the value to associate with the key.
+   * @param key
+   *          the associate the value with.
+   * @param value
+   *          the value to associate with the key.
    */
   public V put(K key, V value) {
     reap();
@@ -171,11 +169,13 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * Removes the mapping for a key from this weak hash map if it is present.
-   * Returns the value to which this map previously associated the key, or
-   * {@code null} if the map contained no mapping for the key. A return value of
-   * {@code null} does not necessarily indicate that the map contained.
-   * @param key the key to remove.
+   * Removes the mapping for a key from this weak hash map if it is present. Returns the value to
+   * which this map previously associated the key, or {@code null} if the map contained no mapping
+   * for the key. A return value of {@code null} does not necessarily indicate that the map
+   * contained.
+   * 
+   * @param key
+   *          the key to remove.
    * @return the previous mapping.
    */
   public V remove(Object key) {
@@ -184,9 +184,9 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * @return the number of key-value mappings in this map. This result is a
-   * snapshot, and may not reflect unprocessed entries that will be removed before
-   * next attempted access because they are no longer referenced.
+   * @return the number of key-value mappings in this map. This result is a snapshot, and may not
+   *         reflect unprocessed entries that will be removed before next attempted access because
+   *         they are no longer referenced.
    */
   public int size() {
     if (backingStore.isEmpty())
@@ -197,8 +197,8 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * @return an iterator over all weak keys of this map. Keys already garbage
-   * collected will not be returned. This Iterator does not support removals.
+   * @return an iterator over all weak keys of this map. Keys already garbage collected will not be
+   *         returned. This Iterator does not support removals.
    */
   public Iterator<K> keyIterator() {
     reap();
@@ -258,9 +258,9 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * @return an iterator over all values of this map. This iterator may return
-   * values whose key is already garbage collected while iterator is consumed,
-   * especially if {@code reapOnRead} is {@code false}.
+   * @return an iterator over all values of this map. This iterator may return values whose key is
+   *         already garbage collected while iterator is consumed, especially if {@code reapOnRead}
+   *         is {@code false}.
    */
   public Iterator<V> valueIterator() {
     if (reapOnRead)
@@ -269,13 +269,12 @@ public final class WeakIdentityMap<K, V> {
   }
 
   /**
-   * This method manually cleans up the reference queue to remove all garbage
-   * collected key/value pairs from the map. Calling this method is not needed if
-   * {@code reapOnRead = true}. Otherwise it might be a good idea to call this
-   * method when there is spare time (e.g. from a background thread).
+   * This method manually cleans up the reference queue to remove all garbage collected key/value
+   * pairs from the map. Calling this method is not needed if {@code reapOnRead = true}. Otherwise
+   * it might be a good idea to call this method when there is spare time (e.g. from a background
+   * thread).
    * 
-   * @see <a href="#reapInfo">Information about the <code>reapOnRead</code>
-   *      setting</a>
+   * @see <a href="#reapInfo">Information about the <code>reapOnRead</code> setting</a>
    */
   public void reap() {
     Reference<?> zombie;

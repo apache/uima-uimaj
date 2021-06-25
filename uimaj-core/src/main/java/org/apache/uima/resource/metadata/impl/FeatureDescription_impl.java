@@ -94,6 +94,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   /**
    * @see FeatureDescription#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -101,6 +102,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   /**
    * @see FeatureDescription#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -108,6 +110,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   /**
    * @see FeatureDescription#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -115,6 +118,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   /**
    * @see FeatureDescription#setDescription(java.lang.String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -122,6 +126,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   /**
    * @see FeatureDescription#getRangeTypeName()
    */
+  @Override
   public String getRangeTypeName() {
     return mRangeTypeName;
   }
@@ -129,6 +134,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   /**
    * @see FeatureDescription#setRangeTypeName(String)
    */
+  @Override
   public void setRangeTypeName(String aTypeName) {
     mRangeTypeName = aTypeName;
   }
@@ -138,6 +144,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    * 
    * @see org.apache.uima.resource.metadata.FeatureDescription#getElementType()
    */
+  @Override
   public String getElementType() {
     return mElementType;
   }
@@ -147,6 +154,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    * 
    * @see org.apache.uima.resource.metadata.FeatureDescription#isMultipleReferencesAllowed()
    */
+  @Override
   public Boolean getMultipleReferencesAllowed() {
     return mMultipleReferencesAllowed;
   }
@@ -156,6 +164,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    * 
    * @see org.apache.uima.resource.metadata.FeatureDescription#setElementType(java.lang.String)
    */
+  @Override
   public void setElementType(String aElementType) {
     mElementType = aElementType;
   }
@@ -165,17 +174,19 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    * 
    * @see org.apache.uima.resource.metadata.FeatureDescription#setMultipleReferencesAllowed(Boolean)
    */
+  @Override
   public void setMultipleReferencesAllowed(Boolean aAllowed) {
     mMultipleReferencesAllowed = aAllowed;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("featureDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-              new PropertyXmlInfo("description", false),
-              new PropertyXmlInfo("rangeTypeName", true), new PropertyXmlInfo("elementType", true),
+              new PropertyXmlInfo("description", false), new PropertyXmlInfo("rangeTypeName", true),
+              new PropertyXmlInfo("elementType", true),
               new PropertyXmlInfo("multipleReferencesAllowed") });
 }

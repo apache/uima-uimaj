@@ -28,12 +28,12 @@ public final class IntArrayUtils {
 
   private static final int default_multiplication_limit = 1024 * 1024 * 16;
 
-  public static final int[] ensure_size(int[] array, int req) {
+  public static int[] ensure_size(int[] array, int req) {
     return ensure_size(array, req, default_growth_factor, default_multiplication_limit);
   }
 
   // done this way to allow more inlining
-  public static final int[] ensure_size(final int[] array, final int req, final int growth_factor,
+  public static int[] ensure_size(final int[] array, final int req, final int growth_factor,
           final int multiplication_limit) {
     if (array.length < req) {
       return expand_size(array, req, growth_factor, multiplication_limit);
@@ -41,12 +41,12 @@ public final class IntArrayUtils {
     return array;
   }
 
-  private static final int[] expand_size(final int[] array, final int req, final int growth_factor,
+  private static int[] expand_size(final int[] array, final int req, final int growth_factor,
           final int multiplication_limit) {
     if (array.length == 0)
       return new int[req];
     int new_array_size = array.length;
-    
+
     while (new_array_size < req) {
       if (new_array_size < multiplication_limit) {
         new_array_size = new_array_size * growth_factor;
@@ -58,8 +58,8 @@ public final class IntArrayUtils {
     System.arraycopy(array, 0, new_array, 0, array.length);
     return new_array;
   }
-  
-  public static final boolean[] ensure_size(boolean[] array, int req, int growth_factor,
+
+  public static boolean[] ensure_size(boolean[] array, int req, int growth_factor,
           int multiplication_limit) {
     if (array.length < req) {
       int new_array_size;
@@ -82,7 +82,7 @@ public final class IntArrayUtils {
     return array;
   }
 
-  public static final char[] ensure_size(char[] array, int req, int growth_factor,
+  public static char[] ensure_size(char[] array, int req, int growth_factor,
           int multiplication_limit) {
     if (array.length < req) {
       int new_array_size;
@@ -120,16 +120,16 @@ public final class IntArrayUtils {
    * @param end
    *          Look up to this point (non-inclusive).
    * @return The position of <code>ele</code>, if found; <code>-insertPos-1</code>, if not.
-   *         <code>insertPos</code> is the position where <code>ele</code> would be inserted.
-   *         Note that the return value is <code>&gt;= start</code> iff <code>ele</code> was
-   *         found; see {@link java.util.Arrays java.util.Arrays}.
+   *         <code>insertPos</code> is the position where <code>ele</code> would be inserted. Note
+   *         that the return value is <code>&gt;= start</code> iff <code>ele</code> was found; see
+   *         {@link java.util.Arrays java.util.Arrays}.
    */
-  public static final int binarySearch(int[] array, int ele, int start, int end) {
+  public static int binarySearch(int[] array, int ele, int start, int end) {
     --end; // Make end a legal value.
     int i; // Current position
     int current; // Current value
     while (start <= end) {
-      i = (int)(((long)start + end) / 2);
+      i = (int) (((long) start + end) / 2);
       current = array[i];
       if (ele == current) {
         return i;
@@ -158,10 +158,10 @@ public final class IntArrayUtils {
    *          The int to find.
    * @param a
    *          The array.
-   * @return The position (first occurence) where <code>x</code> was found; <code>-1</code> if
-   *         not found.
+   * @return The position (first occurence) where <code>x</code> was found; <code>-1</code> if not
+   *         found.
    */
-  public static final int find(int x, int[] a) {
+  public static int find(int x, int[] a) {
     final int max = a.length;
     for (int i = 0; i < max; i++) {
       if (a[i] == x) {

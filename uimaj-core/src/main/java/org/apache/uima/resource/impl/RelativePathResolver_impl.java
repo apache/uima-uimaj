@@ -49,7 +49,8 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
   public RelativePathResolver_impl() {
     this(null);
-    mClassLoader = getClass().getClassLoader();  // default value, maybe overridden by setPathResolverClassLoader
+    mClassLoader = getClass().getClassLoader(); // default value, maybe overridden by
+                                                // setPathResolverClassLoader
   }
 
   public RelativePathResolver_impl(ClassLoader aClassLoader) {
@@ -88,6 +89,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#getDataPath()
    */
+  @Override
   public String getDataPath() {
     return mDataPath;
   }
@@ -95,6 +97,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#setDataPath(java.lang.String)
    */
+  @Override
   public void setDataPath(String aPath) throws MalformedURLException {
     List<URL> urls = new ArrayList<>();
 
@@ -118,6 +121,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#resolveRelativePath(java.net.URL)
    */
+  @Override
   public URL resolveRelativePath(URL aRelativeUrl) {
     // try each base URL
     URL[] baseUrls = getBaseUrls();
@@ -143,12 +147,12 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     if (mClassLoader != null) {
       absURL = mClassLoader.getResource(f);
     } else {// if no ClassLoader specified (could be the bootstrap classloader), try the system
-    // classloader
-    
+      // classloader
+
       // https://issues.apache.org/jira/browse/UIMA-5902
       ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-      absURL = (tccl != null) ? tccl.getResource(f)  
-                              : ClassLoader.getSystemClassLoader().getResource(f);
+      absURL = (tccl != null) ? tccl.getResource(f)
+              : ClassLoader.getSystemClassLoader().getResource(f);
     }
     return absURL;
   }
@@ -156,6 +160,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   /**
    * @see org.apache.uima.resource.RelativePathResolver#setPathResolverClassLoader(java.lang.ClassLoader)
    */
+  @Override
   public void setPathResolverClassLoader(ClassLoader aClassLoader) {
     // set ClassLoader
     mClassLoader = aClassLoader;

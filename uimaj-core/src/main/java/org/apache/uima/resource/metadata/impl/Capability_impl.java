@@ -39,9 +39,9 @@ import org.apache.uima.util.impl.Constants;
 public class Capability_impl extends MetaDataObject_impl implements Capability {
 
   static final long serialVersionUID = -2821073595288674925L;
-  
+
   private final static TypeOrFeature[] EMPTY_TYPE_OR_FEATURE_ARRAY = new TypeOrFeature[0];
-  
+
   private final static Precondition[] EMPTY_PRECONDITION_ARRAY = new Precondition[0];
 
   /** a description of this capability */
@@ -67,6 +67,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -76,6 +77,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#setDescription(java.lang.String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -83,6 +85,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#getInputs()
    */
+  @Override
   public TypeOrFeature[] getInputs() {
     return mInputs;
   }
@@ -90,6 +93,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#getOutputs()
    */
+  @Override
   public TypeOrFeature[] getOutputs() {
     return mOutputs;
   }
@@ -97,6 +101,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#getPreconditions()
    */
+  @Override
   public Precondition[] getPreconditions() {
     return mPreconditions;
   }
@@ -104,6 +109,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#getLanguagesSupported()
    */
+  @Override
   public String[] getLanguagesSupported() {
     // search for LanguagePreconditions
     Precondition[] preconditions = getPreconditions();
@@ -120,6 +126,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#getMimeTypesSupported()
    */
+  @Override
   public String[] getMimeTypesSupported() {
     // search for MimeTypePreconditions
     Precondition[] preconditions = getPreconditions();
@@ -136,6 +143,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#setInputs(TypeOrFeature[])
    */
+  @Override
   public void setInputs(TypeOrFeature[] aInputs) {
     mInputs = aInputs;
   }
@@ -143,6 +151,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#setOutputs(TypeOrFeature[])
    */
+  @Override
   public void setOutputs(TypeOrFeature[] aOutputs) {
     mOutputs = aOutputs;
   }
@@ -150,6 +159,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#setPreconditions(Precondition[])
    */
+  @Override
   public void setPreconditions(Precondition[] aPreconditions) {
     mPreconditions = aPreconditions;
   }
@@ -157,6 +167,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#setLanguagesSupported(String[])
    */
+  @Override
   public void setLanguagesSupported(String[] aLanguageIDs) {
     // create a list of existing preconditions
     List<Precondition> preconditions = new ArrayList<>();
@@ -184,6 +195,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#setMimeTypesSupported(java.lang.String[])
    */
+  @Override
   public void setMimeTypesSupported(String[] aMimeTypes) {
     // create a list of existing preconditions
     List<Precondition> preconditions = new ArrayList<>();
@@ -209,9 +221,9 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.Capability#addInputType(java.lang.String,
-   *      boolean)
+   * @see org.apache.uima.resource.metadata.Capability#addInputType(java.lang.String, boolean)
    */
+  @Override
   public void addInputType(String aTypeName, boolean aAllAnnotatorFeatures) {
     TypeOrFeature type = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     type.setType(true);
@@ -228,6 +240,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#addInputFeature(java.lang.String)
    */
+  @Override
   public void addInputFeature(String aFeatureName) {
     TypeOrFeature feat = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     feat.setType(false);
@@ -241,9 +254,9 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.Capability#addOutputType(java.lang.String,
-   *      boolean)
+   * @see org.apache.uima.resource.metadata.Capability#addOutputType(java.lang.String, boolean)
    */
+  @Override
   public void addOutputType(String aTypeName, boolean aAllAnnotatorFeatures) {
     TypeOrFeature type = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     type.setType(true);
@@ -260,6 +273,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#addOutputFeature(java.lang.String)
    */
+  @Override
   public void addOutputFeature(String aFeatureName) {
     TypeOrFeature feat = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     feat.setType(false);
@@ -275,6 +289,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   /**
    * @see org.apache.uima.resource.metadata.Capability#addSupportedLanguage(java.lang.String)
    */
+  @Override
   public void addSupportedLanguage(String aLanguage) {
     String[] oldArr = getLanguagesSupported();
     String[] newArr = new String[oldArr.length + 1];
@@ -288,6 +303,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#removeSupportedLanguage(java.lang.String)
    */
+  @Override
   public void removeSupportedLanguage(String aLanguage) {
     String[] current = getLanguagesSupported();
     for (int i = 0; i < current.length; i++) {
@@ -306,6 +322,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#getInputSofaNames()
    */
+  @Override
   public String[] getInputSofas() {
     return mInputSofas;
   }
@@ -315,6 +332,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#getOutputSofaNames()
    */
+  @Override
   public String[] getOutputSofas() {
     return mOutputSofas;
   }
@@ -324,6 +342,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#setInputSofaNames(java.lang.String[])
    */
+  @Override
   public void setInputSofas(String[] aInputSofaNames) {
     mInputSofas = aInputSofaNames;
   }
@@ -333,6 +352,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#setOutputSofaNames(java.lang.String[])
    */
+  @Override
   public void setOutputSofas(String[] aOutputSofaNames) {
     mOutputSofas = aOutputSofaNames;
   }
@@ -342,6 +362,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#addInputSofaName(java.lang.String)
    */
+  @Override
   public void addInputSofa(String aSofaName) {
     String[] oldArr = getInputSofas();
     String[] newArr = new String[oldArr.length + 1];
@@ -355,6 +376,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    * 
    * @see org.apache.uima.resource.metadata.Capability#addOutputSofaName(java.lang.String)
    */
+  @Override
   public void addOutputSofa(String aSofaName) {
     String[] oldArr = getOutputSofas();
     String[] newArr = new String[oldArr.length + 1];
@@ -363,6 +385,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     setOutputSofas(newArr);
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

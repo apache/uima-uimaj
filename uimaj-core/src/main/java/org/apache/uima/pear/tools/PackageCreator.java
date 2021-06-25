@@ -117,16 +117,16 @@ public class PackageCreator {
    * 
    * @throws PackageCreatorException
    *           if an error occurs while creating the installation descriptor
-   *           
+   * 
    * @return Path to the created installation descriptor.
    */
   public static String createInstallDescriptor(String componentID, String mainComponentDesc,
           String classpath, String datapath, String mainComponentDir, Properties envVars)
           throws PackageCreatorException {
 
-    //installation descriptor file path
+    // installation descriptor file path
     String installationDesc = null;
-    
+
     // create new install descriptor
     InstallationDescriptor insd = new InstallationDescriptor();
 
@@ -142,8 +142,8 @@ public class PackageCreator {
 
     // set Java version where is was packaged
     insd.clearToolkitsSpecs();
-    insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, System
-            .getProperty("java.version"));
+    insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG,
+            System.getProperty("java.version"));
 
     // add classpath setting to the installation descriptor
     if (classpath != null) {
@@ -195,8 +195,8 @@ public class PackageCreator {
                 InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
         String key = (String) keys.nextElement();
         actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG, key);
-        actionInfo.params
-                .put(InstallationDescriptorHandler.VAR_VALUE_TAG, envVars.getProperty(key));
+        actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG,
+                envVars.getProperty(key));
         String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
                 "package_creator_env_setting", new Object[] { key });
         actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
@@ -212,19 +212,19 @@ public class PackageCreator {
       }
       File installDesc = new File(mainComponentDir, InstallationProcessor.INSD_FILE_PATH);
       InstallationDescriptorHandler.saveInstallationDescriptor(insd, installDesc);
-      
+
       UIMAFramework.getLogger(PackageCreator.class).logrb(Level.INFO, "PackageCreator",
               "createInstallDescriptor", PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "package_creator_install_desc_created_info", new Object[] {installDesc});
-      
-      //set installation descriptor file path
+              "package_creator_install_desc_created_info", new Object[] { installDesc });
+
+      // set installation descriptor file path
       installationDesc = installDesc.getAbsolutePath();
-      
+
     } catch (IOException ex) {
       throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
-    }   
-    
+    }
+
     return installationDesc;
   }
 
@@ -248,22 +248,22 @@ public class PackageCreator {
    * 
    * @return Retuns path absolute path to the created pear package.
    */
-  public static String createPearPackage(String componentID, String mainComponentDir, String targetDir)
-          throws PackageCreatorException {
+  public static String createPearPackage(String componentID, String mainComponentDir,
+          String targetDir) throws PackageCreatorException {
     // package pear file with all data from the mainComponentDir
     ZipOutputStream zipFile;
     File pearFile;
-    
+
     try {
       pearFile = new File(targetDir, componentID + ".pear");
       zipFile = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(pearFile)));
       File mainDir = new File(mainComponentDir);
       zipDirectory(componentID, mainDir.getAbsolutePath(), mainDir, zipFile);
       zipFile.close();
-      
+
       UIMAFramework.getLogger(PackageCreator.class).logrb(Level.INFO, "PackageCreator",
               "createInstallDescriptor", PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "package_creator_pear_created_info", new Object[] {pearFile});
+              "package_creator_pear_created_info", new Object[] { pearFile });
     } catch (FileNotFoundException ex) {
       throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
@@ -271,7 +271,7 @@ public class PackageCreator {
       throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
     }
-    
+
     return pearFile.getAbsolutePath();
   }
 

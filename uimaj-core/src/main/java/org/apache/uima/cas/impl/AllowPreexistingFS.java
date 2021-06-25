@@ -19,6 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-public enum AllowPreexistingFS { allow, disallow, ignore }
-
-
+public enum AllowPreexistingFS {
+  allow, disallow, ignore
+}

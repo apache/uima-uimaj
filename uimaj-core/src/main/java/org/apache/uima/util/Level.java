@@ -25,7 +25,7 @@ package org.apache.uima.util;
 public class Level {
   /** level value */
   private int level;
-  
+
   /** level name */
   private String levelText;
 
@@ -64,7 +64,7 @@ public class Level {
   public final static int DEBUG_INT = FINE_INT;
   /** level value for level "TRACE" */
   public final static int TRACE_INT = FINER_INT;
-  
+
   /** message level "OFF" */
   final static public Level OFF = new Level(OFF_INT, "OFF");
 
@@ -114,6 +114,7 @@ public class Level {
   /**
    * @see java.lang.Object#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object o) {
     // check if current object o is an instance of Level
     if (o instanceof Level) {
@@ -130,6 +131,7 @@ public class Level {
   /**
    * @see java.lang.Object#hashCode()
    */
+  @Override
   public int hashCode() {
     return this.level;
   }
@@ -164,6 +166,7 @@ public class Level {
    * 
    * @see java.lang.Object#toString()
    */
+  @Override
   public final String toString() {
     return levelText;
   }

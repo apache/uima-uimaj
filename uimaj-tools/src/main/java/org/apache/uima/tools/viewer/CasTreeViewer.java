@@ -80,8 +80,6 @@ public class CasTreeViewer extends JPanel {
    * @throws CASException the CAS exception
    */
   public CasTreeViewer(CAS aCAS) throws CASException {
-    super();
-
     // build tree from annotations in CAS
     TreeNode root = buildTree(aCAS);
 

@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import javax.xml.parsers.SAXParser;
@@ -31,13 +34,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
-
-
 
 /**
  * Testclass for the JTok annotator.
@@ -54,8 +51,8 @@ public class UnambiguousIteratorTest {
 
   private static final String sampleTsFileName = "sample.ts";
 
-    @Test
-    public void testUnambiguous() throws Exception {
+  @Test
+  public void testUnambiguous() throws Exception {
 
     // The two XCASes used in this test contain the same data, but the
     // second one contains all annotations twice. So in that case, every
@@ -113,8 +110,9 @@ public class UnambiguousIteratorTest {
       assertEquals(annotSizeU1, annotSizeU2);
       assertTrue(annotSizeA2 > annotSizeU2);
       assertEquals(annotSizeA2, annotSizeU2 * 2);
-      
-      annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX, ((TypeImpl)(cas.getAnnotationType())).getCode());
+
+      annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX,
+              ((TypeImpl) (cas.getAnnotationType())).getCode());
       iteratorSize(annotIdx.ll_iterator());
       iteratorSize(annotIdx.ll_iterator(false));
     } catch (Exception ex) {

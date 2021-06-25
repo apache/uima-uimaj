@@ -29,8 +29,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl implements
-        FileLanguageResourceSpecifier {
+public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl
+        implements FileLanguageResourceSpecifier {
 
   static final long serialVersionUID = 4660680936104675527L;
 
@@ -49,6 +49,7 @@ public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl impl
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#getFileUrlPrefix()
    */
+  @Override
   public String getFileUrlPrefix() {
     return mFileUrlPrefix;
   }
@@ -56,6 +57,7 @@ public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl impl
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#getFileUrlSuffix()
    */
+  @Override
   public String getFileUrlSuffix() {
     return mFileUrlSuffix;
   }
@@ -63,6 +65,7 @@ public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl impl
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#setFileUrlPrefix(java.lang.String)
    */
+  @Override
   public void setFileUrlPrefix(String aPrefix) {
     mFileUrlPrefix = aPrefix;
   }
@@ -70,10 +73,12 @@ public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl impl
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#setFileUrlSuffix(java.lang.String)
    */
+  @Override
   public void setFileUrlSuffix(String aSuffix) {
     mFileUrlSuffix = aSuffix;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

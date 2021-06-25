@@ -28,51 +28,45 @@ import org.apache.uima.jcas.cas.TOP;
 /**
  * Used by Binary serialization form 4 and 6
  * 
- * Manage the conversion of FSs to relative sequential index number, and back 
- * Manage the difference in two type systems
- *   both size of the FSs and
- *   handling excluded types
+ * Manage the conversion of FSs to relative sequential index number, and back Manage the difference
+ * in two type systems both size of the FSs and handling excluded types
  * 
- * During serialization, these maps are constructed before serialization.
- * During deserialization, these maps are constructed while things are being deserialized, and
- *   then used in a "fixup" call at the end.
- *   This allows for forward references.
- *   
- *   For delta deserialization, the base part of these maps (for below-the-line) is
- *   constructed by scanning up to the mark.  
+ * During serialization, these maps are constructed before serialization. During deserialization,
+ * these maps are constructed while things are being deserialized, and then used in a "fixup" call
+ * at the end. This allows for forward references.
+ * 
+ * For delta deserialization, the base part of these maps (for below-the-line) is constructed by
+ * scanning up to the mark.
  */
 public class CasSeqAddrMaps {
-  
+
   /**
-   * map from a target FS sequence nbr to a source id.
-   *   value is 0 if the target instance doesn't exist in the source
-   *     (this doesn't occur for receiving remote CASes back
-   *      (because src ts is always a superset of tgt ts),
-   *      but can occur while deserializing from Disk.)
-   *      
+   * map from a target FS sequence nbr to a source id. value is 0 if the target instance doesn't
+   * exist in the source (this doesn't occur for receiving remote CASes back (because src ts is
+   * always a superset of tgt ts), but can occur while deserializing from Disk.)
+   * 
    * index 0 is reserved for null
    */
   final private List<TOP> tgtId2SrcFs; // the key is the index
-  
-//  /**
-//   * (Not Used, currently)
-//   * map from a source seq number to a target seq number.
-//   * value is -1 if the source FS is not in the target
-//   */
-//  final private IntVector srcSeq2TgtSeq = new IntVector();
-  
-//  /**
-//   * (Not Used, currently)
-//   * map from a target seq number to a target address.
-//   */
-//  final private IntVector tgtSeq2TgtAddr = new IntVector();  // used for comparing
-  
+
+  // /**
+  // * (Not Used, currently)
+  // * map from a source seq number to a target seq number.
+  // * value is -1 if the source FS is not in the target
+  // */
+  // final private IntVector srcSeq2TgtSeq = new IntVector();
+
+  // /**
+  // * (Not Used, currently)
+  // * map from a target seq number to a target address.
+  // */
+  // final private IntVector tgtSeq2TgtAddr = new IntVector(); // used for comparing
+
   /**
-   * map from source id to target id.
-   * if source is not in target, value = -1;
+   * map from source id to target id. if source is not in target, value = -1;
    */
   final private Int2IntRBT srcId2TgtId;
-   
+
   private int nextTgt = 0;
 
   public CasSeqAddrMaps() {
@@ -88,13 +82,17 @@ public class CasSeqAddrMaps {
     this.tgtId2SrcFs = tgtSeq2SrcFs;
     this.srcId2TgtId = srcAddr2TgtSeq;
   }
-        
+
   /**
-   * Add a new FS id - done during prescan of source during serialization
-   * Must call in heap scan order
-   * @param srcFs -
-   * @param tgtId -
-   * @param inTarget true if this type is in the target
+   * Add a new FS id - done during prescan of source during serialization Must call in heap scan
+   * order
+   * 
+   * @param srcFs
+   *          -
+   * @param tgtId
+   *          -
+   * @param inTarget
+   *          true if this type is in the target
    */
   public void addItemId(TOP srcFs, int tgtId, boolean inTarget) {
     if (inTarget) {
@@ -102,11 +100,14 @@ public class CasSeqAddrMaps {
     }
     srcId2TgtId.put((null == srcFs) ? 0 : srcFs._id, inTarget ? nextTgt++ : -1);
   }
-  
+
   /**
-   * Called during deserialize to incrementally add 
-   * @param srcFs -
-   * @param inSrc -
+   * Called during deserialize to incrementally add
+   * 
+   * @param srcFs
+   *          -
+   * @param inSrc
+   *          -
    */
   public void addSrcFsForTgt(TOP srcFs, boolean inSrc) {
     if (inSrc) {
@@ -117,18 +118,19 @@ public class CasSeqAddrMaps {
     }
     nextTgt++;
   }
-  
-//  public void addSrcFsForTgtId(TOP srcFS, boolean isInSrc) {
-//    if (isInSrc) {
-//      tgtId2SrcFs.add(srcFS);
-//    } else {
-//      tgtId2SrcFs.add(null);
-//    }
-//  }
-             
+
+  // public void addSrcFsForTgtId(TOP srcFS, boolean isInSrc) {
+  // if (isInSrc) {
+  // tgtId2SrcFs.add(srcFS);
+  // } else {
+  // tgtId2SrcFs.add(null);
+  // }
+  // }
+
   /**
    * 
-   * @param seq -
+   * @param seq
+   *          -
    * @return 0 means target seq doesn't exist in source CAS
    */
   public TOP getSrcFsFromTgtSeq(int seq) {
@@ -139,23 +141,22 @@ public class CasSeqAddrMaps {
   }
 
   /**
-   * @param itemAddr -
+   * @param itemAddr
+   *          -
    * @return -1 if src addr not in target seq
    */
   public int getTgtSeqFromSrcAddr(int itemAddr) {
-    return srcId2TgtId.getMostlyClose(itemAddr);      
+    return srcId2TgtId.getMostlyClose(itemAddr);
   }
-  
+
   public int getNumberSrcFss() {
     return srcId2TgtId.size();
   }
 
   CasSeqAddrMaps copy() {
-    CasSeqAddrMaps c = new CasSeqAddrMaps(
-        new ArrayList<>(tgtId2SrcFs),
-        srcId2TgtId.copy());
+    CasSeqAddrMaps c = new CasSeqAddrMaps(new ArrayList<>(tgtId2SrcFs), srcId2TgtId.copy());
     c.nextTgt = nextTgt;
-    return c;    
+    return c;
   }
-  
+
 }

@@ -33,46 +33,46 @@ import org.apache.uima.resource.ResourceConfigurationException;
  * configuration settings.
  */
 public interface CasProcessorConfiguration {
-  public String getName();
+  String getName();
 
-  public long getTimeout();
+  long getTimeout();
 
-  public boolean runInSeparateProcess();
+  boolean runInSeparateProcess();
 
-  public boolean isJavaProcess();
+  boolean isJavaProcess();
 
-  public int getErrorRate();
+  int getErrorRate();
 
-  public int getMaxErrorCount();
+  int getMaxErrorCount();
 
-  public long getErrorSampleSize();
+  long getErrorSampleSize();
 
-  public String getActionOnError();
+  String getActionOnError();
 
-  public String getActionOnMaxRestart();
+  String getActionOnMaxRestart();
 
-  public int getMaxRestartCount();
+  int getMaxRestartCount();
 
-  public int getMaxRetryCount();
+  int getMaxRetryCount();
 
-  public List getDeploymentParameters();
+  List getDeploymentParameters();
 
-  public String getDeploymentParameter(String aDeployParameter);
+  String getDeploymentParameter(String aDeployParameter);
 
-  public String getDeploymentType();
+  String getDeploymentType();
 
-  public String getFilterString();
+  String getFilterString();
 
-  public LinkedList getFilter() throws ResourceConfigurationException;
+  LinkedList getFilter() throws ResourceConfigurationException;
 
-  public String[] getKeysToDrop() throws ResourceConfigurationException;
+  String[] getKeysToDrop() throws ResourceConfigurationException;
 
-  public int getBatchSize();
+  int getBatchSize();
 
-  public URL getDescriptorUrl() throws ResourceConfigurationException;
+  URL getDescriptorUrl() throws ResourceConfigurationException;
 
-  public Execute getExecSpec();
+  Execute getExecSpec();
 
-  public int getMaxTimeToWaitBetweenRetries();
+  int getMaxTimeToWaitBetweenRetries();
 
 }

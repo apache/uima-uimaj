@@ -26,8 +26,8 @@ package org.apache.uima.resource;
  * <p>
  * This interface's {@link #load(DataResource)} method is called by the ResourceManager after the
  * <code>SharedResourceObject</code> has been instantiated. A {@link DataResource} is passes as a
- * parameter to this method. The implementation of the <code>load</code> method should read the
- * data from the <code>DataResource</code> and use that data to initialize this object.
+ * parameter to this method. The implementation of the <code>load</code> method should read the data
+ * from the <code>DataResource</code> and use that data to initialize this object.
  * 
  * 
  */
@@ -39,11 +39,10 @@ public interface SharedResourceObject {
    * <code>DataResource</code> and use that data to initialize this object.
    * 
    * @param aData
-   *          a <code>DataResource</code> that provides access to the data for this resource
-   *          object.
+   *          a <code>DataResource</code> that provides access to the data for this resource object.
    * 
    * @throws ResourceInitializationException
    *           if a failure occurs during loading.
    */
-  public void load(DataResource aData) throws ResourceInitializationException;
+  void load(DataResource aData) throws ResourceInitializationException;
 }

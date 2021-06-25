@@ -36,40 +36,41 @@ public interface CpeComponentDescriptor extends MetaDataObject {
   /**
    * Sets component's descriptor file path
    * 
-   * @param aInclude -
-   *          {@link org.apache.uima.collection.metadata.CpeInclude} containing file path
+   * @param aInclude
+   *          - {@link org.apache.uima.collection.metadata.CpeInclude} containing file path
    */
-  public void setInclude(CpeInclude aInclude);
+  void setInclude(CpeInclude aInclude);
 
   /**
    * Returns component's descriptor file path
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeInclude}
    */
-  public CpeInclude getInclude();
-  
-  /** 
-   * Gets the Import object that declares where the component descriptor is located.
-   * Import objects support locating the component descriptor either using a
-   * path that's relative to the CPE descriptor's location ("import by location")
-   * or using the classpath/datapath ("import by name").
+  CpeInclude getInclude();
+
+  /**
+   * Gets the Import object that declares where the component descriptor is located. Import objects
+   * support locating the component descriptor either using a path that's relative to the CPE
+   * descriptor's location ("import by location") or using the classpath/datapath ("import by
+   * name").
    * 
    * @return the import, null if none
    */
-  public Import getImport();
-  
-  /** 
-   * Sets the Import object that declares where the component descriptor is located.
-   * Import objects support locating the component descriptor either using a
-   * path that's relative to the CPE descriptor's location ("import by location")
-   * or using the classpath/datapath ("import by name").
-   * 
-   * @param aImport the import, null if none
-   */
-  public void setImport(Import aImport);
-  
+  Import getImport();
+
   /**
-   * Returns the absolute URL where the component descriptor is located.  This will use either the
+   * Sets the Import object that declares where the component descriptor is located. Import objects
+   * support locating the component descriptor either using a path that's relative to the CPE
+   * descriptor's location ("import by location") or using the classpath/datapath ("import by
+   * name").
+   * 
+   * @param aImport
+   *          the import, null if none
+   */
+  void setImport(Import aImport);
+
+  /**
+   * Returns the absolute URL where the component descriptor is located. This will use either the
    * include or import property, whichever is specified.
    * 
    * @param aResourceManager
@@ -80,5 +81,5 @@ public interface CpeComponentDescriptor extends MetaDataObject {
    * @throws ResourceConfigurationException
    *           if an import could not be resolved
    */
-  public URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException;  
+  URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException;
 }

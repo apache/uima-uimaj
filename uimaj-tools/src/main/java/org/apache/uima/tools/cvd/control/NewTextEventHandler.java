@@ -40,7 +40,6 @@ public class NewTextEventHandler implements ActionListener {
    * @param frame the frame
    */
   public NewTextEventHandler(MainFrame frame) {
-    super();
     this.main = frame;
   }
 

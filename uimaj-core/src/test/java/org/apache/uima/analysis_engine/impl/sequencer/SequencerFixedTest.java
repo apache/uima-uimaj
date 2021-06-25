@@ -30,9 +30,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,8 +49,8 @@ public class SequencerFixedTest {
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSequencerFixedEn() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSequencerFixedEn() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -62,8 +60,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -82,13 +80,13 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
-    } finally {     
+    } finally {
       // Destroy the CAS, releasing resources.
       if (ae != null) {
         ae.destroy();
@@ -96,8 +94,8 @@ public class SequencerFixedTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSequencerFixedEN() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSequencerFixedEN() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -107,8 +105,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -127,10 +125,10 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -141,8 +139,8 @@ public class SequencerFixedTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSequencerFixedEnUS() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSequencerFixedEnUS() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -152,8 +150,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -172,10 +170,10 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -186,8 +184,8 @@ public class SequencerFixedTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSequencerFixedEnus() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSequencerFixedEnus() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -197,8 +195,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -217,10 +215,10 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -231,8 +229,8 @@ public class SequencerFixedTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSequencerFixedUnkown() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSequencerFixedUnkown() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -242,8 +240,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -262,10 +260,10 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -276,8 +274,8 @@ public class SequencerFixedTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSequencerFixedFooBar() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSequencerFixedFooBar() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -287,8 +285,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -307,10 +305,10 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -321,8 +319,8 @@ public class SequencerFixedTest {
     }
   }
 
-    @Test
-    public void testSequencerFixedXunSpec() throws Exception {
+  @Test
+  public void testSequencerFixedXunSpec() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -332,8 +330,8 @@ public class SequencerFixedTest {
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerFixedAggregate.xml"));
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("SequencerTest/SequencerFixedAggregate.xml"));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -352,10 +350,10 @@ public class SequencerFixedTest {
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerFixedExpected.txt")));
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile,
+              JUnitExtension.getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-      ((CASImpl)cas).traceFSflush();
+      ((CASImpl) cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {

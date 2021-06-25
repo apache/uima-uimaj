@@ -32,20 +32,21 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * resource (for simple data resources this will be a
  * {@link org.apache.uima.resource.FileResourceSpecifier} that contains a URL to the data file.</li>
  * <li>The name of a Java class that implements the specified interface and which also implements
- * {@link org.apache.uima.resource.SharedResourceObject}. </li>
+ * {@link org.apache.uima.resource.SharedResourceObject}.</li>
  * </ul>
  * 
  * 
  */
 public interface ExternalResourceDescription extends MetaDataObject {
 
-  public static final ExternalResourceDescription[] EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS = new ExternalResourceDescription[0];
+  ExternalResourceDescription[] EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS = new ExternalResourceDescription[0];
+
   /**
    * Retrieves the name by which the resource is identified.
    * 
    * @return the name of this resource.
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name by which the resource is identified.
@@ -53,14 +54,14 @@ public interface ExternalResourceDescription extends MetaDataObject {
    * @param aName
    *          the name of this resource.
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Retrieves the textual description of the resource.
    * 
    * @return the textual description of the resource.
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Retrieves the textual description of the resource.
@@ -68,14 +69,14 @@ public interface ExternalResourceDescription extends MetaDataObject {
    * @param aDescription
    *          the textual description of the resource.
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
   /**
    * Retrieves the <code>ResourceSpecifier</code> that describes how to create the resource.
    * 
    * @return the <code>ResourceSpecifier</code> for this external resource
    */
-  public ResourceSpecifier getResourceSpecifier();
+  ResourceSpecifier getResourceSpecifier();
 
   /**
    * Sets the <code>ResourceSpecifier</code> that describes how to create the resource.
@@ -86,7 +87,7 @@ public interface ExternalResourceDescription extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setResourceSpecifier(ResourceSpecifier aSpecifier);
+  void setResourceSpecifier(ResourceSpecifier aSpecifier);
 
   /**
    * Retrieves the name of the Java class to be instantiated from the resource data. This must
@@ -95,7 +96,7 @@ public interface ExternalResourceDescription extends MetaDataObject {
    * 
    * @return the name of the Java class implementing the resource access
    */
-  public String getImplementationName();
+  String getImplementationName();
 
   /**
    * Sets the name of the Java class to be instantiated from the resource data. This must extend
@@ -108,6 +109,6 @@ public interface ExternalResourceDescription extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setImplementationName(String aName);
+  void setImplementationName(String aName);
 
 }

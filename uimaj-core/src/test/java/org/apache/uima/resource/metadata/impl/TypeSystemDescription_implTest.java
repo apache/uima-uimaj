@@ -50,21 +50,21 @@ import org.junit.jupiter.api.Test;
 public class TypeSystemDescription_implTest {
   private XMLParser xmlParser;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
     xmlParser.enableSchemaValidation(false);
   }
 
-    @Test
-    public void testBuildFromXmlElement() throws Exception {
+  @Test
+  public void testBuildFromXmlElement() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
@@ -74,33 +74,37 @@ public class TypeSystemDescription_implTest {
     assertThat(ts.getVersion()).isEqualTo("0.1");
 
     assertThat(ts.getImports()).extracting(Import::getName, Import::getLocation).containsExactly(
-        tuple("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", null),
-        tuple(null, "TypeSystemImportedByLocation.xml"),
-        tuple("TypeSystemImportedFromDataPath", null));
+            tuple("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", null),
+            tuple(null, "TypeSystemImportedByLocation.xml"),
+            tuple("TypeSystemImportedFromDataPath", null));
 
-    assertThat(ts.getTypes()).extracting(TypeDescription::getName, TypeDescription::getDescription,
-        TypeDescription::getSupertypeName)
-        .containsExactly(tuple("NamedEntity", "Anything that has a name.", "uima.tcas.Annotation"),
-            tuple("Person", "A person.", "NamedEntity"), tuple("Place", "A place.", "NamedEntity"),
-            tuple("DocumentStructure",
-                "Identifies document structure, such as sentence or paragraph.",
-                "uima.tcas.Annotation"),
-            tuple("Paragraph", "A paragraph.", "DocumentStructure"),
-            tuple("Sentence", "A sentence.", "DocumentStructure"));
+    assertThat(ts.getTypes())
+            .extracting(TypeDescription::getName, TypeDescription::getDescription,
+                    TypeDescription::getSupertypeName)
+            .containsExactly(
+                    tuple("NamedEntity", "Anything that has a name.", "uima.tcas.Annotation"),
+                    tuple("Person", "A person.", "NamedEntity"),
+                    tuple("Place", "A place.", "NamedEntity"),
+                    tuple("DocumentStructure",
+                            "Identifies document structure, such as sentence or paragraph.",
+                            "uima.tcas.Annotation"),
+                    tuple("Paragraph", "A paragraph.", "DocumentStructure"),
+                    tuple("Sentence", "A sentence.", "DocumentStructure"));
 
     assertThat(ts.getTypes()[4].getFeatures())
-        .extracting(FeatureDescription::getName, FeatureDescription::getDescription,
-            FeatureDescription::getRangeTypeName, FeatureDescription::getElementType,
-            FeatureDescription::getMultipleReferencesAllowed)
-        .containsExactly(
-            tuple("sentences", "Direct references to sentences in this paragraph",
-                "uima.cas.FSArray", "Sentence", false),
-            tuple("testMultiRefAllowedFeature", "A test feature that allows multiple references.",
-                "uima.cas.FSArray", null, true));
+            .extracting(FeatureDescription::getName, FeatureDescription::getDescription,
+                    FeatureDescription::getRangeTypeName, FeatureDescription::getElementType,
+                    FeatureDescription::getMultipleReferencesAllowed)
+            .containsExactly(
+                    tuple("sentences", "Direct references to sentences in this paragraph",
+                            "uima.cas.FSArray", "Sentence", false),
+                    tuple("testMultiRefAllowedFeature",
+                            "A test feature that allows multiple references.", "uima.cas.FSArray",
+                            null, true));
   }
 
-    @Test
-    public void testResolveImports() throws Exception {
+  @Test
+  public void testResolveImports() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
@@ -108,13 +112,13 @@ public class TypeSystemDescription_implTest {
 
     assertThatThrownBy(() -> ts.resolveImports()).isInstanceOf(InvalidXMLException.class);
     assertThat(ts.getTypes()).as(
-        "Type count after resolving failed should be same as before / no side effect on exception")
-        .hasSize(6);
+            "Type count after resolving failed should be same as before / no side effect on exception")
+            .hasSize(6);
 
     // set data path correctly and it should work
     ResourceManager resMgr = newDefaultResourceManager();
     resMgr.setDataPath(
-        JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
+            JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
     ts.resolveImports(resMgr);
 
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
@@ -154,10 +158,10 @@ public class TypeSystemDescription_implTest {
     imports[0].setLocation("TypeSystemImportedByLocation.xml");
 
     TypeSystemDescription typeSystemDescription = getResourceSpecifierFactory()
-        .createTypeSystemDescription();
+            .createTypeSystemDescription();
     typeSystemDescription.setImports(imports);
     TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
-        .clone();
+            .clone();
     typeSystemWithResolvedImports.resolveImports(resMgr);
 
     assertThat(typeSystemWithResolvedImports.getTypes()).isNotEmpty();
@@ -165,7 +169,7 @@ public class TypeSystemDescription_implTest {
     // test that importing the same descriptor twice (using the same ResourceManager) caches
     // the result of the first import and does not create new objects
     TypeSystemDescription typeSystemDescription2 = getResourceSpecifierFactory()
-        .createTypeSystemDescription();
+            .createTypeSystemDescription();
 
     Import_impl[] imports2 = { new Import_impl() };
     imports2[0].setSourceUrl(url);
@@ -173,23 +177,23 @@ public class TypeSystemDescription_implTest {
 
     typeSystemDescription2.setImports(imports2);
     TypeSystemDescription typeSystemWithResolvedImports2 = (TypeSystemDescription) typeSystemDescription2
-        .clone();
+            .clone();
     typeSystemWithResolvedImports2.resolveImports(resMgr);
 
     assertThat(typeSystemWithResolvedImports.getTypes())
-        .as("Resolved imports in second type system are the same as in the first (cached)")
-        .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
-        .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
+            .as("Resolved imports in second type system are the same as in the first (cached)")
+            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
+            .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
   }
 
-    @Test
-    public void testInvalidTypeSystem() throws Exception {
+  @Test
+  public void testInvalidTypeSystem() throws Exception {
     File file = getFile("TypeSystemDescriptionImplTest/InvalidTypeSystem1.xml");
 
     TypeSystemDescription tsDesc = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));
 
     assertThatThrownBy(() -> CasCreationUtils.createCas(tsDesc, null, null))
-        .isInstanceOf(ResourceInitializationException.class)
-        .hasMessageContaining("uima.cas.String");
+            .isInstanceOf(ResourceInitializationException.class)
+            .hasMessageContaining("uima.cas.String");
   }
 }

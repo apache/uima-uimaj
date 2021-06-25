@@ -38,7 +38,7 @@ public interface ProcessControllerAdapter {
    * @return URL[] - list of URLs containing endpoint info
    * @throws Exception the exception
    */
-  public URL[] deploy(String aCasProcessorName, int howMany) throws Exception;
+  URL[] deploy(String aCasProcessorName, int howMany) throws Exception;
 
   /**
    * Stops a given CasProcessor service.
@@ -46,6 +46,6 @@ public interface ProcessControllerAdapter {
    * @param aURL - service endpoint.
    * 
    */
-  public void undeploy(URL aURL);
+  void undeploy(URL aURL);
 
 }

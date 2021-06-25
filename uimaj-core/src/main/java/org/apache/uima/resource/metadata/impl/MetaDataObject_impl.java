@@ -68,7 +68,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Abstract base class for all MetaDataObjects in the reference implementation. Provides basic
- * support for getting and setting property values given their names, using bean introspection and reflection.
+ * support for getting and setting property values given their names, using bean introspection and
+ * reflection.
  * <p>
  * Also provides the ability to write objects to XML and build objects from their DOM
  * representation, as required to implement the {@link XMLizable} interface, which is a
@@ -79,31 +80,33 @@ import org.xml.sax.helpers.AttributesImpl;
  * The implementation for getting and setting property values uses the JavaBeans introspection API.
  * Therefore subclasses of this class must be valid JavaBeans and either use the standard naming
  * conventions for getters and setters. BeanInfo augmentation is ignored; the implementation here
- * uses the flag IGNORE_ALL_BEANINFO. See <a href="http://java.sun.com/docs/books/tutorial/javabeans/"> 
- * The Java Beans Tutorial</a> for more information.
+ * uses the flag IGNORE_ALL_BEANINFO. See
+ * <a href="http://java.sun.com/docs/books/tutorial/javabeans/"> The Java Beans Tutorial</a> for
+ * more information.
  * 
- * To support XML Comments, which can occur between any sub-elements, including array values,
- * the "data" for all objects is stored in a pair of ArrayLists; one holds the "name" of the slot,
- * the other the value; comments are interspersed within this list where they occur.
+ * To support XML Comments, which can occur between any sub-elements, including array values, the
+ * "data" for all objects is stored in a pair of ArrayLists; one holds the "name" of the slot, the
+ * other the value; comments are interspersed within this list where they occur.
  * 
- * To the extent possible, this should be the *only* data storage used for the xml element.  
- * Subclasses should access these elements on demand.  Data will be read into / written from this
+ * To the extent possible, this should be the *only* data storage used for the xml element.
+ * Subclasses should access these elements on demand. Data will be read into / written from this
  * representation; Cloning will copy this information.
  * 
- *    For getters that need to do some special initial processing, a global flag will be set whenever
- *    this base code changes the underlying value.
+ * For getters that need to do some special initial processing, a global flag will be set whenever
+ * this base code changes the underlying value.
  */
 public abstract class MetaDataObject_impl implements MetaDataObject {
 
-  static final long               serialVersionUID     = 5876728533863334480L;
+  static final long serialVersionUID = 5876728533863334480L;
 
-  private static String           PROP_NAME_SOURCE_URL = "sourceUrl";
-  private static String           PROP_NAME_INFOSET    = "infoset";
+  private static String PROP_NAME_SOURCE_URL = "sourceUrl";
+  private static String PROP_NAME_INFOSET = "infoset";
 
   // note: AttributesImpl is just a "getter" for attributes, has no setter methods,
   // see javadocs for Attributes (sax)
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
+//@formatter:off
   /*
    * Cache for Java Bean lookup
    * 
@@ -114,6 +117,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *     the writer (a Method)
    *     the java Class of the data type of this attribute <converted to a wrapper class for primitives>
    */
+//@formatter:on
 
   public static class MetaDataAttr {
     @Override
@@ -150,7 +154,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     final String name;
     final Method reader;
     final Method writer;
-    final Class  clazz;
+    final Class clazz;
 
     public MetaDataAttr(String name, Method reader, Method writer, Class clazz) {
       this.name = name;
@@ -165,74 +169,84 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   // Cache for Java Bean info lookup
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
   // holds "filtered" set of Java Bean Info
-  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
-      class2attrsMap =
-      new ConcurrentHashMapWithProducer<>();
+  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> class2attrsMap = new ConcurrentHashMapWithProducer<>();
   // holds the unfiltered set of Java Bean Info
-  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
-      class2attrsMapUnfiltered =
-      new ConcurrentHashMapWithProducer<>();
+  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> class2attrsMapUnfiltered = new ConcurrentHashMapWithProducer<>();
 
   /**
    * methods used for serializing
    *
    */
   public interface Serializer {
-    void outputStartElement(Node node,
-             String nameSpace, String localName, String qname, Attributes attributes) throws SAXException;
-    void outputEndElement(Node node, String aNamespace,
-        String localname, String qname) throws SAXException;
+    void outputStartElement(Node node, String nameSpace, String localName, String qname,
+            Attributes attributes) throws SAXException;
 
-    void outputStartElementForArrayElement(Node node,
-        String nameSpace, String localName, String qname, Attributes attributes) throws SAXException;
-    void outputEndElementForArrayElement(Node node, String aNamespace,
-        String localname, String qname) throws SAXException;
-    
+    void outputEndElement(Node node, String aNamespace, String localname, String qname)
+            throws SAXException;
+
+    void outputStartElementForArrayElement(Node node, String nameSpace, String localName,
+            String qname, Attributes attributes) throws SAXException;
+
+    void outputEndElementForArrayElement(Node node, String aNamespace, String localname,
+            String qname) throws SAXException;
+
     void insertNl();
+
     boolean shouldBeSkipped(PropertyXmlInfo propInfo, Object val, MetaDataObject_impl mdo);
+
     boolean startElementProperty();
 
     void deleteNodeStore();
+
     boolean indentChildElements(XmlizationInfo info, MetaDataObject_impl mdo);
+
     void saveAndAddNodeStore(Node infoset);
+
     void addNodeStore();
-    
+
     void writeDelayedStart(String name) throws SAXException;
 
     void writeSimpleValue(Object val) throws SAXException;
+
     void writeSimpleValueWithTag(String className, Object value, Node node) throws SAXException;
-    
+
     boolean shouldEncloseInArrayElement(Class propClass);
+
     boolean isArrayHasIndentableElements(Object array);
-    
+
     void maybeStartArraySymbol() throws SAXException;
+
     void maybeEndArraySymbol() throws SAXException;
 
     Node findMatchingSubElement(String elementName);
   }
-   
+
   /**
-   * Information, kept globally (by thread) for one serialization
-   *   Inherited by some custom impls, e.g. TypeOrFeature_impl
+   * Information, kept globally (by thread) for one serialization 
+   * 
+   * Inherited by some custom impls, e.g. TypeOrFeature_impl
    */
   public static class SerialContext {
-    
-    final public  ContentHandler ch;
+
+    final public ContentHandler ch;
     final public Serializer serializer;
+
     public SerialContext(ContentHandler ch, Serializer serializer) {
       this.ch = ch;
       this.serializer = serializer;
     }
   }
-  
+
+//@formatter:off
   /**
    * Keeps the serialContext by thread
    *   set when starting to serialize
    *   cleared at the end (in finally clause) to prevent memory leaks
    *   Inherited by some custom impls, e.g. TypeOrFeature_impl
   */
+//@formatter:on
   public static final ThreadLocal<SerialContext> serialContext = new ThreadLocal<>();
-  
+
   public static SerialContext getSerialContext(ContentHandler ch) {
     SerialContext sc = serialContext.get();
     if (null == serialContext.get()) {
@@ -241,7 +255,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return sc;
   }
-  
+
   private transient URL mSourceUrl;
 
   // This is only used if we are capturing comments and ignorable whitespace in the XML
@@ -263,6 +277,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * Override this method to include additional attributes
+   * 
    * @return additional attributes
    */
   public List<MetaDataAttr> getAdditionalAttributes() {
@@ -270,9 +285,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * Like getAttributes, but doesn't filter the attributes.  
-   * Design is only for backwards compatibility.  Unfiltered version
-   * used only by getAttributeValue and setAttributeValue
+   * Like getAttributes, but doesn't filter the attributes. Design is only for backwards
+   * compatibility. Unfiltered version used only by getAttributeValue and setAttributeValue
+   * 
    * @return an unfiltered array of Attribute objects associated with this class
    */
   MetaDataAttr[] getUnfilteredAttributes() {
@@ -285,11 +300,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * On first call, looks up the information using JavaBeans introspection, but then
-   * caches the result for subsequent calls.
+   * On first call, looks up the information using JavaBeans introspection, but then caches the
+   * result for subsequent calls.
    * 
    * Any class which wants to add additional parameters needs to implement / override
    * getAdditionalParameters.
+   * 
    * @return an array of Attribute objects associated with this class
    */
   MetaDataAttr[] getAttributes() {
@@ -304,7 +320,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private void getAttributesFromBeans(final Class<? extends MetaDataObject_impl> clazz) {
     PropertyDescriptor[] pds;
     try {
-      pds = Introspector.getBeanInfo(clazz, Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+      pds = Introspector.getBeanInfo(clazz, Introspector.IGNORE_ALL_BEANINFO)
+              .getPropertyDescriptors();
     } catch (IntrospectionException e) {
       throw new UIMARuntimeException(e);
     }
@@ -317,16 +334,17 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       if (null != propClass && propClass.isPrimitive()) {
         propClass = getWrapperClass(propClass);
       }
-      MetaDataAttr mda = new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass);
+      MetaDataAttr mda = new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(),
+              propClass);
       resultListUnfiltered.add(mda);
       // only include properties with read and write methods,
       // and don't include the SourceUrl property, which is for
       // internal bookkeeping and shouldn't affect object equality
       // and don't include infoset, which is for internal bookkeeping
       // related to comments and whitespace
-        if (pd.getReadMethod() != null && pd.getWriteMethod() != null
-                && !pd.getName().equals(PROP_NAME_SOURCE_URL)
-                && !pd.getName().equals(PROP_NAME_INFOSET)) {
+      if (pd.getReadMethod() != null && pd.getWriteMethod() != null
+              && !pd.getName().equals(PROP_NAME_SOURCE_URL)
+              && !pd.getName().equals(PROP_NAME_INFOSET)) {
         resultList.add(mda);
       }
     }
@@ -342,15 +360,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * Returns a list of <code>NameClassPair</code> objects indicating the attributes of this object
-   * and the String names of the Classes of the attributes' values. 
-   *   For primitive types, the wrapper classes will be
-   * returned (e.g. <code>java.lang.Integer</code> instead of int).
+   * and the String names of the Classes of the attributes' values. For primitive types, the wrapper
+   * classes will be returned (e.g. <code>java.lang.Integer</code> instead of int).
    * 
    * Several subclasses override this, to add additional items to the list.
    * 
    * @see org.apache.uima.resource.metadata.MetaDataObject#listAttributes()
    * @deprecated - use getAttributes
    */
+  @Override
   @Deprecated
   public List<NameClassPair> listAttributes() {
 
@@ -396,6 +414,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#getAttributeValue(String)
    */
+  @Override
   public Object getAttributeValue(String aName) {
     try {
       MetaDataAttr[] attrs = getUnfilteredAttributes();
@@ -438,6 +457,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @see org.apache.uima.resource.metadata.MetaDataObject#isModifiable()
    */
+  @Override
   public boolean isModifiable() {
     return true;
   }
@@ -449,8 +469,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         writer.invoke(this, aValue);
       } catch (IllegalArgumentException e) {
         throw new UIMA_IllegalArgumentException(
-                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                    aValue, attr.name }, e);
+                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+                new Object[] { aValue, attr.name }, e);
       } catch (Exception e) {
         throw new UIMARuntimeException(e);
       }
@@ -460,6 +480,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#setAttributeValue(String, Object)
    */
+  @Override
   public void setAttributeValue(String aName, Object aValue) {
     try {
       MetaDataAttr[] attrs = getUnfilteredAttributes();
@@ -471,13 +492,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               writer.invoke(this, new Object[] { aValue });
             } catch (IllegalArgumentException e) {
               throw new UIMA_IllegalArgumentException(
-                      UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                          aValue, aName }, e);
+                      UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+                      new Object[] { aValue, aName }, e);
             }
           } else {
             throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.NOT_MODIFIABLE, new Object[] { aName,
-                        this.getClass().getName() });
+                    UIMA_UnsupportedOperationException.NOT_MODIFIABLE,
+                    new Object[] { aName, this.getClass().getName() });
           }
         }
       }
@@ -524,6 +545,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return the source URL from which this object was parsed
    */
+  @Override
   public URL getSourceUrl() {
     return mSourceUrl;
   }
@@ -534,6 +556,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return the source URL as a string, or "&lt;unknown&gt;"
    */
+  @Override
   public String getSourceUrlString() {
     return mSourceUrl != null ? mSourceUrl.toString() : "<unknown>";
   }
@@ -561,6 +584,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aUrl
    *          the location of the XML file from which this object was parsed
    */
+  @Override
   public void setSourceUrl(URL aUrl) {
     mSourceUrl = aUrl;
 
@@ -589,9 +613,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.MetaDataObject#clone()
-   * multi-core: could be cloning while another thread is modifying?
+   * @see org.apache.uima.resource.metadata.MetaDataObject#clone() multi-core: could be cloning
+   *      while another thread is modifying?
    */
+  @Override
   public Object clone() {
     // System.out.println("MetaDataObject_impl: clone");
     MetaDataObject_impl clone = null;
@@ -632,6 +657,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * Dump this metadata object's attributes and values to a String. This is useful for debugging.
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getClass().getName()).append(": \n");
@@ -664,6 +690,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return true if and only if this object is equal to <code>aObj</code>
    */
+  @Override
   public boolean equals(Object aObj) {
     if (!(aObj instanceof MetaDataObject_impl)) {
       return false;
@@ -695,6 +722,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return true;
   }
 
+//@formatter:off
   /**
    * Compare 2 values for equality.  
    * Reason val1.equals(val2) is not used:
@@ -706,6 +734,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param val2
    * @return true if equal
    */
+//@formatter:on
   private boolean valuesEqual(Object val1, Object val2) {
     if (val1 == null) {
       return val2 == null;
@@ -717,16 +746,25 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
       // some of this may not be necessary - it depends what kind of array values are actually used
       // The "if" statements below are in guessed order of frequency of occurance
-      if (val1 instanceof String[])  return Arrays.equals((String[])val1,  (String[])val2);
+      if (val1 instanceof String[])
+        return Arrays.equals((String[]) val1, (String[]) val2);
       // deepEquals handles arrays whose elements are arrays
-      if (val1 instanceof Object[])  return Arrays.deepEquals((Object[])val1, (Object[])val2);
-      if (val1 instanceof int[])     return Arrays.equals((int[])val1,     (int[])val2);
-      if (val1 instanceof float[])   return Arrays.equals((float[])val1,   (float[])val2);
-      if (val1 instanceof double[])  return Arrays.equals((double[])val1,  (double[])val2);
-      if (val1 instanceof boolean[]) return Arrays.equals((boolean[])val1, (boolean[])val2);
-      if (val1 instanceof byte[])    return Arrays.equals((byte[])val1,    (byte[])val2);
-      if (val1 instanceof short[])   return Arrays.equals((short[])val1,   (short[])val2);
-      if (val1 instanceof long[])    return Arrays.equals((long[])val1,    (long[])val2);
+      if (val1 instanceof Object[])
+        return Arrays.deepEquals((Object[]) val1, (Object[]) val2);
+      if (val1 instanceof int[])
+        return Arrays.equals((int[]) val1, (int[]) val2);
+      if (val1 instanceof float[])
+        return Arrays.equals((float[]) val1, (float[]) val2);
+      if (val1 instanceof double[])
+        return Arrays.equals((double[]) val1, (double[]) val2);
+      if (val1 instanceof boolean[])
+        return Arrays.equals((boolean[]) val1, (boolean[]) val2);
+      if (val1 instanceof byte[])
+        return Arrays.equals((byte[]) val1, (byte[]) val2);
+      if (val1 instanceof short[])
+        return Arrays.equals((short[]) val1, (short[]) val2);
+      if (val1 instanceof long[])
+        return Arrays.equals((long[]) val1, (long[]) val2);
       return Arrays.equals((char[]) val1, (char[]) val2);
     }
 
@@ -765,13 +803,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @return the hash code for this object
    */
+  @Override
   public int hashCode() {
     int hashCode = 0;
 
     // add the hash codes of all attributes
     MetaDataAttr[] attrs = getAttributes();
     for (MetaDataAttr attr : attrs) {
-//      String attrName = attr.name;
+      // String attrName = attr.name;
       Object val = getAttributeValue(attr);
       if (val != null) {
         if (val instanceof Object[]) {
@@ -802,6 +841,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aWriter
    *          a Writer to which the XML string will be written
    */
+  @Override
   public void toXML(Writer aWriter) throws SAXException, IOException {
     toXML(new XMLSerializer(aWriter));
   }
@@ -812,6 +852,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aOutputStream
    *          an OutputStream to which the XML string will be written
    */
+  @Override
   public void toXML(OutputStream aOutputStream) throws SAXException, IOException {
     toXML(new XMLSerializer(aOutputStream));
   }
@@ -819,14 +860,16 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private void toXML(XMLSerializer sax2xml) throws SAXException, IOException {
     ContentHandler contentHandler = sax2xml.getContentHandler();
     contentHandler.startDocument();
-    toXML(contentHandler, true);  // no reason to create a new content handler
+    toXML(contentHandler, true); // no reason to create a new content handler
     contentHandler.endDocument();
   }
 
   /**
    * This is called internally, also for JSon serialization
+   * 
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
+  @Override
   public void toXML(ContentHandler aContentHandler) throws SAXException {
     toXML(aContentHandler, false);
   }
@@ -834,14 +877,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
    * 
-   * This is called internally, also for JSon serialization
-   * If this is the first call to serialize, create a serialContext (and clean up afterwards)
-   * Other callers (e.g. JSON) must set the serialContext first before calling
+   *      This is called internally, also for JSon serialization If this is the first call to
+   *      serialize, create a serialContext (and clean up afterwards) Other callers (e.g. JSON) must
+   *      set the serialContext first before calling
    */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     if (null == serialContext.get()) {
-      getSerialContext(aContentHandler);  
+      getSerialContext(aContentHandler);
       try {
         toXMLcommon(aWriteDefaultNamespaceAttribute);
       } finally {
@@ -851,31 +895,33 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       toXMLcommon(aWriteDefaultNamespaceAttribute);
     }
   }
-    
+
   private static Serializer getSerializerFromContentHandler(ContentHandler aContentHandler) {
-    return (aContentHandler instanceof CharacterValidatingContentHandler) ? 
-        new MetaDataObjectSerializer_indent((CharacterValidatingContentHandler) aContentHandler) : 
-        new MetaDataObjectSerializer_plain(aContentHandler);
+    return (aContentHandler instanceof CharacterValidatingContentHandler)
+            ? new MetaDataObjectSerializer_indent(
+                    (CharacterValidatingContentHandler) aContentHandler)
+            : new MetaDataObjectSerializer_plain(aContentHandler);
   }
-    
-  private void toXMLcommon(boolean aWriteDefaultNamespaceAttribute) 
-      throws SAXException {    
+
+  private void toXMLcommon(boolean aWriteDefaultNamespaceAttribute) throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
     final Serializer serializer = serialContext.get().serializer;
-    
+
     // write the element's start tag
     // get attributes (can be provided by subclasses)
     AttributesImpl attrs = getXMLAttributes();
-    
+
     if (aWriteDefaultNamespaceAttribute && inf.namespace != null) {
-//      attrs.addAttribute("", "xmlns", "xmlns", "xs:string", inf.namespace);  // NOTE:  Saxon appears to ignore this ??
-      // this is the way to add a default namespace, correctly.  Works with Saxon and non-Saxon
-      ((MetaDataObjectSerializer_plain)serializer).startPrefixMapping("", inf.namespace); 
+      // attrs.addAttribute("", "xmlns", "xmlns", "xs:string", inf.namespace); // NOTE: Saxon
+      // appears to ignore this ??
+      // this is the way to add a default namespace, correctly. Works with Saxon and non-Saxon
+      ((MetaDataObjectSerializer_plain) serializer).startPrefixMapping("", inf.namespace);
     }
-    
+
     // start element
-    serializer.outputStartElement(infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
-    serializer.saveAndAddNodeStore(infoset);     // https://issues.apache.org/jira/browse/UIMA-3477
+    serializer.outputStartElement(infoset, inf.namespace, inf.elementTagName, inf.elementTagName,
+            attrs);
+    serializer.saveAndAddNodeStore(infoset); // https://issues.apache.org/jira/browse/UIMA-3477
 
     // write child elements
     try {
@@ -889,15 +935,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     } finally {
       serializer.deleteNodeStore();
     }
-    
+
     // end element
     serializer.outputEndElement(infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
   }
-  
+
   /**
-   * Called by the {@link #toXML(ContentHandler, boolean)} method to get the XML attributes that will be
-   * written as part of the element's tag. By default this method returns an empty Attributes
-   * object. Subclasses may override it in order to write attributes to the XML.
+   * Called by the {@link #toXML(ContentHandler, boolean)} method to get the XML attributes that
+   * will be written as part of the element's tag. By default this method returns an empty
+   * Attributes object. Subclasses may override it in order to write attributes to the XML.
    * 
    * @return an object defining the attributes to be written to the XML
    */
@@ -941,11 +987,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aPropInfo
    *          information on how to represent the property in XML
    * @param aNamespace
-   *          XML namespace URI for this object
-   *          representation
-   * @throws SAXException -
+   *          XML namespace URI for this object representation
+   * @throws SAXException
+   *           -
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
+          throws SAXException {
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
     // get value of property
@@ -965,53 +1012,55 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       // <node>A</node>
       // <node>B</node>
 
-//      elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
+      // elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
       elementNode = getMatchingNode(sc, aPropInfo.xmlElementName);
-      if (serializer.startElementProperty()) {  // skip for JSON
-        serializer.outputStartElement(elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName, EMPTY_ATTRIBUTES);
+      if (serializer.startElementProperty()) { // skip for JSON
+        serializer.outputStartElement(elementNode, aNamespace, aPropInfo.xmlElementName,
+                aPropInfo.xmlElementName, EMPTY_ATTRIBUTES);
       }
       serializer.addNodeStore();
     }
-    
+
     // get class of property
     Class propClass = getAttributeClass(aPropInfo.propertyName);
 
     try {
-    // if value is null then write nothing
-    if (val != null) {
-      if (aPropInfo.xmlElementName != null) {
-        serializer.writeDelayedStart(aPropInfo.xmlElementName);
-      }
-      
-      // if value is an array then we have to treat that specially
-      if (val.getClass().isArray()) {
-      writeArrayPropertyAsElement(aPropInfo.propertyName, propClass, val,
-              aPropInfo.arrayElementTagName, aNamespace);
-      } else {
-      // if value is an XMLizable object, call its toXML method
-        if (val instanceof XMLizable) {
-          ((XMLizable) val).toXML(sc.ch);
+      // if value is null then write nothing
+      if (val != null) {
+        if (aPropInfo.xmlElementName != null) {
+          serializer.writeDelayedStart(aPropInfo.xmlElementName);
         }
-        // else, if property's class is java.lang.Object, attempt to write
-        // it as a primitive
-        else if (propClass == Object.class) {
-          writePrimitiveValue(val);
+
+        // if value is an array then we have to treat that specially
+        if (val.getClass().isArray()) {
+          writeArrayPropertyAsElement(aPropInfo.propertyName, propClass, val,
+                  aPropInfo.arrayElementTagName, aNamespace);
         } else {
-          // assume attribute's class is known (e.g. String, Integer), so it
-          // is not necessary to write the class name to the XML. Just write
-          // the string representation of the object
-          // XMLUtils.writeNormalizedString(val.toString(), aWriter, true);
-          
-          serializer.writeSimpleValue(val);
+          // if value is an XMLizable object, call its toXML method
+          if (val instanceof XMLizable) {
+            ((XMLizable) val).toXML(sc.ch);
+          }
+          // else, if property's class is java.lang.Object, attempt to write
+          // it as a primitive
+          else if (propClass == Object.class) {
+            writePrimitiveValue(val);
+          } else {
+            // assume attribute's class is known (e.g. String, Integer), so it
+            // is not necessary to write the class name to the XML. Just write
+            // the string representation of the object
+            // XMLUtils.writeNormalizedString(val.toString(), aWriter, true);
+
+            serializer.writeSimpleValue(val);
+          }
         }
       }
-    }
     } finally {
       if (null != elementName) {
         serializer.deleteNodeStore();
         // if XML element name was supplied, end the element that we started
-        if (serializer.startElementProperty()) {  // skip for JSON
-          serializer.outputEndElement(elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
+        if (serializer.startElementProperty()) { // skip for JSON
+          serializer.outputEndElement(elementNode, aNamespace, aPropInfo.xmlElementName,
+                  aPropInfo.xmlElementName);
         }
       }
     }
@@ -1027,68 +1076,69 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aValue
    *          value (guaranteed to be an array and non-null)
    * @param aArrayElementTagName
-   *          name of tag to be assigned to each element of the array. May be <code>null</code>,
-   *          in which case each element will be assigned a value appropriate to its class.
+   *          name of tag to be assigned to each element of the array. May be <code>null</code>, in
+   *          which case each element will be assigned a value appropriate to its class.
    * @param aNamespace
    *          the XML namespace URI for this object
-   * @throws SAXException -         
+   * @throws SAXException
+   *           -
    */
   protected void writeArrayPropertyAsElement(String aPropName, Class aPropClass, Object aValue,
-          String aArrayElementTagName, String aNamespace)
-          throws SAXException {
+          String aArrayElementTagName, String aNamespace) throws SAXException {
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
 
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
-    
+
     Node arraySubElement = null;
     if (serializer.shouldEncloseInArrayElement(aPropClass)) {
       arraySubElement = getMatchingNode(sc, "array");
-      serializer.outputStartElement(arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
-      serializer.addNodeStore();      
+      serializer.outputStartElement(arraySubElement, aNamespace, "array", "array",
+              EMPTY_ATTRIBUTES);
+      serializer.addNodeStore();
     }
-    
+
     try {
       // iterate through elements of the array (at this point we don't allow
       // nested arrays here
-      serializer.maybeStartArraySymbol();  // for JSON      
+      serializer.maybeStartArraySymbol(); // for JSON
       if (serializer.isArrayHasIndentableElements(aValue)) {
-        serializer.insertNl();  // for JSON
+        serializer.insertNl(); // for JSON
       }
-      
+
       for (final Object curElem : ((Object[]) aValue)) {
         Node matchingArrayElement = getMatchingNode(sc, aArrayElementTagName);
-        
+
         // if a particular array element tag has been specified, write it
-        //   (skipped if JSON)
-        serializer.outputStartElementForArrayElement(matchingArrayElement, aNamespace, aArrayElementTagName,
-            aArrayElementTagName, EMPTY_ATTRIBUTES);
-        
+        // (skipped if JSON)
+        serializer.outputStartElementForArrayElement(matchingArrayElement, aNamespace,
+                aArrayElementTagName, aArrayElementTagName, EMPTY_ATTRIBUTES);
+
         if (curElem instanceof AllowedValue) {
-          ((XMLizable)curElem).toXML(sc.ch);
+          ((XMLizable) curElem).toXML(sc.ch);
         } else if (curElem instanceof XMLizable) {
           // if attribute's value is an XMLizable object, call its toXML method
           serializer.insertNl();
           ((XMLizable) curElem).toXML(sc.ch);
-  
-        } else if (aArrayElementTagName == null) {    // else, attempt to write it as a primitive
-          writePrimitiveValue(curElem);               // write <tag>value</tag> or {"tag" : "value"}
-        } else {                          
-          serializer.writeSimpleValue(curElem);          // don't include the type - just write the value
+
+        } else if (aArrayElementTagName == null) { // else, attempt to write it as a primitive
+          writePrimitiveValue(curElem); // write <tag>value</tag> or {"tag" : "value"}
+        } else {
+          serializer.writeSimpleValue(curElem); // don't include the type - just write the value
         }
-        
-        serializer.outputEndElementForArrayElement(matchingArrayElement, 
-            aNamespace, aArrayElementTagName, aArrayElementTagName);
+
+        serializer.outputEndElementForArrayElement(matchingArrayElement, aNamespace,
+                aArrayElementTagName, aArrayElementTagName);
       } // end of for loop over all elements of array
-      
+
       serializer.maybeEndArraySymbol(); // for JSON
     } finally {
       if (serializer.shouldEncloseInArrayElement(aPropClass)) {
-        serializer.deleteNodeStore(); 
+        serializer.deleteNodeStore();
         serializer.outputEndElement(arraySubElement, aNamespace, "array", "array");
       }
-    }    
+    }
   }
 
   /**
@@ -1108,11 +1158,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          will be written as an empty element
    * @param aNamespace
    *          namespace for this object
-   * @throws SAXException  passthru       
+   * @throws SAXException
+   *           passthru
    */
   protected void writeMapPropertyToXml(String aPropName, String aXmlElementName,
-          String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace) 
-              throws SAXException {
+          String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace)
+          throws SAXException {
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
     // get map
@@ -1123,12 +1174,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // if map is empty handle appropriately
     if (theMap == null || theMap.isEmpty()) {
       if (!aOmitIfNull && aXmlElementName != null) {
-        serializer.outputStartElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
+        serializer.outputStartElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName,
+                EMPTY_ATTRIBUTES);
         serializer.outputEndElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName);
       }
-    } else {  // map is not empty
+    } else { // map is not empty
       // write start tag for attribute if desired
-      serializer.outputStartElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
+      serializer.outputStartElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName,
+              EMPTY_ATTRIBUTES);
       serializer.addNodeStore();
 
       try {
@@ -1138,9 +1191,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
           // write a tag for the value, with a "key" attribute
           AttributesImpl attrs = new AttributesImpl();
-          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, "", key); // nulls not OK - must use ""
+          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, "", key); // nulls not OK -
+                                                                               // must use ""
           Node innerMatchingNode = getMatchingNode(sc, aValueTagName);
-          serializer.outputStartElement(innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);
+          serializer.outputStartElement(innerMatchingNode, aNamespace, aValueTagName, aValueTagName,
+                  attrs);
 
           // write the value (must be XMLizable or an array of XMLizable)
           Object val = curEntry.getValue();
@@ -1183,6 +1238,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws InvalidXMLException
    *           if the input XML element does not specify a valid object
    */
+  @Override
   public final void buildFromXMLElement(Element aElement, XMLParser aParser)
           throws InvalidXMLException {
     buildFromXMLElement(aElement, aParser, new XMLParser.ParsingOptions(true));
@@ -1192,8 +1248,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * Initializes this object from its XML DOM representation. This method is typically called from
    * the {@link XMLParser}.
    * 
-   * It is overridden by specific Java impl classes to provide additional
-   * defaulting (e.g. see AnalysisEngineDescription_impl)
+   * It is overridden by specific Java impl classes to provide additional defaulting (e.g. see
+   * AnalysisEngineDescription_impl)
    * 
    * @param aElement
    *          the XML element that represents this object.
@@ -1206,12 +1262,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws InvalidXMLException
    *           if the input XML element does not specify a valid object
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // check element type
     if (!aElement.getTagName().equals(getXmlizationInfo().elementTagName))
-      throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
-          getXmlizationInfo().elementTagName, aElement.getTagName() });
+      throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
+              new Object[] { getXmlizationInfo().elementTagName, aElement.getTagName() });
 
     if (aOptions.preserveComments) {
       infoset = aElement;
@@ -1264,7 +1321,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          parser to use to construct complex values
    * @param aOptions
    *          option settings
-   * @throws InvalidXMLException -         
+   * @throws InvalidXMLException
+   *           -
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
@@ -1324,7 +1382,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          parser to use to construct complex values
    * @param aOptions
    *          option settings
-   * @throws InvalidXMLException -         
+   * @throws InvalidXMLException
+   *           -
    */
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
           Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
@@ -1354,19 +1413,19 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
             try {
               // must have a constructor that takes a String parameter
               if (primitiveElementStringConstructor == null) {
-                primitiveElementStringConstructor = aPropClass.getComponentType().getConstructor(
-                    new Class[] { String.class });
+                primitiveElementStringConstructor = aPropClass.getComponentType()
+                        .getConstructor(new Class[] { String.class });
               }
               // construct the object and add to list
-              valueList.add(primitiveElementStringConstructor
-                      .newInstance(new Object[] { elemText }));
+              valueList.add(
+                      primitiveElementStringConstructor.newInstance(new Object[] { elemText }));
             } catch (Exception e) {
               throw new InvalidXMLException(e);
             }
           } else
             // element type does not match
-            throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
-                aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
+            throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
+                    new Object[] { aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
         } else {
           // array element type is not specified, try defaults
           valueList.add(aParser.buildObjectOrPrimitive(curElem, aOptions));
@@ -1384,8 +1443,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       while (i.hasNext()) {
         Object curObj = i.next();
         if (!componentType.isAssignableFrom(curObj.getClass())) {
-          throw new InvalidXMLException(InvalidXMLException.INVALID_CLASS, new Object[] {
-              componentType, curObj.getClass() });
+          throw new InvalidXMLException(InvalidXMLException.INVALID_CLASS,
+                  new Object[] { componentType, curObj.getClass() });
         }
       }
     } else {
@@ -1420,7 +1479,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          DOM element to read from
    * @param aParser
    *          parser to use to construct complex values
-   * @param aOptions -
+   * @param aOptions
+   *          -
    * @param aKnownPropertyNames
    *          List of propertiees that we've already values for (these values will not be
    *          overwritten)
@@ -1429,7 +1489,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *           if no acceptable object is described by aElement
    */
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-      XMLParser.ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions, List<String> aKnownPropertyNames)
+          throws InvalidXMLException {
     boolean success = false;
     try {
       Object valueObj = aParser.buildObjectOrPrimitive(aElement, aOptions);
@@ -1476,8 +1537,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
     // throw exception if we did not succeed
     if (!success) {
-      throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
-              .getTagName() });
+      throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT,
+              new Object[] { aElement.getTagName() });
     }
   }
 
@@ -1500,11 +1561,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aValueIsArray
    *          true if the value of the map entires is an array. This method only supports
    *          homogeneous arrays.
-   * @throws InvalidXMLException -         
+   * @throws InvalidXMLException
+   *           -
    */
-  protected void readMapPropertyFromXml(String aPropName, Element aElement,
-          String aKeyXmlAttribute, String aValueTagName, XMLParser aParser,
-          XMLParser.ParsingOptions aOptions, boolean aValueIsArray) throws InvalidXMLException {
+  protected void readMapPropertyFromXml(String aPropName, Element aElement, String aKeyXmlAttribute,
+          String aValueTagName, XMLParser aParser, XMLParser.ParsingOptions aOptions,
+          boolean aValueIsArray) throws InvalidXMLException {
     // get the Map to which we add entries (it should already exist)
     Map<String, Object> theMap = (Map<String, Object>) getAttributeValue(aPropName);
 
@@ -1516,8 +1578,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         Element curElem = (Element) curNode;
         // check element tag name
         if (!curElem.getTagName().equals(aValueTagName)) {
-          throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
-              aValueTagName, curElem.getTagName() });
+          throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
+                  new Object[] { aValueTagName, curElem.getTagName() });
         }
         // get the key attribute
         String key = curElem.getAttribute(aKeyXmlAttribute);
@@ -1530,8 +1592,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         if (!aValueIsArray) {
           Element valElem = XMLUtils.getFirstChildElement(curElem);
           if (valElem == null) {
-            throw new InvalidXMLException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
-                "(any)", aValueTagName });
+            throw new InvalidXMLException(InvalidXMLException.ELEMENT_NOT_FOUND,
+                    new Object[] { "(any)", aValueTagName });
           }
           val = aParser.buildObject(valElem, aOptions);
         } else // array
@@ -1564,9 +1626,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aPrimitiveType
    *          <code>Class</code> object representing a primitive type
    * 
-   * @return <code>Class</code> object representing the wrapper type for
-   *     <code>PrimitiveType</code>.  If <code>aPrimitiveType</code> is not
-   *     a primitive type, it is itself returned.
+   * @return <code>Class</code> object representing the wrapper type for <code>PrimitiveType</code>.
+   *         If <code>aPrimitiveType</code> is not a primitive type, it is itself returned.
    */
   protected static Class getWrapperClass(Class aPrimitiveType) {
     if (Integer.TYPE.equals(aPrimitiveType))
@@ -1588,29 +1649,31 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     else
       return aPrimitiveType;
   }
-  
 
   /**
-   * Utility method that introspects this bean and returns a list of <code>PropertyDescriptor</code>s
-   * for its properties.
+   * Utility method that introspects this bean and returns a list of
+   * <code>PropertyDescriptor</code>s for its properties.
    * <p>
    * The JavaBeans introspector is used, with the IGNORE_ALL_BEANINFO flag. This saves on
    * initialization time by preventing the introspector from searching for nonexistent BeanInfo
    * classes for all the MetaDataObjects.
    * 
-   * Caching needed, this method is called for every access to a field, and introspection doesn't cache
-   * (from observation... although the javadocs say otherwise (as of Java6 10/2011 - both IBM and Sun)
+   * Caching needed, this method is called for every access to a field, and introspection doesn't
+   * cache (from observation... although the javadocs say otherwise (as of Java6 10/2011 - both IBM
+   * and Sun)
    * 
    * @return the <code>PropertyDescriptors</code> for all properties introduced by subclasses of
    *         <code>MetaDataObject_impl</code>.
    * 
-   * @throws IntrospectionException if introspection fails
+   * @throws IntrospectionException
+   *           if introspection fails
    * @deprecated - use getAttributes instead
    */
   @Deprecated
   // never called, we hope. No longer caches anything.
   protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {
-    return Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+    return Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO)
+            .getPropertyDescriptors();
   }
 
   // This next method moved here from XMLUtils, but left there because it's public.
@@ -1623,10 +1686,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * lowercase, e.g. "string","integer", "boolean" and <code>string value</code> is the result of
    * <code>Object.toString()</code>.
    * <p>
-   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g. Integer, Boolean).
+   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
+   * Integer, Boolean).
    * 
-   * For JSON, the value is output as {  java-class name : value } unless the value is just a string, in which case 
-   *   we output just the string
+   * For JSON, the value is output as { java-class name : value } unless the value is just a string,
+   * in which case we output just the string
    * 
    * @param aObj
    *          the object to write
@@ -1636,8 +1700,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws SAXException
    *           if the ContentHandler throws an exception
    */
-  private void writePrimitiveValue(Object aObj)
-      throws SAXException {
+  private void writePrimitiveValue(Object aObj) throws SAXException {
     // final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
@@ -1645,21 +1708,20 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     String className = aObj.getClass().getName();
     int lastDotIndex = className.lastIndexOf(".");
     if (lastDotIndex > -1)
-      className = className.substring(lastDotIndex + 1).toLowerCase();    
+      className = className.substring(lastDotIndex + 1).toLowerCase();
     Node node = getMatchingNode(sc, className);
-    
+
     serializer.writeSimpleValueWithTag(className, aObj, node);
   }
 
   protected Node getMatchingNode(SerialContext serialContext, String name) {
     return (infoset == null) ? null : serialContext.serializer.findMatchingSubElement(name);
   }
-  
 
   /*
-   * UIMA-5274 Resolve any ${variable} entries in the string.
-   * Returns null if the expansion fails, i.e. a missing variable, or if no settings have been loaded.
-   * Logs a warning if settings have been loaded but an entry is missing.
+   * UIMA-5274 Resolve any ${variable} entries in the string. Returns null if the expansion fails,
+   * i.e. a missing variable, or if no settings have been loaded. Logs a warning if settings have
+   * been loaded but an entry is missing.
    */
   protected String resolveSettings(String text) {
     UimaContext uimaContext = UimaContextHolder.getContext();
@@ -1675,135 +1737,137 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return null;
   }
-  
-  
-//  /*****************************************
-//   * JSON support *
-//   * 
-//   * The main API takes a JsonContentHandlerJacksonWrapper instance
-//   * 
-//   * The other APIs take combinations of - the output(Writer, File, or OutputStream) - the prettyprint flag
-//   * 
-//   * @throws IOException
-//   * 
-//   * ***************************************/
-//
-//  public void toJSON(Writer aWriter) throws SAXException {
-//    toJSON(aWriter, false);
-//  }
-//
-//  public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException {
-//    try {
-//      JsonGenerator jg = new JsonFactory().createGenerator(aWriter);
-//      toJSON(jg, isFormattedOutput);
-//    } catch (IOException e) {
-//      throw new SAXException(e);
-//    }
-//
-//  }
-//
-//  public void toJSON(JsonGenerator jg, boolean isFormattedOutput) throws SAXException {
-//    JsonContentHandlerJacksonWrapper jch = new JsonContentHandlerJacksonWrapper(jg, isFormattedOutput);
-//    jch.withoutNl();
-//    toXML(jch);
-//    try {
-//      jg.flush();
-//    } catch (IOException e) {
-//      throw new SAXException(e);
-//    }
-//  }
-//
-//  /**
-//   * Writes out this object's JSON representation.
-//   * 
-//   * @param aOutputStream
-//   *          an OutputStream to which the XML string will be written
-//   * @throws SAXException 
-//   */
-//  public void toJSON(OutputStream aOutputStream) throws SAXException {
-//    toJSON(aOutputStream, false);
-//  }
-//
-//  public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException {
-//    try {
-//      JsonGenerator jg = new JsonFactory().createGenerator(aOutputStream);
-//      toJSON(jg, isFormattedOutput);
-//    } catch (IOException e) {
-//      throw new SAXException(e);
-//    }
-//  }
-//
-//  public void toJSON(File file) throws SAXException {
-//    toJSON(file, false);
-//  }
-//
-//  public void toJSON(File file, boolean isFormattedOutput) throws SAXException {
-//    try {
-//      JsonGenerator jg = new JsonFactory().createGenerator(file, JsonEncoding.UTF8);
-//      toJSON(jg, isFormattedOutput);
-//      jg.close();
-//    } catch (IOException e) {
-//      throw new SAXException(e);
-//    }
-//  }
 
-//  public void toJSON(ContentHandler aCh) throws SAXException {
-//    XmlizationInfo inf = getXmlizationInfo();
-//    final boolean isJson = aCh instanceof JsonContentHandlerJacksonWrapper;
-//    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aCh : null;
-//    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
-//
-//
-//    // write the element's start tag
-//    // get attributes (can be provided by subclasses)
-//    AttributesImpl attrs = getXMLAttributes();
-//
-//    if (valueIsEmpty(inf, attrs)) {
-//      return;
-//    }
-//
-//    // start element
-//
-//    try {
-//      outputStartElement(aCh, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
-//    } catch (SAXException e) {
-//      throw new RuntimeException(e);   // should never happen
-//    }
-//
-//    // write child elements
-//    try {
-//      if (isJson) {
-//        if (inf.propertyInfo.length > 1) {
-//          jch.writeNlJustBeforeNext();
-//        }
-//      }
-//      for (int i = 0; i < inf.propertyInfo.length; i++) {
-//        PropertyXmlInfo propInf = inf.propertyInfo[i];
-//        writePropertyAsElement(propInf, inf.namespace, aCh);
-//      }
-//    } catch (SAXException e) {
-//      throw new RuntimeException(e);  // should never happen
-//    }
-//
-//    // end element
-//    outputEndElement(jch, infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
-//  }
+  // /*****************************************
+  // * JSON support *
+  // *
+  // * The main API takes a JsonContentHandlerJacksonWrapper instance
+  // *
+  // * The other APIs take combinations of - the output(Writer, File, or OutputStream) - the
+  // prettyprint flag
+  // *
+  // * @throws IOException
+  // *
+  // * ***************************************/
+  //
+  // public void toJSON(Writer aWriter) throws SAXException {
+  // toJSON(aWriter, false);
+  // }
+  //
+  // public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException {
+  // try {
+  // JsonGenerator jg = new JsonFactory().createGenerator(aWriter);
+  // toJSON(jg, isFormattedOutput);
+  // } catch (IOException e) {
+  // throw new SAXException(e);
+  // }
+  //
+  // }
+  //
+  // public void toJSON(JsonGenerator jg, boolean isFormattedOutput) throws SAXException {
+  // JsonContentHandlerJacksonWrapper jch = new JsonContentHandlerJacksonWrapper(jg,
+  // isFormattedOutput);
+  // jch.withoutNl();
+  // toXML(jch);
+  // try {
+  // jg.flush();
+  // } catch (IOException e) {
+  // throw new SAXException(e);
+  // }
+  // }
+  //
+  // /**
+  // * Writes out this object's JSON representation.
+  // *
+  // * @param aOutputStream
+  // * an OutputStream to which the XML string will be written
+  // * @throws SAXException
+  // */
+  // public void toJSON(OutputStream aOutputStream) throws SAXException {
+  // toJSON(aOutputStream, false);
+  // }
+  //
+  // public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException {
+  // try {
+  // JsonGenerator jg = new JsonFactory().createGenerator(aOutputStream);
+  // toJSON(jg, isFormattedOutput);
+  // } catch (IOException e) {
+  // throw new SAXException(e);
+  // }
+  // }
+  //
+  // public void toJSON(File file) throws SAXException {
+  // toJSON(file, false);
+  // }
+  //
+  // public void toJSON(File file, boolean isFormattedOutput) throws SAXException {
+  // try {
+  // JsonGenerator jg = new JsonFactory().createGenerator(file, JsonEncoding.UTF8);
+  // toJSON(jg, isFormattedOutput);
+  // jg.close();
+  // } catch (IOException e) {
+  // throw new SAXException(e);
+  // }
+  // }
 
-//  private boolean valueIsEmpty(XmlizationInfo inf, AttributesImpl attrs) {
-//    for (PropertyXmlInfo propInf : inf.propertyInfo) {
-//      Object val = getAttributeValue(propInf.propertyName);
-//      if (!valueIsNullOrEmptyArray(val)) {
-//        return false;
-//      }
-//    }
-//    for (int i = 0; i < attrs.getLength(); i++) {
-//      String val = attrs.getValue(i);
-//      if (val != null && (!val.equals(""))) {
-//        return false;
-//      }
-//    }
-//    return true;
-//  }
+  // public void toJSON(ContentHandler aCh) throws SAXException {
+  // XmlizationInfo inf = getXmlizationInfo();
+  // final boolean isJson = aCh instanceof JsonContentHandlerJacksonWrapper;
+  // final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aCh :
+  // null;
+  // final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
+  //
+  //
+  // // write the element's start tag
+  // // get attributes (can be provided by subclasses)
+  // AttributesImpl attrs = getXMLAttributes();
+  //
+  // if (valueIsEmpty(inf, attrs)) {
+  // return;
+  // }
+  //
+  // // start element
+  //
+  // try {
+  // outputStartElement(aCh, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
+  // } catch (SAXException e) {
+  // throw new RuntimeException(e); // should never happen
+  // }
+  //
+  // // write child elements
+  // try {
+  // if (isJson) {
+  // if (inf.propertyInfo.length > 1) {
+  // jch.writeNlJustBeforeNext();
+  // }
+  // }
+  // for (int i = 0; i < inf.propertyInfo.length; i++) {
+  // PropertyXmlInfo propInf = inf.propertyInfo[i];
+  // writePropertyAsElement(propInf, inf.namespace, aCh);
+  // }
+  // } catch (SAXException e) {
+  // throw new RuntimeException(e); // should never happen
+  // }
+  //
+  // // end element
+  // outputEndElement(jch, infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
+  // }
+
+  // private boolean valueIsEmpty(XmlizationInfo inf, AttributesImpl attrs) {
+  // for (PropertyXmlInfo propInf : inf.propertyInfo) {
+  // Object val = getAttributeValue(propInf.propertyName);
+  // if (!valueIsNullOrEmptyArray(val)) {
+  // return false;
+  // }
+  // }
+  // for (int i = 0; i < attrs.getLength(); i++) {
+  // String val = attrs.getValue(i);
+  // if (val != null && (!val.equals(""))) {
+  // return false;
+  // }
+  // }
+  // return true;
+  // }
 
   // private String maybeMakeJsonString(Object aObj, boolean isJson) {
   // if (isJson && aObj instanceof String) {

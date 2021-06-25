@@ -61,30 +61,32 @@ public class CasManager_impl implements CasManager {
   private final ResourceManager mResourceManager;
 
   /**
-   * accumulates the metadata needed for shared CASes for this resource manager
-   * Starts out "empty" when this is created; is added to (but never removed)
-   * Duplicates may be in the list.
+   * accumulates the metadata needed for shared CASes for this resource manager Starts out "empty"
+   * when this is created; is added to (but never removed). Duplicates may be in the list.
    * 
    * Threading: This list is always accessed under the class instance lock.
    */
   private final List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<>();
 
-  private final Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, CasPool> mRequestorToCasPoolMap = Collections
+          .synchronizedMap(new HashMap<>());
 
   private final Map<CAS, CasPool> mCasToCasPoolMap = Collections.synchronizedMap(new HashMap<>());
-  
-  private final Map<CAS, UimaContext> mCasToUimaContextMap = Collections.synchronizedMap(new HashMap<>());
 
-  private volatile CasDefinition mCasDefinition = null;  // once goes non-null, stays
-  
-  private volatile TypeSystem mCurrentTypeSystem = null; // once set, same identical typesystem object used for subseq. CASes
+  private final Map<CAS, UimaContext> mCasToUimaContextMap = Collections
+          .synchronizedMap(new HashMap<>());
+
+  private volatile CasDefinition mCasDefinition = null; // once goes non-null, stays
+
+  private volatile TypeSystem mCurrentTypeSystem = null; // once set, same identical typesystem
+                                                         // object used for subseq. CASes
 
   private volatile Object mMBeanServer;
 
   private volatile String mMBeanNamePrefix;
-  
-  private final List<CasPoolManagementImpl> casPoolMBeans = 
-      Collections.synchronizedList(new ArrayList<>());
+
+  private final List<CasPoolManagementImpl> casPoolMBeans = Collections
+          .synchronizedList(new ArrayList<>());
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
@@ -93,21 +95,25 @@ public class CasManager_impl implements CasManager {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.CasManager#addMetaData(org.apache.uima.resource.metadata.ProcessingResourceMetaData)
+   * @see org.apache.uima.resource.CasManager#addMetaData(org.apache.uima.resource.metadata.
+   * ProcessingResourceMetaData)
    */
+  @Override
   public synchronized void addMetaData(ProcessingResourceMetaData aMetaData) {
     if (mCasDefinition != null) {
-      if (containsSameTypeAndIndexInfo(aMetaData)) { //UIMA-1249
+      if (containsSameTypeAndIndexInfo(aMetaData)) { // UIMA-1249
         return;
       }
-      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, 
-             aMetaData.getSourceUrlString());  // internal error  UIMA-1249    
+      throw new UIMARuntimeException(
+              UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED,
+              aMetaData.getSourceUrlString()); // internal error UIMA-1249
     }
     mMetaDataList.add(aMetaData);
-//    mCasDefinition = null; // marka this stale
-//    mCurrentTypeSystem = null; //this too
+    // mCasDefinition = null; // marka this stale
+    // mCurrentTypeSystem = null; //this too
   }
-  
+
+//@formatter:off
   /**
    * This comparison is needed to avoid throwing errors in the use case:
    *   a) the pipeline has been fully initialized, and one or more CASes have been drawn from this pool
@@ -115,28 +121,28 @@ public class CasManager_impl implements CasManager {
    *   
    * In this case there is no change to the metadata, and we do not want to disturb anything.
    * 
-   * @param md the metadata to see if its in the list already
-   * @return true if the type system description, the type priority description, and the index collection are
-   * in the list already.
+   * @param md
+   *          the metadata to see if its in the list already
+   * @return true if the type system description, the type priority description, and the index
+   *         collection are in the list already.
    */
+//@formatter:on
   private boolean containsSameTypeAndIndexInfo(ProcessingResourceMetaData md) {
     final TypeSystemDescription tsd = md.getTypeSystem();
     final TypePriorities tsp = md.getTypePriorities();
     final FsIndexCollection ic = md.getFsIndexCollection();
-    
+
     for (ProcessingResourceMetaData item : mMetaDataList) {
       final TypeSystemDescription otsd = item.getTypeSystem();
       final TypePriorities otsp = item.getTypePriorities();
       final FsIndexCollection oic = item.getFsIndexCollection();
-      if (equalsWithNulls(tsp, otsp) &&
-          equalsWithNulls(tsd, otsd) &&
-          equalsWithNulls(ic , oic )) {
+      if (equalsWithNulls(tsp, otsp) && equalsWithNulls(tsd, otsd) && equalsWithNulls(ic, oic)) {
         return true;
       }
     }
     return false;
   }
-  
+
   private boolean equalsWithNulls(Object a, Object b) {
     if (a == null && b == null) {
       return true;
@@ -153,6 +159,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#getCasDefinition()
    */
+  @Override
   public synchronized CasDefinition getCasDefinition() throws ResourceInitializationException {
     if (mCasDefinition == null) {
       mCasDefinition = new CasDefinition(mMetaDataList, mResourceManager);
@@ -166,13 +173,14 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#getCAS(org.apache.uima.analysis_engine.AnalysisEngine)
    */
+  @Override
   public CAS getCas(String aRequestorContextName) {
     CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
     if (pool == null) {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
               new Object[] { aRequestorContextName, "1", "0" });
     }
-    return pool.getCas(0);  // 0 means wait forever
+    return pool.getCas(0); // 0 means wait forever
   }
 
   /*
@@ -180,32 +188,34 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#releaseCAS(org.apache.uima.cas.CAS)
    */
+  @Override
   public void releaseCas(AbstractCas aCAS) {
-    if (!(aCAS instanceof CASImpl) &&
-        !(aCAS instanceof JCas)) {
+    if (!(aCAS instanceof CASImpl) && !(aCAS instanceof JCas)) {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
-          new Object[] {aCAS.getClass()});
+              new Object[] { aCAS.getClass() });
     }
-    CASImpl baseCas = (aCAS instanceof JCas) ? ((JCas)aCAS).getCasImpl().getBaseCAS() 
-                                             : ((CASImpl)aCAS).getBaseCAS();
+    CASImpl baseCas = (aCAS instanceof JCas) ? ((JCas) aCAS).getCasImpl().getBaseCAS()
+            : ((CASImpl) aCAS).getBaseCAS();
 
     if (baseCas.containsCasState(CasState.UIMA_AS_WAIT_4_RESPONSE)) {
-      throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASE_NOT_ALLOWED_WHILE_WAITING_FOR_UIMA_AS, new Object[0]);
+      throw new UIMARuntimeException(
+              UIMARuntimeException.CAS_RELEASE_NOT_ALLOWED_WHILE_WAITING_FOR_UIMA_AS,
+              new Object[0]);
     }
-    
+
     CasPool pool = mCasToCasPoolMap.get(baseCas);
     if (pool == null) {
       // CAS doesn't belong to this CasManager!
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
               new Object[0]);
     } else {
-      //see if we have a UimaContext that we can notify that CAS was release
-      UimaContextAdmin uc = (UimaContextAdmin)mCasToUimaContextMap.get(baseCas);
+      // see if we have a UimaContext that we can notify that CAS was release
+      UimaContextAdmin uc = (UimaContextAdmin) mCasToUimaContextMap.get(baseCas);
       if (uc != null) {
         uc.returnedCAS(aCAS);
       }
-      
-      //release the CAS
+
+      // release the CAS
       pool.releaseCas((CAS) aCAS);
     }
   }
@@ -215,26 +225,32 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#setMinimumCasPoolSize(java.lang.String, int)
    */
+  @Override
   public void defineCasPool(String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     defineCasPool(null, aRequestorContextName, aMinimumSize, aPerformanceTuningSettings);
   }
 
-  
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.CasManager#defineCasPool(org.apache.uima.UimaContextAdmin, int, java.util.Properties)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.CasManager#defineCasPool(org.apache.uima.UimaContextAdmin, int,
+   * java.util.Properties)
    */
-  public void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    defineCasPool(aRequestorContext, aRequestorContext.getUniqueName(), aMinimumSize, aPerformanceTuningSettings);
+  @Override
+  public void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize,
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    defineCasPool(aRequestorContext, aRequestorContext.getUniqueName(), aMinimumSize,
+            aPerformanceTuningSettings);
   }
 
   /*
-   * Defines a CAS pool using either a UimaContext or the name of a UimaContext.
-   * synchronized because it tests, then sets "pool"
+   * Defines a CAS pool using either a UimaContext or the name of a UimaContext. synchronized
+   * because it tests, then sets "pool"
    */
-  private synchronized void defineCasPool(UimaContext aRequestorContext, String aRequestorContextName, int aMinimumSize,
-          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+  private synchronized void defineCasPool(UimaContext aRequestorContext,
+          String aRequestorContextName, int aMinimumSize, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
     if (poolSize > 0) {
       CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
@@ -243,7 +259,7 @@ public class CasManager_impl implements CasManager {
         pool = new CasPool(poolSize, this, aPerformanceTuningSettings);
         populateCasToCasPoolAndUimaContextMaps(pool, aRequestorContext);
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
-        //register with JMX
+        // register with JMX
         registerCasPoolMBean(aRequestorContextName, pool);
 
       } else {
@@ -251,26 +267,32 @@ public class CasManager_impl implements CasManager {
                 new Object[] { aRequestorContextName });
       }
     }
-  }  
-  
-  /* (non-Javadoc)
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#createNewCas(java.util.Properties)
    */
-  public CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+  @Override
+  public CAS createNewCas(Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
 
     if (mCurrentTypeSystem != null) {
-      return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
+      return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings,
+              mCurrentTypeSystem);
     } else {
-      synchronized(this) {
+      synchronized (this) {
         if (mCurrentTypeSystem != null) { // double check idiom
-          return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
+          return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings,
+                  mCurrentTypeSystem);
         } else {
           CAS cas = CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings);
           mCurrentTypeSystem = cas.getTypeSystem();
           return cas;
         }
       }
-    }    
+    }
   }
 
   /**
@@ -281,6 +303,7 @@ public class CasManager_impl implements CasManager {
    * @param requiredInterface
    *          interface to get. Currently must be one of CAS or JCas.
    */
+  @Override
   public AbstractCas getCasInterface(CAS cas, Class<? extends AbstractCas> requiredInterface) {
     if (requiredInterface == CAS.class) {
       return cas;
@@ -307,11 +330,13 @@ public class CasManager_impl implements CasManager {
    *          The CAS
    * @param requiredInterface
    *          interface to get. Currently must be one of CAS or JCas.
-   * @param <T> the particular interface
-   * @return -         
+   * @param <T>
+   *          the particular interface
+   * @return -
    */
   @SuppressWarnings("unchecked")
-  public static <T extends AbstractCas> T getCasInterfaceStatic(CAS cas, Class<T> requiredInterface) {
+  public static <T extends AbstractCas> T getCasInterfaceStatic(CAS cas,
+          Class<T> requiredInterface) {
     if (requiredInterface == CAS.class) {
       return (T) cas;
     } else if (requiredInterface == JCas.class) {
@@ -330,15 +355,17 @@ public class CasManager_impl implements CasManager {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#setJmxInfo(java.lang.Object, java.lang.String)
    */
+  @Override
   public void setJmxInfo(Object aMBeanServer, String aRootMBeanName) {
     mMBeanServer = aMBeanServer;
     if (aRootMBeanName.endsWith("\"")) {
       mMBeanNamePrefix = aRootMBeanName.substring(0, aRootMBeanName.length() - 1) + " CAS Pools\",";
-    }
-    else {
+    } else {
       mMBeanNamePrefix = aRootMBeanName + " CAS Pools,";
     }
   }
@@ -346,12 +373,13 @@ public class CasManager_impl implements CasManager {
   protected Map<CAS, CasPool> getCasToCasPoolMap() {
     return mCasToCasPoolMap;
   }
-  
+
   protected void populateCasToCasPoolMap(CasPool aCasPool) {
     populateCasToCasPoolAndUimaContextMaps(aCasPool, null);
   }
-  
-  protected void populateCasToCasPoolAndUimaContextMaps(CasPool aCasPool, UimaContext aUimaContext) {
+
+  protected void populateCasToCasPoolAndUimaContextMaps(CasPool aCasPool,
+          UimaContext aUimaContext) {
     CAS[] casArray = new CAS[aCasPool.getSize()];
     for (int i = 0; i < casArray.length; i++) {
       casArray[i] = ((CASImpl) aCasPool.getCas()).getBaseCAS();
@@ -363,15 +391,17 @@ public class CasManager_impl implements CasManager {
     for (int i = 0; i < casArray.length; i++) {
       aCasPool.releaseCas(casArray[i]);
     }
-  }  
-  
+  }
+
   /**
    * Registers an MBean for the given CasPool.
    * 
    * Never called unless pool is new
    * 
-   * @param aRequestorContextName context name that identifies this CasPool
-   * @param pool the CasPool
+   * @param aRequestorContextName
+   *          context name that identifies this CasPool
+   * @param pool
+   *          the CasPool
    */
   protected void registerCasPoolMBean(String aRequestorContextName, CasPool pool) {
     if (mMBeanNamePrefix != null) {
@@ -380,11 +410,12 @@ public class CasManager_impl implements CasManager {
       JmxMBeanAgent.registerMBean(mbean, mMBeanServer);
       casPoolMBeans.add(mbean);
     }
-  }  
-  
+  }
+
   /**
-   * Determines the size to use for a particular CAS Pool.  This can be overridden
-   * by subclasses to specify custom pool sizes.
+   * Determines the size to use for a particular CAS Pool. This can be overridden by subclasses to
+   * specify custom pool sizes.
+   * 
    * @param aRequestorContextName
    *          the context name of the AE that will request the CASes
    *          (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).
@@ -401,6 +432,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see java.lang.Object#finalize()
    */
+  @Override
   protected void finalize() throws Throwable {
     // unregister MBeans from MBeanServer when GC occurs.
     for (CasPoolManagementImpl mbean : casPoolMBeans) {

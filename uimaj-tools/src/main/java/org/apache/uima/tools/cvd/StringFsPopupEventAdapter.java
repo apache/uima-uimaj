@@ -54,7 +54,6 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
      * @param s the s
      */
     private ShowStringHandler(String s) {
-      super();
       this.string = s;
     }
 
@@ -79,7 +78,6 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
    * Instantiates a new string fs popup event adapter.
    */
   public StringFsPopupEventAdapter() {
-    super();
   }
 
   /* (non-Javadoc)

@@ -48,7 +48,6 @@ public class CPMChunkTimeoutException extends ResourceProcessException {
    * @param aDocumentURL document URL
    */
   public CPMChunkTimeoutException(long aDocumentId, String aThrottleID, String aDocumentURL) {
-    super();
     docID = aDocumentId;
     throttleID = aThrottleID;
     documentURL = aDocumentURL;

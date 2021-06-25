@@ -19,16 +19,13 @@
 
 package org.apache.uima.internal.util;
 
-import java.util.NoSuchElementException;
-
 /**
- * This class implements a set of integers. It does not implement the <code>Set</code> interface
- * for performance reasons, though methods with the same name are equivalent.
+ * This class implements a set of integers. It does not implement the <code>Set</code> interface for
+ * performance reasons, though methods with the same name are equivalent.
  * 
- *  This does not implement shorts + offset, like the IntHashSet does
- *    because by the time that might be of interest, we would switch to
- *    IntHashSet to get ~O(1) operations including contains.
- *    
+ * This does not implement shorts + offset, like the IntHashSet does because by the time that might
+ * be of interest, we would switch to IntHashSet to get ~O(1) operations including contains.
+ * 
  */
 public class IntSet implements PositiveIntSet {
 
@@ -39,10 +36,11 @@ public class IntSet implements PositiveIntSet {
   public IntSet() {
     this.iVec = new IntVector();
   }
-  
+
   /**
    * 
-   * @param capacity allocate enough space to hold at least this before expanding
+   * @param capacity
+   *          allocate enough space to hold at least this before expanding
    */
   public IntSet(int capacity) {
     this.iVec = new IntVector(capacity);
@@ -56,8 +54,8 @@ public class IntSet implements PositiveIntSet {
    * 
    * @param element
    *          the integer to be added.
-   * @return <code>true</code> if this set did not already contain this element,
-   *         <code>false</code> otherwise.
+   * @return <code>true</code> if this set did not already contain this element, <code>false</code>
+   *         otherwise.
    */
   @Override
   public boolean add(int element) {
@@ -95,17 +93,22 @@ public class IntSet implements PositiveIntSet {
   /** @return the <code>n</code>-th element in this set. */
   /**
    * Used for FsBagIndex, and internally to compute most positive/neg
-   * @param n the position
+   * 
+   * @param n
+   *          the position
    * @return the value at that position
    */
   @Override
-  public int get(int n) {  
+  public int get(int n) {
     return this.iVec.get(n);
   }
 
-  /** Removes the <code>n</code>-th element in this set.
-   * @param n - 
-   * */
+  /**
+   * Removes the <code>n</code>-th element in this set.
+   * 
+   * @param n
+   *          -
+   */
   public void removeElementAt(int n) {
     this.iVec.remove(n);
   }
@@ -122,6 +125,7 @@ public class IntSet implements PositiveIntSet {
    *          the set to be tested for equality with this set.
    * @return <code>true</code> if the sets are equal, <code>false</code> otherwise.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -153,6 +157,7 @@ public class IntSet implements PositiveIntSet {
     return false;
   }
 
+  @Override
   public int hashCode() {
     if (this.iVec == null) {
       return 0;
@@ -163,9 +168,9 @@ public class IntSet implements PositiveIntSet {
     }
     return sum;
   }
-  
+
   public int indexOf(int element) {
-	return  this.iVec.indexOf(element);
+    return this.iVec.indexOf(element);
   }
 
   @Override
@@ -181,18 +186,19 @@ public class IntSet implements PositiveIntSet {
     }
     return i != -1;
   }
-  
+
   private class IntSetIterator implements IntListIterator {
 
     protected int pos = 0;
-    
-    protected IntSetIterator() {}
- 
+
+    protected IntSetIterator() {
+    }
+
     @Override
     public final boolean hasNext() {
       return (pos >= 0 && pos < size());
     }
-   
+
     @Override
     public final int nextNvc() {
       return iVec.get(pos++);
@@ -206,7 +212,7 @@ public class IntSet implements PositiveIntSet {
       final int posm1 = pos - 1;
       return (posm1 >= 0 && posm1 < size());
     }
-    
+
     @Override
     public int previousNvc() {
       return iVec.get(--pos);
@@ -242,7 +248,7 @@ public class IntSet implements PositiveIntSet {
 
   @Override
   public int moveToLast() {
-    return size() -1;
+    return size() - 1;
   }
 
   @Override
@@ -278,13 +284,14 @@ public class IntSet implements PositiveIntSet {
     return iVec.toIntArray();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     return String.format("IntSet [iVec=%s]", iVec);
   }
-  
-  
+
 }

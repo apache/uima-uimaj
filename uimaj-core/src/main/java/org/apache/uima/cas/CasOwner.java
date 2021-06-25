@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 /**
@@ -30,8 +29,8 @@ public interface CasOwner {
    * Releases a CAS back to its owner. After calling this method, the caller should no longer access
    * <code>aCAS</code>.
    * 
-   * @param aCAS the CAS to release
+   * @param aCAS
+   *          the CAS to release
    */
   void releaseCas(AbstractCas aCAS);
-
 }

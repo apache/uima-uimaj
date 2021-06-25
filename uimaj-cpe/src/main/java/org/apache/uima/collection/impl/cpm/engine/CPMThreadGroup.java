@@ -26,7 +26,6 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.base_cpm.BaseStatusCallbackListener;
 import org.apache.uima.collection.impl.EntityProcessStatusImpl;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 

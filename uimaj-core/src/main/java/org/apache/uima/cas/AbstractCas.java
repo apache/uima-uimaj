@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 /**
@@ -30,7 +29,7 @@ package org.apache.uima.cas;
  */
 public interface AbstractCas {
 
-	/**
+  /**
    * Indicates that the caller is done using this CAS. Some CAS instances may be pooled, in which
    * case this method returns this CAS to the pool that owns it.
    */

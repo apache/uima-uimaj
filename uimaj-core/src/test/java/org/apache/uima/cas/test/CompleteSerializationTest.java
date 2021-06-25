@@ -69,8 +69,8 @@ public class CompleteSerializationTest {
     System.getProperties().remove("uima.enable_strict_type_source_check");
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSerialization() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSerialization() throws Exception {
     CASMgr cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
 
     ((CAS) cas).setDocumentText("Create the sofa for the inital view");
@@ -99,8 +99,8 @@ public class CompleteSerializationTest {
             .isThrownBy(() -> ((LowLevelCAS) newCas).ll_enableV2IdRefs());
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSerializationV2IdRefs() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSerializationV2IdRefs() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       CAS cas = CASInitializer.initCas(new CASTestSetup(), null);
       JCas jcas = cas.getJCas();
@@ -130,12 +130,12 @@ public class CompleteSerializationTest {
       // deserialize into a new CAS with a type system that only contains the builtins
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
 
-        Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
-      
+      Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
+
       LowLevelCAS ll = newCas.getLowLevelCAS();
-      
+
       assertEquals(id, ll.ll_getFSForRef(id)._id());
-      
+
       CasCompare cc = new CasCompare((CASImpl) cas, (CASImpl) newCas);
       cc.compareIds(true);
       assertTrue(cc.compareCASes());
@@ -154,18 +154,18 @@ public class CompleteSerializationTest {
 
       // deserialize into newCas a second time (OF bug found 7/7/2006)
       Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
-      
+
       assertTrue(((CASMgr) cas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
       assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
     }
   }
-  
+
   @Test
   public void thatReplacingTypeSystemInCasWorks() throws Exception {
     String initialViewText = "First view text";
     String secondViewId = "secondView";
     String secondViewText = "Second view text";
-    
+
     // Construct a CAS with two views
     CAS cas = CasCreationUtils.createCas();
     cas.setDocumentText(initialViewText);
@@ -175,20 +175,20 @@ public class CompleteSerializationTest {
     TypeSystem originalTypeSystem = cas.getTypeSystem();
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     serializeWithCompression(cas, buffer, originalTypeSystem);
-    
+
     // Create a new type system
     TypeSystemDescription newTSD = new TypeSystemDescription_impl();
     newTSD.addType("my.Type", "", CAS.TYPE_NAME_ANNOTATION);
-    
+
     // Replace the type system in the CAS with the new type system
     CAS tempCas = createCas(newTSD, null, null, null);
     CASCompleteSerializer serializer = serializeCASComplete((CASImpl) tempCas);
     deserializeCASComplete(serializer, (CASImpl) cas);
-    
+
     // Write the CAS data from the buffer back into the CAS - this throws an exception if the
     // FSIndexRepositories are not properly reset (cf. UIMA-6352)
     load(new ByteArrayInputStream(buffer.toByteArray()), cas, originalTypeSystem);
-    
+
     CAS secondView = cas.getView(secondViewId);
     assertThat(cas.getDocumentText()).isEqualTo(initialViewText);
     assertThat(secondView).isNotNull();

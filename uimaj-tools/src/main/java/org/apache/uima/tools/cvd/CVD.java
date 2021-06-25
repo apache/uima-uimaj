@@ -66,7 +66,6 @@ public class CVD {
    * Instantiates a new cvd.
    */
   private CVD() {
-    super();
   }
 
   /**

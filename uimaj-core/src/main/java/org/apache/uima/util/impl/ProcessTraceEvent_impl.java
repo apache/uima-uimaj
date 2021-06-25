@@ -97,12 +97,14 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getComponentName()
    */
+  @Override
   public String getComponentName() {
     return mComponentName;
   }
 
   /**
-   * @param aName the component name for this event
+   * @param aName
+   *          the component name for this event
    */
   public void setComponentName(String aName) {
     mComponentName = aName;
@@ -111,12 +113,14 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getType()
    */
+  @Override
   public String getType() {
     return mType;
   }
 
   /**
-   * @param aType the type of this event
+   * @param aType
+   *          the type of this event
    */
   public void setType(String aType) {
     mType = aType;
@@ -125,12 +129,14 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @param aDescription the description for this event
+   * @param aDescription
+   *          the description for this event
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
@@ -139,19 +145,22 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getDuration()
    */
+  @Override
   public int getDuration() {
     return mDuration;
   }
 
   /**
-   * @param aDuration the duration for this event
+   * @param aDuration
+   *          the duration for this event
    */
   public void setDuration(int aDuration) {
     mDuration = aDuration;
   }
 
   /**
-   * @param aAdditionalDuration Adds this to the duration of this event
+   * @param aAdditionalDuration
+   *          Adds this to the duration of this event
    */
   public void addToDuration(long aAdditionalDuration) {
     mDuration += aAdditionalDuration;
@@ -160,12 +169,14 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getResultMessage()
    */
+  @Override
   public String getResultMessage() {
     return mResultMessage;
   }
 
   /**
-   * @param aResultMessage the Result Message for this event
+   * @param aResultMessage
+   *          the Result Message for this event
    */
   public void setResultMessage(String aResultMessage) {
     mResultMessage = aResultMessage;
@@ -174,6 +185,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getSubEvents()
    */
+  @Override
   public List<ProcessTraceEvent> getSubEvents() {
     if (mSubEvents == null) {
       return Collections.emptyList();
@@ -183,7 +195,8 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aEvent Adds this sub-event to this event.
+   * @param aEvent
+   *          Adds this sub-event to this event.
    */
   public void addSubEvent(ProcessTraceEvent aEvent) {
     if (mSubEvents == null) {
@@ -195,6 +208,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#toString()
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     toString(buf, 0);
@@ -204,6 +218,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#toString(StringBuffer,int)
    */
+  @Override
   public void toString(StringBuffer aBuf, int aIndentLevel) {
     toString(aBuf, aIndentLevel, 0);
   }
@@ -211,6 +226,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#toString(java.lang.StringBuffer, int, int)
    */
+  @Override
   public void toString(StringBuffer aBuf, int aIndentLevel, int aTotalTime) {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");
 
@@ -255,6 +271,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getDurationExcludingSubEvents()
    */
+  @Override
   public int getDurationExcludingSubEvents() {
     int result = getDuration();
     for (ProcessTraceEvent evt : getSubEvents()) {

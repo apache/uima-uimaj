@@ -79,8 +79,8 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
   /**
    * Checks out a TextAnalysisEngine from the pool.
    * 
-   * @return a TAE for use by the client. Returns <code>null</code> if none are available (in
-   *         which case the client may wait on this object in order to be notified when an instance
+   * @return a TAE for use by the client. Returns <code>null</code> if none are available (in which
+   *         case the client may wait on this object in order to be notified when an instance
    *         becomes available).
    */
   public TextAnalysisEngine getTAE() {
@@ -104,8 +104,8 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
    * @param aTimeout
    *          the time to wait in milliseconds. A value of &lt;=0 will wait forever.
    * 
-   * @return a TAE for use by the client. Returns <code>null</code> if none are available (in
-   *         which case the client may wait on this object in order to be notified when an instance
+   * @return a TAE for use by the client. Returns <code>null</code> if none are available (in which
+   *         case the client may wait on this object in order to be notified when an instance
    *         becomes available).
    */
   public TextAnalysisEngine getTAE(long aTimeout) {
@@ -115,6 +115,7 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
   /**
    * @see AnalysisEnginePool#getResourceClass()
    */
+  @Override
   protected Class getResourceClass() {
     return TextAnalysisEngine.class;
   }

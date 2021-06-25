@@ -16,19 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 /**
  * Boolean array interface. To create a boolean array object, use
- * {@link org.apache.uima.cas.CAS#createBooleanArrayFS CAS.createBooleanArrayFS(int)} or
- * new BooleanArray(aJCas, length) 
+ * {@link org.apache.uima.cas.CAS#createBooleanArrayFS CAS.createBooleanArrayFS(int)} or new
+ * BooleanArray(aJCas, length)
  */
 public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
 
   /**
    * Get the i-th string from the array.
-   * @param i selects the string
+   * 
+   * @param i
+   *          selects the string
    * @return The i-th element.
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
@@ -55,8 +56,8 @@ public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
   boolean[] toArray();
 
   /**
-   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
-   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
+   * Copy the contents of the array from <code>start</code> to <code>end</code> to the destination
+   * <code>destArray</code> with destination offset <code>destOffset</code>.
    * 
    * @param srcOffset
    *          The index of the first element to copy.
@@ -87,5 +88,4 @@ public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
    */
   void copyFromArray(boolean[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
-
 }

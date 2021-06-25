@@ -40,7 +40,7 @@ public interface FlowControllerDeclaration extends MetaDataObject {
    * 
    * @return the key assigned to the FlowController
    */
-  public String getKey();
+  String getKey();
 
   /**
    * Sets the key that can be used to refer to the FlowController in configuration parameter
@@ -49,14 +49,14 @@ public interface FlowControllerDeclaration extends MetaDataObject {
    * @param aKey
    *          the key to assign to the FlowController
    */
-  public void setKey(String aKey);
+  void setKey(String aKey);
 
   /**
    * Gets the import that references the FlowController specifier.
    * 
    * @return an object containing the import information, or null if no import was used
    */
-  public Import getImport();
+  Import getImport();
 
   /**
    * Sets the import that references the FlowController specifier.
@@ -64,15 +64,15 @@ public interface FlowControllerDeclaration extends MetaDataObject {
    * @param aImport
    *          an object containing the import information, or null if no import is to be used
    */
-  public void setImport(Import aImport);
+  void setImport(Import aImport);
 
   /**
-   * Retrieves the <code>ResourceSpecifier</code> used to determine which FlowController is used
-   * by the AnalysisEngine.
+   * Retrieves the <code>ResourceSpecifier</code> used to determine which FlowController is used by
+   * the AnalysisEngine.
    * 
    * @return the <code>ResourceSpecifier</code> that specifies a FlowController.
    */
-  public ResourceSpecifier getSpecifier();
+  ResourceSpecifier getSpecifier();
 
   /**
    * Sets the <code>ResourceSpecifier</code> used to determine which FlowController is used by the
@@ -81,22 +81,22 @@ public interface FlowControllerDeclaration extends MetaDataObject {
    * @param aSpecifier
    *          a <code>ResourceSpecifier</code> that specifies a FlowController
    */
-  public void setSpecifier(ResourceSpecifier aSpecifier);
+  void setSpecifier(ResourceSpecifier aSpecifier);
 
   /**
-   * Resolves an imported FlowController specifier, if there is one. The <code>specifier</code>property
-   * of this object is set to the result of parsing the imported descriptor. The import is then
-   * deleted.
+   * Resolves an imported FlowController specifier, if there is one. The
+   * <code>specifier</code>property of this object is set to the result of parsing the imported
+   * descriptor. The import is then deleted.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports() throws InvalidXMLException;
+  void resolveImports() throws InvalidXMLException;
 
   /**
-   * Resolves an imported FlowController specifier, if there is one. The <code>specifier</code>property
-   * of this object is set to the result of parsing the imported descriptor. The import is then
-   * deleted.
+   * Resolves an imported FlowController specifier, if there is one. The
+   * <code>specifier</code>property of this object is set to the result of parsing the imported
+   * descriptor. The import is then deleted.
    * 
    * @param aResourceManager
    *          the Resource Manager used to locate an XML file imported by name
@@ -104,6 +104,6 @@ public interface FlowControllerDeclaration extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
+  void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
 
 }

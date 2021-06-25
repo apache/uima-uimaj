@@ -62,6 +62,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
    */
+  @Override
   public void initializationComplete() {
     isInitialized = true;
   }
@@ -72,6 +73,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
    * 
    */
+  @Override
   public void batchProcessComplete() {
     batchCompletCount++;
   }
@@ -81,6 +83,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() {
     isFinished = true;
     collProcessingCount++;
@@ -91,6 +94,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
    */
+  @Override
   public void paused() {
     pausedCount++;
   }
@@ -100,6 +104,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
    */
+  @Override
   public void resumed() {
     resumedCount++;
   }
@@ -109,6 +114,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
    */
+  @Override
   public void aborted() {
     isAborted = true;
     abortedCount++;
@@ -123,6 +129,7 @@ public class TestStatusCallbackListener implements StatusCallbackListener {
    * @param aStatus
    *          EntityProcessStatus that holds the status of all the events for aEntity
    */
+  @Override
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     entityProcessCompleteCount++;
     lastCas = aCas;

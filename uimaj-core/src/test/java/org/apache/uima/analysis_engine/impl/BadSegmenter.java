@@ -35,8 +35,9 @@ public class BadSegmenter extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
-    //do nothing
+    // do nothing
   }
 
   /*
@@ -44,6 +45,7 @@ public class BadSegmenter extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return true;
   }
@@ -53,6 +55,7 @@ public class BadSegmenter extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     // request too many CASes
     getContext().getEmptyCas(CAS.class);
@@ -60,6 +63,7 @@ public class BadSegmenter extends CasMultiplier_ImplBase {
     return getContext().getEmptyCas(CAS.class);
   }
 
+  @Override
   public int getCasInstancesRequired() {
     return 4;
   }

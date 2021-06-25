@@ -81,11 +81,10 @@ public class CppUimajEngine {
   public CppUimajEngine() {
   }
 
-  public int initialize(String config, String dataPath, int[] typeInheritance,
-          int[] typePriorities, int[] featureDefs, int[] featureOffset, String[] typeNames,
-          String[] featureNames, int[] stringSubTypes, String[] stringSubTypeValues,
-          int[] stringSubTypeValuePos, String[] indexIDs, int[] indexKinds, int[] compStarts,
-          int[] compDefs) {
+  public int initialize(String config, String dataPath, int[] typeInheritance, int[] typePriorities,
+          int[] featureDefs, int[] featureOffset, String[] typeNames, String[] featureNames,
+          int[] stringSubTypes, String[] stringSubTypeValues, int[] stringSubTypeValuePos,
+          String[] indexIDs, int[] indexKinds, int[] compStarts, int[] compDefs) {
     int result = 0;
     try {
       // System.out.println("CppUimajEngine::initialize()");
@@ -195,13 +194,13 @@ public class CppUimajEngine {
         ResultSpecification rs = ae.createResultSpecification(casImpl.getTypeSystem());
         for (int i = 0; i < resultSpecTypes.length; ++i) {
           // allAnnotatorFeatures is not considere here! (TODO)
-          rs
-                  .addResultType(casImpl.getTypeSystemImpl().ll_getTypeForCode(resultSpecTypes[i]).getName(),
-                          false);
+          rs.addResultType(
+                  casImpl.getTypeSystemImpl().ll_getTypeForCode(resultSpecTypes[i]).getName(),
+                  false);
         }
         for (int i = 0; i < resultSpecFeatures.length; ++i) {
-          rs.addResultFeature(casImpl.getTypeSystemImpl().ll_getFeatureForCode(resultSpecFeatures[i])
-                  .getName());
+          rs.addResultFeature(casImpl.getTypeSystemImpl()
+                  .ll_getFeatureForCode(resultSpecFeatures[i]).getName());
         }
         // 3. call process with cas
         ae.process(casImpl, rs);
@@ -352,6 +351,7 @@ public class CppUimajEngine {
     return null;
   }
 
+  @Override
   protected void finalize() throws Throwable {
     if (ae != null) {
       destroy();

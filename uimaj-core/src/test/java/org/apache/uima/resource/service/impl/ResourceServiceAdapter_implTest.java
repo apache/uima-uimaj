@@ -27,9 +27,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,11 +36,12 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class ResourceServiceAdapter_implTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       mServiceStub = new TestResourceServiceStub();
       mAdapter = new ResourceServiceAdapter() {
+        @Override
         public boolean initialize(ResourceSpecifier p1, Map p2) {
           return false;
         }
@@ -53,8 +52,8 @@ public class ResourceServiceAdapter_implTest {
     }
   }
 
-    @Test
-    public void testGetMetaData() throws Exception {
+  @Test
+  public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = new ResourceMetaData_impl();
       md.setName("Test");
@@ -64,8 +63,8 @@ public class ResourceServiceAdapter_implTest {
       p1.setDescription("multi-valued parameter with Integer data type");
       p1.setType(ConfigurationParameter.TYPE_INTEGER);
       p1.setMultiValued(true);
-      md.getConfigurationParameterDeclarations().setConfigurationParameters(
-              new ConfigurationParameter[] { p1 });
+      md.getConfigurationParameterDeclarations()
+              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
 
       mServiceStub.getMetaDataReturnValue = md;
       ResourceMetaData result = mAdapter.getMetaData();

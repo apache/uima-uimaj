@@ -208,7 +208,6 @@ public class VinciClient extends BaseClient {
    * return documents.
    */
   public VinciClient() {
-    super();
   }
 
   /**
@@ -492,6 +491,7 @@ public class VinciClient extends BaseClient {
   /**
    * @pre getServiceName() != null
    */
+  @Override
   protected void reopen(Exception e) throws IOException {
     Debug.p("Trying to reopen connection due to exception: " + e);
     // Make sure connection is closed.
@@ -506,6 +506,7 @@ public class VinciClient extends BaseClient {
    * 
    * @return whether socket keepAlive is enabled.
    */
+  @Override
   protected boolean isSocketKeepAliveEnabled() {
     return getContext().isSocketKeepAliveEnabled();
   }

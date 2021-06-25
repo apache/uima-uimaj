@@ -22,9 +22,8 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * UNUSED V3 backwards compat only
- * Delete  REplace with Comparator&lt;FeatureStructure&gt; or the like.
- * Interface to compare two feature structures.
+ * UNUSED V3 backwards compat only Delete REplace with Comparator&lt;FeatureStructure&gt; or the
+ * like. Interface to compare two feature structures.
  * 
  */
 public interface FSComparator {

@@ -19,6 +19,11 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -29,35 +34,31 @@ import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
-
+import org.junit.jupiter.api.Test;
 
 public class TypePriorities_implTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
   /*
    * @see TestCase#tearDown()
    */
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @org.junit.jupiter.api.Test
-    public void testBuildFromXmlElement() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testBuildFromXmlElement() throws Exception {
     try {
       // simple type priorties (backwards compatibility check)
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/SimpleTypePriorities.xml");
-      TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
-              new XMLInputSource(descriptor));
+      TypePriorities pri = UIMAFramework.getXMLParser()
+              .parseTypePriorities(new XMLInputSource(descriptor));
       assertEquals(null, pri.getName());
       assertEquals(null, pri.getDescription());
       assertEquals(null, pri.getVendor());
@@ -88,12 +89,12 @@ public class TypePriorities_implTest {
     }
   }
 
-    @Test
-    public void testResolveImports() throws Exception {
+  @Test
+  public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");
-      TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
-              new XMLInputSource(descriptor));
+      TypePriorities pri = UIMAFramework.getXMLParser()
+              .parseTypePriorities(new XMLInputSource(descriptor));
 
       TypePriorityList[] priLists = pri.getPriorityLists();
       assertEquals(1, priLists.length);
@@ -111,8 +112,8 @@ public class TypePriorities_implTest {
 
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      resMgr.setDataPath(JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
-              .getAbsolutePath());
+      resMgr.setDataPath(
+              JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath());
       pri.resolveImports(resMgr);
 
       priLists = pri.getPriorityLists();
@@ -135,12 +136,12 @@ public class TypePriorities_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testClone() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testClone() throws Exception {
     try {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");
-      TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
-              new XMLInputSource(descriptor));
+      TypePriorities pri = UIMAFramework.getXMLParser()
+              .parseTypePriorities(new XMLInputSource(descriptor));
 
       TypePriorities clone = (TypePriorities) pri.clone();
 

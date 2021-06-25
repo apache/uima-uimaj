@@ -35,6 +35,7 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
+  @Override
   public final Class<JCas> getRequiredCasInterface() {
     return JCas.class;
   }
@@ -44,6 +45,7 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
    * time. Returns a default value of 1, which will be sufficient for most CAS Multipliers. Only if
    * there is a clear need should this be overridden to return something greater than 1.
    */
+  @Override
   public int getCasInstancesRequired() {
     return 1;
   }
@@ -51,23 +53,25 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
+   * @see
+   * org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof JCas) {
       process((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
-                  aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { JCas.class, aCAS.getClass() });
     }
   }
 
   /**
-   * This method should be overriden by subclasses. Inputs a JCAS to the AnalysisComponent. The
+   * This method should be overridden by subclasses. Inputs a JCAS to the AnalysisComponent. The
    * AnalysisComponent "owns" this JCAS until such time as {@link #hasNext()} is called and returns
-   * false, or until the <code>process</code> method is called again (see
-   * {@link AnalysisComponent} for details).
+   * false, or until the <code>process</code> method is called again (see {@link AnalysisComponent}
+   * for details).
    * 
    * @param aJCas
    *          a JCAS that this AnalysisComponent should process.

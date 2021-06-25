@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import org.apache.uima.cas_data.CasData;
@@ -26,8 +25,6 @@ import org.apache.uima.resource.ResourceProcessException;
  * Interface for CAS processors that want to interact directly with the {@link CasData}. This works
  * best for simple processors that do not need the indexing or strong typing features provided by
  * the CAS container.
- * 
- * 
  */
 public interface CasDataProcessor extends CasProcessor {
   /**
@@ -36,13 +33,13 @@ public interface CasDataProcessor extends CasProcessor {
    * @param aCAS
    *          the input CasData
    * 
-   * @return the output CasData (if this CAS processor is {@link #isReadOnly() read-only}, this
-   *         will always be equivalent to <code>aCAS</code>.
+   * @return the output CasData (if this CAS processor is {@link #isReadOnly() read-only}, this will
+   *         always be equivalent to <code>aCAS</code>.
    * 
    * @throws ResourceProcessException
    *           if processing fails
    */
-  public CasData process(CasData aCAS) throws ResourceProcessException;
+  CasData process(CasData aCAS) throws ResourceProcessException;
 
   /**
    * Process multiple CasData objects.
@@ -56,5 +53,5 @@ public interface CasDataProcessor extends CasProcessor {
    * @throws ResourceProcessException
    *           if processing fails
    */
-  public CasData[] process(CasData[] aCASes) throws ResourceProcessException;
+  CasData[] process(CasData[] aCASes) throws ResourceProcessException;
 }

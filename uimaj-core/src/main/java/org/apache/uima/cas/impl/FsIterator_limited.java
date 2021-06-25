@@ -25,18 +25,16 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Wraps FSIterator<T>, limits results to n gets. Moving the iterator around does not count towards
  * the limit.
  */
-class FsIterator_limited<T extends FeatureStructure>
-    implements LowLevelIterator<T> {
+class FsIterator_limited<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   final private LowLevelIterator<T> iterator; // not just for single-type iterators
   final private int limit;
-  
+
   private int count = 0;
   private boolean limitReached = false;
 
@@ -94,18 +92,16 @@ class FsIterator_limited<T extends FeatureStructure>
     if (count >= 0 && limitReached && iterator.isValid()) {
       iterator.moveToPrevious();
       count--;
-    }
-    else {
+    } else {
       moveToFirstNoReinit();
     }
-    
+
     while (count < limit - 1 && iterator.isValid()) {
       iterator.moveToNextNvc();
       if (!iterator.isValid()) {
         iterator.moveToLastNoReinit();
         break;
-      }
-      else {
+      } else {
         count++;
       }
     }
@@ -128,7 +124,7 @@ class FsIterator_limited<T extends FeatureStructure>
     boolean movedForward = false;
     while (isValid()) {
       T current = get();
-      
+
       int c = cmp.compare((TOP) current, (TOP) fs);
 
       // We seek to the first match in index order. Because we move backwards, we need to skip over
@@ -138,12 +134,12 @@ class FsIterator_limited<T extends FeatureStructure>
           // We reached the first match by seeking forward, so we can stop here
           break;
         }
-        
+
         moveToPreviousNvc();
         skippedMatch = true;
         continue;
       }
-      
+
       if (skippedMatch) {
         break;
       }
@@ -153,7 +149,7 @@ class FsIterator_limited<T extends FeatureStructure>
         movedForward = true;
         continue;
       }
-      
+
       if (c > 0) {
         moveToPreviousNvc();
       }
@@ -162,8 +158,7 @@ class FsIterator_limited<T extends FeatureStructure>
     if (skippedMatch) {
       if (!isValid()) {
         moveToFirstNoReinit();
-      }
-      else {
+      } else {
         moveToNextNvc();
       }
     }

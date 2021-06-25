@@ -19,6 +19,8 @@
 
 package org.apache.uima.caseditor.core.model.dotcorpus;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,8 +30,6 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This is the test for the {@link DotCorpusSerializer} class.

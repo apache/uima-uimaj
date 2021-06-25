@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * XCAS serializer. Create a serializer from a type system, then encode individual CASes by writing
- * to a SAX content handler. This class is thread safe. * 
+ * to a SAX content handler. This class is thread safe. *
  */
 public class XCASSerializer {
 
@@ -74,8 +73,6 @@ public class XCASSerializer {
   /**
    * Use an inner class to hold the data for serializing a CAS. Each call to serialize() creates its
    * own instance.
-   * 
-   * 
    */
   private class XCASDocSerializer {
 
@@ -86,7 +83,10 @@ public class XCASSerializer {
     // The CAS we're serializing.
     private CASImpl cas;
 
-    /** Any FS reference we've touched goes in here. value is index repo (first one?), or MULTIPLY_INDEXED */
+    /**
+     * Any FS reference we've touched goes in here. value is index repo (first one?), or
+     * MULTIPLY_INDEXED
+     */
     final private Map<TOP, Integer> queued = new IdentityHashMap<>();
 
     private static final int NOT_INDEXED = -1;
@@ -95,28 +95,31 @@ public class XCASSerializer {
 
     private static final int INVALID_INDEX = -3;
 
-    
-    /** Any FS indexed in more than one IR goes in here, the value is the associated duplicate key,
-     * Key is used to index into dupVectors */
+    /**
+     * Any FS indexed in more than one IR goes in here, the value is the associated duplicate key,
+     * Key is used to index into dupVectors
+     */
     final private Map<TOP, Integer> duplicates = new IdentityHashMap<>();
 
-    /** A key identifying a particular FS indexed in multiple indexes.
-     *  Starts a 0, incr by 1 for each new FS discovered to be indexed in more than one IR */
+    /**
+     * A key identifying a particular FS indexed in multiple indexes. Starts a 0, incr by 1 for each
+     * new FS discovered to be indexed in more than one IR
+     */
     int numDuplicates;
 
-    /** list of IntVectors holding lists of repo numbers.
-     * Indexed by the key above, for fss that are in multiple index repos */
+    /**
+     * list of IntVectors holding lists of repo numbers. Indexed by the key above, for fss that are
+     * in multiple index repos
+     */
     final List<IntVector> dupVectors = new ArrayList<>();
 
-
     // next 2 are a pair; the first is a fs, the 2nd is the index repo its indexed in
-    /** list of FSs that are in an index somewhere.  */
+    /** list of FSs that are in an index somewhere. */
     final private List<TOP> indexedFSs = new ArrayList<>();
 
     /** Specific IndexRepository for indexed FSs */
     final private IntVector indexReps = new IntVector();
 
-    
     /** The current queue for FSs to write out. */
     final private Deque<TOP> queue = new ArrayDeque<>();
 
@@ -135,7 +138,6 @@ public class XCASSerializer {
     // We write to a SAXDocStack, a simplified interface to a
     // ContentHandler.
     private XCASDocSerializer(ContentHandler ch, CASImpl cas) {
-      super();
       this.ch = ch;
       this.cas = cas;
       this.numDuplicates = 0;
@@ -219,7 +221,7 @@ public class XCASSerializer {
     /**
      * Bad name; check if we've seen this (address, value) before.
      * 
-     * @param fs 
+     * @param fs
      *          The Feature Structure.
      * @param value
      *          The index repository
@@ -351,34 +353,36 @@ public class XCASSerializer {
      * Push the indexed FSs onto the queue.
      */
     private void enqueueIndexed() {
-      Collection<Sofa> sofaCollection = cas.getBaseIndexRepositoryImpl().<Sofa>getIndexedFSs(Sofa.class);
+      Collection<Sofa> sofaCollection = cas.getBaseIndexRepositoryImpl()
+              .<Sofa> getIndexedFSs(Sofa.class);
       int sofaCount = sofaCollection.size();
       if (sofaCount > 0) {
         Sofa[] allSofas = sofaCollection.toArray(new Sofa[sofaCount]);
-        
+
         // XCAS requires sofas in order of id
-        Arrays.sort(allSofas, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id) );
+        Arrays.sort(allSofas, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
         enqueueArray(allSofas, 0);
       }
 
       // Get indexes for each SofaFS in the CAS
       for (int sofaNum = 1, numViews = cas.getViewCount(); sofaNum <= numViews; sofaNum++) {
-        FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
+        FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
+                .getSofaIndexRepository(sofaNum);
         if (viewIR != null) {
           Collection<TOP> fssInView = viewIR.getIndexedFSs();
-          if (! fssInView.isEmpty()) {
+          if (!fssInView.isEmpty()) {
             enqueueCollection(fssInView, sofaNum);
           }
         }
       }
     }
-    
+
     private void enqueueArray(TOP[] fss, int sofaNum) {
-      for (TOP fs : fss) {   // enqueues the fss for one view (incl view 0 - the base view
+      for (TOP fs : fss) { // enqueues the fss for one view (incl view 0 - the base view
         enqueueIndexed(fs, sofaNum);
       }
     }
-    
+
     private void enqueueCollection(Collection<TOP> fss, int sofaNum) {
       for (TOP fs : fss) {
         enqueueIndexed(fs, sofaNum);
@@ -419,12 +423,14 @@ public class XCASSerializer {
      *          The address to be encoded.
      * @param isIndexed
      *          If the FS is indexed or not.
-     * @throws IOException passthru
-     * @throws SAXException passthru
+     * @throws IOException
+     *           passthru
+     * @throws SAXException
+     *           passthru
      */
     private void encodeFS(TOP fs, IntVector indexRep) throws IOException, SAXException {
       ++fsCount;
-        
+
       workAttrs.clear();
       // Create an element with the type name as tag.
       // xmlStack.pushElementNode(getTypeName(fs_id));
@@ -441,7 +447,7 @@ public class XCASSerializer {
           // xmlStack.addAttribute(INDEXED_ATTR_NAME, TRUE_VALUE);
           addAttribute(workAttrs, INDEXED_ATTR_NAME, Integer.toString(indexRep.get(0)));
         } else {
-          StringBuilder multIndex = new StringBuilder(); 
+          StringBuilder multIndex = new StringBuilder();
           multIndex.append(Integer.toString(indexRep.get(0)));
           for (int mi = 1; mi < indexRep.size(); mi++) {
             multIndex.append(' ').append(Integer.toString(indexRep.get(mi)));
@@ -461,7 +467,7 @@ public class XCASSerializer {
       // treatment
       // for arrays).
       String[] data = null;
-      String typeName =  getTypeName(fs);
+      String typeName = getTypeName(fs);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_FS: {
           encodeFeatures(fs, workAttrs);
@@ -475,15 +481,15 @@ public class XCASSerializer {
           return;
         }
         case LowLevelCAS.TYPE_CLASS_INTARRAY: {
-          data = ((IntegerArray)fs).toStringArray();
+          data = ((IntegerArray) fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FLOATARRAY: {
-          data = ((FloatArray)fs).toStringArray();
+          data = ((FloatArray) fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
-          data = ((StringArray)fs).toArray();
+          data = ((StringArray) fs).toArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
@@ -491,23 +497,23 @@ public class XCASSerializer {
           return;
         }
         case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY: {
-          data = ((BooleanArray)fs).toStringArray();
+          data = ((BooleanArray) fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_BYTEARRAY: {
-          data = ((ByteArray)fs).toStringArray();
+          data = ((ByteArray) fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_SHORTARRAY: {
-          data = ((ShortArray)fs).toStringArray();
+          data = ((ShortArray) fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_LONGARRAY: {
-          data = ((LongArray)fs).toStringArray();
+          data = ((LongArray) fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
-          data = ((DoubleArray)fs).toStringArray();
+          data = ((DoubleArray) fs).toStringArray();
           break;
         }
         default: {
@@ -537,7 +543,7 @@ public class XCASSerializer {
     private void encodeFSArray(FSArray fs, AttributesImpl attrs) throws SAXException {
       String typeName = fs._getTypeImpl().getName();
       final int size = fs.size();
-//      int pos = cas.getArrayStartAddress(fs_id);
+      // int pos = cas.getArrayStartAddress(fs_id);
       // xmlStack.addAttribute(ARRAY_SIZE_ATTR, Integer.toString(size));
       // xmlStack.commitNode();
       addAttribute(attrs, ARRAY_SIZE_ATTR, Integer.toString(size));
@@ -549,16 +555,15 @@ public class XCASSerializer {
         String val = null;
         // xmlStack.pushTextNode(ARRAY_ELEMENT_TAG);
         // xmlStack.commitNode();
-        TOP element = (TOP)fs.get(i);
+        TOP element = (TOP) fs.get(i);
         if (null == element && mOutOfTypeSystemData != null) {
           // This array element may have been a reference to an OOTS FS.
-          
+
           List<ArrayElement> ootsElems = mOutOfTypeSystemData.arrayElements.get(fs);
           if (ootsElems != null) {
             Iterator<ArrayElement> iter = ootsElems.iterator();
             // TODO: iteration could be slow for large arrays
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
               ArrayElement ootsElem = iter.next();
               if (ootsElem.index == i) {
                 val = mOutOfTypeSystemData.idMap.get(ootsElem.value);
@@ -597,7 +602,7 @@ public class XCASSerializer {
      */
     private void encodeFeatures(TOP fs, AttributesImpl attrs) {
       TypeImpl ti = fs._getTypeImpl();
-      
+
       for (FeatureImpl fi : ti.getFeatureImpls()) {
         String attrValue;
         if (fi.getRangeImpl().isRefType) {
@@ -614,9 +619,9 @@ public class XCASSerializer {
 
     private void enqueueFeatures(TOP fs, int heapValue) {
       TypeImpl ti = fs._getTypeImpl();
-      
+
       if (fs instanceof UimaSerializable) {
-        ((UimaSerializable)fs)._save_to_cas_data();
+        ((UimaSerializable) fs)._save_to_cas_data();
       }
       for (FeatureImpl fi : ti.getFeatureImpls()) {
         if (fi.getRangeImpl().isRefType) {
@@ -665,7 +670,7 @@ public class XCASSerializer {
             // enqueue.
             if (p.u instanceof TOP) {
               enqueue((TOP) p.u);
-//              enqueue(cas.getFsFromId_checked(Integer.parseInt(attr[1])));
+              // enqueue(cas.getFsFromId_checked(Integer.parseInt(attr[1])));
             }
           }
         }
@@ -677,8 +682,10 @@ public class XCASSerializer {
     }
 
     /**
-     * classify the type, without distinguishng list types 
-     * @param ti the type
+     * classify the type, without distinguishng list types
+     * 
+     * @param ti
+     *          the type
      * @return the classification
      */
     private final int classifyType(TypeImpl ti) {
@@ -697,9 +704,9 @@ public class XCASSerializer {
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (attrVal instanceof TOP /*String && !((String)attrVal).startsWith("a")*/) {
-              enqueue((TOP)attrVal);
-//              enqueue(cas.getFsFromId_checked(Integer.parseInt(attrVal)));
+            if (attrVal instanceof TOP /* String && !((String)attrVal).startsWith("a") */) {
+              enqueue((TOP) attrVal);
+              // enqueue(cas.getFsFromId_checked(Integer.parseInt(attrVal)));
             }
           }
         }
@@ -722,7 +729,7 @@ public class XCASSerializer {
           String attrName = entry.getKey();
           Object attrVal = entry.getValue();
           if (attrName.startsWith(REF_PREFIX)) {
-            if (attrVal instanceof String && ((String)attrVal).startsWith("a")) {
+            if (attrVal instanceof String && ((String) attrVal).startsWith("a")) {
               // "a" prefix indicates a reference from one OOTS FS
               // to another OOTS FS;
               // we need to remap those IDs to the actual IDs used
@@ -730,9 +737,9 @@ public class XCASSerializer {
               attrVal = mOutOfTypeSystemData.idMap.get(attrVal);
             }
           }
-          addAttribute(workAttrs, attrName, (attrVal instanceof TOP) 
-                                              ? Integer.toString(((TOP)attrVal)._id) 
-                                              : (String)attrVal);
+          addAttribute(workAttrs, attrName,
+                  (attrVal instanceof TOP) ? Integer.toString(((TOP) attrVal)._id)
+                          : (String) attrVal);
         }
         // send events
         String xcasElementName = getXCasElementName(fs.type);
@@ -757,15 +764,15 @@ public class XCASSerializer {
       return aTagName;
     } else {
       // Note: This is really slow so we avoid if possible. -- RJB
-      return StringUtils
-              .replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-", "_dash_");
+      return StringUtils.replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-",
+              "_dash_");
     }
   }
 
   public static final String casTagName = "CAS";
 
   public static final String VERSION_ATTR = "version";
-  
+
   public static final String CURRENT_VERSION = "2";
 
   public static final String DEFAULT_DOC_TYPE_NAME = "uima.tcas.Document";
@@ -785,7 +792,7 @@ public class XCASSerializer {
   public static final String ARRAY_ELEMENT_TAG = "i";
 
   public static final String TRUE_VALUE = "true";
-  
+
   private TypeSystemImpl ts;
 
   // Create own cache of feature names because of _ref_ prefixes.
@@ -798,7 +805,6 @@ public class XCASSerializer {
   private String docTextFeature = DEFAULT_DOC_TEXT_FEAT;
 
   public XCASSerializer(TypeSystem ts, UimaContext uimaContext) {
-    super();
     // System.out.println("Creating serializer for type system.");
     this.ts = (TypeSystemImpl) ts;
     // Create feature name cache.
@@ -829,8 +835,10 @@ public class XCASSerializer {
    *          The CAS to be serialized.
    * @param contentHandler
    *          The SAX content handler the data is written to.
-   * @throws IOException passed thru
-   * @throws SAXException passed thru
+   * @throws IOException
+   *           passed thru
+   * @throws SAXException
+   *           passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler) throws IOException, SAXException {
     serialize(cas, contentHandler, true);
@@ -846,8 +854,10 @@ public class XCASSerializer {
    * @param encodeDoc
    *          If set to false, no uima.tcas.Document structure will be created, and the document
    *          text will not be serialized.
-   * @throws IOException passed thru
-   * @throws SAXException passed thru
+   * @throws IOException
+   *           passed thru
+   * @throws SAXException
+   *           passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc)
           throws IOException, SAXException {
@@ -867,8 +877,10 @@ public class XCASSerializer {
    * @param outOfTypeSystemData
    *          data not part of the CAS type system, which should be inserted into the XCAS output
    * 
-   * @throws IOException passed thru
-   * @throws SAXException passed thru
+   * @throws IOException
+   *           passed thru
+   * @throws SAXException
+   *           passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc,
           OutOfTypeSystemData outOfTypeSystemData) throws IOException, SAXException {
@@ -968,20 +980,20 @@ public class XCASSerializer {
    * @param aStream
    *          output stream to which to write the XCAS XML document
    * @param isFormattedOutput
-   *          if true the XCAS will be serialized formatted   * 
+   *          if true the XCAS will be serialized formatted *
    * @param useXml_1_1
-   *          if true, the output serializer is set with the OutputKeys.VERSION to "1.1".         
+   *          if true, the output serializer is set with the OutputKeys.VERSION to "1.1".
    * @throws SAXException
    *           if a problem occurs during XCAS serialization
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput, boolean useXml_1_1)
-          throws SAXException, IOException {
+  public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput,
+          boolean useXml_1_1) throws SAXException, IOException {
     XCASSerializer xcasSerializer = new XCASSerializer(aCAS.getTypeSystem());
     XMLSerializer sax2xml = new XMLSerializer(aStream, isFormattedOutput);
     if (useXml_1_1) {
-      sax2xml.setOutputProperty(OutputKeys.VERSION,"1.1");
+      sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
     }
     xcasSerializer.serialize(aCAS, sax2xml.getContentHandler());
   }

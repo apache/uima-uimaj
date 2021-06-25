@@ -45,7 +45,6 @@ public class AnnotationExtent {
    * @param style the style
    */
   public AnnotationExtent(int start, int end, Style style) {
-    super();
     this.start = start;
     this.end = end;
     this.style = style;

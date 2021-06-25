@@ -54,75 +54,100 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    * @return An iterator for this index.
    */
   LowLevelIterator<T> ll_iterator(boolean ambiguous);
-  
-//  /**
-//   * Get a low-level, FS reference iterator specifying instances of
-//   * the precise type <b>only</b> (i.e. without listing the subtypes).
-//   * 
-//   * @return An iterator for the root type of this index.
-//   */
-//  LowLevelIterator<T> ll_rootIterator();
+
+  // /**
+  // * Get a low-level, FS reference iterator specifying instances of
+  // * the precise type <b>only</b> (i.e. without listing the subtypes).
+  // *
+  // * @return An iterator for the root type of this index.
+  // */
+  // LowLevelIterator<T> ll_rootIterator();
 
   /**
    * Compare two Feature structures, referred to by IDs
-   * @param ref1 -
-   * @param ref2 -
+   * 
+   * @param ref1
+   *          -
+   * @param ref2
+   *          -
    * @return -
    */
   default int ll_compare(int ref1, int ref2) {
     CASImpl cas = getCasImpl();
     return compare(cas.getFsFromId_checked(ref1), cas.getFsFromId_checked(ref2));
   };
-  
+
   /**
    * @return a CAS View associated with this iterator
    */
   CASImpl getCasImpl();
-  
+
   // incorporated from FSIndexImpl
   /**
-   * This is **NOT** a comparator for Feature Structures, but rather 
-   * something that compares two comparator specifications
+   * This is **NOT** a comparator for Feature Structures, but rather something that compares two
+   * comparator specifications
+   * 
    * @return -
    */
   FSIndexComparator getComparatorForIndexSpecs();
 
   /**
    * 
-   * @return a comparator used by this index to compare Feature Structures
-   *   For sets, the equal is used to determine set membership
-   *   For sorted, the comparator is the sort order (this comparator is without the ID)
+   * @return a comparator used by this index to compare Feature Structures For sets, the equal is
+   *         used to determine set membership For sorted, the comparator is the sort order (this
+   *         comparator is without the ID)
    */
-  Comparator<TOP> getComparator(); 
-  
-  static final Comparator<TOP> FS_ID_COMPARATOR = 
-      (TOP fs1, TOP fs2) -> Integer.compare(fs1._id, fs2._id); 
-  
-  default void flush() {   // probably not needed, but left for backwards compatibility  4/2015
+  Comparator<TOP> getComparator();
+
+  Comparator<TOP> FS_ID_COMPARATOR = (TOP fs1, TOP fs2) -> Integer.compare(fs1._id, fs2._id);
+
+  default void flush() { // probably not needed, but left for backwards compatibility 4/2015
     throw new UnsupportedOperationException();
   }
 
-  default IntPointerIterator getIntIterator() {   // probably not needed, but left for backwards compatibility 4/2015
+  default IntPointerIterator getIntIterator() { // probably not needed, but left for backwards
+                                                // compatibility 4/2015
     return new IntPointerIterator() {
 
       private LowLevelIterator<T> it = ll_iterator();
-   
+
       @Override
-      public boolean isValid() { return it.isValid(); }
+      public boolean isValid() {
+        return it.isValid();
+      }
+
       @Override
-      public int get() { return it.ll_get(); }
+      public int get() {
+        return it.ll_get();
+      }
+
       @Override
-      public void inc() { it.moveToNext(); }
+      public void inc() {
+        it.moveToNext();
+      }
+
       @Override
-      public void dec() { it.moveToPrevious(); }
+      public void dec() {
+        it.moveToPrevious();
+      }
+
       @Override
-      public void moveTo(int i) { it.moveTo(i); }
+      public void moveTo(int i) {
+        it.moveTo(i);
+      }
+
       @Override
-      public void moveToFirst() { it.moveToFirst(); }
+      public void moveToFirst() {
+        it.moveToFirst();
+      }
+
       @Override
-      public void moveToLast() { it.moveToLast(); }
+      public void moveToLast() {
+        it.moveToLast();
+      }
+
       @Override
-      public Object copy() { 
+      public Object copy() {
         IntPointerIterator newIt = getIntIterator();
         if (isValid()) {
           newIt.moveTo(it.ll_get());
@@ -134,78 +159,83 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
       }
     };
   }
-  
+
   /**
-   * @param type which is a subtype of this index's type
-   * @param <U> the type the subindex is over
+   * @param type
+   *          which is a subtype of this index's type
+   * @param <U>
+   *          the type the subindex is over
    * @return the index but just over this subtype
    */
   default <U extends T> LowLevelIndex<U> getSubIndex(Type type) {
     TypeImpl ti = (TypeImpl) type;
-    return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(), (FSIndexComparatorImpl) getComparatorForIndexSpecs());
+    return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(),
+            (FSIndexComparatorImpl) getComparatorForIndexSpecs());
   }
-  
+
   default <U extends T> LowLevelIndex<U> getSubIndex(Class<? extends TOP> clazz) {
     return getSubIndex(this.getCasImpl().getCasType(clazz));
   }
 
   /**
    * @return for annotation indexes, an conservative estimate the maximum span between begin and end
-   * The value may be larger than actual.
+   *         The value may be larger than actual.
    */
-  int ll_maxAnnotSpan();  
-  
+  int ll_maxAnnotSpan();
+
   /**
    * @return true if the index is sorted
    */
   boolean isSorted();
-  
+
   @Override
   default SelectFSs<T> select() {
-    return ((SelectFSs_impl<T>)getCasImpl().select()).index(this);
+    return ((SelectFSs_impl<T>) getCasImpl().select()).index(this);
   }
 
   @Override
   default <N extends T> SelectFSs<N> select(Type type) {
-    return ((SelectFSs_impl)select()).type(type); // need cast to impl because type() not in interface
+    return ((SelectFSs_impl) select()).type(type); // need cast to impl because type() not in
+                                                   // interface
   }
 
   @Override
   default <N extends T> SelectFSs<N> select(Class<N> clazz) {
-    return ((SelectFSs_impl)select()).type(clazz);
+    return ((SelectFSs_impl) select()).type(clazz);
   }
 
   @Override
   default <N extends T> SelectFSs<N> select(int jcasType) {
-    return ((SelectFSs_impl)select()).type(jcasType);
+    return ((SelectFSs_impl) select()).type(jcasType);
   }
 
   @Override
   default <N extends T> SelectFSs<N> select(String fullyQualifiedTypeName) {
-    return ((SelectFSs_impl)select()).type(fullyQualifiedTypeName);
+    return ((SelectFSs_impl) select()).type(fullyQualifiedTypeName);
   }
-  
+
   /**
-   * Return an iterator over the index. The position of the iterator will be set to 
-   * return the first item in the index.
-   * If the index is empty, the iterator position will be marked as invalid.
+   * Return an iterator over the index. The position of the iterator will be set to return the first
+   * item in the index. If the index is empty, the iterator position will be marked as invalid.
    * 
    * @return An FSIterator positioned at the beginning, or an invalid iterator.
    */
+  @Override
   default LowLevelIterator<T> iterator() {
     return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }
-  
+
   /**
    * Internal use, used by select framework.
    * 
-   * Return an iterator over the index. The position of the iterator will be set to 
-   * return the first item in the index.
-   * If the index is empty, the iterator position will be marked as invalid.
+   * Return an iterator over the index. The position of the iterator will be set to return the first
+   * item in the index. If the index is empty, the iterator position will be marked as invalid.
    * 
-   * @param orderNotNeeded if true, skips work while iterating to keep iterators over multiple types in sync.
-   * @param ignoreType if true, the comparator used for moveTo leftmost operations 
-   *        will ignore typeOrder keys, if the index happens to define these
+   * @param orderNotNeeded
+   *          if true, skips work while iterating to keep iterators over multiple types in sync.
+   * @param ignoreType
+   *          if true, the comparator used for moveTo leftmost operations will ignore typeOrder
+   *          keys, if the index happens to define these
    * 
    * @return An FSIterator positioned at the beginning, or an invalid iterator.
    */
@@ -214,7 +244,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   /**
    * Internal use constants
    */
-  static final boolean IS_ORDERED = false;
-  static final boolean IS_TYPE_ORDER = false;
+  boolean IS_ORDERED = false;
+  boolean IS_TYPE_ORDER = false;
 
 }

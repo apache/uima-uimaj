@@ -56,12 +56,12 @@ import org.apache.uima.util.impl.Constants;
  * whitespace and/or separator tokens are skipped.
  * 
  * <p>
- * A tokenizer provides a standard iterator interface similar to
- * {@link java.util.StringTokenizer StringTokenizer}. The validity of the iterator can be queried
- * with <code>hasNext()</code>, and the next token can be queried with <code>nextToken()</code>.
- * In addition, <code>getNextTokenType()</code> returns the type of the token as an integer. NB
- * that you need to call <code>getNextTokenType()</code> before calling <code>nextToken()</code>,
- * since calling <code>nextToken()</code> will advance the iterator.
+ * A tokenizer provides a standard iterator interface similar to {@link java.util.StringTokenizer
+ * StringTokenizer}. The validity of the iterator can be queried with <code>hasNext()</code>, and
+ * the next token can be queried with <code>nextToken()</code>. In addition,
+ * <code>getNextTokenType()</code> returns the type of the token as an integer. NB that you need to
+ * call <code>getNextTokenType()</code> before calling <code>nextToken()</code>, since calling
+ * <code>nextToken()</code> will advance the iterator.
  * 
  * 
  * @version $Id: TextStringTokenizer.java,v 1.6 2003/04/07 14:50:11 goetz Exp $
@@ -396,7 +396,9 @@ public class TextStringTokenizer {
 
   /**
    * Get the type of an individual character.
-   * @param c -
+   * 
+   * @param c
+   *          -
    * @return The char type.
    */
   public int getCharType(char c) {

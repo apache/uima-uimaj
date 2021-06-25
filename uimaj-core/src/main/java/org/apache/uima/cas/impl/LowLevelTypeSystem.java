@@ -27,9 +27,8 @@ import org.apache.uima.cas.Type;
  * {@link org.apache.uima.cas.impl.LowLevelCAS LowLevelCAS} APIs.
  * 
  * <p>
- * Use
- * {@link org.apache.uima.cas.impl.LowLevelCAS#ll_getTypeSystem() LowLevelCAS.ll_getTypeSystem()} to
- * access a low-level type system.
+ * Use {@link org.apache.uima.cas.impl.LowLevelCAS#ll_getTypeSystem()
+ * LowLevelCAS.ll_getTypeSystem()} to access a low-level type system.
  * 
  */
 public interface LowLevelTypeSystem {
@@ -37,12 +36,12 @@ public interface LowLevelTypeSystem {
   /**
    * Type code that is returned on unknown type names.
    */
-  static final int UNKNOWN_TYPE_CODE = 0;
+  int UNKNOWN_TYPE_CODE = 0;
 
   /**
    * Feature code that is returned on unknown feature names.
    */
-  static final int UNKNOWN_FEATURE_CODE = 0;
+  int UNKNOWN_FEATURE_CODE = 0;
 
   /**
    * Get the type code for a given type name.
@@ -68,8 +67,8 @@ public interface LowLevelTypeSystem {
    * 
    * @param featureName
    *          The name of the feature.
-   * @return The code for the feature. A return value of <code>0</code> means that the name does
-   *         not represent a feature in the type system.
+   * @return The code for the feature. A return value of <code>0</code> means that the name does not
+   *         represent a feature in the type system.
    */
   int ll_getCodeForFeatureName(String featureName);
 
@@ -87,8 +86,7 @@ public interface LowLevelTypeSystem {
    * 
    * @param typeCode
    *          The code of the type.
-   * @return A type object, or <code>null</code> if <code>typeCode</code> is not a valid type
-   *         code.
+   * @return A type object, or <code>null</code> if <code>typeCode</code> is not a valid type code.
    */
   Type ll_getTypeForCode(int typeCode);
 
@@ -132,8 +130,10 @@ public interface LowLevelTypeSystem {
   /**
    * Check subsumption between two types.
    * 
-   * @param type1 -
-   * @param type2 -
+   * @param type1
+   *          -
+   * @param type2
+   *          -
    * @return <code>true</code> iff <code>type1</code> subsumes <code>type2</code>.
    */
   boolean ll_subsumes(int type1, int type2);
@@ -143,7 +143,7 @@ public interface LowLevelTypeSystem {
    * kind of data they're looking at. The type classes currently defined are:
    * <ul>
    * <li><code>TYPE_CLASS_INVALID</code> -- Not a valid type code.</li>
-   * <li><code>TYPE_CLASS_INT</code> -- Integer type. </li>
+   * <li><code>TYPE_CLASS_INT</code> -- Integer type.</li>
    * <li><code>TYPE_CLASS_FLOAT</code> -- Float type.</li>
    * <li><code>TYPE_CLASS_STRING</code> -- String type.</li>
    * <li><code>TYPE_CLASS_INTARRAY</code> -- Integer array.</li>
@@ -165,7 +165,7 @@ public interface LowLevelTypeSystem {
   int ll_getTypeClass(int typeCode);
 
   /**
-   * Check if type is a string subtype.  Returns false for plain string
+   * Check if type is a string subtype. Returns false for plain string
    * 
    * @param type
    *          The type to be checked.
@@ -175,8 +175,8 @@ public interface LowLevelTypeSystem {
 
   /**
    * Checks if the type code is that of a reference type (anything that's not a basic type,
-   * currently Integer, String, Float, Boolean, Byte, Short, Long, Double, 
-   * and subtypes of String - specifying allowed-values).
+   * currently Integer, String, Float, Boolean, Byte, Short, Long, Double, and subtypes of String -
+   * specifying allowed-values).
    * 
    * @param typeCode
    *          The type code to check.
@@ -208,9 +208,8 @@ public interface LowLevelTypeSystem {
    * 
    * @param componentTypeCode
    *          The type code of the component type.
-   * @return The type code for the requested array type, or
-   *         {@link #UNKNOWN_TYPE_CODE UNKNOWN_TYPE_CODE} if <code>componentTypeCode</code> is not
-   *         a valid type code.
+   * @return The type code for the requested array type, or {@link #UNKNOWN_TYPE_CODE
+   *         UNKNOWN_TYPE_CODE} if <code>componentTypeCode</code> is not a valid type code.
    */
   int ll_getArrayType(int componentTypeCode);
 
@@ -241,12 +240,14 @@ public interface LowLevelTypeSystem {
    * @return The type code of the parent type.
    */
   int ll_getParentType(int typeCode);
-  
+
   /**
    * Get the string set (sorted) for a string subtype.
-   * @param typeCode Input type code; should be a string subtype.
-   * @return The set of allowable string values for subtypes of uima.cas.String.  If the input type
-   * code is not a proper subtype of String, returns <code>null</code>. 
+   * 
+   * @param typeCode
+   *          Input type code; should be a string subtype.
+   * @return The set of allowable string values for subtypes of uima.cas.String. If the input type
+   *         code is not a proper subtype of String, returns <code>null</code>.
    */
   String[] ll_getStringSet(int typeCode);
 }

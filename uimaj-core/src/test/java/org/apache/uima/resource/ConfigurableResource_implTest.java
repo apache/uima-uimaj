@@ -33,17 +33,13 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 
 public class ConfigurableResource_implTest {
 
-    @Test
-    public void testReconfigure() throws Exception {
+  @Test
+  public void testReconfigure() throws Exception {
     try {
       // set up some resource metadata and create a resource
       ResourceCreationSpecifier specifier = new MyTestSpecifier();
@@ -100,9 +96,9 @@ public class ConfigurableResource_implTest {
       Integer theInt = 42;
       Float theFloat = 2.718281828459045F;
       String[] theStrArr = { "the", "quick", "brown", "fox" };
-      Boolean[] theBoolArr = {Boolean.FALSE, Boolean.TRUE};
-      Integer[] theIntArr = {1, 2, 3};
-      Float[] theFloatArr = {3.0F, 3.1F, 3.14F};
+      Boolean[] theBoolArr = { Boolean.FALSE, Boolean.TRUE };
+      Integer[] theIntArr = { 1, 2, 3 };
+      Float[] theFloatArr = { 3.0F, 3.1F, 3.14F };
 
       Object[] values = new Object[] { theStr, theBool, theInt, theFloat, theStrArr, theBoolArr,
           theIntArr, theFloatArr };
@@ -140,8 +136,7 @@ public class ConfigurableResource_implTest {
 
       // inappropriate array
       ex = null;
-      testResource1.setConfigParameterValue("FloatParam", new Float[] {0.1F,
-          0.2F, 0.3F});
+      testResource1.setConfigParameterValue("FloatParam", new Float[] { 0.1F, 0.2F, 0.3F });
       try {
         testResource1.reconfigure();
       } catch (ResourceConfigurationException e) {
@@ -173,7 +168,8 @@ public class ConfigurableResource_implTest {
       // (instantiate metadata from XML TAE descriptor because it's convenient)
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in);
       ResourceMetaData metadata = desc.getMetaData();
       MyTestSpecifier spec = new MyTestSpecifier();
       spec.setMetaData(metadata);
@@ -188,14 +184,12 @@ public class ConfigurableResource_implTest {
           new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
           new String[] { "StringParam", "StringArrayParam", "FloatParam", "FloatArrayParam" } };
       Object[][] grpValues = new Object[][] {
-          new Object[] { "test", new String[] { "foo", "bar" }, 1024,
-              new Integer[] {1, 3, 5} },
+          new Object[] { "test", new String[] { "foo", "bar" }, 1024, new Integer[] { 1, 3, 5 } },
           new Object[] { "blah", new String[] { "abc", "def" }, 32768,
-              new Integer[] {-1, -3, -5} },
-          new Object[] { "?", new String[] { "+", "-" }, 112376,
-              new Integer[] {-1, 0, 1} },
+              new Integer[] { -1, -3, -5 } },
+          new Object[] { "?", new String[] { "+", "-" }, 112376, new Integer[] { -1, 0, 1 } },
           new Object[] { "different", new String[] { "test", "ing" }, 49.95F,
-              new Float[] {3.14F, 2.71F, 1.4F} } };
+              new Float[] { 3.14F, 2.71F, 1.4F } } };
 
       for (int i = 0; i < groupNames.length; i++) {
         String[] paramsInGrp = grpParamNames[i];
@@ -220,13 +214,13 @@ public class ConfigurableResource_implTest {
   /*
    * Test for Object getConfigParameterValue(String)
    */
-    @org.junit.jupiter.api.Test
-    public void testGetConfigParameterValueString() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              in);
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in);
       AnalysisEngine test = UIMAFramework.produceAnalysisEngine(desc);
 
       // test default fallback
@@ -241,11 +235,11 @@ public class ConfigurableResource_implTest {
       // //ConfigurableResource testResource1 = new TestResource();
       // CasConsumer test = UIMAFramework.produceCasConsumer(desc);
       // // testResource1.initialize(desc, null);
-      //    
+      //
       // //test default fallback
       // String str3 = (String)test.getConfigParameterValue("FeatureIndex");
       // Assert.assertEquals("test",str3);
-      //    
+      //
       // String[] strArr2 = (String[])testResource1.getConfigParameterValue("StringArrayParam");
       // Assert.assertEquals(4,strArr2.length);
       // Assert.assertEquals("t",strArr2[0]);
@@ -263,6 +257,7 @@ public class ConfigurableResource_implTest {
  * A simple concrete Resource class used for testing.
  */
 class MyTestResource extends ConfigurableResource_ImplBase {
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aParams)
           throws ResourceInitializationException {
     return super.initialize(aSpecifier, aParams);
@@ -275,8 +270,9 @@ class MyTestResource extends ConfigurableResource_ImplBase {
     // return false;
   }
 
+  @Override
   public void destroy() {
-    //do nothing
+    // do nothing
   }
 }
 
@@ -285,6 +281,7 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
     setMetaData(new ResourceMetaData_impl());
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

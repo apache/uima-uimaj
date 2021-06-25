@@ -73,6 +73,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
   /** The Constant sentenceAnnotationMaker. */
   // *********************************************
   static final Maker sentenceAnnotationMaker = new Maker() {
+    @Override
     Annotation newAnnotation(JCas jcas, int start, int end) {
       return new Sentence(jcas, start, end);
     }
@@ -80,6 +81,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
 
   /** The Constant tokenAnnotationMaker. */
   static final Maker tokenAnnotationMaker = new Maker() {
+    @Override
     Annotation newAnnotation(JCas jcas, int start, int end) {
       return new Token(jcas, start, end);
     }
@@ -91,6 +93,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
    * @see org.apache.uima.analysis_component.JCasAnnotator_ImplBase#process(org.apache.uima.jcas.JCas)
    */
   // *************************************************************
+  @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     jcas = aJCas;
     input = jcas.getDocumentText();

@@ -23,17 +23,18 @@ public interface CpeTimer {
   /**
    * Plug-in a custom timer class to be used for measuring performance.
    * 
-   * @param aTimerClass -
-   *          name of a timer class
+   * @param aTimerClass
+   *          - name of a timer class
    * 
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void set(String aTimerClass) throws CpeDescriptorException;
+  void set(String aTimerClass) throws CpeDescriptorException;
 
   /**
    * Return a name of the timer class
    * 
    * @return - class as string
    */
-  public String get();
+  String get();
 }

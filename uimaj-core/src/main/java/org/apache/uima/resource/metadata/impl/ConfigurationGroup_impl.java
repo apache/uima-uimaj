@@ -53,6 +53,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * @see ConfigurationGroup#getNames()
    */
+  @Override
   public String[] getNames() {
     return mNames;
   }
@@ -60,6 +61,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * @see ConfigurationGroup#setNames(java.lang.String[])
    */
+  @Override
   public void setNames(String[] aNames) {
     mNames = aNames;
   }
@@ -67,6 +69,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * @see ConfigurationGroup#getConfigurationParameters()
    */
+  @Override
   public ConfigurationParameter[] getConfigurationParameters() {
     return mConfigurationParameters;
   }
@@ -74,6 +77,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * @see ConfigurationGroup#setConfigurationParameters(ConfigurationParameter[])
    */
+  @Override
   public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     mConfigurationParameters = aParams;
   }
@@ -81,8 +85,11 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   * @see
+   * org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(
+   * org.apache.uima.resource.metadata.ConfigurationParameter)
    */
+  @Override
   public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
     ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
@@ -94,8 +101,10 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#
+   * removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
+  @Override
   public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
     for (int i = 0; i < current.length; i++) {
@@ -114,6 +123,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    * 
    * @see MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     StringBuffer buf = new StringBuffer();
@@ -132,12 +142,13 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String names = aElement.getAttribute("names");
     if (names.length() == 0) {
-      throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING, new Object[] {
-          "names", "configurationGroup" });
+      throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+              new Object[] { "names", "configurationGroup" });
     }
     // treat names as a space-separated list
     StringTokenizer tokenizer = new StringTokenizer(names, " \t");
@@ -156,12 +167,13 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * @see MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
           new PropertyXmlInfo[] {
-          // NOTE: names property is XMLized as an attribute
-          new PropertyXmlInfo("configurationParameters", null), });
+              // NOTE: names property is XMLized as an attribute
+              new PropertyXmlInfo("configurationParameters", null), });
 }

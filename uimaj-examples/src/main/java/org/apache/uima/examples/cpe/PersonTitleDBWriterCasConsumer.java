@@ -109,6 +109,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
     startTime = System.currentTimeMillis();
     System.out
@@ -137,6 +138,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     System.out.println("Time: " + (System.currentTimeMillis() - startTime)
             + " DB Writer: ProcessCas called");
@@ -294,6 +296,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
           IOException {
     firstCall = true;

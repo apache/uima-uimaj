@@ -95,7 +95,7 @@ public class Jg {
      * @param argument the argument
      * @return the string
      */
-    public String generate(Object argument);
+    String generate(Object argument);
   }
 
   /** The Constant jControlModel. */

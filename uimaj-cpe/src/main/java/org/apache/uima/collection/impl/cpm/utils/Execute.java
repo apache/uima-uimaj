@@ -38,7 +38,6 @@ public class Execute {
    * Instantiates a new execute.
    */
   public Execute() {
-    super();
   }
 
   /**

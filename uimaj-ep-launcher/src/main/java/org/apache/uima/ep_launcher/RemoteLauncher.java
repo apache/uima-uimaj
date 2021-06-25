@@ -320,6 +320,7 @@ public class RemoteLauncher {
     if (InputFormat.CAS.equals(inputFormat)) {
       fileFilter = new FileFilter() {
         
+        @Override
         public boolean accept(File file) {
           return file.getName().endsWith(".xmi") || file.getName().endsWith(".xcas") || 
                   (inputRecursive && file.isDirectory());
@@ -329,6 +330,7 @@ public class RemoteLauncher {
     else if (InputFormat.PLAIN_TEXT.equals(inputFormat)) {
       fileFilter = new FileFilter() {
         
+        @Override
         public boolean accept(File file) {
           return file.getName().endsWith(".txt") || (inputRecursive && file.isDirectory());
         }

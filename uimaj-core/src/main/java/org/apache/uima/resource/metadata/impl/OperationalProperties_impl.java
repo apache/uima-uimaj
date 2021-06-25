@@ -26,8 +26,8 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class OperationalProperties_impl extends MetaDataObject_impl implements
-        OperationalProperties {
+public class OperationalProperties_impl extends MetaDataObject_impl
+        implements OperationalProperties {
 
   private static final long serialVersionUID = 8649608701550531026L;
 
@@ -36,12 +36,13 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
   private boolean mMultipleDeploymentAllowed;
 
   private boolean mOutputsNewCASes;
-  
+
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#getModifiesCas()
    */
+  @Override
   public boolean getModifiesCas() {
     return mModifiesCas;
   }
@@ -51,6 +52,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#isMultipleDeploymentAllowed()
    */
+  @Override
   public boolean isMultipleDeploymentAllowed() {
     return mMultipleDeploymentAllowed;
   }
@@ -60,6 +62,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#setModifiesCas(boolean)
    */
+  @Override
   public void setModifiesCas(boolean aModifiesCas) {
     mModifiesCas = aModifiesCas;
 
@@ -68,20 +71,25 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.OperationalProperties#setMultipleDeploymentAllowed(boolean)
+   * @see
+   * org.apache.uima.resource.metadata.OperationalProperties#setMultipleDeploymentAllowed(boolean)
    */
+  @Override
   public void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed) {
     mMultipleDeploymentAllowed = aMultipleDeploymentAllowed;
   }
 
+  @Override
   public boolean getOutputsNewCASes() {
     return mOutputsNewCASes;
   }
 
+  @Override
   public void setOutputsNewCASes(boolean aOutputsNewCASes) {
     mOutputsNewCASes = aOutputsNewCASes;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -89,14 +97,18 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("operationalProperties",
           new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
               new PropertyXmlInfo("multipleDeploymentAllowed"),
-              new PropertyXmlInfo("outputsNewCASes")});
+              new PropertyXmlInfo("outputsNewCASes") });
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.
+   * Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-      throws InvalidXMLException {
+          throws InvalidXMLException {
     // overridden to set proper defaults
     // https://issues.apache.org/jira/browse/UIMA-2350
     // These change depending on the element which is the parent of the parent of this element
@@ -110,9 +122,8 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
     }
     setModifiesCas(grandParentName.equals("casConsumerDescription") ? false : true);
     setOutputsNewCASes(grandParentName.equals("collectionReaderDescription") ? true : false);
-    setMultipleDeploymentAllowed(grandParentName.equals("collectionReaderDescription") ||
-                                 grandParentName.equals("casConsumerDescription") ? false : true);   
+    setMultipleDeploymentAllowed(grandParentName.equals("collectionReaderDescription")
+            || grandParentName.equals("casConsumerDescription") ? false : true);
     super.buildFromXMLElement(aElement, aParser, aOptions);
   }
 }
-

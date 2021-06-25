@@ -79,34 +79,32 @@ import org.xml.sax.SAXException;
  * the <code>installation_directory</code> is the directory where the new component will be
  * installed - if the <code>-root</code> option is specified, the component is installed in this
  * directory, otherwise it is installed in a <code>component_id</code> subdirectory of this
- * directory; by default - current working directory. </li>
+ * directory; by default - current working directory.</li>
  * <li>As a Java object - <br>
  * in this case, the caller is expected to set the <code>UIMA_HOME</code> variable, using the
  * <code>setUimaHomePath()</code> method, immediately after creating a new instance of the
  * <code>InstallationController</code> class. <br>
  * Installation is performed by using the <code>installComponent()</code> method. <br>
- * Installation verification is performed by using the <code>verifyComponent()</code> method.
- * <br>
+ * Installation verification is performed by using the <code>verifyComponent()</code> method. <br>
  * Error messages can be retrieved by using the <code>getInstallationMsg()</code> and
  * <code>getVerificationMsg()</code> methods. <br>
- * <b>Note 1:</b> Starting from version 0.6, the <code>InstallationController</code> class
- * utilizes intra-process message routing (see {@link MessageRouter}).
- * Applications need to call the <code>terminate()</code> method on each instance of the
- * <code>InstallationController</code> class after all their operations are completed. <br>
+ * <b>Note 1:</b> Starting from version 0.6, the <code>InstallationController</code> class utilizes
+ * intra-process message routing (see {@link MessageRouter}). Applications need to call the
+ * <code>terminate()</code> method on each instance of the <code>InstallationController</code> class
+ * after all their operations are completed. <br>
  * The application can get output and error messages, printed by the
  * <code>InstallationController</code>, by adding standard channel listeners (see the
  * <code>addMsgListener()</code> method). By default, the output and error messages are printed to
  * the standard console streams. Alternatively, the application can use the
  * <code>InstallationController</code> constructor that accepts a custom message listener. In this
  * case, the output and error messages will not be printed to the standard console streams. <br>
- * <b>Note 2:</b> Starting from version 1.4, the <code>InstallationController</code> class
- * defines the {@link PackageSelector} interface and allows to plug-in custom package
- * selectors for manually or automatically selecting root directories of installed PEAR packages, as
- * well as PEAR package files that need to be installed. <br>
- * <b>Note 2:</b> Starting from version 1.5, the <code>InstallationController</code> class
- * defines the {@link InstallationMonitor} interface and allows to plug-in custom
- * installation monitors for reporting component installation status and location of installed
- * components. </li>
+ * <b>Note 2:</b> Starting from version 1.4, the <code>InstallationController</code> class defines
+ * the {@link PackageSelector} interface and allows to plug-in custom package selectors for manually
+ * or automatically selecting root directories of installed PEAR packages, as well as PEAR package
+ * files that need to be installed. <br>
+ * <b>Note 2:</b> Starting from version 1.5, the <code>InstallationController</code> class defines
+ * the {@link InstallationMonitor} interface and allows to plug-in custom installation monitors for
+ * reporting component installation status and location of installed components.</li>
  * </ul>
  * 
  * @see org.apache.uima.pear.tools.InstallationDescriptor
@@ -120,7 +118,7 @@ public class InstallationController {
    * The <code>InstallationMonitor</code> interface defines methods required for notifying of
    * component installation status and location of the installed PEAR packages.
    */
-  public static interface InstallationMonitor {
+  public interface InstallationMonitor {
     /**
      * Notifies of the installation status of a given component. Acceptable status values are
      * defined in the <code>InstallationController</code> class.
@@ -132,7 +130,7 @@ public class InstallationController {
      *          Note: Acceptable status values are defined in the
      *          <code>InstallationController</code> class.
      */
-    public void setInstallationStatus(String componentId, String status);
+    void setInstallationStatus(String componentId, String status);
 
     /**
      * Notifies of the installed PEAR package location for a given component.
@@ -143,7 +141,7 @@ public class InstallationController {
      *          The root directory path of the given installed PEAR package in the local file
      *          system.
      */
-    public void setInstallationLocation(String componentId, String componentRootPath);
+    void setInstallationLocation(String componentId, String componentRootPath);
   }
 
   /**
@@ -151,17 +149,17 @@ public class InstallationController {
    * automatically selecting installed PEAR package root directories and PEAR package files.
    * 
    */
-  public static interface PackageSelector {
+  public interface PackageSelector {
     /**
      * Selects root directory of an installed PEAR package in the local file system. If the given
      * component is not installed yet, returns <code>null</code>.
      * 
      * @param componentId
      *          The ID of the given installed component.
-     * @return The root directory of the installed PEAR package, or <code>null</code>, if the
-     *         given component is not installed yet.
+     * @return The root directory of the installed PEAR package, or <code>null</code>, if the given
+     *         component is not installed yet.
      */
-    public File selectPackageDirectory(String componentId);
+    File selectPackageDirectory(String componentId);
 
     /**
      * Selects a PEAR package file in the local file system. If the given component PEAR file is not
@@ -169,10 +167,10 @@ public class InstallationController {
      * 
      * @param componentId
      *          The ID of the given component.
-     * @return The given PEAR package file, or <code>null</code>, if the PEAR file is not found
-     *         in the local file system.
+     * @return The given PEAR package file, or <code>null</code>, if the PEAR file is not found in
+     *         the local file system.
      */
-    public File selectPackageFile(String componentId);
+    File selectPackageFile(String componentId);
 
     /**
      * Selects a PEAR package URL in the network. If the given component PEAR package URL is not
@@ -183,7 +181,7 @@ public class InstallationController {
      * @return The given PEAR package URL, or <code>null</code>, if the PEAR package URL is not
      *         found.
      */
-    public URL selectPackageUrl(String componentId);
+    URL selectPackageUrl(String componentId);
   }
 
   /**
@@ -332,7 +330,7 @@ public class InstallationController {
   private String _installationMsg;
 
   private String _verificationMsg;
-  
+
   private MessageRouter _msgRouter = null;
 
   private MessageRouter.StdChannelListener _defaultMsgListener = null;
@@ -343,9 +341,8 @@ public class InstallationController {
 
   /**
    * Appends a list of JAR files in a given lib directory, separated with the OS dependent separator
-   * (';' or ':'), to a given initial <code>StringBuffer</code> object. If <code>null</code> 
-   * <code>StringBuffer</code>
-   * object is specified, creates new <code>StringBuffer</code> object.
+   * (';' or ':'), to a given initial <code>StringBuffer</code> object. If <code>null</code>
+   * <code>StringBuffer</code> object is specified, creates new <code>StringBuffer</code> object.
    * 
    * @param libDir
    *          The given lib directory.
@@ -384,8 +381,7 @@ public class InstallationController {
    *          The given local environment variable key.
    * @param localValue
    *          The given local environment variable value.
-   * @return <code>true</code> if the local value was really added, <code>false</code>
-   *         otherwise.
+   * @return <code>true</code> if the local value was really added, <code>false</code> otherwise.
    */
   protected static boolean addToSystemEnvTable(Properties sysEnvTable, String localKey,
           String localValue) {
@@ -470,8 +466,9 @@ public class InstallationController {
       cpBuffer = addListOfJarFiles(compLibDir, cpBuffer);
     }
     // append all specified CLASSPATH env.var. settings
-    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject.getInstallationActions(
-            InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
+    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject
+            .getInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT)
+            .iterator();
     while (envActions.hasNext()) {
       // if env.var.name is CLASSPATH, append value to the buffer
       InstallationDescriptor.ActionInfo actInfo = envActions.next();
@@ -498,7 +495,8 @@ public class InstallationController {
    *          The given installation descriptor object.
    * @return The string that should be added to the SPATH for the given component.
    */
-  public static String buildComponentPath(String compRootDirPath, InstallationDescriptor insdObject) {
+  public static String buildComponentPath(String compRootDirPath,
+          InstallationDescriptor insdObject) {
     // append 'bin' directory to component path
     File compBinDir = new File(compRootDirPath, PACKAGE_BIN_DIR);
     StringBuffer pBuffer = new StringBuffer();
@@ -506,8 +504,9 @@ public class InstallationController {
       pBuffer.append(compBinDir.getAbsolutePath().replace('\\', '/'));
     }
     // append all specified PATH env.var. settings
-    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject.getInstallationActions(
-            InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
+    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject
+            .getInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT)
+            .iterator();
     while (envActions.hasNext()) {
       // if env.var.name is PATH, append value to the buffer
       InstallationDescriptor.ActionInfo actInfo = envActions.next();
@@ -577,14 +576,15 @@ public class InstallationController {
    * 
    * @param insdObject
    *          The given installation descriptor object.
-   * @return The <code>Properties</code> table that contains environment variables settings for
-   *         the given installation descriptor object.
+   * @return The <code>Properties</code> table that contains environment variables settings for the
+   *         given installation descriptor object.
    */
   public static Properties buildTableOfEnvVars(InstallationDescriptor insdObject) {
     Properties envVarsTable = new Properties();
     // find all 'set_env_variable' actions
-    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject.getInstallationActions(
-            InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
+    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject
+            .getInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT)
+            .iterator();
     while (envActions.hasNext()) {
       // add env.var. settings to the table
       InstallationDescriptor.ActionInfo actInfo = envActions.next();
@@ -628,9 +628,9 @@ public class InstallationController {
 
   /**
    * Deletes all installed files for a given component in a given parent directory. If the
-   * <code>includeDelegates</code> flag is <code>true</code>, deletes also all files installed
-   * in a given parent directory for separate delegate components, specified in the main
-   * installation descriptor.
+   * <code>includeDelegates</code> flag is <code>true</code>, deletes also all files installed in a
+   * given parent directory for separate delegate components, specified in the main installation
+   * descriptor.
    * 
    * @param componentId
    *          The given main component ID.
@@ -639,8 +639,8 @@ public class InstallationController {
    * @param includeDelegates
    *          Indicates whether files of the specified separate delegate components should be
    *          deleted.
-   * @return <code>true</code>, if the deletion operation completed successfully,
-   *         <code>false</code> otherwise.
+   * @return <code>true</code>, if the deletion operation completed successfully, <code>false</code>
+   *         otherwise.
    * @throws IOException
    *           if any I/O exception occurred.
    */
@@ -710,12 +710,14 @@ public class InstallationController {
    * @param targetDir
    *          The given target directory.
    * @param controller
-   *          The instance of the <code>InstallationController</code> class that provides OUT and ERR 
+   *          The instance of the <code>InstallationController</code> class that provides OUT and
+   *          ERR
    * @param cleanTarget
-   *          If true, the target directory is cleaned before the PEAR file is installed to it. 
-   * message routing, or <code>null</code>.
+   *          If true, the target directory is cleaned before the PEAR file is installed to it.
+   *          message routing, or <code>null</code>.
    * @return The path to the new component root directory.
-   * @throws IOException if any I/O exception occurred.
+   * @throws IOException
+   *           if any I/O exception occurred.
    */
   protected static String extractFilesFromPEARFile(String pearFileLocation, String fileExt,
           File targetDir, InstallationController controller, boolean cleanTarget)
@@ -724,27 +726,27 @@ public class InstallationController {
     long fileSize = Files.size(Paths.get(pearFileLocation));
     // create root directory
     if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
-      //create localized error message
+      // create localized error message
       String message = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_controller_error_creating_install_dir", new Object[] { targetDir
-                      .getAbsolutePath() });
+              "installation_controller_error_creating_install_dir",
+              new Object[] { targetDir.getAbsolutePath() });
       throw new IOException(message);
     }
     // clean target directory
     if (cleanTarget) {
       if (FileUtils.deleteRecursive(targetDir)) {
         if (!targetDir.mkdirs()) {
-          //create localized error message
+          // create localized error message
           String message = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                  "installation_controller_error_creating_install_dir", new Object[] { targetDir
-                          .getAbsolutePath() });
+                  "installation_controller_error_creating_install_dir",
+                  new Object[] { targetDir.getAbsolutePath() });
           throw new IOException(message);
         }
       } else {
-        //create localized error message
+        // create localized error message
         String message = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "installation_controller_error_cleaning_install_dir", new Object[] { targetDir
-                        .getAbsolutePath() });
+                "installation_controller_error_cleaning_install_dir",
+                new Object[] { targetDir.getAbsolutePath() });
         throw new IOException(message);
       }
     }
@@ -753,7 +755,7 @@ public class InstallationController {
     boolean removeLocalCopy = false;
     boolean done = false;
     JarFile jarFile = null;
-    
+
     try {
       // try to find PEAR file in the local file system
       pearFile = new File(pearFileLocation);
@@ -761,8 +763,8 @@ public class InstallationController {
         // copy PEAR file to the target directory using URL connection
         URL pearFileUrl = new URL(pearFileLocation);
         if (controller != null) // write message to OUT msg queue
-          controller.getOutMsgWriter().println(
-                  "[InstallationController]: copying " + fileSize + " bytes from "
+          controller.getOutMsgWriter()
+                  .println("[InstallationController]: copying " + fileSize + " bytes from "
                           + pearFileUrl.toExternalForm() + " to " + targetDir.getAbsolutePath());
         else
           // print message to console
@@ -773,29 +775,28 @@ public class InstallationController {
 
         try (InputStream pearIn = pearFileUrl.openStream()) {
           Files.copy(pearIn, pearFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-        catch (IOException e) {
-          throw new IOException("cannot copy " + pearFileUrl + " to file "
-                  + pearFile.getAbsolutePath(), e);
+        } catch (IOException e) {
+          throw new IOException(
+                  "cannot copy " + pearFileUrl + " to file " + pearFile.getAbsolutePath(), e);
         }
 
         removeLocalCopy = true;
       }
       if (controller != null) // write message to OUT msg queue
-        controller.getOutMsgWriter().println(
-                "[InstallationController]: extracting " + pearFile.getAbsolutePath());
+        controller.getOutMsgWriter()
+                .println("[InstallationController]: extracting " + pearFile.getAbsolutePath());
       else
         // print message to console
         System.out.println("[InstallationController]: extracting " + pearFile.getAbsolutePath());
-      
+
       jarFile = new JarFile(pearFile);
       long totalBytes = (fileExt == null) ? FileUtil.extractFilesFromJar(jarFile, targetDir) : // all
-              // files
+      // files
               FileUtil.extractFilesWithExtFromJar( // files with extension
                       jarFile, fileExt, targetDir);
       if (controller != null) // write message to OUT msg queue
-        controller.getOutMsgWriter().println(
-                "[InstallationController]: " + totalBytes + " bytes extracted");
+        controller.getOutMsgWriter()
+                .println("[InstallationController]: " + totalBytes + " bytes extracted");
       else
         // print message to console
         System.out.println("[InstallationController]: " + totalBytes + " bytes extracted");
@@ -812,14 +813,14 @@ public class InstallationController {
     } catch (Throwable err) {
       throw new IOException(err.toString());
     } finally {
-        if(jarFile != null) 
-            try{
-                jarFile.close();
-            } catch(IOException ioe) {
-                IOException e = new IOException("Can't close open PEAR file :" + jarFile.getName());
-                e.initCause(ioe);
-                throw e;
-            }
+      if (jarFile != null)
+        try {
+          jarFile.close();
+        } catch (IOException ioe) {
+          IOException e = new IOException("Can't close open PEAR file :" + jarFile.getName());
+          e.initCause(ioe);
+          throw e;
+        }
     }
     return done ? targetDir.getAbsolutePath() : null;
   }
@@ -852,12 +853,13 @@ public class InstallationController {
    * @param installationDir
    *          The given target directory.
    * @param controller
-   *          The instance of the <code>InstallationController</code> class that provides OUT and ERR 
-   * message routing, or <code>null</code>.
+   *          The instance of the <code>InstallationController</code> class that provides OUT and
+   *          ERR message routing, or <code>null</code>.
    * @param cleanTarget
-   *          If true, the target directory is cleaned before the PEAR file is installed to it. 
+   *          If true, the target directory is cleaned before the PEAR file is installed to it.
    * @return The path to the new component root directory.
-   * @throws IOException if any I/O exception occurred.
+   * @throws IOException
+   *           if any I/O exception occurred.
    */
   protected static String extractPEARFile(String pearFileLocation, File installationDir,
           InstallationController controller, boolean cleanTarget) throws IOException {
@@ -872,13 +874,13 @@ public class InstallationController {
    * @param installationTable
    *          The given installation table that specifies (compId, rootDirPath) pairs for all
    *          separate delegate components.
-   * @return The <code>Hashtable</code> that contains (compId, InsD) pairs for all separate
-   *         delegate components specified in the given installation table.
+   * @return The <code>Hashtable</code> that contains (compId, InsD) pairs for all separate delegate
+   *         components specified in the given installation table.
    * @throws IOException
    *           If an I/O exception occurred while loading the installation descriptor files.
    */
-  protected static Hashtable<String, InstallationDescriptor> getDelegateInstallationDescriptors(Hashtable<String, String> installationTable)
-          throws IOException {
+  protected static Hashtable<String, InstallationDescriptor> getDelegateInstallationDescriptors(
+          Hashtable<String, String> installationTable) throws IOException {
     // get list of separately installed delegate components
     Enumeration<String> dlgIdList = installationTable.keys();
     // build Hashtable of delegate InsD objects
@@ -910,17 +912,16 @@ public class InstallationController {
 
   /**
    * Retrieves the root directory path of a given component, installed in the local file system, by
-   * using a given <code>PackageSelector</code> input. If the given <code>PackageSelector</code>
-   * is <code>null</code>, the default <code>PackageSelector</code> implementation is used.
+   * using a given <code>PackageSelector</code> input. If the given <code>PackageSelector</code> is
+   * <code>null</code>, the default <code>PackageSelector</code> implementation is used.
    * 
    * @param componentId
    *          The given installed component ID.
    * @param pkgSelector
-   *          The instance of the
-   *          <code>PackageSelector</code> class that allows selecting root directory 
-   * of the installed component in the local file system.
-   * @return The root directory path of the given component in the local 
-   * file system, or <code>null</code>, if the component is not installed.
+   *          The instance of the <code>PackageSelector</code> class that allows selecting root
+   *          directory of the installed component in the local file system.
+   * @return The root directory path of the given component in the local file system, or
+   *         <code>null</code>, if the component is not installed.
    */
   protected static String getInstalledComponentRootPath(String componentId,
           PackageSelector pkgSelector) {
@@ -942,11 +943,10 @@ public class InstallationController {
    * @param componentId
    *          The given component ID.
    * @param pkgSelector
-   *          The instance of the
-   *          <code>PackageSelector</code> class that allows selecting location of the 
-   * given component PEAR file in the local file system, or in the network.
-   * @return The location of the PEAR file for the given component, or 
-   * <code>null</code>, if the PEAR file was not found.
+   *          The instance of the <code>PackageSelector</code> class that allows selecting location
+   *          of the given component PEAR file in the local file system, or in the network.
+   * @return The location of the PEAR file for the given component, or <code>null</code>, if the
+   *         PEAR file was not found.
    */
   protected static String getPEARFileLocation(String componentId, PackageSelector pkgSelector) {
     String pearFileLocation = null;
@@ -1011,8 +1011,8 @@ public class InstallationController {
     }
     // check input parameters
     if (localPearFile != null && !localPearFile.exists()) {
-      System.err.println("[InstallationController]: " + localPearFile.getAbsolutePath()
-              + " file not found");
+      System.err.println(
+              "[InstallationController]: " + localPearFile.getAbsolutePath() + " file not found");
     }
     if (installationDir == null) // set CWD by default
       installationDir = new File(".");
@@ -1038,17 +1038,18 @@ public class InstallationController {
       }
     }
     // create instance of InstallationController
-    InstallationController controller = __inLocalMode ? new InstallationController(mainComponentId,
-            localPearFile, installationDir, installInRootDir) : new InstallationController(
-            mainComponentId, installationDir.getAbsolutePath(), installInRootDir);
+    InstallationController controller = __inLocalMode
+            ? new InstallationController(mainComponentId, localPearFile, installationDir,
+                    installInRootDir)
+            : new InstallationController(mainComponentId, installationDir.getAbsolutePath(),
+                    installInRootDir);
     // set PackageSelector
     controller.setPackageSelector(new PackageSelectorGUI());
     // 1st step: install main component
     if (controller.installComponent() == null) {
       // installation failed
-      controller.getErrMsgWriter().println(
-              "[InstallationController]: installation of " + mainComponentId + " failed => \n"
-                      + controller.getInstallationMsg());
+      controller.getErrMsgWriter().println("[InstallationController]: installation of "
+              + mainComponentId + " failed => \n" + controller.getInstallationMsg());
     } else {
       try {
         controller.getOutMsgWriter().println(
@@ -1057,13 +1058,11 @@ public class InstallationController {
         if (controller.verifyComponent()) {
           controller.getOutMsgWriter().println(
                   "[InstallationController]: verification of " + mainComponentId + " completed");
-          controller.getOutMsgWriter().println(
-                  "[InstallationController]: " + mainComponentId + " installed in the "
-                          + controller._mainComponentRootPath + " directory.");
+          controller.getOutMsgWriter().println("[InstallationController]: " + mainComponentId
+                  + " installed in the " + controller._mainComponentRootPath + " directory.");
         } else {
-          controller.getOutMsgWriter().println(
-                  "[InstallationController]: verification of " + mainComponentId + " failed => \n"
-                          + controller.getVerificationMsg());
+          controller.getOutMsgWriter().println("[InstallationController]: verification of "
+                  + mainComponentId + " failed => \n" + controller.getVerificationMsg());
         }
       } catch (Exception exc) {
         System.err.println("Error in InstallationController.main(): " + exc.toString());
@@ -1105,13 +1104,13 @@ public class InstallationController {
         }
         if (pkgBrowser.getInstallationDescriptor().getMainComponentDesc() == null) {
           throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                  "installation_verification_main_desc_not_available", new Object[] { pkgBrowser
-                          .getInstallationDescriptor().getMainComponentId() });
+                  "installation_verification_main_desc_not_available",
+                  new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() });
         }
         if (pkgBrowser.getInstallationDescriptor().getMainComponentRoot() == null) {
           throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                  "installation_verification_main_root_not_available", new Object[] { pkgBrowser
-                          .getInstallationDescriptor().getMainComponentId() });
+                  "installation_verification_main_root_not_available",
+                  new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() });
         }
       }
 
@@ -1135,8 +1134,8 @@ public class InstallationController {
    * Constructs an instance of the <code>InstallationController</code> class for a given component
    * and a given installation root directory. By default, the <code>InstallationController</code>
    * creates a <code>component_id</code> subdirectory for the component code and resources. By
-   * default, the <code>InstallationController</code> class sends all stdout and stderr messages
-   * to the default message listener, which prints them to the standard console streams.
+   * default, the <code>InstallationController</code> class sends all stdout and stderr messages to
+   * the default message listener, which prints them to the standard console streams.
    * 
    * @param componentId
    *          The given component ID.
@@ -1150,11 +1149,11 @@ public class InstallationController {
   /**
    * Constructs an instance of the <code>InstallationController</code> class for a given component
    * and a given installation root directory. If the <code>installInRootDir</code> flag is
-   * <code>true</code>, the component will be installed in the given root directory, otherwise
-   * the <code>InstallationController</code> will create a <code>component_id</code>
-   * subdirectory for the component code and resources. By default, the
-   * <code>InstallationController</code> class sends all stdout and stderr messages to the default
-   * message listener, which prints them to the standard console streams.
+   * <code>true</code>, the component will be installed in the given root directory, otherwise the
+   * <code>InstallationController</code> will create a <code>component_id</code> subdirectory for
+   * the component code and resources. By default, the <code>InstallationController</code> class
+   * sends all stdout and stderr messages to the default message listener, which prints them to the
+   * standard console streams.
    * 
    * @param componentId
    *          The given component ID.
@@ -1163,8 +1162,8 @@ public class InstallationController {
    * @param installInRootDir
    *          If <code>true</code>, the component will be installed in the given root directory,
    *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
-   *          root directory. Note: the installation directory will be cleaned before the PEAR file is 
-   *          installed to it.
+   *          root directory. Note: the installation directory will be cleaned before the PEAR file
+   *          is installed to it.
    */
   public InstallationController(String componentId, String rootDirPath, boolean installInRootDir) {
     this(componentId, rootDirPath, installInRootDir, null);
@@ -1173,12 +1172,12 @@ public class InstallationController {
   /**
    * Constructs an instance of the <code>InstallationController</code> class for a given component
    * and a given installation root directory. If the <code>installInRootDir</code> flag is
-   * <code>true</code>, the component will be installed in the given root directory, otherwise
-   * the <code>InstallationController</code> will create a <code>component_id</code>
-   * subdirectory for the component code and resources. If a given custom message listener is not
-   * <code>null</code>, the <code>InstallationController</code> instance will sends all stdout
-   * and stderr messages to the given message listener, otherwise these messages are sent to the
-   * default message listener, which prints them to the standard console streams.
+   * <code>true</code>, the component will be installed in the given root directory, otherwise the
+   * <code>InstallationController</code> will create a <code>component_id</code> subdirectory for
+   * the component code and resources. If a given custom message listener is not <code>null</code>,
+   * the <code>InstallationController</code> instance will sends all stdout and stderr messages to
+   * the given message listener, otherwise these messages are sent to the default message listener,
+   * which prints them to the standard console streams.
    * 
    * @param componentId
    *          The given component ID.
@@ -1187,8 +1186,8 @@ public class InstallationController {
    * @param installInRootDir
    *          If <code>true</code>, the component will be installed in the given root directory,
    *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
-   *          root directory. Note: the installation directory will be cleaned before the PEAR file is 
-   *          installed to it.
+   *          root directory. Note: the installation directory will be cleaned before the PEAR file
+   *          is installed to it.
    * @param msgListener
    *          The given custom message listener or <code>null</code>.
    */
@@ -1204,17 +1203,17 @@ public class InstallationController {
   }
 
   /**
-   * Internal constructor that creates an instance of the <code>InstallationController</code>
-   * class for a given component and a given installation root directory. If the
-   * <code>installInRootDir</code> flag is <code>true</code>, the component will be installed
-   * in the given root directory, otherwise the <code>InstallationController</code> will create a
-   * <code>component_id</code> subdirectory for the component code and resources. If a given
-   * custom <code>MessageRouter</code> is not <code>null</code>, the new
+   * Internal constructor that creates an instance of the <code>InstallationController</code> class
+   * for a given component and a given installation root directory. If the
+   * <code>installInRootDir</code> flag is <code>true</code>, the component will be installed in the
+   * given root directory, otherwise the <code>InstallationController</code> will create a
+   * <code>component_id</code> subdirectory for the component code and resources. If a given custom
+   * <code>MessageRouter</code> is not <code>null</code>, the new
    * <code>InstallationController</code> instance will use the given message router, otherwise it
    * will create a new message router object. If a given custom message listener is not
-   * <code>null</code>, the <code>InstallationController</code> instance will send all stdout
-   * and stderr messages to the given message listener, otherwise these messages are sent to the
-   * default message listener, which prints them to the standard console streams.
+   * <code>null</code>, the <code>InstallationController</code> instance will send all stdout and
+   * stderr messages to the given message listener, otherwise these messages are sent to the default
+   * message listener, which prints them to the standard console streams.
    * 
    * @param componentId
    *          The given component ID.
@@ -1232,9 +1231,9 @@ public class InstallationController {
    *          If <code>true</code>, the target installation directory will be cleaned before the
    *          PEAR file is installed.
    */
-  protected InstallationController(String componentId, String rootDirPath,
-          boolean installInRootDir, MessageRouter msgRouter,
-          MessageRouter.StdChannelListener msgListener, boolean cleanInstallDir) {
+  protected InstallationController(String componentId, String rootDirPath, boolean installInRootDir,
+          MessageRouter msgRouter, MessageRouter.StdChannelListener msgListener,
+          boolean cleanInstallDir) {
     if (msgRouter == null)
       _msgRouter = new MessageRouter();
     else
@@ -1242,11 +1241,13 @@ public class InstallationController {
     if (msgListener == null) {
       // set default standard message channel listener
       _defaultMsgListener = new MessageRouter.StdChannelListener() {
+        @Override
         public void errMsgPosted(String errMsg) {
           System.err.print(errMsg);
           System.err.flush();
         }
 
+        @Override
         public void outMsgPosted(String outMsg) {
           System.out.print(outMsg);
           System.out.flush();
@@ -1285,9 +1286,9 @@ public class InstallationController {
   /**
    * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
    * root directory where the component will be installed. By default, the
-   * <code>InstallationController</code> creates a <code>component_id</code> subdirectory for
-   * the component code and resources. By default, the <code>InstallationController</code> class
-   * sends all stdout and stderr messages to the default message listener, which prints them to the
+   * <code>InstallationController</code> creates a <code>component_id</code> subdirectory for the
+   * component code and resources. By default, the <code>InstallationController</code> class sends
+   * all stdout and stderr messages to the default message listener, which prints them to the
    * standard console streams.
    * 
    * @param componentId
@@ -1301,12 +1302,12 @@ public class InstallationController {
     this(componentId, rootDir.getAbsolutePath(), false, null, null, true);
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
-  
+
   /**
    * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
-   * root directory where the component will be installed. If the <code>installInRootDir</code>
-   * flag is <code>true</code>, the component code and resources will be installed in the
-   * specified root directory, otherwise the <code>InstallationController</code> will create a
+   * root directory where the component will be installed. If the <code>installInRootDir</code> flag
+   * is <code>true</code>, the component code and resources will be installed in the specified root
+   * directory, otherwise the <code>InstallationController</code> will create a
    * <code>component_id</code> subdirectory for the component code and resources. By default, the
    * <code>InstallationController</code> class sends all stdout and stderr messages to the default
    * message listener, which prints them to the standard console streams.
@@ -1331,12 +1332,11 @@ public class InstallationController {
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
 
-
   /**
    * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
-   * root directory where the component will be installed. If the <code>installInRootDir</code>
-   * flag is <code>true</code>, the component code and resources will be installed in the
-   * specified root directory, otherwise the <code>InstallationController</code> will create a
+   * root directory where the component will be installed. If the <code>installInRootDir</code> flag
+   * is <code>true</code>, the component code and resources will be installed in the specified root
+   * directory, otherwise the <code>InstallationController</code> will create a
    * <code>component_id</code> subdirectory for the component code and resources. By default, the
    * <code>InstallationController</code> class sends all stdout and stderr messages to the default
    * message listener, which prints them to the standard console streams.
@@ -1350,8 +1350,8 @@ public class InstallationController {
    * @param installInRootDir
    *          If <code>true</code>, the component will be installed in the given root directory,
    *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
-   *          root directory. Note: the installation directory will be cleaned before the PEAR file is 
-   *          installed to it. 
+   *          root directory. Note: the installation directory will be cleaned before the PEAR file
+   *          is installed to it.
    */
   public InstallationController(String componentId, File localPearFile, File rootDir,
           boolean installInRootDir) {
@@ -1361,13 +1361,13 @@ public class InstallationController {
 
   /**
    * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
-   * root directory where the component will be installed. If the <code>installInRootDir</code>
-   * flag is <code>true</code>, the component code and resources will be installed in the
-   * specified root directory, otherwise the <code>InstallationController</code> will create a
+   * root directory where the component will be installed. If the <code>installInRootDir</code> flag
+   * is <code>true</code>, the component code and resources will be installed in the specified root
+   * directory, otherwise the <code>InstallationController</code> will create a
    * <code>component_id</code> subdirectory for the component code and resources. If the custom
-   * message listener is not <code>null</code>, the <code>InstallationController</code> class
-   * sends all stdout and stderr messages to this message listener, otherwise these messages are
-   * sent to the default message listener, which prints them to the standard console streams.
+   * message listener is not <code>null</code>, the <code>InstallationController</code> class sends
+   * all stdout and stderr messages to this message listener, otherwise these messages are sent to
+   * the default message listener, which prints them to the standard console streams.
    * 
    * @param componentId
    *          The given component ID.
@@ -1390,13 +1390,13 @@ public class InstallationController {
 
   /**
    * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
-   * root directory where the component will be installed. If the <code>installInRootDir</code>
-   * flag is <code>true</code>, the component code and resources will be installed in the
-   * specified root directory, otherwise the <code>InstallationController</code> will create a
+   * root directory where the component will be installed. If the <code>installInRootDir</code> flag
+   * is <code>true</code>, the component code and resources will be installed in the specified root
+   * directory, otherwise the <code>InstallationController</code> will create a
    * <code>component_id</code> subdirectory for the component code and resources. If the custom
-   * message listener is not <code>null</code>, the <code>InstallationController</code> class
-   * sends all stdout and stderr messages to this message listener, otherwise these messages are
-   * sent to the default message listener, which prints them to the standard console streams.
+   * message listener is not <code>null</code>, the <code>InstallationController</code> class sends
+   * all stdout and stderr messages to this message listener, otherwise these messages are sent to
+   * the default message listener, which prints them to the standard console streams.
    * 
    * @param componentId
    *          The given component ID.
@@ -1435,11 +1435,11 @@ public class InstallationController {
   }
 
   /**
-   * Builds <code>CLASSPATH</code> for the installed component, including <code>CLASSPATH</code>
-   * for all separate delegate components that are utilized by the main installed component, if any.
+   * Builds <code>CLASSPATH</code> for the installed component, including <code>CLASSPATH</code> for
+   * all separate delegate components that are utilized by the main installed component, if any.
    * 
-   * @return The <code>CLASSPATH</code> for the installed component, or <code>null</code>, if
-   *         the component has not been installed.
+   * @return The <code>CLASSPATH</code> for the installed component, or <code>null</code>, if the
+   *         component has not been installed.
    * @throws IOException
    *           If any I/O exception occurred.
    */
@@ -1537,6 +1537,7 @@ public class InstallationController {
   /**
    * Overrides standard <code>finalize</code> method.
    */
+  @Override
   protected void finalize() {
     _msgRouter.terminate();
   }
@@ -1558,7 +1559,8 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract PEAR file in a specified directory
-      if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this, _cleanInstallDir) == null) {
+      if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this,
+              _cleanInstallDir) == null) {
         // PEAR extraction failed
         // set error message
         setInstallationError(new IOException("PEAR extraction failed"));
@@ -1585,12 +1587,10 @@ public class InstallationController {
       // generate 'setenv.bat' file
       generateSetEnvFile();
       generatePearSpecifier(_mainComponentRootPath, _mainComponentId);
-      getOutMsgWriter().println(
-              "[InstallationController]: " + "the " + SET_ENV_FILE + " file contains required "
-                      + "environment variables for this component");
-      getOutMsgWriter().println(
-              "[InstallationController]: component " + _mainComponentId
-                      + " installation completed.");
+      getOutMsgWriter().println("[InstallationController]: " + "the " + SET_ENV_FILE
+              + " file contains required " + "environment variables for this component");
+      getOutMsgWriter().println("[InstallationController]: component " + _mainComponentId
+              + " installation completed.");
       if (_installationMonitor != null) {
         // notify installation monitor
         _installationMonitor.setInstallationLocation(_mainComponentId, _mainComponentRootPath);
@@ -1611,9 +1611,9 @@ public class InstallationController {
   /**
    * Performs installation of XML descriptors of the specified component in the specified target
    * directory, including XML descriptors of all the delegate components (if exist). If the
-   * installation completed successfully, returns the <code>InstallationDescriptor</code> object
-   * for the partially installed component. If the installation failed, returns <code>null</code>,
-   * and sets the installation error message that can be retrieved using the
+   * installation completed successfully, returns the <code>InstallationDescriptor</code> object for
+   * the partially installed component. If the installation failed, returns <code>null</code>, and
+   * sets the installation error message that can be retrieved using the
    * <code>getInstallationMsg()</code> method.
    * 
    * @return The <code>InstallationDescriptor</code> object for the partially installed component,
@@ -1643,9 +1643,8 @@ public class InstallationController {
               _installationTable);
       processor.process();
       _insdObject = processor.getInstallationDescriptor();
-      getOutMsgWriter().println(
-              "[InstallationController]: component " + _mainComponentId
-                      + " descriptors installation completed.");
+      getOutMsgWriter().println("[InstallationController]: component " + _mainComponentId
+              + " descriptors installation completed.");
     } catch (Exception exc) {
       getErrMsgWriter().println("Error in InstallationController: " + exc);
       exc.printStackTrace(getErrMsgWriter());
@@ -1671,9 +1670,8 @@ public class InstallationController {
       try {
         componentRootPath = getInstalledComponentRootPath(componentId, _packageSelector);
       } catch (Exception e) {
-        getErrMsgWriter().println(
-                "[InstallationController]: " + "failed to query " + componentId + " location - "
-                        + e);
+        getErrMsgWriter().println("[InstallationController]: " + "failed to query " + componentId
+                + " location - " + e);
       }
       if (componentRootPath == null) {
         // install next separate delegate component
@@ -1723,10 +1721,10 @@ public class InstallationController {
       dlgController.setPackageSelector(this._packageSelector);
       InstallationDescriptor dlgInsdObject = dlgController.installComponentDescriptors();
       if (dlgInsdObject == null) {
-        getErrMsgWriter().println(
-                "[InstallationController]: " + "failed to install descriptors for dlg component "
-                        + componentId);
-        throw new RuntimeException("failed to install descriptors for dlg component " + componentId);
+        getErrMsgWriter().println("[InstallationController]: "
+                + "failed to install descriptors for dlg component " + componentId);
+        throw new RuntimeException(
+                "failed to install descriptors for dlg component " + componentId);
       }
       String componentRootPath = dlgInsdObject.getMainComponentRoot();
       // add installation info to the table
@@ -1746,8 +1744,10 @@ public class InstallationController {
    * @param mainComponentId
    *          main component ID of the installed pear file
    * 
-   * @throws IOException if IO Exception
-   * @throws SAXException if SAX Exception
+   * @throws IOException
+   *           if IO Exception
+   * @throws SAXException
+   *           if SAX Exception
    */
   protected static synchronized void generatePearSpecifier(String mainComponentRootPath,
           String mainComponentId) throws IOException, SAXException {
@@ -1790,7 +1790,8 @@ public class InstallationController {
         String varValue = envVarTable.getProperty(varName);
         // add env.var. setting
         if (varName.length() > 0 && varValue.length() > 0
-              && !varName.equalsIgnoreCase(CLASSPATH_VAR) && !varName.equalsIgnoreCase(PATH_VAR)) {
+                && !varName.equalsIgnoreCase(CLASSPATH_VAR)
+                && !varName.equalsIgnoreCase(PATH_VAR)) {
           fWriter.println(varName + "=" + varValue);
         }
       }
@@ -1814,8 +1815,8 @@ public class InstallationController {
       }
     }
     // set local config params
-    packageConfig.setProperty(LocalInstallationAgent.MAIN_ROOT, _mainComponentRootPath.replace(
-            '\\', '/'));
+    packageConfig.setProperty(LocalInstallationAgent.MAIN_ROOT,
+            _mainComponentRootPath.replace('\\', '/'));
     Iterator<String> dlgIdList = _installationTable.keySet().iterator();
     while (dlgIdList.hasNext()) {
       String id = dlgIdList.next();
@@ -1859,12 +1860,12 @@ public class InstallationController {
   }
 
   /**
-   * Removes a given <code>MessageRouter.StdChannelListener</code> object from the list of
-   * standard channel listeners.
+   * Removes a given <code>MessageRouter.StdChannelListener</code> object from the list of standard
+   * channel listeners.
    * 
    * @param listener
-   *          The given <code>MessageRouter.StdChannelListener</code> object to be removed from
-   *          the list.
+   *          The given <code>MessageRouter.StdChannelListener</code> object to be removed from the
+   *          list.
    */
   public void removeMsgListener(MessageRouter.StdChannelListener listener) {
     _msgRouter.removeChannelListener(listener);

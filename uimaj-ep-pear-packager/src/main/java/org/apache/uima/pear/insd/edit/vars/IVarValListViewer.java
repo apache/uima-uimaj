@@ -30,19 +30,19 @@ interface IVarValListViewer {
    *
    * @param tableRow the table row
    */
-  public void addTableRow(VarVal tableRow);
+  void addTableRow(VarVal tableRow);
 
   /**
    * Update the view to reflect the fact that a VarVal was removed from the VarVal list.
    *
    * @param tableRow the table row
    */
-  public void removeTableRow(VarVal tableRow);
+  void removeTableRow(VarVal tableRow);
 
   /**
    * Update the view to reflect the fact that one of the TableRows was modified.
    *
    * @param tableRow the table row
    */
-  public void updateTableRow(VarVal tableRow);
+  void updateTableRow(VarVal tableRow);
 }

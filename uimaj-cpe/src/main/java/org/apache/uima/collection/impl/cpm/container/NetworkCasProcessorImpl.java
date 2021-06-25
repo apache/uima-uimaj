@@ -132,6 +132,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @param aCas - instance of CasData to analyze
    * @return instance containing result of the analysis
    */
+  @Override
   public CasData process(CasData aCas) throws ResourceProcessException {
     if (textAnalysisProxy == null) {
       throw new ResourceProcessException(new Exception(Thread.currentThread().getName()
@@ -178,6 +179,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @param aCasList - array of CasData instances to analyze
    * @return CasData - array of CasData instances containing results of the analysis
    */
+  @Override
   public CasData[] process(CasData[] aCasList) throws ResourceProcessException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(
@@ -206,6 +208,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
+  @Override
   public boolean isStateless() {
     if (resourceMetadata == null) {
       try {
@@ -228,6 +231,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
+  @Override
   public boolean isReadOnly() {
     if (resourceMetadata == null) {
       try {
@@ -250,6 +254,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * 
    * This method returns the metadata associated with the annotator.
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     if (textAnalysisProxy == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -308,6 +313,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     // Check if batch noitification is disabled == 0
@@ -330,6 +336,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {

@@ -31,7 +31,9 @@ import org.apache.uima.jcas.JCas;
 
 public abstract class StringList extends TOP implements CommonList, Iterable<String> {
 
-	/* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Iterable#iterator()
    */
   @Override
@@ -40,18 +42,20 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   }
 
   // Never called.
-	protected StringList() { // Disable default constructor
-	}
+  protected StringList() { // Disable default constructor
+  }
 
-	public StringList(JCas jcas) {
-		super(jcas);
-	}
+  public StringList(JCas jcas) {
+    super(jcas);
+  }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public StringList(TypeImpl t, CASImpl c) {
@@ -61,16 +65,18 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   public String getNthElement(int i) {
     return ((NonEmptyStringList) getNonEmptyNthNode(i)).getHead();
   }
-   
+
+  @Override
   public NonEmptyStringList createNonEmptyNode() {
-    NonEmptyStringList node = new NonEmptyStringList(this._casView.getTypeSystemImpl().stringNeListType, this._casView);
+    NonEmptyStringList node = new NonEmptyStringList(
+            this._casView.getTypeSystemImpl().stringNeListType, this._casView);
     return node;
-  }  
-  
+  }
+
   public NonEmptyStringList push(String item) {
     return new NonEmptyStringList(this._casView.getJCasImpl(), item, this);
-  } 
-  
+  }
+
   @Override
   public EmptyStringList emptyList() {
     return this._casView.emptyStringList();
@@ -78,25 +84,28 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
 
   /**
    * Create an StringList from an existing array of Strings
-   * @param jcas the JCas to use
-   * @param a the array of Strings to populate the list with
+   * 
+   * @param jcas
+   *          the JCas to use
+   * @param a
+   *          the array of Strings to populate the list with
    * @return an StringList, with the elements from the array
    */
   public static StringList create(JCas jcas, String[] a) {
-    StringList stringList = jcas.getCasImpl().emptyStringList();   
+    StringList stringList = jcas.getCasImpl().emptyStringList();
     for (int i = a.length - 1; i >= 0; i--) {
       stringList = stringList.push(a[i]);
-    }   
+    }
     return stringList;
   }
-  
+
   /**
    * @return a stream over this FSList
    */
   public Stream<String> stream() {
     return StreamSupport.stream(spliterator(), false);
   }
- 
+
   public boolean contains(String v) {
     StringList node = this;
     while (node instanceof NonEmptyStringList) {

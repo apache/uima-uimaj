@@ -69,6 +69,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     // Initialize the CasConsumer, passing the appropriate UimaContext
     // and a dummy descriptor containing the metadata passed to our constructor
@@ -85,11 +86,12 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (!CAS.class.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
-                  aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { CAS.class, aCAS.getClass() });
     }
 
     // check if type system changed; if so, notify Annotator
@@ -112,7 +114,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
-      } else // CAS 
+      } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
       }
@@ -130,6 +132,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     try {
       mCasConsumer.batchProcessComplete(new ProcessTrace_impl());
@@ -145,6 +148,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     try {
       mCasConsumer.collectionProcessComplete(new ProcessTrace_impl());
@@ -160,6 +164,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#destroy()
    */
+  @Override
   public void destroy() {
     mCasConsumer.destroy();
   }
@@ -169,6 +174,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     mCasConsumer.reconfigure();
   }
@@ -178,6 +184,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
@@ -187,10 +194,11 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                AnnotatorAdapter.class, "next" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
+            new Object[] { AnnotatorAdapter.class, "next" });
   }
 
   /**
@@ -198,6 +206,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @return the CAS interface required by this CasConsumer
    */
+  @Override
   public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
@@ -207,10 +216,12 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
    */
+  @Override
   public int getCasInstancesRequired() {
     return 0;
   }
 
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     // CAS Consumers don't use Result Specifications
   }

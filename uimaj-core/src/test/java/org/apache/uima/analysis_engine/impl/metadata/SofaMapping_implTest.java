@@ -30,8 +30,6 @@ import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Assert;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,8 +55,8 @@ public class SofaMapping_implTest {
     sm2.setComponentKey("myAnnotator2");
   }
 
-    @Test
-    public void testXmlization() throws Exception {
+  @Test
+  public void testXmlization() throws Exception {
     try {
       // write to XML
       StringWriter writer = new StringWriter();
@@ -69,11 +67,11 @@ public class SofaMapping_implTest {
       String sm2Xml = writer.getBuffer().toString();
       // parse from XML
       InputStream is = new ByteArrayInputStream(sm1Xml.getBytes(encoding));
-      SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(is, null));
+      SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser()
+              .parse(new XMLInputSource(is, null));
       is = new ByteArrayInputStream(sm2Xml.getBytes(encoding));
-      SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(is, null));
+      SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser()
+              .parse(new XMLInputSource(is, null));
 
       Assert.assertEquals(sm1, newSm1);
       Assert.assertEquals(sm2, newSm2);

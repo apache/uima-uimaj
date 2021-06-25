@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 import org.apache.uima.resource.ResourceSpecifier;
@@ -30,8 +29,6 @@ import org.apache.uima.resource.ResourceSpecifier;
  * {@link org.apache.uima.resource.ResourceSpecifier} that the factory can handle is passed to this
  * method. In the event that more than one <code>ResourceFactory</code> is registered for the same
  * Resource Specifier class, the most recently registered factory will be tried first.
- * 
- * 
  */
 public interface CompositeResourceFactory extends ResourceFactory {
   /**
@@ -43,5 +40,6 @@ public interface CompositeResourceFactory extends ResourceFactory {
    * @param aFactory
    *          the factory used to create resources from resource specifiers of the given type
    */
-  public void registerFactory(Class<? extends ResourceSpecifier> aResourceSpecifierInterface, ResourceFactory aFactory);
+  void registerFactory(Class<? extends ResourceSpecifier> aResourceSpecifierInterface,
+          ResourceFactory aFactory);
 }

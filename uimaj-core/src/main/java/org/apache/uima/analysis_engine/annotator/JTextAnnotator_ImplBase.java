@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.annotator;
 
 /**
  * Base class for JCAS annotators in UIMA SDK v1.x. As of v2.0, JCAS annotators should extend
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
+ * 
  * @deprecated As of release 2.3.0, use JCasAnnotator_ImplBase instead
  */
 @Deprecated

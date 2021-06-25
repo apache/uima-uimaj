@@ -57,19 +57,19 @@ import org.apache.uima.util.XMLizable;
  * 
  * <p>
  * The <code>...</code> indicates repeating elements of the same type - for example an
- * <code>indexBuildSpecification</code> may have multiple <code>indexBuildItem</code>s. The
- * square brackets indicate optionality, hence <code>filter</code> is an optional element of
+ * <code>indexBuildSpecification</code> may have multiple <code>indexBuildItem</code>s. The square
+ * brackets indicate optionality, hence <code>filter</code> is an optional element of
  * <code>indexRule</code>.
  * <ul>
  * <li>CAS_TYPE_NAME is any valid type name in the CAS.</li>
- * <li>CAS_TYPE_NAMESPACE_WILDCARD is a CAS type namespace followed by <code>.*</code>, for
- * example <code>org.apache.myproject.*</code></li>
+ * <li>CAS_TYPE_NAMESPACE_WILDCARD is a CAS type namespace followed by <code>.*</code>, for example
+ * <code>org.apache.myproject.*</code></li>
  * <li>NAME is a string that must be taken from the set of names recognized by the particular
  * indexer implementation. Some standard names are defined in the {@link Style} and {@link Filter}
  * classes.</li>
  * <li>FILTER_EXPRESSION is a string whose meaning is determined by the value of the
- * <code>syntax</code> attribute on the <code>filter</code> element. See {@link Filter} for
- * details. </li>
+ * <code>syntax</code> attribute on the <code>filter</code> element. See {@link Filter} for details.
+ * </li>
  * <li>STRING can be any string (although in some contexts this must match a valid CAS feature
  * name). See {@link Attribute} and {@link Mapping} for details.</li>
  * </ul>
@@ -79,19 +79,19 @@ import org.apache.uima.util.XMLizable;
 public interface IndexBuildSpecification extends XMLizable, Serializable {
 
   /**
-   * Gets the <code>IndexBuildItem</code> objects that comprise this index build specification.
-   * Each of these identifies an annotation type and describes how it should be indexed.
+   * Gets the <code>IndexBuildItem</code> objects that comprise this index build specification. Each
+   * of these identifies an annotation type and describes how it should be indexed.
    * 
    * @return the build items
    */
-  public IndexBuildItem[] getIndexBuildItems();
+  IndexBuildItem[] getIndexBuildItems();
 
   /**
-   * Sets the <code>IndexBuildItem</code> objects that comprise this index build specification.
-   * Each of these identifies an annotation type and describes how it should be indexed.
+   * Sets the <code>IndexBuildItem</code> objects that comprise this index build specification. Each
+   * of these identifies an annotation type and describes how it should be indexed.
    * 
    * @param aItems
    *          the build items
    */
-  public void setIndexBuildItems(IndexBuildItem[] aItems);
+  void setIndexBuildItems(IndexBuildItem[] aItems);
 }

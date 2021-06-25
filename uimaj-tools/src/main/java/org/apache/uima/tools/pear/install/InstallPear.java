@@ -874,7 +874,6 @@ public class InstallPear extends JFrame {
    * This is the default constructor.
    */
   public InstallPear() {
-    super();
     initialize();
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

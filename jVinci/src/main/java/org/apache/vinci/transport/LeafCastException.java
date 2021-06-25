@@ -28,7 +28,6 @@ public class LeafCastException extends IllegalArgumentException {
   private static final long serialVersionUID = 2167774897716144428L;
 
   public LeafCastException() {
-    super();
   }
 
   public LeafCastException(String message) {

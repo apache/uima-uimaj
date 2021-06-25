@@ -41,6 +41,7 @@ public class VinciFrame extends QueryableFrame {
   private KeyValuePair[] elements;
 
   private static TransportableFactory vinciFrameFactory = new TransportableFactory() {
+    @Override
     public Transportable makeTransportable() {
       return new VinciFrame();
     }
@@ -106,6 +107,7 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Implementation of the abstract fget method defined in QueryableFrame.
    */
+  @Override
   public ArrayList fget(String key) {
     ArrayList return_me = new ArrayList();
     for (int i = 0; i < size; i++) {
@@ -120,6 +122,7 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Implementation of the abstract fgetFirst method defined in QueryableFrame.
    */
+  @Override
   public FrameComponent fgetFirst(String key) {
     for (int i = 0; i < size; i++) {
       KeyValuePair pair = elements[i];
@@ -136,6 +139,7 @@ public class VinciFrame extends QueryableFrame {
    * @pre tag_name != null
    * @pre initialCapacity &ge; 0
    */
+  @Override
   public Frame createSubFrame(String tag_name, int initialCapacity) {
     return new VinciFrame(initialCapacity);
   }
@@ -388,6 +392,7 @@ public class VinciFrame extends QueryableFrame {
    * @pre key != null
    * @pre val != null
    */
+  @Override
   public void add(String key, FrameComponent val) {
     if (val != null) {
       ensureCapacity();
@@ -411,6 +416,7 @@ public class VinciFrame extends QueryableFrame {
    * @pre which &lt; getKeyValuePairCount()
    * @pre which &ge; 0
    */
+  @Override
   public KeyValuePair getKeyValuePair(int which) {
     return elements[which];
   }
@@ -418,6 +424,7 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Implementation of the abstract Frame method.
    */
+  @Override
   public int getKeyValuePairCount() {
     return size;
   }

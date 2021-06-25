@@ -19,21 +19,21 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 public class IntArrayFSTest {
 
   private CAS cas;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     } catch (Exception e) {
@@ -41,13 +41,13 @@ public class IntArrayFSTest {
     }
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     this.cas = null;
   }
 
-    @Test
-    public void testSet() {
+  @Test
+  public void testSet() {
     IntArrayFS array = this.cas.createIntArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -108,8 +108,8 @@ public class IntArrayFSTest {
     assertTrue(exceptionCaught);
   }
 
-    @Test
-    public void testToArray() {
+  @Test
+  public void testToArray() {
     // From CAS array to Java array.
     IntArrayFS array = this.cas.createIntArrayFS(3);
     int[] fsArray = array.toArray();

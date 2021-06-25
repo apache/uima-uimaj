@@ -28,11 +28,11 @@ import org.apache.uima.util.NameClassPair;
  * A simple concrete MetaDataObject implementation for use in testing the MetaDataObject_impl class.
  */
 public class TestFruitObject extends MetaDataObject_impl {
-  
+
   private static final long serialVersionUID = 1L;
 
   public TestFruitObject() {
-    //do nothing
+    // do nothing
   }
 
   public String getName() {
@@ -83,6 +83,7 @@ public class TestFruitObject extends MetaDataObject_impl {
     mCommonUses = aCommonUses;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -106,40 +107,28 @@ public class TestFruitObject extends MetaDataObject_impl {
     result.add(new NameClassPair("commonUses", String[].class.getName()));
     return result;
   }
-  
+
   static public Set<MetaDataAttr> getMetaDataAttrSet() {
     HashSet<MetaDataAttr> result = new HashSet<>();
     try {
-    result.add(new MetaDataAttr(
-        "name", 
-        TestFruitObject.class.getDeclaredMethod("getName"),
-        TestFruitObject.class.getDeclaredMethod("setName", String.class), 
-        String.class));
-    result.add(new MetaDataAttr(
-        "avgWeightLbs", 
-        TestFruitObject.class.getDeclaredMethod("getAvgWeightLbs"),
-        TestFruitObject.class.getDeclaredMethod("setAvgWeightLbs", float.class),
-        Float.class));
-    result.add(new MetaDataAttr(
-        "color", 
-        TestFruitObject.class.getDeclaredMethod("getColor"),
-        TestFruitObject.class.getDeclaredMethod("setColor", String.class), 
-        String.class));
-    result.add(new MetaDataAttr(
-        "avgCostCents", 
-        TestFruitObject.class.getDeclaredMethod("getAvgCostCents"),
-        TestFruitObject.class.getDeclaredMethod("setAvgCostCents", int.class), 
-        Integer.class));
-    result.add(new MetaDataAttr(
-        "citrus", 
-        TestFruitObject.class.getDeclaredMethod("isCitrus"),
-        TestFruitObject.class.getDeclaredMethod("setCitrus", boolean.class), 
-        Boolean.class));
-    result.add(new MetaDataAttr(
-        "commonUses", 
-        TestFruitObject.class.getDeclaredMethod("getCommonUses"),
-        TestFruitObject.class.getDeclaredMethod("setCommonUses", String[].class), 
-        String[].class));
+      result.add(new MetaDataAttr("name", TestFruitObject.class.getDeclaredMethod("getName"),
+              TestFruitObject.class.getDeclaredMethod("setName", String.class), String.class));
+      result.add(new MetaDataAttr("avgWeightLbs",
+              TestFruitObject.class.getDeclaredMethod("getAvgWeightLbs"),
+              TestFruitObject.class.getDeclaredMethod("setAvgWeightLbs", float.class),
+              Float.class));
+      result.add(new MetaDataAttr("color", TestFruitObject.class.getDeclaredMethod("getColor"),
+              TestFruitObject.class.getDeclaredMethod("setColor", String.class), String.class));
+      result.add(new MetaDataAttr("avgCostCents",
+              TestFruitObject.class.getDeclaredMethod("getAvgCostCents"),
+              TestFruitObject.class.getDeclaredMethod("setAvgCostCents", int.class),
+              Integer.class));
+      result.add(new MetaDataAttr("citrus", TestFruitObject.class.getDeclaredMethod("isCitrus"),
+              TestFruitObject.class.getDeclaredMethod("setCitrus", boolean.class), Boolean.class));
+      result.add(new MetaDataAttr("commonUses",
+              TestFruitObject.class.getDeclaredMethod("getCommonUses"),
+              TestFruitObject.class.getDeclaredMethod("setCommonUses", String[].class),
+              String[].class));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

@@ -20,7 +20,7 @@
 package org.apache.uima.cas.impl;
 
 /**
- * Support for legacy string heap format.  Used only for (de)serialization.
+ * Support for legacy string heap format. Used only for (de)serialization.
  */
 public class StringHeapDeserializationHelper {
 
@@ -35,7 +35,7 @@ public class StringHeapDeserializationHelper {
   protected static final int CHAR_HEAP_STRLEN_OFFSET = 1;
 
   // Third position in a cell: if the string is a real Java string, the position of that string
-  // in the string list.  This is not used for serialization and kept here only for documentation
+  // in the string list. This is not used for serialization and kept here only for documentation
   // purposes.
   protected static final int STRING_LIST_ADDR_OFFSET = 2;
 
@@ -54,7 +54,6 @@ public class StringHeapDeserializationHelper {
   protected char[] charHeap;
 
   public StringHeapDeserializationHelper() {
-    super();
   }
 
 }

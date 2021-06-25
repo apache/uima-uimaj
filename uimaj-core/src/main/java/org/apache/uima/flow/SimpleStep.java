@@ -51,8 +51,9 @@ public class SimpleStep extends Step {
    * user's Flow implementation can (but is not required to) reuse the same SimpleStep object
    * multiple times.
    * 
-   * @param aKey an Analysis Engine key. This must be one of the keys in the FlowController's
-   *         {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
+   * @param aKey
+   *          an Analysis Engine key. This must be one of the keys in the FlowController's
+   *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
   public void setAnalysisEngineKey(String aKey) {
     mKey = aKey;

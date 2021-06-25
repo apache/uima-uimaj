@@ -29,10 +29,7 @@ import java.util.Collections;
 
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,8 +37,8 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class DataResource_implTest {
-    @Test
-    public void testInitialize() throws Exception {
+  @Test
+  public void testInitialize() throws Exception {
     try {
       // create a FileResourceSpecifier
       FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
@@ -76,8 +73,8 @@ public class DataResource_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetInputStream() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetInputStream() throws Exception {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)
       File tempDataFile = JUnitExtension
@@ -95,7 +92,8 @@ public class DataResource_implTest {
 
       // try to get an input stream and read from the file
       InputStream inStr = dr.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, StandardCharsets.UTF_8));
+      BufferedReader bufRdr = new BufferedReader(
+              new InputStreamReader(inStr, StandardCharsets.UTF_8));
       String result = bufRdr.readLine();
       inStr.close();
 

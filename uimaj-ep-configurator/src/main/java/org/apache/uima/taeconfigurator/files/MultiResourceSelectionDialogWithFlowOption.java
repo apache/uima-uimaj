@@ -19,6 +19,10 @@
 
 package org.apache.uima.taeconfigurator.files;
 
+import org.apache.uima.taeconfigurator.CDEpropertyPage;
+import org.apache.uima.taeconfigurator.Messages;
+import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
+import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
@@ -28,11 +32,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
-import org.apache.uima.taeconfigurator.CDEpropertyPage;
-import org.apache.uima.taeconfigurator.Messages;
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
-import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
 
 /**

@@ -47,9 +47,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * <p>
  * A FlowController, like other components, can have custom configuration parameters that it
  * accesses through its Context. These parameters can define the flow using whatever flow language
- * the particular FlowController implementation requires. The <code>Flow</code> object can be
- * given a handle to the CAS, so that it can use any information in the CAS to make its routing
- * decisions.
+ * the particular FlowController implementation requires. The <code>Flow</code> object can be given
+ * a handle to the CAS, so that it can use any information in the CAS to make its routing decisions.
  * <p>
  * For convenience, FlowController implementations can extend from the base classes
  * {@link org.apache.uima.flow.CasFlowController_ImplBase} or
@@ -126,8 +125,8 @@ public interface FlowController {
   /**
    * Invokes this FlowController on a CAS. The FlowController returns a {@link Flow} object that is
    * responsible for routing this particular CAS through the components of this Aggregate. The
-   * <code>Flow</code> object should be given a handle to the CAS, so that it can use information
-   * in the CAS to make routing decisions.
+   * <code>Flow</code> object should be given a handle to the CAS, so that it can use information in
+   * the CAS to make routing decisions.
    * <p>
    * FlowController implementations will typically define their own class that implements
    * {@link Flow} by extending from the base class {@link CasFlow_ImplBase} or
@@ -154,50 +153,53 @@ public interface FlowController {
    * @return the required CAS interface. This must specify a subtype of {@link AbstractCas}.
    */
   Class<? extends AbstractCas> getRequiredCasInterface();
-  
+
   /**
    * Notifies this FlowController that new Analysis Engines are now available to route CASes to.
    * Prior to calling this method the framework will update
-   * {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}
-   * with the metadata for these new Analysis Engines.
+   * {@link FlowControllerContext#getAnalysisEngineMetaDataMap()} with the metadata for these new
+   * Analysis Engines.
    * <p>
-   * This FlowController is not obligated to do anything in response to this method if it does
-   * not want to consider routing CASes to the new AnalysisEngines.
+   * This FlowController is not obligated to do anything in response to this method if it does not
+   * want to consider routing CASes to the new AnalysisEngines.
    * <p>
    * The contract for this method is that the framework will not concurrently call any
    * {@link Flow#next()} methods on any Flow objects produced by this FlowController, during the
    * time between when the Analysis Engine MetaData map is updated and the time when this method
    * completes.
    * 
-   * @param aKeys a Collection of Strings, each of which is the key of an Analysis Engine to which
-   *   CASes can be routed.  These are the same keys as used in
-   *   {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
+   * @param aKeys
+   *          a Collection of Strings, each of which is the key of an Analysis Engine to which CASes
+   *          can be routed. These are the same keys as used in
+   *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
   void addAnalysisEngines(Collection<String> aKeys);
 
   /**
-   * Notifies this FlowController that some Analysis Engines are no longer available to route CASes to.
-   * Prior to calling this method the framework will update
-   * {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}
-   * and will remove the metadata for these new Analysis Engines.
+   * Notifies this FlowController that some Analysis Engines are no longer available to route CASes
+   * to. Prior to calling this method the framework will update
+   * {@link FlowControllerContext#getAnalysisEngineMetaDataMap()} and will remove the metadata for
+   * these new Analysis Engines.
    * <p>
-   * It is not required for a FlowController implementation to support this method.  It may throw
-   * an exception if this operation is not supported
-   * (see {@link AnalysisEngineProcessException#REMOVE_AE_FROM_FLOW_NOT_SUPPORTED}.
-   * Also the FlowController may throw an Exception if it determines that it does not make sense for
-   * the flow to continue in the absence of the removed Analysis Engines
-   * (see {@link AnalysisEngineProcessException#FLOW_CANNOT_CONTINUE_AFTER_REMOVE}.
+   * It is not required for a FlowController implementation to support this method. It may throw an
+   * exception if this operation is not supported (see
+   * {@link AnalysisEngineProcessException#REMOVE_AE_FROM_FLOW_NOT_SUPPORTED}. Also the
+   * FlowController may throw an Exception if it determines that it does not make sense for the flow
+   * to continue in the absence of the removed Analysis Engines (see
+   * {@link AnalysisEngineProcessException#FLOW_CANNOT_CONTINUE_AFTER_REMOVE}.
    * <p>
    * The contract for this method is that the framework will not concurrently call any
    * {@link Flow#next()} methods on any Flow objects produced by this FlowController, during the
    * time between when the Analysis Engine MetaData map is updated and the time when this method
    * completes.
    * 
-   * @param aKeys a Collection of Strings, each of which is the key of an Analysis Engine to which CASes
-   *   may no longer be routed.
+   * @param aKeys
+   *          a Collection of Strings, each of which is the key of an Analysis Engine to which CASes
+   *          may no longer be routed.
    * 
-   * @throws AnalysisEngineProcessException if the FlowController cannot continue with these
-   *   Analysis Engines removed, or doesn't support removing Analysis Engines at all.
+   * @throws AnalysisEngineProcessException
+   *           if the FlowController cannot continue with these Analysis Engines removed, or doesn't
+   *           support removing Analysis Engines at all.
    */
   void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException;
 }

@@ -112,7 +112,6 @@ public class XMLUtil {
    * XMLUtil constructor comment.
    */
   public XMLUtil() {
-    super();
   }
 
   /**
@@ -143,9 +142,9 @@ public class XMLUtil {
    * Attempts to detect file encoding of a given XML file by analyzing it's first characters. This
    * method can recognize the following 2 standard encodings: UTF-8 (ASCII) and UTF-16 (LE and BE).
    * If the given XML file is not valid or its encoding cannot be recognized, the method returns
-   * <code>null</code>, otherwise it returns the detected encoding name. For more on UTF
-   * encodings and its signatures see <a href="http://www.unicode.org/faq/utf_bom.html"
-   * target="_blank"> FAQ - UTF and BOM</a>.
+   * <code>null</code>, otherwise it returns the detected encoding name. For more on UTF encodings
+   * and its signatures see <a href="http://www.unicode.org/faq/utf_bom.html" target="_blank"> FAQ -
+   * UTF and BOM</a>.
    * 
    * @param xmlFile
    *          The given XML file.
@@ -172,30 +171,28 @@ public class XMLUtil {
         nextByte = iStream.read();
         // store as possible UTF signature or BOM
         if (byteCounter < 16) {
-            prefix[byteCounter] = nextByte;
+          prefix[byteCounter] = nextByte;
         }
         byteCounter++;
         if (nextByte < 0) {
-            throw new IOException("cannot read file");
+          throw new IOException("cannot read file");
         }
       } while (nextByte == 0xEF || nextByte == 0xBB || nextByte == 0xBF || nextByte == 0xFE
               || nextByte == 0xFF || nextByte == 0x00);
       int prefixLength = byteCounter < 17 ? byteCounter - 1 : 16;
-      String utfSignature = (prefixLength > 0) ? FileUtil
-              .identifyUtfSignature(prefix, prefixLength) : null;
+      String utfSignature = (prefixLength > 0) ? FileUtil.identifyUtfSignature(prefix, prefixLength)
+              : null;
       boolean utf8Signature = false;
       boolean utf16Signature = false;
       boolean utf32Signature = false;
       if (utfSignature != null) {
         // check signature name
         if (utfSignature.startsWith("UTF-8")) {
-            utf8Signature = true;
-        }
-        else if (utfSignature.startsWith("UTF-16")) {
-            utf16Signature = true;
-        }
-        else if (utfSignature.startsWith("UTF-32")) {
-            utf32Signature = true;
+          utf8Signature = true;
+        } else if (utfSignature.startsWith("UTF-16")) {
+          utf16Signature = true;
+        } else if (utfSignature.startsWith("UTF-32")) {
+          utf32Signature = true;
         }
       }
       byte[] buffer = null;
@@ -206,7 +203,7 @@ public class XMLUtil {
         bytes2put = 7 * 2; // <?xml?>
         buffer = new byte[prefixLength + bytes2put];
         for (int i = 0; i < prefixLength; i++) {
-            buffer[i] = (byte) prefix[i];
+          buffer[i] = (byte) prefix[i];
         }
         byteCounter = prefixLength;
       } else if (utf32Signature) {
@@ -214,7 +211,7 @@ public class XMLUtil {
         bytes2put = 7 * 4; // <?xml?>
         buffer = new byte[prefixLength + bytes2put];
         for (int i = 0; i < prefixLength; i++) {
-            buffer[i] = (byte) prefix[i];
+          buffer[i] = (byte) prefix[i];
         }
         byteCounter = prefixLength;
       } else {
@@ -231,30 +228,30 @@ public class XMLUtil {
       while (offset < (bytes2put - 1)) {
         int bytesRead = iStream.read(buffer, offset + byteCounter, bytes2put - 1 - offset);
         if (bytesRead == -1) {
-            break;
+          break;
         }
         offset += bytesRead;
       }
       if (offset != (bytes2put - 1)) {
         throw new IOException("cannot read file");
-    }
+      }
       // check first XML header characters - '<?'
       // buffer is 7 bytes
       // some Javas won't properly decode an odd number of bytes for utf16 coding
       // https://issues.apache.org/jira/browse/UIMA-2099
       byte[] buffer6 = new byte[6];
-      System.arraycopy(buffer, 0, buffer6, 0, 6);  
+      System.arraycopy(buffer, 0, buffer6, 0, 6);
       if (utf8Signature) {
         // check for UTF-8
         String test = new String(buffer, StandardCharsets.UTF_8);
         if (test.startsWith(FIRST_XML_CHARS)) {
-            encoding = "UTF-8";
+          encoding = "UTF-8";
         }
       } else if (utf16Signature) {
         // check for UTF-16
         String test = new String(buffer6, StandardCharsets.UTF_16);
         if (test.startsWith(FIRST_XML_CHARS)) {
-            encoding = "UTF-16";
+          encoding = "UTF-16";
         }
       } else if (utf32Signature) {
         // we don't support this
@@ -262,9 +259,8 @@ public class XMLUtil {
         // no signature - check for UTF-8 in XML header characters
         String test = new String(buffer, StandardCharsets.UTF_8);
         if (test.startsWith(FIRST_XML_CHARS)) {
-            encoding = "UTF-8";
-        }
-        else {
+          encoding = "UTF-8";
+        } else {
           // next, check for UTF-16LE in XML header characters
           test = new String(buffer6, StandardCharsets.UTF_16LE);
           if (test.startsWith(FIRST_XML_CHARS)) {
@@ -282,7 +278,8 @@ public class XMLUtil {
       if (encoding == null) {
         // last resort: check 1st non-space XML character - '<'
         // check 1st non-space XML character for UTF-8
-        fReader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), StandardCharsets.UTF_8));
+        fReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(xmlFile), StandardCharsets.UTF_8));
         String line = null;
         try {
           while ((line = fReader.readLine()) != null) {
@@ -290,7 +287,7 @@ public class XMLUtil {
             if (xmlLine.length() > 0) {
               if (xmlLine.charAt(0) == '<') {
                 encoding = "UTF-8";
-            }
+              }
               break;
             }
           }
@@ -306,7 +303,7 @@ public class XMLUtil {
               String xmlLine = line.trim();
               if (xmlLine.length() > 0) {
                 if (xmlLine.charAt(0) == '<') {
-                    encoding = "UTF-16";
+                  encoding = "UTF-16";
                 }
                 break;
               }
@@ -326,25 +323,24 @@ public class XMLUtil {
           iStream.close();
         } catch (Exception e) {
         }
-    }
+      }
       if (fReader != null) {
         try {
           fReader.close();
         } catch (Exception e) {
         }
-    }
+      }
     }
     return encoding;
   } // detectXmlFileEncoding()
 
   /**
-   * Tries to parse a given XML file using SAX parser. Returns <code>true</code>, if the parser
-   * does not encounter fatal error, otherwise returns <code>false</code>.
+   * Tries to parse a given XML file using SAX parser. Returns <code>true</code>, if the parser does
+   * not encounter fatal error, otherwise returns <code>false</code>.
    * 
    * @param xmlFile
    *          The given XML file to be tested.
-   * @return <code>true</code>, if the given XML file can be parsed, <code>false</code>
-   *         otherwise.
+   * @return <code>true</code>, if the given XML file can be parsed, <code>false</code> otherwise.
    * @throws IOException
    *           If the given file cannot be read.
    */
@@ -365,15 +361,18 @@ public class XMLUtil {
           iStream.close();
         } catch (Exception e) {
         }
-    }
+      }
     }
     return isValid;
   } // isValidXmlFile()
 
   /**
    * Prints SAX error message.
-   * @param type type
-   * @param ex exception
+   * 
+   * @param type
+   *          type
+   * @param ex
+   *          exception
    */
   public static void printError(String type, SAXParseException ex) {
 
@@ -382,13 +381,14 @@ public class XMLUtil {
     System.err.print("] ");
 
     if (ex == null) {
-      System.err.print("SAX Parse Exception was null! Therefore, no further details are available.");
+      System.err
+              .print("SAX Parse Exception was null! Therefore, no further details are available.");
     } else {
       String systemId = ex.getSystemId();
       if (systemId != null) {
         int index = systemId.lastIndexOf('/');
         if (index != -1) {
-            systemId = systemId.substring(index + 1);
+          systemId = systemId.substring(index + 1);
         }
         System.err.print(systemId);
       }
@@ -423,9 +423,9 @@ public class XMLUtil {
 
   /**
    * Prints entries of a given <code>Properties</code> object as XML elements to a given
-   * <code>PrintWriter</code>, maintaining a specified tag order and a given indentation level.
-   * Some elements may contain multiple values delimited by a specified value delimiter. Inserts new
-   * line after each printed element.
+   * <code>PrintWriter</code>, maintaining a specified tag order and a given indentation level. Some
+   * elements may contain multiple values delimited by a specified value delimiter. Inserts new line
+   * after each printed element.
    * 
    * @param elements
    *          The given <code>Properties</code> object.
@@ -453,9 +453,8 @@ public class XMLUtil {
           if (eValue != null) {
             // print XML element(s)
             if (multiValue) {
-                printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
-            }
-            else {
+              printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
+            } else {
               printXMLElement(tag, eValue, oWriter, level);
               // insert new line
               oWriter.println();
@@ -482,8 +481,7 @@ public class XMLUtil {
           String eValue = elements.getProperty(tag);
           if (multiValue) {
             printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
-        }
-        else {
+          } else {
             printXMLElement(tag, eValue, oWriter, level);
             // insert new line
             oWriter.println();
@@ -535,8 +533,8 @@ public class XMLUtil {
 
   /**
    * Prints a given XML element, which contains given attributes and a given string value, to a
-   * given <code>PrintWriter</code>, maintaining a given indentation level. The string element
-   * value (if exists) is printed 'as is' - without a CDATA section.
+   * given <code>PrintWriter</code>, maintaining a given indentation level. The string element value
+   * (if exists) is printed 'as is' - without a CDATA section.
    * 
    * @param tag
    *          The given XML element tag.
@@ -558,8 +556,8 @@ public class XMLUtil {
 
   /**
    * Prints a given XML element, which contains given attributes and a given string value, to a
-   * given <code>PrintWriter</code>, maintaining a given indentation level. The string element
-   * value (if exists) is printed within or without the CDATA section, depending on a given
+   * given <code>PrintWriter</code>, maintaining a given indentation level. The string element value
+   * (if exists) is printed within or without the CDATA section, depending on a given
    * <code>boolean</code> flag value.
    * 
    * @param tag
@@ -585,11 +583,10 @@ public class XMLUtil {
 
   /**
    * Prints a given XML element, which contains given attributes and a given string value, to a
-   * given <code>PrintWriter</code>, maintaining a given indentation level. The string element
-   * value (if exists) may be printed inside a CDATA section, depending on the value of a given
-   * 'CDATA' <code>boolean</code> flag. The element value may be printed on the same line as the
-   * element tags, or on a new line, depending on the value of a given 'new-line'
-   * <code>boolean</code> flag.
+   * given <code>PrintWriter</code>, maintaining a given indentation level. The string element value
+   * (if exists) may be printed inside a CDATA section, depending on the value of a given 'CDATA'
+   * <code>boolean</code> flag. The element value may be printed on the same line as the element
+   * tags, or on a new line, depending on the value of a given 'new-line' <code>boolean</code> flag.
    * 
    * @param tag
    *          The given XML element tag.
@@ -605,8 +602,8 @@ public class XMLUtil {
    * @param level
    *          The given indentation level (number of marginal '\t' symbols).
    * @param useNewLine4Value
-   *          If <code>true</code>, the given element value is printed on a new line, otherwise
-   *          it's printed on the same line as the element tags.
+   *          If <code>true</code>, the given element value is printed on a new line, otherwise it's
+   *          printed on the same line as the element tags.
    * @throws IOException
    *           if any I/O exception occurred.
    */
@@ -653,9 +650,8 @@ public class XMLUtil {
 
   /**
    * Prints a given XML element, which contains only a given string value, to a given
-   * <code>PrintWriter</code>, maintaining a given indentation level. The string element value
-   * (if exists) is put into the CDATA block, if a given <code>boolean</code> flag is
-   * <code>true</code>.
+   * <code>PrintWriter</code>, maintaining a given indentation level. The string element value (if
+   * exists) is put into the CDATA block, if a given <code>boolean</code> flag is <code>true</code>.
    * 
    * @param tag
    *          The given XML tag.
@@ -729,9 +725,8 @@ public class XMLUtil {
 
   /**
    * Prints a given element value to a given <code>PrintWriter</code>, maintaining a given
-   * indentation level. If a given <code>boolean</code> 'CDATA' flag is <code>true</code>, puts
-   * the element value in the <code>CDATA</code> section, otherwise prints the element value 'as
-   * is'.
+   * indentation level. If a given <code>boolean</code> 'CDATA' flag is <code>true</code>, puts the
+   * element value in the <code>CDATA</code> section, otherwise prints the element value 'as is'.
    * 
    * @param elemValue
    *          The given element value.
@@ -746,35 +741,33 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElementValue(String elemValue, boolean putInCdataSection,
-          PrintWriter oWriter, int level)
-      throws IOException
-  {
+          PrintWriter oWriter, int level) throws IOException {
     // add marginal tabs
     for (int l = 0; l < level; l++) {
       oWriter.print('\t');
     }
-    
+
     if (elemValue != null) {
       // print XML element value
       if (putInCdataSection) {
         oWriter.print(CDATA_SECTION_BEG);
       }
-      
+
       // Either put the element value into a CDATA section or escape special XML characters properly
       oWriter.print(putInCdataSection ? elemValue.trim() : xmlEscape(elemValue.trim()));
-      
+
       if (putInCdataSection) {
         oWriter.print(CDATA_SECTION_END);
       }
-      
+
       oWriter.flush();
     }
   }
 
   /**
    * Prints standard XML 1.0 header with a specified encoding to a given <code>PrintStream</code>.
-   * If no encoding is specified (<code>null</code> or empty string), does not include the
-   * encoding name in the header.
+   * If no encoding is specified (<code>null</code> or empty string), does not include the encoding
+   * name in the header.
    * 
    * @param encoding
    *          The given XML encoding name or <code>null</code>.
@@ -786,7 +779,7 @@ public class XMLUtil {
   public static void printXMLHeader(String encoding, PrintWriter oWriter) throws IOException {
     oWriter.print(XML_HEADER_BEG);
     if (encoding != null && encoding.length() > 0) {
-        oWriter.print(" " + XML_ENCODING_TAG + "=\"" + encoding + "\"");
+      oWriter.print(" " + XML_ENCODING_TAG + "=\"" + encoding + "\"");
     }
     oWriter.println(XML_HEADER_END);
   }
@@ -800,8 +793,8 @@ public class XMLUtil {
    * @param oWriter
    *          The given <code>PrintWriter</code> object.
    * @param tagEnd
-   *          If <code>false</code> prints the XML tag beginning brackets, otherwise prints the
-   *          the XML tag ending brackets.
+   *          If <code>false</code> prints the XML tag beginning brackets, otherwise prints the the
+   *          XML tag ending brackets.
    * @param level
    *          The given indentation level (number of marginal '\t' symbols).
    * @throws IOException
@@ -823,8 +816,8 @@ public class XMLUtil {
    * @param oWriter
    *          The given <code>PrintWriter</code> object.
    * @param tagEnd
-   *          If <code>false</code> prints the XML tag beginning brackets, otherwise prints the
-   *          the XML tag ending brackets.
+   *          If <code>false</code> prints the XML tag beginning brackets, otherwise prints the the
+   *          XML tag ending brackets.
    * @param level
    *          The given indentation level (number of marginal '\t' symbols).
    * @throws IOException
@@ -834,14 +827,13 @@ public class XMLUtil {
           boolean tagEnd, int level) throws IOException {
     // add marginal tabs
     for (int l = 0; l < level; l++) {
-        oWriter.print('\t');
+      oWriter.print('\t');
     }
     // print XML tag prefix
     if (tagEnd) {
-        oWriter.print("</");
-    }
-    else {
-        oWriter.print('<');
+      oWriter.print("</");
+    } else {
+      oWriter.print('<');
     }
     // print XML tag name
     oWriter.print(tag);
@@ -863,18 +855,13 @@ public class XMLUtil {
     oWriter.print('>');
     oWriter.flush();
   }
-  
-  private static String xmlEscape(String value)
-  {
-      if (value == null) {
-          return value;
-      }
-      
-      return value
-              .replace("&", "&amp;")
-              .replace("<", "&lt;")
-              .replace(">", "&gt;")
-              .replace("\"", "&quot;")
-              .replace("'", "&apos;");
+
+  private static String xmlEscape(String value) {
+    if (value == null) {
+      return value;
+    }
+
+    return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace("\"", "&quot;").replace("'", "&apos;");
   }
 }

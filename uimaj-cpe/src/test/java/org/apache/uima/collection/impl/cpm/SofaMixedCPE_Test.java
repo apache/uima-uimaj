@@ -21,8 +21,6 @@ package org.apache.uima.collection.impl.cpm;
 
 import java.io.File;
 
-import org.junit.jupiter.api.AfterEach;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -31,6 +29,7 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -102,14 +101,17 @@ public class SofaMixedCPE_Test {
 
     int statUnit = 100;
 
+    @Override
     public void initializationComplete() {
       if (debug)
         System.out.println(" Collection Processsing managers initialization " + "is complete ");
     }
 
+    @Override
     public synchronized void batchProcessComplete() {
     }
 
+    @Override
     public synchronized void collectionProcessComplete() {
       if (debug)
         System.out.println(" Completed " + entityCount + " documents  ; " + size / 1000 + " kB");
@@ -119,21 +121,25 @@ public class SofaMixedCPE_Test {
       notifyAll();
     }
 
+    @Override
     public synchronized void paused() {
       if (debug)
         System.out.println("Paused");
     }
 
+    @Override
     public synchronized void resumed() {
       if (debug)
         System.out.println("Resumed");
     }
 
+    @Override
     public void aborted() {
       if (debug)
         System.out.println("Stopped");
     }
 
+    @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       // if there is an error, record and we will fail on CPE completion
       if (aStatus.getExceptions().size() > 0) {

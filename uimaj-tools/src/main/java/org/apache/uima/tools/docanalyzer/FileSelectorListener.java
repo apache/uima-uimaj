@@ -42,5 +42,5 @@ public interface FileSelectorListener {
    * @param fileString the file string
    * @return true, if successful
    */
-  public boolean fileSelected(JComponent source, String fileString);
+  boolean fileSelected(JComponent source, String fileString);
 }

@@ -44,7 +44,6 @@ public class WorkUnit {
    * @param aPayload the a payload
    */
   public WorkUnit(Object aPayload) {
-    super();
     payload = aPayload;
   }
 

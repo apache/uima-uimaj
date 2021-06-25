@@ -28,21 +28,21 @@ import org.apache.uima.cas.CAS;
  * Currently the framework does not fully support Preconditions. Only the
  * {@link org.apache.uima.resource.metadata.LanguagePrecondition} subinterface is used.
  * <p>
- * As with all {@link MetaDataObject}s, a <code>Precondition</code> may or may not be modifiable.
- * An application can find out by calling the {@link #isModifiable()} method.
+ * As with all {@link MetaDataObject}s, a <code>Precondition</code> may or may not be modifiable. An
+ * application can find out by calling the {@link #isModifiable()} method.
  * 
  * 
  */
 public interface Precondition extends MetaDataObject {
 
   /**
-   * Gets the type of this precondition. Each sub-interface of <code>Precondition</code> has its
-   * own standard type identifier String. These identifier Strings are used instead of Java class
-   * names in order to ease portability of metadata to other languages.
+   * Gets the type of this precondition. Each sub-interface of <code>Precondition</code> has its own
+   * standard type identifier String. These identifier Strings are used instead of Java class names
+   * in order to ease portability of metadata to other languages.
    * 
    * @return the type identifier String for this precondition
    */
-  public String getPreconditionType();
+  String getPreconditionType();
 
   /**
    * Determines if this precondition is satisfied by a CAS.
@@ -52,5 +52,5 @@ public interface Precondition extends MetaDataObject {
    * 
    * @return true if and only if the CAS satisfies this precondition.
    */
-  public boolean evaluate(CAS aCAS);
+  boolean evaluate(CAS aCAS);
 }

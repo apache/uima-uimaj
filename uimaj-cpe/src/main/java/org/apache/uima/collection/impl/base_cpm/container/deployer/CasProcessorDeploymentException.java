@@ -39,7 +39,6 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    * Creates a new exception with a null message.
    */
   public CasProcessorDeploymentException() {
-    super();
   }
 
   /**

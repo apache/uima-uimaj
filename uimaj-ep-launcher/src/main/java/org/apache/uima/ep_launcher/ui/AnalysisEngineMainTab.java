@@ -24,7 +24,6 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
 import org.apache.uima.ep_launcher.LauncherConstants;
 import org.apache.uima.ep_launcher.LauncherConstants.InputFormat;
 import org.eclipse.core.resources.IContainer;
@@ -35,6 +34,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -58,11 +58,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 /**
  * The Analysis Engine Main Tab is responsible to display/edit
@@ -109,6 +109,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     return null;
   }
   
+  @Override
   public void createControl(Composite composite) {
     
     Composite projectComposite = new Composite(composite, SWT.NONE);
@@ -134,6 +135,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(true, false).applyTo(projectText);
     projectText.addModifyListener(new ModifyListener() {
       
+      @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
@@ -142,6 +144,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     Button browseProject = new Button(projectGroup, SWT.NONE);
     browseProject.setText("Browse ...");
     browseProject.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         ILabelProvider labelProvider = new WorkbenchLabelProvider();
 
@@ -179,6 +182,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(true, false).applyTo(descriptorText);
     descriptorText.addModifyListener(new ModifyListener() {
       
+      @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
@@ -186,6 +190,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     Button browseDescriptor = new Button(descriptorGroup, SWT.NONE);
     browseDescriptor.setText("Browse ...");
     browseDescriptor.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(),
                 new WorkbenchLabelProvider(), new WorkbenchContentProvider());
@@ -218,6 +223,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(true, false).applyTo(inputText);
     inputText.addModifyListener(new ModifyListener() {
       
+      @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
@@ -226,6 +232,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     Button browseInputResource = new Button(inputResourceGroup, SWT.NONE);
     browseInputResource.setText("Browse ...");
     browseInputResource.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(),
                 new WorkbenchLabelProvider(), new WorkbenchContentProvider());
@@ -249,10 +256,12 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(true, false).applyTo(recursivelyButton);
     recursivelyButton.addSelectionListener(new SelectionListener() {
       
+      @Override
       public void widgetSelected(SelectionEvent event) {
         updateLaunchConfigurationDialog();
       }
       
+      @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
@@ -272,10 +281,12 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(true, false).span(4, 1).applyTo(casButton);
     casButton.addSelectionListener(new SelectionListener() {
       
+      @Override
       public void widgetSelected(SelectionEvent event) {
         updateLaunchConfigurationDialog();
       }
       
+      @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
@@ -285,12 +296,14 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(false, false).applyTo(plainTextButton);
     plainTextButton.addSelectionListener(new SelectionListener() {
       
+      @Override
       public void widgetSelected(SelectionEvent event) {
         encodingCombo.setEnabled(plainTextButton.getSelection());
         languageText.setEnabled(plainTextButton.getSelection());
         updateLaunchConfigurationDialog();
       }
       
+      @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
@@ -302,6 +315,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     encodingCombo.addModifyListener(new ModifyListener() {
       
+      @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
@@ -333,7 +347,8 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
    languageText.addModifyListener(new ModifyListener() {
      
-     public void modifyText(ModifyEvent event) {
+     @Override
+    public void modifyText(ModifyEvent event) {
        updateLaunchConfigurationDialog();
      }
    });
@@ -350,6 +365,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
             grab(true, false).applyTo(outputFolderText);
     outputFolderText.addModifyListener(new ModifyListener() {
       
+      @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
@@ -358,6 +374,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     Button browseOutputFolderButton = new Button(outputFolderGroup, SWT.NONE);
     browseOutputFolderButton.setText("Browse ...");
     browseOutputFolderButton.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
      // TODO: Only select elements within project
         String currentContainerString = outputFolderText.getText();
@@ -380,16 +397,19 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
             grab(true, false).applyTo(clearFolderButton);
     clearFolderButton.addSelectionListener(new SelectionListener() {
+      @Override
       public void widgetSelected(SelectionEvent event) {
         updateLaunchConfigurationDialog();
       }
       
+      @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
     setControl(projectComposite);
   }
 
+  @Override
   public String getName() {
     return "Main";
   }
@@ -453,6 +473,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     return super.isValid(launchConfig);
   }
   
+  @Override
   public void performApply(ILaunchConfigurationWorkingCopy config) {
     config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
             (String) projectText.getText());
@@ -485,6 +506,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         clearFolderButton.getSelection());
   }
 
+  @Override
   public void setDefaults(ILaunchConfigurationWorkingCopy config) {
     config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false);
     config.setAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME, InputFormat.CAS.toString());

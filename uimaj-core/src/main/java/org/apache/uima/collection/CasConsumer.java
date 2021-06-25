@@ -37,8 +37,8 @@ import org.apache.uima.util.XMLInputSource;
  * with that information; commonly CAS consumers will build aggregate data structures such as search
  * engine indexes or glossaries.
  * <p>
- * <code>CasConsumer</code>s are also UIMA {@link ConfigurableResource}s, and can be
- * instantiated from descriptors. See
+ * <code>CasConsumer</code>s are also UIMA {@link ConfigurableResource}s, and can be instantiated
+ * from descriptors. See
  * {@link org.apache.uima.util.XMLParser#parseCasConsumerDescription(XMLInputSource)} and
  * {@link org.apache.uima.UIMAFramework#produceCasConsumer(ResourceSpecifier,Map)} for more
  * information.
@@ -52,6 +52,7 @@ public interface CasConsumer extends ConfigurableResource, CasObjectProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
-  public boolean isReadOnly();
+  @Override
+  boolean isReadOnly();
 
 }

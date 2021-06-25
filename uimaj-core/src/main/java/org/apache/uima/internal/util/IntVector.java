@@ -21,7 +21,6 @@ package org.apache.uima.internal.util;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfInt;
 
@@ -110,7 +109,7 @@ public class IntVector implements Serializable {
     this.growth_factor = growth_factor;
     this.multiplication_limit = multiplication_limit;
   }
-  
+
   public void resetSize(int capacity) {
     pos = 0;
     if (capacity <= 0) {
@@ -127,34 +126,42 @@ public class IntVector implements Serializable {
 
   /**
    * Add an array of elements to the end.
-   * @param elements -
+   * 
+   * @param elements
+   *          -
    */
   public void add(int[] elements) {
     add(elements, 0, elements.length);
   }
-  
+
   public void addBulk(IntVector elements) {
     add(elements.array, 0, elements.size());
   }
-  
+
   /**
    * Add a slice of elements to the end
-   * @param elements -
-   * @param startpos -
-   * @param endpos -
+   * 
+   * @param elements
+   *          -
+   * @param startpos
+   *          -
+   * @param endpos
+   *          -
    */
   public void add(int[] elements, int startpos, int endpos) {
     final int len = endpos - startpos;
     final int posNow = this.pos;
-    ensure_size(this.pos + len);  // changes pos
+    ensure_size(this.pos + len); // changes pos
     System.arraycopy(elements, startpos, this.array, posNow, len);
-//    this.pos += len;  done by ensure_size    
+    // this.pos += len; done by ensure_size
   }
-  
+
   /**
-   * Add an element at the end of vector. Behaves like add(Object o) of
-   * {@link java.util.Vector Vector}.
-   * @param element -
+   * Add an element at the end of vector. Behaves like add(Object o) of {@link java.util.Vector
+   * Vector}.
+   * 
+   * @param element
+   *          -
    */
   public void add(int element) {
     final int i = this.pos;
@@ -162,20 +169,23 @@ public class IntVector implements Serializable {
     ensure_size(this.pos);
     this.array[i] = element;
   }
-  
+
   public void multiAdd(int element, int count) {
     final int i = this.pos;
     this.pos += count;
     ensure_size(this.pos);
-    Arrays.fill(this.array, i, this.pos, element);    
+    Arrays.fill(this.array, i, this.pos, element);
   }
 
   /**
    * Add an element at a certain position in the vector. Elements later in the vector are shifted
    * right by one. If the position is past the end of the current vector, new <code>0</code>-valued
    * elements are added.
-   * @param index -
-   * @param element -
+   * 
+   * @param index
+   *          -
+   * @param element
+   *          -
    */
   public void add(int index, int element) {
     if (index >= this.pos) {
@@ -190,26 +200,29 @@ public class IntVector implements Serializable {
     }
     this.array[index] = element;
   }
-  
+
   public void multiAdd(int index, int element, int count) {
     final int endPos = index + count;
     if (index >= this.pos) {
       ensure_size(endPos);
     } else {
-      if (this.array.length < this.pos + count) {  // "<" because cocunt
+      if (this.array.length < this.pos + count) { // "<" because cocunt
         ensure_size(this.pos + count);
       } else {
         this.pos += count;
       }
       System.arraycopy(this.array, index, this.array, endPos, this.pos - endPos);
     }
-    Arrays.fill(this.array, index,  endPos, element);
+    Arrays.fill(this.array, index, endPos, element);
   }
 
   /**
    * Set an element at a certain position in the vector.
-   * @param index -
-   * @param element -
+   * 
+   * @param index
+   *          -
+   * @param element
+   *          -
    */
   public void set(int index, int element) {
     if (index >= this.pos) {
@@ -219,11 +232,13 @@ public class IntVector implements Serializable {
   }
 
   /**
-   * Set an element at a certain position in the vector. Vector will grow.
-   * Not apparently used (2014)
-   * Seems for purposes of having pairs of adjacent elements, (e.g. map).
-   * @param index -
-   * @param element -
+   * Set an element at a certain position in the vector. Vector will grow. Not apparently used
+   * (2014) Seems for purposes of having pairs of adjacent elements, (e.g. map).
+   * 
+   * @param index
+   *          -
+   * @param element
+   *          -
    */
   public void put(int index, int element) {
     ensure_size(index + 1);
@@ -233,7 +248,8 @@ public class IntVector implements Serializable {
   /**
    * Retrieve the element at index.
    * 
-   * @param index -
+   * @param index
+   *          -
    * @return The element at <code>index</code>.
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>index</code> is not a valid index.
@@ -266,9 +282,9 @@ public class IntVector implements Serializable {
       return retval;
     }
     System.arraycopy(this.array, index + 1, this.array, index, this.pos - index);
-//    for (int i = index; i < this.pos; i++) {
-//      this.array[i] = this.array[i + 1];
-//    }
+    // for (int i = index; i < this.pos; i++) {
+    // this.array[i] = this.array[i + 1];
+    // }
     return retval;
   }
 
@@ -278,28 +294,27 @@ public class IntVector implements Serializable {
   public void removeAllElements() {
     this.pos = 0;
   }
-  
+
   public void removeAllElementsAdjustSizeDown() {
     removeAllElements();
     int len = array.length;
-    int newSize =  len >> (
-        (len > 128) ? 2 : 
-        (len > 4 ) ? 1 : 
-                    0);
+    int newSize = len >> ((len > 128) ? 2 : (len > 4) ? 1 : 0);
     resetSize(newSize);
   }
 
   /**
-   * Compares the specified <code>Object</code> with this <code>IntVector</code> for equality.
-   * Two <code>IntVector</code>s are equal if and only if the object passed in <code>o</code>
-   * is of type <code>IntVector</code>, <code>this.size() == o.size()</code>, and the <i>n</i>-th
-   * element in this <code>IntVector</code> is equal to the <i>n</i>-th element in <code>o</code>
-   * for all <i>n</i> &lt; <code>this.size()</code>.
+   * Compares the specified <code>Object</code> with this <code>IntVector</code> for equality. Two
+   * <code>IntVector</code>s are equal if and only if the object passed in <code>o</code> is of type
+   * <code>IntVector</code>, <code>this.size() == o.size()</code>, and the <i>n</i>-th element in
+   * this <code>IntVector</code> is equal to the <i>n</i>-th element in <code>o</code> for all
+   * <i>n</i> &lt; <code>this.size()</code>.
    * 
-   * @param o -
+   * @param o
+   *          -
    * @return <code>true</code> if the <code>IntVector</code>s are equal, <code>false</code>
    *         otherwise.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -332,7 +347,9 @@ public class IntVector implements Serializable {
 
   /**
    * Tests if the specified <code>int</code> is a component of this <code>IntVector</code>.
-   * @param elem -
+   * 
+   * @param elem
+   *          -
    * @return <code>true</code> if and only if the <code>int</code> is an element of this
    *         <code>IntVector</code>, <code>false</code> otherwise.
    */
@@ -344,25 +361,24 @@ public class IntVector implements Serializable {
    * Return the position of the first occurrence of <code>elem</code> in the IntVector, if it
    * exists.
    * 
-   * @param elem 
+   * @param elem
    *          The element we're looking for.
    * @return The position, or <code>-1</code> if it doesn't exist.
    */
   public int position(int elem) {
     return indexOfOptimizeAscending(elem);
-//    int i = 0;
-//    while (i < this.pos) {
-//      if (this.array[i] == elem) {
-//        return i;
-//      }
-//      ++i;
-//    }
-//    return -1;
+    // int i = 0;
+    // while (i < this.pos) {
+    // if (this.array[i] == elem) {
+    // return i;
+    // }
+    // ++i;
+    // }
+    // return -1;
   }
 
   /**
-   * Set every element of the vector to some value.
-   * Not used (2014)
+   * Set every element of the vector to some value. Not used (2014)
    * 
    * @param value
    *          The fill value.
@@ -373,28 +389,28 @@ public class IntVector implements Serializable {
 
   /**
    * @return the underlying int array, where the length of the returned array is equal to the
-   * vector's size. This is not a copy!
+   *         vector's size. This is not a copy!
    */
   public int[] toArray() {
     trimToSize();
     return this.array;
   }
-  
+
   /**
    * 
    * @return an updated value for this vector, with the values sorted and duplicates removed
    */
   public IntVector sortDedup() {
     if (pos == 0) {
-      return this;  // handle empty edge case https://issues.apache.org/jira/browse/UIMA-3603
+      return this; // handle empty edge case https://issues.apache.org/jira/browse/UIMA-3603
     }
     Arrays.sort(array, 0, pos);
     int prev = array[0];
     int cpyfromIndex = 1;
-    int cpytoIndex = 1; 
-    
+    int cpytoIndex = 1;
+
     // go past first part of array until find first duplicate
-    for (; cpyfromIndex < pos; cpyfromIndex ++) {
+    for (; cpyfromIndex < pos; cpyfromIndex++) {
       final int v = array[cpyfromIndex];
       if (v == prev) {
         break;
@@ -403,11 +419,11 @@ public class IntVector implements Serializable {
     }
 
     // copyfromIndex == 1 past end or the index of first duplicate
-    cpytoIndex = cpyfromIndex ++;
+    cpytoIndex = cpyfromIndex++;
     // now cpytoIndex = 1 past end or index of 1st duplicate,
-    //     cpyfromIndex is one beyond that (next one to check)
-    
-    for (; cpyfromIndex < pos; ) {
+    // cpyfromIndex is one beyond that (next one to check)
+
+    for (; cpyfromIndex < pos;) {
       final int v = array[cpyfromIndex++];
       if (v == prev) {
         continue;
@@ -428,8 +444,10 @@ public class IntVector implements Serializable {
     return copy;
   }
 
-  /** Return the internal array. 
-   * @return - 
+  /**
+   * Return the internal array.
+   * 
+   * @return -
    */
   public int[] getArray() {
     return this.array;
@@ -437,7 +455,9 @@ public class IntVector implements Serializable {
 
   /**
    * Returns the index of the first occurrence of the element specified in this vector.
-   * @param element -
+   * 
+   * @param element
+   *          -
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOf(int element) {
@@ -459,34 +479,33 @@ public class IntVector implements Serializable {
     }
     return -1;
   }
-  
+
   /**
-   * Returns the index of some occurrence of the element specified in this vector.
-   * optimization: 
-   * this is used only in bag index implementations or cases where which element among potentially many is picked,
-   *   such as sets (at most one element) or "contains" (don't care which one is found)
-   * Other optimizations for that are done for the major use case
-   * that the order of adding elements results in the elements being
-   * more-or-less ordered, ascending.
+   * Returns the index of some occurrence of the element specified in this vector. optimization:
+   * this is used only in bag index implementations or cases where which element among potentially
+   * many is picked, such as sets (at most one element) or "contains" (don't care which one is
+   * found) Other optimizations for that are done for the major use case that the order of adding
+   * elements results in the elements being more-or-less ordered, ascending.
    *
-   * Exploit this by assuming ascending, and testing if the 
-   * element is above or below the mid-element, and ordering the
-   * direction of the search.
-   * @param element -
+   * Exploit this by assuming ascending, and testing if the element is above or below the
+   * mid-element, and ordering the direction of the search.
+   * 
+   * @param element
+   *          -
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOfOptimizeAscending(int element) {
-//    return indexOf(element);
+    // return indexOf(element);
     final int midValue = this.array[this.pos >>> 1];
     if (element > midValue) {
-      for (int i = this.pos - 1; i >=0; i--) {
+      for (int i = this.pos - 1; i >= 0; i--) {
         if (element == this.array[i]) {
           return i;
         }
       }
       return -1;
     }
-    
+
     final int size = this.pos;
     for (int i = 0; i < size; i++) {
       if (element == this.array[i]) {
@@ -511,15 +530,16 @@ public class IntVector implements Serializable {
   }
 
   public IntVector copy() {
-    IntVector copy = new IntVector(this.array.length, this.growth_factor, this.multiplication_limit);
+    IntVector copy = new IntVector(this.array.length, this.growth_factor,
+            this.multiplication_limit);
     copy.pos = this.pos;
-//    for (int i = 0; i < this.pos; i++) {
-//      copy.array[i] = this.array[i];
-//    }
+    // for (int i = 0; i < this.pos; i++) {
+    // copy.array[i] = this.array[i];
+    // }
     System.arraycopy(this.array, 0, copy.array, 0, this.pos);
     return copy;
   }
-  
+
   /**
    * @return a copy of the internal int array, trimmed
    */
@@ -528,16 +548,16 @@ public class IntVector implements Serializable {
     System.arraycopy(this.array, 0, r, 0, this.pos);
     return r;
   }
-  
+
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, this.array, destPos, length);
   }
-  
+
   public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
     System.arraycopy(this.array, srcPos, dest, destPos, length);
   }
 
-
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('[');
@@ -559,6 +579,7 @@ public class IntVector implements Serializable {
     }
   }
 
+  @Override
   public int hashCode() {
     if (this.array == null) {
       return 0;
@@ -569,12 +590,12 @@ public class IntVector implements Serializable {
     }
     return sum;
   }
-  
+
   public OfInt iterator() {
     return new OfInt() {
 
       int pos = 0;
-      
+
       @Override
       public boolean hasNext() {
         return pos < size();
@@ -595,15 +616,15 @@ public class IntVector implements Serializable {
         }
         return get(pos++);
       }
-      
+
     };
   }
-  
+
   public IntListIterator intListIterator() {
     return new IntListIterator() {
 
-      private int pos = 0; 
-      
+      private int pos = 0;
+
       @Override
       public boolean hasNext() {
         return pos >= 0 && pos < size();
@@ -611,14 +632,14 @@ public class IntVector implements Serializable {
 
       @Override
       public int nextNvc() {
-        return get(pos++);        
+        return get(pos++);
       }
-      
+
       @Override
       public boolean hasPrevious() {
-        return pos > 0 && pos < size();  
+        return pos > 0 && pos < size();
       }
-      
+
       @Override
       public int previousNvc() {
         return get(--pos);
@@ -635,20 +656,19 @@ public class IntVector implements Serializable {
       }
     };
   }
-  
-  public void sort () {
+
+  public void sort() {
     Arrays.sort(this.array, 0, size());
   }
 
-  
   // testing
-//  public static void main(String[] args) {
-//    IntVector iv = new IntVector();
-//    iv.add(new int[] {5, 3, 2, 7, 5, 3, 4, 5, 6, 5, 9, 8, 7});
-//    iv.sortDedup();
-//    for (int i = 0; i < iv.size(); i++) {
-//      System.out.print(iv.get(i) + " ");
-//    }
-//  }
- 
+  // public static void main(String[] args) {
+  // IntVector iv = new IntVector();
+  // iv.add(new int[] {5, 3, 2, 7, 5, 3, 4, 5, 6, 5, 9, 8, 7});
+  // iv.sortDedup();
+  // for (int i = 0; i < iv.size(); i++) {
+  // System.out.print(iv.get(i) + " ");
+  // }
+  // }
+
 }

@@ -22,8 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.NoSuchElementException;
 
 /**
- * Int iterator in the Java style, but returning/using ints.
- * Contrast with IntPointerIterator, which is in the UIMA style allowing forward and backwards movement.
+ * Int iterator in the Java style, but returning/using ints. Contrast with IntPointerIterator, which
+ * is in the UIMA style allowing forward and backwards movement.
  */
 public interface IntListIterator {
 
@@ -50,12 +50,13 @@ public interface IntListIterator {
   }
 
   /**
-   * version of next() which bypasses the validity check.
-   * Only use this if you've already done this check yourself.
+   * version of next() which bypasses the validity check. Only use this if you've already done this
+   * check yourself.
+   * 
    * @return the next int in the list and increment the iterator.
    */
   int nextNvc();
-  
+
   /**
    * Check if there is a previous element. Does not move the iterator.
    * 
@@ -77,10 +78,11 @@ public interface IntListIterator {
     }
     return previousNvc();
   }
-  
+
   /**
-   * version of previous that bypasses the validity check.
-   * Only use this if you've already done this check yourself.
+   * version of previous that bypasses the validity check. Only use this if you've already done this
+   * check yourself.
+   * 
    * @return the previous int (found by first moving the iterator one backwards).
    */
   int previousNvc();

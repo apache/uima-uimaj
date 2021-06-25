@@ -21,8 +21,8 @@ package org.apache.uima.util;
 
 /**
  * Progress statistics for a process. This is represented by an amount completed, a total amount (if
- * known), and a unit. There are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}),
- * but any unit can be used.
+ * known), and a unit. There are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but
+ * any unit can be used.
  * 
  * 
  */
@@ -33,7 +33,7 @@ public interface Progress extends java.io.Serializable {
    * 
    * @return the amount completed
    */
-  public long getCompleted();
+  long getCompleted();
 
   /**
    * The total amount being processed, in terms of units specified by {@link #getUnit()}. For some
@@ -41,16 +41,15 @@ public interface Progress extends java.io.Serializable {
    * 
    * @return the total amount, -1 if not known
    */
-  public long getTotal();
+  long getTotal();
 
   /**
    * The unit type represented by the {@link #getCompleted()} and {@link #getTotal()} numbers. There
-   * are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit can be
-   * used.
+   * are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit can be used.
    * 
    * @return the unit
    */
-  public String getUnit();
+  String getUnit();
 
   /**
    * Returns true if the progress statistics are approximate, for example if the total number of
@@ -58,18 +57,18 @@ public interface Progress extends java.io.Serializable {
    * 
    * @return true if the statistics are approximate, false if they are exact
    */
-  public boolean isApproximate();
+  boolean isApproximate();
 
   /**
    * The predefined unit type "entities". An entity is the thing being processed, for example a
    * document. When this unit is used, the amount completed and total amount represent a number of
    * entities.
    */
-  public String ENTITIES = "entities";
+  String ENTITIES = "entities";
 
   /**
    * The predefined unit type "bytes". When this unit is used, the amount completed and total amount
    * represent the size of the data in bytes.
    */
-  public String BYTES = "bytes";
+  String BYTES = "bytes";
 }

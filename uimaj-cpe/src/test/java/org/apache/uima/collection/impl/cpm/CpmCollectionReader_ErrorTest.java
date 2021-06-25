@@ -19,13 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.Iterator;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -41,6 +38,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
 import org.apache.uima.util.Level;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test CollectionReader Error Handling<br>
@@ -773,6 +772,7 @@ public class CpmCollectionReader_ErrorTest {
       /**
        * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
        */
+      @Override
       public void aborted() {
          super.aborted();
          // System.out.println("abort was called.");
@@ -786,6 +786,7 @@ public class CpmCollectionReader_ErrorTest {
        * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
        *      org.apache.uima.collection.EntityProcessStatus)
        */
+      @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
          super.entityProcessComplete(aCas, aStatus);
          // check for a failure in processing...

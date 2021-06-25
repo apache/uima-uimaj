@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,23 +31,23 @@ import org.apache.uima.jcas.cas.TOP;
 class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
   private static final AtomicInteger moveToCount = new AtomicInteger(0);
-  
-  protected CopyOnWriteObjHashSet<T> bag;
-  final protected FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from super class, allows dispatch w/o casting
-  
-  private int position = -1;  
-  
-  private boolean isGoingForward = true;
-  
 
+  protected CopyOnWriteObjHashSet<T> bag;
+  final protected FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from
+                                             // super class, allows dispatch w/o casting
+
+  private int position = -1;
+
+  private boolean isGoingForward = true;
 
   FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti, CopyOnWriteIndexPart<T> cow_wrapper) {
     super(ti);
-    this.fsBagIndex = fsBagIndex;  // need for copy()
+    this.fsBagIndex = fsBagIndex; // need for copy()
     bag = (CopyOnWriteObjHashSet<T>) cow_wrapper;
     moveToFirst();
   }
-  
+
+  @Override
   public boolean maybeReinitIterator() {
     if (!bag.isOriginal()) {
       bag = (CopyOnWriteObjHashSet<T>) fsBagIndex.getNonNullCow();
@@ -58,8 +56,9 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return false;
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#isValid()
    */
   @Override
@@ -69,53 +68,61 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   @Override
   public T getNvc() {
-//    checkConcurrentModification();
+    // checkConcurrentModification();
     return (T) bag.get(position);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToFirst()
    */
   @Override
   public void moveToFirstNoReinit() {
-//    resetConcurrentModification();
+    // resetConcurrentModification();
     isGoingForward = true;
     position = (bag.size() == 0) ? -1 : bag.moveToNextFilled(0);
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIterator#moveToLast()
-   *  If empty, make position -1 (invalid)
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIterator#moveToLast() If empty, make position -1 (invalid)
    */
   @Override
   public void moveToLastNoReinit() {
-//    resetConcurrentModification();
+    // resetConcurrentModification();
     isGoingForward = false;
-    position =  (bag.size() == 0) ? -1 : bag.moveToPreviousFilled(bag.getCapacity() -1);
+    position = (bag.size() == 0) ? -1 : bag.moveToPreviousFilled(bag.getCapacity() - 1);
   }
-  
+
   @Override
   public void moveToNextNvc() {
-//    checkConcurrentModification(); 
+    // checkConcurrentModification();
     isGoingForward = true;
     position = bag.moveToNextFilled(++position);
   }
 
   @Override
   public void moveToPreviousNvc() {
-//    checkConcurrentModification();
+    // checkConcurrentModification();
     isGoingForward = false;
     position = bag.moveToPreviousFilled(--position);
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-//    throw new UnsupportedOperationException("MoveTo operations for unordered iterators is not supported");
-    Misc.decreasingWithTrace(moveToCount, "MoveTo operations on iterators over Bag indexes are likely mistakes." , UIMAFramework.getLogger());
-//    resetConcurrentModification();
+    // throw new UnsupportedOperationException("MoveTo operations for unordered iterators is not
+    // supported");
+    Misc.decreasingWithTrace(moveToCount,
+            "MoveTo operations on iterators over Bag indexes are likely mistakes.",
+            UIMAFramework.getLogger());
+    // resetConcurrentModification();
     // for backwards compatibility
     position = bag.moveTo(fs);
     if (position >= 0) {
@@ -125,11 +132,13 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     }
   }
 
-//  public void moveToExactNoReinit(FeatureStructure fs) {
-//    position = bag.moveTo(fs);
-//  }
+  // public void moveToExactNoReinit(FeatureStructure fs) {
+  // position = bag.moveTo(fs);
+  // }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   @Override
@@ -138,15 +147,17 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     copyCommonSetup(copy);
     return copy;
   }
-  
+
   protected void copyCommonSetup(FsIterator_bag<T> copy) {
     copy.position = position;
     copy.isGoingForward = isGoingForward;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
-   */  
+   */
   @Override
   public int ll_indexSizeMaybeNotCurrent() {
     return bag.size();
@@ -157,7 +168,9 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return Integer.MAX_VALUE;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_getIndex()
    */
   @Override
@@ -165,15 +178,17 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return fsBagIndex;
   }
 
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.cas.impl.FsIterator_singletype#getModificationCountFromIndex()
-//   */
-//  @Override
-//  protected int getModificationCountFromIndex() {
-//    return bag.getModificationCount();
-//  }
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.cas.impl.FsIterator_singletype#getModificationCountFromIndex()
+  // */
+  // @Override
+  // protected int getModificationCountFromIndex() {
+  // return bag.getModificationCount();
+  // }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
    */
   @Override
@@ -183,13 +198,12 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   @Override
   public Comparator<TOP> getComparator() {
-    return null;  // not used for bag
+    return null; // not used for bag
   }
 
   @Override
   public int size() {
     return bag.size();
   }
-  
-}
 
+}

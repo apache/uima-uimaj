@@ -40,6 +40,7 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
+// @formatter:off
 /**
  * Reference implementation of {@link ResultSpecification}.
  * 
@@ -124,35 +125,35 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * The compiled version is used in containsType, containsFeature testing, and is used when
  * computing intersection.
  */
-
-public final class ResultSpecification_impl extends MetaDataObject_impl implements
-        ResultSpecification {
+// @formatter:on
+public final class ResultSpecification_impl extends MetaDataObject_impl
+        implements ResultSpecification {
 
   private static final long serialVersionUID = 8516517600467270594L;
 
   /**
    * main language separator e.g 'en' and 'en-US'
-   */  
-    
-  private static final String[] ARRAY_X_UNSPEC = new String[]{Language.UNSPECIFIED_LANGUAGE};
-  
-  /**
-   * form used in hash table of compilied version to represent x-unspecified
-   * (can't use null - that means entry not in table)
    */
-  private static final RsLangs compiledXunspecified = RsLangs.createSharableEmpty();  // a distinct object
-  
+
+  private static final String[] ARRAY_X_UNSPEC = new String[] { Language.UNSPECIFIED_LANGUAGE };
+
+  /**
+   * form used in hash table of compilied version to represent x-unspecified (can't use null - that
+   * means entry not in table)
+   */
+  private static final RsLangs compiledXunspecified = RsLangs.createSharableEmpty(); // a distinct
+                                                                                     // object
+
   /**
    * used for empty type subsumption lists in subtype iterator
    */
   public static final List<Type> EMPTY_TYPE_LIST = new ArrayList<>(0);
-  
+
   /**
-   * For this Result-specification, the collection of language-sets
-   * Uncompiled format
+   * For this Result-specification, the collection of language-sets Uncompiled format
    */
   private final RsTypesMap rsTypesMap;
-  
+
   /**
    * The type system used to compute the subtypes and allAnnotatorFeatures of types
    */
@@ -168,12 +169,13 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   }
 
   /**
-   * Constructor specifying the type system
-   *   this should always be used in preference to the 0 argument version
-   *   if the type system is available.  Otherwise, the type system *must*
-   *   be set via a method call prior to querying the result spec, with the
-   *   one exception of the method getResultTypesAndFeaturesWithoutCompiling
-   * @param aTypeSystem -
+   * Constructor specifying the type system this should always be used in preference to the 0
+   * argument version if the type system is available. Otherwise, the type system *must* be set via
+   * a method call prior to querying the result spec, with the one exception of the method
+   * getResultTypesAndFeaturesWithoutCompiling
+   * 
+   * @param aTypeSystem
+   *          -
    */
   public ResultSpecification_impl(TypeSystem aTypeSystem) {
     this();
@@ -181,12 +183,12 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   }
 
   /**
-   * copies the result spec passed in so that updates to it
-   *   don't affect the original
+   * copies the result spec passed in so that updates to it don't affect the original
+   * 
    * @param original
    */
   private ResultSpecification_impl(ResultSpecification_impl original) {
-    mTypeSystem = original.mTypeSystem;    // not cloned
+    mTypeSystem = original.mTypeSystem; // not cloned
     rsTypesMap = new RsTypesMap(original.rsTypesMap);
     needsCompilation = original.needsCompilation;
     rsCompiled = new HashMap<>(original.rsCompiled);
@@ -194,23 +196,25 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       e.getValue().setShared();
     }
   }
-      
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#getResultTypesAndFeatures()
    */
+  @Override
   public TypeOrFeature[] getResultTypesAndFeatures() {
     return getResultTypesAndFeatures(true, null);
-  }    
-  
+  }
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#getResultTypesAndFeatures(java.lang.String)
-   * May contain near-duplicates - same type, but with different settings of allannotatorfeatures
-   *   (only if they have different languages)
+   *      May contain near-duplicates - same type, but with different settings of
+   *      allannotatorfeatures (only if they have different languages)
    */
+  @Override
   public TypeOrFeature[] getResultTypesAndFeatures(String language) {
     return getResultTypesAndFeatures(false, language);
   }
-  
+
   private TypeOrFeature[] getResultTypesAndFeatures(boolean skipLanguageFilter, String language) {
     List<TypeOrFeature> r = new ArrayList<>();
     if (rsTypesMap.nbrOfTypes() == 0 && !needsCompilation) {
@@ -220,17 +224,21 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       reconstructRsTypesFromCompiled();
     }
     for (RsType t : rsTypesMap) {
-      if (t.isAllFeatures && (skipLanguageFilter || RsLangs.subsumes(t.languagesAllFeat, language))) {
+      if (t.isAllFeatures
+              && (skipLanguageFilter || RsLangs.subsumes(t.languagesAllFeat, language))) {
         r.add(createTypeOrFeature(t.typeName, true, true));
       }
-      if (t.isSpecified && (skipLanguageFilter || RsLangs.subsumes(t.languagesNotAllFeat, language))) {
-        if (!(t.isAllFeatures && t.languagesAllFeat.equals(t.languagesNotAllFeat)))  // don't make a duplicate
-        r.add(createTypeOrFeature(t.typeName, true, false));
+      if (t.isSpecified
+              && (skipLanguageFilter || RsLangs.subsumes(t.languagesNotAllFeat, language))) {
+        if (!(t.isAllFeatures && t.languagesAllFeat.equals(t.languagesNotAllFeat))) {
+          r.add(createTypeOrFeature(t.typeName, true, false));
+        }
       }
       if (t.features != null) {
         for (RsFeat f : t.features) {
-          if (skipLanguageFilter || f.subsumes(language))
+          if (skipLanguageFilter || f.subsumes(language)) {
             r.add(createTypeOrFeature(t.typeName, f.shortFeatName));
+          }
         }
       }
     }
@@ -243,17 +251,17 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       String tofName = e.getKey();
       int b = tofName.indexOf(TypeSystem.FEATURE_SEPARATOR);
       if (b == -1) {
-        rsTypesMap.add(tofName, false, e.getValue(), false);  
+        rsTypesMap.add(tofName, false, e.getValue(), false);
       } else {
         String typeName = tofName.substring(0, b);
-        String featName = tofName.substring(b+1);
+        String featName = tofName.substring(b + 1);
         rsTypesMap.add(typeName, featName, e.getValue(), false);
       }
     }
-    
-    // Second merge 
-    //   if the types features all have the same lang and are all the features,
-    //      set the allFeats flag, and merge in the langs
+
+    // Second merge
+    // if the types features all have the same lang and are all the features,
+    // set the allFeats flag, and merge in the langs
     for (RsType t : rsTypesMap) {
       if (t.hasAllFeaturesExplicitly(mTypeSystem) && t.allFeaturesHaveSameLangs()) {
         t.isAllFeatures = true;
@@ -264,37 +272,40 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
         if (l != null) {
           if (t.languagesAllFeat == null) {
             t.languagesAllFeat = RsLangs.createOrNull(l);
-          } else {  // merge in langs l
+          } else { // merge in langs l
             t.languagesAllFeat = RsLangs.addAll(t.languagesAllFeat, l);
           }
-        }        
+        }
         t.features = null;
       }
-      if (t.isSpecified && t.isAllFeatures && equalsOrBothNull(t.languagesAllFeat, t.languagesNotAllFeat)) {
+      if (t.isSpecified && t.isAllFeatures
+              && equalsOrBothNull(t.languagesAllFeat, t.languagesNotAllFeat)) {
         t.isSpecified = false;
         t.languagesNotAllFeat = null;
       }
-    }    
+    }
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#setResultTypesAndFeatures(org.apache.uima.analysis_engine.TypeOrFeature[])
    */
+  @Override
   public void setResultTypesAndFeatures(TypeOrFeature[] aTypesAndFeatures) {
     setResultTypesAndFeatures(aTypesAndFeatures, ARRAY_X_UNSPEC);
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#setResultTypesAndFeatures(org.apache.uima.analysis_engine.TypeOrFeature[],
    *      java.lang.String[])
    */
+  @Override
   public void setResultTypesAndFeatures(TypeOrFeature[] aTypesAndFeatures, String[] aLanguageIDs) {
-       
+
     for (TypeOrFeature tof : aTypesAndFeatures) {
       addResultTof(tof, aLanguageIDs, true);
     }
   }
-    
+
   private void addResultTof(TypeOrFeature tof, String[] langs, boolean replace) {
     String name = tof.getName();
     String typeName = null;
@@ -305,15 +316,16 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       rsTypesMap.add(typeName, tof.isAllAnnotatorFeatures(), langs, replace);
     } else {
       typeName = name.substring(0, i);
-      shortFeatName = name.substring(i+1);
+      shortFeatName = name.substring(i + 1);
       rsTypesMap.add(typeName, shortFeatName, langs, replace);
     }
     setCompileNeeded();
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultTypeOrFeature(org.apache.uima.analysis_engine.TypeOrFeature)
    */
+  @Override
   public void addResultTypeOrFeature(TypeOrFeature aTypeOrFeature) {
     addResultTypeOrFeature(aTypeOrFeature, ARRAY_X_UNSPEC);
   }
@@ -321,33 +333,39 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultTypeOrFeature(org.apache.uima.analysis_engine.TypeOrFeature,
    *      java.lang.String[])
-   *      
-   * Note: Javadoc makes assumption that there's one tof per type, but this design allows 2 (one with allAnnotatorFeatures set or not).
+   * 
+   *      Note: Javadoc makes assumption that there's one tof per type, but this design allows 2
+   *      (one with allAnnotatorFeatures set or not).
    */
+  @Override
   public void addResultTypeOrFeature(TypeOrFeature tof, String[] languages) {
-    addResultTof(tof, languages, true); 
- }
-  
+    addResultTof(tof, languages, true);
+  }
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultType(java.lang.String,
    *      boolean)
    */
+  @Override
   public void addResultType(String aTypeName, boolean aAllAnnotatorFeatures) {
     addResultType(aTypeName, aAllAnnotatorFeatures, ARRAY_X_UNSPEC);
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultType(java.lang.String,
    *      boolean, java.lang.String[])
    */
-  public void addResultType(String aTypeName, boolean aAllAnnotatorFeatures, String[] aLanguageIDs) {
+  @Override
+  public void addResultType(String aTypeName, boolean aAllAnnotatorFeatures,
+          String[] aLanguageIDs) {
     rsTypesMap.add(aTypeName, aAllAnnotatorFeatures, aLanguageIDs, false);
     setCompileNeeded();
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultFeature(java.lang.String)
    */
+  @Override
   public void addResultFeature(String aFullFeatureName) {
     addResultFeature(aFullFeatureName, ARRAY_X_UNSPEC);
   }
@@ -356,12 +374,13 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultFeature(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public void addResultFeature(String aFullFeatureName, String[] aLanguageIDs) {
     String typeName = null;
     String shortFeatName = null;
     int i = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
     typeName = aFullFeatureName.substring(0, i);
-    shortFeatName = aFullFeatureName.substring(i+1);
+    shortFeatName = aFullFeatureName.substring(i + 1);
     rsTypesMap.add(typeName, shortFeatName, aLanguageIDs, false);
     setCompileNeeded();
   }
@@ -370,13 +389,15 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#compile(org.apache.uima.cas.TypeSystem)
    * @deprecated no longer needed, remove call to this
    */
+  @Override
   @Deprecated
   public void compile(TypeSystem aTypeSystem) {
     setTypeSystem(aTypeSystem);
     compile();
   }
-    
-  private TypeOrFeature createTypeOrFeature(String name, boolean isType, boolean aAllAnnotatorFeatures) {
+
+  private TypeOrFeature createTypeOrFeature(String name, boolean isType,
+          boolean aAllAnnotatorFeatures) {
     TypeOrFeature r = new TypeOrFeature_impl();
     r.setType(isType);
     r.setName(name);
@@ -385,18 +406,20 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     }
     return r;
   }
-  
+
   private TypeOrFeature createTypeOrFeature(String typeName, String featureName) {
     return createTypeOrFeature(typeName + TypeSystem.FEATURE_SEPARATOR + featureName, false, false);
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String)
    */
+  @Override
   public boolean containsType(String aTypeName) {
     return containsType(aTypeName, Language.UNSPECIFIED_LANGUAGE);
   }
 
+// @formatter:off
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String,java.lang.String)
    * method:
@@ -410,8 +433,9 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *   But: cache this: key = int[2]: type#, langi#, value = true/false
    *   
    */
-  
+// @formatter:on
   // TODO check cache, normalize language
+  @Override
   public boolean containsType(String aTypeName, String aLanguage) {
     if (aTypeName.indexOf(TypeSystem.FEATURE_SEPARATOR) != -1) {
       return false; // check against someone passing a feature name here
@@ -420,10 +444,10 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     return hasLanguage(rsCompiled.get(aTypeName), aLanguage);
   }
 
-  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String)
    */
+  @Override
   public boolean containsFeature(String aFullFeatureName) {
     return containsFeature(aFullFeatureName, Language.UNSPECIFIED_LANGUAGE);
   }
@@ -432,18 +456,21 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String,java.lang.String)
    */
 
+  @Override
   public boolean containsFeature(String aFullFeatureName, String aLanguage) {
     int i = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
-    if (i == -1)
+    if (i == -1) {
       return false; // check against someone passing a type name here
+    }
     compileIfNeeded();
     boolean found = hasLanguage(rsCompiled.get(aFullFeatureName), aLanguage);
     if (found) {
       return true;
     }
-    // this next bit is to keep the behavior in the case where the type system isn't specified, 
+    // this next bit is to keep the behavior in the case where the type system isn't specified,
     // the same.
-    RsType t = rsTypesMap.getRsType(aFullFeatureName.substring(0, i)); // look for just the type name
+    RsType t = rsTypesMap.getRsType(aFullFeatureName.substring(0, i)); // look for just the type
+                                                                       // name
     if (null != t && t.isAllFeatures && RsLangs.subsumes(t.languagesAllFeat, aLanguage)) {
       return true;
     }
@@ -454,16 +481,15 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * 
    * @param rsLangs
    * @param language
-   * @return true if the rsLangs subsumes the language 
+   * @return true if the rsLangs subsumes the language
    */
   private static boolean hasLanguage(RsLangs rsLangs, String language) {
     language = Language.normalize(language);
-    // rsLangs == null means there was no entry in the 
-    //   rsCompiled map for this type
-    //   It does NOT mean x-unspecified
+    // rsLangs == null means there was no entry in the
+    // rsCompiled map for this type
+    // It does NOT mean x-unspecified
     return (rsLangs == null) ? false : (RsLangs.subsumes(rsLangs, language));
   }
-
 
   /**
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
@@ -477,6 +503,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addCapabilities(org.apache.uima.resource.metadata.Capability[])
    */
+  @Override
   public void addCapabilities(Capability[] capabilities) {
     addCapabilities(capabilities, true);
   }
@@ -485,22 +512,24 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#addCapabilities(org.apache.uima.resource.metadata.Capability[],
    *      boolean)
    */
+  @Override
   public void addCapabilities(Capability[] capabilities, boolean outputs) {
     if (null == capabilities) {
       return;
     }
     for (Capability capability : capabilities) {
       TypeOrFeature[] tofs = outputs ? capability.getOutputs() : capability.getInputs();
-      
+
       for (TypeOrFeature tof : tofs) {
         String typeName = tof.getName();
         if (!tof.isType()) {
           int i = typeName.indexOf(TypeSystem.FEATURE_SEPARATOR);
-          String shortFeatName = typeName.substring(i+1);
+          String shortFeatName = typeName.substring(i + 1);
           typeName = typeName.substring(0, i);
           rsTypesMap.add(typeName, shortFeatName, capability.getLanguagesSupported(), false);
         } else {
-          rsTypesMap.add(typeName, tof.isAllAnnotatorFeatures(), capability.getLanguagesSupported(), false);
+          rsTypesMap.add(typeName, tof.isAllAnnotatorFeatures(), capability.getLanguagesSupported(),
+                  false);
         }
       }
     }
@@ -509,16 +538,17 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#removeTypeOrFeature(org.apache.uima.analysis_engine.TypeOrFeature)
-   * This removes the type or feature for all languages.
-   * Beware: there are two possible ToFs one with allFeatures set or not (if they have different languages).
+   *      This removes the type or feature for all languages. Beware: there are two possible ToFs
+   *      one with allFeatures set or not (if they have different languages).
    */
+  @Override
   public void removeTypeOrFeature(TypeOrFeature tof) {
     String name = tof.getName();
     if (tof.isType()) {
       rsTypesMap.remove(name);
     } else {
       int i = name.indexOf(TypeSystem.FEATURE_SEPARATOR);
-      rsTypesMap.remove(name.substring(0, i), name.substring(i+1));
+      rsTypesMap.remove(name.substring(0, i), name.substring(i + 1));
     }
     setCompileNeeded();
   }
@@ -538,38 +568,42 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     return new ResultSpecification_impl(this);
   }
 
+  @Override
   public void setTypeSystem(TypeSystem ts) {
     mTypeSystem = ts;
     setCompileNeeded();
   }
-  
+
+  @Override
   public TypeSystem getTypeSystem() {
     return mTypeSystem;
   }
-  
+
+  @Override
   @SuppressWarnings("unchecked")
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(this.getClass().getSimpleName() + ":\n");
     sb.append("  needsCompilation = ").append(needsCompilation).append('\n');
-//    sb.append("lang2int = ").append(lang2int).append("\n");
-//    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
-//    sb.append("withSubtypesName2tof_langs = ").append(withSubtypesName2tof_langs).append("\n");
+    // sb.append("lang2int = ").append(lang2int).append("\n");
+    // sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
+    // sb.append("withSubtypesName2tof_langs = ").append(withSubtypesName2tof_langs).append("\n");
     sb.append("\nrsTofLangs:\n");
     if (needsCompilation) {
       sb.append(rsTypesMap);
     } else {
-      Object [] sorted = rsCompiled.entrySet().toArray();
+      Object[] sorted = rsCompiled.entrySet().toArray();
       Arrays.sort(sorted, new Comparator<Object>() {
+        @Override
         public int compare(Object object1, Object object2) {
-          return ((Entry<String, RsLangs>)object1).getKey().
-          compareTo(((Entry<String, RsLangs>)object2).getKey());
+          return ((Entry<String, RsLangs>) object1).getKey()
+                  .compareTo(((Entry<String, RsLangs>) object2).getKey());
         }
       });
       for (Object o : sorted) {
         Entry<String, RsLangs> e = (Entry<String, RsLangs>) o;
         String k = e.getKey();
-        k = k + "        ".substring(k.length()%8);
+        k = k + "        ".substring(k.length() % 8);
         sb.append(" key: ").append(k).append("  value: ").append(e.getValue()).append('\n');
       }
     }
@@ -583,16 +617,16 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       compile();
     }
   }
-  
+
   private void setCompileNeeded() {
     needsCompilation = true;
-    rsCompiled.clear(); 
+    rsCompiled.clear();
   }
-  
+
   /**
    * create a fully expanded version of this result spec
    */
-  
+
   private void compile() {
     for (RsType rst : rsTypesMap) {
       if (rst.isSpecified) {
@@ -600,26 +634,27 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       }
       if (rst.isAllFeatures) {
         addCompiledFormForTypeAndItsSubtypes(rst, rst.languagesAllFeat);
-        
+
         for (Feature f : rst.getAllAppropriateFeatures(mTypeSystem)) {
-          addCompiledFormForFeatureAndItsSubtypes(rst, f.getShortName(), rst.languagesAllFeat);          
+          addCompiledFormForFeatureAndItsSubtypes(rst, f.getShortName(), rst.languagesAllFeat);
         }
       }
       if (rst.features != null) {
         for (RsFeat rsf : rst.features) {
           addCompiledFormForFeatureAndItsSubtypes(rst, rsf.shortFeatName, rsf.languages);
         }
-      }   
+      }
     }
   }
-  
+
   private void addCompiledFormForTypeAndItsSubtypes(RsType rst, RsLangs langs) {
     addCompiledFormEntry(rst.typeName, langs);
     for (String subtypeName : subtypeNames(rst.typeName)) {
       addCompiledFormEntry(subtypeName, langs);
     }
   }
-  
+
+// @formatter:off
   /**
    * Note: the string typeXXX:featYYY may not be in the type system.
    *   For instance, if featYYY is introduced in type Foo, we could have a spec of
@@ -628,15 +663,18 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @param shortFeatName
    * @param langs
    */
-  private void addCompiledFormForFeatureAndItsSubtypes(RsType rst, String shortFeatName, RsLangs langs) {
+// @formatter:on
+  private void addCompiledFormForFeatureAndItsSubtypes(RsType rst, String shortFeatName,
+          RsLangs langs) {
     addCompiledFormEntry(RsFullFeatNames.getFullFeatName(rst.typeName, shortFeatName), langs);
     for (String subtypeName : subtypeNames(rst.typeName)) {
-      addCompiledFormEntry(RsFullFeatNames.getFullFeatName(subtypeName, shortFeatName), langs);  
+      addCompiledFormEntry(RsFullFeatNames.getFullFeatName(subtypeName, shortFeatName), langs);
     }
   }
-      
+
   /**
    * Adds languages to a type or feature
+   * 
    * @param tofName
    * @param languagesToAdd
    */
@@ -654,34 +692,40 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     }
     RsLangs.addAll(rsLangs, languagesToAdd);
   }
-  
+
   private Iterable<String> subtypeNames(final String typeName) {
     final TypeSystemImpl ts = (TypeSystemImpl) mTypeSystem;
     return new Iterable<String>() {
 
+      @Override
       public Iterator<String> iterator() {
         return new Iterator<String>() {
-          Type t = (null == ts) ? null : ts.getType(typeName);         
-          List<Type> subtypes = (null == ts) ? EMPTY_TYPE_LIST 
-                              : (null == t ) ? EMPTY_TYPE_LIST
-                              : ts.getProperlySubsumedTypes(t);
-          int  i = 0;
+          Type t = (null == ts) ? null : ts.getType(typeName);
+          List<Type> subtypes = (null == ts) ? EMPTY_TYPE_LIST
+                  : (null == t) ? EMPTY_TYPE_LIST : ts.getProperlySubsumedTypes(t);
+          int i = 0;
 
+          @Override
           public boolean hasNext() {
             return i < subtypes.size();
           }
 
+          @Override
           public String next() {
             return subtypes.get(i++).getName();
           }
 
-          public void remove() {throw new UnsupportedOperationException();}
-          
+          @Override
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+
         };
       }
     };
   }
-  
+
+//@formatter:off
   /**
    * Compute the feature/type + language intersection of two result specs
    * Result-spec 2 is the more-or-less constant spec from the primitive's capability outputs
@@ -692,50 +736,50 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *     If the set contains x-unspecified - it is taken to mean all languages
    *     if the set contains XX - it is taken to mean the union of all sublanguages XX-yy
    */
-
-  
+//@formatter:on
   ResultSpecification_impl intersect(ResultSpecification_impl rsOther) {
-    
+
     ResultSpecification_impl r = new ResultSpecification_impl();
     r.setTypeSystem(rsOther.mTypeSystem);
-    
+
     r.compileIfNeeded();
     rsOther.compileIfNeeded();
     compileIfNeeded();
-    
+
     /**
-     * Iterate over other 
+     * Iterate over other
      */
-    for (Iterator<Entry<String, RsLangs>> it = rsOther.rsCompiled.entrySet().iterator(); it.hasNext();) {
+    for (Iterator<Entry<String, RsLangs>> it = rsOther.rsCompiled.entrySet().iterator(); it
+            .hasNext();) {
       Entry<String, RsLangs> e = it.next();
       String tofName = e.getKey();
-      RsLangs otherRsLangs = e.getValue(); 
-      
+      RsLangs otherRsLangs = e.getValue();
+
       /**
        * Get corresponding languages from this side
        */
       RsLangs thisRsLangs = rsCompiled.get(tofName);
       if (null == thisRsLangs) {
-        continue;    // null does NOT mean x-unspecified, it means tof is not present in compiled map at all
+        continue; // null does NOT mean x-unspecified, it means tof is not present in compiled map
+                  // at all
       }
-      
+
       /**
        * Intersect languages, with subsumption
        */
-      RsLangs intersectRsLangs = thisRsLangs.intersect(otherRsLangs);      
+      RsLangs intersectRsLangs = thisRsLangs.intersect(otherRsLangs);
       if (intersectRsLangs != null) {
         r.addCompiledFormEntry(tofName, intersectRsLangs);
       }
     }
     return r;
   }
-  
-  
-  
+
   private boolean compiledFormEquals(ResultSpecification_impl other) {
     compileIfNeeded();
     other.compileIfNeeded();
-    return rsCompiled.equals(other.rsCompiled);  // compares two maps, returns true if have same entries
+    return rsCompiled.equals(other.rsCompiled); // compares two maps, returns true if have same
+                                                // entries
   }
 
   @Override
@@ -743,11 +787,9 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     if (!(aObj instanceof ResultSpecification_impl)) {
       return false;
     }
-    return compiledFormEquals((ResultSpecification_impl)aObj);
+    return compiledFormEquals((ResultSpecification_impl) aObj);
   }
-  
-  
-  
+
   static boolean equalsOrBothNull(Object x, Object y) {
     if (null == x && null == y) {
       return true;
@@ -760,7 +802,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
   @Override
   public int hashCode() {
-    throw new UnsupportedOperationException("HashCode not implemented for ResultSpecification_impl");
+    throw new UnsupportedOperationException(
+            "HashCode not implemented for ResultSpecification_impl");
   }
 
 }

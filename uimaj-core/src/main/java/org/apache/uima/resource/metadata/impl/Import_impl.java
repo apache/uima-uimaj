@@ -39,9 +39,9 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  */
 public class Import_impl extends MetaDataObject_impl implements Import {
-  
+
   private static final long serialVersionUID = 6876757002913848998L;
-  
+
   /**
    * resource bundle for log messages
    */
@@ -50,13 +50,13 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   private String mName;
 
   private String mLocation;
-  
+
   private String byNameSuffix = ".xml";
 
   /*
-   * UIMA-5274  Expand any references to external overrides when name and location are fetched.
-   * Cache the value if the evaluation succeeds (later fetches may not have the settings defined!)
-   * Leave value unmodified if any settings are undefined.
+   * UIMA-5274 Expand any references to external overrides when name and location are fetched. Cache
+   * the value if the evaluation succeeds (later fetches may not have the settings defined!) Leave
+   * value unmodified if any settings are undefined.
    */
 
   /*
@@ -64,10 +64,11 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#getName()
    */
+  @Override
   public String getName() {
     if (mName != null && mName.contains("${")) {
       String value = resolveSettings(mName);
-      if (value != null) {  // Success!
+      if (value != null) { // Success!
         mName = value;
       }
     }
@@ -79,6 +80,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#setName(java.lang.String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -88,6 +90,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#getLocation()
    */
+  @Override
   public String getLocation() {
     if (mLocation != null && mLocation.contains("${")) {
       String value = resolveSettings(mLocation);
@@ -103,6 +106,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.resource.metadata.Import#setLocation(java.lang.String)
    */
+  @Override
   public void setLocation(String aUri) {
     mLocation = aUri;
   }
@@ -113,33 +117,35 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   public void setSuffix(String suffix) {
     byNameSuffix = suffix;
   }
-  
+
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
+   * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.
+   * ResourceManager)
    */
+  @Override
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
     String location, name;
-    if ((location=getLocation()) != null) {
+    if ((location = getLocation()) != null) {
       try {
         URL url = new URL(this.getRelativePathBase(), location);
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
                 "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
-                new Object[] {"location", url});
+                new Object[] { "location", url });
         return url;
       } catch (MalformedURLException e) {
-        throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
-            location, getSourceUrlString() }, e);
+        throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL,
+                new Object[] { location, getSourceUrlString() }, e);
       }
-    } else if ((name=getName()) != null) {
+    } else if ((name = getName()) != null) {
       String filename = name.replace('.', '/') + byNameSuffix;
       URL url;
       try {
         url = aResourceManager.resolveRelativePath(filename);
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
                 "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
-                new Object[] {"name", url});
+                new Object[] { "name", url });
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
                 new Object[] { filename, getSourceUrlString() }, e);
@@ -163,6 +169,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String name = aElement.getAttribute("name");
@@ -177,16 +184,17 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     }
   }
 
-  
   /**
    * Overridden to provide custom XML representation.
    * 
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
-  
-  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute) throws SAXException {
+
+  @Override
+  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+          throws SAXException {
     if (null == serialContext.get()) {
-      getSerialContext(aContentHandler);  
+      getSerialContext(aContentHandler);
       try {
         toXMLinner(aWriteDefaultNamespaceAttribute);
       } finally {
@@ -196,12 +204,11 @@ public class Import_impl extends MetaDataObject_impl implements Import {
       toXMLinner(aWriteDefaultNamespaceAttribute);
     }
   }
-  
-  private void toXMLinner(boolean aWriteDefaultNamespaceAttribute)
-          throws SAXException {
+
+  private void toXMLinner(boolean aWriteDefaultNamespaceAttribute) throws SAXException {
     SerialContext sc = serialContext.get();
-    Serializer serializer = sc.serializer;   
-    
+    Serializer serializer = sc.serializer;
+
     String namespace = getXmlizationInfo().namespace;
     AttributesImpl attrs = new AttributesImpl();
     String name = getName();
@@ -214,14 +221,15 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     }
     Node node = serializer.findMatchingSubElement("import");
     serializer.outputStartElement(node, namespace, "import", "import", attrs);
-//    aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);
+    // aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);
     serializer.outputEndElement(node, namespace, "import", "import");
-//    aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
+    // aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
   }
 
   /**
    * @see MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);
     // this object has custom XMLization routines

@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,12 +39,9 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for IteratorTest.java goes here.
@@ -52,17 +51,17 @@ public class TypeSystemUtilsTest {
 
   private CAS cas;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
 
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/pathValidationTS.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
-        .exists());
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+            descriptorFile.exists());
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
-      TypeSystemDescription spec = (TypeSystemDescription) parser.parse(new XMLInputSource(
-          descriptorFile));
+      TypeSystemDescription spec = (TypeSystemDescription) parser
+              .parse(new XMLInputSource(descriptorFile));
       this.cas = CasCreationUtils.createCas(spec, null, new FsIndexDescription[] {});
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
@@ -76,9 +75,9 @@ public class TypeSystemUtilsTest {
     }
 
   }
-  
-    @Test
-    public void testPathValidation() {
+
+  @Test
+  public void testPathValidation() {
     Type type1 = this.cas.getTypeSystem().getType("Type1");
     // Type1, f0/begin, always
     List<String> path = new ArrayList<>();
@@ -115,8 +114,8 @@ public class TypeSystemUtilsTest {
     assertTrue(TypeSystemUtils.isPathValid(t1, path) == PathValid.ALWAYS);
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     this.cas = null;
   }
 }

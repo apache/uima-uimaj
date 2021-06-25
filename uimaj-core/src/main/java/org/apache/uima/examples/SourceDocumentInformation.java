@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-   
+// @formatter:off   
 /* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:42:57 EST 2016 */
 
 package org.apache.uima.examples;

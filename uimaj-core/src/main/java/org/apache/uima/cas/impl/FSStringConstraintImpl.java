@@ -37,7 +37,6 @@ class FSStringConstraintImpl implements FSStringConstraint {
    * Constructor is package private.
    */
   FSStringConstraintImpl() {
-    super();
     this.string = "";
   }
 

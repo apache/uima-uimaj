@@ -35,8 +35,8 @@ import org.apache.uima.resource.metadata.LanguagePrecondition;
  * 
  * 
  */
-public class LanguagePrecondition_impl extends SimplePrecondition_impl implements
-        LanguagePrecondition {
+public class LanguagePrecondition_impl extends SimplePrecondition_impl
+        implements LanguagePrecondition {
 
   private static final long serialVersionUID = -5526826405334750929L;
 
@@ -51,6 +51,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.LanguagePrecondition#getLanguages()
    */
+  @Override
   public String[] getLanguages() {
     return (String[]) getComparisonValue();
   }
@@ -58,6 +59,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.LanguagePrecondition#setLanguages(java.lang.String[])
    */
+  @Override
   public void setLanguages(String[] aLanguages) {
     setComparisonValue(aLanguages);
   }
@@ -65,20 +67,21 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setComparisonValue(java.lang.Object)
    */
+  @Override
   public void setComparisonValue(Object aValue) {
     // value must be a string array
     if (!(aValue instanceof String[])) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { aValue, "aValue", "setComparisonValue" });
     }
-    String [] languages = (String []) aValue;
-    String [] normalizedLanguages = new String[languages.length];
+    String[] languages = (String[]) aValue;
+    String[] normalizedLanguages = new String[languages.length];
     int i = 0;
     for (String language : languages) {
       normalizedLanguages[i++] = Language.normalize(language);
-      if (Language.UNSPECIFIED_LANGUAGE.equals(normalizedLanguages[i-1])) {
+      if (Language.UNSPECIFIED_LANGUAGE.equals(normalizedLanguages[i - 1])) {
         // return new object to guard against modifications
-        super.setComparisonValue(new String[]{Language.UNSPECIFIED_LANGUAGE});
+        super.setComparisonValue(new String[] { Language.UNSPECIFIED_LANGUAGE });
         return;
       }
     }
@@ -88,39 +91,44 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
    */
+  @Override
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                this.getClass().getName(), "setFeatureName" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
+            new Object[] { this.getClass().getName(), "setFeatureName" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
    */
+  @Override
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                this.getClass().getName(), "setFsIndexName" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
+            new Object[] { this.getClass().getName(), "setFsIndexName" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
    */
+  @Override
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                this.getClass().getName(), "setFsMatchConstraint" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
+            new Object[] { this.getClass().getName(), "setFsMatchConstraint" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setPredicate(java.lang.String)
    */
+  @Override
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                this.getClass().getName(), "setPredicate" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
+            new Object[] { this.getClass().getName(), "setPredicate" });
   }
 
+  @Override
   public boolean equals(Object aObject) {
     if (!(aObject instanceof LanguagePrecondition))
       return false;
@@ -138,6 +146,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
     return true;
   }
 
+  @Override
   public int hashCode() {
     int h = getFeatureName().hashCode();
     if (getComparisonValue() != null)

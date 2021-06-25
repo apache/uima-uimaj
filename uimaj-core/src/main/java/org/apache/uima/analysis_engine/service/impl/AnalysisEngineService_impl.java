@@ -56,10 +56,12 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * Initialize this service. This is where the CAS pool is created.
    * 
-   * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(ResourceSpecifier, Map)
+   * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(ResourceSpecifier,
+   *      Map)
    */
-  public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
-          throws ResourceInitializationException {
+  @Override
+  public void initialize(ResourceSpecifier aResourceSpecifier,
+          Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     super.initialize(aResourceSpecifier, aResourceInitParams);
     Integer numInstances = (Integer) aResourceInitParams
             .get(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
@@ -80,10 +82,15 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * An alternative form of initialize that takes the number of simultaneous requests and timeout
    * period as explicit arguments.
-   * @param aResourceSpecifier -
-   * @param aNumSimultaneousRequests - 
-   * @param aTimeout -
-   * @throws ResourceInitializationException -
+   * 
+   * @param aResourceSpecifier
+   *          -
+   * @param aNumSimultaneousRequests
+   *          -
+   * @param aTimeout
+   *          -
+   * @throws ResourceInitializationException
+   *           -
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
@@ -100,7 +107,8 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    *          data to be processed
    * @param aResultSpec
    *          specifies which results the Analysis Engine should produce
-   * @throws ResourceServiceException -
+   * @throws ResourceServiceException
+   *           -
    * @return the results of analysis
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
@@ -160,6 +168,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * @see org.apache.uima.resource.service.impl.ResourceService_impl#getResourceClass()
    */
+  @Override
   protected Class<? extends Resource> getResourceClass() {
     return AnalysisEngine.class;
   }

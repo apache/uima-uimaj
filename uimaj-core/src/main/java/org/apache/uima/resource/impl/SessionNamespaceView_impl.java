@@ -21,7 +21,6 @@ package org.apache.uima.resource.impl;
 
 import org.apache.uima.resource.Session;
 
-
 public class SessionNamespaceView_impl implements Session {
   private static final long serialVersionUID = 7585276862479207970L;
 
@@ -39,6 +38,7 @@ public class SessionNamespaceView_impl implements Session {
    * 
    * @see org.apache.uima.resource.Session#put(java.lang.String, java.lang.Object)
    */
+  @Override
   public void put(String aKey, Object aValue) {
     mRootSession.put(mNamespace + aKey, aValue);
   }
@@ -48,6 +48,7 @@ public class SessionNamespaceView_impl implements Session {
    * 
    * @see org.apache.uima.resource.Session#get(java.lang.String)
    */
+  @Override
   public Object get(String aKey) {
     return mRootSession.get(mNamespace + aKey);
   }

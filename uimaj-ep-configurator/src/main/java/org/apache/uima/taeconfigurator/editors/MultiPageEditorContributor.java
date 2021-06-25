@@ -19,6 +19,10 @@
 
 package org.apache.uima.taeconfigurator.editors;
 
+import org.apache.uima.taeconfigurator.Messages;
+import org.apache.uima.taeconfigurator.PreferencePage;
+import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
+import org.apache.uima.taeconfigurator.editors.xml.XMLEditor;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -36,11 +40,6 @@ import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-
-import org.apache.uima.taeconfigurator.Messages;
-import org.apache.uima.taeconfigurator.PreferencePage;
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
-import org.apache.uima.taeconfigurator.editors.xml.XMLEditor;
 
 
 // import org.eclipse.jdt.launching.IVMRunner;
@@ -73,7 +72,6 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * Creates a multi-page contributor.
    */
   public MultiPageEditorContributor() {
-    super();
     createActions();
   }
 

@@ -33,7 +33,6 @@ public class SortedIntSet {
 
   /** Default constructor. */
   public SortedIntSet() {
-    super();
     this.vector = new IntVector();
   }
 
@@ -50,7 +49,8 @@ public class SortedIntSet {
    * @param ele
    *          The element we're looking for.
    * @return The position, if found; a negative value, else. See
-   *         {@link org.apache.uima.internal.util.IntArrayUtils#binarySearch IntArrayUtils.binarySearch()}.
+   *         {@link org.apache.uima.internal.util.IntArrayUtils#binarySearch
+   *         IntArrayUtils.binarySearch()}.
    */
   public int find(int ele) {
     int[] array = this.vector.getArray();
@@ -58,9 +58,9 @@ public class SortedIntSet {
   }
 
   /**
-   * @param ele - 
-   * @return <code>true</code> iff <code>ele</code> is contained in
-   *  the set.
+   * @param ele
+   *          -
+   * @return <code>true</code> iff <code>ele</code> is contained in the set.
    */
   public boolean contains(int ele) {
     return this.find(ele) >= 0;
@@ -69,7 +69,8 @@ public class SortedIntSet {
   /**
    * Add element to set.
    * 
-   * @param ele - 
+   * @param ele
+   *          -
    * @return <code>true</code> iff <code>ele</code> was not already contained in the set.
    */
   public boolean add(int ele) {
@@ -83,7 +84,9 @@ public class SortedIntSet {
 
   /**
    * Remove element from set.
-   * @param ele - 
+   * 
+   * @param ele
+   *          -
    * @return <code>true</code> iff <code>ele</code> was actually contained in the set.
    */
   public boolean remove(int ele) {
@@ -129,7 +132,7 @@ public class SortedIntSet {
   public int[] toArray() {
     return this.vector.toArrayCopy();
   }
-  
+
   public int[] getArray() {
     return vector.getArray();
   }

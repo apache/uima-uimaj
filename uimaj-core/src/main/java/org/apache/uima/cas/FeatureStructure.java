@@ -21,11 +21,13 @@ package org.apache.uima.cas;
 
 import org.apache.uima.jcas.JCas;
 
+// @formatter:off
 /**
  * Interface for feature structures.
  *
- * This interface includes indirect getters and setters that use Feature object instances to specify the feature.
- *   There are multiple versions of these, corresponding to the consolidated types of the feature range.
+ * This interface includes indirect getters and setters that use Feature object instances to specify
+ * the feature. There are multiple versions of these, corresponding to the consolidated types of the
+ * feature range.
  *
  *   Here are the types:
  *     FeatureStructure - reference to another Feature structure
@@ -37,8 +39,8 @@ import org.apache.uima.jcas.JCas;
  *     short
  *     long
  *     double
- *
  */
+//@formatter:on
 public interface FeatureStructure extends Cloneable {
 
   /**
@@ -56,9 +58,9 @@ public interface FeatureStructure extends Cloneable {
    * @param fs
    *          The value FS.
    * @exception CASRuntimeException
-   *              If there is a typing violation, i.e., if <code>feat</code> is not defined for
-   *              the type of this FS, or the range type of <code>feat</code> is not a supertype
-   *              of <code>fs.getType()</code>.
+   *              If there is a typing violation, i.e., if <code>feat</code> is not defined for the
+   *              type of this FS, or the range type of <code>feat</code> is not a supertype of
+   *              <code>fs.getType()</code>.
    */
   void setFeatureValue(Feature feat, FeatureStructure fs) throws CASRuntimeException;
 
@@ -69,12 +71,12 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to get.
    * @return The value; may be <code>null</code> if the value has not been set.
    * @exception CASRuntimeException
-   *              If there is a typing violation, i.e., if <code>feat</code> is not defined for
-   *              the type of this FS, or the range type of <code>feat</code> is Float, Integer or
+   *              If there is a typing violation, i.e., if <code>feat</code> is not defined for the
+   *              type of this FS, or the range type of <code>feat</code> is Float, Integer or
    *              String.
    */
   FeatureStructure getFeatureValue(Feature feat) throws CASRuntimeException;
-  
+
   /**
    * Set the string value of a feature.
    *
@@ -110,8 +112,8 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to get.
    * @return The value float; <code>0.0</code> if the value has not been set.
    * @exception CASRuntimeException
-   *              If <code>feat</code> is not defined for the type of this FS, or if it is not
-   *              float valued.
+   *              If <code>feat</code> is not defined for the type of this FS, or if it is not float
+   *              valued.
    */
   float getFloatValue(Feature feat) throws CASRuntimeException;
 
@@ -123,8 +125,8 @@ public interface FeatureStructure extends Cloneable {
    * @param f
    *          The float we're setting the feature to.
    * @exception CASRuntimeException
-   *              If <code>feat</code> is not defined for the type of this FS, or if it is not
-   *              float valued.
+   *              If <code>feat</code> is not defined for the type of this FS, or if it is not float
+   *              valued.
    */
   void setFloatValue(Feature feat, float f) throws CASRuntimeException;
 
@@ -159,7 +161,8 @@ public interface FeatureStructure extends Cloneable {
    * @param feat
    *          The feature whose value we want to set.
    * @return The value byte; <code>0</code> if the value has not been set.
-   * @throws CASRuntimeException tbd
+   * @throws CASRuntimeException
+   *           tbd
    */
   byte getByteValue(Feature feat) throws CASRuntimeException;
 
@@ -170,7 +173,8 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to set.
    * @param i
    *          The 8bit value we're setting the feature to.
-   * @throws CASRuntimeException tbd
+   * @throws CASRuntimeException
+   *           tbd
    */
   void setByteValue(Feature feat, byte i) throws CASRuntimeException;
 
@@ -205,8 +209,8 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
    * @exception CASRuntimeException
-   *              If <code>feat</code> is not defined for the type of this FS, or if it is not
-   *              short valued.
+   *              If <code>feat</code> is not defined for the type of this FS, or if it is not short
+   *              valued.
    */
   short getShortValue(Feature feat) throws CASRuntimeException;
 
@@ -228,8 +232,8 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
    * @exception CASRuntimeException
-   *              If <code>feat</code> is not defined for the type of this FS, or if it is not
-   *              long valued.
+   *              If <code>feat</code> is not defined for the type of this FS, or if it is not long
+   *              valued.
    */
   long getLongValue(Feature feat) throws CASRuntimeException;
 
@@ -263,7 +267,8 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to set.
    * @param i
    *          The double value we're setting the feature to.
-   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
+   * @exception CASRuntimeException
+   *              If <code>feat</code> is not defined for the type of this FS
    */
   void setDoubleValue(Feature feat, double i) throws CASRuntimeException;
 
@@ -275,8 +280,8 @@ public interface FeatureStructure extends Cloneable {
    *          The feature whose value we want to get and whose type is one of the primitive types.
    * @return A string representation of the feature value.
    * @throws CASRuntimeException
-   *           If <code>feat</code> is not defined for the type of this FS, or if the type is not
-   *           a primitive type.
+   *           If <code>feat</code> is not defined for the type of this FS, or if the type is not a
+   *           primitive type.
    */
   String getFeatureValueAsString(Feature feat) throws CASRuntimeException;
 
@@ -289,8 +294,8 @@ public interface FeatureStructure extends Cloneable {
    * @param s
    *          The string value that the feature will be set to.
    * @throws CASRuntimeException
-   *           If <code>feat</code> is not a primitive type or the value cannot be converted to
-   *           this type.
+   *           If <code>feat</code> is not a primitive type or the value cannot be converted to this
+   *           type.
    */
   void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException;
 
@@ -303,40 +308,43 @@ public interface FeatureStructure extends Cloneable {
    * @return the JCas view where this Feature Structure was created
    */
   default JCas getJCas() {
-    return getCAS().getJCasImpl();  // getJCas defined (from v2) to throw exception, this one doesn't
+    return getCAS().getJCasImpl(); // getJCas defined (from v2) to throw exception, this one doesn't
   };
-  
+
   /**
    * return the unique (to this CAS) id of this feature structure
+   * 
    * @return the id
    */
   int _id();
 
   /**
    * Internal use
+   * 
    * @return the type code of this feature structure
    */
   int _getTypeCode();
-  
+
   /**
    * Creates a copy of this feature structure. The returned feature structure is a new and separate
    * object but all features of the feature structure which are not of builtin types (integer,
    * float, string) will be shared between the clone and it's source FS.
    * 
    * @return a FeatureStructure that is the cloned copy of this FeatureStructure.
-   * @throws CASRuntimeException passthru
+   * @throws CASRuntimeException
+   *           passthru
    */
   Object clone() throws CASRuntimeException;
-  
+
   /**
-   * Compatibility for v2 code.
-   * As a side effect, this will enter this Feature Structure into the int-to-FS table so the low level
-   * API call ll_getFSForRef(int) works.  This has the effect of disabling garbage collection
-   * for this Feature Structure.
+   * Compatibility for v2 code. As a side effect, this will enter this Feature Structure into the
+   * int-to-FS table so the low level API call ll_getFSForRef(int) works. This has the effect of
+   * disabling garbage collection for this Feature Structure.
+   * 
    * @return the equivalent of the v2 address
    */
-  int getAddress(); 
-  
+  int getAddress();
+
   /**
    * A feature structure is equal to another feature structure iff it is identical in the underlying
    * representation.
@@ -344,6 +352,7 @@ public interface FeatureStructure extends Cloneable {
    * @exception ClassCastException
    *              If <code>o</code> is not a FS.
    */
+  @Override
   boolean equals(Object o) throws ClassCastException;
 
   /**
@@ -352,7 +361,7 @@ public interface FeatureStructure extends Cloneable {
    * 
    * @return The hash code.
    */
+  @Override
   int hashCode();
 
 }
-

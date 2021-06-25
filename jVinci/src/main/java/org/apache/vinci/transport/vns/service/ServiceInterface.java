@@ -21,6 +21,6 @@ package org.apache.vinci.transport.vns.service;
 
 public interface ServiceInterface {
 
-  public Object getAttr(String name);
+  Object getAttr(String name);
 
 }

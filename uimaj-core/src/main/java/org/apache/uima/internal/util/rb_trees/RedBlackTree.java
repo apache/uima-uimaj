@@ -67,7 +67,6 @@ public class RedBlackTree<T> implements Iterable<T> {
 
   /** Default constructor, does nothing. */
   public RedBlackTree() {
-    super();
   }
 
   /**
@@ -125,9 +124,8 @@ public class RedBlackTree<T> implements Iterable<T> {
    *          The key under which the Object is to be inserted.
    * @param el
    *          The Object to be inserted.
-   * @return <code>true</code>, if the key was not in the tree; <code>false</code>, if an
-   *         element with that key was already in the tree. The old element is overwritten with the
-   *         new one.
+   * @return <code>true</code>, if the key was not in the tree; <code>false</code>, if an element
+   *         with that key was already in the tree. The old element is overwritten with the new one.
    */
   public final boolean put(int key, T el) {
     if (put(new RBTNode<>(key, el))) {
@@ -142,7 +140,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * 
    * @param key
    *          The key to be deleted.
-   * @return -         
+   * @return -
    */
   public final T remove(int key) {
     RBTNode<T> node = RBTNode.find(this.root, key);
@@ -157,9 +155,9 @@ public class RedBlackTree<T> implements Iterable<T> {
 
   /**
    * Get the object for a key. If the key is not contained in the tree, returns <code>null</code>.
-   * Since <code>null</code> can also be a regular value, use {@link
-   * org.apache.uima.internal.util.rb_trees.RedBlackTree#containsKey containsKey()} to check if a
-   * key is defined or not.
+   * Since <code>null</code> can also be a regular value, use
+   * {@link org.apache.uima.internal.util.rb_trees.RedBlackTree#containsKey containsKey()} to check
+   * if a key is defined or not.
    * 
    * @param key
    *          The key.
@@ -204,8 +202,7 @@ public class RedBlackTree<T> implements Iterable<T> {
   }
 
   /**
-   * @return The object associated with the smallest key, or <code>null</code> if the tree is
-   *         empty.
+   * @return The object associated with the smallest key, or <code>null</code> if the tree is empty.
    */
   public final T getFirst() {
     return this.getFirstNode().element;
@@ -226,6 +223,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return An iterator over the elements in the tree. The elements are returned in ascending order
    *         of the corresponding keys.
    */
+  @Override
   public Iterator<T> iterator() {
     return new RBTIterator<>(this);
   }
@@ -239,10 +237,12 @@ public class RedBlackTree<T> implements Iterable<T> {
       this.current = tree.getFirstNode();
     }
 
+    @Override
     public boolean hasNext() {
       return (this.current != null);
     }
 
+    @Override
     public T next() {
       if (this.current == null) {
         throw new java.util.NoSuchElementException();
@@ -252,6 +252,7 @@ public class RedBlackTree<T> implements Iterable<T> {
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -259,7 +260,7 @@ public class RedBlackTree<T> implements Iterable<T> {
 
   /**
    * @return a copy of the red-black tree as a BinaryTree. The node values are key-value pairs
-   * (RBTKeyValuePair).
+   *         (RBTKeyValuePair).
    */
   public BinaryTree getBinaryTree() {
     if (this.root == null) {

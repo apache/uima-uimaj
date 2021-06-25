@@ -21,18 +21,20 @@ package org.apache.uima.cas.impl;
 
 public class TypeImpl_primitive extends TypeImpl {
 
-  public TypeImpl_primitive(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaType) {
+  public TypeImpl_primitive(String name, TypeSystemImpl tsi, TypeImpl supertype,
+          Class<?> javaType) {
     super(name, tsi, supertype, javaType);
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
   }
-  
+
   @Override
   public boolean subsumes(TypeImpl ti) {
-    return ti == this;  // primitives don't subsume any other type except itself, except for string / stringsubtype (overrides)
+    return ti == this; // primitives don't subsume any other type except itself, except for string /
+                       // stringsubtype (overrides)
   }
 
 }

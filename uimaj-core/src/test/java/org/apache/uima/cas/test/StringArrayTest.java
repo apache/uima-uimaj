@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
@@ -27,11 +29,9 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * Class comment for StringArrayTest.java goes here.
@@ -43,8 +43,8 @@ public class StringArrayTest {
 
   private TypeSystem ts;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -53,14 +53,14 @@ public class StringArrayTest {
     }
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-    @Test
-    public void testSet() {
+  @Test
+  public void testSet() {
     StringArrayFS array = this.cas.createStringArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -126,8 +126,8 @@ public class StringArrayTest {
     assertTrue(exceptionCaught);
   }
 
-    @org.junit.jupiter.api.Test
-    public void testToArray() {
+  @org.junit.jupiter.api.Test
+  public void testToArray() {
     // From CAS array to Java array.
     StringArrayFS array = this.cas.createStringArrayFS(3);
     String[] fsArray = array.toArray();
@@ -158,10 +158,10 @@ public class StringArrayTest {
     assertTrue(array.get(0) == null);
   }
 
-    @Test
-    public void testStringArrayValue() {
+  @Test
+  public void testStringArrayValue() {
     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-	+ CASTestSetup.LEMMA_LIST_FEAT;
+            + CASTestSetup.LEMMA_LIST_FEAT;
     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
     String[] javaArray = { "1", "2", "3" };
@@ -175,27 +175,26 @@ public class StringArrayTest {
     casArray.set(0, hello);
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == hello);
   }
-  
 
-    @org.junit.jupiter.api.Test
-    public void testStringArrayNullValue() throws Exception{
-     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-    + CASTestSetup.LEMMA_LIST_FEAT;
-     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
-     assertTrue(lemmaList != null);
-     StringArrayFS casArray = this.cas.createStringArrayFS(3);
-     ((CASImpl)(casArray.getCAS())).setId2FSsMaybeUnconditionally(casArray);
-     casArray.set(0, "1");
-     casArray.set(1, null);
-     casArray.set(2, "3");
-     FeatureStructure token = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
-     assertTrue(token.getFeatureValue(lemmaList) == null);
-     token.setFeatureValue(lemmaList, casArray);
-     this.cas.addFsToIndexes(token);
-     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
-     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
-     LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
-     assertTrue(llc.ll_getStringArrayValue(llc.ll_getFSRef(casArray), 1) == null);
+  @org.junit.jupiter.api.Test
+  public void testStringArrayNullValue() throws Exception {
+    String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+            + CASTestSetup.LEMMA_LIST_FEAT;
+    final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
+    assertTrue(lemmaList != null);
+    StringArrayFS casArray = this.cas.createStringArrayFS(3);
+    ((CASImpl) (casArray.getCAS())).setId2FSsMaybeUnconditionally(casArray);
+    casArray.set(0, "1");
+    casArray.set(1, null);
+    casArray.set(2, "3");
+    FeatureStructure token = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
+    assertTrue(token.getFeatureValue(lemmaList) == null);
+    token.setFeatureValue(lemmaList, casArray);
+    this.cas.addFsToIndexes(token);
+    assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
+    assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
+    LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
+    assertTrue(llc.ll_getStringArrayValue(llc.ll_getFSRef(casArray), 1) == null);
   }
 
 }

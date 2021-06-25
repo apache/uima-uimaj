@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.annotator;
 
 import java.io.InputStream;
@@ -32,31 +31,31 @@ import org.apache.uima.util.Logger;
 /**
  * This interface is maintained only for backwards compatibility with annotators developed in UIMA
  * SDK v1.x. New code should use {@link UimaContext} instead.
+ * 
  * @deprecated As of release 2.3.0, use UimaContext instead
  */
 @Deprecated
 public interface AnnotatorContext {
-
   /**
    * Retrieves the value for a configuration parameter that is not defined in any group or is
    * defined in the default group.
    * <p>
-   * This method returns <code>null</code> if the parameter is optional and has not been assigned
-   * a value. (For mandatory parameters, an exception is thrown during initialization if no value
-   * has been assigned.) This method also returns <code>null</code> if there is no declared
+   * This method returns <code>null</code> if the parameter is optional and has not been assigned a
+   * value. (For mandatory parameters, an exception is thrown during initialization if no value has
+   * been assigned.) This method also returns <code>null</code> if there is no declared
    * configuration parameter with the specified name.
    * 
    * @param aParamName
    *          the name of the parameter to look up
    * 
    * @return the value of the parameter with the given name. The annotator is expected to know the
-   *         data type of its parameters. Returns <code>null</code> if the parameter does not
-   *         exist or has not been assigned a value.
+   *         data type of its parameters. Returns <code>null</code> if the parameter does not exist
+   *         or has not been assigned a value.
    * 
    * @throws AnnotatorContextException
    *           if an internal failure has occurred in the <code>AnnotatorContext</code>.
    */
-  public Object getConfigParameterValue(String aParamName) throws AnnotatorContextException;
+  Object getConfigParameterValue(String aParamName) throws AnnotatorContextException;
 
   /**
    * Retrieves the value for a configuration parameter in a particular group. If that group contains
@@ -64,9 +63,9 @@ public interface AnnotatorContext {
    * {@link org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#getSearchStrategy()}
    * property will be used. The search strategy can be specified in the Analysis Engine Descriptor.
    * <p>
-   * This method returns <code>null</code> if the parameter is optional and has not been assigned
-   * a value. (For mandatory parameters, an exception is thrown during initialization if no value
-   * has been assigned.) This method also returns <code>null</code> if there is no declared
+   * This method returns <code>null</code> if the parameter is optional and has not been assigned a
+   * value. (For mandatory parameters, an exception is thrown during initialization if no value has
+   * been assigned.) This method also returns <code>null</code> if there is no declared
    * configuration parameter with the specified name.
    * 
    * @param aGroupName
@@ -75,13 +74,13 @@ public interface AnnotatorContext {
    *          the name of the parameter to look up
    * 
    * @return the value of the parameter with the given name. The annotator is expected to know the
-   *         data type of its parameters. Returns <code>null</code> if the parameter does not
-   *         exist or has not been assigned a value.
+   *         data type of its parameters. Returns <code>null</code> if the parameter does not exist
+   *         or has not been assigned a value.
    * 
    * @throws AnnotatorContextException
    *           if an internal failure has occurred in the <code>AnnotatorContext</code>.
    */
-  public Object getConfigParameterValue(String aGroupName, String aParamName)
+  Object getConfigParameterValue(String aGroupName, String aParamName)
           throws AnnotatorContextException;
 
   /**
@@ -90,7 +89,7 @@ public interface AnnotatorContext {
    * @return an array containing the names of all configuration groups that exist for this
    *         annotator. Returns an empty array if no groups are declared.
    */
-  public String[] getConfigurationGroupNames();
+  String[] getConfigurationGroupNames();
 
   /**
    * Gets the names of all configuration parameters in the specified group.
@@ -98,11 +97,11 @@ public interface AnnotatorContext {
    * @param aGroup
    *          the group name
    * 
-   * @return an array containing the names of all configuration parameters declared in {<code>aGroup</code>.
-   *         Note that this does include parameters with null values. Returns an empty array if
-   *         there are none (including if the group does not exist).
+   * @return an array containing the names of all configuration parameters declared in
+   *         {<code>aGroup</code>. Note that this does include parameters with null values. Returns
+   *         an empty array if there are none (including if the group does not exist).
    */
-  public String[] getConfigParameterNames(String aGroup);
+  String[] getConfigParameterNames(String aGroup);
 
   /**
    * Gets the names of all configuration parameters that are not declared in a group.
@@ -110,7 +109,7 @@ public interface AnnotatorContext {
    * @return an array containing the names of all configuration parameters not declared in any
    *         group. Returns an empty array if there are none.
    */
-  public String[] getConfigParameterNames();
+  String[] getConfigParameterNames();
 
   /**
    * Gets the <code>Logger</code> to which this annotator should send its log output. Annotators
@@ -121,18 +120,18 @@ public interface AnnotatorContext {
    * @throws AnnotatorContextException
    *           if an internal failure has occurred in the <code>AnnotatorContext</code>.
    */
-  public Logger getLogger() throws AnnotatorContextException;
+  Logger getLogger() throws AnnotatorContextException;
 
   /**
-   * Gets the <code>InstrumentationFacility</code> that this annotator can use to record
-   * information about its performance.
+   * Gets the <code>InstrumentationFacility</code> that this annotator can use to record information
+   * about its performance.
    * 
    * @return an instance of the instrumentation facility for use by this annotator.
    * 
    * @throws AnnotatorContextException
    *           if an internal failure has occurred in the <code>AnnotatorContext</code>.
    */
-  public InstrumentationFacility getInstrumentationFacility() throws AnnotatorContextException;
+  InstrumentationFacility getInstrumentationFacility() throws AnnotatorContextException;
 
   /**
    * Retrieves the URL to the named resource. This can be used, for example, to locate configuration
@@ -141,8 +140,8 @@ public interface AnnotatorContext {
    * <p>
    * Note that if the URL contains spaces may be encoded as %20. The {@link URL#getPath()} method
    * does NOT decode these sequences, therefore it is not safe to call
-   * <code>getResourceURL().getPath()</code> and attempt to use the result as a file path.
-   * Instead, you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
+   * <code>getResourceURL().getPath()</code> and attempt to use the result as a file path. Instead,
+   * you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
    * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
@@ -153,12 +152,13 @@ public interface AnnotatorContext {
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * 
-   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
-   * @throws AnnotatorContextException if there's a problem
+   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
+   * @throws AnnotatorContextException
+   *           if there's a problem
    * @see org.apache.uima.UimaContext#getResourceURL(String)
    */
-  public URL getResourceURL(String aKey) throws AnnotatorContextException;
+  URL getResourceURL(String aKey) throws AnnotatorContextException;
 
   /**
    * Retrieves the URI to the named resource. This can be used, for example, to locate configuration
@@ -178,12 +178,13 @@ public interface AnnotatorContext {
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * 
-   * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
-   * @throws AnnotatorContextException if there's an exception
+   * @return the <code>URI</code> at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
+   * @throws AnnotatorContextException
+   *           if there's an exception
    * @see org.apache.uima.UimaContext#getResourceURI(String)
    */
-  public URI getResourceURI(String aKey) throws AnnotatorContextException;
+  URI getResourceURI(String aKey) throws AnnotatorContextException;
 
   /**
    * Retrieves the absolute file path to the named resource. This can be used, for example, to
@@ -205,13 +206,14 @@ public interface AnnotatorContext {
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * 
-   * @return the absolute file path at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
-   * @throws AnnotatorContextException if there's an exception
+   * @return the absolute file path at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
+   * @throws AnnotatorContextException
+   *           if there's an exception
    * 
    * @see org.apache.uima.UimaContext#getResourceFilePath(String)
    */
-  public String getResourceFilePath(String aKey) throws AnnotatorContextException;
+  String getResourceFilePath(String aKey) throws AnnotatorContextException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
@@ -227,14 +229,15 @@ public interface AnnotatorContext {
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * 
-   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
-   *         if the named resource could not be found. It is the caller's responsibility to close
-   *         this stream once it is no longer needed.
-   * @throws AnnotatorContextException if an error occurs
+   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code> if
+   *         the named resource could not be found. It is the caller's responsibility to close this
+   *         stream once it is no longer needed.
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceAsStream(String)
    */
-  public InputStream getResourceAsStream(String aKey) throws AnnotatorContextException;
+  InputStream getResourceAsStream(String aKey) throws AnnotatorContextException;
 
   /**
    * Retrieves the named resource object. This can be used to acquire references to external
@@ -246,11 +249,12 @@ public interface AnnotatorContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * 
    * @return the object bound to <code>aName</code>, <code>null</code> if none.
-   * @throws AnnotatorContextException if an error occurs
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceObject(String)
    */
-  public Object getResourceObject(String aKey) throws AnnotatorContextException;
+  Object getResourceObject(String aKey) throws AnnotatorContextException;
 
   /**
    * Retrieves the URL to the named resource. This can be used, for example, to locate configuration
@@ -259,8 +263,8 @@ public interface AnnotatorContext {
    * <p>
    * Note that if the URL contains spaces may be encoded as %20. The {@link URL#getPath()} method
    * does NOT decode these sequences, therefore it is not safe to call
-   * <code>getResourceURL().getPath()</code> and attempt to use the result as a file path.
-   * Instead, you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
+   * <code>getResourceURL().getPath()</code> and attempt to use the result as a file path. Instead,
+   * you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
    * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
@@ -269,24 +273,25 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
-   * the component descriptor.
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used
+   * in the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
-   *          the ISO language code for the language of the document (e.g. "en", "de").
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single
+   *          element, the ISO language code for the language of the document (e.g. "en", "de").
    * 
-   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
-   * @throws AnnotatorContextException if an error occurs
+   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceURL(String,String[])
    */
-  public URL getResourceURL(String aKey, String[] aParams) throws AnnotatorContextException;
+  URL getResourceURL(String aKey, String[] aParams) throws AnnotatorContextException;
 
   /**
    * Retrieves the URI to the named resource. This can be used, for example, to locate configuration
@@ -304,20 +309,22 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
-   * the component descriptor.
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used
+   * in the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
-   * @param aParams the additional parameters to further identify the resource
-   * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
+   * @param aParams
+   *          the additional parameters to further identify the resource
+   * @return the <code>URI</code> at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
    * 
-   * @throws AnnotatorContextException if an error occurs
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * @see org.apache.uima.UimaContext#getResourceURI(String,String[])
    */
-  public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException;
+  URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException;
 
   /**
    * Retrieves the absolute file path to the named resource. This can be used, for example, to
@@ -337,21 +344,23 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
-   * the component descriptor.
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used
+   * in the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
-   * @param aParams The parameters used to further specify the resource
+   * @param aParams
+   *          The parameters used to further specify the resource
    * 
-   * @return the absolute file path at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
-   * @throws AnnotatorContextException if an error occurs
+   * @return the absolute file path at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceFilePath(String,String[])
    */
-  public String getResourceFilePath(String aKey, String[] aParams) throws AnnotatorContextException;
+  String getResourceFilePath(String aKey, String[] aParams) throws AnnotatorContextException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
@@ -365,26 +374,26 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
-   * the component descriptor.
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used
+   * in the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should bd declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
-   *          the ISO language code for the language of the document (e.g. "en", "de").
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single
+   *          element, the ISO language code for the language of the document (e.g. "en", "de").
    * 
-   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
-   *         if the named resource could not be found. It is the caller's responsibility to close
-   *         this stream once it is no longer needed.
-   * @throws AnnotatorContextException if an error occurs
+   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code> if
+   *         the named resource could not be found. It is the caller's responsibility to close this
+   *         stream once it is no longer needed.
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceAsStream(String,String[])
    */
-  public InputStream getResourceAsStream(String aKey, String[] aParams)
-          throws AnnotatorContextException;
+  InputStream getResourceAsStream(String aKey, String[] aParams) throws AnnotatorContextException;
 
   /**
    * Retrieves the named resource object. This can be used to acquire references to external
@@ -393,23 +402,24 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
-   * the component descriptor.
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used
+   * in the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
-   *          the ISO language code for the language of the document (e.g. "en", "de").
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single
+   *          element, the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the object bound to <code>aName</code>, <code>null</code> if none.
-   * @throws AnnotatorContextException if an error occurs
+   * @throws AnnotatorContextException
+   *           if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceObject(String,String[])
    */
-  public Object getResourceObject(String aKey, String[] aParams) throws AnnotatorContextException;
+  Object getResourceObject(String aKey, String[] aParams) throws AnnotatorContextException;
 
   /**
    * Gets the data path used to locate resources. This path may contain more than one directory,
@@ -424,7 +434,7 @@ public interface AnnotatorContext {
    * @throws AnnotatorContextException
    *           if an internal failure has occurred in the <code>AnnotatorContext</code>.
    */
-  public String getDataPath() throws AnnotatorContextException;
+  String getDataPath() throws AnnotatorContextException;
 
   /**
    * Retrieve actual sofa ID given a symbolic name
@@ -438,7 +448,7 @@ public interface AnnotatorContext {
    *             framework will automatically do the necessary Sofa mappings.
    */
   @Deprecated
-  public SofaID mapToSofaID(String aSofaName);
+  SofaID mapToSofaID(String aSofaName);
 
   /**
    * 
@@ -449,6 +459,6 @@ public interface AnnotatorContext {
    *             framework will automatically do the necessary Sofa mappings.
    */
   @Deprecated
-  public SofaID[] getSofaMappings();
+  SofaID[] getSofaMappings();
 
 }

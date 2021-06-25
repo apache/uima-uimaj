@@ -33,6 +33,7 @@ public class SlowAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.JTextAnnotator#process(org.apache.uima.jcas.impl.JCas,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public void process(JCas aJCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // waste some time
     fibonacci(35);

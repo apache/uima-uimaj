@@ -30,7 +30,6 @@ import org.apache.uima.collection.base_cpm.CasDataConsumer;
 import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 
@@ -45,8 +44,10 @@ public class CasConsumerFactory_impl implements ResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
-  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
-          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
+  @Override
+  public Resource produceResource(Class<? extends Resource> aResourceClass,
+          ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+          throws ResourceInitializationException {
     if (aSpecifier instanceof CasConsumerDescription) {
       CasConsumerDescription desc = (CasConsumerDescription) aSpecifier;
 
@@ -70,17 +71,16 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         try {
           implClass = Class_TCCL.forName(className, aAdditionalParams);
         } catch (ClassNotFoundException e) {
-          throw new ResourceInitializationException(
-                  ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,
-                      aSpecifier.getSourceUrlString() }, e);
+          throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+                  new Object[] { className, aSpecifier.getSourceUrlString() }, e);
         }
-        
+
         // check to see if this is a subclass of Cas[Data]Consumer and of aResourceClass
         if (!CasConsumer.class.isAssignableFrom(implClass)
                 && !CasDataConsumer.class.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.NOT_A_CAS_CONSUMER, new Object[] { className,
-                      aSpecifier.getSourceUrlString() });
+                  ResourceInitializationException.NOT_A_CAS_CONSUMER,
+                  new Object[] { className, aSpecifier.getSourceUrlString() });
         }
         if (!aResourceClass.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
@@ -95,12 +95,12 @@ public class CasConsumerFactory_impl implements ResourceFactory {
           resource = (Resource) implClass.newInstance();
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
-                      aSpecifier.getSourceUrlString() }, e);
+                  ResourceInitializationException.COULD_NOT_INSTANTIATE,
+                  new Object[] { className, aSpecifier.getSourceUrlString() }, e);
         } catch (IllegalAccessException e) {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
-                      aSpecifier.getSourceUrlString() }, e);
+                  ResourceInitializationException.COULD_NOT_INSTANTIATE,
+                  new Object[] { className, aSpecifier.getSourceUrlString() }, e);
         }
         // attempt to initialize it
         if (resource.initialize(aSpecifier, aAdditionalParams)) {
@@ -110,8 +110,8 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                      className, aSpecifier.getSourceUrlString() });
+                  ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                  new Object[] { className, aSpecifier.getSourceUrlString() });
         }
       } else if (frameworkImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
         Resource resource = new UimacppAnalysisEngineImpl();

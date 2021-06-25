@@ -56,11 +56,11 @@ public class MetaDataObject_implTest {
   private TestFruitObject orange;
   private TestFruitBagObject fruitBag;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
     // create an object that can represent a fruit
     unknownFruit = new TestFruitObject();
-  
+
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
@@ -92,38 +92,38 @@ public class MetaDataObject_implTest {
     fruitBag.setAttributeValue("fruits", fruitArray);
   }
 
-//  /**
-//   * Tests the {@link MetaDataObject#listAttributes()} method.
-//   */
-//  public void testListAttributes() throws Exception {
-//    try {
-//      HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
-//      HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
-//      HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
-//
-//      Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
-//      Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
-//      Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
-//    } catch (RuntimeException e) {
-//      JUnitExtension.handleException(e);
-//    }
-//  }
+  // /**
+  // * Tests the {@link MetaDataObject#listAttributes()} method.
+  // */
+  // public void testListAttributes() throws Exception {
+  // try {
+  // HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
+  // HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
+  // HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
+  //
+  // Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
+  // Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
+  // Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
+  // } catch (RuntimeException e) {
+  // JUnitExtension.handleException(e);
+  // }
+  // }
 
   /**
    * Test the getAttributes method
    */
-    @org.junit.jupiter.api.Test
-    public void testGetAttributes() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGetAttributes() throws Exception {
     assertThat(apple1.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(orange.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(fruitBag.getAttributes()).containsAll(TestFruitBagObject.getMetaDataAttrSet());
   }
-  
+
   /**
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */
-    @org.junit.jupiter.api.Test
-    public void testEquals() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEquals() throws Exception {
     assertThat(unknownFruit).isEqualTo(unknownFruit);
     assertThat(apple1).isEqualTo(apple2);
     assertThat(apple2).isEqualTo(apple1);
@@ -134,29 +134,36 @@ public class MetaDataObject_implTest {
     assertThat(apple1).isEqualTo(apple1.clone());
     assertThat(fruitBag).isEqualTo(fruitBag.clone());
     assertThat(apple1).isNotEqualTo(orange.clone());
-        
+
     // test with maps
-    ConfigurationParameterSettings cps1 = getResourceSpecifierFactory().createConfigurationParameterSettings();
-    cps1.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
-    cps1.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
-    
-    ConfigurationParameterSettings cps2 = getResourceSpecifierFactory().createConfigurationParameterSettings();
-    cps2.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
-    cps2.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
-    
+    ConfigurationParameterSettings cps1 = getResourceSpecifierFactory()
+            .createConfigurationParameterSettings();
+    cps1.getSettingsForGroups().put("k1",
+            new NameValuePair[] { new NameValuePair_impl("s1", "o1") });
+    cps1.getSettingsForGroups().put("k2",
+            new NameValuePair[] { new NameValuePair_impl("s2", "o2") });
+
+    ConfigurationParameterSettings cps2 = getResourceSpecifierFactory()
+            .createConfigurationParameterSettings();
+    cps2.getSettingsForGroups().put("k1",
+            new NameValuePair[] { new NameValuePair_impl("s1", "o1") });
+    cps2.getSettingsForGroups().put("k2",
+            new NameValuePair[] { new NameValuePair_impl("s2", "o2") });
+
     assertThat(cps1).isEqualTo(cps2);
     assertThat(cps1).isEqualTo(cps2.clone());
-    
-    cps2.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "ox2")});
-    
+
+    cps2.getSettingsForGroups().put("k2",
+            new NameValuePair[] { new NameValuePair_impl("s2", "ox2") });
+
     assertThat(cps1).isNotEqualTo(cps2);
   }
 
   /**
    * Tests the {@link MetaDataObject#toString()} method.
    */
-    @org.junit.jupiter.api.Test
-    public void testToString() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testToString() throws Exception {
     String apple1Str = apple1.toString();
     String apple2Str = apple2.toString();
     String orangeStr = orange.toString();
@@ -171,8 +178,8 @@ public class MetaDataObject_implTest {
    * exercise the {@link MetaDataObject#getAttributeValue(String)} and
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
-    @Test
-    public void testXMLization() throws Exception {
+  @Test
+  public void testXMLization() throws Exception {
     // write objects to XML
     String apple1xml = toXmlString(apple1);
     String apple2xml = toXmlString(apple2);
@@ -242,28 +249,24 @@ public class MetaDataObject_implTest {
     Assert.assertEquals("raspberry", raspberry.getName());
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSerialization() throws Exception {
-    assertThat(deserialize(serialize(apple1)))
-        .isInstanceOf(TestFruitObject.class)
-        .isEqualTo(apple1);
+  @org.junit.jupiter.api.Test
+  public void testSerialization() throws Exception {
+    assertThat(deserialize(serialize(apple1))).isInstanceOf(TestFruitObject.class)
+            .isEqualTo(apple1);
 
-    assertThat(deserialize(serialize(apple2)))
-        .isInstanceOf(TestFruitObject.class)
-        .isEqualTo(apple2);
+    assertThat(deserialize(serialize(apple2))).isInstanceOf(TestFruitObject.class)
+            .isEqualTo(apple2);
 
     byte[] orangeBytes = serialize(orange);
-    assertThat(deserialize(orangeBytes))
-        .isInstanceOf(TestFruitObject.class)
-        .isEqualTo(orange);
+    assertThat(deserialize(orangeBytes)).isInstanceOf(TestFruitObject.class).isEqualTo(orange);
 
     // make sure XMLization still works
     String orange1xml = toXmlString(orange);
     String orange2xml = toXmlString((TestFruitObject) deserialize(orangeBytes));
-    
+
     assertThat(orange1xml).isEqualTo(orange2xml);
   }
-  
+
   private String toXmlString(XMLizable aObject) throws IOException, SAXException {
     StringWriter writer = new StringWriter();
     aObject.toXML(writer);

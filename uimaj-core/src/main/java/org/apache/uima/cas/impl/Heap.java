@@ -30,9 +30,9 @@ import org.apache.uima.internal.util.Misc;
 public final class Heap {
 
   private static final boolean debugLogShrink = false;
-//  static {
-//    debugLogShrink = System.getProperty("uima.debug.ihs") != null;
-//  }
+  // static {
+  // debugLogShrink = System.getProperty("uima.debug.ihs") != null;
+  // }
 
   /**
    * Minimum size of the heap. Currently set to <code>1000</code>.
@@ -43,8 +43,8 @@ public final class Heap {
    * Default size of the heap. Currently set to <code>500000</code>(2 MB).
    */
   public static final int DEFAULT_SIZE = 1024 * 512; // 2 MB pages
-  
-  private static final int MULTIPLICATION_LIMIT = 1024 * 1024 * 16;  
+
+  private static final int MULTIPLICATION_LIMIT = 1024 * 1024 * 16;
 
   // Initial size of the heap. This is also the size the heap will be reset to
   // on a full reset.
@@ -53,14 +53,14 @@ public final class Heap {
   // The array that represents the actual heap is package private and
   // can be directly addressed by the LowLevelCAS.
   int[] heap;
-  
+
   // Next free position on the heap.
   private int pos;
 
   // End of heap. In the current implementation, this is the same as
   // this.heap.length at all times.
   private int max;
-  
+
   private final int[] shrinkableCount = new int[1];
 
   // Serialization constants. There are holes in the numbering for historical
@@ -85,16 +85,13 @@ public final class Heap {
   }
 
   /**
-   * Constructor lets you set initial heap size. Use only if you know what
-   * you're doing.
+   * Constructor lets you set initial heap size. Use only if you know what you're doing.
    * 
    * @param initialSize
-   *                The initial heap size. If this is smaller than the
-   *                {@link #MIN_SIZE MIN_SIZE}, the default will be used
-   *                instead.
+   *          The initial heap size. If this is smaller than the {@link #MIN_SIZE MIN_SIZE}, the
+   *          default will be used instead.
    */
   public Heap(int initialSize) {
-    super();
     if (initialSize < MIN_SIZE) {
       initialSize = MIN_SIZE;
     }
@@ -102,17 +99,17 @@ public final class Heap {
     initHeap();
   }
 
-  private final void initHeap() {
+  private void initHeap() {
     this.heap = new int[this.initialSize];
     this.pos = 1; // 0 is not a valid address
     this.max = this.heap.length;
   }
-  
-  private final void initHeap(int size) {
+
+  private void initHeap(int size) {
     this.heap = new int[size];
     this.pos = 1; // 0 is not a valid address
     this.max = this.heap.length;
-  }  
+  }
 
   void reinit(int[] md, int[] shortHeap) {
     if (md == null) {
@@ -146,14 +143,14 @@ public final class Heap {
     }
     // Set position and max.
     this.pos = shortHeap.length;
-//    this.max = this.initialSize;    
-    this.max = this.heap.length;   // heap could be repl by short heap
+    // this.max = this.initialSize;
+    this.max = this.heap.length; // heap could be repl by short heap
   }
 
   /**
-   * Re-create the heap for the given size. Just use the size of the incoming
-   * heap, unless it's smaller than our minimum. It is expected that the caller
-   * will then fill in the new heap up to newSize.
+   * Re-create the heap for the given size. Just use the size of the incoming heap, unless it's
+   * smaller than our minimum. It is expected that the caller will then fill in the new heap up to
+   * newSize.
    * 
    * @param newSize
    */
@@ -197,14 +194,14 @@ public final class Heap {
     final int start = this.heap.length;
     // This will grow the heap by doubling its size if it's smaller than
     // MULTIPLICATION_LIMIT, and by MULTIPLICATION_LIMIT if it's larger.
-    this.heap = IntArrayUtils.ensure_size(this.heap, start + this.initialSize, 2, MULTIPLICATION_LIMIT);
+    this.heap = IntArrayUtils.ensure_size(this.heap, start + this.initialSize, 2,
+            MULTIPLICATION_LIMIT);
     this.max = this.heap.length;
   }
-  
-  
+
   static int getRoundedSize(int size) {
     if (size < MULTIPLICATION_LIMIT) {
-      return Misc.nextHigherPowerOf2(size); 
+      return Misc.nextHigherPowerOf2(size);
     }
     return size + (MULTIPLICATION_LIMIT << 1);
   }
@@ -221,31 +218,31 @@ public final class Heap {
    * 
    * Logic for shrinking:
    * 
-   *   Based on a short history of the sizes needed to hold the larger of the previous 2 sizes
-   *     (Note: can be overridden by calling reset() multiple times in a row)
-   *   Never shrink below initialSize
-   *   
-   *   Shrink in exact reverse sequence of growth - using the subtraction method 
-   *   and then (for small enough sizes) the dividing method
-   *   
-   *   Shrink 1/2 the distance to the size needed to hold the large of the prev 2 sizes
+   * Based on a short history of the sizes needed to hold the larger of the previous 2 sizes (Note:
+   * can be overridden by calling reset() multiple times in a row) Never shrink below initialSize
+   * 
+   * Shrink in exact reverse sequence of growth - using the subtraction method and then (for small
+   * enough sizes) the dividing method
+   * 
+   * Shrink 1/2 the distance to the size needed to hold the large of the prev 2 sizes
    */
-  
+
   void reset(boolean doFullReset) {
     if (doFullReset) {
-      if (debugLogShrink) System.out.format("Debug shrink Heap full reset from %,d%n", getHeapSize());
+      if (debugLogShrink)
+        System.out.format("Debug shrink Heap full reset from %,d%n", getHeapSize());
       this.initHeap();
     } else {
       final int curCapacity = getHeapSize();
       final int curSize = getCellsUsed();
       // shrink based on max of prevSize and curSize
-      final int newCapacity = CommonAuxHeap.computeShrunkArraySize(
-            curCapacity, curSize, 2, MULTIPLICATION_LIMIT, initialSize, shrinkableCount);
+      final int newCapacity = CommonAuxHeap.computeShrunkArraySize(curCapacity, curSize, 2,
+              MULTIPLICATION_LIMIT, initialSize, shrinkableCount);
       if (newCapacity == curCapacity) {
         Arrays.fill(this.heap, 0, this.pos, 0);
       } else {
-        if (debugLogShrink) System.out.format("Debug shrink Heap from %,d to %,d%n",
-            curCapacity, newCapacity);
+        if (debugLogShrink)
+          System.out.format("Debug shrink Heap from %,d to %,d%n", curCapacity, newCapacity);
         this.initHeap(newCapacity);
       }
       this.pos = 1;
@@ -256,9 +253,9 @@ public final class Heap {
    * Add a structure to the heap.
    * 
    * @param fs
-   *                The input structure.
-   * @return The position where the structure was added, i.e., a pointer to the
-   *         first element of the structure.
+   *          The input structure.
+   * @return The position where the structure was added, i.e., a pointer to the first element of the
+   *         structure.
    */
   public int add(int[] fs) {
     while ((this.pos + fs.length) >= this.max) {
@@ -271,15 +268,15 @@ public final class Heap {
   }
 
   /**
-   * Reserve space for <code>len</code> items on the heap and set the first
-   * item to <code>val</code>. The other items are set to <code>0</code>.
+   * Reserve space for <code>len</code> items on the heap and set the first item to
+   * <code>val</code>. The other items are set to <code>0</code>.
    * 
    * @param len
-   *                The length of the new structure.
+   *          The length of the new structure.
    * @param val
-   *                The value of the first cell in the new structure.
-   * @return The position where the structure was added, i.e., a pointer to the
-   *         first element of the structure.
+   *          The value of the first cell in the new structure.
+   * @return The position where the structure was added, i.e., a pointer to the first element of the
+   *         structure.
    */
   public int add(int len, int val) {
     while ((this.pos + len) >= this.max) {
@@ -290,23 +287,23 @@ public final class Heap {
     this.heap[pos1] = val;
     return pos1;
   }
-  
+
   public int getNextId() {
-	  return pos;
+    return pos;
   }
-  
+
   public void grow(int len) {
-  	while ((this.pos + len) >= this.max) {
-  	  grow();
-  	}
+    while ((this.pos + len) >= this.max) {
+      grow();
+    }
     this.pos += len;
   }
 
   // used by JCas to default the size the JCasHashMap
   public int getInitialSize() {
     return initialSize;
-  }	
-  
+  }
+
   public int[] toArray() {
     int[] r = new int[pos];
     System.arraycopy(heap, 0, r, 0, pos);

@@ -16,16 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.annotator;
 
 import org.apache.uima.UIMAException;
 
 /**
- * An <code>AnnotatorConfigurationException</code> is thrown by an annotator if the settings of
- * its configuration parameters are invalid.
- * 
- * 
+ * An <code>AnnotatorConfigurationException</code> is thrown by an annotator if the settings of its
+ * configuration parameters are invalid.
  */
 public class AnnotatorConfigurationException extends UIMAException {
 
@@ -58,7 +55,6 @@ public class AnnotatorConfigurationException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public AnnotatorConfigurationException() {
-    super();
   }
 
   /**
@@ -79,8 +75,8 @@ public class AnnotatorConfigurationException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -98,8 +94,8 @@ public class AnnotatorConfigurationException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -116,8 +112,8 @@ public class AnnotatorConfigurationException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -132,15 +128,16 @@ public class AnnotatorConfigurationException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
    * @param aCause
    *          the original exception that caused this exception to be thrown, if any
    */
-  public AnnotatorConfigurationException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+  public AnnotatorConfigurationException(String aMessageKey, Object[] aArguments,
+          Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }
 }

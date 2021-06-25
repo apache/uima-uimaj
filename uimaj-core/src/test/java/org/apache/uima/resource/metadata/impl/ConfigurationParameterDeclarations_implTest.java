@@ -27,17 +27,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-
 public class ConfigurationParameterDeclarations_implTest {
-    @Test
-    public void testBuildFromXmlElement() throws Exception {
+  @Test
+  public void testBuildFromXmlElement() throws Exception {
     // parse XML
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

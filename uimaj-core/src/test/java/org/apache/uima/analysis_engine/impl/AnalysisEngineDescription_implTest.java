@@ -112,14 +112,14 @@ public class AnalysisEngineDescription_implTest {
   public static final String encoding = "utf-8";
 
   private static final File TEST_DATA_FILE = JUnitExtension
-      .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
+          .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
 
   private XMLParser xmlParser;
   private AnalysisEngineDescription primitiveDesc;
   private AnalysisEngineDescription aggregateDesc;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
 
@@ -127,7 +127,7 @@ public class AnalysisEngineDescription_implTest {
     TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
     type1.addFeature("TestFeature", "For Testing Only", CAS.TYPE_NAME_STRING);
     TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-        "uima.cas.String");
+            "uima.cas.String");
     enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
         new AllowedValue_impl("Two", "Second Value") });
 
@@ -163,7 +163,7 @@ public class AnalysisEngineDescription_implTest {
     primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     primitiveDesc.setPrimitive(true);
     primitiveDesc
-        .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+            .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
     AnalysisEngineMetaData md = primitiveDesc.getAnalysisEngineMetaData();
     md.setName("Test TAE");
     md.setDescription("Does not do anything useful.");
@@ -206,7 +206,7 @@ public class AnalysisEngineDescription_implTest {
     cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
     cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
     md.getConfigurationParameterDeclarations()
-        .setConfigurationGroups(new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+            .setConfigurationGroups(new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
 
     NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
     NameValuePair nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
@@ -222,7 +222,7 @@ public class AnalysisEngineDescription_implTest {
     aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     aggregateDesc.setPrimitive(false);
     Map<String, MetaDataObject> delegateTaeMap = aggregateDesc
-        .getDelegateAnalysisEngineSpecifiersWithImports();
+            .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateTaeMap.put("Test", primitiveDesc);
     AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
     primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
@@ -230,7 +230,7 @@ public class AnalysisEngineDescription_implTest {
     primDesc2.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
     primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
     primDesc2.getAnalysisEngineMetaData()
-        .setCapabilities(new Capability[] { new Capability_impl() });
+            .setCapabilities(new Capability[] { new Capability_impl() });
     delegateTaeMap.put("Empty", primDesc2);
     // Can't use URI specifier if we try to produce resource, because it maps to either a SOAP or
     // VINCI adapter,
@@ -249,21 +249,21 @@ public class AnalysisEngineDescription_implTest {
     aggregateDesc.setFlowControllerDeclaration(fcDecl);
 
     ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
-        .createExternalResourceDependency();
+            .createExternalResourceDependency();
     dep.setKey("ResourceKey");
     dep.setDescription("Test");
     aggregateDesc.setExternalResourceDependencies(new ExternalResourceDependency[] { dep });
     ResourceManagerConfiguration resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
-        .createResourceManagerConfiguration();
+            .createResourceManagerConfiguration();
     ExternalResourceDescription extRes = UIMAFramework.getResourceSpecifierFactory()
-        .createExternalResourceDescription();
+            .createExternalResourceDescription();
     extRes.setResourceSpecifier(fileResSpec);
     extRes.setName("Resource1");
     extRes.setDescription("Test");
     resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
 
     ExternalResourceBinding binding = UIMAFramework.getResourceSpecifierFactory()
-        .createExternalResourceBinding();
+            .createExternalResourceBinding();
     binding.setKey("ResourceKey");
     binding.setResourceName("Resource1");
     resMgrCfg.setExternalResourceBindings(new ExternalResourceBinding[] { binding });
@@ -290,8 +290,8 @@ public class AnalysisEngineDescription_implTest {
     md.setFlowConstraints(fixedFlow);
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
     xmlParser.enableSchemaValidation(false);
@@ -299,8 +299,8 @@ public class AnalysisEngineDescription_implTest {
     aggregateDesc = null;
   }
 
-    @Test
-    public void testMulticoreInitialize() throws Exception {
+  @Test
+  public void testMulticoreInitialize() throws Exception {
     ResourceManager resourceManager = newDefaultResourceManager();
     ConfigurationManager configManager = newConfigurationManager();
     Logger logger = UIMAFramework.getLogger(this.getClass());
@@ -308,11 +308,11 @@ public class AnalysisEngineDescription_implTest {
 
     UimaContext uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
     final Map<String, Object> p = new HashMap<>();
-    p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);
+    p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER, newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
-    int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
+    int numberOfThreads = Math.min(50, Misc.numberOfCores * 5);
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n", numberOfThreads);
 
@@ -331,7 +331,7 @@ public class AnalysisEngineDescription_implTest {
       }
     };
     MultiThreadUtils.tstMultiThread("MultiCoreInitialize", numberOfThreads, 100, run2isb,
-        MultiThreadUtils.emptyReset);
+            MultiThreadUtils.emptyReset);
     assertThat(aes[0]).isNotEqualTo(aes[1]);
 
     run2isb = new MultiThreadUtils.Run2isb() {
@@ -350,7 +350,7 @@ public class AnalysisEngineDescription_implTest {
     };
 
     MultiThreadUtils.tstMultiThread("MultiCoreInitialize", numberOfThreads, 100, run2isb,
-        MultiThreadUtils.emptyReset);
+            MultiThreadUtils.emptyReset);
 
     assertThat(aes[0]).isNotEqualTo(aes[1]);
   }
@@ -359,7 +359,7 @@ public class AnalysisEngineDescription_implTest {
   public void thatComplexDescriptorCanBeXMLized() throws Exception {
     // test a complex descriptor
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
-        getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml")));
+            getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml")));
     OperationalProperties opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
 
     assertThat(opProps).isNotNull();
@@ -368,7 +368,7 @@ public class AnalysisEngineDescription_implTest {
 
     try (InputStream is = new ByteArrayInputStream(toXmlString(desc).getBytes(encoding))) {
       AnalysisEngineDescription newDesc = xmlParser
-          .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
       assertThat(newDesc).isEqualTo(desc);
     }
   }
@@ -376,11 +376,11 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void thatDescriptorWithCasConsumerCanBeXMLized() throws Exception {
     // test a descriptor that includes a CasConsumer
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(
-        new XMLInputSource(getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
+    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
+            getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
     try (InputStream is = new ByteArrayInputStream(toXmlString(desc).getBytes(encoding))) {
       AnalysisEngineDescription newDesc = xmlParser
-          .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
       assertThat(newDesc).isEqualTo(desc);
     }
   }
@@ -393,7 +393,7 @@ public class AnalysisEngineDescription_implTest {
     // parse objects from XML
     try (InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding))) {
       AnalysisEngineDescription newPrimitiveDesc = xmlParser
-          .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
       assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
     }
   }
@@ -403,15 +403,15 @@ public class AnalysisEngineDescription_implTest {
     String aggregateDescXml = toXmlString(aggregateDesc);
     try (InputStream is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding))) {
       AnalysisEngineDescription newAggregateDesc = xmlParser
-          .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
       assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
     }
   }
 
-    @Test
-    public void testDefaultingOperationalParameters() throws Exception {
+  @Test
+  public void testDefaultingOperationalParameters() throws Exception {
     XMLInputSource in = new XMLInputSource(JUnitExtension
-        .getFile("TextAnalysisEngineImplTest/TestPrimitiveOperationalParmsDefaults.xml"));
+            .getFile("TextAnalysisEngineImplTest/TestPrimitiveOperationalParmsDefaults.xml"));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
     OperationalProperties opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
 
@@ -424,7 +424,7 @@ public class AnalysisEngineDescription_implTest {
   public void thatPrimitiveDescriptionCanBeSerialized() throws Exception {
     byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
     AnalysisEngineDescription newPrimitiveDesc = (AnalysisEngineDescription) SerializationUtils
-        .deserialize(primitiveDescBytes);
+            .deserialize(primitiveDescBytes);
     assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
   }
 
@@ -432,44 +432,44 @@ public class AnalysisEngineDescription_implTest {
   public void thatAggregateDescriptionCanBeSerialized() throws Exception {
     byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
     AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) SerializationUtils
-        .deserialize(aggregateDescBytes);
+            .deserialize(aggregateDescBytes);
     assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
   }
 
-    @Test
-    public void testDelegateImports() throws Exception {
+  @Test
+  public void testDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
-        getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+            getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
 
     AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
     Map<String, MetaDataObject> delegateMap = testAgg
-        .getDelegateAnalysisEngineSpecifiersWithImports();
+            .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateMap.put("key", delegateImport);
 
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiers().values()) //
-        .as("test that import is resolved") //
-        .hasSize(1) //
-        .allMatch(d -> d instanceof AnalysisEngineDescription);
+            .as("test that import is resolved") //
+            .hasSize(1) //
+            .allMatch(d -> d instanceof AnalysisEngineDescription);
 
     delegateMap.remove("key");
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiers()) //
-        .as("test that remove works") //
-        .isEmpty();
+            .as("test that remove works") //
+            .isEmpty();
 
     delegateMap.put("key", delegateImport);
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiers().values()) //
-        .as("test the re-add works") //
-        .hasSize(1) //
-        .allMatch(d -> d instanceof AnalysisEngineDescription);
+            .as("test the re-add works") //
+            .hasSize(1) //
+            .allMatch(d -> d instanceof AnalysisEngineDescription);
 
     // serialize to XML, preserving imports
     testAgg.toXML(new StringWriter(), true);
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiers().values()) //
-        .as("verify that imports are still resolved") //
-        .hasSize(1) //
-        .allMatch(d -> d instanceof AnalysisEngineDescription);
+            .as("verify that imports are still resolved") //
+            .hasSize(1) //
+            .allMatch(d -> d instanceof AnalysisEngineDescription);
   }
 
   @org.junit.jupiter.api.Test
@@ -477,39 +477,39 @@ public class AnalysisEngineDescription_implTest {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
-        getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+            getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
 
     AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
     Map<String, MetaDataObject> delegateMap = testAgg
-        .getDelegateAnalysisEngineSpecifiersWithImports();
+            .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateMap.put("key", delegateImport);
 
     assertThat(testAgg) //
-        .as("Delegate import in original has not been resolved") //
-        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
-        .isEmpty();
+            .as("Delegate import in original has not been resolved") //
+            .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+            .isEmpty();
 
     AnalysisEngineDescription clonedAgg = (AnalysisEngineDescription) testAgg.clone();
 
     assertThat(testAgg) //
-        .as("Delegate import in original has still not been resolved") //
-        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
-        .isEmpty();
+            .as("Delegate import in original has still not been resolved") //
+            .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+            .isEmpty();
 
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiersWithImports().values()) //
-        .as("import is still there in original") //
-        .hasSize(1) //
-        .allMatch(d -> d instanceof Import);
+            .as("import is still there in original") //
+            .hasSize(1) //
+            .allMatch(d -> d instanceof Import);
 
     assertThat(clonedAgg) //
-        .as("Delegate import in clone has not been resolved") //
-        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
-        .isEmpty();
+            .as("Delegate import in clone has not been resolved") //
+            .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+            .isEmpty();
 
     assertThat(clonedAgg.getDelegateAnalysisEngineSpecifiersWithImports().values()) //
-        .as("import is still there in clone") //
-        .hasSize(1) //
-        .allMatch(d -> d instanceof Import);
+            .as("import is still there in clone") //
+            .hasSize(1) //
+            .allMatch(d -> d instanceof Import);
   }
 
   @Test
@@ -517,32 +517,28 @@ public class AnalysisEngineDescription_implTest {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
-        getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+            getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
 
     AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
     Map<String, MetaDataObject> delegateMap = testAgg
-        .getDelegateAnalysisEngineSpecifiersWithImports();
+            .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateMap.put("key", delegateImport);
-    
+
     AnalysisEngineDescription clonedTestAgg = (AnalysisEngineDescription) testAgg.clone();
 
     // These two are actually exposed as attributes - we just check for good measure
-    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
-            "mSofaMappings");
-    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
-            "mFlowControllerDeclaration");
-    
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg, "mSofaMappings");
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg, "mFlowControllerDeclaration");
+
     // These are hidden state not exposed as meta data attributes
-    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
-            "mProcessedImports");
-    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
-            "mDelegateAnalysisEngineSpecifiers");
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg, "mProcessedImports");
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg, "mDelegateAnalysisEngineSpecifiers");
     assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
             "mDelegateAnalysisEngineSpecifiersWithImports");
   }
 
-    @Test
-    public void testDoFullValidation() throws Exception {
+  @Test
+  public void testDoFullValidation() throws Exception {
     // try some descriptors that are invalid due to config. param problems
     for (int i = 1; i <= 13; i++) {
       assertDescriptorIsNotValid("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml");
@@ -576,7 +572,7 @@ public class AnalysisEngineDescription_implTest {
 
     // try primitive with duplicate configuration group definitions
     assertDescriptorIsValid(
-        "TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml");
+            "TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml");
 
     // try aggregate with duplicate configuration group definitions
     assertDescriptorIsValid("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml");
@@ -591,7 +587,7 @@ public class AnalysisEngineDescription_implTest {
   public void thatAggregateWithImportByNameAndConfigParameterOverridesValidates() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
     XMLInputSource in = new XMLInputSource(
-        getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
+            getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
     ResourceManager resMgr = newDefaultResourceManager();
     File dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
@@ -599,11 +595,11 @@ public class AnalysisEngineDescription_implTest {
     desc.doFullValidation(resMgr);
   }
 
-    @Test
-    public void testValidate() throws Exception {
+  @Test
+  public void testValidate() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
     XMLInputSource in = new XMLInputSource(
-        getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
+            getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
     ResourceManager resMgr = newDefaultResourceManager();
     File dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
@@ -612,43 +608,44 @@ public class AnalysisEngineDescription_implTest {
 
     // test invalid aggregate with undefined key in flow
     in = new XMLInputSource(
-        getFile("TextAnalysisEngineImplTest/InvalidAggregate_UndefinedKeyInFlow.xml"));
+            getFile("TextAnalysisEngineImplTest/InvalidAggregate_UndefinedKeyInFlow.xml"));
     AnalysisEngineDescription desc2 = xmlParser.parseAnalysisEngineDescription(in);
 
     assertThatThrownBy(() -> desc2.validate()) //
-        .isInstanceOf(ResourceInitializationException.class) //
-        .extracting("messageKey", "message") //
-        .satisfies(t -> { //
-          assertThat(t.get(0)).isEqualTo(UNDEFINED_KEY_IN_FLOW); //
-          assertThat((String) t.get(1)).doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
-        });
+            .isInstanceOf(ResourceInitializationException.class) //
+            .extracting("messageKey", "message") //
+            .satisfies(t -> { //
+              assertThat(t.get(0)).isEqualTo(UNDEFINED_KEY_IN_FLOW); //
+              assertThat((String) t.get(1))
+                      .doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
+            });
   }
 
-    @Test
-    public void testGetAllComponentSpecifiers() throws Exception {
+  @Test
+  public void testGetAllComponentSpecifiers() throws Exception {
     Map<String, ResourceSpecifier> allSpecs = aggregateDesc.getAllComponentSpecifiers(null);
 
     assertThat((FlowControllerDescription) allSpecs.get("TestFlowController")) //
-        .isNotNull() //
-        .extracting(desc -> desc.getMetaData().getName()).isEqualTo("MyTestFlowController");
+            .isNotNull() //
+            .extracting(desc -> desc.getMetaData().getName()).isEqualTo("MyTestFlowController");
 
     assertThat((AnalysisEngineDescription) allSpecs.get("Test")) //
-        .isNotNull() //
-        .extracting(desc -> desc.getMetaData().getName()).isEqualTo("Test TAE");
+            .isNotNull() //
+            .extracting(desc -> desc.getMetaData().getName()).isEqualTo("Test TAE");
   }
 
-    @Test
-    public void testDocumentAnnotationRedefine() throws Exception {
+  @Test
+  public void testDocumentAnnotationRedefine() throws Exception {
     File file = getFile(
-        "org/apache/uima/analysis_engine/impl/documentAnnotationRedefinitionTS.xml");
+            "org/apache/uima/analysis_engine/impl/documentAnnotationRedefinitionTS.xml");
     TypeSystemDescription tsd = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));
 
     assertThatThrownBy(() -> createCas(tsd, null, new FsIndexDescription[0]))
-        .isInstanceOf(ResourceInitializationException.class);
+            .isInstanceOf(ResourceInitializationException.class);
   }
 
-    @Test
-    public void testNoDelegatesToResolve() throws Exception {
+  @Test
+  public void testNoDelegatesToResolve() throws Exception {
     ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
 
     AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
@@ -666,7 +663,7 @@ public class AnalysisEngineDescription_implTest {
   }
 
   private void assertDescriptorIsValid(String aPath)
-      throws IOException, InvalidXMLException, ResourceInitializationException {
+          throws IOException, InvalidXMLException, ResourceInitializationException {
     XMLInputSource in = new XMLInputSource(getFile(aPath));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
     desc.doFullValidation();
@@ -677,13 +674,13 @@ public class AnalysisEngineDescription_implTest {
 
     assertThat(file).exists();
 
-    assertThatThrownBy(
-        () -> xmlParser.parseAnalysisEngineDescription(new XMLInputSource(file)).doFullValidation())
-            .satisfiesAnyOf( //
-                e -> assertThat(e).isInstanceOf(ResourceInitializationException.class), //
-                e -> assertThat(e).isInstanceOf(InvalidXMLException.class)) //
-            .extracting("message", as(InstanceOfAssertFactories.STRING)) //
-            .doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
+    assertThatThrownBy(() -> xmlParser
+            .parseAnalysisEngineDescription(new XMLInputSource(file)).doFullValidation())
+                    .satisfiesAnyOf( //
+                            e -> assertThat(e).isInstanceOf(ResourceInitializationException.class), //
+                            e -> assertThat(e).isInstanceOf(InvalidXMLException.class)) //
+                    .extracting("message", as(InstanceOfAssertFactories.STRING)) //
+                    .doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
   }
 
   private String toXmlString(XMLizable aObject) throws IOException, SAXException {

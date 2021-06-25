@@ -25,22 +25,18 @@ import org.apache.uima.cas.Marker;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * A MarkerImpl holds a high-water "mark" in the CAS,
- * for all views.
- * Typically, one is obtained via the createMarker call
- * on a CAS.
+ * A MarkerImpl holds a high-water "mark" in the CAS, for all views. Typically, one is obtained via
+ * the createMarker call on a CAS.
  * 
- * Currently only one marker is used per CAS.
- * The Marker enables testing on each CAS update if the
- * update is "below" or "above" the marker - this is
- * used for implementing delta serialization, in which
- * only the changed data is sent.
+ * Currently only one marker is used per CAS. The Marker enables testing on each CAS update if the
+ * update is "below" or "above" the marker - this is used for implementing delta serialization, in
+ * which only the changed data is sent.
  */
 public class MarkerImpl implements Marker {
-	
-  protected int nextFSId;    //next FS id
+
+  protected int nextFSId; // next FS id
   protected boolean isValid;
-  
+
   CASImpl cas;
 
   MarkerImpl(int nextFSId, CASImpl cas) {
@@ -49,27 +45,29 @@ public class MarkerImpl implements Marker {
     this.isValid = true;
   }
 
-  
-  
+  @Override
   public boolean isNew(FeatureStructure fs) {
-  	//check if same CAS instance
-  	if (!isValid || !cas.isInCAS(fs)) {
-  		throw new CASRuntimeException(CASRuntimeException.CAS_MISMATCH, "FS and Marker are not from the same CAS.");
-  	}
-  	return isNew(fs._id());
+    // check if same CAS instance
+    if (!isValid || !cas.isInCAS(fs)) {
+      throw new CASRuntimeException(CASRuntimeException.CAS_MISMATCH,
+              "FS and Marker are not from the same CAS.");
+    }
+    return isNew(fs._id());
   }
 
+  @Override
   public boolean isModified(FeatureStructure fs) {
-	  if (isNew(fs)) {
-	    return false;  // new fs's are not modified ones
-	  }
-    return this.cas.isInModifiedPreexisting((TOP)fs);
+    if (isNew(fs)) {
+      return false; // new fs's are not modified ones
+    }
+    return this.cas.isInModifiedPreexisting((TOP) fs);
   }
-    
+
   boolean isNew(int id) {
-	  return (id >= nextFSId);
+    return (id >= nextFSId);
   }
-    
+
+  @Override
   public boolean isValid() {
     return isValid;
   }
@@ -77,5 +75,5 @@ public class MarkerImpl implements Marker {
   public int getNextFSId() {
     return nextFSId;
   }
-  
+
 }

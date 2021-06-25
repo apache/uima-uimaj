@@ -50,6 +50,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
      * @return <code>true</code>, if the given <code>File</code> object is accepted,
      *         <code>fase</code> otherwise.
      */
+    @Override
     public boolean accept(File file) {
       // accept only directories
       return file.isDirectory();
@@ -58,6 +59,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
     /**
      * @return The description of this filter.
      */
+    @Override
     public String getDescription() {
       return "Root directories of installed PEAR packages";
     }
@@ -80,6 +82,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
      * @return <code>true</code>, if the given <code>File</code> object is accepted,
      *         <code>fase</code> otherwise.
      */
+    @Override
     public boolean accept(File file) {
       if (file.isDirectory()) // show all directories
         return true;
@@ -91,6 +94,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
     /**
      * @return The description of this filter.
      */
+    @Override
     public String getDescription() {
       return "PEAR package files";
     }
@@ -119,6 +123,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
    *          The given component ID.
    * @return Selected package root directory or <code>null</code>, if the selection cancelled.
    */
+  @Override
   public synchronized File selectPackageDirectory(String componentId) {
     // get last package dir path
     Preferences userPrefs = Preferences.userNodeForPackage(getClass());
@@ -159,6 +164,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
    * @return Selected PEAR package file for the given component, or <code>null</code>, if the
    *         selection cancelled.
    */
+  @Override
   public synchronized File selectPackageFile(String componentId) {
     // get last package file path
     Preferences userPrefs = Preferences.userNodeForPackage(getClass());
@@ -197,6 +203,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
    * @return The PEAR package URL for the given component or <code>null</code>, if no URL is
    *         entered.
    */
+  @Override
   public URL selectPackageUrl(String componentId) {
     return null;
   }

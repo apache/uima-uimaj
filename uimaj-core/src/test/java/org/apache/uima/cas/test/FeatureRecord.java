@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-   
+//@formatter:off
 /* Apache UIMA v3 - First created by JCasGen Fri Dec 04 14:44:18 CET 2020 */
 
 package org.apache.uima.cas.test;

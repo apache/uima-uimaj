@@ -30,7 +30,8 @@ package org.apache.uima.resource.metadata;
  */
 public interface ExternalResourceBinding extends MetaDataObject {
 
-  public final static ExternalResourceBinding[] EMPTY_RESOURCE_BINDINGS = new ExternalResourceBinding[0];
+  ExternalResourceBinding[] EMPTY_RESOURCE_BINDINGS = new ExternalResourceBinding[0];
+
   /**
    * Retrieves the key that identifies the
    * {@link org.apache.uima.resource.ExternalResourceDependency} being bound. If this binding is
@@ -45,7 +46,7 @@ public interface ExternalResourceBinding extends MetaDataObject {
    * 
    * @return the key for this resource binding.
    */
-  public String getKey();
+  String getKey();
 
   /**
    * Sets the key that identifies the {@link org.apache.uima.resource.ExternalResourceDependency}
@@ -61,7 +62,7 @@ public interface ExternalResourceBinding extends MetaDataObject {
    * @param aKey
    *          the key for this resource binding.
    */
-  public void setKey(String aKey);
+  void setKey(String aKey);
 
   /**
    * Retrieves the name of the actual Resource instance that will satisfy this dependency. This name
@@ -71,7 +72,7 @@ public interface ExternalResourceBinding extends MetaDataObject {
    * 
    * @return the name of the resource satisfying this dependency.
    */
-  public String getResourceName();
+  String getResourceName();
 
   /**
    * Sets the name of the actual Resource instance that will satisfy this dependency. This name must
@@ -82,6 +83,6 @@ public interface ExternalResourceBinding extends MetaDataObject {
    * @param aName
    *          the name of the resource satisfying this dependency.
    */
-  public void setResourceName(String aName);
+  void setResourceName(String aName);
 
 }

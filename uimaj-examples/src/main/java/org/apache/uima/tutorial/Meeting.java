@@ -21,12 +21,12 @@ package org.apache.uima.tutorial;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
@@ -63,6 +63,7 @@ public class Meeting extends Annotation {
      * @return the type index ID
      * @generated 
      */
+    @Override
     public int getTypeIndexID() {return typeIndexID;}
  
  
@@ -248,6 +249,7 @@ public class Meeting extends Annotation {
     /* (non-Javadoc)
      * @see org.apache.uima.cas.impl.FeatureStructureImplC#toString()
      */
+    @Override
     public String toString() {
         return "Meeting in " + getRoom().getCoveredText() + " on " + getDate().getCoveredText() + ", " + getStartTime().getCoveredText() + " - " + getEndTime().getCoveredText();
     }

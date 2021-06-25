@@ -74,6 +74,7 @@ public class ServiceAlias implements ServiceInterface {
       return new Service(H);
   }
 
+  @Override
   public Object getAttr(String name) {
     name = name.toLowerCase().trim();
     if (name.equals("name"))

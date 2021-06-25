@@ -29,9 +29,9 @@ import java.util.TreeSet;
 
 import org.apache.uima.internal.util.IntVector;
 
+//@formatter:off
 /**
- * Share common underlying char[] among strings: Optimize sets of strings for
- * efficient storage
+ * Share common underlying char[] among strings: Optimize sets of strings for efficient storage
  * 
  * Apply it to a set of strings.
  * 
@@ -58,22 +58,23 @@ import org.apache.uima.internal.util.IntVector;
  * very large amounts, in excess of 2GB.  
  * 
  * Nulls, passed in as strings, are mostly ignored, but handled appropriately.
- * 
- * 
  */
+//@formatter:on
 public class OptimizeStrings {
-  
 
+ // @formatter:off
   /**
    * splitSize = 100 means 
    * the common string can be as large as 100
    * the common string can hold a string of length 100 
    */
+ // @formatter:on
   // not final static for testing
-  private int splitSize = Integer.MAX_VALUE - 2;  // avoid boundary issues
-  
+  private int splitSize = Integer.MAX_VALUE - 2; // avoid boundary issues
+
   private ArrayList<String> inStrings = new ArrayList<>();
-  
+
+//@formatter:off
   /**
    * A two hop map from strings to offsets is used.
    * "index" (int):
@@ -85,33 +86,33 @@ public class OptimizeStrings {
    * The lastIndexInCommonStringA array holds the last index value
    *   within each of the common string segments
    */
-  
+//@formatter:on
   // the value is either
-  //   an int index into the offset table which has the offset in the common string
-  //   the intindex in the str aux heap for this string, in the deserialized form
-  //   These are distinguished by having the aux heap index be negative
+  // an int index into the offset table which has the offset in the common string
+  // the intindex in the str aux heap for this string, in the deserialized form
+  // These are distinguished by having the aux heap index be negative
   private Map<String, Integer> stringToIndexMap;
   // map from string index its offset in the piece of the common string array
-  private int[]             offsets;  
-  private String[]          commonStringsA;
+  private int[] offsets;
+  private String[] commonStringsA;
   /**
-   * holds the last index (counting down in sort order) that is valid for 
-   * the corresponding common string segment.
+   * holds the last index (counting down in sort order) that is valid for the corresponding common
+   * string segment.
    */
   private int[] lastIndexInCommonStringsA;
-  
+
   private Map<String, String> returnedStrings = new HashMap<>();
-  
-  private long              savedCharsExact   = 0;
-  private long              savedCharsSubstr  = 0;
-  private int               nextSeq           = -1;
-  
-  private final boolean     doMeasurement;
-  
+
+  private long savedCharsExact = 0;
+  private long savedCharsSubstr = 0;
+  private int nextSeq = -1;
+
+  private final boolean doMeasurement;
+
   public OptimizeStrings(boolean doMeasurement) {
     this.doMeasurement = doMeasurement;
   }
-  
+
   // for testing, mainly
   public OptimizeStrings(boolean doMeasurement, int splitSize) {
     this.doMeasurement = doMeasurement;
@@ -120,18 +121,20 @@ public class OptimizeStrings {
 
   /**
    * The number of characters saved - for statistical reporting only
+   * 
    * @return the number of characters saved
    */
   public long getSavedCharsExact() {
     return savedCharsExact;
   }
-  
+
   public long getSavedCharsSubstr() {
     return savedCharsSubstr;
   }
 
   /**
    * The list of common strings
+   * 
    * @return the list of common strings
    */
   public String[] getCommonStrings() {
@@ -140,12 +143,16 @@ public class OptimizeStrings {
 
   /**
    * null strings not added
+   * 
    * 0 length strings added
-   * @param s -
+   * 
+   * @param s
+   *          -
    */
   public void add(String s) {
-    if (inStrings.size() == (Integer.MAX_VALUE -1)) {
-      throw new RuntimeException(String.format("Exceeded size limit, size = %,d%n", inStrings.size()));
+    if (inStrings.size() == (Integer.MAX_VALUE - 1)) {
+      throw new RuntimeException(
+              String.format("Exceeded size limit, size = %,d%n", inStrings.size()));
     }
     if (null != s) {
       inStrings.add(s);
@@ -166,15 +173,14 @@ public class OptimizeStrings {
     }
     return stringToIndexMap.get(s);
   }
-  
-  /** 
+
+  /**
    * 
-   * @param s  must not be null
-   * @return a (positive or 0) or negative number.
-   * If positive, it is the offset in the common string
-   * If negative, -v is the index (starting at 1) that sequentially
-   * increases, for each new unique string fetched using this
-   * method.
+   * @param s
+   *          must not be null
+   * @return a (positive or 0) or negative number. If positive, it is the offset in the common
+   *         string. If negative, -v is the index (starting at 1) that sequentially increases, for
+   *         each new unique string fetched using this method.
    */
   public int getIndexOrSeqIndex(String s) {
     if (null == s) {
@@ -187,13 +193,14 @@ public class OptimizeStrings {
     }
     return v;
   }
-  
+
   /**
    * return a string which is made as a substring of the common string
    * 
-   * @param s -
-   * @return an equal string, made as substring of common string instance
-   *         equal results return the same string
+   * @param s
+   *          -
+   * @return an equal string, made as substring of common string instance equal results return the
+   *         same string
    */
   public String getString(String s) {
     if (null == s) {
@@ -209,20 +216,21 @@ public class OptimizeStrings {
     returnedStrings.put(r, r);
     return r;
   }
-  
+
   public long getOffset(String s) {
     if (null == s) {
       return -1;
     }
     return offsets[getStringIndex(s)];
   }
-  
+
   public int getOffset(int i) {
     return offsets[i];
   }
-  
+
   /**
-   * @param index an index (not offset) to the sorted strings, 
+   * @param index
+   *          an index (not offset) to the sorted strings,
    * @return the index of the segment it belongs to
    */
   public int getCommonStringIndex(int index) {
@@ -253,25 +261,24 @@ public class OptimizeStrings {
       sa[i] = getString(sa[i]);
     }
   }
-  
+
   /**
-   * Fully checking indexof for every new string is prohibitively expensive We
-   * do a partial check - only checking if a string is a substring of the
-   * previous one
+   * Fully checking indexof for every new string is prohibitively expensive We do a partial check -
+   * only checking if a string is a substring of the previous one
    */
   public void optimize() {
     String[] sa = inStrings.toArray(new String[inStrings.size()]);
-    optimizeI(sa); 
-    inStrings = new ArrayList<>();  // release space
+    optimizeI(sa);
+    inStrings = new ArrayList<>(); // release space
   }
-     
+
   private void optimizeI(String[] sortedStrings) {
     savedCharsExact = 0;
     savedCharsSubstr = 0;
     StringBuilder sb = new StringBuilder();
-        
+
     String[] sortedStrings2 = sortStrings(sortedStrings);
-    
+
     int ssLength;
     if (sortedStrings2 != sortedStrings) {
       // in this case, duplicates have already been eliminated
@@ -292,32 +299,32 @@ public class OptimizeStrings {
       String s = sortedStrings[i];
       int sLength = s.length();
       if (sLength > splitSize) {
-        throw new RuntimeException(String.format("String too long, length = %,d, max length allowed is %,d", sLength, splitSize));
+        throw new RuntimeException(String.format(
+                "String too long, length = %,d, max length allowed is %,d", sLength, splitSize));
       }
       if (previous.startsWith(s)) {
         offsets[i] = previousOffset;
-        if (doMeasurement) {  // equals case counted in dupl removal
+        if (doMeasurement) { // equals case counted in dupl removal
           savedCharsSubstr += sLength;
         }
       } else {
-        if (sb.length() + sLength  > splitSize) {
+        if (sb.length() + sLength > splitSize) {
           commonStrings.add(sb.toString());
           sb = new StringBuilder();
-          lastIndexInCommonStrings.add(i + 1);  // previous index because index counting down
+          lastIndexInCommonStrings.add(i + 1); // previous index because index counting down
         }
         offsets[i] = previousOffset = sb.length();
         sb.append(previous = s);
       }
     }
-    commonStrings.add(sb.toString());  // add the last (partial) one
-    lastIndexInCommonStrings.add(0);   // the last index 
-    
+    commonStrings.add(sb.toString()); // add the last (partial) one
+    lastIndexInCommonStrings.add(0); // the last index
+
     // convert List<Integer> to int[]
     lastIndexInCommonStrings.toArray();
     lastIndexInCommonStringsA = lastIndexInCommonStrings.toArray();
-    
+
     commonStringsA = commonStrings.toArray(new String[commonStrings.size()]);
-    
 
     // prepare map from original string object to index in sorted arrays and offsets
     // index also used to find common string segment.
@@ -326,11 +333,11 @@ public class OptimizeStrings {
       stringToIndexMap.put(sortedStrings[i], i);
     }
   }
-  
+
   /**
-   * Scan sorted strings, removing duplicates.
-   * Copy refs so that final array has no dups up to new length
-   * Return new length, but don't trim array
+   * Scan sorted strings, removing duplicates. Copy refs so that final array has no dups up to new
+   * length Return new length, but don't trim array
+   * 
    * @param sortedStrings
    * @return new length
    */
@@ -340,7 +347,7 @@ public class OptimizeStrings {
     }
     String prev = sortedStrings[0];
     int to = 1;
-    for(int from = 1; from < sortedStrings.length; from++) {
+    for (int from = 1; from < sortedStrings.length; from++) {
       String s = sortedStrings[from];
       if (s.equals(prev)) {
         if (doMeasurement) {
@@ -351,38 +358,37 @@ public class OptimizeStrings {
       prev = s;
       sortedStrings[to] = s;
       to++;
-    }    
-    return to;  // to is length, is also where next string would be copied to
+    }
+    return to; // to is length, is also where next string would be copied to
   }
-  
+
   private String[] sortStrings(String[] sa) {
     try {
       Arrays.sort(sa);
 
       // testing
-//      Set<String> orderedSet = new TreeSet<String>();
-//      for (String s : inStrings) {
-//        orderedSet.add(s);
-//      }
-//      Iterator<String> it = orderedSet.iterator();
-//      for (int i = 0; i < sa.length; i++) {
-//        String s = it.next();
-//        if (sa[i] != s) {
-//          throw new RuntimeException(String.format(
-//              "Mismatch, old way sort(i = %,d) = %s, new way is %s", i, s));
-//        }
-//        while ((i < sa.length - 1) && (sa[i + 1].equals(sa[i]))) {
-//         i++;
-//        }
-//      }
+      // Set<String> orderedSet = new TreeSet<String>();
+      // for (String s : inStrings) {
+      // orderedSet.add(s);
+      // }
+      // Iterator<String> it = orderedSet.iterator();
+      // for (int i = 0; i < sa.length; i++) {
+      // String s = it.next();
+      // if (sa[i] != s) {
+      // throw new RuntimeException(String.format(
+      // "Mismatch, old way sort(i = %,d) = %s, new way is %s", i, s));
+      // }
+      // while ((i < sa.length - 1) && (sa[i + 1].equals(sa[i]))) {
+      // i++;
+      // }
+      // }
       // end of test
-      
-      
+
       return sa;
     } catch (StackOverflowError e) {
       // see https://issues.apache.org/jira/browse/UIMA-2515
       // debug/test
-//      System.out.println("hit stack overflow");
+      // System.out.println("hit stack overflow");
       Set<String> orderedSet = new TreeSet<>();
       for (String s : inStrings) {
         if (!orderedSet.add(s)) {

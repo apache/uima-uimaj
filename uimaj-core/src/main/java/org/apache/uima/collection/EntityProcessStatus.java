@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.io.Serializable;
@@ -27,8 +26,6 @@ import org.apache.uima.util.ProcessTrace;
 /**
  * Contains information about the successful or unsuccessful processing of an entity (an element of
  * a collection) by the {@link CollectionProcessingManager}.
- * 
- * 
  */
 public interface EntityProcessStatus extends Serializable {
   /**
@@ -37,21 +34,21 @@ public interface EntityProcessStatus extends Serializable {
    * @return true if an exception occurred, false if processing completely successfully with no
    *         exceptions.
    */
-  public boolean isException();
+  boolean isException();
 
   /**
    * Gets a message describing the status of the Entity's processing.
    * 
    * @return the status message
    */
-  public String getStatusMessage();
+  String getStatusMessage();
 
   /**
    * Gets the List of Exceptions that occurred during processing of the Entity.
    * 
    * @return the List of Exceptions, <code>null</code> if none
    */
-  public List<Exception> getExceptions();
+  List<Exception> getExceptions();
 
   /**
    * Gets the name of the components in which Exceptions (if any) occurred. These could be the
@@ -59,22 +56,21 @@ public interface EntityProcessStatus extends Serializable {
    * 
    * @return the name of the components that failed, <code>null</code> if there was no failure
    */
-  public List<String> getFailedComponentNames();
+  List<String> getFailedComponentNames();
 
   /**
    * Gets the <code>ProcessTrace</code> object for the Entity's processing. The
-   * <code>ProcessTrace</code> object contains a record of each component involved in the
-   * processing and how much time that component took to complete its processing.
+   * <code>ProcessTrace</code> object contains a record of each component involved in the processing
+   * and how much time that component took to complete its processing.
    * 
    * @return the object containing trace and timing information for the Entity's processing.
    */
-  public ProcessTrace getProcessTrace();
+  ProcessTrace getProcessTrace();
 
   /**
    * Gets whether an entity has beed skipped during processing
    * 
    * @return true if an entity was skipped, false otherwise
    */
-  public boolean isEntitySkipped();
-
+  boolean isEntitySkipped();
 }

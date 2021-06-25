@@ -19,9 +19,9 @@
 
 package org.apache.uima.caseditor.editor.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for the <code>Span</code> class.

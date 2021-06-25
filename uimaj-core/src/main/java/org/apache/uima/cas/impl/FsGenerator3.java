@@ -26,7 +26,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 @FunctionalInterface
 public interface FsGenerator3 {
-  
+
   TOP createFS(TypeImpl typeImpl, CASImpl casImpl);
-  
+
 }

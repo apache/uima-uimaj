@@ -25,8 +25,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Encapsulates all of the metadata for an Analysis Engine.
  * 
  * As with all {@link org.apache.uima.resource.metadata.MetaDataObject}s, an
- * <code>AnalysisEngineMetaData</code> may or may not be modifiable. An application can find out
- * by calling the {@link #isModifiable()} method.
+ * <code>AnalysisEngineMetaData</code> may or may not be modifiable. An application can find out by
+ * calling the {@link #isModifiable()} method.
  * 
  * 
  */
@@ -38,12 +38,12 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * 
    * @return true if and only if this AnalysisEngine supports asynchronous communication
    */
-  public boolean isAsynchronousModeSupported();
+  boolean isAsynchronousModeSupported();
 
   /**
    * Sets whether this AnalysisEngine supports asynchronous communication. If this is set to true
-   * then the AnalysisEngine should implement the <code>AsynchronousAnalysisEngine</code>
-   * interface (not yet implemented).
+   * then the AnalysisEngine should implement the <code>AsynchronousAnalysisEngine</code> interface
+   * (not yet implemented).
    * 
    * @param aSupported
    *          true if and only if this AnalysisEngine supports asynchronous communication
@@ -51,7 +51,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setAsynchronousModeSupported(boolean aSupported);
+  void setAsynchronousModeSupported(boolean aSupported);
 
   /**
    * For an aggregate AnalysisEngine only, gets the constraints on the execution sequence of the
@@ -67,7 +67,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * @return the flow constraints for the AnalysisEngine, or <code>null</code> if no flow
    *         constraints are published by this AnalysisEngine.
    */
-  public FlowConstraints getFlowConstraints();
+  FlowConstraints getFlowConstraints();
 
   /**
    * For an aggregate AnalysisEngine only, sets the constraints on the execution sequence of the
@@ -81,21 +81,21 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * map.
    * 
    * @param aFlowConstraints
-   *          the flow constraints for the AnalysisEngine, or <code>null</code> if there are no
-   *          flow constraints
+   *          the flow constraints for the AnalysisEngine, or <code>null</code> if there are no flow
+   *          constraints
    * 
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setFlowConstraints(FlowConstraints aFlowConstraints);
+  void setFlowConstraints(FlowConstraints aFlowConstraints);
 
   /**
    * For an aggregate AnalysisEngine only, gets the metadata of the delegate AnalysisEngines.
    * <p>
    * Publishing this information is optional; some implementations may always return null here.
    * 
-   * @return an array of delegate AnalysisEngine metadata, or <code>null</code> if that
-   *         information is not available.
+   * @return an array of delegate AnalysisEngine metadata, or <code>null</code> if that information
+   *         is not available.
    */
-  public AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData();
+  AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData();
 }

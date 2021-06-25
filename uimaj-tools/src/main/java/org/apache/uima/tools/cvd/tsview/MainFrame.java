@@ -114,7 +114,6 @@ public class MainFrame extends JFrame {
    * @throws HeadlessException -
    */
   public MainFrame() {
-    super();
     init();
   }
 

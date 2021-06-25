@@ -28,14 +28,15 @@ package org.apache.uima.resource.metadata;
  */
 public interface FsIndexDescription extends MetaDataObject {
 
-  public final static FsIndexDescription[] EMPTY_FS_INDEX_DESCRIPTIONS = new FsIndexDescription[0];
+  FsIndexDescription[] EMPTY_FS_INDEX_DESCRIPTIONS = new FsIndexDescription[0];
+
   /**
    * Gets the label of this index. This is the identifier used to retrieve the index from the CAS's
    * Index Repository.
    * 
    * @return the label of this index.
    */
-  public String getLabel();
+  String getLabel();
 
   /**
    * Sets the label of this index. This is the identifier used to retrieve the index from the CAS's
@@ -44,7 +45,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * @param aLabel
    *          the label of this index.
    */
-  public void setLabel(String aLabel);
+  void setLabel(String aLabel);
 
   /**
    * Gets the Type name for this index. This determines what type of FeatureStructures are contained
@@ -52,7 +53,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * 
    * @return the type name for this index
    */
-  public String getTypeName();
+  String getTypeName();
 
   /**
    * Sets the Type name for this index. This determines what type of FeatureStructures are contained
@@ -61,7 +62,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * @param aTypeName
    *          the type name for this index
    */
-  public void setTypeName(String aTypeName);
+  void setTypeName(String aTypeName);
 
   /**
    * Gets the "kind" of index. There are currently three kinds of indexes - "sorted", "set", and
@@ -70,7 +71,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * 
    * @return the kind of index
    */
-  public String getKind();
+  String getKind();
 
   /**
    * Sets the "kind" of index. There are currently three kinds of indexes - sorted, set, and bag
@@ -80,7 +81,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * @param aKind
    *          the kind of index
    */
-  public void setKind(String aKind);
+  void setKind(String aKind);
 
   /**
    * Gets the keys for this index. The keys determine the ordering of FeatureStructures in this
@@ -88,7 +89,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * 
    * @return the keys for this index
    */
-  public FsIndexKeyDescription[] getKeys();
+  FsIndexKeyDescription[] getKeys();
 
   /**
    * Sets the keys for this index. The keys determine the ordering of FeatureStructures in this
@@ -97,26 +98,26 @@ public interface FsIndexDescription extends MetaDataObject {
    * @param aKeys
    *          the keys for this index
    */
-  public void setKeys(FsIndexKeyDescription[] aKeys);
+  void setKeys(FsIndexKeyDescription[] aKeys);
 
   /**
    * Identifies a Sorted index.
    * 
    * @see org.apache.uima.cas.FSIndex
    */
-  public static final String KIND_SORTED = "sorted";
+  String KIND_SORTED = "sorted";
 
   /**
    * Identifies a Set index.
    * 
    * @see org.apache.uima.cas.FSIndex
    */
-  public static final String KIND_SET = "set";
+  String KIND_SET = "set";
 
   /**
    * Identifies a Bag index.
    * 
    * @see org.apache.uima.cas.FSIndex
    */
-  public static final String KIND_BAG = "bag";
+  String KIND_BAG = "bag";
 }

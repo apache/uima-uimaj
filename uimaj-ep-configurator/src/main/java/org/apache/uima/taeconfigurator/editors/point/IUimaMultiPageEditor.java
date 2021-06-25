@@ -31,25 +31,25 @@ public interface IUimaMultiPageEditor {
   /**
    * Adds the pages for current editor.
    */
-  public void addPagesForCurrentEditor();
+  void addPagesForCurrentEditor();
   
   /**
    * Page change for current editor.
    *
    * @param newPageIndex the new page index
    */
-  public void pageChangeForCurrentEditor(int newPageIndex);
+  void pageChangeForCurrentEditor(int newPageIndex);
   
   /**
    * Do save for current editor.
    *
    * @param monitor the monitor
    */
-  public void doSaveForCurrentEditor(IProgressMonitor monitor);
+  void doSaveForCurrentEditor(IProgressMonitor monitor);
   
   /**
    * Do save as for current editor.
    */
-  public void doSaveAsForCurrentEditor();
+  void doSaveAsForCurrentEditor();
 
 }

@@ -35,7 +35,7 @@ public interface IUimaEditorExtension {
    * interface is instantiated.
    * 
    */
-  public void init ();
+  void init ();
   
   /**
    * When a new type of descriptor is encountered and cannot edit, CDE will
@@ -45,7 +45,7 @@ public interface IUimaEditorExtension {
    * @param xmlizable New type of descriptor to be edited
    * @return true if the external editor can edit the specified type of descriptor
    */
-  public boolean canEdit (MultiPageEditor cde, XMLizable xmlizable);
+  boolean canEdit (MultiPageEditor cde, XMLizable xmlizable);
   
   /**
    * Called by CDE to activate the external editor for editing the new type of descriptor.
@@ -61,6 +61,6 @@ public interface IUimaEditorExtension {
    * @throws PartInitException
    *             If the initialization of the part fails
    */
-  public void activateEditor(IEditorSite site, IEditorInput editorInput,
+  void activateEditor(IEditorSite site, IEditorInput editorInput,
           MultiPageEditor cde, XMLizable xmlizable) throws PartInitException;
 }

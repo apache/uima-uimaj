@@ -40,89 +40,86 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
- * Dummy annotator which does not processing. Annotator only writes his name and
- * his result specification to a text file
+ * Dummy annotator which does not processing. Annotator only writes his name and his result
+ * specification to a text file
  * 
  */
-public class SequencerTestAnnotator extends Annotator_ImplBase implements
-      TextAnnotator {
-   // annotator name
-   private String name;
+public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAnnotator {
+  // annotator name
+  private String name;
 
-   private File testBaseDir;
+  private File testBaseDir;
 
-   public SequencerTestAnnotator() {
-      super();
-      this.testBaseDir = JUnitExtension.getFile("SequencerTest");
-   }
+  public SequencerTestAnnotator() {
+    this.testBaseDir = JUnitExtension.getFile("SequencerTest");
+  }
 
-   /**
-    * method to read configuration parameter for the annotator
-    */
-   private static String secureGetConfigParameterValue(
-         AnnotatorContext context, String param, String defaultValue)
-         throws AnnotatorContextException {
-      String name = (String) context.getConfigParameterValue(param);
-      if (name != null) {
-         return name;
-      }
-      return defaultValue;
-   }
+  /**
+   * method to read configuration parameter for the annotator
+   */
+  private static String secureGetConfigParameterValue(AnnotatorContext context, String param,
+          String defaultValue) throws AnnotatorContextException {
+    String name = (String) context.getConfigParameterValue(param);
+    if (name != null) {
+      return name;
+    }
+    return defaultValue;
+  }
 
-   /**
-    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
-    */
-   public void initialize(AnnotatorContext context)
-         throws AnnotatorInitializationException,
-         AnnotatorConfigurationException {
+  /**
+   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
+   */
+  @Override
+  public void initialize(AnnotatorContext context)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException {
 
+    try {
+      // read annotator name from configuration parameter 'AnnotatorName'
+      this.name = secureGetConfigParameterValue(context, "AnnotatorName", "defaultName");
+    } catch (AnnotatorContextException e) {
+      throw new AnnotatorConfigurationException(e);
+    }
+
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.CAS,
+   *      org.apache.uima.analysis_engine.ResultSpecification)
+   */
+  @Override
+  public void process(CAS tcas, ResultSpecification resultSpec) throws AnnotatorProcessException {
+    if (true) {
       try {
-         // read annotator name from configuration parameter 'AnnotatorName'
-         this.name = secureGetConfigParameterValue(context, "AnnotatorName",
-               "defaultName");
-      } catch (AnnotatorContextException e) {
-         throw new AnnotatorConfigurationException(e);
-      }
-
-   }
-
-   /**
-    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.CAS,
-    *      org.apache.uima.analysis_engine.ResultSpecification)
-    */
-   public void process(CAS tcas, ResultSpecification resultSpec)
-         throws AnnotatorProcessException {
-      if (true) {
-         try {
-            // use standard output file
-            File fp = new File(this.testBaseDir, "SequencerTest.txt");
-            if (!fp.exists()) {
-               fp.createNewFile();
+        // use standard output file
+        File fp = new File(this.testBaseDir, "SequencerTest.txt");
+        if (!fp.exists()) {
+          fp.createNewFile();
+        }
+        if (fp.canWrite()) {
+          // write result specification to the output file
+          OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fp, true),
+                  StandardCharsets.UTF_8);
+          writer.write("\nResultSpec for annotator " + this.name + ":\n");
+          TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
+          // sort by name to ensure consistent output for testing purposes
+          Arrays.sort(tofs, new Comparator<TypeOrFeature>() {
+            @Override
+            public int compare(TypeOrFeature o1, TypeOrFeature o2) {
+              return o1.getName().compareTo(o2.getName());
             }
-            if (fp.canWrite()) {
-               // write result specification to the output file
-               OutputStreamWriter writer = new OutputStreamWriter(
-                     new FileOutputStream(fp, true), StandardCharsets.UTF_8);
-               writer.write("\nResultSpec for annotator " + this.name + ":\n");
-               TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
-               // sort by name to ensure consistent output for testing purposes
-               Arrays.sort(tofs, new Comparator<TypeOrFeature>() {
-                  public int compare(TypeOrFeature o1, TypeOrFeature o2) {
-                     return o1.getName().compareTo(o2.getName());
-                  }
-               });
-               for (int i = 0; i < tofs.length; i++) {
-                  writer.write(tofs[i].getName() + "\n");
-               }
-               writer.flush();
-               writer.close();
-            } else {
-               throw new IOException("Cannot write to " + fp.getAbsolutePath());
-            }
-         } catch (IOException e) {
-            // If an error occurs, throw new annotator exception
-            throw new AnnotatorProcessException(e);
-         }
+          });
+          for (int i = 0; i < tofs.length; i++) {
+            writer.write(tofs[i].getName() + "\n");
+          }
+          writer.flush();
+          writer.close();
+        } else {
+          throw new IOException("Cannot write to " + fp.getAbsolutePath());
+        }
+      } catch (IOException e) {
+        // If an error occurs, throw new annotator exception
+        throw new AnnotatorProcessException(e);
       }
-   }
+    }
+  }
 }

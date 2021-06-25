@@ -19,6 +19,7 @@
 
 package org.apache.uima.taeconfigurator.editors.xml;
 
+import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
@@ -28,8 +29,6 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-
-import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
 
 
 /**

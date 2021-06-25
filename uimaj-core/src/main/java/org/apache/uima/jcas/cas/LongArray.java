@@ -35,12 +35,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, LongArrayFSImpl, Iterable<Long> {
+public final class LongArray extends TOP
+        implements CommonPrimitiveArray<Long>, LongArrayFSImpl, Iterable<Long> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_LONG_ARRAY;
 
-  
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -61,6 +61,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
   }
 
   private final long[] theArray;
+
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private LongArray() {
@@ -69,8 +70,11 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
 
   /**
    * Make a new LongArray of given size
-   * @param jcas The JCas
-   * @param length The number of elements in the new array
+   * 
+   * @param jcas
+   *          The JCas
+   * @param length
+   *          The number of elements in the new array
    */
   public LongArray(JCas jcas, int length) {
     super(jcas);
@@ -79,28 +83,31 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
-    }     
+      _casView.adjustLastFsV2size_nonHeapStoredArrays();
+    }
   }
 
   /**
-   * used by generator
-   * Make a new LongArray of given size
-   * @param c -
-   * @param t -
-   * @param length the length of the array in bytes
+   * used by generator Make a new LongArray of given size
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
+   * @param length
+   *          the length of the array in bytes
    */
   public LongArray(TypeImpl t, CASImpl c, int length) {
-    super(t, c);  
+    super(t, c);
     theArray = new long[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
-    }     
+      _casView.adjustLastFsV2size_nonHeapStoredArrays();
+    }
   }
-  
+
   /**
    * @see org.apache.uima.cas.LongArrayFS#get(int)
    */
@@ -176,46 +183,51 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
   public long[] _getTheArray() {
     return theArray;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
     LongArray bv = (LongArray) v;
-    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    System.arraycopy(bv.theArray, 0, theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int,
+   * java.lang.String)
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
     set(i, Long.parseLong(v));
   }
-  
+
   @Override
   public Spliterator.OfLong spliterator() {
     return Arrays.spliterator(theArray);
   }
-  
+
   @Override
   public OfLong iterator() {
     return new OfLong() {
       int i = 0;
-      
+
       @Override
       public boolean hasNext() {
         return i < size();
       }
 
-//      @Override   // using default
-//      public Long next() {
-//        if (!hasNext())
-//          throw new NoSuchElementException();
-//        return get(i++);
-//      }
+      // @Override // using default
+      // public Long next() {
+      // if (!hasNext())
+      // throw new NoSuchElementException();
+      // return get(i++);
+      // }
 
       @Override
       public long nextLong() {
@@ -223,9 +235,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
           throw new NoSuchElementException();
         return get(i++);
       }
-   };
+    };
   }
-  
+
   /**
    * @return an LongStream over the elements of the array
    */
@@ -234,8 +246,10 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
   }
 
   /**
-   * @param jcas Which CAS to create the array in
-   * @param a the source for the array's initial values
+   * @param jcas
+   *          Which CAS to create the array in
+   * @param a
+   *          the source for the array's initial values
    * @return a newly created and populated array
    */
   public static LongArray create(JCas jcas, long[] a) {
@@ -243,10 +257,12 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
     longArray.copyFromArray(a, 0, 0, a.length);
     return longArray;
   }
-  
+
   /**
    * Non Boxing
-   * @param action to be performed on each element
+   * 
+   * @param action
+   *          to be performed on each element
    */
   public void forEach(LongConsumer action) {
     for (long l : theArray) {
@@ -254,9 +270,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
     }
   }
 
-
   /**
-   * @param item the item to see if is in the array
+   * @param item
+   *          the item to see if is in the array
    * @return true if the item is in the array
    */
   public boolean contains(long item) {

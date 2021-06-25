@@ -60,17 +60,15 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CasInitializerDescription_implTest {
   CasInitializerDescription_impl mTestDesc;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
@@ -145,8 +143,8 @@ public class CasInitializerDescription_implTest {
       ConfigurationGroup cfgGrp2 = new ConfigurationGroup_impl();
       cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
-      md.getConfigurationParameterDeclarations().setConfigurationGroups(
-              new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+      md.getConfigurationParameterDeclarations()
+              .setConfigurationGroups(new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
 
       NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
       NameValuePair nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
@@ -184,8 +182,8 @@ public class CasInitializerDescription_implTest {
     }
   }
 
-    @Test
-    public void testXMLization() throws Exception {
+  @Test
+  public void testXMLization() throws Exception {
     try {
       // write objects to XML
       StringWriter writer = new StringWriter();
@@ -205,8 +203,8 @@ public class CasInitializerDescription_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testSerialization() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSerialization() throws Exception {
     try {
       // serialize objects to byte array
 

@@ -34,7 +34,7 @@ public interface ProcessTraceEvent extends java.io.Serializable {
    * 
    * @return the component name
    */
-  public String getComponentName();
+  String getComponentName();
 
   /**
    * Gets the type of event. Standard values for this property are defined as constants on this
@@ -42,49 +42,50 @@ public interface ProcessTraceEvent extends java.io.Serializable {
    * 
    * @return the event type
    */
-  public String getType();
+  String getType();
 
   /**
    * Retrieves the description of this event.
    * 
    * @return the event Description
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Gets the duration of this event.
    * 
    * @return the duration of this event, in milliseconds.
    */
-  public int getDuration();
+  int getDuration();
 
   /**
    * Retrieves the result message of this event.
    * 
    * @return the event's result message
    */
-  public String getResultMessage();
+  String getResultMessage();
 
   /**
    * Gets the sub-events of this event.
    * 
    * @return a List containing other <code>ProcessTraceEvent</code> objects
    */
-  public List<ProcessTraceEvent> getSubEvents();
+  List<ProcessTraceEvent> getSubEvents();
 
   /**
    * Gets the duration of this event, minus the sum of the durations of its direct sub-events.
    * 
    * @return the duration of this event in milliseconds, excluding the time spent in its sub-events
    */
-  public int getDurationExcludingSubEvents();
+  int getDurationExcludingSubEvents();
 
   /**
    * Generates a user-readable representation of this event and its sub-events.
    * 
    * @return the String representation of this event and its sub-events
    */
-  public String toString();
+  @Override
+  String toString();
 
   /**
    * Generates a user-readable representation of this event and its subevents, using the given
@@ -95,7 +96,7 @@ public interface ProcessTraceEvent extends java.io.Serializable {
    * @param aIndentLevel
    *          indentation level
    */
-  public void toString(StringBuffer aBuf, int aIndentLevel);
+  void toString(StringBuffer aBuf, int aIndentLevel);
 
   /**
    * Generates a user-readable representation of this event and its subevents, using the given
@@ -109,29 +110,29 @@ public interface ProcessTraceEvent extends java.io.Serializable {
    * @param aTotalTime
    *          total time, used to calculate percentags. If not known, pass 0.
    */
-  public void toString(StringBuffer aBuf, int aIndentLevel, int aTotalTime);
+  void toString(StringBuffer aBuf, int aIndentLevel, int aTotalTime);
 
   /**
    * Constant for the ANALYSIS_ENGINE event type. This represents the time spent in the Analysis
    * Engine, including the annotator's analysis and framework overhead.
    */
-  public static final String ANALYSIS_ENGINE = "ANALYSIS_ENGINE";
+  String ANALYSIS_ENGINE = "ANALYSIS_ENGINE";
 
   /**
    * Constant for the ANALYSIS event type. This represents the actual analysis performed by an
    * annotator.
    */
-  public static final String ANALYSIS = "ANALYSIS";
+  String ANALYSIS = "ANALYSIS";
 
   /**
    * Constant for the SERVICE event type. This represents the total time spent in execution of a
    * remote service (not including communication and marshalling/unmarshalling overhead).
    */
-  public static final String SERVICE = "SERVICE";
+  String SERVICE = "SERVICE";
 
   /**
    * Constant for the SERVICE_CALL event type. This represents the total time spent making a call on
    * a remote service, including marshalling and unmarshalling.
    */
-  public static final String SERVICE_CALL = "SERVICE_CALL";
+  String SERVICE_CALL = "SERVICE_CALL";
 }

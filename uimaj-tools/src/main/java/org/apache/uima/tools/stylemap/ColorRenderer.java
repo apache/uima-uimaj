@@ -49,8 +49,6 @@ class ColorRenderer extends JLabel implements TableCellRenderer {
    * @param sTable the s table
    */
   public ColorRenderer(StyleMapTable sTable) {
-    super();
-
     setOpaque(true);
     // MUST do this for background to show up.
 

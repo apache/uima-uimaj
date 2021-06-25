@@ -21,8 +21,6 @@ package org.apache.uima.flow.impl;
 
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
@@ -45,13 +42,7 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
-import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
-import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 
 /**
  * FlowController for the CapabilityLanguageFlow, which uses a linear flow but may skip some of the
@@ -64,9 +55,8 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   private Map<String, AnalysisEngineMetaData> mComponentMetaDataMap;
 
   private Map<String, List<AnalysisSequenceCapabilityNode>> mFlowTable;
-  
-  private final Map<String, ResultSpecification> lastResultSpecForComponent =
-      new HashMap<>();
+
+  private final Map<String, ResultSpecification> lastResultSpecForComponent = new HashMap<>();
 
   /**
    * main language separator e.g 'en' and 'en-US'
@@ -78,6 +68,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    * 
    * @see org.apache.uima.flow.FlowController#initialize(FlowControllerContext)
    */
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mComponentMetaDataMap = aContext.getAnalysisEngineMetaDataMap();
@@ -87,11 +78,8 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     CapabilityLanguageFlow flowConstraints = (CapabilityLanguageFlow) aContext
             .getAggregateMetadata().getFlowConstraints();
     for (String aeKey : flowConstraints.getCapabilityLanguageFlow()) {
-      mStaticSequence.add(
-          new AnalysisSequenceCapabilityNode(
-              aeKey, 
-              mComponentMetaDataMap.get(aeKey).getCapabilities(), 
-              null));
+      mStaticSequence.add(new AnalysisSequenceCapabilityNode(aeKey,
+              mComponentMetaDataMap.get(aeKey).getCapabilities(), null));
     }
 
     // compute flow table with the specified capabilities
@@ -103,6 +91,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     CapabilityLanguageFlowObject flow = new CapabilityLanguageFlowObject(mFlowTable, this);
     flow.setCas(aCAS);
@@ -111,16 +100,16 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
   /**
    * method computeFlowTable create the flow table for faster processing. The flow table includes
-   * the corresponding flow sequence for all languages in the capabilities 
+   * the corresponding flow sequence for all languages in the capabilities
    * 
    * @param aCapabilities
    *          aggregate engine capabilities
    * @return Map - flow table includes all sequences for all languages
    */
-  protected Map<String, List<AnalysisSequenceCapabilityNode>> computeFlowTable(Capability[] aCapabilities) {
+  protected Map<String, List<AnalysisSequenceCapabilityNode>> computeFlowTable(
+          Capability[] aCapabilities) {
     // create flowTable
-    Map<String, List<AnalysisSequenceCapabilityNode>> flowTable =
-        new HashMap<>();
+    Map<String, List<AnalysisSequenceCapabilityNode>> flowTable = new HashMap<>();
 
     // get all languages from the capabilities
     Set<String> languages = new HashSet<>();
@@ -134,7 +123,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     for (String capabilityLanguage : languages) {
       flowTable.put(capabilityLanguage, computeSequence(capabilityLanguage, aCapabilities));
     }
-    
+
     return flowTable;
   }
 
@@ -148,8 +137,10 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    * 
    * @return List - capabilityLanguageAnalysisSequence for the current language
    */
-  protected List<AnalysisSequenceCapabilityNode> computeSequence(String language, Capability[] aCapabilities) {
-    language = Language.normalize(language);  // lower-cases, replaces _ with -, changes null to x-unspecified
+  protected List<AnalysisSequenceCapabilityNode> computeSequence(String language,
+          Capability[] aCapabilities) {
+    language = Language.normalize(language); // lower-cases, replaces _ with -, changes null to
+                                             // x-unspecified
 
     // create resultSpec from the current aggregate capabilities
     ResultSpecification aggrResultsToProduce = UIMAFramework.getResourceSpecifierFactory()
@@ -165,14 +156,14 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     List<AnalysisSequenceCapabilityNode> newSequence = new ArrayList<>();
 
     // loop over all annotators that should be called
-    // In this loop we will gradually reduce the set of output capabilities 
+    // In this loop we will gradually reduce the set of output capabilities
     for (int sequenceIndex = 0; sequenceIndex < mStaticSequence.size(); sequenceIndex++) {
       // get array of output capabilities for the current language from the current result spec
       TypeOrFeature[] tofsNeeded = aggrResultsToProduce.getResultTypesAndFeatures(language);
 
-      // Augment these outputCapabilities if the language-spec is for a country, to 
+      // Augment these outputCapabilities if the language-spec is for a country, to
       // include the outputCapabilities for the language without the country-spec.
-      
+
       // strip language extension if available
       int index = language.indexOf(LANGUAGE_SEPARATOR);
 
@@ -181,7 +172,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
         // create Set for outputSpecs, so we can eliminate duplicates
         Set<TypeOrFeature> outputSpec = new HashSet<>();
 
-        // add language with country extension removed, 
+        // add language with country extension removed,
         // to the existing output capabilities (or if non exist, just use
         // the capabilities for the language without the country extension)
         if (tofsNeeded.length > 0) {
@@ -201,7 +192,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
           // convert all output capabilities to a outputCapabilities array
           tofsNeeded = new TypeOrFeature[outputSpec.size()];
           outputSpec.toArray(tofsNeeded);
-        } else { // for language with country extension was noting found        
+        } else { // for language with country extension was noting found
           // get array of output capabilities with the new main language without country extension
           tofsNeeded = aggrResultsToProduce.getResultTypesAndFeatures(language.substring(0, index));
         }
@@ -228,38 +219,38 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
       currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
 
-      // check if engine should be called - 
-      //   loop over all remaining output capabilities of the aggregate's result spec
-      //     to see if this component of the aggregate produces that type or feature,
-      //     for this language
+      // check if engine should be called -
+      // loop over all remaining output capabilities of the aggregate's result spec
+      // to see if this component of the aggregate produces that type or feature,
+      // for this language
       for (TypeOrFeature tof : tofsNeeded) {
-        if ((tof.isType() && delegateProduces.containsType(tof.getName(), language)) ||
-            (!tof.isType() && delegateProduces.containsFeature(tof.getName(), language))) {
-//        if (capabilityContainer.hasOutputTypeOrFeature(tof, language, true)) {
+        if ((tof.isType() && delegateProduces.containsType(tof.getName(), language))
+                || (!tof.isType() && delegateProduces.containsFeature(tof.getName(), language))) {
+          // if (capabilityContainer.hasOutputTypeOrFeature(tof, language, true)) {
           currentAnalysisResultSpec.addResultTypeOrFeature(tof);
           shouldEngineBeCalled = true;
           // remove current ToF from the result spec
           aggrResultsToProduce.removeTypeOrFeature(tof);
         }
       }
-      
+
       // skip engine if not output capability match
 
-      // should be called is false if this engine produces none of the 
-      //   needed outputs of the aggregate
+      // should be called is false if this engine produces none of the
+      // needed outputs of the aggregate
       if (shouldEngineBeCalled) {
         // tell this component which output types/features need to be produced
-        //   note: As an exception to the way normal result-specifications are produced,
-        //         here we *don't* add the types/features which are input to
-        //         other delegates need to be produced.
-        //         This is for backward compatibility.
+        // note: As an exception to the way normal result-specifications are produced,
+        // here we *don't* add the types/features which are input to
+        // other delegates need to be produced.
+        // This is for backward compatibility.
         node.setResultSpec(currentAnalysisResultSpec);
 
         // add note to the current sequence
-        newSequence.add((AnalysisSequenceCapabilityNode)node.clone());
+        newSequence.add((AnalysisSequenceCapabilityNode) node.clone());
       } else {
-      // engine should not be called, but add null to the sequence to track that
-      // engine should not be called
+        // engine should not be called, but add null to the sequence to track that
+        // engine should not be called
         newSequence.add(null);
       }
     } // loop over all delegates in the flow sequence
@@ -268,24 +259,26 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   }
 
   public static FlowControllerDescription getDescription() {
-    FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
-    
+    FlowControllerDescription desc = getResourceSpecifierFactory()
+            .createFlowControllerDescription();
+
     desc.setImplementationName(CapabilityLanguageFlowController.class.getName());
-    
+
     ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
     metaData.setName("Capability Language Flow Controller");
-    metaData.setDescription("Simple FlowController that uses a linear fow but may skip\n" + 
-        "\t\tsome of the AEs in the flow if they do not handle the language\n" + 
-        "\t\tof the current document or if their outputs have already been\n" + 
-        "\t\tproduced by a previous AE in the flow.");
+    metaData.setDescription("Simple FlowController that uses a linear fow but may skip\n"
+            + "\t\tsome of the AEs in the flow if they do not handle the language\n"
+            + "\t\tof the current document or if their outputs have already been\n"
+            + "\t\tproduced by a previous AE in the flow.");
     metaData.setVendor("The Apache Software Foundation");
     metaData.setVersion("1.0");
-    
+
     Capability capability = getResourceSpecifierFactory().createCapability();
     metaData.setCapabilities(new Capability[] { capability });
-        
+
     return desc;
   }
+
   public Map<String, ResultSpecification> getLastResultSpecForComponent() {
     return lastResultSpecForComponent;
   }

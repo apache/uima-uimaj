@@ -46,18 +46,19 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   public static boolean typeSystemInitCalled;
 
   public static synchronized String getLastDocument() {
-    return lastDocument;  
+    return lastDocument;
   }
-  
+
   public static synchronized ResultSpecification getLastResultSpec() {
     return lastResultSpec;
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(AnnotatorContext)
    */
-  public void initialize(AnnotatorContext aContext) throws AnnotatorConfigurationException,
-          AnnotatorInitializationException {
+  @Override
+  public void initialize(AnnotatorContext aContext)
+          throws AnnotatorConfigurationException, AnnotatorInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
     lastResultSpec = null;
@@ -69,6 +70,7 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
     }
   }
 
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) {
     typeSystemInitCalled = true;
   }
@@ -76,6 +78,7 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   /**
    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
    */
+  @Override
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.

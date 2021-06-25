@@ -33,26 +33,28 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 @Deprecated
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
+  @Override
   protected FSGenerator<?> getFSGenerator() {
-    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
+    return null; // no longer used, but may be needed for compatibility with older existing
+                 // JCasGen'd cover classes that might extend this class
   }
-//
-//  private final FSGenerator fsGenerator = new FSGenerator() {
-//    @SuppressWarnings("unchecked")
-//    public Annotation createFS(int addr, CASImpl cas) {
-//      if (Annotation_Type.this.useExistingInstance) {
-//        // Return eq fs instance if already created
-//        Annotation fs = (Annotation) Annotation_Type.this.jcas.getJfsFromCaddr(addr);
-//        if (null == fs) {
-//          fs = new Annotation(addr, Annotation_Type.this);
-//          Annotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
-//          return fs;
-//        }
-//        return fs;
-//      } else
-//        return new Annotation(addr, Annotation_Type.this);
-//    }
-//  };
+  //
+  // private final FSGenerator fsGenerator = new FSGenerator() {
+  // @SuppressWarnings("unchecked")
+  // public Annotation createFS(int addr, CASImpl cas) {
+  // if (Annotation_Type.this.useExistingInstance) {
+  // // Return eq fs instance if already created
+  // Annotation fs = (Annotation) Annotation_Type.this.jcas.getJfsFromCaddr(addr);
+  // if (null == fs) {
+  // fs = new Annotation(addr, Annotation_Type.this);
+  // Annotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
+  // return fs;
+  // }
+  // return fs;
+  // } else
+  // return new Annotation(addr, Annotation_Type.this);
+  // }
+  // };
 
   public final static int typeIndexID = -1;
 
@@ -65,72 +67,73 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   public int getBegin(int addr) {
     throw new RuntimeException("not supported");
     // not needed - is built in
-//    if (featOkTst && casFeat_begin == null)
-//      this.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-//    return casImpl.ll_getAnnotBegin(addr);
-//    return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
+    // if (featOkTst && casFeat_begin == null)
+    // this.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
+    // return casImpl.ll_getAnnotBegin(addr);
+    // return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
   }
 
   public void setBegin(int addr, int v) {
     throw new RuntimeException("JCas _Type v2 not supported");
-//    if (featOkTst && casFeat_begin == null)
-//      this.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-//    ll_cas.ll_setIntValue(addr, casFeatCode_begin, v);
+    // if (featOkTst && casFeat_begin == null)
+    // this.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
+    // ll_cas.ll_setIntValue(addr, casFeatCode_begin, v);
   }
 
   final Feature casFeat_end = null;
 
   final int casFeatCode_end = -1;
-  
+
   public int getEnd(int addr) {
     throw new RuntimeException("JCas _Type v2 not supported");
     // not needed - is built in
-//    if (featOkTst && casFeat_end == null)
-//      this.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-//    return casImpl.ll_getAnnotEnd(addr);
-//    return ll_cas.ll_getIntValue(addr, casFeatCode_end);
+    // if (featOkTst && casFeat_end == null)
+    // this.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
+    // return casImpl.ll_getAnnotEnd(addr);
+    // return ll_cas.ll_getIntValue(addr, casFeatCode_end);
   }
 
   public void setEnd(int addr, int v) {
     throw new RuntimeException("JCas _Type v2 not supported");
-//    if (featOkTst && casFeat_end == null)
-//      this.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-//    ll_cas.ll_setIntValue(addr, casFeatCode_end, v);
+    // if (featOkTst && casFeat_end == null)
+    // this.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
+    // ll_cas.ll_setIntValue(addr, casFeatCode_end, v);
   }
 
   /**
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
-   * @param inst low level reference to a Feature Structure
+   * @param inst
+   *          low level reference to a Feature Structure
    * @return null or the covered text
    */
-  public String getCoveredText(int inst) { 
+  public String getCoveredText(int inst) {
     final CASImpl casView = ll_cas.ll_getSofaCasView(inst);
     final String text = casView.getDocumentText();
     if (text == null) {
       return null;
     }
-    return text.substring(getBegin(inst), getEnd(inst)); 
+    return text.substring(getBegin(inst), getEnd(inst));
   }
 
   // * initialize variables to correspond with Cas Type and Features
   public Annotation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-//    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+    // casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
-//    casFeat_begin = jcas.getRequiredFeatureDE(casType, "begin", "uima.cas.Integer", featOkTst);
-//    casFeatCode_begin = (null == casFeat_begin) ? JCas.INVALID_FEATURE_CODE
-//            : ((FeatureImpl) casFeat_begin).getCode();
-//    casFeat_end = jcas.getRequiredFeatureDE(casType, "end", "uima.cas.Integer", featOkTst);
-//    casFeatCode_end = (null == casFeat_end) ? JCas.INVALID_FEATURE_CODE
-//            : ((FeatureImpl) casFeat_end).getCode();
+    // casFeat_begin = jcas.getRequiredFeatureDE(casType, "begin", "uima.cas.Integer", featOkTst);
+    // casFeatCode_begin = (null == casFeat_begin) ? JCas.INVALID_FEATURE_CODE
+    // : ((FeatureImpl) casFeat_begin).getCode();
+    // casFeat_end = jcas.getRequiredFeatureDE(casType, "end", "uima.cas.Integer", featOkTst);
+    // casFeatCode_end = (null == casFeat_end) ? JCas.INVALID_FEATURE_CODE
+    // : ((FeatureImpl) casFeat_end).getCode();
   }
 
   protected Annotation_Type() { // block default new operator
-//    casFeat_begin = null;
-//    casFeatCode_begin = JCas.INVALID_FEATURE_CODE;
-//    casFeat_end = null;
-//    casFeatCode_end = JCas.INVALID_FEATURE_CODE;
-//    throw new RuntimeException("Internal Error-this constructor should never be called.");
+    // casFeat_begin = null;
+    // casFeatCode_begin = JCas.INVALID_FEATURE_CODE;
+    // casFeat_end = null;
+    // casFeatCode_end = JCas.INVALID_FEATURE_CODE;
+    // throw new RuntimeException("Internal Error-this constructor should never be called.");
   }
 
 }

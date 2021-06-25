@@ -94,6 +94,7 @@ public class XMLToXTalk {
       this.purgeWhitespace = purgeWhitespace;
     }
 
+    @Override
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes a) {
       flushString();
       try {
@@ -130,6 +131,7 @@ public class XMLToXTalk {
       }
     }
 
+    @Override
     public void endElement(String uri, String name, String qName) {
       flushString();
       depth--;
@@ -153,6 +155,7 @@ public class XMLToXTalk {
      */
     StringBuffer buf = new StringBuffer();
 
+    @Override
     public void characters(char[] ch, int start, int length) {
       buf.append(ch, start, length);
     }

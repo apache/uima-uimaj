@@ -20,8 +20,8 @@
 package org.apache.uima.analysis_engine.metadata;
 
 /**
- * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that
- * specifies the complete flow as a capabilityLanguage sequence.
+ * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that specifies
+ * the complete flow as a capabilityLanguage sequence.
  * <p>
  * Each element in the sequence is specified as a String identifier. In a
  * <code>CapabilityLanguageFlow</code> skipping of the included AnalysisEngines is possible if the
@@ -29,7 +29,7 @@ package org.apache.uima.analysis_engine.metadata;
  * another AnalysisEngine.
  */
 public interface CapabilityLanguageFlow extends FlowConstraints {
-  public static final String FLOW_CONSTRAINTS_TYPE = "CAPABILITY_LANGUAGE";
+  String FLOW_CONSTRAINTS_TYPE = "CAPABILITY_LANGUAGE";
 
   /**
    * Gets the type of this <code>FlowConstraints</code> object. Each sub-interface of
@@ -39,7 +39,8 @@ public interface CapabilityLanguageFlow extends FlowConstraints {
    * 
    * @return {@link #FLOW_CONSTRAINTS_TYPE}
    */
-  public String getFlowConstraintsType();
+  @Override
+  String getFlowConstraintsType();
 
   /**
    * Returns the flow as an array. Each element of the array is a String that identifies the
@@ -47,7 +48,7 @@ public interface CapabilityLanguageFlow extends FlowConstraints {
    * 
    * @return an array of AE identifiers.
    */
-  public String[] getCapabilityLanguageFlow();
+  String[] getCapabilityLanguageFlow();
 
   /**
    * Sets the CapabilityLanguageFlow.
@@ -59,6 +60,6 @@ public interface CapabilityLanguageFlow extends FlowConstraints {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setCapabilityLanguageFlow(String[] aFlow);
+  void setCapabilityLanguageFlow(String[] aFlow);
 
 }

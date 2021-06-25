@@ -21,12 +21,11 @@ package org.apache.uima.adapter.vinci.util;
 
 import java.util.Stack;
 
+import org.apache.vinci.transport.document.AFrame;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import org.apache.vinci.transport.document.AFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,6 +65,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @throws SAXException the SAX exception
    * @see org.xml.sax.ContentHandler#startDocument()
    */
+  @Override
   public void startDocument() throws SAXException {
     mCurrentFrameName = null;
     mCurrentFrameAttrs = null;
@@ -83,6 +83,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @param attributes          The specified or defaulted attributes.
    * @throws SAXException the SAX exception
    */
+  @Override
   public void startElement(String namespaceURI, String localName, String qualifiedName,
           org.xml.sax.Attributes attributes) throws SAXException {
     // I would like to create a VinciFrame here and put it on the
@@ -129,6 +130,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @param length the length
    * @see org.xml.sax.ContentHandler#characters(char[],int,int)
    */
+  @Override
   public void characters(char[] ch, int start, int length) {
     mCharContentBuffer.append(ch, start, length);
   }
@@ -141,6 +143,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @param qualifiedName the qualified name
    * @see org.xml.sax.ContentHandler#endElement(String,String,String)
    */
+  @Override
   public void endElement(String namespaceURI, String localName, String qualifiedName) {
     // if we're ending a leaf frame (which we know because mCurrentFrame is
     // non-null), we must create the appropriate FrameLeaf object and add

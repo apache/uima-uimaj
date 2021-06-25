@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,7 +29,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -44,8 +44,6 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-
-import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
 
 /**
@@ -100,7 +98,6 @@ public class XMLEditor extends TextEditor {
    * @param editor the editor
    */
   public XMLEditor(MultiPageEditor editor) {
-    super();
     colorManager = new ColorManager();
     setSourceViewerConfiguration(new XMLConfiguration(colorManager));
     setDocumentProvider(new XMLDocumentProvider());

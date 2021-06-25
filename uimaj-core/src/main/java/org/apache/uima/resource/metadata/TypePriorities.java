@@ -41,9 +41,9 @@ import org.apache.uima.util.InvalidXMLException;
  * resolution is done automatically when a CAS is created using a TypePriorities object.
  * <p>
  * TypePriorities declarations can optionally be assigned a {@link #getName() name},
- * {@link #getDescription() description}, {@link #getVendor() vendor}, and
- * {@link #getVersion() version}. It is recommended that these properties be set on any
- * TypePriorities declaration that is meant to be shared by (imported by) multiple components.
+ * {@link #getDescription() description}, {@link #getVendor() vendor}, and {@link #getVersion()
+ * version}. It is recommended that these properties be set on any TypePriorities declaration that
+ * is meant to be shared by (imported by) multiple components.
  * 
  * 
  */
@@ -54,7 +54,7 @@ public interface TypePriorities extends MetaDataObject {
    * 
    * @return the name of this TypePriorities declaration, null if none has been specified.
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of this TypePriorities declaration.
@@ -65,7 +65,7 @@ public interface TypePriorities extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the version number of this TypePriorities declaration.
@@ -73,7 +73,7 @@ public interface TypePriorities extends MetaDataObject {
    * @return the version number of this TypePriorities declaration, as a String, null if none has
    *         been specified.
    */
-  public String getVersion();
+  String getVersion();
 
   /**
    * Sets the version number of this TypePriorities declaration.
@@ -84,14 +84,14 @@ public interface TypePriorities extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setVersion(String aVersion);
+  void setVersion(String aVersion);
 
   /**
    * Gets the description of this TypePriorities declaration.
    * 
    * @return the description of this TypePriorities declaration, null if none has been specified.
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Sets the description of this TypePriorities declaration.
@@ -102,14 +102,14 @@ public interface TypePriorities extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
   /**
    * Gets the vendor of this TypePriorities declaration.
    * 
    * @return the vendor of this TypePriorities declaration, as a String
    */
-  public String getVendor();
+  String getVendor();
 
   /**
    * Sets the vendor of this TypePriorities declaration.
@@ -121,14 +121,14 @@ public interface TypePriorities extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setVendor(String aVendor);
+  void setVendor(String aVendor);
 
   /**
    * Gets the imports declared by this TypePriorities declaration.
    * 
    * @return an array of imports declared by this TypePriorities declaration.
    */
-  public Import[] getImports();
+  Import[] getImports();
 
   /**
    * Sets the imports declared by this TypePriorities declaration.
@@ -136,7 +136,7 @@ public interface TypePriorities extends MetaDataObject {
    * @param aImports
    *          an array of imports declared by this TypePriorities declaration.
    */
-  public void setImports(Import[] aImports);
+  void setImports(Import[] aImports);
 
   /**
    * Gets the <code>TypePriorityList</code>s that define the priorities. Each
@@ -144,7 +144,7 @@ public interface TypePriorities extends MetaDataObject {
    * 
    * @return the <code>TypePriorityList</code>s that define the priorities
    */
-  public TypePriorityList[] getPriorityLists();
+  TypePriorityList[] getPriorityLists();
 
   /**
    * Sets the <code>TypePriorityList</code>s that define the priorities. Each
@@ -153,7 +153,7 @@ public interface TypePriorities extends MetaDataObject {
    * @param aPriorityLists
    *          the <code>TypePriorityList</code>s that define the priorities
    */
-  public void setPriorityLists(TypePriorityList[] aPriorityLists);
+  void setPriorityLists(TypePriorityList[] aPriorityLists);
 
   /**
    * Adds a <code>TypePriorityList</code>.
@@ -161,14 +161,14 @@ public interface TypePriorities extends MetaDataObject {
    * @param aPriorityList
    *          the <code>TypePriorityList</code> to add
    */
-  public void addPriorityList(TypePriorityList aPriorityList);
+  void addPriorityList(TypePriorityList aPriorityList);
 
   /**
    * Creates a new, empty <code>TypePriorityList</code> and adds it to this object.
    * 
    * @return the new <code>TypePriorityList</code>, which can be modified by the caller
    */
-  public TypePriorityList addPriorityList();
+  TypePriorityList addPriorityList();
 
   /**
    * Removes a <code>TypePriorityList</code>.
@@ -176,7 +176,7 @@ public interface TypePriorities extends MetaDataObject {
    * @param aPriorityList
    *          the <code>TypePriorityList</code> to remove
    */
-  public void removePriorityList(TypePriorityList aPriorityList);
+  void removePriorityList(TypePriorityList aPriorityList);
 
   /**
    * Resolves any import declarations in this Type Priorities declaration, adding the imported
@@ -187,7 +187,7 @@ public interface TypePriorities extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports() throws InvalidXMLException;
+  void resolveImports() throws InvalidXMLException;
 
   /**
    * Resolves any import declarations in this Type Priorities declaration, adding the imported
@@ -203,7 +203,7 @@ public interface TypePriorities extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
+  void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
 
   /**
    * Resolves any import declarations in this Type Priorities declaration, adding the imported
@@ -223,6 +223,6 @@ public interface TypePriorities extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports(Collection<String> aAlreadyImportedPriorityListURLs,
+  void resolveImports(Collection<String> aAlreadyImportedPriorityListURLs,
           ResourceManager aResourceManager) throws InvalidXMLException;
 }

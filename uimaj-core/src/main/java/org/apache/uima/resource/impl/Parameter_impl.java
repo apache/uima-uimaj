@@ -45,18 +45,22 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
     this.value = value;
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void setName(String aName) {
     this.name = aName;
   }
 
+  @Override
   public String getValue() {
     return value;
   }
 
+  @Override
   public void setValue(String aValue) {
     this.value = aValue;
   }
@@ -67,6 +71,7 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -79,6 +84,7 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "name", "name", "CDATA", getName());
@@ -86,6 +92,7 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
     return attrs;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

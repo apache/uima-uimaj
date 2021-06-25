@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.CASException;
@@ -24,8 +23,6 @@ import org.apache.uima.cas.CASException;
 /**
  * Defines a pre-order on types. This pre-order is later embedded in a total order an can be used in
  * index comparators.
- * 
- * 
  */
 public interface LinearTypeOrderBuilder {
 
@@ -36,7 +33,8 @@ public interface LinearTypeOrderBuilder {
    * relation is no longer a partial order. If you need to know exactly which pair fails, always
    * call add() with a two-element array.
    * 
-   * @param types types to add
+   * @param types
+   *          types to add
    * @exception CASException
    *              When adding pairs would make order inconsistent.
    */
@@ -47,8 +45,8 @@ public interface LinearTypeOrderBuilder {
    * defined through calls to add().
    * 
    * @return An array of Strings in ascending order.
-   * @throws CASException if any error
+   * @throws CASException
+   *           if any error
    */
   LinearTypeOrder getOrder() throws CASException;
-
 }

@@ -78,6 +78,7 @@ public class UtilError extends RuntimeException {
   /**
    * @return The message of the exception. Useful for including the text in another exception.
    */
+  @Override
   public String getMessage() {
     if (this.resource == null) {
       try {
@@ -96,6 +97,7 @@ public class UtilError extends RuntimeException {
   /**
    * @return The same as getMessage(), but prefixed with <code>"UtilError: "</code>.
    */
+  @Override
   public String toString() {
     return "UtilError: " + this.getMessage();
   }
@@ -106,7 +108,9 @@ public class UtilError extends RuntimeException {
    * they are specified in the message catalog (i.e. add %1 first, %2 next, and so on). Adding a
    * <code>null String</code> has no effect! So if you don't know the value of an argument, use
    * something like <code>""</code> or <code>"UNKNOWN"</code>, but not <code>null</code>.
-   * @param s -
+   * 
+   * @param s
+   *          -
    * @return -
    */
   public boolean addArgument(String s) {

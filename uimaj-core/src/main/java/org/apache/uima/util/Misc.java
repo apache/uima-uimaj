@@ -24,24 +24,26 @@ public class Misc {
 
   /**
    * 
-   * @param name of property
-   * @return true if property is defined, or is defined and set to anything 
-   * except "false"; false if property is not defined, or is defined and set to
-   * "false".
+   * @param name
+   *          of property
+   * @return true if property is defined, or is defined and set to anything except "false"; false if
+   *         property is not defined, or is defined and set to "false".
    */
   public static boolean getNoValueSystemProperty(String name) {
     return !System.getProperty(name, "false").equals("false");
   }
-  
-//  public static void main(String[] args) {
-//    System.out.println("should be false - not defined: " + getNoValueSystemProperty("foo"));
-//    System.setProperty("foo", "");
-//    System.out.println("should be true - defined, 0 len str value: " + getNoValueSystemProperty("foo"));
-//    System.setProperty("foo", "true");
-//    System.out.println("should be true - defined, true value: " + getNoValueSystemProperty("foo"));
-//    System.setProperty("foo", "zzz");
-//    System.out.println("should be true - defined, zzz value: " + getNoValueSystemProperty("foo"));
-//    System.setProperty("foo", "false");
-//    System.out.println("should be false - defined, false value: " + getNoValueSystemProperty("foo"));
-//  }
+
+  // public static void main(String[] args) {
+  // System.out.println("should be false - not defined: " + getNoValueSystemProperty("foo"));
+  // System.setProperty("foo", "");
+  // System.out.println("should be true - defined, 0 len str value: " +
+  // getNoValueSystemProperty("foo"));
+  // System.setProperty("foo", "true");
+  // System.out.println("should be true - defined, true value: " + getNoValueSystemProperty("foo"));
+  // System.setProperty("foo", "zzz");
+  // System.out.println("should be true - defined, zzz value: " + getNoValueSystemProperty("foo"));
+  // System.setProperty("foo", "false");
+  // System.out.println("should be false - defined, false value: " +
+  // getNoValueSystemProperty("foo"));
+  // }
 }

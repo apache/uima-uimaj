@@ -25,15 +25,11 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class ResourceCreationSpecifier_implTest {
-    @Test
-    public void testDoFullValidation() throws Exception {
+  @Test
+  public void testDoFullValidation() throws Exception {
     try {
       File descFile = JUnitExtension.getFile("UimaContextTest/CasConsumerForUimaContextTest.xml");
       ResourceCreationSpecifier resCreaSpec = (ResourceCreationSpecifier) UIMAFramework

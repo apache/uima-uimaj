@@ -35,7 +35,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * classes that you can inherit from depending on the function that your component performs and
  * which CAS interface it uses:
  * <ul>
- * <li> Annotator: Receives an input CAS and updates it
+ * <li>Annotator: Receives an input CAS and updates it
  * <ul>
  * <li>{@link JCasAnnotator_ImplBase}: Uses JCas interface</li>
  * <li>{@link CasAnnotator_ImplBase}: Uses CASinterface
@@ -43,14 +43,14 @@ import org.apache.uima.resource.ResourceInitializationException;
  * </li>
  * <li>{@link org.apache.uima.collection.CasConsumer_ImplBase}: Receives an input CAS but does not
  * update it. May update a data structure based on information in the CASes it receives.</li>
- * <li> CasMultiplier: Receives an input CAS and, in addition to updating it, may output new CASes.
+ * <li>CasMultiplier: Receives an input CAS and, in addition to updating it, may output new CASes.
  * One common use of this is to split a CAS into pieces, emitting each piece as a separate output
  * CAS.
  * <ul>
  * <li>{@link JCasMultiplier_ImplBase}: Uses JCas interface</li>
  * <li>{@link CasMultiplier_ImplBase}: Uses CAS interface</li>
- * <li>{@link org.apache.uima.collection.CollectionReader_ImplBase}: A special type of
- * CasMultiplier that, for historical reasons, does not take an input CAS.</li>
+ * <li>{@link org.apache.uima.collection.CollectionReader_ImplBase}: A special type of CasMultiplier
+ * that, for historical reasons, does not take an input CAS.</li>
  * </ul>
  * </li>
  * </ul>
@@ -72,15 +72,15 @@ import org.apache.uima.resource.ResourceInitializationException;
  * </ol>
  * 
  * From the time when <code>process</code> is called until the time when <code>hasNext</code>
- * returns false, the AnalysisComponent "owns" the CAS that was passed to <code>process</code>.
- * The AnalysisComponent is permitted to make changes to this CAS. Once <code>hasNext</code>
- * returns false, the AnalysisComponent releases control of the initial CAS. This means that the
+ * returns false, the AnalysisComponent "owns" the CAS that was passed to <code>process</code>. The
+ * AnalysisComponent is permitted to make changes to this CAS. Once <code>hasNext</code> returns
+ * false, the AnalysisComponent releases control of the initial CAS. This means that the
  * AnalysisComponent must finish all updates to the initial CAS prior to returning false from
  * <code>hasNext</code>.
  * <p>
- * However, if the <code>process</code> method is called a second time, before <code>hasNext</code> has returned
- * false, this is a signal to the AnalysisComponent to cancel all processing of the previous CAS and begin
- * processing the new CAS instead.
+ * However, if the <code>process</code> method is called a second time, before <code>hasNext</code>
+ * has returned false, this is a signal to the AnalysisComponent to cancel all processing of the
+ * previous CAS and begin processing the new CAS instead.
  */
 public interface AnalysisComponent {
   /**
@@ -107,8 +107,8 @@ public interface AnalysisComponent {
    * <p>
    * In the abstract base classes provided by the framework, this is generally implemented by
    * calling <code>destroy</code> followed by <code>initialize</code> and
-   * <code>typeSystemChanged</code>. If a more efficient implementation is needed, you can
-   * override that implementation.
+   * <code>typeSystemChanged</code>. If a more efficient implementation is needed, you can override
+   * that implementation.
    * 
    * @throws ResourceConfigurationException
    *           if the configuration specified for this component is invalid.

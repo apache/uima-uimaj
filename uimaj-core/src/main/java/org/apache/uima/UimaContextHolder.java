@@ -20,32 +20,36 @@
 package org.apache.uima;
 
 /**
- * This class holds the UimaContext for the current thread, or a parent thread.
- * The getContext method may be used by any plain Java class invoked by an annotator,
- * The POJO must run in the same thread or a child thread of the annotator.
+ * This class holds the UimaContext for the current thread, or a parent thread. The getContext
+ * method may be used by any plain Java class invoked by an annotator, The POJO must run in the same
+ * thread or a child thread of the annotator.
  * 
  * For example a POJO can access the shared External Override Settings with:
- *     String paramValue = UimaContextHolder.getContext().getSetting(paramName);
+ * 
+ * <pre>
+ * String paramValue = UimaContextHolder.getContext().getSetting(paramName);
+ * </pre>
  */
 public class UimaContextHolder {
-  
+
   private static InheritableThreadLocal<UimaContext> threadLocalContext = new InheritableThreadLocal<>();
-  
+
   /**
    * Get the UimaContext for this thread
    * 
-   * @return      the thread-specific UimaContext
+   * @return the thread-specific UimaContext
    */
   public static UimaContext getContext() {
     return threadLocalContext.get();
   }
-  
+
   /**
    * Sets the UimaContext for the current thread.
    * <p>
    * NOTE - Should be used only by the UIMA Framework.
    * 
-   * @param uimaContext - new UimaContext for this thread
+   * @param uimaContext
+   *          - new UimaContext for this thread
    * @return - previous UimaContext for this thread
    */
   public static UimaContext setContext(UimaContext uimaContext) {
@@ -53,7 +57,7 @@ public class UimaContextHolder {
     threadLocalContext.set(uimaContext);
     return prevContext;
   }
-  
+
   /**
    * Clears the UimaContext entry for the current thread
    * <p>

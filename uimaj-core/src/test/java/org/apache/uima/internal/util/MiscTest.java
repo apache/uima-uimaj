@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 
 public class MiscTest {
 
-    @Test
-    public void test() {
+  @Test
+  public void test() {
     assertEquals(8, Misc.nextHigherPowerOfX(0, 8));
     assertEquals(8, Misc.nextHigherPowerOfX(-0, 8));
     assertEquals(8, Misc.nextHigherPowerOfX(1, 8));
@@ -37,8 +37,8 @@ public class MiscTest {
     assertEquals(8, Misc.nextHigherPowerOfX(8, 8));
     assertEquals(16, Misc.nextHigherPowerOfX(9, 8));
     assertEquals(561152, Misc.nextHigherPowerOfX(10 * 1024 * 1024 * 8 / 3 / 50, 4096));
-    assertEquals(576, Misc.nextHigherPowerOfX(Math.max(512, 561152/1000), 32));
-    assertTrue(Arrays.equals(new byte[] { 0x03,  0x42}, Misc.hex_string_to_bytearray("0342")));
+    assertEquals(576, Misc.nextHigherPowerOfX(Math.max(512, 561152 / 1000), 32));
+    assertTrue(Arrays.equals(new byte[] { 0x03, 0x42 }, Misc.hex_string_to_bytearray("0342")));
   }
 
 }

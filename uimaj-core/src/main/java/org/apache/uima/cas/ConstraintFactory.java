@@ -33,7 +33,7 @@ import org.apache.uima.cas.impl.ConstraintFactoryImpl;
  * Tests include
  * <ul>
  * <li>type subsumption --(satisfied if the CAS feature structure being tested is of a specified
- * type (or is a subtype of that type). </li>
+ * type (or is a subtype of that type).</li>
  * <li>value equality</li>
  * <li>for numeric values - range testing</li>
  * </ul>
@@ -79,7 +79,7 @@ public abstract class ConstraintFactory {
    * @return A new String constraint, completely unconstrained.
    */
   public abstract FSStringConstraint createStringConstraint();
-  
+
   /**
    * Create a new boolean constraint. A boolean constraint must be initialized after it's created by
    * adding one or more tests to it.
@@ -113,7 +113,8 @@ public abstract class ConstraintFactory {
    *          The constraint to be embedded.
    * @return A new FSMatchConstraint.
    */
-  public abstract FSMatchConstraint embedConstraint(ArrayList<String> path, FSConstraint constraint);
+  public abstract FSMatchConstraint embedConstraint(ArrayList<String> path,
+          FSConstraint constraint);
 
   /**
    * Conjoin two constraints.

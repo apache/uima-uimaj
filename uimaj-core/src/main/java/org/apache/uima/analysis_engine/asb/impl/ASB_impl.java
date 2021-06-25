@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.asb.impl;
 
 import java.util.Collections;
@@ -70,10 +69,8 @@ import org.apache.uima.util.UimaTimer;
  * technology. It simply uses the {@link ResourceFactory} to acquire instances of its delegate
  * AnalysisEngines and then communicates with these delegate AnalysisEngines through the
  * {@link AnalysisEngine} interface. Any communication with remote AnalysisEngine services is done
- * through a {@link org.apache.uima.analysis_engine.service.impl.AnalysisEngineServiceAdapter} and is not
- * the concern of this ASB implementation.
- * 
- * 
+ * through a {@link org.apache.uima.analysis_engine.service.impl.AnalysisEngineServiceAdapter} and
+ * is not the concern of this ASB implementation.
  */
 public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
@@ -96,8 +93,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * Map from String key to delegate AnalysisEngineMetaData for all component AnalysisEngines within
    * this ASB.
    */
-  private Map<String, AnalysisEngineMetaData> mComponentAnalysisEngineMetaDataMap =
-      new HashMap<>();
+  private Map<String, AnalysisEngineMetaData> mComponentAnalysisEngineMetaDataMap = new HashMap<>();
 
   /**
    * Map from String key to component (AnalysisEngine or FlowController) metadata.
@@ -138,6 +134,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize",
@@ -167,27 +164,28 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     // destroy component AnalysisEngines that have been successfully initialized
-    //   unsuccessful initializations are not put into the Map
-    Iterator<Map.Entry<String, AnalysisEngine>> i = mComponentAnalysisEngineMap.entrySet().iterator();
+    // unsuccessful initializations are not put into the Map
+    Iterator<Map.Entry<String, AnalysisEngine>> i = mComponentAnalysisEngineMap.entrySet()
+            .iterator();
     while (i.hasNext()) {
       Map.Entry<String, AnalysisEngine> entry = i.next();
       Resource delegate = entry.getValue();
       delegate.destroy();
     }
-    
+
     if (mFlowControllerContainer != null &&
-        // the container might be non-null, but the initialization could have failed
-        mFlowControllerContainer.isInitialized()) {
+    // the container might be non-null, but the initialization could have failed
+            mFlowControllerContainer.isInitialized()) {
       mFlowControllerContainer.destroy();
     }
   }
 
   /**
-   * Called after calling initialize() (see above)
-   * by the Aggregate Analysis Engine to provide this ASB with information it needs to
-   * operate.
+   * Called after calling initialize() (see above) by the Aggregate Analysis Engine to provide this
+   * ASB with information it needs to operate.
    * 
    * @param aSpecifiers
    *          the specifiers for all component AEs within this Aggregate. The ASB will instantiate
@@ -196,9 +194,12 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    *          UIMA context for the aggregate AE
    * @param aFlowControllerDeclaration
    *          declaration (key and specifier) of FlowController to be used for this aggregate.
-   * @param aAggregateMetadata metadata for the aggregate AE
-   * @throws ResourceInitializationException passthru
+   * @param aAggregateMetadata
+   *          metadata for the aggregate AE
+   * @throws ResourceInitializationException
+   *           passthru
    */
+  @Override
   public void setup(Map<String, ResourceSpecifier> aSpecifiers, UimaContextAdmin aParentContext,
           FlowControllerDeclaration aFlowControllerDeclaration,
           AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException {
@@ -210,10 +211,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     mAllComponentMetaDataMap.clear();
 
     // loop through all entries in the (key, specifier) map
-    Iterator<Map.Entry<String,ResourceSpecifier>> i = aSpecifiers.entrySet().iterator();
+    Iterator<Map.Entry<String, ResourceSpecifier>> i = aSpecifiers.entrySet().iterator();
     while (i.hasNext()) {
-      Map.Entry<String,ResourceSpecifier> entry = i.next();
-      String key =entry.getKey();
+      Map.Entry<String, ResourceSpecifier> entry = i.next();
+      String key = entry.getKey();
       ResourceSpecifier spec = entry.getValue();
 
       Map<String, String> sofamap = new TreeMap<>();
@@ -225,21 +226,23 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           if (mSofaMappings[s].getComponentKey().equals(key)) {
             // if component sofa name is null, replace it with the default for CAS sofa name
             // This is to support single-view annotators.
-            if (mSofaMappings[s].getComponentSofaName() == null)
+            if (mSofaMappings[s].getComponentSofaName() == null) {
               mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_SOFA);
-            sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
-                    .getAggregateSofaName());
+            }
+            sofamap.put(mSofaMappings[s].getComponentSofaName(),
+                    mSofaMappings[s].getAggregateSofaName());
           }
         }
       }
 
       // create child UimaContext and insert into mInitParams map
       // mInitParams was previously set to the value of aAdditionalParams
-      //  passed to the initialize method of this aggregate, by the
-      //  preceeding call to initialize().
-      
-      if (mInitParams == null)
+      // passed to the initialize method of this aggregate, by the
+      // preceeding call to initialize().
+
+      if (mInitParams == null) {
         mInitParams = new HashMap<>();
+      }
       UimaContextAdmin childContext = aParentContext.createChild(key, sofamap);
       mInitParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
 
@@ -275,8 +278,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
     // initialize the AllComponentMetaData map to include AEs plus the FlowController
     mAllComponentMetaDataMap = new LinkedHashMap<>(mComponentAnalysisEngineMetaDataMap);
-    mAllComponentMetaDataMap.put(aFlowControllerDeclaration.getKey(), mFlowControllerContainer
-            .getProcessingResourceMetaData());
+    mAllComponentMetaDataMap.put(aFlowControllerDeclaration.getKey(),
+            mFlowControllerContainer.getProcessingResourceMetaData());
     mAllComponentMetaDataMap = Collections.unmodifiableMap(mAllComponentMetaDataMap);
   }
 
@@ -301,10 +304,11 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
         if (mSofaMappings[s].getComponentKey().equals(key)) {
           // if component sofa name is null, replace it with the default for TCAS sofa name
           // This is to support single-view annotators.
-          if (mSofaMappings[s].getComponentSofaName() == null)
+          if (mSofaMappings[s].getComponentSofaName() == null) {
             mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_SOFA);
-          sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
-                  .getAggregateSofaName());
+          }
+          sofamap.put(mSofaMappings[s].getComponentSofaName(),
+                  mSofaMappings[s].getAggregateSofaName());
         }
       }
     }
@@ -320,6 +324,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * @see org.apache.uima.analysis_engine.asb.ASB#getComponentAnalysisEngineMetaData()
    */
+  @Override
   public Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData() {
     return mComponentAnalysisEngineMetaDataMap;
   }
@@ -327,10 +332,12 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * @see org.apache.uima.analysis_engine.asb.ASB#getComponentAnalysisEngines()
    */
+  @Override
   public Map<String, AnalysisEngine> getComponentAnalysisEngines() {
     return mComponentAnalysisEngineMap;
   }
 
+  @Override
   public Map<String, ProcessingResourceMetaData> getAllComponentMetaData() {
     return mAllComponentMetaDataMap;
   }
@@ -340,11 +347,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * 
    * @see org.apache.uima.analysis_engine.asb.ASB#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public CasIterator process(CAS aCAS) throws AnalysisEngineProcessException {
     return new AggregateCasIterator(aCAS);
   }
 
   /** Not public API. Is declared public so it can be used by test case. */
+  @Override
   public FlowControllerContainer getFlowControllerContainer() {
     return mFlowControllerContainer;
   }
@@ -352,6 +361,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * Gets the MBean that provides the management interface to this AE. Returns the same object as
    * UimaContext.getManagementInterface() but casted to the AnalysisEngineManagement type.
+   * 
    * @return the MBean for the management interface to this AE
    */
   protected AnalysisEngineManagementImpl getMBean() {
@@ -420,11 +430,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     /**
      * Returns whether there are any more CASes to be returned.
      */
+    @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       timer.startIt();
       try {
-        if (nextCas == null)
+        if (nextCas == null) {
           nextCas = processUntilNextOutputCas();
+        }
         return (nextCas != null);
       } finally {
         timer.stopIt();
@@ -433,12 +445,14 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     }
 
     /** Gets the next output CAS. */
+    @Override
     public CAS next() throws AnalysisEngineProcessException {
       timer.startIt();
       try {
         CAS toReturn = nextCas;
-        if (toReturn == null)
+        if (toReturn == null) {
           toReturn = processUntilNextOutputCas();
+        }
         if (toReturn == null) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
                   new Object[0]);
@@ -457,15 +471,16 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      * 
      * @see org.apache.uima.analysis_engine.CasIterator#release()
      */
+    @Override
     public void release() {
       // pop all frames off the casIteratorStack, calling Flow.abort() on flow objects and
-      //CasIterator.release() on the CAS iterators
+      // CasIterator.release() on the CAS iterators
       while (!casIteratorStack.isEmpty()) {
         StackFrame frame = casIteratorStack.pop();
         frame.originalCasFlow.aborted();
         frame.casIterator.release();
       }
-      
+
       // release all active, internal CASes
       Iterator<CAS> iter = activeCASes.iterator();
       while (iter.hasNext()) {
@@ -476,9 +491,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           cas.release();
         }
       }
-      //clear the active CASes list, to guard against ever trying to
-      //reuse these CASes or trying to release them a second time.
-      activeCASes.clear();       
+      // clear the active CASes list, to guard against ever trying to
+      // reuse these CASes or trying to release them a second time.
+      activeCASes.clear();
     }
 
     /**
@@ -513,20 +528,23 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                 // this is a new output CAS so we need to compute a flow for it
                 flow = frame.originalCasFlow.newCasProduced(cas, frame.casMultiplierAeKey);
               }
-            } 
-            catch(Exception e) {
-              //A CAS Multiplier (or possibly an aggregate) threw an exception trying to output the next CAS.
-              //We abandon trying to get further output CASes from that CAS Multiplier,
-              //and ask the Flow Controller if we should continue routing the CAS that was input to the CasMultiplier.
+            } catch (Exception e) {
+              // A CAS Multiplier (or possibly an aggregate) threw an exception trying to output the
+              // next CAS.
+              // We abandon trying to get further output CASes from that CAS Multiplier,
+              // and ask the Flow Controller if we should continue routing the CAS that was input to
+              // the CasMultiplier.
               if (!frame.originalCasFlow.continueOnFailure(frame.casMultiplierAeKey, e)) {
-                throw e;              
+                throw e;
               } else {
-                UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
-                        LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
-               
+                UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(),
+                        "processUntilNextOutputCas", LOG_RESOURCE_BUNDLE,
+                        "UIMA_continuing_after_exception__FINE", e);
+
               }
-              //if the Flow says to continue, we fall through to the if (cas == null) block below, get
-              //the originalCas from the stack and continue with its flow.
+              // if the Flow says to continue, we fall through to the if (cas == null) block below,
+              // get
+              // the originalCas from the stack and continue with its flow.
             }
             if (cas == null) {
               // we've finished routing all the Output CASes from a StackFrame. Now
@@ -534,8 +552,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               // that stack frame and continue with its flow
               cas = frame.originalCas;
               flow = frame.originalCasFlow;
-              nextStep = frame.incompleteParallelStep; //in case we need to resume a parallel step
-              cas.setCurrentComponentInfo(null); // this CAS is done being processed by the previous AnalysisComponent
+              nextStep = frame.incompleteParallelStep; // in case we need to resume a parallel step
+              cas.setCurrentComponentInfo(null); // this CAS is done being processed by the previous
+                                                 // AnalysisComponent
               casIteratorStack.pop(); // remove this state from the stack now
             }
           }
@@ -543,7 +562,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           // record active CASes in case we encounter an exception and need to release them
           activeCASes.add(cas);
 
-          // if we're not in the middle of parallel step already, ask the FlowController 
+          // if we're not in the middle of parallel step already, ask the FlowController
           // for the next step
           if (nextStep == null) {
             nextStep = flow.next();
@@ -551,36 +570,36 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
           // repeat until we reach a FinalStep
           while (!(nextStep instanceof FinalStep)) {
-            //Simple Step
+            // Simple Step
             if (nextStep instanceof SimpleStep) {
               String nextAeKey = ((SimpleStep) nextStep).getAnalysisEngineKey();
               AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
               if (nextAe != null) {
-                //check if we have to set result spec, to support capability language flow
+                // check if we have to set result spec, to support capability language flow
                 if (nextStep instanceof SimpleStepWithResultSpec) {
-                  ResultSpecification rs = ((SimpleStepWithResultSpec)nextStep).getResultSpecification();
+                  ResultSpecification rs = ((SimpleStepWithResultSpec) nextStep)
+                          .getResultSpecification();
                   if (rs != null) {
                     nextAe.setResultSpecification(rs);
                   }
                 }
                 // invoke next AE in flow
                 CasIterator casIter = null;
-                CAS outputCas = null; //used if the AE we call outputs a new CAS
+                CAS outputCas = null; // used if the AE we call outputs a new CAS
                 try {
                   casIter = nextAe.processAndOutputNewCASes(cas);
                   if (casIter.hasNext()) {
                     outputCas = casIter.next();
                   }
-                }
-                catch(Exception e) {
-                  //ask the FlowController if we should continue
-                  //TODO: should this be configurable?
+                } catch (Exception e) {
+                  // ask the FlowController if we should continue
+                  // TODO: should this be configurable?
                   if (!flow.continueOnFailure(nextAeKey, e)) {
                     throw e;
-                  }
-                  else {
-                    UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
-                            LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
+                  } else {
+                    UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(),
+                            "processUntilNextOutputCas", LOG_RESOURCE_BUNDLE,
+                            "UIMA_continuing_after_exception__FINE", e);
                   }
                 }
                 if (outputCas != null) // new CASes are output
@@ -603,36 +622,36 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                         AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
                         new Object[] { nextAeKey });
               }
-            } 
-            //ParallelStep (TODO: refactor out common parts with SimpleStep?)
+            }
+            // ParallelStep (TODO: refactor out common parts with SimpleStep?)
             else if (nextStep instanceof ParallelStep) {
-              //create modifiable list of destinations 
-              List<String> destinations = new LinkedList<>(((ParallelStep) nextStep).getAnalysisEngineKeys());
-              //iterate over all destinations, removing them from the list as we go
+              // create modifiable list of destinations
+              List<String> destinations = new LinkedList<>(
+                      ((ParallelStep) nextStep).getAnalysisEngineKeys());
+              // iterate over all destinations, removing them from the list as we go
               while (!destinations.isEmpty()) {
                 String nextAeKey = destinations.get(0);
-                destinations.remove(0); 
-                //execute this step as we would a single step
+                destinations.remove(0);
+                // execute this step as we would a single step
                 AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
                 if (nextAe != null) {
                   // invoke next AE in flow
                   CasIterator casIter = null;
-                  CAS outputCas = null; //used if the AE we call outputs a new CAS
+                  CAS outputCas = null; // used if the AE we call outputs a new CAS
                   try {
                     casIter = nextAe.processAndOutputNewCASes(cas);
                     if (casIter.hasNext()) {
                       outputCas = casIter.next();
                     }
-                  }
-                  catch(Exception e) {
-                    //ask the FlowController if we should continue
-                    //TODO: should this be configurable?
+                  } catch (Exception e) {
+                    // ask the FlowController if we should continue
+                    // TODO: should this be configurable?
                     if (!flow.continueOnFailure(nextAeKey, e)) {
                       throw e;
-                    }
-                    else {
-                      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
-                              LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
+                    } else {
+                      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(),
+                              "processUntilNextOutputCas", LOG_RESOURCE_BUNDLE,
+                              "UIMA_continuing_after_exception__FINE", e);
                     }
                   }
                   if (outputCas != null) // new CASes are output
@@ -643,14 +662,14 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                       casIteratorStack.push(new StackFrame(casIter, cas, flow, nextAeKey,
                               new ParallelStep(destinations)));
                     } else {
-                      casIteratorStack.push(new StackFrame(casIter, cas, flow, nextAeKey));                      
+                      casIteratorStack.push(new StackFrame(casIter, cas, flow, nextAeKey));
                     }
-                      
+
                     // compute Flow for the output CAS and begin routing it through the flow
                     flow = flow.newCasProduced(outputCas, nextAeKey);
                     cas = outputCas;
                     activeCASes.add(cas);
-                    break; //break out of processing of ParallelStep
+                    break; // break out of processing of ParallelStep
                   } else {
                     // no new CASes are output; this cas is done being processed
                     // by that AnalysisEngine so clear the componentInfo
@@ -661,11 +680,11 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                           AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
                           new Object[] { nextAeKey });
                 }
-              }            
+              }
             } else {
               throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.UNSUPPORTED_STEP_TYPE, new Object[] { nextStep
-                              .getClass() });
+                      AnalysisEngineProcessException.UNSUPPORTED_STEP_TYPE,
+                      new Object[] { nextStep.getClass() });
             }
             nextStep = flow.next();
           }
@@ -693,7 +712,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           }
         }
       } catch (Exception e) {
-        //notify Flow that processing has aborted on this CAS
+        // notify Flow that processing has aborted on this CAS
         if (flow != null) {
           flow.aborted();
         }
@@ -726,6 +745,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       this.casMultiplierAeKey = lastAeKey;
       this.incompleteParallelStep = incompleteParallelStep;
     }
+
     /** CasIterator that returns output CASes produced by the CasMultiplier. */
     CasIterator casIterator;
 
@@ -740,10 +760,11 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
     /** The key that identifies the CasMultiplier whose output we are processing */
     String casMultiplierAeKey;
-    
-    /** If the CAS Multiplier was called while processing a ParallelStep, this specifies
-     * the remaining parts of the parallel step, so we can pick up processing from there
-     * once we've processed all the output CASes.
+
+    /**
+     * If the CAS Multiplier was called while processing a ParallelStep, this specifies the
+     * remaining parts of the parallel step, so we can pick up processing from there once we've
+     * processed all the output CASes.
      */
     ParallelStep incompleteParallelStep;
   }

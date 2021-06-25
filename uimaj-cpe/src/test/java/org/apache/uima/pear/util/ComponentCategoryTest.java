@@ -22,11 +22,8 @@ package org.apache.uima.pear.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**

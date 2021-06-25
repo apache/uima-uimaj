@@ -65,6 +65,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a ConfigurableDataResourceSpecifier
@@ -106,12 +107,14 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.DataResource#getInputStream()
    */
+  @Override
   public InputStream getInputStream() throws IOException {
     return mFileUrl.openStream();
   }
@@ -121,6 +124,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
    * 
    * @see org.apache.uima.resource.DataResource#getUri()
    */
+  @Override
   public URI getUri() {
     return mUri;
   }
@@ -128,6 +132,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   /**
    * @see org.apache.uima.resource.DataResource#getUrl()
    */
+  @Override
   public URL getUrl() {
     return mFileUrl;
   }
@@ -145,6 +150,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   /**
    * @see DataResource#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object obj) {
     // obj must be a DataResource_impl
     if (!(obj instanceof ConfigurableDataResource_impl))
@@ -169,6 +175,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   /**
    * @see DataResource#hashCode()
    */
+  @Override
   public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;

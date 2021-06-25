@@ -25,9 +25,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +34,8 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class ResourceService_implTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       // create resource specifier and a pool containing 2 instances
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -59,8 +57,8 @@ public class ResourceService_implTest {
     }
   }
 
-    @Test
-    public void testGetMetaData() throws Exception {
+  @Test
+  public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = service.getMetaData();
       Assert.assertNotNull(md);

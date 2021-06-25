@@ -22,7 +22,7 @@ package org.apache.uima.internal.util.rb_trees;
 import org.apache.uima.util.impl.Constants;
 
 /**
- * map&lt;int, int%gt; uses separate objects (IntRBTNode) as nodes  
+ * map&lt;int, int%gt; uses separate objects (IntRBTNode) as nodes
  * 
  * See the {@link org.apache.uima.internal.util.rb_trees.RedBlackTree RedBlackTree} class. This is a
  * specialized instance with ints as elements.
@@ -46,7 +46,6 @@ public class IntRedBlackTree {
 
   /** Default constructor, does nothing. */
   public IntRedBlackTree() {
-    super();
   }
 
   public final int size() {
@@ -83,9 +82,8 @@ public class IntRedBlackTree {
    *          The key under which the int is to be inserted.
    * @param el
    *          The int to be inserted.
-   * @return <code>true</code>, if the key was not in the tree; <code>false</code>, if an
-   *         element with that key was already in the tree. The old element is overwritten with the
-   *         new one.
+   * @return <code>true</code>, if the key was not in the tree; <code>false</code>, if an element
+   *         with that key was already in the tree. The old element is overwritten with the new one.
    */
   public final boolean put(int key, int el) {
     if (put(new IntRBTNode(key, el))) {
@@ -206,8 +204,8 @@ public class IntRedBlackTree {
    * @param offset
    *          An offset for internal addressing. If <code>offset &gt; 0</code>, the addresses
    *          generated for right daughters in two-daughter nodes are shifted to the right. This is
-   *          useful if the resulting array will be copied to a certain <code>offset</code>
-   *          position in a different array.
+   *          useful if the resulting array will be copied to a certain <code>offset</code> position
+   *          in a different array.
    * @return The resulting array representation.
    */
   public int[] toArray(int offset) {
@@ -224,5 +222,4 @@ public class IntRedBlackTree {
     return c;
   }
 
-  
 }

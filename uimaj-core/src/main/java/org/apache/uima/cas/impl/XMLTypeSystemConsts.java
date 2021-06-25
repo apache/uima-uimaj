@@ -16,26 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
 /**
  * Class comment for XMLTypeSystemConsts.java goes here.
- * 
- * 
  */
 public interface XMLTypeSystemConsts {
 
-  static final String TYPE_SYSTEM_TAG = "type_system";
+  String TYPE_SYSTEM_TAG = "type_system";
 
-  static final String TYPE_TAG = "type";
+  String TYPE_TAG = "type";
 
-  static final String FEATURE_TAG = "feature";
+  String FEATURE_TAG = "feature";
 
-  static final String TYPE_NAME_ATTR = "name";
+  String TYPE_NAME_ATTR = "name";
 
-  static final String FEATURE_NAME_ATTR = "name";
+  String FEATURE_NAME_ATTR = "name";
 
-  static final String FEATURE_RANGE_ATTR = "range";
-
+  String FEATURE_RANGE_ATTR = "range";
 }

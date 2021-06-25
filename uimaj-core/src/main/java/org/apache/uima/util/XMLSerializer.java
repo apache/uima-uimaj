@@ -50,13 +50,16 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class XMLSerializer {
 
-  // See Javadocs for javax.xml.transform.TransformerFactory for details on how the TransformerFactory is found:
-  //  the class specified in the system property: javax.xml.transform.TransformerFactory 
-  //  or the value of this property in <jre>/lib/jaxp.properties
-  //  or the class found in any jar that has an entry: META-INF/service/javax.xml.transform.TransformerFactory
-  //  or a platform default.
-  
-  private static final SAXTransformerFactory transformerFactory = XMLUtils.createSaxTransformerFactory();
+  // See Javadocs for javax.xml.transform.TransformerFactory for details on how the
+  // TransformerFactory is found:
+  // the class specified in the system property: javax.xml.transform.TransformerFactory
+  // or the value of this property in <jre>/lib/jaxp.properties
+  // or the class found in any jar that has an entry:
+  // META-INF/service/javax.xml.transform.TransformerFactory
+  // or a platform default.
+
+  private static final SAXTransformerFactory transformerFactory = XMLUtils
+          .createSaxTransformerFactory();
 
   private TransformerHandler mHandler;
 
@@ -64,7 +67,7 @@ public class XMLSerializer {
 
   private OutputStream mOutputStream;
   private Writer mWriter;
-  
+
   public XMLSerializer() {
     this(true);
   }
@@ -79,10 +82,11 @@ public class XMLSerializer {
         mTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
         mTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         mTransformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-        //   Saxon appears to ignore the above and use a default of 3 unless the following is used
-        //mTransformer.setOutputProperty("{http://saxon.sf.net/}indent-spaces", "4");
-        //   But this fails on Saxon9-HE with:
-        //     net.sf.saxon.trans.LicenseException: Requested feature (custom serialization) requires Saxon-PE
+        // Saxon appears to ignore the above and use a default of 3 unless the following is used
+        // mTransformer.setOutputProperty("{http://saxon.sf.net/}indent-spaces", "4");
+        // But this fails on Saxon9-HE with:
+        // net.sf.saxon.trans.LicenseException: Requested feature (custom serialization) requires
+        // Saxon-PE
         mTransformer.setOutputProperty(OutputKeys.METHOD, "xml");
       }
 
@@ -94,7 +98,7 @@ public class XMLSerializer {
   public void setIndent(boolean yes) {
     mTransformer.setOutputProperty(OutputKeys.INDENT, yes ? "yes" : "no");
   }
-  
+
   public XMLSerializer(OutputStream aOutputStream) {
     this();
     setOutputStream(aOutputStream);
@@ -137,7 +141,7 @@ public class XMLSerializer {
     if (mOutputStream != null) {
       return new StreamResult(mOutputStream);
     } else if (mWriter != null) {
-      return new StreamResult(mWriter); 
+      return new StreamResult(mWriter);
     } else {
       return null;
     }
@@ -165,65 +169,66 @@ public class XMLSerializer {
     } catch (IllegalArgumentException e) {
       throw new UIMARuntimeException(e);
     }
-    //re-create the Result object when properties change.  This fixes bug UIMA-1859 where setting the XML version was
-    //not reflected in the output.
+    // re-create the Result object when properties change. This fixes bug UIMA-1859 where setting
+    // the XML version was
+    // not reflected in the output.
     Result result = createSaxResultObject();
     if (result != null) {
       mHandler.setResult(result);
     }
-  }  
-  
+  }
+
   /**
    * This class wraps the standard content handler
    */
   public class CharacterValidatingContentHandler implements ContentHandler, LexicalHandler {
-    ContentHandler mHandler;  // the wrapped handler
-    boolean mXml11;           
-    
-    private int indent = 0;  // tracks indentation for nicely indented output
-    
+    ContentHandler mHandler; // the wrapped handler
+    boolean mXml11;
+
+    private int indent = 0; // tracks indentation for nicely indented output
+
     public int getIndent() {
       return indent;
     }
-    
+
     public int nextIndent() {
       indent += indentDelta;
-//    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-//    
-//    System.out.format("++++++++ %3d %26s %4d <- %26s %4d <- %26s %4d <- %26s %4d%n",
-//        indent, 
-//        stackTraceElements[3].getMethodName(), 
-//        stackTraceElements[3].getLineNumber(),
-//        stackTraceElements[4].getMethodName(), 
-//        stackTraceElements[4].getLineNumber(),
-//        stackTraceElements[5].getMethodName(), 
-//        stackTraceElements[5].getLineNumber(), 
-//        stackTraceElements[6].getMethodName(), 
-//        stackTraceElements[6].getLineNumber());
+      // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+      //
+      // System.out.format("++++++++ %3d %26s %4d <- %26s %4d <- %26s %4d <- %26s %4d%n",
+      // indent,
+      // stackTraceElements[3].getMethodName(),
+      // stackTraceElements[3].getLineNumber(),
+      // stackTraceElements[4].getMethodName(),
+      // stackTraceElements[4].getLineNumber(),
+      // stackTraceElements[5].getMethodName(),
+      // stackTraceElements[5].getLineNumber(),
+      // stackTraceElements[6].getMethodName(),
+      // stackTraceElements[6].getLineNumber());
       return indent;
     }
 
     public int prevIndent() {
       indent -= indentDelta;
-//      if (indent < 0) {
-//        indent = 0;
-//      }
-//      StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-//      System.out.format("-------- %3d %26s %4d <- %26s %4d <- %26s %4d <- %26s %4d%n",
-//          indent, 
-//          stackTraceElements[3].getMethodName(), 
-//          stackTraceElements[3].getLineNumber(),
-//          stackTraceElements[4].getMethodName(), 
-//          stackTraceElements[4].getLineNumber(),
-//          stackTraceElements[5].getMethodName(), 
-//          stackTraceElements[5].getLineNumber(), 
-//          stackTraceElements[6].getMethodName(), 
-//          stackTraceElements[6].getLineNumber());
+      // if (indent < 0) {
+      // indent = 0;
+      // }
+      // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+      // System.out.format("-------- %3d %26s %4d <- %26s %4d <- %26s %4d <- %26s %4d%n",
+      // indent,
+      // stackTraceElements[3].getMethodName(),
+      // stackTraceElements[3].getLineNumber(),
+      // stackTraceElements[4].getMethodName(),
+      // stackTraceElements[4].getLineNumber(),
+      // stackTraceElements[5].getMethodName(),
+      // stackTraceElements[5].getLineNumber(),
+      // stackTraceElements[6].getMethodName(),
+      // stackTraceElements[6].getLineNumber());
       return indent;
     }
-    
-    private int indentDelta = 0;  // set to positive # to indent each level
-    
+
+    private int indentDelta = 0; // set to positive # to indent each level
+
     public int getIndentDelta() {
       return indentDelta;
     }
@@ -232,40 +237,42 @@ public class XMLSerializer {
       this.indentDelta = indentDelta;
     }
 
-    private List<Node> mLastOutputNode = new ArrayList<>();  // the last output node for repeated subelement nodes
-    
+    private List<Node> mLastOutputNode = new ArrayList<>(); // the last output node for repeated
+                                                            // subelement nodes
+
     public void lastOutputNodeAddLevel() {
       mLastOutputNode.add(null);
     }
-    
+
     public void setLastOutputNode(Node n) {
-      mLastOutputNode.set(mLastOutputNode.size() -1, n);
+      mLastOutputNode.set(mLastOutputNode.size() - 1, n);
     }
 
     public Node getLastOutputNode() {
-      return mLastOutputNode.get(mLastOutputNode.size() -1);
+      return mLastOutputNode.get(mLastOutputNode.size() - 1);
     }
-    
+
     public Node getLastOutputNodePrevLevel() {
-      int lastIndex = mLastOutputNode.size() -1;
+      int lastIndex = mLastOutputNode.size() - 1;
       if (lastIndex > 0) {
-        return mLastOutputNode.get(lastIndex - 1); 
+        return mLastOutputNode.get(lastIndex - 1);
       }
       return null;
     }
-    
+
     public void lastOutputNodeClearLevel() {
-      mLastOutputNode.remove(mLastOutputNode.size() -1);
+      mLastOutputNode.remove(mLastOutputNode.size() - 1);
     }
-    
+
     public boolean prevWasEndElement = false;
-    
+
     public boolean prevNL = false;
-    
+
     CharacterValidatingContentHandler(boolean xml11, ContentHandler serializerHandler) {
-      mHandler = serializerHandler;  
+      mHandler = serializerHandler;
       mXml11 = xml11;
-      String indentDeltaString = mTransformer.getOutputProperty("{http://xml.apache.org/xslt}indent-amount");
+      String indentDeltaString = mTransformer
+              .getOutputProperty("{http://xml.apache.org/xslt}indent-amount");
       if (null != indentDeltaString) {
         try {
           indentDelta = Integer.parseInt(indentDeltaString);
@@ -276,22 +283,30 @@ public class XMLSerializer {
       mLastOutputNode.add(null);
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
+     * java.lang.String, org.xml.sax.Attributes)
      */
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes atts)
+            throws SAXException {
       for (int i = 0; i < atts.getLength(); i++) {
         String val = atts.getValue(i);
         checkForInvalidXmlChars(val, mXml11);
       }
-      mHandler.startElement(uri, localName, qName, atts); 
+      mHandler.startElement(uri, localName, qName, atts);
       prevWasEndElement = false;
       prevNL = false;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       checkForInvalidXmlChars(ch, start, length, mXml11);
       mHandler.characters(ch, start, length);
@@ -302,118 +317,162 @@ public class XMLSerializer {
           break;
         }
       }
-//      nlOK = false;  //unfortunately, non validating dom parsers can't detect ignorable whitespace,
+      // nlOK = false; //unfortunately, non validating dom parsers can't detect ignorable
+      // whitespace,
       // so they use characters instead...
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#endDocument()
      */
+    @Override
     public void endDocument() throws SAXException {
       mHandler.endDocument();
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
+     * java.lang.String)
      */
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       mHandler.endElement(uri, localName, qName);
       prevWasEndElement = true;
       prevNL = false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#endPrefixMapping(java.lang.String)
      */
+    @Override
     public void endPrefixMapping(String prefix) throws SAXException {
       mHandler.endPrefixMapping(prefix);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
+    @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
       mHandler.ignorableWhitespace(ch, start, length);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#processingInstruction(java.lang.String, java.lang.String)
      */
+    @Override
     public void processingInstruction(String target, String data) throws SAXException {
       mHandler.processingInstruction(target, data);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
      */
+    @Override
     public void setDocumentLocator(Locator locator) {
       mHandler.setDocumentLocator(locator);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
      */
+    @Override
     public void skippedEntity(String name) throws SAXException {
       mHandler.skippedEntity(name);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       indent = 0;
       mHandler.startDocument();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#startPrefixMapping(java.lang.String, java.lang.String)
      */
+    @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
       mHandler.startPrefixMapping(prefix, uri);
     }
-    
+
     private final void checkForInvalidXmlChars(String s, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(s, xml11);
       if (index >= 0) {
-        String startStr = (index == 0) 
-                         ? "[The Very First Character]"
-                         : s.substring(0, Math.min(index, Math.min(100,  s.length())));
-        String msg =  String.format("Trying to serialize non-XML %s character: 0x%x at offset %,d in string starting with %s",
-            (xml11 ? "1.1" : "1.0"),
-//            s.charAt(index),  // don't try to output this, causes problems with other tooling 
-            (int)s.charAt(index),
-            index,
-            startStr); 
-        throw new SAXParseException(msg, null);
-      }
-    }
-    
-    private final void checkForInvalidXmlChars(char[] ch, int start, int length, boolean xml11) throws SAXParseException {
-      final int index = XMLUtils.checkForNonXmlCharacters(ch, start, length, xml11);
-      if (index >= 0) {
-        String startStr = (index == 0) 
-            ? "[The Very First Character]"
-            : new String(ch).substring(0, Math.min(index, Math.min(100,  ch.length)));
-        String msg =  String.format("Trying to serialize non-XML %s character: 0x%x at offset %,d in string starting with %s",
-            (xml11 ? "1.1" : "1.0"),
-//            ch[index],  // don't try to output this, causes problems with other tooling  
-            (int)(ch[index]),
-            index,
-            startStr); 
+        String startStr = (index == 0) ? "[The Very First Character]"
+                : s.substring(0, Math.min(index, Math.min(100, s.length())));
+        String msg = String.format(
+                "Trying to serialize non-XML %s character: 0x%x at offset %,d in string starting with %s",
+                (xml11 ? "1.1" : "1.0"),
+                // s.charAt(index), // don't try to output this, causes problems with other tooling
+                (int) s.charAt(index), index, startStr);
         throw new SAXParseException(msg, null);
       }
     }
 
+    private final void checkForInvalidXmlChars(char[] ch, int start, int length, boolean xml11)
+            throws SAXParseException {
+      final int index = XMLUtils.checkForNonXmlCharacters(ch, start, length, xml11);
+      if (index >= 0) {
+        String startStr = (index == 0) ? "[The Very First Character]"
+                : new String(ch).substring(0, Math.min(index, Math.min(100, ch.length)));
+        String msg = String.format(
+                "Trying to serialize non-XML %s character: 0x%x at offset %,d in string starting with %s",
+                (xml11 ? "1.1" : "1.0"),
+                // ch[index], // don't try to output this, causes problems with other tooling
+                (int) (ch[index]), index, startStr);
+        throw new SAXParseException(msg, null);
+      }
+    }
+
+    @Override
     public void comment(char[] ch, int start, int length) throws SAXException {
-      ((LexicalHandler)mHandler).comment(ch, start, length);
+      ((LexicalHandler) mHandler).comment(ch, start, length);
       prevNL = false;
     }
 
-    public void endCDATA() throws SAXException {}
-    public void endDTD() throws SAXException {}
-    public void endEntity(String arg0) throws SAXException {}
-    public void startCDATA() throws SAXException {}
-    public void startDTD(String arg0, String arg1, String arg2) throws SAXException {}
-    public void startEntity(String arg0) throws SAXException {}    
+    @Override
+    public void endCDATA() throws SAXException {
+    }
+
+    @Override
+    public void endDTD() throws SAXException {
+    }
+
+    @Override
+    public void endEntity(String arg0) throws SAXException {
+    }
+
+    @Override
+    public void startCDATA() throws SAXException {
+    }
+
+    @Override
+    public void startDTD(String arg0, String arg1, String arg2) throws SAXException {
+    }
+
+    @Override
+    public void startEntity(String arg0) throws SAXException {
+    }
   }
 }

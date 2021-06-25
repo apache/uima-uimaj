@@ -55,8 +55,8 @@ package org.apache.uima.cas.impl;
  */
 
 /**
- * NOTE: adding or altering slots breaks backward compatability and
- * the ability do deserialize previously serialized things
+ * NOTE: adding or altering slots breaks backward compatability and the ability do deserialize
+ * previously serialized things
  * 
  * This definition shared with BinaryCasSerDes4
  * 
@@ -68,80 +68,74 @@ public class SlotKinds {
   public static final boolean IN_MAIN_HEAP = true;
 
   public enum SlotKind {
-    Slot_ArrayLength(          ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_HeapRef(                CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_Int(                    CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    Slot_ArrayLength(!CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP), Slot_HeapRef(CAN_BE_NEGATIVE, 4,
+            IN_MAIN_HEAP), Slot_Int(CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     /**
      * byte feature (not array) slot name
      */
-    Slot_Byte(                 ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    Slot_Byte(!CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     /**
      * short feature (not array) slot name
      */
-    Slot_Short(                  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_TypeCode(             ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-  
-    Slot_StrOffset(            ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-    Slot_StrLength(            ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-    Slot_Long_High(              CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    Slot_Long_Low (              CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-  
+    Slot_Short(CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP), Slot_TypeCode(!CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+
+    Slot_StrOffset(!CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP), Slot_StrLength(!CAN_BE_NEGATIVE, 4,
+            !IN_MAIN_HEAP), Slot_Long_High(CAN_BE_NEGATIVE, 0,
+                    !IN_MAIN_HEAP), Slot_Long_Low(CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
+
     // the next are not actual slot kinds, but instead
     // are codes used to control encoding of Floats and Doubles.
-    Slot_Float_Mantissa_Sign( !  CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
+    Slot_Float_Mantissa_Sign(!CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
     // exponent is 8 bits, and shifted in the expectation
     // that many values may be between 1 and 0 (e.g., normalized values)
-    //   -- so sign moving is needed
-    Slot_Float_Exponent(      !  CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    
-    Slot_Double_Mantissa_Sign(!  CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    Slot_Double_Exponent(     !  CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    Slot_FsIndexes(              CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-    
-    Slot_StrChars(               IGNORED,         2, !IN_MAIN_HEAP),
-    
-    Slot_Control(                IGNORED,         0, !IN_MAIN_HEAP),
-    Slot_StrSeg(              !  CAN_BE_NEGATIVE, 0, ! IN_MAIN_HEAP),
-    
+    // -- so sign moving is needed
+    Slot_Float_Exponent(!CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
+
+    Slot_Double_Mantissa_Sign(!CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP), Slot_Double_Exponent(
+            !CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP), Slot_FsIndexes(CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
+
+    Slot_StrChars(IGNORED, 2, !IN_MAIN_HEAP),
+
+    Slot_Control(IGNORED, 0, !IN_MAIN_HEAP), Slot_StrSeg(!CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
+
     // the next slots are not serialized
-    Slot_StrRef(                 CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    Slot_StrRef(CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     /**
      * boolean array slot name
      */
-    Slot_BooleanRef(          !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    Slot_BooleanRef(!CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     /**
      * byte array slot name
-     */    
-    Slot_ByteRef(                CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+     */
+    Slot_ByteRef(CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     /**
      * short array slot name
-     */    
-    Slot_ShortRef(               CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_LongRef(                CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_DoubleRef(              CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_Float(               !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+     */
+    Slot_ShortRef(CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP), Slot_LongRef(CAN_BE_NEGATIVE, 4,
+            IN_MAIN_HEAP), Slot_DoubleRef(CAN_BE_NEGATIVE, 4,
+                    IN_MAIN_HEAP), Slot_Float(!CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     /**
      * boolean feature slot name (not array)
      */
-    Slot_Boolean(             !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    Slot_Boolean(!CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     // next used to capture original heap size
-    Slot_MainHeap(               IGNORED,         4, !IN_MAIN_HEAP),
-  
+    Slot_MainHeap(IGNORED, 4, !IN_MAIN_HEAP),
+
     ;
+
     public final boolean canBeNegative;
     public final boolean inMainHeap;
     public final int elementSize;
-    
+
     public static final int NBR_SLOT_KIND_ZIP_STREAMS;
-    static {NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();}
-    
-    SlotKind(boolean canBeNegative, 
-             int elementSize,
-             boolean inMainHeap) {
-      this.canBeNegative =canBeNegative;
-      this.elementSize = elementSize; 
+    static {
+      NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();
+    }
+
+    SlotKind(boolean canBeNegative, int elementSize, boolean inMainHeap) {
+      this.canBeNegative = canBeNegative;
+      this.elementSize = elementSize;
       this.inMainHeap = inMainHeap;
     }
   }
 }
-

@@ -36,23 +36,23 @@ import org.apache.uima.flow.Step;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * FlowController for testing proper notification to the Flow Controller
- * when an error occurs.
+ * FlowController for testing proper notification to the Flow Controller when an error occurs.
  */
 public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
   public static final String PARAM_CONTINUE_ON_FAILURE = "ContinueOnFailure";
-  
+
   private String[] mSequence;
   private boolean mContinueOnFailure;
-  
+
   public static List<String> abortedDocuments = new ArrayList<>();
   public static List<String> failedAEs = new ArrayList<>();
 
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
-    Boolean paramVal = (Boolean)aContext.getConfigParameterValue(PARAM_CONTINUE_ON_FAILURE);
+    Boolean paramVal = (Boolean) aContext.getConfigParameterValue(PARAM_CONTINUE_ON_FAILURE);
     mContinueOnFailure = paramVal != null && paramVal;
   }
 
@@ -61,6 +61,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     FixedFlowObject ffo = new FixedFlowObject(aCAS, 0, false);
     ffo.setCas(aCAS);
@@ -71,7 +72,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     private int currentStep;
 
     private boolean wasSegmented = false;
-    
+
     private boolean internallyCreatedCas;
 
     /**
@@ -91,6 +92,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.Flow#next()
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       if (currentStep >= mSequence.length) {
         return new FinalStep(); // this CAS has finished the sequence
@@ -110,7 +112,9 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
-    public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+    @Override
+    public Flow newCasProduced(CAS newCas, String producedBy)
+            throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       wasSegmented = true;
       // start the new segment CAS from the next node after the Segmenter that produced it
@@ -119,30 +123,33 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
         i++;
       return new FixedFlowObject(newCas, i + 1, true);
     }
-    
-    
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String, java.lang.Exception)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String,
+     * java.lang.Exception)
      */
+    @Override
     public boolean continueOnFailure(String failedAeKey, Exception failure) {
       failedAEs.add(failedAeKey);
       return mContinueOnFailure;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#aborted()
      */
+    @Override
     public void aborted() {
       abortedDocuments.add(getCas().getDocumentText());
     }
-    
-    
+
   }
 
-  
   public static void reset() {
     abortedDocuments.clear();
-    failedAEs.clear();    
+    failedAEs.clear();
   }
 }

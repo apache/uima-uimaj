@@ -18,7 +18,9 @@
  */
 /**
  * Custom Functional Interfaces used by various UIMA methods
- *   - generators and by
- *   - de/serializers
+ * <ul>
+ * <li>generators and by</li>
+ * <li>de/serializers</li>
+ * </ul>
  */
 package org.apache.uima.internal.util.function;

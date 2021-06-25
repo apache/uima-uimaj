@@ -19,10 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
@@ -32,19 +29,18 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
 
-
 public class ProtectIndexTest {
 
-    @Test
-    public void testProtectIndex() throws CASException, ResourceInitializationException {
-    JCas jcas = CasCreationUtils.createCas((TypeSystemDescription)null, null, null).getJCas();
-    
+  @Test
+  public void testProtectIndex() throws CASException, ResourceInitializationException {
+    JCas jcas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null).getJCas();
+
     Annotation a = new Annotation(jcas, 0, 2);
-    
-    jcas.protectIndexes(() ->
-      { a.setBegin(a.getBegin() + 1);
-      });
-      
-    assertEquals(a.getBegin(),  1);  
+
+    jcas.protectIndexes(() -> {
+      a.setBegin(a.getBegin() + 1);
+    });
+
+    assertEquals(a.getBegin(), 1);
   }
 }

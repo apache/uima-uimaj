@@ -34,43 +34,41 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * Test the pear installation verification
  */
 public class PearInstallationVerificationTest {
   @Test
-  public void testAePearVerification(@TempDir File temp) throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/analysisEngine.pear"), temp);
+  public void testAePearVerification(@TempDir
+  File temp) throws Exception {
+    assertThatPearInstalls(getFile("pearTests/analysisEngine.pear"), temp);
   }
 
   @Test
-  public void testCcPearVerification(@TempDir File temp) throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/casConsumer.pear"), temp);
+  public void testCcPearVerification(@TempDir
+  File temp) throws Exception {
+    assertThatPearInstalls(getFile("pearTests/casConsumer.pear"), temp);
   }
 
   @Test
-  public void testTsPearVerification(@TempDir File temp) throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/typeSystem.pear"), temp);
+  public void testTsPearVerification(@TempDir
+  File temp) throws Exception {
+    assertThatPearInstalls(getFile("pearTests/typeSystem.pear"), temp);
   }
 
   // TODO: create testcases for ci, cr, cpe pear packages
 
   @Test
-  public void thatSpecialXmlCharactersInTargetPathDoNotBreakInstallation(@TempDir File temp) throws Exception {
+  public void thatSpecialXmlCharactersInTargetPathDoNotBreakInstallation(@TempDir
+  File temp) throws Exception {
     File folder = new File(temp, "!'&");
     folder.mkdirs();
-    assertThatPearInstalls(
-            getFile("pearTests/analysisEngine.pear"),
+    assertThatPearInstalls(getFile("pearTests/analysisEngine.pear"),
             // on windows, can't use these chars
-            //   <>:"/\|?*  
+            // <>:"/\|?*
             folder);
   }
 

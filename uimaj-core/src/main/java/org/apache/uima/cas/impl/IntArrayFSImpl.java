@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.IntArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for Integer Array
+ * V2 compatibility only The non-JCas cover class for Integer Array
+ * 
  * @deprecated use IntegerArray instead
  */
 @Deprecated
 public interface IntArrayFSImpl extends IntArrayFS {
-  
+
 }

@@ -24,27 +24,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Implements a globally shared weak-reference map between
- *   types &amp; features to the corresponding Full Feature name
- * Used to avoid creating new full feature names when compiling
- *   result feature specs.
- * Indexable for features via a 2 step index: typeName and shortFeatName
+ * Implements a globally shared weak-reference map between types &amp; features to the corresponding
+ * Full Feature name Used to avoid creating new full feature names when compiling result feature
+ * specs. Indexable for features via a 2 step index: typeName and shortFeatName
  * 
- * NOTE: this static table ends up holding on to string representations of all types,
- * all features, and all valid full feature names; there's no "cleanup".
+ * NOTE: this static table ends up holding on to string representations of all types, all features,
+ * and all valid full feature names; there's no "cleanup".
  *
  */
 public class RsFullFeatNames {
-    
-  private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> typeName2TypeFeats =
-      new ConcurrentHashMap<>();
-  
+
+  private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> typeName2TypeFeats = new ConcurrentHashMap<>();
+
   public static String getFullFeatName(String typeName, String shortFeatName) {
-    
+
     ConcurrentHashMap<String, String> tf = typeName2TypeFeats.get(typeName), tfOther;
     if (null == tf) {
       tfOther = typeName2TypeFeats.putIfAbsent(typeName, tf = new ConcurrentHashMap<>());
-      tf = (tfOther != null) ? tfOther : tf; 
+      tf = (tfOther != null) ? tfOther : tf;
     }
     String s = tf.get(shortFeatName), otherString;
     if (null == s) {
@@ -53,10 +50,11 @@ public class RsFullFeatNames {
     }
     return s;
   }
-  
+
   private static String makeFullFeatName(String typeName, String shortFeatName) {
     StringBuilder sb = new StringBuilder(typeName.length() + 1 + shortFeatName.length());
-    return sb.append(typeName).append(TypeSystem.FEATURE_SEPARATOR).append(shortFeatName).toString();
+    return sb.append(typeName).append(TypeSystem.FEATURE_SEPARATOR).append(shortFeatName)
+            .toString();
   }
 
 }

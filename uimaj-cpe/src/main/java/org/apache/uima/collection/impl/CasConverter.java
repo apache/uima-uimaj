@@ -21,18 +21,17 @@ package org.apache.uima.collection.impl;
 
 import java.io.IOException;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.OutOfTypeSystemData;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.impl.CasDataImpl;
 import org.apache.uima.cas_data.impl.CasDataToXCas;
 import org.apache.uima.cas_data.impl.XCasToCasDataSaxHandler;
 import org.apache.uima.collection.CollectionException;
+import org.xml.sax.SAXException;
 
 /**
  * Converts {@link CasData} to and from Cas Object ({@link CAS}).

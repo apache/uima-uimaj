@@ -31,15 +31,15 @@ public interface CpeInclude extends MetaDataObject {
   /**
    * Sets a path to component descriptor
    * 
-   * @param aPath -
-   *          descriptor path
+   * @param aPath
+   *          - descriptor path
    */
-  public void set(String aPath);
+  void set(String aPath);
 
   /**
    * Returns a path to component descriptor
    * 
    * @return descriptor path
    */
-  public String get();
+  String get();
 }

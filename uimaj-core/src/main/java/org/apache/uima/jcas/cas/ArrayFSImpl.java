@@ -22,11 +22,11 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * For backwards compatibility with V2, only
- * Only has methods not in ArrayFS or CommonArrayFSImpl
+ * For backwards compatibility with V2, only Only has methods not in ArrayFS or CommonArrayFSImpl
+ * 
  * @deprecated use FSArray instead
  */
 @Deprecated
 public interface ArrayFSImpl<E extends FeatureStructure> extends ArrayFS<E> {
-  
+
 }

@@ -38,7 +38,6 @@ public class SetLogConfigHandler implements ActionListener {
    * Instantiates a new sets the log config handler.
    */
   public SetLogConfigHandler() {
-    super();
   }
 
   /* (non-Javadoc)

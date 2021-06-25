@@ -69,8 +69,6 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
    */
   public AnnotationFeaturesViewer() {
 
-    super();
-
     setLayout(new BorderLayout());
 
     scrollPane = new JScrollPane();

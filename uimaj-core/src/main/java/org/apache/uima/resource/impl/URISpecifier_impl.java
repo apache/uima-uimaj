@@ -60,6 +60,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @see org.apache.uima.resource.URISpecifier#getUri()
    */
+  @Override
   public String getUri() {
     return mUri;
   }
@@ -67,6 +68,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @see org.apache.uima.resource.URISpecifier#setUri(String)
    */
+  @Override
   public void setUri(String aUri) {
     mUri = aUri;
   }
@@ -74,6 +76,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @see org.apache.uima.resource.URISpecifier#getProtocol()
    */
+  @Override
   public String getProtocol() {
     return mProtocol;
   }
@@ -81,6 +84,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @see org.apache.uima.resource.URISpecifier#setProtocol(String)
    */
+  @Override
   public void setProtocol(String aProtocol) {
     mProtocol = aProtocol;
   }
@@ -88,6 +92,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @see org.apache.uima.resource.URISpecifier#getTimeout()
    */
+  @Override
   public Integer getTimeout() {
     return mTimeout;
   }
@@ -95,6 +100,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @see org.apache.uima.resource.URISpecifier#setTimeout(Integer)
    */
+  @Override
   public void setTimeout(Integer aTimeout) {
     mTimeout = aTimeout;
   }
@@ -104,6 +110,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
    * 
    * @see org.apache.uima.resource.URISpecifier#getResourceType()
    */
+  @Override
   public String getResourceType() {
     return mResourceType;
   }
@@ -113,6 +120,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
    * 
    * @see org.apache.uima.resource.URISpecifier#setResourceType(java.lang.String)
    */
+  @Override
   public void setResourceType(String aResourceType) {
     mResourceType = aResourceType;
   }
@@ -120,6 +128,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   /**
    * @return Returns the Parameters.
    */
+  @Override
   public Parameter[] getParameters() {
     return mParameters;
   }
@@ -128,10 +137,12 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
    * @param parameters
    *          The Parameters to set.
    */
+  @Override
   public void setParameters(Parameter[] parameters) {
     mParameters = parameters;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

@@ -34,9 +34,9 @@ import org.apache.uima.util.impl.Constants;
 import org.xml.sax.SAXException;
 
 /**
- * The <code>PackageBrowser</code> class allows browsing both archived and unarchived PEAR
- * packages, finding package files and directories, loading installation descriptor files and
- * returning run-time environment settings required for installed components.
+ * The <code>PackageBrowser</code> class allows browsing both archived and unarchived PEAR packages,
+ * finding package files and directories, loading installation descriptor files and returning
+ * run-time environment settings required for installed components.
  * 
  * @see org.apache.uima.pear.tools.InstallationDescriptor
  */
@@ -96,15 +96,16 @@ public class PackageBrowser {
    * 
    * @param pearPackage
    *          The given archived PEAR package to browse.
-   * @throws IOException if a problem with IO
+   * @throws IOException
+   *           if a problem with IO
    */
   public PackageBrowser(JarFile pearPackage) throws IOException {
     _pearPackage = pearPackage;
     _pearFile = new File(pearPackage.getName());
     int nameEndIndex = _pearFile.getAbsolutePath().lastIndexOf('.');
     // set root dir = PEAR file path (w/o file name extension)
-    String rootDirPath = (nameEndIndex > 0) ? _pearFile.getAbsolutePath()
-            .substring(0, nameEndIndex) : _pearFile.getAbsolutePath();
+    String rootDirPath = (nameEndIndex > 0) ? _pearFile.getAbsolutePath().substring(0, nameEndIndex)
+            : _pearFile.getAbsolutePath();
     _rootDir = new File(rootDirPath);
     _archived = true;
     // add directories and files to the lists
@@ -118,7 +119,8 @@ public class PackageBrowser {
    * 
    * @param pearPackageDir
    *          The root directory where the PEAR package was unarchived.
-   * @throws IOException if a problem with IO
+   * @throws IOException
+   *           if a problem with IO
    */
   public PackageBrowser(File pearPackageDir) throws IOException {
     _rootDir = pearPackageDir;
@@ -143,11 +145,13 @@ public class PackageBrowser {
   public String buildComponentClassPath() throws IOException {
     return buildComponentClassPath(false, true);
   }
-  
+
   /**
    * Like {@link #buildComponentClassPath()}, but without all jars from the lib dir.
+   * 
    * @return The runtime classpath for the component.
-   * @throws IOException if there was an IO problem
+   * @throws IOException
+   *           if there was an IO problem
    */
   public String buildComponentRuntimeClassPath() throws IOException {
     return buildComponentClassPath(false, false);
@@ -162,9 +166,9 @@ public class PackageBrowser {
    * <code>null</code>.
    * 
    * @param relativePath
-   *          If <code>true</code>, the output string will include relative path expressions for
-   *          all relevant objects containing in the component PEAR package, otherwise it will
-   *          contain absolute path expressions for these objects.
+   *          If <code>true</code>, the output string will include relative path expressions for all
+   *          relevant objects containing in the component PEAR package, otherwise it will contain
+   *          absolute path expressions for these objects.
    * @param addLibDir
    *          Whether to add jars from the lib dir to the classpath (true at packaging time, false
    *          at runtime).
@@ -172,14 +176,15 @@ public class PackageBrowser {
    * @throws IOException
    *           If any I/O exception occurred.
    */
-  public String buildComponentClassPath(boolean relativePath, boolean addLibDir) throws IOException {
+  public String buildComponentClassPath(boolean relativePath, boolean addLibDir)
+          throws IOException {
     if (!isArchived()) {
       InstallationDescriptor insdObject = getInstallationDescriptor();
       if (insdObject != null) {
         String absoluteClassPath = InstallationController.buildComponentClassPath(
                 getRootDirectory().getAbsolutePath(), insdObject, addLibDir);
-        String absoluteRootDirPathExp = StringUtil.toRegExpReplacement(getRootDirectory()
-                .getAbsolutePath().replace('\\', '/'));
+        String absoluteRootDirPathExp = StringUtil
+                .toRegExpReplacement(getRootDirectory().getAbsolutePath().replace('\\', '/'));
         return relativePath ? absoluteClassPath.replaceAll(absoluteRootDirPathExp, "\\.")
                 : absoluteClassPath;
       }
@@ -205,13 +210,13 @@ public class PackageBrowser {
    * Creates a string that should be added to the PATH to run the given installed component, based
    * on the PEAR package defaults and its installation descriptor specifications. The output string
    * includes absolute or relative path expressions for all relevant objects containing in the
-   * component PEAR package, depending on the value of a given <code>boolean</code> argument. If
-   * the component package is archived, returns <code>null</code>.
+   * component PEAR package, depending on the value of a given <code>boolean</code> argument. If the
+   * component package is archived, returns <code>null</code>.
    * 
    * @param relativePath
-   *          If <code>true</code>, the output string will include relative path expressions for
-   *          all relevant objects containing in the component PEAR package, otherwise it will
-   *          contain absolute path expressions for these objects.
+   *          If <code>true</code>, the output string will include relative path expressions for all
+   *          relevant objects containing in the component PEAR package, otherwise it will contain
+   *          absolute path expressions for these objects.
    * @return The string that needs to be added to the PATH to run the given installed component.
    * @throws IOException
    *           If any I/O exception occurred.
@@ -220,10 +225,10 @@ public class PackageBrowser {
     if (!isArchived()) {
       InstallationDescriptor insdObject = getInstallationDescriptor();
       if (insdObject != null) {
-        String absolutePath = InstallationController.buildComponentPath(getRootDirectory()
-                .getAbsolutePath(), insdObject);
-        String absoluteRootDirPathExp = StringUtil.toRegExpReplacement(getRootDirectory()
-                .getAbsolutePath().replace('\\', '/'));
+        String absolutePath = InstallationController
+                .buildComponentPath(getRootDirectory().getAbsolutePath(), insdObject);
+        String absoluteRootDirPathExp = StringUtil
+                .toRegExpReplacement(getRootDirectory().getAbsolutePath().replace('\\', '/'));
         return relativePath ? absolutePath.replaceAll(absoluteRootDirPathExp, "\\.") : absolutePath;
       }
     }
@@ -321,8 +326,8 @@ public class PackageBrowser {
    *         <code>null</code> otherwise.
    */
   public File findStandardFile(String stdFileName) {
-    String fileName = stdFileName.replace('\\', File.separatorChar)
-            .replace('/', File.separatorChar);
+    String fileName = stdFileName.replace('\\', File.separatorChar).replace('/',
+            File.separatorChar);
     File file = new File(_rootDir, fileName);
     File foundFile = (_allFiles.contains(file)) ? file : null;
     return foundFile;
@@ -392,8 +397,7 @@ public class PackageBrowser {
   }
 
   /**
-   * @return <code>true</code>, if the archived package was specified, <code>false</code>
-   *         otherwise.
+   * @return <code>true</code>, if the archived package was specified, <code>false</code> otherwise.
    */
   public boolean isArchived() {
     return _archived;
@@ -405,7 +409,8 @@ public class PackageBrowser {
    * @return returns the pear component pearSpecifier file path or null if an archived package was
    *         used.
    * 
-   * @throws IOException if there was an IO problem
+   * @throws IOException
+   *           if there was an IO problem
    */
   public String getComponentPearDescPath() throws IOException {
 
@@ -414,9 +419,9 @@ public class PackageBrowser {
       return null;
     } else {
       // get pear descriptor file and return it as file path
-      File pearDescFile = new File(this._rootDir, this.getInstallationDescriptor()
-              .getMainComponentId()
-              + InstallationController.PEAR_DESC_FILE_POSTFIX);
+      File pearDescFile = new File(this._rootDir,
+              this.getInstallationDescriptor().getMainComponentId()
+                      + InstallationController.PEAR_DESC_FILE_POSTFIX);
       return pearDescFile.getAbsolutePath();
     }
   }
@@ -435,8 +440,8 @@ public class PackageBrowser {
   public String getComponentDataPath() throws IOException {
 
     // get all environment variables that are specified for the current pear file
-    Properties pearEnvProps = InstallationController.buildTableOfEnvVars(this
-            .getInstallationDescriptor());
+    Properties pearEnvProps = InstallationController
+            .buildTableOfEnvVars(this.getInstallationDescriptor());
 
     // return the uima datapath setting if available. If not return null
     return (String) pearEnvProps.get(RelativePathResolver.UIMA_DATAPATH_PROP);
@@ -445,8 +450,7 @@ public class PackageBrowser {
 
   /**
    * Returns the environment variable settings for the component. The variable settings does not
-   * contain the <code>classpath</code> and <code>uima.datapath</code> settings for the
-   * component.
+   * contain the <code>classpath</code> and <code>uima.datapath</code> settings for the component.
    * 
    * @return returns the environment variable settings for the component
    * 
@@ -455,8 +459,8 @@ public class PackageBrowser {
    */
   public Properties getComponentEnvVars() throws IOException {
     // get all environment variables that are specified for the current pear file
-    Properties pearEnvProps = InstallationController.buildTableOfEnvVars(this
-            .getInstallationDescriptor());
+    Properties pearEnvProps = InstallationController
+            .buildTableOfEnvVars(this.getInstallationDescriptor());
 
     // removes the UIMA datapath setting if available since it is already returned with the
     // getComponentDataPath() method.

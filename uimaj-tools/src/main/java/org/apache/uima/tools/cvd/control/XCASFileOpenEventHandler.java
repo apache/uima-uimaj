@@ -48,7 +48,6 @@ public class XCASFileOpenEventHandler implements ActionListener {
    * @param frame the frame
    */
   public XCASFileOpenEventHandler(MainFrame frame) {
-    super();
     this.main = frame;
   }
 

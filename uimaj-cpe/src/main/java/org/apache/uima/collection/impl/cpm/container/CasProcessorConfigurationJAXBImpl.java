@@ -164,6 +164,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Returns how long to wait between resending CAS after failure
    */
+  @Override
   public int getMaxTimeToWaitBetweenRetries() {
     return waitTimeBetweenRestarts;
   }
@@ -499,6 +500,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - action
    */
+  @Override
   public String getActionOnError() {
     return actionOnMaxError;
   }
@@ -514,14 +516,17 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - action
    */
+  @Override
   public String getActionOnMaxRestart() {
     return actionOnMaxRestarts;
   }
 
+  @Override
   public int getErrorRate() {
     return errorRate;
   }
 
+  @Override
   public long getErrorSampleSize() {
     return errorSampleSize;
   }
@@ -531,6 +536,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - max number of allowed errors
    */
+  @Override
   public int getMaxErrorCount() {
     return maxErrorThreshold;
   }
@@ -540,6 +546,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - max number of restarts
    */
+  @Override
   public int getMaxRestartCount() {
     return maxRestartThreshold;
   }
@@ -549,6 +556,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - max retry count
    */
+  @Override
   public int getMaxRetryCount() {
     return maxRetryThreshold;
   }
@@ -558,6 +566,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - Name
    */
+  @Override
   public String getName() {
     return name;
   }
@@ -567,6 +576,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - value for timeout
    */
+  @Override
   public long getTimeout() {
     return timeOut;
   }
@@ -576,6 +586,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - deployment paramaters as List
    */
+  @Override
   public List getDeploymentParameters() {
     return deploymentParameters;
   }
@@ -590,6 +601,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - deployment type
    */
+  @Override
   public String getDeploymentType() {
     return deploymentType;
   }
@@ -599,6 +611,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - fliter String
    */
+  @Override
   public String getFilterString() {
     return filterString;
   }
@@ -607,6 +620,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * Returns parsed filter expressions as List.
    * 
    */
+  @Override
   public LinkedList getFilter() throws ResourceConfigurationException {
     String filterExpression = null;
     try {
@@ -635,6 +649,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * Returns an array of types that should not be sent to Cas Processor. The drop types are defined
    * in the cpe descriptor.
    */
+  @Override
   public String[] getKeysToDrop() throws ResourceConfigurationException {
     try {
       // Now extract the file containing features to be dropped from the CAS when communicating with
@@ -667,6 +682,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - batch size
    */
+  @Override
   public int getBatchSize() {
     return batchSize;
   }
@@ -678,6 +694,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @throws ResourceConfigurationException if an import could not be resolved
    */
+  @Override
   public URL getDescriptorUrl() throws ResourceConfigurationException {
     return descriptor.findAbsoluteUrl(resourceManager);
   }
@@ -688,6 +705,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @param aDeployParameter - name of the parameter
    * @return - value for parameter name
    */
+  @Override
   public String getDeploymentParameter(String aDeployParameter) {
     String desc = null;
     if (aDeployParameter == null || deploymentParameters == null) {
@@ -708,6 +726,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - true if running in seperate process
    */
+  @Override
   public boolean runInSeparateProcess() {
     return runInSeparateProcess;
   }
@@ -716,6 +735,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * Returns true it the Cas Processor is written in java and will be run with java jvm.
    * 
    */
+  @Override
   public boolean isJavaProcess() {
     return isJavaProcess;
   }
@@ -727,6 +747,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @return - Execute object
    */
+  @Override
   public Execute getExecSpec() {
     if (!isJavaProcess()) {
       return nonJavaApp.getExecSpec();

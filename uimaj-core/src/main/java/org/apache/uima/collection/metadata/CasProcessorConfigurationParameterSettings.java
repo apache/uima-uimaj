@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.metadata;
 
 /**
@@ -27,10 +26,10 @@ public interface CasProcessorConfigurationParameterSettings {
   /**
    * Gets the settings for configuration parameters that are not in any group.
    * 
-   * @return an array of <code>NameValuePair</code> objects, each of which contains a parameter
-   *         name and the value of that parameter
+   * @return an array of <code>NameValuePair</code> objects, each of which contains a parameter name
+   *         and the value of that parameter
    */
-  public NameValuePair[] getParameterSettings();
+  NameValuePair[] getParameterSettings();
 
   /**
    * Looks up the value of a parameter.
@@ -40,7 +39,7 @@ public interface CasProcessorConfigurationParameterSettings {
    * 
    * @return the value of the parameter with name <code>aParamName</code>
    */
-  public Object getParameterValue(String aParamName);
+  Object getParameterValue(String aParamName);
 
   /**
    * Sets the value of a parameter.
@@ -51,6 +50,5 @@ public interface CasProcessorConfigurationParameterSettings {
    *          the value to assign to the parameter. This must be a String, Boolean, Integer, Float,
    *          or an array of one of those types.
    */
-  public void setParameterValue(String aParamName, Object aValue);
-
+  void setParameterValue(String aParamName, Object aValue);
 }

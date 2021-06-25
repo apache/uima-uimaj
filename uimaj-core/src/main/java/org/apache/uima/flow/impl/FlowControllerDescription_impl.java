@@ -40,8 +40,8 @@ import org.w3c.dom.Element;
 /**
  * Implementation of {@link FlowControllerDescription}.
  */
-public class FlowControllerDescription_impl extends ResourceCreationSpecifier_impl implements
-        FlowControllerDescription {
+public class FlowControllerDescription_impl extends ResourceCreationSpecifier_impl
+        implements FlowControllerDescription {
   private static final long serialVersionUID = 7478890390021821535L;
 
   /**
@@ -60,6 +60,7 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
     getFlowControllerMetaData().setOperationalProperties(opProps);
   }
 
+  @Override
   public ProcessingResourceMetaData getFlowControllerMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -67,8 +68,11 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.
+   * ResourceManager)
    */
+  @Override
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // check that user class was specified
@@ -97,6 +101,7 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
   /**
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -110,13 +115,14 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "flowControllerDescription", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("frameworkImplementation"),
+          "flowControllerDescription",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
               new PropertyXmlInfo("externalResourceDependencies"),
               new PropertyXmlInfo("resourceManagerConfiguration", null) });

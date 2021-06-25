@@ -23,19 +23,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Like string heap, but keeps strings in a hashmap (for quick testing) and an array list.
- * This is used to emulate how v2 keeps strings, to support backwards compatibility for low-level access
+ * Like string heap, but keeps strings in a hashmap (for quick testing) and an array list. This is
+ * used to emulate how v2 keeps strings, to support backwards compatibility for low-level access
  * 
  */
 final class StringSet {
 
   private int lastStringCode = 0;
   final private ArrayList<String> strings = new ArrayList<>();
-  {strings.add(null);}
+  {
+    strings.add(null);
+  }
   final private HashMap<String, Integer> string2int = new HashMap<>();
-  
+
   // Reset the string heap (called on CAS reset).
-  final void reset() {
+  void reset() {
     strings.clear();
     strings.add(null);
     string2int.clear();
@@ -52,26 +54,28 @@ final class StringSet {
 
   /**
    * get the code for a string, adding it to the string table if not already there.
-   * @param s The string.
-   * @return The code corresponding to the string, which can be used in the getStringForCode call above
+   * 
+   * @param s
+   *          The string.
+   * @return The code corresponding to the string, which can be used in the getStringForCode call
+   *         above
    */
   int getCodeForString(String s) {
     if (s == null) {
       return LowLevelCAS.NULL_FS_REF;
     }
-    
+
     Integer prev = string2int.putIfAbsent(s, lastStringCode + 1);
     if (prev == null) {
       strings.add(s);
       return ++lastStringCode;
     }
-    
-    return prev; 
+
+    return prev;
   }
-  
-  
-  final int getSize() {
-	  return this.strings.size();
+
+  int getSize() {
+    return this.strings.size();
   }
-  
+
 }

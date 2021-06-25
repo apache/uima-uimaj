@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
@@ -26,12 +29,9 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationIndex;
-
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for CASTest.java goes here.
@@ -43,8 +43,8 @@ public class CASTest {
 
   private TypeSystem ts;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -53,19 +53,19 @@ public class CASTest {
     }
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-    @org.junit.jupiter.api.Test
-    public void testGetTypeSystem() {
+  @org.junit.jupiter.api.Test
+  public void testGetTypeSystem() {
     assertTrue(this.cas.getTypeSystem() != null);
   }
-  
-    @Test
-    public void testGetAnnotationIndex() {
+
+  @Test
+  public void testGetAnnotationIndex() {
     AnnotationIndex index = this.cas.getAnnotationIndex();
     assertNotNull(index);
     assertTrue(index.iterator() != null);
@@ -78,8 +78,8 @@ public class CASTest {
     assertTrue(caughtException);
   }
 
-    @Test
-    public void testCreateFS() {
+  @Test
+  public void testCreateFS() {
     // Can create FS of type "Top"
     assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
     boolean caughtExc = false;
@@ -107,7 +107,7 @@ public class CASTest {
     final int arraySize = 1000000;
     // Make sure that the structure we're trying to create is actually larger
     // than the page size we're testing with.
-//    assertTrue(arraySize > Heap.DEFAULT_SIZE);
+    // assertTrue(arraySize > Heap.DEFAULT_SIZE);
     IntArrayFS array = null;
     try {
       array = this.cas.createIntArrayFS(arraySize);
@@ -130,8 +130,8 @@ public class CASTest {
     // assertTrue(caughtExc);
   }
 
-    @Test
-    public void testCreateCAS() {
+  @Test
+  public void testCreateCAS() {
     TypeSystemMgr tsm = CASFactory.createTypeSystem();
     tsm.commit();
   }

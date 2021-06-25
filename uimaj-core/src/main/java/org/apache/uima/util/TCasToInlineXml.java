@@ -63,6 +63,7 @@ public class TCasToInlineXml implements TCasFormatter {
   /*
    * @see org.apache.uima.util.TCasFormatter#format(CAS)
    */
+  @Override
   public String format(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
   }
@@ -70,6 +71,7 @@ public class TCasToInlineXml implements TCasFormatter {
   /*
    * @see org.apache.uima.util.TCasFormatter#format(CAS, FSMatchConstraint)
    */
+  @Override
   public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     return generateXML(aCAS, aFilter);
   }
@@ -77,8 +79,7 @@ public class TCasToInlineXml implements TCasFormatter {
   /*
    * Generates inline XML from a CAS.
    * 
-   * @param aCAS
-   *          CAS to generate from
+   * @param aCAS CAS to generate from
    */
   public String generateXML(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -87,11 +88,10 @@ public class TCasToInlineXml implements TCasFormatter {
   /*
    * Generates inline XML from a CAS.
    * 
-   * @param aCAS
-   *          CAS to generate from
-   * @param aFilter
-   *          constraint that determines which annotations are included in the output. If null (or
-   *          omitted), all annotations are included.
+   * @param aCAS CAS to generate from
+   * 
+   * @param aFilter constraint that determines which annotations are included in the output. If null
+   * (or omitted), all annotations are included.
    */
   public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -104,7 +104,7 @@ public class TCasToInlineXml implements TCasFormatter {
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator<Annotation> iterator = aCAS.<Annotation>getAnnotationIndex().iterator();
+    FSIterator<Annotation> iterator = aCAS.<Annotation> getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -145,8 +145,8 @@ public class TCasToInlineXml implements TCasFormatter {
             try {
               handler.characters(docCharArray, pos, nextAnnot.getBegin() - pos);
               pos = nextAnnot.getBegin();
-              handler.startElement("", nextAnnot.getType().getName(),
-                      nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
+              handler.startElement("", nextAnnot.getType().getName(), nextAnnot.getType().getName(),
+                      getFeatureAttributes(nextAnnot, aCAS));
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -240,13 +240,11 @@ public class TCasToInlineXml implements TCasFormatter {
           attrs.addAttribute("", featName, featName, "CDATA", str);
         }
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
-        attrs
-                .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
-                        .getIntValue(feat)));
+        attrs.addAttribute("", featName, featName, "CDATA",
+                Integer.toString(aFS.getIntValue(feat)));
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
-        attrs
-                .addAttribute("", featName, featName, "CDATA", Float.toString(aFS
-                        .getFloatValue(feat)));
+        attrs.addAttribute("", featName, featName, "CDATA",
+                Float.toString(aFS.getFloatValue(feat)));
       } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
         StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
         if (arrayFS == null) {

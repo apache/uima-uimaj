@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 import org.apache.uima.UIMAException;
 
 /**
- * Exception class for package org.apache.uima.cas.
- * Message catalog: org.apache.uima.UIMAException_Messages
+ * Exception class for package org.apache.uima.cas. Message catalog:
+ * org.apache.uima.UIMAException_Messages
  */
 public class CASException extends UIMAException {
 
-  private static final long serialVersionUID = 1L;  // not intended for serialization
+  private static final long serialVersionUID = 1L; // not intended for serialization
 
   /** The value of the feature {0} cannot be accessed as type {1}, because it is {2}. */
   public static final String INAPPROP_TYPE_EXCEPTION = "INAPPROP_TYPE_EXCEPTION";
@@ -55,17 +54,16 @@ public class CASException extends UIMAException {
 
   /** The JCas cannot be initialized. The following errors occurred: {0} */
   public static final String JCAS_INIT_ERROR = "JCAS_INIT_ERROR";
-  
+
   /** Type information from the CAS cannot be accessed while initializing the JCas type {0} */
   public static final String JCAS_TYPENOTFOUND_ERROR = "JCAS_TYPENOTFOUND_ERROR";
 
-  
   /**
    * Feature information from the CAS cannot be accessed while initializing the JCAS type {0} with
    * feature {1}.
    */
   public static final String JCAS_FEATURENOTFOUND_ERROR = "JCAS_FEATURENOTFOUND_ERROR";
-  
+
   /* Unable to find required {0} method for JCAS type {1} with {2} type of {3}. */
   public static final String JCAS_GETTER_SETTER_MISSING = "JCAS_GETTER_SETTER_MISSING";
 
@@ -80,22 +78,20 @@ public class CASException extends UIMAException {
 
   /** Type system has not been committed; cannot create base index. */
   public static final String MUST_COMMIT_TYPE_SYSTEM = "MUST_COMMIT_TYPE_SYSTEM";
-  
-  
 
   public CASException() {
-    super();
   }
 
   public CASException(String aMessageKey, Object[] aArguments, Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }
 
-  public CASException(String aMessageKey, Object ... aArguments) {
+  public CASException(String aMessageKey, Object... aArguments) {
     super(aMessageKey, aArguments);
   }
 
-  public CASException(String aResourceBundleName, String aMessageKey, Object[] aArguments, Throwable aCause) {
+  public CASException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
+          Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 
@@ -106,7 +102,4 @@ public class CASException extends UIMAException {
   public CASException(Throwable aCause) {
     super(aCause);
   }
-
-  
-
 }

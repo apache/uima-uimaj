@@ -19,18 +19,16 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
+import org.apache.uima.taeconfigurator.editors.ui.Utility;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
-
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
 
 /**

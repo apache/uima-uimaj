@@ -16,25 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 /**
- * This interface is implemented by JCas classes that need to be called by the 
- * framework when a serialization is about to happen
- * where the _save_to_cas_data() method update Features which have references to Feature Structures
+ * This interface is implemented by JCas classes that need to be called by the framework when a
+ * serialization is about to happen where the _save_to_cas_data() method update Features which have
+ * references to Feature Structures
  */
 public interface UimaSerializableFSs extends UimaSerializable {
-  
+
   /**
-   * This method is called by the framework when the framework needs to 
-   * locate referenced FSs.  
-   * The implementation should save FS references into normal Features of this JCas class
+   * This method is called by the framework when the framework needs to locate referenced FSs. The
+   * implementation should save FS references into normal Features of this JCas class
    */
   default void _save_fsRefs_to_cas_data() {
     _save_to_cas_data();
   }
-
-  
 }
-

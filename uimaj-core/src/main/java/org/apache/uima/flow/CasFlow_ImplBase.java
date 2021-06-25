@@ -19,7 +19,6 @@
 
 package org.apache.uima.flow;
 
-
 import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -51,36 +50,39 @@ public abstract class CasFlow_ImplBase implements Flow {
    * 
    * @see Flow#newCasProduced(AbstractCas, String)
    */
+  @Override
   public final Flow newCasProduced(AbstractCas newCas, String producedBy)
           throws AnalysisEngineProcessException {
     if (newCas instanceof CAS) {
       return newCasProduced((CAS) newCas, producedBy);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
-                  newCas.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { CAS.class, newCas.getClass() });
     }
   }
-  
-  
-  
+
   /**
-   * By default, returns false, indicating that processing cannot continue after a failure.
-   * May be overridden by subclasses to allow processing to continue.
+   * By default, returns false, indicating that processing cannot continue after a failure. May be
+   * overridden by subclasses to allow processing to continue.
+   * 
    * @see org.apache.uima.flow.Flow#continueOnFailure(String, java.lang.Exception)
    */
+  @Override
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
     return false;
   }
 
-  /** 
-   * By default, does nothing.  May be overriden by subclasses to release resources 
-   * when a flow is aborted.
+  /**
+   * By default, does nothing. May be overriden by subclasses to release resources when a flow is
+   * aborted.
+   * 
    * @see Flow#aborted()
    */
+  @Override
   public void aborted() {
     // does nothing by default
-  }  
+  }
 
   /**
    * By default, throws an exception to indicate this this Flow object does not support new CASes
@@ -93,13 +95,15 @@ public abstract class CasFlow_ImplBase implements Flow {
    *          the key of the CAS Multiplier that produced this CAS
    * 
    * @return a Flow object that will be used to route the new CAS
-   * @throws AnalysisEngineProcessException passthru
+   * @throws AnalysisEngineProcessException
+   *           passthru
    * @see Flow#newCasProduced(AbstractCas, String)
    */
-  protected Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+  protected Flow newCasProduced(CAS newCas, String producedBy)
+          throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED, new Object[] { this
-                    .getClass().getName() });
+            UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED,
+            new Object[] { this.getClass().getName() });
   }
 
   /**

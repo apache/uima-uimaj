@@ -93,6 +93,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.JCasAnnotator_ImplBase#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
 
@@ -114,6 +115,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#typeSystemInit(TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
     // Get a reference to the "PersonTitle" Type
     mPersonTitleType = aTypeSystem.getType("example.PersonTitle");
@@ -150,6 +152,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * 
    * @see CasAnnotator_ImplBase#process(CAS)
    */
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     try {
       // If the ResultSpec doesn't include the PersonTitle type, we have

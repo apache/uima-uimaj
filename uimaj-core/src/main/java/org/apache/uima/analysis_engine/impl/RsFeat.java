@@ -16,21 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.impl;
 
 /**
  * Represents the languages associated with one explicit type:feature in a result spec
  */
 public class RsFeat {
-  final String shortFeatName;    // these are canonical strings, can be compared ==
+  final String shortFeatName; // these are canonical strings, can be compared ==
   RsLangs languages = null;
-  
+
   RsFeat(String shortName, String[] languages) {
     this.shortFeatName = shortName;
     this.languages = RsLangs.createOrNull(languages);
   }
-  
+
   RsFeat(String shortName, RsLangs languages) {
     this.shortFeatName = shortName;
     if (null != languages) {
@@ -38,17 +37,16 @@ public class RsFeat {
     }
     this.languages = languages;
   }
-  
+
   RsFeat(RsFeat original) {
     shortFeatName = original.shortFeatName;
     if (null != original.languages) {
       original.languages.setShared();
-    }  
-    languages = original.languages; 
+    }
+    languages = original.languages;
   }
-    
+
   boolean subsumes(String language) {
     return RsLangs.subsumes(languages, language);
   }
-     
 }

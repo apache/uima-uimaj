@@ -23,7 +23,7 @@ public class Pair<T, U> {
 
   public final T t;
   /** updatable but don't update if used as key in hashtable */
-  public U u;  
+  public U u;
 
   public Pair(T t, U u) {
     this.t = t;
@@ -68,12 +68,14 @@ public class Pair<T, U> {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     return "Pair [t=" + t + ", u=" + u + "]";
   }
-  
+
 }

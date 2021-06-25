@@ -85,9 +85,10 @@ public class ResourceConfigurationException extends UIMAException {
    * component "{1}" -- directory "{2}" does not exist.
    */
   public static final String DIRECTORY_NOT_FOUND = "directory_not_found";
-  
+
   /**
-   * Message key for a standard UIMA exception message: External override variable "{0}" references the undefined variable "{1}"
+   * Message key for a standard UIMA exception message: External override variable "{0}" references
+   * the undefined variable "{1}"
    */
   public static final String EXTERNAL_OVERRIDE_INVALID = "external_override_invalid";
 
@@ -95,27 +96,29 @@ public class ResourceConfigurationException extends UIMAException {
    * Message key for a standard UIMA exception message: Error loading external overrides from "{0}"
    */
   public static final String EXTERNAL_OVERRIDE_ERROR = "external_override_error";
-  
+
   /**
-   * Message key for a standard UIMA exception message: External override value for "{0}" has the wrong type (scalar or array)
+   * Message key for a standard UIMA exception message: External override value for "{0}" has the
+   * wrong type (scalar or array)
    */
   public static final String EXTERNAL_OVERRIDE_TYPE_MISMATCH = "external_override_type_mismatch";
-  
+
   /**
-   * Message key for a standard UIMA exception message: External override value "{0}" is not an integer
+   * Message key for a standard UIMA exception message: External override value "{0}" is not an
+   * integer
    */
   public static final String EXTERNAL_OVERRIDE_NUMERIC_ERROR = "external_override_numeric_error";
-  
+
   /**
-   * Message key for a standard UIMA exception message: External override variable "{0}" has a circular reference to itself
+   * Message key for a standard UIMA exception message: External override variable "{0}" has a
+   * circular reference to itself
    */
   public static final String EXTERNAL_OVERRIDE_CIRCULAR_REFERENCE = "external_override_circular_reference";
-  
+
   /**
    * Creates a new exception with a null message.
    */
   public ResourceConfigurationException() {
-    super();
   }
 
   /**
@@ -136,8 +139,8 @@ public class ResourceConfigurationException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -155,8 +158,8 @@ public class ResourceConfigurationException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -173,8 +176,8 @@ public class ResourceConfigurationException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -189,8 +192,8 @@ public class ResourceConfigurationException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.

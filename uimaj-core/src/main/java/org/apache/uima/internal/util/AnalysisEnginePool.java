@@ -138,6 +138,7 @@ public class AnalysisEnginePool {
 
   /**
    * Gets metadata for AnalysisEngines in this pool.
+   * 
    * @return -
    */
   public AnalysisEngineMetaData getMetaData() {
@@ -146,43 +147,45 @@ public class AnalysisEnginePool {
 
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(ResultSpecification)
-   * This version only called for setResultSpecification called from an appl on the
-   * MultiprocessingAnalysisEngine directly.  process(cas, result-spec) calls
-   * setResultSpecification on the individual analysis engine from the pool.
-   * @param aResultSpec -
+   *      This version only called for setResultSpecification called from an appl on the
+   *      MultiprocessingAnalysisEngine directly. process(cas, result-spec) calls
+   *      setResultSpecification on the individual analysis engine from the pool.
+   * @param aResultSpec
+   *          -
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
-    
+
     // set Result Spec on each AnalysisEngine in the pool
 
     Vector<Resource> allInstances = mPool.getAllInstances();
     for (int i = 0; i < mPool.getSize(); i++) {
-      AnalysisEngine ae = (AnalysisEngine)allInstances.get(i);
-      
+      AnalysisEngine ae = (AnalysisEngine) allInstances.get(i);
+
       mPool.checkoutSpecificResource(ae);
-      
+
       try {
-      //    set result spec
-      ae.setResultSpecification(aResultSpec);
+        // set result spec
+        ae.setResultSpecification(aResultSpec);
       } finally {
-      mPool.releaseResource(ae);
+        mPool.releaseResource(ae);
       }
     }
- 
+
   }
 
-//  public void setResultSpecForAeIfPending(AnalysisEngine ae) {
-//    Vector allInstances = mPool.getAllInstances();
-//    int i = allInstances.indexOf(ae);
-//    if (resultSpecChanged[i]) {
-//      resultSpecChanged[i] = false;
-//      ae.setResultSpecification(sharedResultSpec);
-//    }  
-//  }
-  
+  // public void setResultSpecForAeIfPending(AnalysisEngine ae) {
+  // Vector allInstances = mPool.getAllInstances();
+  // int i = allInstances.indexOf(ae);
+  // if (resultSpecChanged[i]) {
+  // resultSpecChanged[i] = false;
+  // ae.setResultSpecification(sharedResultSpec);
+  // }
+  // }
+
   /**
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException
+   *           -
    */
   public synchronized void reconfigure() throws ResourceConfigurationException {
     // reconfigure each AnalysisEngine in the pool
@@ -209,7 +212,9 @@ public class AnalysisEnginePool {
 
   /**
    * Calls batchProcessComplete on all AEs in pool.
-   * @throws AnalysisEngineProcessException -
+   * 
+   * @throws AnalysisEngineProcessException
+   *           -
    */
   public synchronized void batchProcessComplete() throws AnalysisEngineProcessException {
     List<AnalysisEngine> toRelease = new ArrayList<>();
@@ -234,7 +239,9 @@ public class AnalysisEnginePool {
 
   /**
    * Calls collectionProcessComplete on all AEs in pool.
-   * @throws AnalysisEngineProcessException -
+   * 
+   * @throws AnalysisEngineProcessException
+   *           -
    */
   public synchronized void collectionProcessComplete() throws AnalysisEngineProcessException {
     List<AnalysisEngine> toRelease = new ArrayList<>();
@@ -269,7 +276,9 @@ public class AnalysisEnginePool {
 
   /**
    * Sets logger for all AnalysisEngines in pool.
-   * @param aLogger -
+   * 
+   * @param aLogger
+   *          -
    */
   public synchronized void setLogger(Logger aLogger) {
     List<AnalysisEngine> toRelease = new ArrayList<>();

@@ -25,10 +25,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import org.apache.uima.pear.*;
+import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.insd.edit.vars.VarVal;
 import org.apache.uima.pear.insd.edit.vars.VarValList;
 import org.apache.uima.pear.insd.edit.vars.VarValViewerHandler;
+import org.apache.uima.pear.tools.InstallationDescriptor;
+import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -50,9 +52,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-
-import org.apache.uima.pear.tools.InstallationDescriptor;
-import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
 
 /**
