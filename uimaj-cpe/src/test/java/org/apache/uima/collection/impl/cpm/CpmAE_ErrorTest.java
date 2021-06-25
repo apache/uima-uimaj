@@ -171,7 +171,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testProcessWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents to process
     int exceptionSequence = 3; // the sequence in which errors are produced
@@ -249,7 +249,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitializeWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
@@ -452,7 +452,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testAeErrorRateThresholdTerminateDefault() throws Exception {
     int documentCount = 1000; // number of documents to process
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -671,7 +671,7 @@ public class CpmAE_ErrorTest {
     assertEquals("There are not as much exceptions as expected! ", 6, FunctionErrorStore.getCount());
   }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testAeErrorRateActionOnMaxRestarts() throws Exception {
     int exceptionSequence = 1;
     int documentCount = 10; // number of documents processed
@@ -716,7 +716,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testNumToProcess() throws Exception {
     int exceptionSequence = 25;
     int documentCount = 50; // number of documents processed

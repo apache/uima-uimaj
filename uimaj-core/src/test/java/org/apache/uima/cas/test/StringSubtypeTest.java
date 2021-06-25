@@ -86,7 +86,7 @@ public class StringSubtypeTest {
     this.jcas = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testJcas() {
     StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
     annot.setStringSetFeature(definedValue1);
@@ -101,7 +101,7 @@ public class StringSubtypeTest {
     assertTrue(exCaught);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLowLevelCas() {
     LowLevelCAS cas = this.jcas.getLowLevelCas();
     LowLevelTypeSystem ts = cas.ll_getTypeSystem();

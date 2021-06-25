@@ -428,7 +428,7 @@ public class AnalysisEngineDescription_implTest {
     assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatAggregateDescriptionCanBeSerialized() throws Exception {
     byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
     AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) SerializationUtils
@@ -472,7 +472,7 @@ public class AnalysisEngineDescription_implTest {
             .allMatch(d -> d instanceof AnalysisEngineDescription);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatCloneDoesNotResolveDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();

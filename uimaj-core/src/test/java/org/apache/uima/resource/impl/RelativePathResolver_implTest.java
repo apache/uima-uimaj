@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class RelativePathResolver_implTest {
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetDataPath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();

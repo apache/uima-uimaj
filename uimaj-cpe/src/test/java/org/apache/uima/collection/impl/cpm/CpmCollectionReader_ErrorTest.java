@@ -94,7 +94,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testGetNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 5; // the sequence in which errors are produced
@@ -135,7 +135,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testGetNextWithCollectionException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 2; // the sequence in which errors are produced
@@ -172,7 +172,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testGetNextWithIOException() throws Exception {
       int TIMEOUT = 10; // seconds, till the test is aborted
       int documentCount = 20; // number of documents processed
@@ -228,7 +228,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testGetNextWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 2; // the sequence in which errors are produced
@@ -266,7 +266,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testHasNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 4; // the sequence in which errors are produced
@@ -302,7 +302,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testHasNextWithNullPointerException() throws Exception {
       int TIMEOUT = 20; // seconds, till the test is aborted
       int documentCount = 30; // number of documents processed
@@ -355,7 +355,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitializeWithResourceInitializationException()
          throws Exception {
       int documentCount = 20; // number of documents processed
@@ -460,7 +460,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitializeWithOutOfMemoryError() throws Exception {
       boolean outOfMemoryError = false;
       int documentCount = 20; // number of documents processed
@@ -510,7 +510,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testGetProgressWithIOException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
@@ -552,7 +552,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testGetProcessWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced

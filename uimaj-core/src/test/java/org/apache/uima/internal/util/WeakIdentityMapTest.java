@@ -175,7 +175,7 @@ public class WeakIdentityMapTest {
     assertTrue(map.isEmpty());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testConcurrentHashMap() throws Exception {
     // don't make threadCount and keyCount random, otherwise easily OOMs or fails otherwise:
     final int threadCount = 4;

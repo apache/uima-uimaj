@@ -253,7 +253,7 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBlobSerialization() throws Exception {
 
     // create FS
@@ -293,7 +293,7 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testXCASSerialization() throws Exception {
 
     // create FS
@@ -581,7 +581,7 @@ public class NewPrimitiveTypesTest {
     return fs;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testNewPrimitiveTypeKeys() throws Exception {
     // Create FS with features set in reverse order
     for (int i = 0; i < 5; i++) {

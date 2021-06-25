@@ -39,7 +39,7 @@ public class CpmInitTest {
     FunctionErrorStore.resetCount();
   }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitSingleThreadCPMMode() throws Exception {
     int documentCount = 10000000;
     int threadCount = 1;
@@ -72,7 +72,7 @@ public class CpmInitTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitMultiThreadCPMMode() throws Exception {
     int documentCount = 10000000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;

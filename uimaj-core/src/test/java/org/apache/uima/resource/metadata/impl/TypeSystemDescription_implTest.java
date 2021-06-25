@@ -124,7 +124,7 @@ public class TypeSystemDescription_implTest {
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatCircularImportsDoNotCrash() throws Exception {
     // test that circular imports don't crash
     File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
@@ -147,7 +147,7 @@ public class TypeSystemDescription_implTest {
     assertThat(ts.getTypes()).hasSize(2);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatImportFromProgrammaticallyCreatedTypeSystemDescriptionWorks() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
     URL url = getFile("TypeSystemDescriptionImplTest").toURL();

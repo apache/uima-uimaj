@@ -141,7 +141,7 @@ public class FilteredIteratorTest {
     this.annotationType = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIterator1() {
 
     try {
@@ -301,7 +301,7 @@ public class FilteredIteratorTest {
    * it.moveToNext(); } }
    */
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIterator2() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
@@ -461,7 +461,7 @@ public class FilteredIteratorTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIterator2b() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");

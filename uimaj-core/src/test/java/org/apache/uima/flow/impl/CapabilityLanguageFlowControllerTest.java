@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 
 public class CapabilityLanguageFlowControllerTest {
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception {
     FlowControllerDescription desc1 = CapabilityLanguageFlowController.getDescription();
 

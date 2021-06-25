@@ -41,7 +41,7 @@ public class PearSpecifier_implTest {
   /*
    * pearSpecifier creation test
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testProducePearResource() throws Exception {
     PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     specifier.setPearPath("/home/user/uimaApp/installedPears/testpear");

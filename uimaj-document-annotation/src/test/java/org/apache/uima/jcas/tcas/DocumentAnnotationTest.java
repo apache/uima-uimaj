@@ -73,7 +73,7 @@ public class DocumentAnnotationTest {
     }
   }
   
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCreateDocumentAnnot() throws Exception {
     try {
       DocumentAnnotation b = (DocumentAnnotation) jcas.getDocumentAnnotationFs();
@@ -84,7 +84,7 @@ public class DocumentAnnotationTest {
     }
   }
   
-    @org.junit.jupiter.api.Test
+    @Test
     public void testDocMeta() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -123,7 +123,7 @@ public class DocumentAnnotationTest {
     assertTrue(CasCompare.compareCASes((CASImpl)source, (CASImpl)target));
   }
   
-    @org.junit.jupiter.api.Test
+    @Test
     public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(

@@ -103,7 +103,7 @@ public class IntArrayRBTTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testFindInsertionPoint() {
     IntArrayRBT ia = new IntArrayRBT();
     Integer[] vs = new Integer[] { 2, 2, 5, 1, 6, 7, 3, 4 };
@@ -116,7 +116,7 @@ public class IntArrayRBTTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIterator() {
     IntArrayRBT ia = new IntArrayRBT();
 
@@ -177,7 +177,7 @@ public class IntArrayRBTTest {
 
   // }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLargeInsertsDeletes() {
     IntArrayRBT ia = new IntArrayRBT();
     System.gc();

@@ -148,7 +148,7 @@ public class SofaTest {
   /**
    * Test driver.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMain() throws Exception {
     try {
 
@@ -362,7 +362,7 @@ public class SofaTest {
   /*
    * Test stream access to Sofa Data.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSofaDataStream() throws Exception {
     try {
 
@@ -598,7 +598,7 @@ public class SofaTest {
     assertEquals(TEST_TEXT, testView.getSofaDataString());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetSofaDataStringOnInitialView() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
@@ -608,7 +608,7 @@ public class SofaTest {
     assertEquals(TEST_TEXT, this.cas.getSofaDataString());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
     final String TEST_MIME = "text/plain";
@@ -618,7 +618,7 @@ public class SofaTest {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetSofaDataURIonInitialView() throws Exception {
     // This test uses platform encoding both for reading and writing.
     String someText = "remote text.";
@@ -653,7 +653,7 @@ public class SofaTest {
     assertTrue(testFile.delete());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetSofaDataArray() {
     final String TEST_MIME = "text/plain";
     CAS testView = this.cas.createView("TestView");
@@ -665,7 +665,7 @@ public class SofaTest {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetSofaDataArrayOnInitialView() {
     final String TEST_MIME = "text/plain";
     ByteArrayFS sofaDataArray = this.cas.createByteArrayFS(2);
@@ -676,7 +676,7 @@ public class SofaTest {
     assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testReset() {
     this.cas.reset();
     this.cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
@@ -703,7 +703,7 @@ public class SofaTest {
     assertEquals(i, cas_s.length);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetViewIterator() throws Exception {
     this.cas.reset();
     CAS view1 = this.cas.createView("View1");

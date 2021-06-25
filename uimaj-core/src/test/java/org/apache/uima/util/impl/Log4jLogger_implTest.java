@@ -64,7 +64,7 @@ public class Log4jLogger_implTest {
   // logLevels.put("ALL", Level.ALL);
   // }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = Log4jLogger_impl.getInstance(this.getClass());

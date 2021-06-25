@@ -40,7 +40,7 @@ public class IntHashSetTest {
     ihs = new IntHashSet();
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBasic() {
 
     ihs.add(15);
@@ -74,7 +74,7 @@ public class IntHashSetTest {
     assertTrue(Arrays.equals(sv, new int[] { -1000, -500, 189, 500, 1001 }));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSwitching224() {
     final int OS = 100000;
     ihs = new IntHashSet(16, OS);
@@ -127,7 +127,7 @@ public class IntHashSetTest {
     assertFalse(ihs.wontExpand(21));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testExpandNpe() {
     ihs.add(15);
     ihs.add(150000); // makes 4 byte table entries
@@ -137,7 +137,7 @@ public class IntHashSetTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAddIntoRemovedSlot() {
     long seed = // 6738591171221169418L;
             new Random().nextLong();
@@ -216,7 +216,7 @@ public class IntHashSetTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;

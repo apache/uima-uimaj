@@ -83,7 +83,7 @@ public class ResourceManagerConfiguration_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension.getFile(

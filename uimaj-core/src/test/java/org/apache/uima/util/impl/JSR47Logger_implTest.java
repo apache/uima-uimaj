@@ -45,7 +45,7 @@ public class JSR47Logger_implTest {
     logLevels.put("ALL", Level.ALL);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLogWrapperCreation() throws Exception {
 
     // Set the root logger's level to INFO ... may not be the default
@@ -68,7 +68,7 @@ public class JSR47Logger_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIsLoggable() throws Exception {
     // create logger
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
@@ -171,7 +171,7 @@ public class JSR47Logger_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMessageLogMethods() throws Exception {
     // create Logger
     final org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();

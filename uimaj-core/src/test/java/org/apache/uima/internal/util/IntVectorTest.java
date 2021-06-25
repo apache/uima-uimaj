@@ -63,7 +63,7 @@ public class IntVectorTest {
 
   // verify that several CASes in a pool in different views share the same type system
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testPool() throws Exception {
     try {
 

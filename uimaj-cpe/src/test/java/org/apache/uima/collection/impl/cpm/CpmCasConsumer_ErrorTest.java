@@ -132,7 +132,7 @@ public class CpmCasConsumer_ErrorTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
@@ -173,7 +173,7 @@ public class CpmCasConsumer_ErrorTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInitializeWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced

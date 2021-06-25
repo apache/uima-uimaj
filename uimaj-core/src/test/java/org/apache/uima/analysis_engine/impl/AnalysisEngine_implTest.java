@@ -109,7 +109,7 @@ import org.xml.sax.ContentHandler;
  * 
  */
 public class AnalysisEngine_implTest {
-  @org.junit.jupiter.api.Test
+  @Test
   public void testInitialize() throws Exception {
     try {
       PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
@@ -410,7 +410,7 @@ public class AnalysisEngine_implTest {
     assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testParameterGroups() throws Exception {
     // Check that both groups parameters and non-group parameters are validated
     XMLInputSource in = new XMLInputSource(JUnitExtension
@@ -610,7 +610,7 @@ public class AnalysisEngine_implTest {
     ae.destroy();
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
@@ -1517,7 +1517,7 @@ public class AnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testProcessWithError() throws Exception {
     try {
       // This test uses an aggregate AE fails if the document text is set to "ERROR".
@@ -1580,7 +1580,7 @@ public class AnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testThrottleLogging() throws Exception {
     // This test uses an aggregate AE fails if the document text is set to "ERROR".
     AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
@@ -1631,7 +1631,7 @@ public class AnalysisEngine_implTest {
     System.err.println("should see no logging above");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingSuper() throws Exception {
     try {
       // initialize simple primitive TextAnalysisEngine
@@ -1647,7 +1647,7 @@ public class AnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testManyDelegates() throws Exception {
     // test with and without validation - UIMA-2453
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
@@ -1751,7 +1751,7 @@ public class AnalysisEngine_implTest {
    * 
    * Creating an AE with an unseen type, type-priority, or index should fail.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAdditionalAEs() throws Exception {
 
     // Create an AE and "freeze" the type-system

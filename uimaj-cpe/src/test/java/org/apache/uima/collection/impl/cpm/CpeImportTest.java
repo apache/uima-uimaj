@@ -89,7 +89,7 @@ public class CpeImportTest {
   /**
    * Test a CPE descriptor using import by name and requiring data patht o be set
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testImportsWithDataPath() throws Exception {
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
             new XMLInputSource(JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportDataPathTest.xml")));

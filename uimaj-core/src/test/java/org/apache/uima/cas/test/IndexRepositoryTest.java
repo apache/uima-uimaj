@@ -72,7 +72,7 @@ public class IndexRepositoryTest {
     indexRep = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingSofaRef() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
@@ -118,7 +118,7 @@ public class IndexRepositoryTest {
     assertFalse(iter.hasNext());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetIndex() throws Exception {
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     // create an instance of an annotation type
@@ -186,7 +186,7 @@ public class IndexRepositoryTest {
 
   public static int NBR_ITEMS = 40000;
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRemovalSpeed() throws Exception {
     // create an instance of an annotation type
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");

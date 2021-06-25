@@ -191,7 +191,7 @@ public class TypePriorityTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testN1() throws Exception {
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();

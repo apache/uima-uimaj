@@ -66,7 +66,7 @@ public class UimaV2CasCompatibilityTest {
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.xmi", REINIT);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatReadingMixedV2andV3FilesWorks() throws Exception {
     assertCasMixedLoadingWorks("simpleCas.bins4", DEFAULT);
     assertCasMixedLoadingWorks("simpleCas.bins4", REINIT);

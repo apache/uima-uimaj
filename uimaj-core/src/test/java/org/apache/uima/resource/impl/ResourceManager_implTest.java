@@ -149,7 +149,7 @@ public class ResourceManager_implTest {
     mManager = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetDataPath() throws Exception {
     try {
       String path = "c:\\this\\path\\is;for\\windows";
@@ -213,7 +213,7 @@ public class ResourceManager_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testResolveAndValidateDependencies() throws Exception {
     try {
       // dependencies 1-4 are for the resource bindings created in setUp()

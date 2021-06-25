@@ -98,7 +98,7 @@ public class XCasToCasDataSaxHandlerTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testConversions() throws Exception {
     try {
       // complex CAS obtained by deserialization

@@ -118,7 +118,7 @@ public class JCasClassLoaderTest {
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
    * engines should use its own version of the JCas wrappers to access the CAS.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClasspath()
           throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
@@ -364,7 +364,7 @@ public class JCasClassLoaderTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatFSArraySpliteratorReturnsProperJCasWrapper() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 
@@ -409,7 +409,7 @@ public class JCasClassLoaderTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatFSArrayToArrayReturnsProperJCasWrapper() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 

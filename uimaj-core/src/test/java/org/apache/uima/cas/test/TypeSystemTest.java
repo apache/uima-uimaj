@@ -323,7 +323,7 @@ public class TypeSystemTest {
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testNameChecking() {
     CAS tcas = CASInitializer.initCas(new SetupTest(), null);
     assertTrue(tcas != null);
@@ -370,7 +370,7 @@ public class TypeSystemTest {
     assertTrue(start == start2);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetTypeIterator() {
     Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
@@ -426,7 +426,7 @@ public class TypeSystemTest {
   /*
    * Test for boolean subsumes(Type, Type)
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSubsumes() {
     Type top = this.ts.getTopType();
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);

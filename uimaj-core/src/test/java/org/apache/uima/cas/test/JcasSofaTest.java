@@ -321,7 +321,7 @@ public class JcasSofaTest {
   /*
    * Test stream access to Sofa Data.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSofaDataStream() throws Exception {
     try {
 
@@ -505,7 +505,7 @@ public class JcasSofaTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIndexTwice() throws Exception {
     try {
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
@@ -527,7 +527,7 @@ public class JcasSofaTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetSofa() throws Exception {
     try {
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");

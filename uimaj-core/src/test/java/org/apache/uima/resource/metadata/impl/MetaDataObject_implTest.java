@@ -112,7 +112,7 @@ public class MetaDataObject_implTest {
   /**
    * Test the getAttributes method
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetAttributes() throws Exception {
     assertThat(apple1.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(orange.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
@@ -122,7 +122,7 @@ public class MetaDataObject_implTest {
   /**
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testEquals() throws Exception {
     assertThat(unknownFruit).isEqualTo(unknownFruit);
     assertThat(apple1).isEqualTo(apple2);
@@ -162,7 +162,7 @@ public class MetaDataObject_implTest {
   /**
    * Tests the {@link MetaDataObject#toString()} method.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testToString() throws Exception {
     String apple1Str = apple1.toString();
     String apple2Str = apple2.toString();
@@ -249,7 +249,7 @@ public class MetaDataObject_implTest {
     Assert.assertEquals("raspberry", raspberry.getName());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSerialization() throws Exception {
     assertThat(deserialize(serialize(apple1))).isInstanceOf(TestFruitObject.class)
             .isEqualTo(apple1);

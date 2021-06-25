@@ -49,7 +49,7 @@ public class SequencerFixedTest {
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSequencerFixedEn() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -94,7 +94,7 @@ public class SequencerFixedTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSequencerFixedEN() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -139,7 +139,7 @@ public class SequencerFixedTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSequencerFixedEnUS() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -184,7 +184,7 @@ public class SequencerFixedTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSequencerFixedEnus() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -229,7 +229,7 @@ public class SequencerFixedTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSequencerFixedUnkown() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -274,7 +274,7 @@ public class SequencerFixedTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSequencerFixedFooBar() throws Exception {
     AnalysisEngine ae = null;
     try {

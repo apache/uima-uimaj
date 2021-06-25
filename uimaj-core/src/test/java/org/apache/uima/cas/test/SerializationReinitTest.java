@@ -286,7 +286,7 @@ public class SerializationReinitTest {
     return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testReset() {
     cas.reset();
     casMgr.enableReset(false);

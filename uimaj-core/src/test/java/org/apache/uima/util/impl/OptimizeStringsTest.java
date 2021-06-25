@@ -125,7 +125,7 @@ public class OptimizeStringsTest {
     checkOffset(abcde, 0);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSort2() {
     OptimizeStrings os = new OptimizeStrings(true, 7);
 
@@ -151,7 +151,7 @@ public class OptimizeStringsTest {
     checkOffset(abcde, 0);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSort3() {
     OptimizeStrings os = new OptimizeStrings(true);
 

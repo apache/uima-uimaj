@@ -347,7 +347,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDocText() {
     try {
       CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
@@ -369,7 +369,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDocumentText() {
     // serdesSimple(getTT(EqTwoTypes));
     remoteCas = setupCas(getTT(EqTwoTypes));
@@ -391,7 +391,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * new cas, compare
    */
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAllKinds() {
     if (doPlain) {
       serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
@@ -421,7 +421,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAllKindsV2() {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs();
             AutoCloseableNoException b = casSrc.ll_enableV2IdRefs()) { // because casSrc set in
@@ -438,7 +438,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   // T1 fsArray ref -> T2 -> T1 (new) (indexed)
   // T1 ref -> T2 -> T1 (new) (indexed)
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRefThroughFilteredType() {
     reftft(OneType, 0);
     for (int i = 0; i < 10; i++) {
@@ -514,7 +514,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithDblArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -542,7 +542,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithByteArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -570,7 +570,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithStrArrayMod() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
@@ -673,7 +673,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithMods() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
@@ -737,7 +737,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithIndexMods() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
@@ -761,7 +761,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testWithOtherSerializer() {
     doPlain = true;
     testDeltaWithMods();
@@ -910,7 +910,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * "deleted" by the modelling V3 does for the CAS layout because they're not findable during
    * scanning, and therefore, delta mods won't be correct.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testWithPrevGenerated() {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;

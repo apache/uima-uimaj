@@ -66,7 +66,7 @@ public class CpmStopTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCpmStopMultipleThreads() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 5;
@@ -93,7 +93,7 @@ public class CpmStopTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCpmStopSlowAnnotator() throws Exception {
     int documentCount = 1000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
@@ -120,7 +120,7 @@ public class CpmStopTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCpmStopImmediate() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;

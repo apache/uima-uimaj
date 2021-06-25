@@ -103,7 +103,7 @@ public class CasPoolTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);

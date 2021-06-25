@@ -113,7 +113,7 @@ public class XmiCasSerializerTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testInvalidCharsInFeatureValue() throws Exception {
     CAS cas = CasCreationUtils.createCas(this.typeSystemDesc, null, null);
     char badChar = 0x1A;

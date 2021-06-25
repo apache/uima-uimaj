@@ -41,7 +41,7 @@ public class IntBitSetTest {
     ibs1k = new IntBitSet(63, 1000);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBasic() {
 
     ibs.add(15);
@@ -123,7 +123,7 @@ public class IntBitSetTest {
     assertTrue(Arrays.equals(ints.toArray(), new Object[] { 1, 10 }));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRemove() {
     ibs.add(15);
     ibs.add(188);
@@ -141,7 +141,7 @@ public class IntBitSetTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testContains() {
     ibs = new IntBitSet(63, 1000);
 

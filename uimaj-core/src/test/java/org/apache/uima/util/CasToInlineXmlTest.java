@@ -103,7 +103,7 @@ public class CasToInlineXmlTest {
     // Assert.assertEquals(formattedXml, unformattedXml);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCasToInlineXml() throws Exception {
     // Jira https://issues.apache.org/jira/browse/UIMA-2406
 

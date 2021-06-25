@@ -126,7 +126,7 @@ public class StringArrayTest {
     assertTrue(exceptionCaught);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testToArray() {
     // From CAS array to Java array.
     StringArrayFS array = this.cas.createStringArrayFS(3);
@@ -176,7 +176,7 @@ public class StringArrayTest {
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == hello);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testStringArrayNullValue() throws Exception {
     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
             + CASTestSetup.LEMMA_LIST_FEAT;
