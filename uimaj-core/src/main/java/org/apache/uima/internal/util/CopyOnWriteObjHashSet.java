@@ -50,9 +50,10 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
     ohs = new ObjHashSet<>(ohs, true); // true - read-only copy
   }
 
-  /*****************************************************
-   * These methods to make this class easily usable by * FsIterator_bag *
-   *****************************************************/
+  // ***************************************************
+  // These methods to make this class easily usable by *
+  // FsIterator_bag                                    *
+  // ***************************************************
 
   /**
    * @param obj

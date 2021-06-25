@@ -41,8 +41,9 @@ public class JCasReinitTest {
   }
 
   /**
-   * Make a type system having type T with a features f1 Make a type system having type T with no
-   * features
+   * Make a type system having type T with a features f1
+   * 
+   * Make a type system having type T with no features
    * 
    * Have a JCas class for that type, with f1 defined
    * 
@@ -88,7 +89,5 @@ public class JCasReinitTest {
             null);
 
     T.dumpOffset();
-
   }
-
 }

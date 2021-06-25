@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
@@ -52,118 +52,96 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.util.impl.Constants;
 
+
 /** An expandable array of Feature Structures, implementing the ArrayList API.
  * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
  * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
  * @generated */
 
 /**
- * <p>
- * An ArrayList type containing Feature Structures, for UIMA
- * <ul>
- * <li>Has all the methods of List
- * <li>Implements the select(...) APIs
- * </ul>
- * 
- * <p>
- * Implementation notes:
- * <ul>
- * <li>Uses UimaSerializable APIs
- * <li>two implementations of the array list:
- * <ul>
- * <li>one uses the original FSArray, via an asList wrapper
- * <li>This is used until an add or remove operation;
- * <li>switches to ArrayList, resetting the original FSArray to null
- * </ul>
- * 
- * <li>This enables operation without creating the Java Object in use cases of deserializing and
- * referencing when updating is not being used.
- * 
- * <li>The values stored internally are non-PEAR ones.
- * <li>The get/set/add operations convert to/from PEAR ones as needed
- * </ul>
+ * <p>An ArrayList type containing Feature Structures, for UIMA
+ *   <ul><li>Has all the methods of List
+ *       <li>Implements the select(...) APIs 
+ *   </ul>
+ *   
+ * <p>Implementation notes:
+ *   <ul>
+ *     <li>Uses UimaSerializable APIs
+ *     <li>two implementations of the array list:
+ *     <ul><li>one uses the original FSArray, via an asList wrapper
+ *         <li>This is used until an add or remove operation;
+ *         <li>switches to ArrayList, resetting the original FSArray to null
+ *     </ul>
+ *       
+ *     <li>This enables operation without creating the Java Object in use cases of deserializing and
+ *     referencing when updating is not being used.
+ *     
+ *     <li>The values stored internally are non-PEAR ones.
+ *     <li>The get/set/add operations convert to/from PEAR ones as needed
+ *   </ul>
  *
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 
-public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableFSs,
-        CommonArrayFS<T>, SelectViaCopyToArray<T>, List<T>, RandomAccess, Cloneable {
-
+public class FSArrayList <T extends TOP> extends TOP implements 
+                         UimaSerializableFSs, CommonArrayFS<T>, SelectViaCopyToArray<T>, 
+                         List<T>, RandomAccess, Cloneable {
+ 
   /** The Constant EMPTY_LIST. */
   private final static List<? extends TOP> EMPTY_LIST = Arrays.asList(Constants.EMPTY_TOP_ARRAY);
 
-  /**
-   * @generated
-   * @ordered
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static String _TypeName = "org.apache.uima.jcas.cas.FSArrayList";
-
-  /**
-   * @generated
-   * @ordered
+  
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(FSArrayList.class);
-  /**
-   * @generated
-   * @ordered
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /**
-   * @generated
-   * @return index of the type
+  /** @generated
+   * @return index of the type  
    */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /**
-   * lifecycle - starts as empty array list - becomes non-empty when updated (add) -- used from that
-   * point on.
-   */
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+  /** lifecycle   - starts as empty array list   - becomes non-empty when updated (add)       -- used from that point on. */
   private final ArrayList<T> fsArrayList;
-
-  /**
-   * lifecycle - starts as the empty list - set when _init_from_cas_data() - set to null when update
-   * (add/remove) happens.
-   */
+  
+  /** lifecycle   - starts as the empty list   - set when _init_from_cas_data()   - set to null when update (add/remove) happens. */
   @SuppressWarnings("unchecked")
   private List<T> fsArray_asList = (List<T>) EMPTY_LIST;
 
-  /*
-   * ******************* Feature Offsets *
-   *******************/
-
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
   public final static String _FeatName_fsArray = "fsArray";
 
+
   /* Feature Adjusted Offsets */
-  // public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  private final static CallSite _FC_fsArray = TypeSystemImpl
-          .createCallSiteForBuiltIn(FSArrayList.class, "fsArray");
+//  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
+  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSArrayList.class, "fsArray");
   private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
-   */
+   
+  /** Never called.  Disable default constructor
+   * @generated */
   protected FSArrayList() {
     fsArrayList = null;
   }
-
-  /**
-   * Internal - constructor used by generator
-   * 
+    
+  /** Internal - constructor used by generator 
    * @generated
-   * @param casImpl
-   *          the CAS this Feature Structure belongs to
-   * @param type
-   *          the type of this Feature Structure
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
   public FSArrayList(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
@@ -172,11 +150,9 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     }
     fsArrayList = new ArrayList<>();
   }
-
-  /**
-   * @generated
-   * @param jcas
-   *          JCas to which this Feature Structure belongs
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public FSArrayList(JCas jcas) {
     super(jcas);
@@ -185,16 +161,14 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
                             // because this impls CommonArrayFS
       _casView.traceFSCreate(this);
-    }
-  }
+    }   
+  } 
 
   /**
    * Make a new ArrayList with an initial size .
    *
-   * @param jcas
-   *          The JCas
-   * @param length
-   *          initial size
+   * @param jcas The JCas
+   * @param length initial size
    */
   public FSArrayList(JCas jcas, int length) {
     super(jcas);
@@ -204,32 +178,26 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-  }
+  }     
+ 
+    
+  //*--------------*
+  //* Feature: fsArray
 
-  // *--------------*
-  // * Feature: fsArray
-
-  /**
-   * getter for fsArray - gets internal use - holds the contents
-   * 
+  /** getter for fsArray - gets internal use - holds the contents
    * @generated
-   * @return value of the feature
+   * @return value of the feature 
    */
-  private FSArray getFsArray() {
-    return (FSArray) (_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));
-  }
-
-  /**
-   * setter for fsArray - sets internal use - holds the contents
-   * 
+  private FSArray getFsArray() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));}
+    
+  /** setter for fsArray - sets internal use - holds the contents 
    * @generated
-   * @param v
-   *          value to set into the feature
+   * @param v value to set into the feature 
    */
   private void setFsArray(FSArray v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_fsArray), v);
-  }
-
+  }    
+    
   /**
    * Maybe start using array list.
    */
@@ -237,13 +205,11 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     if (fsArray_asList != null) {
       fsArrayList.clear();
       fsArrayList.addAll(fsArray_asList);
-      fsArray_asList = null; // stop using this one
+      fsArray_asList = null;  // stop using this one
     }
   }
-
-  /*
-   * (non-Javadoc)
-   * 
+    
+  /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
    */
   @Override
@@ -253,23 +219,20 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     if (null == fsa) {
       fsArray_asList = Collections.emptyList();
     } else {
-
+    
       fsArray_asList = new AbstractList<T>() {
         int i = 0;
-
         @Override
-        public T get(int index) {
-          return (T) fsa.get_without_PEAR_conversion(i);
+        public T get(int index) {  
+          return (T) fsa.get_without_PEAR_conversion(i); 
         }
-
+  
         @Override
         public int size() {
           return fsa.size();
         }
 
-        /*
-         * (non-Javadoc)
-         * 
+        /* (non-Javadoc)
          * @see java.util.AbstractList#set(int, java.lang.Object)
          */
         @Override
@@ -277,14 +240,12 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
           T prev = get(index);
           fsa.set_without_PEAR_conversion(index, element);
           return prev;
-        }
+        } 
       };
     }
   }
-
-  /*
-   * (non-Javadoc)
-   * 
+  
+  /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_save_to_cas_data()
    */
   @Override
@@ -293,59 +254,56 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     if (null != fsArray_asList) {
       return;
     }
-
+    
     // reallocate fsArray if wrong size
     final int sz = size();
     FSArray fsa = getFsArray();
     if (fsa == null || fsa.size() != sz) {
       setFsArray(fsa = new FSArray(_casView.getJCasImpl(), sz));
     }
-
-    // in case fsa was preallocated and right size, may need journaling
+    
+    //   in case fsa was preallocated and right size, may need journaling
     int i = 0;
-    for (TOP fs : fsArrayList) { // getting non-PEAR values
-      TOP currentValue = fsa.get_without_PEAR_conversion(i);
+    for (TOP fs : fsArrayList) {  // getting non-PEAR values
+      TOP currentValue = fsa.get_without_PEAR_conversion(i);  
       if (currentValue != fs) {
-        fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for delta
-                                                // CAS
+        fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for delta CAS
       }
       i++;
     }
   }
-
+  
   /**
-   * gets either the array list object, or a list operating over the original FS Array. Note: these
-   * forms will get/set the non Pear form of elements
-   * 
+   * gets either the array list object, or a list operating over the original FS Array.
+   * Note: these forms will get/set the non Pear form of elements
    * @return the list
    */
-  private List<T> gl() {
-    return (null == fsArray_asList) ? fsArrayList : fsArray_asList;
+  private List<T> gl () {
+    return (null == fsArray_asList) 
+      ? fsArrayList
+      : fsArray_asList;
   }
-
+  
   /**
-   * Supports reading only, no update or remove
-   * 
+   * Supports reading only, no update or remove 
    * @return a list backed by gl(), where the items are pear converted
    */
   private List<T> gl_read_pear(List<T> baseItems) {
-
+    
     return new List<T>() {
       /*
        * @see java.lang.Iterable#forEach(java.util.function.Consumer)
        */
-      @Override
       public void forEach(Consumer<? super T> action) {
         baseItems.forEach(item -> {
-          T pearedItem = _maybeGetPearFs((T) item);
-          action.accept(pearedItem);
+            T pearedItem = _maybeGetPearFs((T) item);
+            action.accept(pearedItem);
         });
       }
 
       /*
        * @see java.util.List#size()
        */
-      @Override
       public int size() {
         return baseItems.size();
       }
@@ -353,7 +311,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#isEmpty()
        */
-      @Override
       public boolean isEmpty() {
         return baseItems.isEmpty();
       }
@@ -361,24 +318,23 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#contains(java.lang.Object)
        */
-      @Override
       public boolean contains(Object o) {
-        return (o instanceof TOP) ? baseItems.contains(_maybeGetBaseForPearFs((TOP) o)) : false;
+        return (o instanceof TOP) 
+                 ? baseItems.contains(_maybeGetBaseForPearFs((TOP)o))
+                 : false;
       }
 
       /*
        * @see java.util.List#iterator()
        */
-      @Override
       public Iterator<T> iterator() {
         return new Iterator<T>() {
-
+          
           Iterator<T> outerIt = baseItems.iterator();
 
           /*
            * @see java.util.Iterator#hasNext()
            */
-          @Override
           public boolean hasNext() {
             return outerIt.hasNext();
           }
@@ -386,7 +342,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
           /*
            * @see java.util.Iterator#next()
            */
-          @Override
           public T next() {
             return _maybeGetPearFs(outerIt.next());
           }
@@ -397,35 +352,31 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#toArray()
        */
-      @Override
       public Object[] toArray() {
         Object[] a = baseItems.toArray();
         FSArrayList.this._casView.swapInPearVersion(a);
         return a;
       }
-
+      
       /*
        * @see java.util.List#toArray(java.lang.Object[])
        */
-      @Override
       public <U> U[] toArray(U[] a) {
         U[] aa = baseItems.toArray(a);
         FSArrayList.this._casView.swapInPearVersion(aa);
-        return aa;
+        return aa;    
       }
 
       /*
        * @see java.util.List#add(java.lang.Object)
        */
-      @Override
       public boolean add(T e) {
         throw new UnsupportedOperationException();
-      }
+     }
 
       /*
        * @see java.util.List#remove(java.lang.Object)
        */
-      @Override
       public boolean remove(Object o) {
         throw new UnsupportedOperationException();
       }
@@ -433,7 +384,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#containsAll(java.util.Collection)
        */
-      @Override
       public boolean containsAll(Collection<?> c) {
         for (Object item : c) {
           if (!contains(item)) {
@@ -446,7 +396,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#addAll(java.util.Collection)
        */
-      @Override
       public boolean addAll(Collection<? extends T> c) {
         throw new UnsupportedOperationException();
       }
@@ -454,7 +403,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#addAll(int, java.util.Collection)
        */
-      @Override
       public boolean addAll(int index, Collection<? extends T> c) {
         throw new UnsupportedOperationException();
       }
@@ -462,7 +410,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#removeAll(java.util.Collection)
        */
-      @Override
       public boolean removeAll(Collection<?> c) {
         throw new UnsupportedOperationException();
       }
@@ -470,7 +417,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#retainAll(java.util.Collection)
        */
-      @Override
       public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
       }
@@ -478,18 +424,16 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#replaceAll(java.util.function.UnaryOperator)
        */
-      @Override
       public void replaceAll(UnaryOperator<T> operator) {
         for (int i = size() - 1; i >= 0; i--) {
-          baseItems.set(i,
-                  _maybeGetBaseForPearFs(operator.apply(_maybeGetPearFs(baseItems.get(i)))));
+          baseItems.set(i, _maybeGetBaseForPearFs(
+              operator.apply(_maybeGetPearFs(baseItems.get(i)))));
         }
       }
 
       /*
        * @see java.util.Collection#removeIf(java.util.function.Predicate)
        */
-      @Override
       public boolean removeIf(Predicate<? super T> filter) {
         throw new UnsupportedOperationException();
       }
@@ -497,15 +441,13 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#sort(java.util.Comparator)
        */
-      @Override
       public void sort(Comparator<? super T> c) {
-        baseItems.sort((o1, o2) -> c.compare(_maybeGetPearFs(o1), _maybeGetPearFs(o2)));
+        baseItems.sort((o1, o2) -> c.compare(_maybeGetPearFs(o1), _maybeGetPearFs(o2))); 
       }
 
       /*
        * @see java.util.List#clear()
        */
-      @Override
       public void clear() {
         throw new UnsupportedOperationException();
       }
@@ -513,7 +455,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#equals(java.lang.Object)
        */
-      @Override
       public boolean equals(Object o) {
         return baseItems.equals(o);
       }
@@ -521,7 +462,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#hashCode()
        */
-      @Override
       public int hashCode() {
         return baseItems.hashCode();
       }
@@ -529,7 +469,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#get(int)
        */
-      @Override
       public T get(int index) {
         return _maybeGetPearFs(baseItems.get(index));
       }
@@ -537,7 +476,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#set(int, java.lang.Object)
        */
-      @Override
       public T set(int index, T element) {
         return baseItems.set(index, _maybeGetBaseForPearFs(element));
       }
@@ -545,7 +483,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#add(int, java.lang.Object)
        */
-      @Override
       public void add(int index, T element) {
         throw new UnsupportedOperationException();
       }
@@ -553,7 +490,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.Collection#stream()
        */
-      @Override
       public Stream<T> stream() {
         return baseItems.stream().map(item -> _maybeGetPearFs(item));
       }
@@ -561,7 +497,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#remove(int)
        */
-      @Override
       public T remove(int index) {
         throw new UnsupportedOperationException();
       }
@@ -569,7 +504,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.Collection#parallelStream()
        */
-      @Override
       public Stream<T> parallelStream() {
         return baseItems.parallelStream().map(item -> _maybeGetPearFs(item));
       }
@@ -577,23 +511,20 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#indexOf(java.lang.Object)
        */
-      @Override
       public int indexOf(Object o) {
-        return baseItems.indexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP) o) : o);
+        return baseItems.indexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
       }
 
       /*
        * @see java.util.List#lastIndexOf(java.lang.Object)
        */
-      @Override
       public int lastIndexOf(Object o) {
-        return baseItems.lastIndexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP) o) : o);
+        return baseItems.lastIndexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
       }
 
       /*
        * @see java.util.List#listIterator()
        */
-      @Override
       public ListIterator<T> listIterator() {
         return listIterator(0);
       }
@@ -601,16 +532,14 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#listIterator(int)
        */
-      @Override
       public ListIterator<T> listIterator(int index) {
         return new ListIterator<T>() {
-
+          
           ListIterator<T> baseIt = baseItems.listIterator(index);
-
+          
           /*
            * @see java.util.ListIterator#hasNext()
            */
-          @Override
           public boolean hasNext() {
             return baseIt.hasNext();
           }
@@ -619,7 +548,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * @return
            * @see java.util.ListIterator#next()
            */
-          @Override
           public T next() {
             return _maybeGetPearFs(baseIt.next());
           }
@@ -627,7 +555,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
           /*
            * @see java.util.ListIterator#hasPrevious()
            */
-          @Override
           public boolean hasPrevious() {
             return baseIt.hasPrevious();
           }
@@ -635,7 +562,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
           /*
            * @see java.util.Iterator#forEachRemaining(java.util.function.Consumer)
            */
-          @Override
           public void forEachRemaining(Consumer<? super T> action) {
             baseIt.forEachRemaining(item -> action.accept(_maybeGetPearFs(item)));
           }
@@ -644,7 +570,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * @return
            * @see java.util.ListIterator#previous()
            */
-          @Override
           public T previous() {
             return baseIt.previous();
           }
@@ -653,7 +578,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * @return
            * @see java.util.ListIterator#nextIndex()
            */
-          @Override
           public int nextIndex() {
             return baseIt.nextIndex();
           }
@@ -662,7 +586,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * @return
            * @see java.util.ListIterator#previousIndex()
            */
-          @Override
           public int previousIndex() {
             return baseIt.previousIndex();
           }
@@ -671,7 +594,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * 
            * @see java.util.ListIterator#remove()
            */
-          @Override
           public void remove() {
             throw new UnsupportedOperationException();
           }
@@ -680,7 +602,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * @param e
            * @see java.util.ListIterator#set(java.lang.Object)
            */
-          @Override
           public void set(T e) {
             baseIt.set(_maybeGetBaseForPearFs(e));
           }
@@ -689,7 +610,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
            * @param e
            * @see java.util.ListIterator#add(java.lang.Object)
            */
-          @Override
           public void add(T e) {
             throw new UnsupportedOperationException();
           }
@@ -699,7 +619,6 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       /*
        * @see java.util.List#subList(int, int)
        */
-      @Override
       public List<T> subList(int fromIndex, int toIndex) {
         return gl_read_pear(baseItems.subList(fromIndex, toIndex));
       }
@@ -713,10 +632,7 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       }
     };
   }
-
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.util.List#get(int)
    */
   @Override
@@ -727,28 +643,22 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   /**
    * updates the i-th value of the FSArrayList.
    *
-   * @param i
-   *          the i
-   * @param v
-   *          the v
+   * @param i the i
+   * @param v the v
    * @return the t
    */
   @Override
   public T set(int i, T v) {
-
+    
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
-      /**
-       * Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list
-       * element in a different CAS {2}.
-       */
-      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView,
-              _casView);
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
-    return _maybeGetPearFs(gl().set(i, _maybeGetBaseForPearFs(v)));
+    return _maybeGetPearFs(gl().set(i,  _maybeGetBaseForPearFs(v)));
   }
-
+  
   /**
-   * return the size of the array.
+   *  return the size of the array.
    *
    * @return the int
    */
@@ -760,28 +670,23 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   /**
    * Copy from array.
    *
-   * @param src
-   *          -
-   * @param srcPos
-   *          -
-   * @param destPos
-   *          -
-   * @param length
-   *          -
-   * @param <E>
-   *          the type of the source array being copied from
+   * @param src -
+   * @param srcPos -
+   * @param destPos -
+   * @param length -
+   * @param <E> the type of the source array being copied from
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
-  public <E extends FeatureStructure> void copyFromArray(E[] src, int srcPos, int destPos,
-          int length) {
+  public <E extends FeatureStructure> void copyFromArray(E[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
-    if (srcPos < 0 || srcEnd > src.length || destEnd > size()) {
+    if (srcPos < 0 ||
+        srcEnd > src.length ||
+        destEnd > size()) {
       throw new ArrayIndexOutOfBoundsException(
-              String.format("FSArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",
-                      srcPos, destPos, length));
+          String.format("FSArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
-    for (; srcPos < srcEnd && destPos < destEnd;) {
+    for (;srcPos < srcEnd && destPos < destEnd;) {
       set(destPos++, (T) src[srcPos++]);
     }
   }
@@ -789,34 +694,30 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   /**
    * Copy to array.
    *
-   * @param srcPos
-   *          -
-   * @param dest
-   *          -
-   * @param destPos
-   *          -
-   * @param length
-   *          -
-   * @param <E>
-   *          the type of the elements of the Array being copied into
+   * @param srcPos -
+   * @param dest -
+   * @param destPos -
+   * @param length -
+   * @param <E> the type of the elements of the Array being copied into
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
-  public <E extends FeatureStructure> void copyToArray(int srcPos, E[] dest, int destPos,
-          int length) {
+  public <E extends FeatureStructure> void copyToArray(int srcPos, E[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
-    if (srcPos < 0 || srcEnd > size() || destEnd > dest.length) {
+    if (srcPos < 0 ||
+        srcEnd > size() ||
+        destEnd > dest.length) {
       throw new ArrayIndexOutOfBoundsException(
-              String.format("FSArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d", srcPos,
-                      destPos, length));
+          String.format("FSArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
-    for (; srcPos < srcEnd && destPos < destEnd;) {
+    for (;srcPos < srcEnd && destPos < destEnd;) {
       dest[destPos++] = (E) get(srcPos++);
     }
   }
 
   /**
-   * returns TOP[] because can't make array of T Note: converts to pear trampolines.
+   * returns TOP[] because can't make array of T
+   * Note: converts to pear trampolines.
    */
   @Override
   public TOP[] toArray() {
@@ -825,48 +726,42 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     return r;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.SelectViaCopyToArray#_toArrayForSelect()
    */
   @Override
-  public FeatureStructure[] _toArrayForSelect() {
-    return toArray();
-  }
+  public FeatureStructure[] _toArrayForSelect() { return toArray(); }
 
   /**
    * Not supported, will throw UnsupportedOperationException.
    *
-   * @param src
-   *          the src
-   * @param srcPos
-   *          the src pos
-   * @param destPos
-   *          the dest pos
-   * @param length
-   *          the length
+   * @param src the src
+   * @param srcPos the src pos
+   * @param destPos the dest pos
+   * @param length the length
    */
   @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
   }
-
+    
   /**
-   * Copies an array of Feature Structures to an Array of Strings. The strings are the "toString()"
-   * representation of the feature structures. If in Pear context, the Pear form is used.
+   * Copies an array of Feature Structures to an Array of Strings.
+   * The strings are the "toString()" representation of the feature structures.
+   * If in Pear context, the Pear form is used. 
    * 
    * @param srcPos
-   *          The index of the first element to copy.
+   *                The index of the first element to copy.
    * @param dest
-   *          The array to copy to.
+   *                The array to copy to.
    * @param destPos
-   *          Where to start copying into <code>dest</code>.
+   *                Where to start copying into <code>dest</code>.
    * @param length
-   *          The number of elements to copy.
+   *                The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *              If <code>srcPos &lt; 0</code> or <code>length &gt; size()</code> or
-   *              <code>destPos + length &gt; destArray.length</code>.
+   *                    If <code>srcPos &lt; 0</code> or
+   *                    <code>length &gt; size()</code> or
+   *                    <code>destPos + length &gt; destArray.length</code>.
    */
   @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
@@ -877,14 +772,13 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       i++;
     }
   }
-
-  /*
+  
+  /* 
    * 
    * (non-Javadoc)
-   * 
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
-   * The spliterators return PEAR objects, potentially. The add operation expects PEAR objects, and
-   * converts them to base when storing.
+   * The spliterators return PEAR objects, potentially.  The add operation expects PEAR objects,
+   * and converts them to base when storing.
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
@@ -893,44 +787,35 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
     if (v instanceof FSArrayList) {
       si = ((FSArrayList<T>) v).spliterator();
     } else if (v instanceof FSArray) {
-      si = (Spliterator<T>) ((FSArray) v).spliterator();
+      si = (Spliterator<T>) ((FSArray)v).spliterator();
     } else {
       throw new ClassCastException("argument must be of class FSArray or FSArrayList");
-    }
-
+    } 
+    
     si.forEachRemaining(fs -> add(fs));
   }
-
+  
   /**
    * Convenience - create a FSArrayList from an existing Array.
    *
-   * @param <E>
-   *          generic type of returned FS
-   * @param <F>
-   *          generic type of the elements of the array argument
-   * @param jcas
-   *          -
-   * @param a
-   *          -
+   * @param <E> generic type of returned FS
+   * @param <F> generic type of the elements of the array argument
+   * @param jcas -
+   * @param a -
    * @return -
    */
-  public static <E extends TOP, F extends FeatureStructure> FSArrayList<E> create(JCas jcas,
-          F[] a) {
+  public static <E extends TOP, F extends FeatureStructure> FSArrayList<E> create(JCas jcas, F[] a) {
     FSArrayList<E> fsa = new FSArrayList<>(jcas, a.length);
-    fsa.copyFromArray(a, 0, 0, a.length); // does pear and journaling actions as needed
+    fsa.copyFromArray(a, 0, 0, a.length);  // does pear and journaling actions as needed
     return fsa;
   }
-
-  /*
-   * (non-Javadoc)
-   * 
+  
+  /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_superClone()
    */
   @Override
-  public FeatureStructureImplC _superClone() {
-    return clone();
-  } // enable common clone
-
+  public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
+  
   /*
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
    */
@@ -952,9 +837,8 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
    */
   @Override
   public boolean contains(Object o) {
-    if (!(o instanceof TOP))
-      return false;
-    TOP fs = (TOP) o;
+    if (!(o instanceof TOP)) return false;
+    TOP fs = (TOP) o;    
     return gl().contains(_maybeGetBaseForPearFs(fs));
   }
 
@@ -963,9 +847,8 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
    */
   @Override
   public int indexOf(Object o) {
-    if (!(o instanceof TOP))
-      return -1;
-    TOP fs = (TOP) o;
+    if (!(o instanceof TOP)) return -1;
+    TOP fs = (TOP) o;    
     return gl().indexOf(_maybeGetBaseForPearFs(fs));
   }
 
@@ -974,9 +857,8 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
    */
   @Override
   public int lastIndexOf(Object o) {
-    if (!(o instanceof TOP))
-      return -1;
-    TOP fs = (TOP) o;
+    if (!(o instanceof TOP)) return -1;
+    TOP fs = (TOP) o;    
     return gl().lastIndexOf(_maybeGetBaseForPearFs(fs));
   }
 
@@ -984,26 +866,25 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
    * @see java.util.ArrayList#toArray(java.lang.Object[])
    */
   @Override
-  public <U> U[] toArray(U[] a) {
+  public <U> U[] toArray(U[] a) {    
     return gl_read_pear(gl()).toArray(a);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     final int maxLen = 10;
-    return "FSArrayList [size=" + size() + ", fsArrayList="
-            + (fsArrayList != null ? fsArrayList.subList(0, Math.min(fsArrayList.size(), maxLen))
-                    : null)
-            + ", fsArray_asList="
-            + (fsArray_asList != null
-                    ? fsArray_asList.subList(0, Math.min(fsArray_asList.size(), maxLen))
-                    : null)
-            + "]";
+    return "FSArrayList [size="
+        + size()
+        + ", fsArrayList="
+        + (fsArrayList != null ? fsArrayList.subList(0, Math.min(fsArrayList.size(), maxLen))
+            : null)
+        + ", fsArray_asList=" + (fsArray_asList != null
+            ? fsArray_asList.subList(0, Math.min(fsArray_asList.size(), maxLen)) : null)
+        + "]";
   }
 
   /*
@@ -1020,19 +901,16 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
    */
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof FSArrayList))
-      return false;
+    if (!(o instanceof FSArrayList)) return false;
     FSArrayList<T> other = (FSArrayList<T>) o;
-    if (size() != other.size())
-      return false;
-
-    List<T> items = gl(); // non-pear form
+    if (size() != other.size()) return false;
+    
+    List<T> items = gl();  // non-pear form
     List<T> other_items = other.gl(); // non-pear form
-
+    
     Iterator<T> it_other = other_items.iterator();
     for (T item : items) {
-      if (!item.equals(it_other.next()))
-        return false;
+      if (!item.equals(it_other.next())) return false;
     }
     return true;
   }
@@ -1076,7 +954,7 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   public int hashCode() {
     int hc = 1;
     final int prime = 31;
-    for (T item : gl()) { // non pear form
+    for (T item : gl()) {  // non pear form
       hc = hc * prime + item.hashCode();
     }
     return hc;
@@ -1108,11 +986,11 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
       return false;
     }
     maybeStartUsingArrayList();
-    // return fsArrayList.addAll(index, c); // doesn't do pear conversion
+//    return fsArrayList.addAll(index, c); // doesn't do pear conversion
     fsArrayList.ensureCapacity(fsArrayList.size() + c.size());
-    List<T> baseItems = c.stream().map(item -> _maybeGetBaseForPearFs(item))
-            .collect(Collectors.toList());
-    fsArrayList.addAll(index, baseItems);
+    List<T> baseItems = c.stream().map(item -> 
+        _maybeGetBaseForPearFs(item)).collect(Collectors.toList());
+    fsArrayList.addAll(index, baseItems); 
     return true;
   }
 
@@ -1123,13 +1001,13 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   public boolean removeAll(Collection<?> c) {
     boolean changed = false;
     maybeStartUsingArrayList();
-    // return fsArrayList.removeAll(c); // doesn't do pear conversion
+//    return fsArrayList.removeAll(c); // doesn't do pear conversion
     for (Object item : c) {
       if (!(item instanceof TOP)) {
         continue;
       }
-      // order important!
-      changed = fsArrayList.remove(_maybeGetBaseForPearFs((TOP) item)) || changed;
+                // order important! 
+      changed = fsArrayList.remove(_maybeGetBaseForPearFs((TOP)item)) || changed;
     }
     return changed;
   }
@@ -1140,7 +1018,7 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   @Override
   public boolean retainAll(Collection<?> c) {
     Collection<?> cc = _casView.collectNonPearVersions(c);
-    maybeStartUsingArrayList();
+    maybeStartUsingArrayList();    
     return fsArrayList.retainAll(cc);
   }
 
@@ -1232,5 +1110,7 @@ public class FSArrayList<T extends TOP> extends TOP implements UimaSerializableF
   public void sort(Comparator<? super T> c) {
     gl_read_pear(gl()).sort(c);
   }
-
+      
 }
+
+    

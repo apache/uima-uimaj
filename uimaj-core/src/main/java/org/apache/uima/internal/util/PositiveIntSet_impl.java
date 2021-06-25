@@ -24,34 +24,41 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.util.impl.Constants;
 
+//@formatter:off
 /**
- * An set of non-zero integers, ability to iterate over them (possibly in a sorted way), with O(1)
- * operations for adding, removing, and testing for contains.
+ * An set of non-zero integers, ability to iterate over them (possibly in a sorted way),
+ * with O(1) operations for adding, removing, and testing for contains.
  * 
  * Optimized for adding mostly increasing integers (with some space for less-than-first-one-added).
- * - major uses: indexes of Feature Structures. Optimize for small sets
+ *   - major uses: indexes of Feature Structures.
+ * Optimize for small sets 
  * 
- * Graceful degradation for completely random integer operations on large sets; keep O(1)
- * operations, at the expense of extra space (&lt; 3 x size).
+ * Graceful degradation for completely random integer operations on large sets; 
+ *   keep O(1) operations, at the expense of extra space (&lt; 3 x size).
  * 
- * Uses several different representations depending on the range of ints stored and the total number
- * of ints stored.
+ *   Uses several different representations depending on the range of ints stored and the total number of ints stored.
  * 
- * Sizes: Tiny, medium, large Ranges: semi-knowable, unknowable; if semi-knowable, dense,
- * small-range (&lt; 65K), large-range
+ *     Sizes:  Tiny, medium, large 
+ *     Ranges: semi-knowable, unknowable;  
+ *               if semi-knowable, dense, small-range (&lt; 65K), large-range
  * 
- * For all sizes, if dense, use IntBitSet (with offset)
+ *     For all sizes, 
+ *       if dense, use IntBitSet (with offset)
  * 
- * else For large, (implies large-range, too) use IntHashSet
+ *     else 
+ *       For large, (implies large-range, too) use IntHashSet  
  * 
- * For medium, if small-range &lt; 65K, use IntHashSet with offset else use IntHashSet
+ *       For medium,
+ *         if small-range &lt; 65K, use IntHashSet with offset 
+ *         else use IntHashSet 
  * 
- * Arrange switching between representations to occur infrequently, especially as cost of switching
- * (size) grows Arrange checking for switching to occur infrequently, taking into account how
- * underlying data structures grow (which is often by doubling) Switch when adding new member(s) if
- * alternative representation is sufficiently smaller
- * 
+ *   Arrange switching between representations
+ *     to occur infrequently, especially as cost of switching (size) grows
+ *   Arrange checking for switching to occur infrequently, taking into account how underlying data structures grow
+ *     (which is often by doubling)
+ *   Switch when adding new member(s) if alternative representation is sufficiently smaller
  */
+//@formatter:on
 public class PositiveIntSet_impl implements PositiveIntSet {
 
   // number of words a inthashset has to be better than intbitset to cause switch
@@ -437,22 +444,26 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     return existingSize + (existingSize >> HASH_SET_OVERALLOCATE_DIVIDER_SHIFT);
   }
 
+//@formatter:off
   /**
    * logic for switching representation
    * 
    * BitSet preferred - is faster, can be more compact, and permits ordered iteration HashSet used
    * when BitSet is too space inefficient.
    * 
-   * Avoid switching if the new key being added won't increase the representation size - for hash:
-   * if number of elements +1 won't cause doubling of the hash table - for bitset: if key will fit
-   * in existing "capacity"
+   * Avoid switching if the new key being added won't increase the representation size
+   *   - for hash: if number of elements +1 won't cause doubling of the hash table
+   *   - for bitset: if key will fit in existing "capacity"
    * 
-   * Compute space needed after adding - bitset: array doubles - hashset: array doubles
+   * Compute space needed after adding
+   *   - bitset:  array doubles
+   *   - hashset: array doubles
    *
-   * Preventing jitters back and forth: - removes don't cause switching - compare against other size
-   * including its non-linear space jumps.
+   * Preventing jitters back and forth:
+   *   - removes don't cause switching
+   *   - compare against other size including its non-linear space jumps.   
    */
-
+//@formatter:on
   private void maybeSwitchRepresentation(int newKey) {
     if (isBitSet) {
       handleBitSet(newKey);

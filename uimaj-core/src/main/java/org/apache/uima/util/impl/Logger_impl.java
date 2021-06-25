@@ -33,7 +33,7 @@ import org.slf4j.helpers.MessageFormatter;
  * UIMA Logging interface implementation without using an logging toolkit Logger names are not used
  * 
  * The call getInstance() returns a common shared instance. The call getInstance(String) ignores its
- * argument but returns a new instance of this logger class
+ * argument but returns a new instance of this logger class.
  * 
  * Each instance of this logger class can have a level set via the setAPI call - that is the only
  * configuration possible. If not set, the level is INFO.

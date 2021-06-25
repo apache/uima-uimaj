@@ -49,20 +49,24 @@ import org.apache.uima.jcas.JCasRegistry;
  * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
  * @generated */
 
+//@formatter:off
 /**
- * An ArrayList type containing ints, for UIMA - implements a subset of the List API,
- * Iterable&lt;Integer&gt;, IntListIterator. - it is adjustable, like ArrayList
- * 
- * Implementation notes: - implements Iterable + stream, not Collection, because stream returns
- * IntStream - Uses UimaSerializable APIs - two implementations of the array list: -- one uses the
- * original IntegerArray, via a variant of the asList wrapper that returns ints -- This is used
- * until an add or remove operation that changes the size. --- switches to IntVector, resetting the
- * original IntegerArray to null
- * 
- * - This enables operation without creating the Java Object in use cases of deserializing and
- * referencing when updating is not being used.
+ * An ArrayList type containing ints, for UIMA
+ *   - implements a subset of the List API, Iterable&lt;Integer&gt;, IntListIterator.
+ *   - it is adjustable, like ArrayList
+ *   
+ * Implementation notes:
+ *   - implements Iterable + stream, not Collection, because stream returns IntStream
+ *   - Uses UimaSerializable APIs
+ *   - two implementations of the array list:
+ *     -- one uses the original IntegerArray, via a variant of the asList wrapper that returns ints
+ *     -- This is used until an add or remove operation that changes the size.
+ *       --- switches to IntVector, resetting the original IntegerArray to null
+ *       
+ *   - This enables operation without creating the Java Object in use cases of deserializing and
+ *     referencing when updating is not being used.    
  */
-
+//@formatter:on
 public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSerializable,
         CommonArrayFS<Integer>, RandomAccess, Cloneable {
 
@@ -107,10 +111,11 @@ public class IntegerArrayList extends TOP implements Iterable<Integer>, UimaSeri
    */
   private List_of_ints intArrayAsList = List_of_ints.EMPTY_LIST();
 
-  /*
-   * ******************* Feature Offsets *
-   *******************/
-
+//@formatter:off
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+//@formatter:on
   public final static String _FeatName_intArray = "intArray";
 
   /* Feature Adjusted Offsets */

@@ -40,6 +40,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
+//@formatter:off
 /**
  * This class represents a simple pool of {@link CAS} instances. This is useful for multithreaded
  * applications, where there is a need for multiple CASes to be processed simultaneously. Because
@@ -49,17 +50,16 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Clients check-out CAS instances from the pool using the {@link #getCas()} method and check-in CAS
  * instances using the {@link #releaseCas(CAS)} method.
  * <p>
- * Design considerations: The pool favors reuse of CASes is some arbitrary preferred priority order.
- * For example if there is a pool of 10 CASes, but only 2 are being check-out at any given time, the
- * same 2 CASes will be used (as opposed to a FIFO approach where all the CASes would be cycled
- * through).
- * 
- * If more threads request CASes from the pool than are available, the pool (optionally) puts
- * requesting threads into a wait state. When CASes become available, the longest-waiting thread
- * gets the CAS; this approach prevents starvation behavior (where some threads get all the CASes
- * and others get none).
- * 
+ * Design considerations:
+ *   The pool favors reuse of CASes is some arbitrary preferred priority order.  For example if there is a pool
+ *   of 10 CASes, but only 2 are being check-out at any given time, the same 2 CASes will be used (as opposed
+ *   to a FIFO approach where all the CASes would be cycled through).
+ *   
+ *   If more threads request CASes from the pool than are available, the pool (optionally) puts requesting
+ *   threads into a wait state.  When CASes become available, the longest-waiting thread gets the CAS; this
+ *   approach prevents starvation behavior (where some threads get all the CASes and others get none).
  */
+//@formatter:on
 public class CasPool {
 
   /**
@@ -174,7 +174,9 @@ public class CasPool {
   }
 
   /**
-   * Creates a new CasPool. TODO: do we need this method AND the one that takes a CasManager?
+   * Creates a new CasPool. 
+   * 
+   * TODO: do we need this method AND the one that takes a CasManager?
    * 
    * @param aNumInstances
    *          the number of CAS instances in the pool

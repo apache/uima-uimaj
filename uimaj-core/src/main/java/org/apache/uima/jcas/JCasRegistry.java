@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.apache.uima.jcas.cas.TOP;
 
+//@formatter:off
 /**
  * Maintains a registry of JCas cover classes that have been loaded in order to be able to assign a
  * unique low-value positive int index to each loaded JCas class. Note that the same JCas class
@@ -38,13 +39,13 @@ import org.apache.uima.jcas.cas.TOP;
  * The register method is called from JCas cover class static initialization and returns the unique
  * index value for this class.
  * 
- * The associated int index is used in a lookup on a jcas registry array associated with a
- * particular type system, to get the associated Type. This supports the use cases of - different
- * type systems being used with the same loaded JCas classes, either -- sequentially by a single
- * instance of UIMA or -- multiple instances of pipelines running in one JVM each with different
- * type systems
- * 
+ * The associated int index is used in a lookup on a jcas registry array associated with a particular
+ * type system, to get the associated Type.  This supports the use cases of
+ *   - different type systems being used with the same loaded JCas classes, either
+ *      -- sequentially by a single instance of UIMA or
+ *      -- multiple instances of pipelines running in one JVM each with different type systems 
  */
+//@formatter:on
 public class JCasRegistry {
 
   private JCasRegistry() {
@@ -126,7 +127,9 @@ public class JCasRegistry {
   }
 
   /**
-   * NOT CURRENTLY USED Gets the number of cover classes that have been registered.
+   * NOT CURRENTLY USED 
+   * 
+   * Gets the number of cover classes that have been registered.
    * 
    * @return the number of registered JCas cover classes
    */
@@ -134,12 +137,14 @@ public class JCasRegistry {
     return loadedJCasClasses.size();
   }
 
+//@formatter:off
   /**
-   * Used for error message: When a particular loaded type system is missing the type that
-   * corresponds to a loaded JCas class (perhaps that class was loaded when another type system was
-   * being used, or it was just referred to in Java code (which causes it to be loaded) then the
-   * error message uses this to get the class to be able to print the class name
-   * 
+   * Used for error message:
+   *   When a particular loaded type system is missing the type that corresponds to a loaded JCas class
+   *     (perhaps that class was loaded when another type system was being used, or 
+   *      it was just referred to in Java code (which causes it to be loaded)
+   *   then the error message uses this to get the class to be able to print the class name
+   *   
    * Gets the JCas cover class for a given index.
    * 
    * @param aIndex
@@ -148,6 +153,7 @@ public class JCasRegistry {
    * @return the JCas cover class that was assigned the value <code>aIndex</code> during its
    *         registration, <code>null</code> if none.
    */
+//@formatter:on
   public static synchronized Class<? extends TOP> getClassForIndex(int aIndex) {
     if (aIndex >= 0 && aIndex < loadedJCasClasses.size())
       return loadedJCasClasses.get(aIndex).get();

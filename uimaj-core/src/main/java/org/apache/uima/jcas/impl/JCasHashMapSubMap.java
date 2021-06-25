@@ -28,7 +28,9 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.IteratorNvc;
 
 /**
- * Part of the JCasHashMap. There are multiple instances of this class, one per concurrancy level
+ * Part of the JCasHashMap. 
+ * 
+ * There are multiple instances of this class, one per concurrancy level
  */
 class JCasHashMapSubMap implements Iterable<TOP> {
 
@@ -63,10 +65,13 @@ class JCasHashMapSubMap implements Iterable<TOP> {
   int maxProbeAfterContinue = 0;
   int continues = 0;;
 
+//@formatter:off
   /**
-   * This lock is sometimes held by put, putIfAbsent, get, clear - not held if putIfAbsent or get
-   * find existing (non-reserve) item -- assumes no "remove" operation
+   * This lock is sometimes held by put, putIfAbsent, get, clear
+   *   - not held if putIfAbsent or get find existing (non-reserve) item
+   *     -- assumes no "remove" operation
    */
+//@formatter:on
   private final Object synclock = new Object();
 
   private int sizeWhichTriggersExpansion;
@@ -141,22 +146,24 @@ class JCasHashMapSubMap implements Iterable<TOP> {
     }
   }
 
+//@formatter:off
   /**
-   * find a real item or a reserve item, matching the key Can be called under lock or not. Using a
-   * ref to the current value of table, searches that int array. If, during the search, the table is
-   * resized, it continues using the ** before the resize ** int array referenced by localTable The
-   * answer will only be OK if the key is found for a real value. Results that yield null or
-   * Reserved slots must be re-searched, under a lock (caller needs to do this).
-   * 
-   * @param key
-   *          -
-   * @param hash
-   *          -
-   * @param probeInfo
-   *          - used to get/receive multiple int values; 0: (in/out) startProbe or -1; -1 starts at
-   *          the hash & bitMask 1: (in/out) probeDelta (starts at 1)
+   * find a real item or a reserve item, matching the key
+   * Can be called under lock or not.
+   * Using a ref to the current value of table, searches that int array.
+   *   If, during the search, the table is resized, it continues using the
+   *   ** before the resize ** int array referenced by localTable 
+   *     The answer will only be OK if the key is found for a real value.  
+   *     Results that yield null or Reserved slots must be re-searched, 
+   *     under a lock (caller needs to do this).
+   * @param key -
+   * @param hash -
+   * @param probeInfo - used to get/receive multiple int values;
+   *    0: (in/out) startProbe or -1; -1 starts at the hash & bitMask
+   *    1: (in/out) probeDelta (starts at 1)
    * @return the probeAddr in original table (which might have been resized)
    */
+//@formatter:on
   private TOP find(final TOP[] localTable, final int key, final int hash, final int[] probeInfo) {
     int nbrProbes = 1; // for histogram
     final int localTblLength = localTable.length;
@@ -256,20 +263,27 @@ class JCasHashMapSubMap implements Iterable<TOP> {
 
   }
 
+//@formatter:off
   /**
-   * If an entry isn't already present for this key, calls a Supplier to create a value and puts it
-   * into the table. otherwise, doesn't call the Supplier and returns the already present value.
+   * If an entry isn't already present for this key,
+   *   calls a Supplier to create a value and puts it into the table.
+   *   otherwise, doesn't call the Supplier and returns the already present value.
    * 
-   * If the key isn't present, gets a lock, and (partially, as necessary) redoes the find. - assert
-   * key still not present. - add a "reserve" for the slot where it will go -- reserve is a pseudo
-   * FS with a matching key, but with null _casView - release the lock -- eval the creator to create
-   * the item (may cause table to be updated) - require the lock - if resized, redo the find() till
-   * find the reserved item, and replace it with value. - if not resized, replace the prev reserved
-   * spot.
+   * If the key isn't present, gets a lock, and 
+   *   (partially, as necessary) redoes the find. 
+   *     - assert key still not present.
+   *     - add a "reserve" for the slot where it will go
+   *       -- reserve is a pseudo FS with a matching key, but with null _casView
+   *     - release the lock
+   *          -- eval the creator to create the item (may cause table to be updated)
+   *     - require the lock
+   *     - if resized, redo the find() till find the reserved item, and replace it with value.
+   *     - if not resized, replace the prev reserved spot.  
    * 
    * Threading: not synchronized for main path where finding the element (if already in table).
-   * Since elements are never updated, there is no race if an element is found, except for table
-   * being resized. And it doesn't matter if the table is resized (if the element is found).
+   *   Since elements are never updated, there is no race if an element is found, except for
+   *   table being resized.
+   *   And it doesn't matter if the table is resized (if the element is found).
    * 
    * @param key
    *          - the id to use as the key
@@ -279,7 +293,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
    *          - the function to call to create the item.
    * @return - the found fs in the table with the same key, or the newly created item.
    */
-
+//@formatter:on
   TOP putIfAbsent(final int key, final int hash, final IntFunction<TOP> creatorFromKey) {
 
     final int[] probeInfo = probeInfoGet.get();
@@ -508,13 +522,16 @@ class JCasHashMapSubMap implements Iterable<TOP> {
     }
   }
 
+//@formatter:off
   /**
    * Gets a value.
    * 
-   * Threading: not synchronized for main path where get is finding an element. Since elements are
-   * never updated, there is no race if an element is found. And it doesn't matter if the table is
-   * resized (if the element is found). If it is not found, need to get the lock in order to get
-   * memory synch, and start over if resized, or continue from reserved or null spot if not
+   * Threading: not synchronized for main path where get is finding an element.
+   *   Since elements are never updated, there is no race if an element is found.
+   *   And it doesn't matter if the table is resized (if the element is found).
+   *   If it is not found, need to get the lock in order to get memory synch, and
+   *     start over if resized, or
+   *     continue from reserved or null spot if not    
    *
    * @param key
    *          - the addr in the heap
@@ -522,6 +539,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
    *          - the hash that was already computed from the key
    * @return - the found fs, or null
    */
+//@formatter:on
   final TOP get(final int key, final int hash) {
 
     final int[] probeInfo = probeInfoGet.get();

@@ -35,8 +35,9 @@ import org.slf4j.Marker;
 /**
  * UIMA Logging interface implementation for Log4j
  * 
- * This version is for Log4j version 2, from Apache Built using version 2.8
+ * This version is for Log4j version 2, from Apache
  * 
+ * Built using version 2.8
  */
 public class Log4jLogger_impl extends Logger_common_impl {
 

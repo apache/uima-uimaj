@@ -62,14 +62,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+//@formatter:off
 /**
- * Setup: all kinds of types, primitives and non-primitives see CASTestSetup class
- * 
- * Multiple Indexes, some sorted\
- * 
- * setupTheCas - puts in tokens / phrases / sentences, overlapping tokens 0-4, 1-5, 2-6, etc.
- * sentences 0-10, 5-15, 10-20, etc. + 12-31 phrases 0-5, 6-9, 10-16, 14-19, ...
+ * Setup:  all kinds of types, primitives and non-primitives
+ *         see CASTestSetup class
+ *         
+ *         Multiple Indexes, some sorted\
+ *         
+ *         setupTheCas - puts in tokens / phrases / sentences, overlapping
+ *           tokens 0-4, 1-5, 2-6, etc.
+ *           sentences 0-10, 5-15, 10-20, etc.    
+ *             + 12-31
+ *           phrases  0-5,  6-9,  10-16, 14-19, ...
  */
+//@formatter:on
 public class AnnotationIteratorTest {
 
   private static final boolean showFSs = false;
@@ -221,21 +227,25 @@ public class AnnotationIteratorTest {
     assertFalse(it2.isValid());
   }
 
+//@formatter:off
   /**
-   * The tests include: a) running with / w/o "flattened" indexes b) running forwards and backwards
-   * (testing moveToLast, isValid) c) testing strict and unambiguous variants d) running over all
-   * annotations and restricting to just a particular subtype
-   * 
-   * new tests: verifying bounding FS < all returned, including multiples of it strict at 1st
-   * element, at last element (not done yet) ConcurrentModificationException testing
-   * 
-   * (not done yet) Testing with different bound styles
-   * 
-   * @param annotCount
-   *          -
-   * @param afss
-   *          -
+   * The tests include:
+   *   a) running with / w/o "flattened" indexes
+   *   b) running forwards and backwards (testing moveToLast, isValid)
+   *   c) testing strict and unambiguous variants
+   *   d) running over all annotations and restricting to just a particular subtype
+   *   
+   *   new tests:  
+   *     verifying bounding FS < all returned, including multiples of it
+   *     strict at 1st element, at last element
+   *     (not done yet) ConcurrentModificationException testing
+   *     
+   *     (not done yet) Testing with different bound styles
+   *     
+   * @param annotCount -
+   * @param afss -
    */
+//@formatter:on
   // called twice, the 2nd time should be with flattened indexes (List afss non empty the 2nd time)
   private void iterateOverAnnotations(final int annotCount, List<Annotation> afss)
           throws Exception {
@@ -317,9 +327,13 @@ public class AnnotationIteratorTest {
             .includeAnnotationsWithEndBeyondBounds().asList())
                     .as("Subiterator select limit 7 over annot with big bound, strict")
                     .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
-                    .containsExactly(tuple(sentenceType, 10, 20), tuple(tokenType, 10, 15),
-                            tuple(tokenType, 11, 16), tuple(sentenceType, 12, 31),
-                            tuple(tokenType, 12, 17), tuple(tokenType, 13, 18),
+                    .containsExactly( //
+                            tuple(sentenceType, 10, 20), //
+                            tuple(tokenType, 10, 15), //
+                            tuple(tokenType, 11, 16), //
+                            tuple(sentenceType, 12, 31), //
+                            tuple(tokenType, 12, 17), //
+                            tuple(tokenType, 13, 18), //
                             tuple(tokenType, 14, 19));
     assertCount("Subiterator select limit 7 over annot with big bound, strict", 7, annotIndex
             .select().coveredBy(bigBound).limit(7).includeAnnotationsWithEndBeyondBounds());
@@ -370,12 +384,22 @@ public class AnnotationIteratorTest {
     // a.getBegin(), a.getEnd());
     // }
 
-    assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable().containsExactly(ann[58],
-            ann[11], ann[12], ann[76], ann[13], ann[14], ann[15], ann[59], ann[16], ann[69],
-            ann[17], ann[18], ann[19], ann[20], ann[60], ann[21], ann[22], ann[70], ann[23],
-            ann[24], ann[71], ann[25], ann[61], ann[26], ann[27], ann[28], ann[29], ann[30],
-            ann[62], ann[31], ann[72], ann[32], ann[33], ann[34], ann[35], ann[63], ann[36],
-            ann[37], ann[73], ann[38], ann[39], ann[74], ann[40], ann[64], ann[41], ann[42]);
+    assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable()
+        .containsExactly( //
+                ann[58], ann[11], ann[12], //
+                ann[76], ann[13], ann[14], ann[15], //
+                ann[59], ann[16], //
+                ann[69], ann[17], ann[18], ann[19], ann[20], //
+                ann[60], ann[21], ann[22], //
+                ann[70], ann[23], ann[24], //
+                ann[71], ann[25], //
+                ann[61], ann[26], ann[27], ann[28], ann[29], ann[30], //
+                ann[62], ann[31], //
+                ann[72], ann[32], ann[33], ann[34], ann[35], //
+                ann[63], ann[36], ann[37], //
+                ann[73], ann[38], ann[39], //
+                ann[74], ann[40],  //
+                ann[64], ann[41], ann[42]);
     assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable()
             .extracting(a -> asList(ann).indexOf(a), a -> a.getType(), a -> a.getBegin(),
                     a -> a.getEnd())
@@ -414,14 +438,18 @@ public class AnnotationIteratorTest {
     assertThat(annotIndex.subiterator(sent, false, true)).toIterable()
             .as("Subiterator over annot unambiguous strict")
             .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
-            .containsExactly(tuple(tokenType, 0, 5), tuple(tokenType, 5, 10));
+            .containsExactly( //
+                    tuple(tokenType, 0, 5),  //
+                    tuple(tokenType, 5, 10));
     assertCount("Subiterator over annot unambiguous strict", 2,
             annotIndex.subiterator(sent, false, true));
 
     assertThat(annotIndex.select().nonOverlapping().coveredBy(sent).asList())
             .as("Subiterator select over annot unambiguous strict")
             .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
-            .containsExactly(tuple(tokenType, 0, 5), tuple(tokenType, 5, 10));
+            .containsExactly( //
+                    tuple(tokenType, 0, 5),  //
+                    tuple(tokenType, 5, 10));
     assertCount("Subiterator select over annot unambiguous strict", 2,
             annotIndex.select().nonOverlapping().coveredBy(sent));
     assertCount("Subiterator select over annot unambiguous strict (type priorities)", 2,
@@ -688,11 +716,13 @@ public class AnnotationIteratorTest {
   @Test
   public void testUnambiguousSubiteratorOnIndex() {
     try {
-      // 0 0 1 1 2 2 3 3 4 4 5
-      // 0 5 0 5 0 5 0 5 0 5 0
-      // ------- sentence ---------
-      // -------- sentence ---------
-      // -tk-
+      // @formatter:off
+      //                        0    0    1    1    2    2    3    3    4    4    5
+      //                        0    5    0    5    0    5    0    5    0    5    0
+      //                        ------- sentence ---------
+      //                                                  -------- sentence ---------
+      //                                                                        -tk-
+      // @formatter:on
       cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
     } catch (CASRuntimeException e) {
       assertTrue(false);
@@ -729,34 +759,48 @@ public class AnnotationIteratorTest {
     }
   }
 
+  // @formatter:off
   /**
    * Test subiterator edge cases
    * 
-   * skip over variations: -, i, t1, tn no match - match - == id, using == id test i match - != id,
-   * using type test, t1 or tn -- alternative: 1 or multiple to skip over
+   *   skip over variations:                           -, i, t1, tn
+   *     no match                                             -
+   *     match - == id, using == id test                      i
+   *     match - != id, using type test,                      t1 or tn
+   *                  --  alternative: 1 or multiple to skip over 
    * 
-   * nothing before bound, nothing in bound, nothing after n n n nothing before, nothing in bound,
-   * stuff after n n s nothing before, something in bound, nothing after n s n skip over variation
-   * nothing before, something in bound, something after n s s
-   * 
-   * stuff before bound, nothing in bound, nothing after s n n stuff before bound, nothing in bound,
-   * stuff after s n s stuff before, something in bound, nothing after s s n stuff before, something
-   * in bound, something after s s s
-   * 
-   * test with bound before / after having their begin / end be different or the same (if the same,
-   * have the same or different type; if the same type, have the equals-to-bound test be for the
-   * same type or same id
-   * 
-   * begin end type idtst d d - - d s - - s d - - s s d - test with nnn, nns, nsn, nss, snn, sns,
-   * ssn, sss p- test with or without type priority s s s n insure skip over both/multiple s s s y
-   * insure skip over just 1
-   * 
-   * test with type priorities: skip (only covering) skipoverbound: if type priority off, can have
-   * bound in middle
-   * 
-   * setup notation: any number of tuples separated by ':' xxx : yyy : zzz each is either - or x-y-t
-   * where x == begin, y == end, t = 0 1 or 2 type order
+   *   nothing before bound, nothing in bound, nothing after  n n n
+   *   nothing before, nothing in bound, stuff after          n n s
+   *   nothing before, something in bound, nothing after      n s n    skip over variation
+   *   nothing before, something in bound, something after    n s s
+   *                                                          
+   *   stuff before bound, nothing in bound, nothing after    s n n
+   *   stuff before bound, nothing in bound, stuff after      s n s
+   *   stuff before, something in bound, nothing after        s s n
+   *   stuff before, something in bound, something after      s s s
+   *   
+   *   test with bound before / after having their begin / end be different or the same
+   *     (if the same, have the same or different type;
+   *                   if the same type, have the equals-to-bound test be for the same type or same id
+   *          
+   *       begin end type idtst
+   *         d    d   -     -    
+   *         d    s   -     -
+   *         s    d   -     -
+   *         s    s   d     -  test with nnn, nns, nsn, nss, snn, sns, ssn, sss
+   *                     p-    test with or without type priority  
+   *         s    s   s     n    insure skip over both/multiple
+   *         s    s   s     y    insure skip over just 1
+   *      
+   *   test with type priorities:
+   *     skip (only covering)
+   *     skipoverbound: if type priority off, can have bound in middle 
+   *           
+   *   setup notation:  any number of tuples separated by ':'
+   *       xxx : yyy : zzz 
+   *     each is either - or x-y-t  where x == begin, y == end, t = 0 1 or 2 type order
    */
+  // @formatter:on
   private void setupEdges(String s) {
     String[] sa = s.split("\\:");
     for (String x : sa) {
@@ -848,26 +892,28 @@ public class AnnotationIteratorTest {
   private int setupTheCas() {
     List<AnnotationFS> annotationList = new ArrayList<>();
 
-    // Tokens +---+
-    // +---+
-    // +---+
-    // BigBound +-----------------------------+
-    final String text = "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
-    // +--------+
-    // Sentences +--------+
-    // +----------+
-    // one xtr sent +-----------------+ (12, 31)
-    //
-    // Phrases some overlap, some dont, 3-7 length
-    //
-    // bound4strict +------------------+
-    // sentence4strict +-----------------------------+
-
-    try {
-      cas.setDocumentText(text);
-    } catch (CASRuntimeException e) {
-      fail();
-    }
+    //@formatter:off
+//  Tokens                +---+
+//                       +---+
+//                      +---+
+//  BigBound                      +-----------------------------+
+   final String text = "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
+//                      +--------+
+//  Sentences                +--------+
+//                                +----------+
+//  one xtr sent                    +-----------------+  (12, 31)
+//
+//  Phrases             some overlap, some dont, 3-7 length
+//
+//  bound4strict                   +------------------+            
+//  sentence4strict                 +-----------------------------+
+   //@formatter:n
+   
+   try {
+     cas.setDocumentText(text);
+   } catch (CASRuntimeException e) {
+     fail();
+   }
 
     /***************************************************
      * Create and index tokens and sentences

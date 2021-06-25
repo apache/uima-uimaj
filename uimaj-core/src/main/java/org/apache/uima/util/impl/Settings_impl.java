@@ -39,18 +39,20 @@ import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 
+//@formatter:off
 /**
  * Class that reads properties files containing external parameter overrides used by the
  * ExternalOverrideSettings_impl class.
  * 
- * Similar to java.util.Properties but: supports UTF-8 files reverses priority in that duplicate key
- * values are ignored, i.e. values cannot be changed arrays are represented as strings, e.g.
- * '[elem1,elem2]', and can span multiple lines '\' can be used to escape $ [ , ] and the line-end
+ * Similar to java.util.Properties but: 
+ *    supports UTF-8 files 
+ *    reverses priority in that duplicate key values are ignored, i.e. values cannot be changed 
+ *    arrays are represented as strings, e.g. '[elem1,elem2]', and can span multiple lines
+ *    '\' can be used to escape $ [ , ] and the line-end
  * 
  * @author burn
- * 
  */
-
+//@formatter:on
 public class Settings_impl implements Settings {
 
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";

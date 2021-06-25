@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
+//@formatter:off
 /**
  * This one not in current use Maybe be put back into service when the array becomes large and it
  * starts outperforming the other
@@ -45,20 +46,28 @@ import org.apache.uima.util.impl.Constants;
  * 
  * Entries kept in order in 1 big ArrayList
  * 
- * Adds optimized: - maintain high mark, if &gt;, add to end - batch adds other than above -- do
- * when reference needed -- sort the to be added - to add to pos p, shift elements in p to higher,
- * insert
+ * Adds optimized:
+ *   - maintain high mark, if &gt;, add to end
+ *   - batch adds other than above
+ *     -- do when reference needed
+ *     -- sort the to be added
+ *   - to add to pos p, shift elements in p to higher, insert   
  * 
- * shifting optimization: removes replace element with null shift until hit null
+ * shifting optimization: 
+ *   removes replace element with null
+ *   shift until hit null 
  * 
- * nullBlock - a group of nulls (free space) together - might be created by a batch add which adds a
- * block of space all at once - might arise from encountering 1 or more "nulls" created by removes -
- * id by nullBlockStart (inclusive) and nullBlockEnd (exclusive)
+ * nullBlock - a group of nulls (free space) together
+ *   - might be created by a batch add which 
+ *     adds a block of space all at once
+ *   - might arise from encountering 1 or more "nulls" created
+ *     by removes
+ *   - id by nullBlockStart (inclusive) and nullBlockEnd (exclusive)
  * 
- * bitset: 1 for avail slot used to compute move for array copy
- * 
- * 
+ * bitset: 1 for avail slot
+ *   used to compute move for array copy
  */
+//@formatter:on
 public class OrderedFsSet_array2 implements NavigableSet<TOP> {
   // public boolean specialDebug = false;
   final private static boolean TRACE = false;
@@ -489,11 +498,13 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
           batchCountHistogram[31 - Integer.numberOfLeadingZeros(batchSize)]++;
         }
 
-        /*
-         * the number of new empty slots created, may end up being larger than actually used because
-         * some of the items being inserted may already be in the array - decreases as each item is
-         * actually inserted into the array
+     // @formatter:off
+        /* the number of new empty slots created, 
+         *   may end up being larger than actually used because some of the items 
+         *   being inserted may already be in the array
+         *     - decreases as each item is actually inserted into the array
          */
+     // @formatter:on
         int nbrNewSlots = 1; // start at one, may increase
 
         if (batchSize > 1) {
@@ -670,16 +681,18 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
 
   }
 
+//@formatter:off
   /**
-   * side effects: increment size reset a_firstUsedslot if adding in front ( a_nextFreeslot not
-   * updated, because this method only called to inserting before end ) nullBlockEnd reduced
-   * conditionally lastRemovedPos is reset if that position is used
-   * 
-   * @param indexToUpdate
-   *          - the index in the array to update with the item to add
-   * @param itemToAdd
-   *          -
+   * side effects:
+   *   increment size
+   *   reset a_firstUsedslot if adding in front
+   *   ( a_nextFreeslot not updated, because this method only called to inserting before end )
+   *   nullBlockEnd reduced conditionally
+   *   lastRemovedPos is reset if that position is used
+   * @param indexToUpdate - the index in the array to update with the item to add
+   * @param itemToAdd -
    */
+//@formatter:on
   private void insertItem(int indexToUpdate, TOP itemToAdd) {
     // validateA();
     try {
@@ -721,30 +734,35 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     // validateA();
   }
 
+//@formatter:off
   /**
-   * This is called when inserting new items from the batch. It does a bulk insert of space for all
-   * the items in the batch.
+   * This is called when inserting new items from the batch.
+   * It does a bulk insert of space for all the items in the batch.
    * 
-   * Attempts to move a small amount with a multi-part strategy: - make use of existing "nulls" at
-   * the insert spot -- if not enough, --- if just need one more, compute distance from 3 possible
-   * source: -- front, end, and lastRemovedPos (if not already included in existing "nulls") combine
-   * with a new additional block that is moved down from the top. - make use of both beginning and
-   * end free space.
+   * Attempts to move a small amount with a multi-part strategy:
+   *   - make use of existing "nulls" at the insert spot
+   *     -- if not enough,
+   *       --- if just need one more, compute distance from 3 possible source:
+   *            -- front, end, and lastRemovedPos (if not already included in existing "nulls")   
+   *     combine with a new additional block that is moved down from the top.
+   *   - make use of both beginning and end free space.
    * 
-   * If there is already a "null" at the insert spot, use that space. - if there are enough nulls,
-   * return
+   * If there is already a "null" at the insert spot, use that space.
+   *   - if there are enough nulls, return 
    * 
-   * Sets (as side effect) nullBlockStart and nullBlockEnd The setting includes all of the nulls,
-   * both what might have been present at the insert spot and any added new ones. nullBlockStart
-   * refs a null, nullBlockEnd refs a non-null (or null if things are being inserted at the end)
-   * position - the insert position
+   * Sets (as side effect) nullBlockStart and nullBlockEnd
+   *   The setting includes all of the nulls, both what might have been present at the 
+   *   insert spot and any added new ones.
+   *      nullBlockStart refs a null, 
+   *      nullBlockEnd refs a non-null (or null if things are being inserted at the end) position
+   *        - the insert position
    * 
-   * @param positionToInsert
-   *          position containing a value, to free up by moving the current free block so that the
-   *          last free element is at that (adjusted up) position.
+   * @param positionToInsert position containing a value, to free up by moving the current free block
+   *                         so that the last free element is at that (adjusted up) position.          
    * @param nbrNewSlots
    * @return adjusted positionToInsert, the free spot is just to the left of this position
    */
+//@formatter:on
   private int insertSpace(final int positionToInsert, final int origNbrNewSlots) {
     if (TRACE) {
       tr.setLength(0);
@@ -760,9 +778,13 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     int nullsBelowInsertMin = i;
     int nbrNewSlotsNeeded = origNbrNewSlots;
 
+ // @formatter:off
     /***********************************
-     * count nulls already present * reduce nbrNewSlotsNeeded * reset lastRemovedPos if using *
+     * count nulls already present     *
+     * reduce nbrNewSlotsNeeded        *
+     *   reset lastRemovedPos if using *
      ***********************************/
+ // @formatter:on
     while (i > 0 && a[i - 1] == null && nbrNewSlotsNeeded > 0) {
       i--;
       nbrNewSlotsNeeded--;
@@ -774,10 +796,12 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
 
     int r = positionToInsert;
 
+ // @formatter:off
     /***********************************
-     * Finish if nulls already found * for all new slots *
+     * Finish if nulls already found   *
+     * for all new slots               *
      ***********************************/
-
+ // @formatter:on
     if (nbrNewSlotsNeeded != 0) {
 
       /***********************************
@@ -884,40 +908,55 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     return r;
   }
 
+//@formatter:off
   /**
-   * Shift a block of free space lower in the array. This is done by shifting the space at the
-   * insert point for length = start of free block - insert point to the right by the nbrNewSlots
+   * Shift a block of free space lower in the array.
+   * This is done by shifting the space at the insert point
+   *   for length = start of free block - insert point 
+   *   to the right by the nbrNewSlots
    * and then resetting (filling) the freed up space with null
    * 
    * Example: u = used, f = free space
    * 
-   * before |--| uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu ^ insert point after |--|
-   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuuuuuu ^ insert point
+   * before                      |--| 
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu
+   *                             ^ insert point
+   * after                               |--|
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuuuuuu
+   *                                     ^ insert point
    * 
-   * before |------------------------------| uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu ^
-   * insert point after |------------------------------|
-   * ffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point before
-   * |------------------------------| ffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu ^ insert
-   * point after |------------------------------|
-   * ffffffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point
+   * before 
+   * |------------------------------|
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu
+   * ^ insert point
+   * after   |------------------------------| 
+   * ffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *         ^ insert point
+   * before 
+   *     |------------------------------|
+   * ffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu
+   *     ^ insert point
+   * after       |------------------------------| 
+   * ffffffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *             ^ insert point
    * 
-   * move up by nbrNewSlots length to move = nullBlockStart - insert point new insert point is
-   * nbrOfFreeSlots higher (this points to a filled spot, prev spot is free)
+   * move up by nbrNewSlots
+   * length to move = nullBlockStart - insert point
+   * new insert point is nbrOfFreeSlots higher (this points to a filled spot, prev spot is free)
    * 
    * fill goes from original newInsertPoint, for min(nbrNewSlots, length of move)
    * 
-   * There may be nulls already at the insert point, or encountered along the way. - nulls along the
-   * way are kept, unchanged - nulls at the insert point are incorporated; the freespace added is
-   * combined (need to verify)
+   * There may be nulls already at the insert point, or encountered along the way.
+   *   - nulls along the way are kept, unchanged
+   *   - nulls at the insert point are incorporated; the freespace added is combined (need to verify)
    * 
-   * hidden param: nullBlockStart side effect: lastRemovedPosition maybe updated
-   * 
-   * @param insertPoint
-   *          index of slot array, currently occupied, where an item is to be set into
-   * @param nbrNewSlots
-   *          - the size of the inserted space
+   * hidden param:  nullBlockStart
+   * side effect: lastRemovedPosition maybe updated
+   * @param insertPoint index of slot array, currently occupied, where an item is to be set into
+   * @param nbrNewSlots - the size of the inserted space
    * @return the updated insert point, now moved up
    */
+//@formatter:on
   private int shiftFreespaceDown(final int insertPoint, final int nbrNewSlots) {
     assert insertPoint >= 0;
     assert nbrNewSlots >= 0;
@@ -963,42 +1002,59 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     return insertPoint + nbrNewSlots;
   }
 
+//@formatter:off
   /**
-   * Shift a block of free space higher in the array. This is done by shifting the space at the
-   * insert point of length = insert point - (end+1) of free block to the left by the nbrNewSlots
+   * Shift a block of free space higher in the array.
+   * This is done by shifting the space at the insert point
+   *   of length = insert point - (end+1) of free block 
+   *   to the left by the nbrNewSlots
    * and then resetting (filling) the freed up space with null
    * 
    * Example: u = used, f = free space
    * 
-   * before |-| << block shifted uuuuuuuuuuuuuuufffffuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point
-   * after |-| << block shifted uuuuuuuuuuuuuuuuuufffffuuuuuuuuuuuuuuuuuuu ^ insert point
+   * before              |-|   << block shifted 
+   * uuuuuuuuuuuuuuufffffuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *                        ^ insert point
+   * after          |-|   << block shifted
+   * uuuuuuuuuuuuuuuuuufffffuuuuuuuuuuuuuuuuuuu
+   *                        ^ insert point
    * 
-   * before |----| uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffuuuuuuu ^ insert point note: insert point
-   * is never beyond last because those are added immediately after |----|
-   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffu ^ insert point
+   * before                                  |----|
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffuuuuuuu
+   *                                               ^ insert point
+   *     note: insert point is never beyond last because
+   *     those are added immediately
+   * after                               |----|
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffu
+   *                                               ^ insert point
    * 
-   * before |--| uuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point after |--|
-   * uuuuuuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point
+   * before       |--|   
+   * uuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *                  ^ insert point
+   * after       |--|
+   * uuuuuuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *                  ^ insert point
    * 
-   * |--------| before ffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point |--------|
-   * uuuuuuuuuuffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu ^ insert point
+   *     |--------|  before 
+   * ffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *               ^ insert point
+   * |--------|
+   * uuuuuuuuuuffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *               ^ insert point
    * 
    * 
-   * move down by nbrNewSlots length to move = insert point - null block end (which is 1 plus index
-   * of last free) new insert point is the same as the old one (this points to a filled spot, prev
-   * spot is free)
+   * move down by nbrNewSlots
+   * length to move = insert point - null block end (which is 1 plus index of last free)
+   * new insert point is the same as the old one (this points to a filled spot, prev spot is free)
    * 
    * fill goes from original null block end, for min(nbrNewSlots, length of move)
    * 
    * hidden param: nullBlock Start, nullBlockEnd = 1 past end of last free slot
-   * 
-   * @param newInsertPoint
-   *          index of slot array, currently occupied, where an item is to be set into
-   * @param nbrNewSlots
-   *          - the size of the inserted space
+   * @param newInsertPoint index of slot array, currently occupied, where an item is to be set into
+   * @param nbrNewSlots - the size of the inserted space
    * @return the updated insert point, now moved up
    */
-
+//@formatter:on
   private int shiftFreespaceUp(int newInsertPoint, int nbrNewSlots) {
     boolean need2setFirstUsedslot = nullBlockEnd == a_firstUsedslot;
     int lengthToMove = newInsertPoint - nullBlockEnd;
@@ -1121,20 +1177,26 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
 
       while (null == item) { // skip over nulls
 
+       // @formatter:off
         /**
-         * lower (inclusive) may point to null, upper (exclusive) guaranteed to not point to a null
+         * lower (inclusive) may point to null,
+         * upper (exclusive) guaranteed to not point to a null
          * 
-         * the mid position is point to a null; We split the mid into two items: midup and middown.
-         * - both may point to a non-null item eventually - the one that gets to a non-null first is
-         * used, unless: -- it is == to the upper, in which case we attempt to find the middown
-         * non-null. -- it is below the lower (only happens if the lower is ref-ing a null), in
-         * which case we attempt to find the midup non-null -- if both the midup == upper and
-         * middown < lower, then not found, return (-upper) -1;
+         * the mid position is point to a null; 
+         *   We split the mid into two items: midup and middown.
+         *     - both may point to a non-null item eventually
+         *     - the one that gets to a non-null first is used, unless:
+         *       -- it is == to the upper, in which case we attempt to find the
+         *          middown non-null.
+         *       -- it is below the lower (only happens if the lower is ref-ing a null), in which case
+         *          we attempt to find the midup non-null
+         *       -- if both the midup == upper and middown < lower, then 
+         *            not found, return (-upper) -1;
          * 
-         * This may be inside a null block - in which case shortcut: speed the midup and middown to
-         * the edges (1st non-null positions)
+         *   This may be inside a null block - in which case
+         *     shortcut: speed the midup and middown to the edges (1st non-null positions)
          */
-
+       // @formatter:on
         if (_nullBlockStart != -1 && middwn >= _nullBlockStart && midup < _nullBlockEnd) {
           // in the null block
           // move to edges
@@ -1276,11 +1338,13 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     return true;
   }
 
+//@formatter:off
   /**
    * When the main array between the first used slot and the next free slot has too many nulls
-   * representing removed items, scan and gc them. assumes: first used slot is not null,
-   * nextFreeslot - 1 is not null
+   * representing removed items, scan and gc them.
+   *   assumes: first used slot is not null, nextFreeslot - 1 is not null
    */
+//@formatter:on
   private void compressOutRemoves() {
     int j = a_firstUsedslot + 1; // outside of for loop because need value of j after loop ends
     for (int i = a_firstUsedslot + 1; i < a_nextFreeslot; i++, j++) {
@@ -1666,10 +1730,13 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     return tailSet(fromElement, true);
   }
 
+//@formatter:off
   /**
-   * This is used in a particular manner: only used to create iterators over that subset -- no
-   * insert/delete
+   * This is used in a particular manner:
+   *   only used to create iterators over that subset
+   *     -- no insert/delete
    */
+//@formatter:on
   public static class SubSet implements NavigableSet<TOP> {
     final Supplier<OrderedFsSet_array2> theSet;
     final private TOP fromElement;

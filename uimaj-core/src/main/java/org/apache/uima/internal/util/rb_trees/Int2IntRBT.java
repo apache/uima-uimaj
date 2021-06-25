@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 
+// @formatter:off
 /**
  * A map&lt;int, int&gt;
  * 
@@ -31,11 +32,15 @@ import org.apache.uima.internal.util.IntListIterator;
  * 
  * Int to Int Map, based on IntArrayRBT, used in no-duplicates mode
  * 
- * Implements Map - like interface: keys and values are ints Entry set not (yet) impl
- * 
- * no keySet() no values()
- * 
+ * Implements Map - like interface:
+ *   keys and values are ints
+ *   Entry set not (yet) impl
+ *   
+ *   no keySet()
+ *   no values()
+ *   
  */
+//@formatter:on
 public class Int2IntRBT extends IntArrayRBTcommon {
 
   private class KeyValueIterator implements IntKeyValueIterator {
@@ -384,7 +389,9 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   // }
 
   /**
-   * Fast version of findKey Keeps the last node referenced *** NOT THREAD SAFE ***
+   * Fast version of findKey Keeps the last node referenced 
+   * 
+   * *** NOT THREAD SAFE ***
    * 
    * Tries to shorten the search path, conditionally
    * 

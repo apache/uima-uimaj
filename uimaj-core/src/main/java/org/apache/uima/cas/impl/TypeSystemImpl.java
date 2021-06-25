@@ -481,10 +481,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     // set up meta info (TypeImpl) for built-in types
 
+   // @formatter:off
     /****************************************************************
-     * D O N O T C H A N G E T H I S O R D E R I N G ! ! * --- ----- ----------- -------
-     * -------------------
+     *   D O   N O T   C H A N G E   T H I S   O R D E R I N G ! !  *
+     *   ---   -----   -----------   -------   -------------------
      ****************************************************************/
+   // @formatter:on
 
     // Create top type.
     topType = new TypeImpl(CAS.TYPE_NAME_TOP, this, null, TOP.class);
@@ -502,10 +504,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     intArrayType = addArrayType(intType, Slot_Int, HEAP_STORED_ARRAY, IntegerArray.class);
     stringArrayType = addArrayType(stringType, Slot_StrRef, HEAP_STORED_ARRAY, StringArray.class);
 
+ // @formatter:off
     /**********************************************************************************************
-     * Add Lists * The Tail feature is not factored out into listBaseType because it returns a typed
-     * value. *
+     * Add Lists                                                                                  *
+     *   The Tail feature is not factored out into listBaseType because it returns a typed value. *
      **********************************************************************************************/
+ // @formatter:on
     listBaseType = new TypeImpl(CAS.TYPE_NAME_LIST_BASE, this, topType);
 
     // FS list
@@ -1022,13 +1026,16 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
             multipleReferencesAllowed, getSlotKindFromType(rangeType));
   }
 
+//@formatter:off
   /**
-   * Given a range type, return the corresponding slot kind string -> Slot_StrRef, long and double
-   * -> ...Ref boolean, byte, int, short, float, -> withoutRef
-   * 
+   * Given a range type, return the corresponding slot kind
+   *   string -> Slot_StrRef, long and double -> ...Ref
+   *   boolean, byte, int, short, float, -> withoutRef
+   *   
    * @param rangeType
    * @return
    */
+//@formatter:on
   static SlotKind getSlotKindFromType(Type rangeType) {
     SlotKind slotKind = rangeType.isStringOrStringSubtype() ? Slot_StrRef
             : slotKindsForNonArrays.get(rangeType.getName());
@@ -1166,13 +1173,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return t1.getDirectSubtypes().contains(t2);
   }
 
+//@formatter:off
   /**
    * Does one type inherit from the other?
    * 
    * There are two versions.
    * 
-   * Fast: but only works after commit: aTypeImplInstance.subsumes(otherTypeImpl) Slower: this
-   * routine. This routine is called from fast one if not committed.
+   *  Fast: but only works after commit:  aTypeImplInstance.subsumes(otherTypeImpl)
+   *  Slower: this routine.
+   *  This routine is called from fast one if not committed.
    * 
    * @param superType
    *          Supertype.
@@ -1180,10 +1189,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *          Subtype.
    * @return <code>true</code> iff <code>sub</code> inherits from <code>super</code>.
    */
+//@formatter:on
   @Override
   public boolean subsumes(Type superType, Type subType) {
-    if (superType == subType)
+    if (superType == subType) {
       return true;
+    }
 
     if (isCommitted()) {
       return ((TypeImpl) superType).subsumes((TypeImpl) subType);
@@ -1606,9 +1617,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsrFis) {
 
     Class<?> superClass = clazz.getSuperclass();
-    /*
-     * ********************** STOP if get to top *
-     **********************/
+    // **********************
+    // STOP if get to top *
+    // **********************
     if (superClass == Object.class) {
       return;
     }
@@ -1617,9 +1628,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     String uimaSuperTypeName = Misc.javaClassName2UimaTypeName(superClassName);
     if (this.getType(uimaSuperTypeName) != null) {
 
-      /*
-       * **************************** STOP if get to UIMA type *
-       ****************************/
+      // ****************************
+      // STOP if get to UIMA type *
+      // ****************************/
 
       // But process this jcas class level
       // then return to recursively process other jcas class levels.
@@ -2196,11 +2207,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // }
   //
 
+//@formatter:off
   /****************************************************************
-   * Low Level APIs that use type codes and feature codes * These are less efficient in V3, and
-   * should be replaced where * possible with standard non-low-level access *
+   * Low Level APIs that use type codes and feature codes         *
+   * These are less efficient in V3, and should be replaced where *
+   * possible with standard non-low-level access                  *
    * **************************************************************
    */
+//@formatter:on
 
   /**
    * 
@@ -2754,8 +2768,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     for (int i = 0; i < sz;) {
       sb.append(String.format("%4d: %-20s ", i, allTypes.get(i++).getName()));
-      if (i == sz)
+      if (i == sz) {
         break;
+      }
       if (i % 5 == 0) {
         sb.append('\n');
       }
@@ -2854,8 +2869,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
   static {
     TypeSystemImpl tsi = staticTsi.commit(); // needed to assign adjusted offsets to the builtins
-    if (tsi != staticTsi)
+    if (tsi != staticTsi) {
       Misc.internalError();
+    }
   }
 
 //@formatter:off
@@ -2896,18 +2912,23 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     TypeSystemImpl other = (TypeSystemImpl) obj;
     if (types == null) {
-      if (other.types != null)
+      if (other.types != null) {
         return false;
-    } else if (!types.equals(other.types))
+      }
+    } else if (!types.equals(other.types)) {
       return false;
+    }
     return true;
   }
 
@@ -2984,6 +3005,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // return fi.getAdjustedOffset();
   }
 
+//@formatter:off
   /**
    * When deserializing Xmi and XCAS, Arrays of Feature Structures are encoded as FSArray types, but
    * they may have a more restrictive typing, e.g. arrays of Annotation, with the type code of
@@ -2991,8 +3013,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * 
    * This is determined by the range type of the feature referring to the array instance.
    * 
-   * A fixup is done when - the arrayFs is not already subtyped (could be for 0 length arrays) -
-   * it's not disabled (for backward compatibility with v2)
+   * A fixup is done when
+   *   - the arrayFs is not already subtyped (could be for 0 length arrays) 
+   *   - it's not disabled (for backward compatibility with v2)
    * 
    * If the feature is marked as multipleReferencesAllowed, the presumption is that all references
    * are to the same subtype.
@@ -3002,6 +3025,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * The fixup updates the type of the Feature Structure from FSArray to the array type declared; no
    * checking is done to insure the elements conform, however.
    */
+//@formatter:on
   void fixupFSArrayTypes(TypeImpl featRange, TOP arrayFs) {
     if (CASImpl.IS_DISABLE_SUBTYPE_FSARRAY_CREATION) {
       return; // for compatibility with V2

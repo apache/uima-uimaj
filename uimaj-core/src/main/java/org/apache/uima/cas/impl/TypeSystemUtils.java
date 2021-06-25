@@ -374,27 +374,29 @@ public abstract class TypeSystemUtils {
 
   }
 
+//@formatter:off
   /**
    * Called when the Feature Name is not a valid feature of the current <code>type</code>.
    * 
    * It examines all the subtypes to see if it can find one for which the feature is valid.
    * 
-   * If the feature name is found in any subtype (recursively) of the type - given one subtype is
-   * found having the feature, continue the checking of subsequent features in the path - to see if
-   * there's some path where all the features are found. -- if so, return PathValid.POSSIBLE. -- if
-   * not, loop to try other subtypes. - if no subtypes have all the features, return
-   * PathValid.NEVER.
-   * 
-   * The subtypes are descended when the feature name isn't a feature of a subtype, to see if a
-   * sub-sub-type might define the feature. The subtypes for one type are iterated while they have
-   * no match at any depth for the feature name
-   * 
-   * @param type
-   *          the type whose subtypes should be checked
+   * If the feature name is found in any subtype (recursively) of the type
+   *   - given one subtype is found having the feature, 
+   *     continue the checking of subsequent features in the path - to see if there's some path where all the features are found.
+   *     -- if so, return PathValid.POSSIBLE.
+   *     -- if not, loop to try other subtypes.
+   *   - if no subtypes have all the features, return PathValid.NEVER. 
+   *     
+   *   The subtypes are descended when the feature name isn't a feature of a subtype, to see if a sub-sub-type
+   *     might define the feature.  
+   *   The subtypes for one type are iterated while they have no match at any depth for the feature name
+   *      
+   * @param type the type whose subtypes should be checked
    * @param fName
    * @param nextPath
    * @return
    */
+//@formatter:on
   private static final PathValid isPathValidInSubtypes(TypeImpl type, String fName,
           Deque<String> nextPath) {
     for (TypeImpl subtype : type.getDirectSubtypes()) {

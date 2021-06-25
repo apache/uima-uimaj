@@ -422,22 +422,24 @@ public class Misc {
     return addElementsToStringBuilder(indent, sb, c, limit, appender);
   }
 
+//@formatter:off
   /**
-   * Does two styles of list formatting: Style 1: [ item1, item 2, item3] Style 2: [ item1, item2,
-   * item3 ] Starts as style 1, switches to style 2 when length &gt; 60
-   * 
-   * @param sb
-   *          where the string is assembled
-   * @param c
-   *          the collection to process
-   * @param limit
-   *          the maximum number of items, if negative, no limit
-   * @param appender
-   *          the appender
-   * @param <T>
-   *          the type of the collection
+   * Does two styles of list formatting:
+   *   Style 1:  [ item1, item 2, item3]
+   *   Style 2:  [ 
+   *               item1,
+   *               item2,
+   *               item3
+   *             ]
+   * Starts as style 1, switches to style 2 when length &gt; 60             
+   * @param sb where the string is assembled
+   * @param c the collection to process
+   * @param limit the maximum number of items, if negative, no limit
+   * @param appender the appender
+   * @param <T> the type of the collection
    * @return argument sb, appeneded
    */
+//@formatter:on
   public static <T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c,
           int limit, BiConsumer<StringBuilder, T> appender) {
     return addElementsToStringBuilder(INT0, sb, c, limit, appender);
@@ -878,15 +880,15 @@ public class Misc {
     return (s.substring(0, len) + "...");
   }
 
+//@formatter:off
   /**
    * Some objects can be shared, if "equal", rather than creating duplicates, if they're read-only.
-   * This may in general be beneficial by reducing the size of the "working set" via more sharing of
-   * read-only objects. Users should insure the read-only property. This routine allows a) creating
-   * a potentially sharable object b) checking to see if we already have an "equal" one, and c) if
-   * so, using that and allowing the just created one to be GC'd.
-   * 
-   * Items in this "set" are held with weak references, so may be gc'd if no longer referenced
-   * anywhere.
+   * This may in general be beneficial by reducing the size of the "working set" via more sharing of read-only objects.
+   * Users should insure the read-only property.
+   * This routine allows 
+   *   a) creating a potentially sharable object
+   *   b) checking to see if we already have an "equal" one, and 
+   *   c) if so, using that and allowing the just created one to be GC'd.
    * 
    * @param obj
    *          - the object to use a cached substitute for, if one exists
@@ -896,6 +898,7 @@ public class Misc {
    *          the type of the cached object
    * @return - the object or a cached version of it.
    */
+//@formatter:on
   public static <T> T shareExisting(T obj, WeakHashMap<T, WeakReference<T>> cache) {
     if (null == obj) {
       throw new IllegalArgumentException();

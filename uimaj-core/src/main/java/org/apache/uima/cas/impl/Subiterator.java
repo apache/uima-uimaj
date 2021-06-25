@@ -106,43 +106,50 @@ import org.apache.uima.jcas.tcas.Annotation;
  *     
  */
 
+//@formatter:off
 /**
  * Subiterator implementation.
  * 
  * There are 2 underlying forms.
  * 
- * The 2nd form is produced lazily when needed, and is made by a one-time forward traversal to
- * compute unambiguous subsets and store them into a list. - The 2nd form is needed only for
- * unambiguous style if backwards or moveTo(fs), or moveToLast operations.
+ * The 2nd form is produced lazily when needed, and 
+ * is made by a one-time forward traversal to compute unambiguous subsets and store them into a list.
+ *   - The 2nd form is needed only for unambiguous style if backwards or moveTo(fs), or moveToLast operations.
  * 
- * The 1st form uses the underlying iterator directly, and does skipping as needed, while iterating
- * - going forward: skip if unambiguous (noBound or coveredBy only) and start is within prev span
- * skip if strict (coveredBy only) and end lies outside of scope span
- * 
- * - going backward: if unambiguous - convert to form 2 skip if strict (coveredBy only) and end lies
- * outside of scope span
- * 
- * - going to particular fs (left most match) if unambiguous - convert to form 2 skip (forward) if
- * strict (coveredBy only) and end lies outside of scope span
+ * The 1st form uses the underlying iterator directly, and does skipping as needed, while iterating  
+ *   - going forward: 
+ *       skip if unambiguous (noBound or coveredBy only) and start is within prev span
+ *       skip if strict (coveredBy only) and end lies outside of scope span
+ *     
+ *   - going backward:
+ *       if unambiguous - convert to form 2
+ *       skip if strict (coveredBy only) and end lies outside of scope span
+ *       
+ *   - going to particular fs (left most match)
+ *       if unambiguous - convert to form 2
+ *       skip (forward) if strict (coveredBy only) and end lies outside of scope span
  *
- * - going to first: unambiguous - no testing needed, no prior span skip if strict and end lies
- * outside of scope span
- * 
- * - going to last: unambiguous - convert to 2nd form skip backwards if strict and end lies outside
- * of scope span
- * 
+ *   - going to first:
+ *       unambiguous - no testing needed, no prior span 
+ *       skip if strict and end lies outside of scope span
+ *     
+ *   - going to last:
+ *       unambiguous - convert to 2nd form
+ *       skip backwards if strict and end lies outside of scope span
+ *       
  * There are two styles of the bounding information.
  * 
- * - the traditional one uses the standard comparator for annotations: begin (ascending), end
- * (descending) and type priority ordering - the 2nd style uses just a begin value and an end value,
- * no type priority ordering.
- * 
- * Interaction with copy-on-write concurrent modification avoidance As with other iterators, the
- * moveToFirst/Last/feature-structure-position "resets" the underlying iterators to match their
- * current indexes. This implementation maintains local data: the list form and the isEmpty flag.
- * These would also need recomputing for the above operations, if isIndexesHaveBeenUpdated() is
- * true.
+ *   - the traditional one uses the standard comparator for annotations: begin (ascending), end (descending) and
+ *     type priority ordering
+ *   - the 2nd style uses just a begin value and an end value, no type priority ordering. 
+ *   
+ * Interaction with copy-on-write concurrent modification avoidance
+ *   As with other iterators, the moveToFirst/Last/feature-structure-position "resets" the underlying
+ *     iterators to match their current indexes.  
+ *   This implementation maintains local data: the list form and the isEmpty flag.  These would
+ *     also need recomputing for the above operations, if isIndexesHaveBeenUpdated() is true. 
  */
+//@formatter:on
 public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> {
 
   public enum BoundsUse {
@@ -196,12 +203,15 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private final boolean isIncludeZeroWidthAtBegin;
   private final boolean isIncludeZeroWidthAtEnd;
 
+//@formatter:off
   /**
-   * isEmpty is a potentially expensive calculation, involving potentially traversing all the
-   * iterators in a particular type hierarchy It is only done: - at init time - at
-   * moveToFirst/last/FS - these can cause regenerating the copy-on-write objects via the
-   * getNonNullCow call if no new nonNullCow was obtained, no need to recalculate empty
+   * isEmpty is a potentially expensive calculation, involving potentially traversing all the iterators in a particular type hierarchy
+   * It is only done:
+   *   - at init time
+   *   - at moveToFirst/last/FS - these can cause regenerating the copy-on-write objects via the getNonNullCow call
+   *       if no new nonNullCow was obtained, no need to recalculate empty
    */
+//@formatter:on
   private boolean isEmpty;
 
   private int prevBegin = -1; // for unambiguous iterators
@@ -447,10 +457,14 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.isDoEqualsTest = isDoEqualsTest;
   }
 
+//@formatter:off
   /**
-   * Converting to list form - called for unambiguous iterator going backwards, unambiguous iterator
-   * doing a moveTo(fs) operation unambiguous iterator doing a moveToLast() operation
+   * Converting to list form - called for 
+   *   unambiguous iterator going backwards, 
+   *   unambiguous iterator doing a moveTo(fs) operation
+   *   unambiguous iterator doing a moveToLast() operation 
    */
+//@formatter:on
   private void convertToListForm() {
     // moves to the start annotation, including moving past equals for annot style,
     // and accommodating strict
@@ -1004,15 +1018,18 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     return false;
   }
 
+//@formatter:off
   /**
-   * @return true if iterator was outside - beyond, and therefore, made invalid or iterator is
-   *         invalid to start with
-   * 
-   *         For covering case, if the annotation is equal to the bounding one, it's considered
-   *         outside. Use case: a bunch of same begin / end, one in middle is bounding one, and move
-   *         To is to left of it, or to right of it , without typePriorities to left: is ok, to
-   *         right, is outside but without type priorities, all are considered == to the bound
+   * @return true if iterator was outside - beyond, and therefore, made invalid
+   *              or iterator is invalid to start with
+   *              
+   *   For covering case, if the annotation is equal to the bounding one, it's considered outside.
+   *      Use case: a bunch of same begin / end,  one in middle is bounding one, and 
+   *                move To is to left of it, or to right of it , without typePriorities
+   *                  to left: is ok, to right, is outside but without type priorities,
+   *                     all are considered == to the bound                 
    */
+//@formatter:on
   private boolean is_beyond_bounds_chk_covering() {
     if (!it.isValid()) {
       return true;
@@ -1150,17 +1167,17 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     return wentBack;
   }
 
+//@formatter:off
   /**
-   * Special equalToBounds used only for having bounded iterators skip returning the bounding
-   * annotation
+   * Special equalToBounds used only for having bounded iterators 
+   * skip returning the bounding annotation
    * 
-   * Two styles: uimaFIT style: only skip the exact one (id's the same) uima style: skip all that
-   * compare equal using the AnnotationIndex comparator
-   * 
-   * @param fs
-   *          -
+   * Two styles: uimaFIT style: only skip the exact one (id's the same)
+   *             uima style: skip all that compare equal using the AnnotationIndex comparator
+   * @param fs -
    * @return true if should be skipped
    */
+//@formatter:on
   private boolean equalToBounds(Annotation fs) {
     return isDoEqualsTest && fs._id == originalBoundingAnnotation._id || (isSkipSameBeginEndType
             && fs.getBegin() == boundBegin && fs.getEnd() == boundEnd && fs.getType() == boundType);
@@ -1245,25 +1262,33 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     return true;
   }
 
+//@formatter:off
   /**
-   * Assume: on entry the subiterator might not be in a "valid" position Case:
-   * moveToJustPastBoundsAndBackup...
+   * Assume: on entry the subiterator might not be in a "valid" position
+   *   Case: moveToJustPastBoundsAndBackup...
    * 
-   * Adjust: skip over annotations whose "end" is < bound end, or whose end is == to bound end and
-   * begin == bound begin and linearTypeOrder exists, and annotation lessThan the bound type. Marks
-   * iterator invalid if moves beyond bound
+   * Adjust: skip over annotations whose "end" is < bound end, or
+   *   whose end is == to bound end and begin == bound begin 
+   *     and linearTypeOrder exists, 
+   *     and annotation lessThan the bound type.
+   * Marks iterator invalid if moves beyond bound
    * 
-   * when covering (which is different from coveredBy and sameBeginEnd, means get all annotations
-   * which span the bounds), skip items where the end < bounds end, because those items don't span
-   * the bounding FS
+   * when covering (which is different from coveredBy and sameBeginEnd,
+   *  means get all annotations which span the bounds), 
+   *  skip items where the end < bounds end,
+   *    because those items don't span the bounding FS
    * 
-   * Edge case: item with same begin and end is considered "covering" but subject to exclusion based
-   * on equalToBounds skipping Cases: position of begin is after span begin - mark "invalid"
-   * position of begin is before or == span begin: position of end is == or > span end: OK (except
-   * if begin is ==, then do lto check) position of end is < span end: if backward: moveToPrev until
-   * get valid position or run out. if run out, mark invalid if forward: move to next while position
-   * of begin is <= span begin.
+   * Edge case: item with same begin and end is considered "covering"
+   *              but subject to exclusion based on equalToBounds skipping
+   * Cases:
+   *   position of begin is after span begin - mark "invalid"
+   *   position of begin is before or == span begin:
+   *     position of end is == or > span end: OK (except if begin is ==, then do lto check)
+   *     position of end is < span end:
+   *       if backward: moveToPrev until get valid position or run out.  if run out, mark invalid
+   *       if forward: move to next while position of begin is <= span begin.
    */
+//@formatter:on
   private void adjustForCovering_forward() {
     if (!it.isValid()) {
       return;

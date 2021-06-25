@@ -29,52 +29,64 @@ import java.util.TreeSet;
 
 import org.apache.uima.internal.util.IntVector;
 
+//@formatter:off
 /**
  * Share common underlying char[] among strings: Optimize sets of strings for efficient storage
  * 
  * Apply it to a set of strings.
  * 
- * Lifecycle: 1) make an instance of this class 2) call .add (String or String[]) for all strings in
- * the set
+ * Lifecycle: 
+ *   1) make an instance of this class 
+ *   2) call .add (String or String[]) for all strings in the set 
+ *   
+ *   or - skip 1 and 2 and pass in a String [] that can be modified (sorted]
+ *   
+ *   3) call .optimize()
+ *    
+ *   4) call
+ *        .getString(String) or .getStringArray(String[]) - returns new string objects
+ *        .updateStringArray(String[]) to replace original Strings 
+ *        .getOffset(String) - returns int offset in some common string
+ *        .getCommonStringIndex(String)
+ *   5) call getCommonStrings to get all the common strings
+ *   6) Let the GC collect the instance of this class
  * 
- * or - skip 1 and 2 and pass in a String [] that can be modified (sorted]
+ * The strings are added first to a big list, instead of directly to a
+ * stringbuilder in order to improve reuse by sorting for longest strings first
  * 
- * 3) call .optimize()
- * 
- * 4) call .getString(String) or .getStringArray(String[]) - returns new string objects
- * .updateStringArray(String[]) to replace original Strings .getOffset(String) - returns int offset
- * in some common string .getCommonStringIndex(String) 5) call getCommonStrings to get all the
- * common strings 6) Let the GC collect the instance of this class
- * 
- * The strings are added first to a big list, instead of directly to a stringbuilder in order to
- * improve reuse by sorting for longest strings first
- * 
- * The commonStrings are kept in an array. There are more than one to support very large amounts, in
- * excess of 2GB.
+ * The commonStrings are kept in an array.  There are more than one to support
+ * very large amounts, in excess of 2GB.  
  * 
  * Nulls, passed in as strings, are mostly ignored, but handled appropriately.
- * 
- * 
  */
+//@formatter:on
 public class OptimizeStrings {
 
+ // @formatter:off
   /**
-   * splitSize = 100 means the common string can be as large as 100 the common string can hold a
-   * string of length 100
+   * splitSize = 100 means 
+   * the common string can be as large as 100
+   * the common string can hold a string of length 100 
    */
+ // @formatter:on
   // not final static for testing
   private int splitSize = Integer.MAX_VALUE - 2; // avoid boundary issues
 
   private ArrayList<String> inStrings = new ArrayList<>();
 
+//@formatter:off
   /**
-   * A two hop map from strings to offsets is used. "index" (int): The first hop: goes from string
-   * to an int index, incrementing 1 per unique shared common string segment "offset" (int): The 2nd
-   * hop: goes from the first index to the actual int offset in the particular associated piece of
-   * the common strings. The lastIndexInCommonStringA array holds the last index value within each
-   * of the common string segments
+   * A two hop map from strings to offsets is used.
+   * "index" (int):
+   *    The first hop: goes from string to an int index, incrementing 1 per
+   *      unique shared common string segment
+   * "offset" (int):     
+   * The 2nd hop: goes from the first index to the actual int offset in
+   *   the particular associated piece of the common strings.
+   * The lastIndexInCommonStringA array holds the last index value
+   *   within each of the common string segments
    */
-
+//@formatter:on
   // the value is either
   // an int index into the offset table which has the offset in the common string
   // the intindex in the str aux heap for this string, in the deserialized form
@@ -130,7 +142,9 @@ public class OptimizeStrings {
   }
 
   /**
-   * null strings not added 0 length strings added
+   * null strings not added 
+   * 
+   * 0 length strings added
    * 
    * @param s
    *          -

@@ -46,6 +46,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+//@formatter:off
 /**
  * Utility class for doing deep copies of FeatureStructures from one CAS to another. To handle cases
  * where the source CAS has multiple references to the same FS, you can create one instance of
@@ -58,16 +59,17 @@ import org.apache.uima.jcas.tcas.Annotation;
  * method getLowLevelCas() which should return a reference to the underlying CAS which can be
  * successfully cast to a CASImpl.
  * 
- * The source and target view names for FSs are the same except if: - The constructor of the CAS
- * Copier instance specifies two different view names, or - The copyCasView method(s) specify two
- * different view names. In both these cases, the FSs copied are between different views. Feature
- * Structures belonging to one view will be belonging to the other view in the copy. Exception:
- * Feature Structures which are subtypes of AnnotationBase belong to the view associated with the
- * AnnotationBase's sofa reference.
+ * The source and target view names for FSs are the same except if:
+ *   - The constructor of the CAS Copier instance specifies two different view names, or
+ *   - The copyCasView method(s) specify two different view names.
+ *   In both these cases, the FSs copied are between different views.  
+ *   Feature Structures belonging to one view will be belonging to the other view in the copy.
+ *     Exception: Feature Structures which are subtypes of AnnotationBase belong to the view
+ *     associated with the AnnotationBase's sofa reference.
  * 
- * The source and target CASs must be separate CASs (that is, not two views of the same CAS), unless
- * the target View name is different from the source view name.
- * 
+ * The source and target CASs must be separate CASs (that is, not two views of the same CAS),
+ *   unless the target View name is different from the source view name.
+ *   
  * The copied FSs have their associated CAS references set to a corresponding view in the target.
  * 
  * The corresponding view is the view in the target with the same view name as the source view
@@ -78,6 +80,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * copy of the sofa reference (if not null) is used.
  * 
  */
+//@formatter:on
 public class CasCopier {
 
   private static final TypeImpl MISSING_TYPE = TypeImpl.singleton;

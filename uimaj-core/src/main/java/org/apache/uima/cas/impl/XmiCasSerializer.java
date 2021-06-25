@@ -58,11 +58,14 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+//@formatter:off
 /**
  * CAS serializer for XMI format; writes a CAS in the XML Metadata Interchange (XMI) format.
  * 
- * To use, - create an instance of this class, - optionally) configure the instance, and then - call
- * serialize on the instance, optionally passing in additional parameters.
+ * To use, 
+ *   - create an instance of this class, 
+ *   - optionally) configure the instance, and then 
+ *   - call serialize on the instance, optionally passing in additional parameters.
  * 
  * After the 1st 2 steps, the serializer instance may be used for multiple calls (on multiple
  * threads) to the 3rd serialize step, if all calls use the same configuration.
@@ -97,6 +100,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * Instances of this class must be used on only one thread while configuration is being done;
  * afterwards, multiple threads may use the configured instance, to call serialize.
  */
+//@formatter:on
 public class XmiCasSerializer {
 
   static final char[] URIPFX = new char[] { 'h', 't', 't', 'p', ':', '/', '/', '/' };
@@ -404,12 +408,16 @@ public class XmiCasSerializer {
     xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
   }
 
+//@formatter:off
   /***************************************************
-   * non-static XMI Serializer methods * To use: first make an instance of this class and set any
-   * configuration info needed Then call these methods
+   *       non-static XMI Serializer methods         * 
+   *  To use: first make an instance of this class
+   *    and set any configuration info needed
+   *  Then call these methods
    * 
    * The serialize calls are thread-safe
    ***************************************************/
+//@formatter:on
 
   /**
    * Write the CAS data to a SAX content handler.
@@ -1274,7 +1282,7 @@ public class XmiCasSerializer {
 
     /**
      * Generate startElement, characters, and endElement SAX events. Only for StringArray and
-     * StringList kinds of things Only called for XMI (not JSON)
+     * StringList kinds of things. Only called for XMI (not JSON)
      * 
      * @param elements
      *          a list of XmlElementNameAndContents objects representing the elements to generate
@@ -1354,10 +1362,12 @@ public class XmiCasSerializer {
       return false; // ignored
     }
 
+ // @formatter:off
     /**
      * Converts a UIMA-style dotted type name to the element name that should be used in the XMI
      * serialization. The XMI element name consists of three parts - the Namespace URI, the Local
-     * Name, and the QName (qualified name). Namespace URI = http:///uima/noNamespace.ecore or
+     * Name, and the QName (qualified name).
+     * Namespace URI = http:///uima/noNamespace.ecore or
      * http:///uima/package/name/with/slashes.ecore
      * 
      * 
@@ -1365,6 +1375,7 @@ public class XmiCasSerializer {
      *          a UIMA-style dotted type name
      * @return a data structure holding the three components of the XML element name
      */
+ // @formatter:on
     @Override
     protected XmlElementName uimaTypeName2XmiElementName(String uimaTypeName) {
       if (uimaTypeName.endsWith(TypeSystemImpl.ARRAY_TYPE_SUFFIX)) {

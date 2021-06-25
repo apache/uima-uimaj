@@ -38,20 +38,29 @@ import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 
+//@formatter:off
 /**
- * Decompiler - for testing - for locating customizations
+ * Decompiler
+ *   - for testing
+ *   - for locating customizations
  *
- * Operation: Make an instance, optionally setting - class loader to use (may pass byte array
- * instead) - directory where to write output (may output to string instead) - class loader to use
- * when resolving symbols during decompile
+ * Operation:
+ *   Make an instance, optionally setting
+ *     - class loader to use (may pass byte array instead)
+ *     - directory where to write output (may output to string instead)
+ *     - class loader to use when resolving symbols during decompile
  * 
- * call decompile - argument - class name (without .class or .java suffix, fully qualified) or -
- * byte array - return value is a byte array output stream with UTF-8 encoded value
+ *   call decompile
+ *     - argument
+ *         - class name (without .class or .java suffix, fully qualified) or
+ *         - byte array
+ *     - return value is a byte array output stream with UTF-8 encoded value
  * 
  * decompileToFile - writes decompiled output to a xxx.java file in output directory
  * 
  * Not thread safe
  */
+//@formatter:on
 public class UimaDecompiler {
 
   /**

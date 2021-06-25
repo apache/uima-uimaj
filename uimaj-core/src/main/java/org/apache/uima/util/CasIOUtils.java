@@ -345,6 +345,7 @@ public class CasIOUtils {
             leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
   }
 
+//@formatter:off
   /**
    * Loads a CAS from an Input Stream. The format is determined from the content. For formats of
    * ending in _TSI SERIALIZED_TSI or COMPRESSED_FILTERED_TSI, the type system and index definitions
@@ -363,10 +364,10 @@ public class CasIOUtils {
    * @param casInputStream
    *          The input stream containing the CAS, appropriately buffered.
    * @param tsiInputStream
-   *          The optional input stream containing the type system, appropriately buffered. This is
-   *          only used if it is non null and - the casInputStream does not already come with an
-   *          embedded CAS Type System and Index Definition, or - the serial format is
-   *          COMPRESSED_FILTERED_TSI
+   *          The optional input stream containing the type system, appropriately buffered. 
+   *          This is only used if it is non null and 
+   *            -  the casInputStream does not already come with an embedded CAS Type System and Index Definition, or 
+   *            -  the serial format is COMPRESSED_FILTERED_TSI
    * @param aCAS
    *          The CAS that should be filled
    * @param casLoadMode
@@ -375,6 +376,7 @@ public class CasIOUtils {
    * @throws IOException
    *           - Problem loading from given InputStream
    */
+//@formatter:on
   public static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
           CasLoadMode casLoadMode) throws IOException {
     return load(casInputStream, tsiInputStream, aCAS, casLoadMode, null);

@@ -32,25 +32,28 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.resource.ResourceInitializationException;
 
+//@formatter:off
 /**
  * This class has no fields or instance methods, but instead has only static methods.
  * 
  * In spite of its name, it has static methods for both serializing and deserializing CASes.
  * 
- * It has 2 styles of Serialization / Deserialization - one which makes use of various custom binary
- * serialization methods, and - one which just converts CAS and related objects into other objects
- * which in turn are serializable by normal Java Object serialization.
+ * It has 2 styles of Serialization / Deserialization 
+ *   - one which makes use of various custom binary serialization methods, and
+ *   - one which just converts CAS and related objects into other objects which
+ *     in turn are serializable by normal Java Object serialization.
  * 
  * See also CasIOUtils, which has static methods for serialization and deserialization, including
  * support for XMI and XCAS.
- * 
  */
+//@formatter:on
 public class Serialization {
 
-  /***************************************************************
-   * These methods convert a CAS to / from a serializable object * and vice-versa. * Some also
-   * handle type system and index definitions *
-   ***************************************************************/
+  // *************************************************************
+  // These methods convert a CAS to / from a serializable object * 
+  // and vice-versa.                                             *
+  // Some also handle type system and index definitions          *
+  // *************************************************************
 
   /**
    * Convert a CAS to a CASSerializer object. This object used in testing , and also to pass things
@@ -67,8 +70,8 @@ public class Serialization {
   }
 
   /**
-   * Convert a CAS to a CASSerializer object. This object used in testing Excludes metadata about
-   * the CAS
+   * Convert a CAS to a CASSerializer object. This object used in testing. Excludes metadata about
+   * the CAS.
    * 
    * @param cas
    *          the source for a new CASSerializer object
@@ -166,10 +169,10 @@ public class Serialization {
     return ((CASImpl) casMgr).getCurrentView();
   }
 
-  /*******************************************************************************
-   * Methods from here on do some form of custom serialization / deserialization * with data
-   * streams, byte arrays, etc. *
-   *******************************************************************************/
+  // *****************************************************************************
+  // Methods from here on do some form of custom serialization / deserialization *
+  // with data streams, byte arrays, etc.                                        *   
+  // *****************************************************************************
 
   /**
    * Serialize a CAS including what's indexed, to an output stream Uses uncompressed binary
@@ -185,20 +188,19 @@ public class Serialization {
     ser.addCAS((CASImpl) cas, ostream);
   }
 
+//@formatter:off
   /**
-   * Deserialize a CAS, in various binary formats, into an existing CAS Note: this form supports
-   * deserializing the following binary representations: - plain (uncompressed) - compressed, no
-   * type filtering (form 4), Delta and not-delta - compressed, no type filtering (form 6),
-   * not-delta only. If this form encounters a non-conforming kind of input, it will throw a runtime
-   * exception.
-   * 
-   * @param cas
-   *          the CAS to deserialize into. If the incoming representation is a Delta Cas, then the
-   *          receiving CAS is not reset, but is added to.
-   * @param istream
-   *          the input stream
+   * Deserialize a CAS, in various binary formats, into an existing CAS
+   *   Note: this form supports deserializing the following binary representations:
+   *     - plain (uncompressed)
+   *     - compressed, no type filtering (form 4), Delta and not-delta
+   *     - compressed, no type filtering (form 6), not-delta only.
+   *     If this form encounters a non-conforming kind of input, it will throw a runtime exception.  
+   * @param cas the CAS to deserialize into.  If the incoming representation is a Delta Cas, then the receiving CAS is not reset, but is added to.
+   * @param istream the input stream
    * @return The form of the serialized CAS (from its header)
    */
+//@formatter:on
   public static SerialFormat deserializeCAS(CAS cas, InputStream istream) {
     return ((CASImpl) cas).getBinaryCasSerDes().reinit(istream);
   }
@@ -222,9 +224,9 @@ public class Serialization {
     ser.addCAS((CASImpl) cas, ostream, mark);
   }
 
-  /*******************************************************************************
-   * Methods from here on use some form of compression *
-   *******************************************************************************/
+  // *****************************************************************************
+  // Methods from here on use some form of compression                           *
+  // *****************************************************************************
 
   /**
    * Serialize in compressed binary form 4
@@ -341,29 +343,24 @@ public class Serialization {
     bcs.serialize(out);
   }
 
+//@formatter:off
   /**
-   * Deserialize a CAS, in various binary formats, into an existing CAS Note: this form supports
-   * deserializing the following binary representations: - compressed, type filtering (form 6),
-   * delta and not-delta.
-   * 
-   * @param cas
-   *          the CAS to deserialize into. If the incoming representation is a Delta Cas, then the
-   *          receiving CAS is not reset, but is added to.
-   * @param istream
-   *          the input stream
-   * @param tgtTypeSystem
-   *          The typeSystem of the serialized form of the CAS; must be compatible with the type
-   *          system of the receiving cas.
-   * @param reuseInfo
-   *          If delta CAS is being received and form 6 compression is being used, then this must be
-   *          the reuseInfo captured when the original CAS (being updated by the delta coming in)
-   *          was sent out.
+   * Deserialize a CAS, in various binary formats, into an existing CAS
+   *   Note: this form supports deserializing the following binary representations:
+   *     - compressed, type filtering (form 6), delta and not-delta.
+   *   
+   * @param cas the CAS to deserialize into.  If the incoming representation is a Delta Cas, then the receiving CAS is not reset, but is added to.
+   * @param istream the input stream
+   * @param tgtTypeSystem The typeSystem of the serialized form of the CAS; must be compatible with the type system of the receiving cas.
+   * @param reuseInfo If delta CAS is being received and form 6 compression is being used, then this must be the reuseInfo captured when the
+   *                  original CAS (being updated by the delta coming in) was sent out.
    * @return The instance of BinaryCasSerDes6 used for deserialization
    * @throws IOException
    *           if IO exception
    * @throws ResourceInitializationException
    *           if the target type system and the CAS's type system can't be merged
    */
+//@formatter:on
   public static BinaryCasSerDes6 deserializeCAS(CAS cas, InputStream istream,
           TypeSystem tgtTypeSystem, ReuseInfo reuseInfo)
           throws IOException, ResourceInitializationException {
@@ -373,33 +370,25 @@ public class Serialization {
     return bcs;
   }
 
+//@formatter:off
   /**
-   * Deserialize a CAS, in various binary formats, into an existing CAS Note: this form supports
-   * deserializing the following binary representations: - compressed, type filtering (form 6),
-   * delta and not-delta.
-   * 
-   * @param cas
-   *          the CAS to deserialize into. If the incoming representation is a Delta Cas, then the
-   *          receiving CAS is not reset, but is added to.
-   * @param istream
-   *          the input stream
-   * @param tgtTypeSystem
-   *          The typeSystem of the serialized form of the CAS; must be compatible with the type
-   *          system of the receiving cas.
-   * @param reuseInfo
-   *          If delta CAS is being received and form 6 compression is being used, then this must be
-   *          the reuseInfo captured when the original CAS (being updated by the delta coming in)
-   *          was sent out.
-   * @param allowPreexisting
-   *          used to control what happens when a delta cas is modifying Feature Structures below
-   *          the line
+   * Deserialize a CAS, in various binary formats, into an existing CAS
+   *   Note: this form supports deserializing the following binary representations:
+   *     - compressed, type filtering (form 6), delta and not-delta.
+   *   
+   * @param cas the CAS to deserialize into.  If the incoming representation is a Delta Cas, then the receiving CAS is not reset, but is added to.
+   * @param istream the input stream 
+   * @param tgtTypeSystem The typeSystem of the serialized form of the CAS; must be compatible with the type system of the receiving cas.
+   * @param reuseInfo If delta CAS is being received and form 6 compression is being used, then this must be the reuseInfo captured when the
+   *                  original CAS (being updated by the delta coming in) was sent out.
+   * @param allowPreexisting used to control what happens when a delta cas is modifying Feature Structures below the line
    * @return The instance of BinaryCasSerDes6 used for deserialization
    * @throws IOException
    *           if IO exception
    * @throws ResourceInitializationException
    *           if the target type system and the CAS's type system can't be merged
    */
-
+//@formatter:on
   public static BinaryCasSerDes6 deserializeCAS(CAS cas, InputStream istream,
           TypeSystem tgtTypeSystem, ReuseInfo reuseInfo, AllowPreexistingFS allowPreexisting)
           throws IOException, ResourceInitializationException {
@@ -408,5 +397,4 @@ public class Serialization {
     bcs.deserialize(istream, allowPreexisting);
     return bcs;
   }
-
 }

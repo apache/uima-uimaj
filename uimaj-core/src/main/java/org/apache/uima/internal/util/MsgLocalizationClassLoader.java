@@ -21,20 +21,25 @@ package org.apache.uima.internal.util;
 
 import java.net.URL;
 
+//@formatter:off
 /**
- * Class Loader for loading localized messages See https://issues.apache.org/jira/browse/UIMA-1714
- * Delegates to other ClassLoaders, in the following order the class loader that loaded the 2nd
- * previous caller the class loader that loaded the 3rd previous caller etc. and finally, the thread
- * local context loader, if it exists UIMA-3692 Note: the caller of this method is presumed to be
- * framework code that was, in turn, called to perform some logging or whatever, so we skip the 1st
- * previous caller.
+ * Class Loader for loading localized messages
+ * See https://issues.apache.org/jira/browse/UIMA-1714
+ * Delegates to other ClassLoaders, in the following order
+ *   the class loader that loaded the 2nd previous caller
+ *   the class loader that loaded the 3rd previous caller
+ *   etc.
+ *   and finally, the thread local context loader, if it exists UIMA-3692
+ * Note: the caller of this method is presumed to be framework code
+ *   that was, in turn, called to perform some logging or whatever,
+ *   so we skip the 1st previous caller.
  * 
  * Note that each of these class loaders will, in turn, delegate if they are set up to do so
  * 
  * Note: if a caller's class loader is the same as the previously tried one, we skip it (simple
  * speed optimization, and may avoid some kind of strange loop)
  */
-
+//@formatter:on
 public class MsgLocalizationClassLoader {
 
   /**

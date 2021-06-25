@@ -2360,6 +2360,7 @@ public class XmiCasDeserializer {
     xmlReader.parse(new InputSource(aStream));
   }
 
+//@formatter:off
   /**
    * Deserializes a CAS from XMI. This version of this method supports deserializing XMI document
    * containing only deltas. The Delta CAS XMI is in the same form as a complete CAS XMI but only
@@ -2389,13 +2390,15 @@ public class XmiCasDeserializer {
    *          target CAS will not be reset, and only Feature Structures whose xmi:id is strictly
    *          greater than the mergePoint value will be deserialized.
    * @param allowPreexistingFS
-   *          used when deserializing delta CAS whether to allow, disallow or ignore elements
-   *          representign preexisting FSs or preexisting FSs updates in View element. if IGNORE,
-   *          FSs below the mergePoint are ignored and only new FSs are processed. if ALLOW, FSs
-   *          below the mergePoint are processed as well as new FSs. if DISALLOW FSs below
-   *          mergePoint will cause serialization to fail. FSs below the mergePoint referenced in
-   *          View element will be flagged as an error condition and will not modifiy the CAS being
-   *          filled and an exception reporting this will be thrown at the end of deserialization.
+   *            used when deserializing delta CAS whether to allow, disallow or
+   *            ignore elements representign preexisting FSs or preexisting 
+   *            FSs updates in View element.
+   *            if IGNORE, FSs below the mergePoint are ignored and only new FSs are processed.
+   *            if ALLOW,  FSs below the mergePoint are processed as well as new FSs.
+   *            if DISALLOW FSs below mergePoint will cause serialization to fail. FSs below
+   *               the mergePoint referenced in View element will be flagged as an error condition
+   *               and will not modifiy the CAS being filled and an exception reporting this will
+   *               be thrown at the end of deserialization.
    * 
    *
    * @throws SAXException
@@ -2403,19 +2406,21 @@ public class XmiCasDeserializer {
    * @throws IOException
    *           if an I/O failure occurs
    * 
-   *           NOTES: It is expected that Delta CAS serialization will serialize modified
-   *           preexisting FSs first so that disallowed preexisting FSs are detected at the start
-   *           and the CAS being filled is left untouched. If disallowed prexisting FS is
-   *           encountered in the View element, the FS is ignored and the deserialization completes
+   * NOTES:
+   *     It is expected that Delta CAS serialization will serialize 
+   *     modified preexisting FSs first so that disallowed preexisting
+   *     FSs are detected at the start and the CAS being filled is
+   *     left untouched.  If disallowed prexisting FS is encountered in
+   *     the View element, the FS is ignored and the deserialization completes
    *           but throws an exception at the end.
    * 
-   *           Possible performance issue with StringListFS. When processing String, StringArrayFS
-   *           and StringListFS features of a preexisting FS, the string value in the CAS is updated
-   *           only if it is not equal to the incoming string value. Processing of a StringListFS
-   *           where a new string value has been inserted, all subsequent strings in the list will
-   *           be updated with new strings.
-   * 
+   *     Possible performance issue with StringListFS. 
+   *     When processing String, StringArrayFS and StringListFS features of a preexisting FS, 
+   *     the string value in the CAS is updated only if it is not equal to the incoming string value.
+   *     Processing of a StringListFS where a new string value has been inserted, all subsequent
+   *     strings in the list will be updated with new strings.   
    */
+//@formatter:on
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
           XmiSerializationSharedData aSharedData, int aMergePoint,
           AllowPreexistingFS allowPreexistingFS) throws SAXException, IOException {

@@ -221,24 +221,29 @@ public class IntArrayRBTcommon {
     return this.size;
   }
 
+//@formatter:off
   /**
-   * There are two strategies for storing data, controlled by useklrp. If useklrp, then 4 elements
-   * are put together into one int vector, taking 4 words per element. Other elements are kept in
-   * their own vectors.
+   * There are two strategies for storing data, controlled by useklrp.
+   * If useklrp, then 4 elements are put together into one int vector,
+   *   taking 4 words per element.
+   *   Other elements are kept in their own vectors.
    * 
-   * The growth strategy for the 4-element one is to a) start at some minimum (a power of 2) b) grow
-   * by doubling up to 2 * 1024 *1024 c) grow by adding 2 *1024 * 1024, until d) reaching the
-   * maximum size (the max index will be 1 less) e) when that size is reached, the next int[] is set
-   * up with the minimum, and it grows as above.
+   * The growth strategy for the 4-element one is to 
+   *   a) start at some minimum (a power of 2)
+   *   b) grow by doubling up to 2 * 1024 *1024
+   *   c) grow by adding 2 *1024 * 1024, until
+   *   d) reaching the maximum size (the max index will be 1 less)
+   *   e) when that size is reached, the next int[] is set up with the
+   *      minimum, and it grows as above.
    * 
-   * The test for growth and growing is made individually for the different parts. For color (a
-   * boolean), the size for stopping doubling is 32 * 2 * 1024 * 1024, so the # of words is the
-   * same.
+   * The test for growth and growing is made individually for the different parts.
+   * For color (a boolean), the size for stopping doubling is 32 * 2 * 1024 * 1024,
+   *   so the # of words is the same.
    * 
    * @param requiredSize
    *          -
    */
-
+//@formatter:on
   protected void ensureCapacityKlrp(int requiredSize) {
     // the klrp design stacks 4 pointers together into the int array
     // When growing, the last array is grown by the needed amount.
@@ -428,15 +433,15 @@ public class IntArrayRBTcommon {
     return NIL;
   }
 
+//@formatter:off
   /**
-   * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k. If k is less than all
-   * the nodes, then the first node is returned If k is greater than all the nodes, then NIL is
-   * returned (invalid signal)
-   * 
-   * @param k
-   *          the key
+   * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
+   *   If k is less than all the nodes, then the first node is returned
+   *   If k is greater than all the nodes, then NIL is returned (invalid signal)
+   * @param k the key
    * @return the index of the node, or NIL if k &gt; all keys
    */
+//@formatter:on
   public int findInsertionPoint(final int k) {
     return findInsertionPointCmn(k, true);
   }
@@ -593,22 +598,24 @@ public class IntArrayRBTcommon {
     }
   }
 
+//@formatter:off
   /**
-   * delete node z Step 1: locate a node to delete at the bottom of the tree. Bottom means left or
-   * right (or both) descendant is NIL.
+   * delete node z
+   *   Step 1: locate a node to delete at the bottom of the tree.  Bottom means left or right (or both) descendant is NIL.
    * 
-   * There are 2 cases: either the node to delete is z, or the node is the nextNode. If z has one or
-   * both descendants NIL, then it's the one to delete. Otherwise, the next node which is found by
-   * descending right then left until reaching the bottom (left = 0) node.
+   *   There are 2 cases:  either the node to delete is z, or the node is the nextNode.
+   *     If z has one or both descendants NIL, then it's the one to delete.
+   *     Otherwise, the next node which is found by descending right then left until reaching the bottom (left = 0) node.
    * 
    * y is node to remove from the tree.
    * 
-   * x is the non-NIL descendant of y (if one exists). It will be reparented to y's parent, and y's
-   * parent's left or right will point to it, skipping over y.
+   *   x is the non-NIL descendant of y (if one exists).  It will be reparented to y's parent, and y's parent's left or right
+   *   will point to it, skipping over y.
    * 
    * @param z
    *          node to be removed, logically
    */
+//@formatter:on
   protected void deleteNode(final int z) {
     // y is the node to remove from the tree; is the input node, or the next node.
 

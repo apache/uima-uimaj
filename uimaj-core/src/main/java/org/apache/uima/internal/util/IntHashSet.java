@@ -25,29 +25,37 @@ import java.util.function.IntPredicate;
 
 import org.apache.uima.util.impl.Constants;
 
+//@formatter:off
 /**
- * A set of non-zero ints. Can be negative.
+ * A set of non-zero ints. 
+ *   Can be negative.
  * 
- * 0 reserved internally to indicate "not in the map"; you will get an exception if you try to store
- * 0 as a value.
+ *   0 reserved internally to indicate "not in the map";
+ *   you will get an exception if you try to store 0 as a value.
  * 
  * 0 will be returned if the value is missing from the map.
  * 
- * allowed range is Integer.MIN_VALUE + 1 to Integer.MAX_VALUE 0 is the value for an empty cell
+ *   allowed range is Integer.MIN_VALUE + 1 to Integer.MAX_VALUE 
+ *     0 is the value for an empty cell
  * Integer.MIN_VALUE is the value for a deleted (removed) value
  * 
- * based on Int2IntHashMap This impl is for use in a single thread case only
+ * based on Int2IntHashMap
+ * This impl is for use in a single thread case only
  * 
  * Supports shrinking (reallocating the big table)
  *
- * Supports representing ints as "short" 2byte values if possible, together with an offset amount.
- * Because of the offset, the adjusted key could be == to the offset, so we subtract 1 from it to
- * preserve 0 value as being the null / empty. For short values, the range is: Short.MIN_VALUE+2 to
- * Short.MAX_VALUE after Offset, with the "0" value moved down by 1 and the Short.MIN_VALUE used for
- * deleted (removed) items
+ * Supports representing ints as "short" 2byte values if possible,
+ *   together with an offset amount.
+ *   Because of the offset, the adjusted key could be == to the offset,
+ *   so we subtract 1 from it to preserve 0 value as being the null / empty.
+ *   For short values, the range is:
+ *        Short.MIN_VALUE+2 to Short.MAX_VALUE after Offset,
+ *        with the "0" value moved down by 1 and 
+ *        the Short.MIN_VALUE used for deleted (removed) items 
  * 
  * Automatically switches to full int representation if needed
  */
+//@formatter:on
 public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 
   public static final int SIZE_NEEDING_4_BYTES = 256 * 256 - 2;

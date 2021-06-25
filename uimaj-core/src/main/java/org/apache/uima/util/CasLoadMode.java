@@ -18,6 +18,7 @@
  */
 package org.apache.uima.util;
 
+//@formatter:off
 /**
  * Used with CasIOUtils, maybe elsewhere, to indicate how CASes are to be loaded or saved.
  * 
@@ -29,55 +30,76 @@ package org.apache.uima.util;
  * 
  * The TS/TSI artifact is self-identifying as to which kind it is, when deserializing.
  * 
- * TSI and TS can be provided via two sources: - embedded in some serialized forms - via a separate
- * artifact
+ * TSI and TS can be provided via two sources:
+ *   - embedded in some serialized forms
+ *   - via a separate artifact 
  * 
- * If both embedded and separate values are available for TS or TSI, then embedded takes precedence,
- * external is ignored, except for compressed form 6; in that case, both are used: - external used
- * to reinitialize the CAS's type system and indexes definition, and - embedded used to decode the
- * serialized data, leniently.
+ * If both embedded and separate values are available for TS or TSI, then embedded takes precedence, external is ignored,
+ *   except for compressed form 6; in that case, both are used: 
+ *     - external used to reinitialize the CAS's type system and indexes definition, and
+ *     - embedded used to decode the serialized data, leniently.
  *
- * Compressed form 6 type system for decoding comes from the first one available of: - embedded TS
- * or TSI - external TS or TSI - the receiving CAS's type system
+ * Compressed form 6 type system for decoding comes from the first one available of: 
+ *   - embedded TS or TSI
+ *   - external TS or TSI
+ *   - the receiving CAS's type system 
  */
+//@formatter:on
 public enum CasLoadMode {
 
+ // @formatter:off
   /**
    * Default operation:
    *
-   * If TSI is available, reinitialize the CAS's type system and its indexes definition, except for
-   * Compressed Form 6, using the first TSI in this list: - embedded - external (to do this for
-   * Compressed Form 6, specify REINIT) Logic for doing embedded before external: Examining each
-   * serialized form: Java Object: if embedded is available, it's the right one, a different one
-   * causes exceptions XCas, XMI: doesn't apply - no way to have embedded Form 6 - excluded, anyway,
-   * see below Form 4 and Binary: these require the serialized type system match the CASs, so the
-   * embedded one is always right.
+   * If TSI is available, 
+   *   reinitialize the CAS's type system and its indexes definition, except for Compressed Form 6, 
+   *     using the first TSI in this list:
+   *       - embedded
+   *       - external
+   *     (to do this for Compressed Form 6, specify REINIT)
+   *     Logic for doing embedded before external:
+   *       Examining each serialized form:
+   *         Java Object:  if embedded is available, it's the right one, a different one causes exceptions
+   *         XCas, XMI:  doesn't apply - no way to have embedded
+   *         Form 6 - excluded, anyway, see below
+   *         Form 4 and Binary: these require the serialized type system match the CASs, so the embedded one is always right.
    * 
-   * Compressed Form 6: - decoding: use the first type system in this list: - embedded TS/TSI -
-   * external TS/TSI - the receiving CAS's type system
+   * Compressed Form 6:
+   *   - decoding: use the first type system in this list:
+   *     - embedded TS/TSI
+   *     - external TS/TSI
+   *     - the receiving CAS's type system 
    * 
    * For all SerialFormats except Compressed type 6, default is to require strict matching (not
    * lenient).
    */
+ // @formatter:on
   DEFAULT,
 
+//@formatter:off
   /**
-   * Same as DEFAULT, except for XMI and XCAS formats: Specifies lenient loading for those formats,
-   * which means that the load will not indicate an error if the incoming data has types and/or
-   * features not in the receiving CAS, but will instead silently ignore these.
+   * Same as DEFAULT, except for XMI and XCAS formats:
+   *   Specifies lenient loading for those formats, which means that the 
+   *   load will not indicate an error if the incoming data has types and/or features not in the receiving CAS,
+   *   but will instead silently ignore these.
    */
+//@formatter:on
   LENIENT,
 
+//@formatter:off
   /**
    * Used for Compressed Form 6 when needing to reset the CAS's type system.
    * 
-   * Same as default, except that the internal and / or external TSI is used to reinitialize the
-   * CAS's type system and its indexes definition, using the first TSI in this list: - external (to
-   * allow the embedded to specify the decoding type system) - embedded (if it is a TSI)
+   * Same as default, except that the internal and / or external TSI is used to 
+   *   reinitialize the CAS's type system and its indexes definition, 
+   *   using the first TSI in this list:
+   *     - external (to allow the embedded to specify the decoding type system)
+   *     - embedded (if it is a TSI)
    *
    * Decode (same as DEFAULT)
    * 
    * Error if no TSI information available
    */
-  REINIT,;
+//@formatter:on
+  REINIT;
 }

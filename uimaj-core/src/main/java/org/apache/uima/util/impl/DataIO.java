@@ -190,17 +190,16 @@ public class DataIO {
     out.write(v);
   }
 
+//@formatter:off
   /**
-   * write a positive or negative number, optimized for fewer bytes near 0 sign put in low order
-   * bit, rest of number converted to positive and shifted left 1 max negative written as - 0.
-   * 
-   * @param out
-   *          output sink
-   * @param v
-   *          the value to write
-   * @throws IOException
-   *           passthru
+   * write a positive or negative number, optimized for fewer bytes near 0
+   *   sign put in low order bit, rest of number converted to positive and shifted left 1
+   *   max negative written as - 0.
+   * @param out output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
+//@formatter:on
   // special handling for MIN_VALUE because
   // Math.abs of it "fails". We instead code it as
   // "-0", a code point not otherwise in use
@@ -261,9 +260,11 @@ public class DataIO {
     }
   }
 
+//@formatter:off
   /**
-   * Write a positive number with the fewest bytes possible up to 127 written as a byte high order
-   * bit on means get another byte
+   * Write a positive number with the fewest bytes possible
+   * up to 127 written as a byte
+   * high order bit on means get another byte
    * 
    * Note: value treated as unsigned 32 bit int
    * 
@@ -274,6 +275,7 @@ public class DataIO {
    * @throws IOException
    *           passthru
    */
+//@formatter:on
   public static void writeVnumber(final DataOutput out, final int v) throws IOException {
     if ((v >= 0) && v < 128) {
       out.write(v); // fast path
@@ -482,15 +484,17 @@ public class DataIO {
   public static void writeLongArray(DataOutput out, long[] v) throws IOException {
     // java doesn't support arrays longer than Integer.MAX_VALUE, even on 64-bit platforms
     writeVnumber(out, v.length);
-    for (long vi : v)
+    for (long vi : v) {
       out.writeLong(vi);
+    }
   }
 
   public static long[] readLongArray(DataInput in) throws IOException {
     int size = readVnumber(in);
     long[] v = new long[size];
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i) {
       v[i] = in.readLong();
+    }
     return v;
   }
 
@@ -522,5 +526,4 @@ public class DataIO {
     }
     return r;
   }
-
 }

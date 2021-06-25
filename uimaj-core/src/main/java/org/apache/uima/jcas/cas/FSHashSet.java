@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
@@ -43,106 +43,91 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.util.impl.Constants;
 
-/**
- * a hash set of Feature Structures Is Pear aware - stores non-pear versions but may return pear
- * version in pear contexts Updated by JCasGen Fri Jan 20 11:55:59 EST 2017 XML source:
- * C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
- * 
- * @generated
- */
-public class FSHashSet<T extends TOP> extends TOP
-        implements UimaSerializableFSs, SelectViaCopyToArray, Set<T>, RandomAccess, Cloneable {
 
-  /**
-   * @generated
-   * @ordered
+/** a hash set of Feature Structures
+ * Is Pear aware - stores non-pear versions but may return pear version in pear contexts
+ * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
+ * @generated */
+public class FSHashSet <T extends TOP> extends TOP implements 
+                            UimaSerializableFSs, SelectViaCopyToArray, 
+                            Set<T>, RandomAccess, Cloneable {
+  
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
-
-  /**
-   * @generated
-   * @ordered
+  
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(FSHashSet.class);
-  /**
-   * @generated
-   * @ordered
+  /** @generated
+   * @ordered 
    */
-  @SuppressWarnings("hiding")
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /**
-   * @generated
-   * @return index of the type
+  /** @generated
+   * @return index of the type  
    */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /**
-   * lifecycle - starts as empty array list - becomes non-empty when updated (add) -- used from that
-   * point on.
-   */
-
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+  /** lifecycle   
+   *   - starts as empty array list   
+   *   - becomes non-empty when updated (add)       
+   *   -- used from that point on. */
+  
   private boolean isPendingInit = false;
   private boolean isSaveNeeded = false;
-
+  
   private final HashSet<T> fsHashSet; // not set here to allow initial size version
 
-  /*
-   * ******************* Feature Offsets *
-   *******************/
-
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
   public final static String _FeatName_fsArray = "fsArray";
 
+
   /* Feature Adjusted Offsets */
-  // public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  private final static CallSite _FC_fsArray = TypeSystemImpl
-          .createCallSiteForBuiltIn(FSHashSet.class, "fsArray");
+//  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
+  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSHashSet.class, "fsArray");
   private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
-   */
+   
+  /** Never called.  Disable default constructor
+   * @generated */
   protected FSHashSet() {
     fsHashSet = null;
   }
-
-  /**
-   * Internal - constructor used by generator
-   * 
+    
+  /** Internal - constructor used by generator 
    * @generated
-   * @param casImpl
-   *          the CAS this Feature Structure belongs to
-   * @param type
-   *          the type of this Feature Structure
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
   public FSHashSet(TypeImpl type, CASImpl casImpl) {
     this(new HashSet<>(), type, casImpl);
   }
-
+  
   public FSHashSet(HashSet<T> set, TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     fsHashSet = set;
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
-    }
+    }    
   }
-
-  /**
-   * @generated
-   * @param jcas
-   *          JCas to which this Feature Structure belongs
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public FSHashSet(JCas jcas) {
     this(new HashSet<>(), jcas);
-  }
+  } 
 
   public FSHashSet(HashSet<T> set, JCas jcas) {
     super(jcas);
@@ -150,21 +135,19 @@ public class FSHashSet<T extends TOP> extends TOP
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
-    }
-  }
+    }   
+  } 
 
   /**
    * Make a new HashSet with an initial size .
    *
-   * @param jcas
-   *          The JCas
-   * @param length
-   *          initial size
+   * @param jcas The JCas
+   * @param length initial size
    */
   public FSHashSet(JCas jcas, int length) {
-    this(new HashSet<>(length), jcas, length);
+    this (new HashSet<>(length), jcas, length);
   }
-
+    
   public FSHashSet(HashSet<T> set, JCas jcas, int length) {
     super(jcas);
     _casView.validateArraySize(length);
@@ -174,34 +157,25 @@ public class FSHashSet<T extends TOP> extends TOP
       _casView.traceFSCreate(this);
     }
   }
+  
+  //*--------------*
+  //* Feature: fsArray
 
-  // *--------------*
-  // * Feature: fsArray
-
-  /**
-   * getter for fsArray - gets internal use - holds the set of Feature Structures
-   * 
+  /** getter for fsArray - gets internal use - holds the set of Feature Structures
    * @generated
-   * @return value of the feature
+   * @return value of the feature 
    */
-  private FSArray<T> getFsArray() {
-    return (FSArray<T>) (_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));
-  }
-
-  /**
-   * setter for fsArray - sets internal use - holds the set of Feature Structures
-   * 
+  private FSArray<T> getFsArray() { return (FSArray<T>)(_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));}
+    
+  /** setter for fsArray - sets internal use - holds the set of Feature Structures 
    * @generated
-   * @param v
-   *          value to set into the feature
+   * @param v value to set into the feature 
    */
   private void setFsArray(FSArray<T> v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_fsArray), v);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
+  }    
+    
+  /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
    */
   @Override
@@ -214,8 +188,8 @@ public class FSHashSet<T extends TOP> extends TOP
       lazyInit();
     }
   }
-
-  private void lazyInit() {
+  
+  private void lazyInit() {  
     isPendingInit = false;
     fsHashSet.clear();
     FSArray<T> a = getFsArray();
@@ -224,10 +198,8 @@ public class FSHashSet<T extends TOP> extends TOP
       fsHashSet.add((T) fs);
     }
   }
-
-  /*
-   * (non-Javadoc)
-   * 
+    
+  /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_save_to_cas_data()
    */
   @Override
@@ -239,42 +211,35 @@ public class FSHashSet<T extends TOP> extends TOP
         fsa = new FSArray(_casView.getJCasImpl(), fsHashSet.size());
         setFsArray(fsa);
       }
-
+ 
       // using element by element instead of bulk operations
-      // in case fsa was preallocated and right size, may need journaling
-
+      //   in case fsa was preallocated and right size, may need journaling
+      
       int i = 0;
       for (TOP fs : fsHashSet) {
         TOP currentValue = fsa.get(i);
         if (currentValue != fs) {
-          fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for
-                                                  // delta CAS
+          fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for delta CAS
         }
         i++;
       }
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.SelectViaCopyToArray#_toArrayForSelect()
    */
   @Override
   public T[] _toArrayForSelect() {
-    return toArray();
+    return toArray(); 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_superClone()
    */
   @Override
-  public FeatureStructureImplC _superClone() {
-    return clone();
-  } // enable common clone
-
+  public FeatureStructureImplC _superClone() { return clone();}  // enable common clone
+  
   private TOP[] gta() {
     FSArray fsa = getFsArray();
     if (null == fsa) {
@@ -282,23 +247,20 @@ public class FSHashSet<T extends TOP> extends TOP
     }
     return fsa._getTheArray();
   }
-
+  
   /*
    * @see java.util.AbstractSet#equals(java.lang.Object)
    */
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof FSHashSet))
-      return false;
+    if (!(o instanceof FSHashSet)) return false;
     FSHashSet<?> other = (FSHashSet<?>) o;
-    if (size() != other.size())
-      return false;
-    if (size() == 0)
-      return true;
-
+    if (size() != other.size()) return false;
+    if (size() == 0) return true;
+    
     maybeLazyInit();
     other.maybeLazyInit();
-
+    
     return fsHashSet.equals(other.fsHashSet);
   }
 
@@ -309,10 +271,10 @@ public class FSHashSet<T extends TOP> extends TOP
   public int hashCode() {
     // hash code needs to be the same for both styles
     // fsHashSet adds element hashcodes, Arrays combines using 31*.
-
-    // return isSaveNeeded
-    // ? fsHashSet.hashCode() // no good - hash codes different
-    // : Arrays.hashCode(gta());
+    
+//    return isSaveNeeded
+//        ? fsHashSet.hashCode()    // no good - hash codes different
+//        : Arrays.hashCode(gta());
     maybeLazyInit();
     return fsHashSet.hashCode();
   }
@@ -325,7 +287,7 @@ public class FSHashSet<T extends TOP> extends TOP
     if (isSaveNeeded) {
       T[] r = (T[]) new TOP[size()];
       fsHashSet.toArray(r);
-
+      
       return r;
     }
     return (T[]) Arrays.copyOf(gta(), gta().length);
@@ -337,9 +299,8 @@ public class FSHashSet<T extends TOP> extends TOP
   @Override
   public boolean removeAll(Collection<?> c) {
     maybeLazyInit();
-    boolean r = fsHashSet.removeAll(c);
-    if (r)
-      isSaveNeeded = true;
+    boolean r = fsHashSet.removeAll(c); 
+    if (r) isSaveNeeded = true;
     return r;
   }
 
@@ -353,12 +314,12 @@ public class FSHashSet<T extends TOP> extends TOP
       _casView.swapInPearVersion(aa);
       return aa;
     }
-
+    
     final int sz = size();
     if (a.length < sz) {
       a = (N[]) Array.newInstance(a.getClass().getComponentType(), sz);
     }
-
+    
     TOP[] d = gta();
     System.arraycopy(d, 0, a, 0, d.length);
     _casView.swapInPearVersion(a);
@@ -373,10 +334,12 @@ public class FSHashSet<T extends TOP> extends TOP
     if (size() == 0) {
       return Collections.emptyIterator();
     }
-
+    
     return new Iterator<T>() {
 
-      final private Iterator<T> baseIt = isSaveNeeded ? fsHashSet.iterator() : gtaIterator();
+      final private Iterator<T> baseIt = isSaveNeeded 
+          ? fsHashSet.iterator()
+          : gtaIterator();
 
       @Override
       public boolean hasNext() {
@@ -386,16 +349,16 @@ public class FSHashSet<T extends TOP> extends TOP
       @Override
       public T next() {
         return _maybeGetPearFs(baseIt.next());
-      }
+      }      
     };
   }
-
+  
   /**
    * 
    * @return iterator over non-pear versions
    */
   private Iterator<T> gtaIterator() {
-    return (Iterator<T>) getFsArray().iterator();
+    return (Iterator<T>) getFsArray().iterator(); 
   }
 
   /**
@@ -406,7 +369,9 @@ public class FSHashSet<T extends TOP> extends TOP
    */
   @Override
   public int size() {
-    return isSaveNeeded ? fsHashSet.size() : gta().length;
+    return isSaveNeeded 
+        ? fsHashSet.size()
+        : gta().length;
   }
 
   /**
@@ -423,48 +388,43 @@ public class FSHashSet<T extends TOP> extends TOP
   /**
    * Contains.
    *
-   * @param o
-   *          the o
+   * @param o the o
    * @return true, if successful
    * @see java.util.HashSet#contains(java.lang.Object)
    */
   @Override
   public boolean contains(Object o) {
     maybeLazyInit();
-    return fsHashSet.contains((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP) o) : o);
+    return fsHashSet.contains((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
   }
 
   /**
    * Adds the element to the set.
    *
-   * @param e
-   *          the element to add
+   * @param e the element to add
    * @return true, if the set didn't already contain this element
    * @see java.util.HashSet#add(java.lang.Object)
    */
   @Override
   public boolean add(T e) {
     maybeLazyInit();
-    boolean r = fsHashSet.add(_maybeGetBaseForPearFs(e));
-    if (r)
-      isSaveNeeded = true;
+    boolean r = fsHashSet.add(_maybeGetBaseForPearFs(e)); 
+    if (r) isSaveNeeded = true;
     return r;
   }
 
   /**
    * Removes the element.
    *
-   * @param o
-   *          the o
+   * @param o the o
    * @return true, if the set contained the element
    * @see java.util.HashSet#remove(java.lang.Object)
    */
   @Override
   public boolean remove(Object o) {
     maybeLazyInit();
-    boolean r = fsHashSet.remove((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP) o) : o);
-    if (r)
-      isSaveNeeded = true;
+    boolean r = fsHashSet.remove((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+    if (r) isSaveNeeded = true;
     return r;
   }
 
@@ -475,8 +435,7 @@ public class FSHashSet<T extends TOP> extends TOP
    */
   @Override
   public void clear() {
-    if (size() == 0)
-      return;
+    if (size() == 0) return;
     maybeLazyInit();
     isSaveNeeded = true;
     fsHashSet.clear();
@@ -485,8 +444,7 @@ public class FSHashSet<T extends TOP> extends TOP
   /**
    * Contains all.
    *
-   * @param c
-   *          the c
+   * @param c the c
    * @return true, if set contains all of the elements in c
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
    */
@@ -504,8 +462,7 @@ public class FSHashSet<T extends TOP> extends TOP
   /**
    * Adds all the elements .
    *
-   * @param c
-   *          the c
+   * @param c the c
    * @return true, if set changed
    * @see java.util.AbstractCollection#addAll(java.util.Collection)
    */
@@ -514,15 +471,14 @@ public class FSHashSet<T extends TOP> extends TOP
     if (c.size() == 0) {
       return false;
     }
-
+    
     ArrayList<T> a = new ArrayList<>(c.size());
     for (T item : c) {
       a.add(_maybeGetBaseForPearFs(item));
     }
     maybeLazyInit();
     boolean r = fsHashSet.addAll(a);
-    if (r)
-      isSaveNeeded = true;
+    if (r) isSaveNeeded = true;
     return r;
   }
 
@@ -534,17 +490,17 @@ public class FSHashSet<T extends TOP> extends TOP
    */
   @Override
   public Spliterator<T> spliterator() {
-    Spliterator<T> baseSi = isSaveNeeded ? fsHashSet.spliterator()
-            : (Spliterator<T>) Arrays.asList(gta()).spliterator();
-
-    return _casView.makePearAware(baseSi);
+    Spliterator<T> baseSi =  isSaveNeeded
+        ? fsHashSet.spliterator()
+        : (Spliterator<T>) Arrays.asList(gta()).spliterator();
+        
+    return _casView.makePearAware(baseSi);   
   }
 
   /**
    * Retain all.
    *
-   * @param c
-   *          the c
+   * @param c the c
    * @return true, if collection changed
    * @see java.util.AbstractCollection#retainAll(java.util.Collection)
    */
@@ -555,34 +511,29 @@ public class FSHashSet<T extends TOP> extends TOP
       clear();
       return wasNotEmpty;
     }
-
+    
     Collection<?> cc = _casView.collectNonPearVersions(c);
     maybeLazyInit();
     boolean r = fsHashSet.retainAll(cc);
-    if (r)
-      isSaveNeeded = true;
+    if (r) isSaveNeeded = true;
     return r;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     final int maxLen = 10;
     return "FSHashSet [isPendingInit=" + isPendingInit + ", isSaveNeeded=" + isSaveNeeded
-            + ", fsHashSet=" + (fsHashSet != null ? toString(fsHashSet, maxLen) : null) + "]";
+        + ", fsHashSet=" + (fsHashSet != null ? toString(fsHashSet, maxLen) : null) + "]";
   }
 
   /**
    * To string.
    *
-   * @param collection
-   *          the collection
-   * @param maxLen
-   *          the max len
+   * @param collection the collection
+   * @param maxLen the max len
    * @return the string
    */
   private String toString(Collection<?> collection, int maxLen) {
@@ -599,3 +550,5 @@ public class FSHashSet<T extends TOP> extends TOP
   }
 
 }
+
+    

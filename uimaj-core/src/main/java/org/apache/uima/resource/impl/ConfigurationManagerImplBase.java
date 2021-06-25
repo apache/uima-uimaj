@@ -44,8 +44,6 @@ import org.apache.uima.util.Settings;
  * implement the abstract methods
  * {@link #declareParameters(String, ConfigurationParameter[], ConfigurationParameterSettings, String, Settings)}
  * and {@link #lookupSharedParamNoLinks(String)}.
- * 
- * 
  */
 public abstract class ConfigurationManagerImplBase implements ConfigurationManager {
   /**
@@ -58,21 +56,26 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   protected static final String SESSION_CONFIGURATION_KEY = "config";
 
+//@formatter:off
   /**
-   * Map from context name to ConfigurationParameterDeclarations for that context. Not sync'd based
-   * on belief: setup of values must be complete before any reference occurs, even in multi-threaded
-   * context. The setup is done under a sync'd control to insure only one setup is done, and to
-   * publish the updated results to other threads
+   * Map from context name to ConfigurationParameterDeclarations for that context.
+   * Not sync'd based on belief:
+   *   setup of values must be complete before any reference occurs, even in multi-threaded context.
+   *   The setup is done under a sync'd control to insure only one setup is done, and to
+   *   publish the updated results to other threads
    */
+//@formatter:on
   final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = new HashMap<>();
 
+//@formatter:off
   /**
    * Map the fully-qualified name of a parameter to the fully-qualified name of the parameter it is
-   * linked to (from which it takes its value). Not sync'd based on belief: setup of values must be
-   * complete before any reference occurs, even in multi-threaded context. The setup is done under a
-   * sync'd control to insure only one setup is done
-   * 
+   * linked to (from which it takes its value).
+   * Not sync'd based on belief:
+   *   setup of values must be complete before any reference occurs, even in multi-threaded context.
+   *   The setup is done under a sync'd control to insure only one setup is done
    */
+//@formatter:on
   final protected Map<String, String> mLinkMap = new HashMap<>();
 
   /**

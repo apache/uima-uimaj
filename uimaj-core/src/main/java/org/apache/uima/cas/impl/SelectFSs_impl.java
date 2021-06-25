@@ -64,25 +64,39 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
+// @formatter:off
 /**
- * Collection of builder style methods to specify selection of FSs from indexes shift handled in
- * this routine Comment codes: AI = implies AnnotationIndex
+ * Collection of builder style methods to specify selection of FSs from indexes
+ * shift handled in this routine
+ * Comment codes:
+ *   AI = implies AnnotationIndex
  * 
  * Iterator varieties and impl
  * 
- * bounded? type order not unambig? strict? skipEq Priority? Needed? no coveredBy covering sameas
+ *   bounded?  type      order not unambig? strict? skipEq    
+ *             Priority? Needed? 
+ *     no
+ *   coveredBy
+ *   covering
+ *   sameas
  * 
- * for not-bounded, - ignore strict and skipEq -- except: preceding implies skipping annotations
- * whose end &gt; positioning begin - order-not-needed only applies if iicp size &gt; 1 - unambig
- * ==&gt; use Subiterator -- subiterator wraps: according to typePriority and order-not-needed - no
- * Type Priority - need to pass in as arg to fsIterator_multiple_indexes == if no type priority,
- * need to prevent rattling off the == type while compare is equal == affects both
- * FsIterator_aggregation_common and FsIterator_subtypes_ordered for 3 other boundings: - use
- * subiterator, pass in strict and skipeq
+ *   for not-bounded, 
+ *     - ignore strict and skipEq
+ *       -- except: preceding implies skipping annotations whose end &gt; positioning begin
+ *     - order-not-needed only applies if iicp size &gt; 1
+ *     - unambig ==&gt; use Subiterator
+ *         -- subiterator wraps: according to typePriority and order-not-needed
+ *     - no Type Priority - need to pass in as arg to fsIterator_multiple_indexes
+ *        == if no type priority, need to prevent rattling off the == type while compare is equal
+ *        == affects both FsIterator_aggregation_common and FsIterator_subtypes_ordered
+ *   for 3 other boundings:
+ *     - use subiterator, pass in strict and skipeq
  * 
- * finish this javadoc comment edit T extends FeatureStructure, not TOP, because of ref from FSIndex
+   finish this javadoc comment edit
+ *   T extends FeatureStructure, not TOP, because of ref from FSIndex 
  * which uses FeatureStructure for backwards compatibility
  */
+//@formatter:on
 public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> {
 
   private final static boolean IS_UNORDERED = true;
@@ -125,11 +139,17 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   private AnnotationFS boundingFs = null;
   private boolean noResult = false;
 
-  /*
-   * ********************************************** Constructors always need the cas might also have
-   * the type Caller will convert other forms for the cas (e.g. jcas) and type (e.g. type name,
-   * MyType.type, MyType.class) to these arg forms.
+  
+//@formatter:off
+  /* **********************************************
+   * Constructors
+   *   always need the cas
+   *   might also have the type
+   * Caller will convert other forms for the cas (e.g. jcas) 
+   * and type (e.g. type name, MyType.type, MyType.class) to 
+   * these arg forms.
    ************************************************/
+//@formatter:on
   public SelectFSs_impl(CAS cas) {
     this.view = (CASImpl) cas.getLowLevelCAS();
     this.jcas = (JCasImpl) view.getJCas();
@@ -967,19 +987,24 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     return new Annotation(jcas, begin, end);
   }
 
+//@formatter:off
   /**
    * Iterator respects backwards
    * 
-   * Sets the characteristics from the context: IMMUTABLE / NONNULL / DISTINCT - always CONCURRENT -
-   * never ORDERED - unless orderNotNeeded index or not SORTED_INDEX or SET_INDEX SORTED - only for
-   * SORTED_INDEX (and not orderNotNeeded?) SIZED - if exact size is (easily) known, just from
-   * index. false if bounded, unambiguous SUBSIZED - if spliterator result from trysplit also is
-   * SIZED, set to true for now
+   * Sets the characteristics from the context:
+   *   IMMUTABLE / NONNULL / DISTINCT - always
+   *   CONCURRENT - never
+   *   ORDERED - unless orderNotNeeded index or not SORTED_INDEX or SET_INDEX
+   *   SORTED - only for SORTED_INDEX (and not orderNotNeeded?)
+   *   SIZED - if exact size is (easily) known, just from index.
+   *           false if bounded, unambiguous
+   *   SUBSIZED - if spliterator result from trysplit also is SIZED, set to true for now
    * 
-   * trySplit impl: always returns null (no parallelism support for now)
-   * 
+   * trySplit impl: 
+   *   always returns null (no parallelism support for now) 
    * @return the spliterator
    */
+//@formatter:on
   @Override
   public Spliterator<T> spliterator() {
     return new Spliterator<T>() {
@@ -1247,21 +1272,22 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     return singleOrNull();
   }
 
+//@formatter:off
   /**
    * works for AnnotationIndex or general index
    * 
-   * position taken from startingFs (not necessarily an Annotation subtype) - goes to left-most
-   * "equal" using comparator, or if none equal, to the first one &gt; startingFs -- using
-   * moveTo(fs)
+   * position taken from startingFs (not necessarily an Annotation subtype)
+   *   - goes to left-most "equal" using comparator, or if none equal, to the first one &gt; startingFs
+   *     -- using moveTo(fs)
    * 
-   * special processing for AnnotationIndex (only): - typePriority - use or ignore -- ignored: after
-   * moveTo(fs), moveToPrevious while begin and end == // REMOVED see
-   * https://issues.apache.org/jira/browse/UIMA-5536 --- and if isPositionUsesType types are ==
-   * 
-   * @param it
-   *          iterator to position
+   * special processing for AnnotationIndex (only):
+   *   - typePriority - use or ignore
+   *     -- ignored: after moveTo(fs), moveToPrevious while begin and end ==
+   *       // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536 --- and if isPositionUsesType types are == 
+   * @param it iterator to position
    * @return it positioned if needed
    */
+//@formatter:on
   private FSIterator<T> maybePosition(FSIterator<T> it) {
     if (!it.isValid() || startingFs == null || boundsUse != BoundsUse.notBounded) {
       return it;
@@ -1333,10 +1359,12 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     return (limit == -1) ? it : new FsIterator_limited<>(it, limit);
   }
 
-  /********************************************
-   * The methods below are alternatives to the methods above, that combine frequently used patterns
-   * into more concise forms using positional arguments
-   ********************************************/
+  // *******************************************
+  // The methods below are alternatives 
+  // to the methods above, that combine
+  // frequently used patterns into more
+  // concise forms using positional arguments
+  // *******************************************
 
   /*
    * (non-Javadoc)
@@ -1426,11 +1454,14 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   // return this;
   // }
 
+//@formatter:off
   /**
-   * validations isAnnotationIndex => startingFs is Annotation isAllViews: doesn't support startAt,
-   * coveredBy and friends, backwards isAllViews: supports limit, shift
+   * validations
+   *   isAnnotationIndex => startingFs is Annotation 
+   *   isAllViews:  doesn't support startAt, coveredBy and friends, backwards
+   *   isAllViews:  supports limit, shift
    */
-
+//@formatter:on
   // private void validateSinglePosition(TOP fs, int offset) {
   // if (startingFs != null) {
   // /* Select - multiple starting positions not allowed */
@@ -1478,10 +1509,12 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     return StreamSupport.stream(spliterator(), false); // false = default not parallel
   }
 
-  /*
-   * *************************************** S T R E A M methods these convert the result to a
-   * stream and apply the method
+//@formatter:off
+  /* ***************************************
+   *   S T R E A M   methods
+   * these convert the result to a stream and apply the method
    */
+//@formatter:on
   @Override
   public Stream<T> filter(Predicate<? super T> predicate) {
     return stream().filter(predicate);

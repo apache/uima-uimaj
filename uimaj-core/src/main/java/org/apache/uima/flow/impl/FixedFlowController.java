@@ -52,15 +52,20 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  */
 public class FixedFlowController extends CasFlowController_ImplBase {
 
+ // @formatter:off
   /**
-   * Key for the configuration parameter that determines what should happen to a CAS after it has
-   * been input to a CAS Multiplier. Possible values are: continue: the CAS continues on to the next
-   * element in the flow stop: the CAS will no longer continue in the flow, and will be returned
-   * from the aggregate if possible. drop: the CAS will no longer continue in the flow, and will be
-   * dropped (not returned from the aggregate) if possible. dropIfNewCasProduced (the default): if
-   * the CAS multiplier produced a new CAS as a result of processing this CAS, then this CAS will be
-   * dropped. If not, then this CAS will continue.
+   * Key for the configuration parameter that determines what should happen to a
+   * CAS after it has been input to a CAS Multiplier.  Possible values are:
+   * continue:  the CAS continues on to the next element in the flow
+   * stop: the CAS will no longer continue in the flow, and will be returned from the
+   *        aggregate if possible.
+   * drop: the CAS will no longer continue in the flow, and will be dropped (not 
+   *        returned from the aggregate) if possible.
+   * dropIfNewCasProduced (the default): if the CAS multiplier produced a new CAS as a
+   *        result of processing this CAS, then this CAS will be dropped. If not, then this CAS
+   *        will continue.
    */
+ // @formatter:on
   public static final String PARAM_ACTION_AFTER_CAS_MULTIPLIER = "ActionAfterCasMultiplier";
 
   private static final int ACTION_CONTINUE = 0;
@@ -70,28 +75,26 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   private static final int ACTION_DROP = 2;
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
-
-  // make final to work better in multi-thread case UIMA-2373
-  // working assumption:
-  // A single instance of this class may be used on multiple replications of a UIMA pipeline.
-  // In this case, the initialization would be done once (because the same context object is passed
-  // for the replicas).
-  // The mSequence is read-only after being set up
-  // -- except for the calls to addAnalysisEngines or removeAnalysisEngines.
-  // But these are intended for maybe in the future supporting dynamically adding/removing
-  // annotators from
-  // aggregates - but are not supported as of 2014.
-  //
-  // Users might run several CASes asynchronously using this FixedFlowController object,
-  // on different threads. However, users will not re-initialize this with a different
-  // flowControllerContext while this object is controlling CASes from the previous Object.
-  // When this was a synchronized list, some contention observed between the "reads", which can be
-  // eliminated by
-  // switching this to a copy-on-write kind of final list.
-  // -- this has the added "benefit" (maybe eventually) of having better semantics for letting
-  // existing
-  // Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
-  final private List<String> mSequence = new CopyOnWriteArrayList<>(); // UIMA-4013
+  
+//@formatter:off
+  // make final to work better in multi-thread case  UIMA-2373
+  // working assumption: 
+  //   A single instance of this class may be used on multiple replications of a UIMA pipeline.
+  //     In this case, the initialization would be done once (because the same context object is passed for the replicas).
+  //   The mSequence is read-only after being set up
+  //     -- except for the calls to addAnalysisEngines or removeAnalysisEngines.
+  //        But these are intended for maybe in the future supporting dynamically adding/removing annotators from
+  //        aggregates - but are not supported as of 2014.
+  //   
+  //   Users might run several CASes asynchronously using this FixedFlowController object,
+  //   on different threads. However, users will not re-initialize this with a different 
+  //   flowControllerContext while this object is controlling CASes from the previous Object.
+  // When this was a synchronized list, some contention observed between the "reads", which can be eliminated by
+  //   switching this to a copy-on-write kind of final list.
+  //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
+  //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
+//@formatter:on
+  final private List<String> mSequence = new CopyOnWriteArrayList<>();  //UIMA-4013
 
   private int mActionAfterCasMultiplier;
 

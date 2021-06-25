@@ -24,15 +24,21 @@ import java.util.Map;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceManager;
 
+//@formatter:off
 /**
- * Utilities supporting a unified approach to loading classes, incorporating the resource manager's
- * classloader if available, and making use of the Thread Context Class Loader (TCCL)
+ * Utilities supporting a unified approach to loading classes,
+ * incorporating the resource manager's classloader if available,
+ * and making use of the Thread Context Class Loader (TCCL)
  *
- * For backwards compatibility, if a class is not found using the Thread Context Class Loader, for
- * classloading: try again using the class loader for this class since that's what the previous impl
- * did, and some applications will break otherwise, with class-not-found. for resourceloading: try
- * again using the Classloader.getSystemClassLoader, since that's what the previous impl did
+ * For backwards compatibility, if a class is not found using the 
+ * Thread Context Class Loader, 
+ *   for classloading: try again using the 
+ *                     class loader for this class since that's what the previous impl did,
+ *                     and some applications will break otherwise, with class-not-found.
+ *   for resourceloading: try again using the Classloader.getSystemClassLoader, 
+ *                     since that's what the previous impl did
  */
+//@formatter:on
 public class Class_TCCL {
 
   static public <T> Class<T> forName(String className) throws ClassNotFoundException {

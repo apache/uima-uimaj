@@ -20,11 +20,14 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.CAS;
 
+//@formatter:off
 /**
- * This interface defines static final constants for Type Systems For the built-in types and
- * features: - the type and feature codes - the adjOffsets
- *
+ * This interface defines static final constants for Type Systems
+ *   For the built-in types and features:
+ *     - the type and feature codes
+ *     - the adjOffsets
  */
+//@formatter:on
 public interface TypeSystemConstants {
 
   /******************************************

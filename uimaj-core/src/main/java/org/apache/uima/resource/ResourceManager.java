@@ -93,21 +93,23 @@ public interface ResourceManager {
    */
   Object getResource(String aName) throws ResourceAccessException;
 
+//@formatter:off
   /**
-   * Returns one of two kinds of objects (or null): - an instance of the implementation object for a
-   * resource, that has been loaded with a DataResource resource produced by the resource given the
-   * aParms
-   * 
-   * - (if there is no implementation defined for this resource) returns an instance of the
-   * DataResource, itself, produced by the resource given the aParms
-   * 
-   * An example of a parameterized Resource is a dictionary whose data depend on a specified
-   * language identifier.
-   * 
-   * If the implementation object class exists, but no instance has been created (yet) for the
-   * particular data resource corresponding to the parameters, then this method will create and
-   * register a new instance and call its load() api using the data resource corresponding to the
-   * parameters, and return that.
+   * Returns one of two kinds of objects (or null):
+   *   - an instance of the implementation object for a resource, that has 
+   *     been loaded with a DataResource resource produced by the resource given the aParms
+   *     
+   *   - (if there is no implementation defined for this resource) 
+   *     returns an instance of the DataResource, itself, produced by the resource given the aParms
+   *    
+   *   An example of a parameterized Resource is a
+   *     dictionary whose data depend on a specified language identifier.
+   *   
+   *   If the implementation object class exists, but no instance has been 
+   *   created (yet) for the particular data resource corresponding to the parameters,
+   *   then this method will create and register a new instance and call its
+   *   load() api using the data resource corresponding to the parameters, and
+   *   return that.
    * 
    * @param aName
    *          the name of the parameterized resource to retrieve
@@ -132,6 +134,7 @@ public interface ResourceManager {
    *           if there is a resource registered under <code>aName</code> but it could not be
    *           instantiated for the specified parameters.
    */
+//@formatter:on
   Object getResource(String aName, String[] aParams) throws ResourceAccessException;
 
   /**
@@ -268,14 +271,17 @@ public interface ResourceManager {
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
+//@formatter:off
   /**
    * Resolves a component's external resource dependencies (bindings) using this resource manager.
    * 
    * The default implementation has special defaulting logic:
    * 
-   * If a binding specifies a non-existing resource, an attempt is made to interpret the key as a
-   * file name, looked up using the current context for relative path resolution. - If successfully
-   * found, a FileResourceSpecifier is created using the file and used as the implementing class.
+   *   If a binding specifies a non-existing resource, 
+   *   an attempt is made to interpret the key as a file name, looked up 
+   *   using the current context for relative path resolution.  
+   *     - If successfully found, a FileResourceSpecifier is created using the file
+   *       and used as the implementing class. 
    * 
    * If no resource can be found at all, then unless the dependency is marked "optional", an
    * ResourceInitializationException is thrown.
@@ -292,6 +298,7 @@ public interface ResourceManager {
    * @throws ResourceInitializationException
    *           if a required dependency is not satisfied
    */
+//@formatter:on
   void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
           String aQualifiedContextName) throws ResourceInitializationException;
 

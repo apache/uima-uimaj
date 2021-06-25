@@ -357,14 +357,15 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setConfigurationGroups(groupArr);
   }
 
+//@formatter:off
   /**
    * Overridden to return defaultGroup and searchStrategy as XML attributes.
    * 
-   * 9/2013: superclasses don't have this method, so can't be overridden. 9/2013: method never
-   * called
-   * 
-   * @return -
+   * 9/2013: superclasses don't have this method, so can't be overridden.
+   * 9/2013: method never called
+   * @return - 
    */
+//@formatter:on
   protected String getXMLAttributeString() {
     StringBuffer buf = new StringBuffer();
     if (getDefaultGroupName() != null) {

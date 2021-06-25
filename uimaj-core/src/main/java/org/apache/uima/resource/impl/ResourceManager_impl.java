@@ -64,13 +64,20 @@ import org.apache.uima.util.XMLizable;
  */
 public class ResourceManager_impl implements ResourceManager {
 
+ // @formatter:off
   /**
-   * Ties an External Resource instance to - its description -- name -- textual description -- a
-   * ResourceSpecifier describing how to create it -- (optional) the String name of the Java class
-   * that implements the resource) - its defining UIMA Context
-   * 
-   * These are used to validate multiple declarations, and to get a resource to tie it to a binding
+   * Ties an External Resource instance to
+   *   - its description 
+   *     -- name
+   *     -- textual description
+   *     -- a ResourceSpecifier describing how to create it
+   *     -- (optional) the String name of the Java class that implements the resource)
+   *   - its defining UIMA Context
+   *   
+   *   These are used to validate multiple declarations, and to get
+   *   a resource to tie it to a binding
    */
+ // @formatter:on
   static protected class ResourceRegistration { // make protected
                                                 // https://issues.apache.org/jira/browse/UIMA-2102
     /**
@@ -187,18 +194,25 @@ public class ResourceManager_impl implements ResourceManager {
   // volatile to support double-checked locking idiom
   protected volatile CasManager mCasManager = null;
 
+//@formatter:off
   /**
    * Cache of imported descriptors, so that parsed objects can be reused if the same URL is imported
    * more than once.
    * 
-   * All callers of this synchronize on the importCache object before doing a get ... put sequence
+   * All callers of this synchronize on the importCache object before doing a 
+   *    get
+   *    ...
+   *    put
+   * sequence
    * 
-   * Use Case where synchronization is needed: running multiple instances on multiple threads,
-   * sharing a common resource manager, the initialization that merges typePriorities happens
-   * lazily, when using Cas Multipliers, and occurs when the first getCas call happens on a thread.
-   * Although these calls are synchronized among themselves, any other use of this map that might
-   * occur simultaneously is not.
+   * Use Case where synchronization is needed:
+   *   running multiple instances on multiple threads, sharing a common resource manager,
+   *   the initialization that merges typePriorities happens lazily, when using Cas Multipliers,
+   *   and occurs when the first getCas call happens on a thread.  Although these calls
+   *   are synchronized among themselves, any other use of this map that might occur
+   *   simultaneously is not.
    */
+//@formatter:on
   // leaving this as a synchronizedMap - for backwards compatibility
   // internal users do sync around get/set pairs anyways, but can't rely on
   // what external users do
@@ -401,11 +415,13 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public Object getResource(String aName, String[] aParams) throws ResourceAccessException {
-    /*
-     * Multi-core design This may be called by user code sharing the same Resource Manager, and / or
-     * the same uima context object. Do double-checked idiom to avoid locking where resource is
-     * already available, loaded
+   // @formatter:off
+    /* Multi-core design
+     *   This may be called by user code sharing the same Resource Manager, and / or the same 
+     *     uima context object.
+     *   Do double-checked idiom to avoid locking where resource is already available, loaded   
      */
+   // @formatter:on
     checkDestroyed();
     Object r = mResourceMap.get(aName);
 
@@ -559,18 +575,20 @@ public class ResourceManager_impl implements ResourceManager {
     return getResourceAsStreamCommonUrl(getResource(aKey));
   }
 
+//@formatter:off
   /*
    * (non-Javadoc)
    * 
-   * This method is called during Resource Initialization, - only for resources which are "local",
-   * that is, instances of ResourceCreationSpecifier - and therefore might have external resource
-   * declarations
+   * This method is called during Resource Initialization, 
+   *   - only for resources which are "local", that is, instances of ResourceCreationSpecifier
+   *   - and therefore might have external resource declarations 
    * 
    * Compare with resolveAndValidateResourceDependencies, called for resource binding resolution.
    * 
    * @see ResourceManager#initializeExternalResources(ResourceManagerConfiguration, String,
    * Map<String, Object>)
    */
+//@formatter:on
   @Override
   public synchronized void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)

@@ -34,9 +34,9 @@ import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
- * UIMA Logging interface implementation for Java Logging Toolkit JSR-47 (JDK 1.4) JUL Ignores
- * Markers and MDC (not supported in the JUL
+ * UIMA Logging interface implementation for Java Logging Toolkit JSR-47 (JDK 1.4) JUL
  * 
+ * Ignores Markers and MDC (not supported in the JUL)
  */
 public class JSR47Logger_impl extends Logger_common_impl {
 

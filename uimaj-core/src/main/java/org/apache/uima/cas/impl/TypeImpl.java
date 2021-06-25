@@ -41,18 +41,19 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
+//@formatter:off
 /**
  * The implementation of types in the type system.
  * 
  * UIMA Version 3
- * 
- * Instances of this class are not shared by different type systems because they contain a ref to
- * the TypeSystemImpl (needed by FeaturePath and maybe other things) - even for built-ins. -
- * However, the JCas cover class definitions are shared by all type systems for built-in types
+
+ * Instances of this class are not shared by different type systems because they contain a ref to the TypeSystemImpl (needed by FeaturePath and maybe other things)
+ *   - even for built-ins.  
+ *   - However, the JCas cover class definitions are shared by all type systems for built-in types
  * 
  * Feature offsets are set from the (changing) value of nbrOfIntDataFields and nbrOfRefDataFields
- * 
  */
+//@formatter:on
 public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private final String name; // x.y.Foo
@@ -86,10 +87,14 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   protected final boolean isLongOrDouble; // for code generation
 
+//@formatter:off
   /**
-   * when set, processing skipped for - augment features from jcas - conformance checking between
-   * jcas and type system - validating the superclass chain upon load of jcas class
+   * when set, processing skipped for
+   *   - augment features from jcas
+   *   - conformance checking between jcas and type system
+   *   - validating the superclass chain upon load of jcas class
    */
+//@formatter:on
   protected boolean isBuiltIn; // for avoiding repetitive work
 
   int nbrOfLongOrDoubleFeatures = 0;
@@ -143,8 +148,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(0);
 
   /**
-   * Map from adjusted offset in int features to feature Corrects for Long/Double values taking 2
-   * int slots Set at commit time
+   * Map from adjusted offset in int features to feature. 
+   * 
+   * Corrects for Long/Double values taking 2 int slots. 
+   * 
+   * Set at commit time
    */
   private FeatureImpl[] staticMergedIntFeaturesList;
   /**
@@ -586,20 +594,20 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     // getAllSubtypes().forEach(ti -> ti.addFeature(fi)); // add the same feature to all subtypes
   }
 
+//@formatter:off
   /**
-   * It is possible that users may create type/subtype structure, and then add features (in any
-   * order) to that, including adding a subtype feature "foo", and subsequently adding a type
-   * feature "foo".
+   * It is possible that users may create type/subtype structure, and then add features (in any order) to that,
+   * including adding a subtype feature "foo", and subsequently adding a type feature "foo".
    * 
-   * To handle this: a feature added to type T should be - removed if present in all subtype's
-   * introfeatures - added to all subtypes merged features - a check done in case any of the
-   * subtypes had already added this, but with a different definition
-   * 
-   * @param ti
-   *          the type whose subtypes need checking
-   * @param fi
-   *          the feature
+   * To handle this:
+   *   a feature added to type T should be 
+   *     - removed if present in all subtype's introfeatures
+   *     - added to all subtypes merged features
+   *     - a check done in case any of the subtypes had already added this, but with a different definition
+   * @param ti the type whose subtypes need checking
+   * @param fi the feature
    */
+//@formatter:on
   private void checkAndAdjustFeatureInSubtypes(TypeImpl ti, FeatureImpl fi) {
     String featShortName = fi.getShortName();
     for (TypeImpl subti : ti.directSubtypes) {
@@ -885,11 +893,14 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   int computeDepthFirstCode(int level) {
     // other work done for each type at commit time, just piggy backing on this method
 
+   // @formatter:off
     /**************************************************************************************
-     * N O T E : * fixup the ordering of staticMergedFeatures: * - supers, then features introduced
-     * by this type. * - order may be "bad" if later feature merge introduced an additional feature
-     * *
+     *    N O T E :                                                                           *
+     *    fixup the ordering of staticMergedFeatures:                                     *
+     *      - supers, then features introduced by this type.                              *
+     *      - order may be "bad" if later feature merge introduced an additional feature  *
      **************************************************************************************/
+   // @formatter:on
     if (level != 1) {
       // skip for top level; no features there, but no super type either
       getFeatureImpls(); // also done for side effect of computingcomputeStaticMergedFeaturesList();
@@ -1018,7 +1029,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
 
   /**
-   * Equal TypeImpl Works across type systems.
+   * Equal TypeImpl. Works across type systems.
    */
   @Override
   public boolean equals(Object obj) {

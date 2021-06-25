@@ -60,12 +60,15 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XCASDeserializer {
 
+ // @formatter:off
   /**
-   * Feature Structure plus all the indexes it is indexed in indexRep -> indexMap ->
-   * indexRepositories -> indexRepository or indexRep -> indexRepositories -> indexRepository
+   * Feature Structure plus all the indexes it is indexed in
+   *    indexRep -> indexMap -> indexRepositories -> indexRepository or
+   *    indexRep             -> indexRepositories -> indexRepository
    *
    * (2nd if indexMap size == 1)
    */
+ // @formatter:on
   private static class FSInfo {
 
     final private TOP fs;
@@ -185,8 +188,9 @@ public class XCASDeserializer {
 
     // map incoming _indexed values
     /**
-     * Map external SofaNum -> internal sofaNum internal sofaNums also used to index
-     * indexRepositories -> ref to FsIndexRepositoryImpl
+     * Map external SofaNum -> internal sofaNum 
+     * 
+     * internal sofaNums also used to index indexRepositories -> ref to FsIndexRepositoryImpl
      */
     final private IntVector indexMap;
 
@@ -475,10 +479,14 @@ public class XCASDeserializer {
       int extId = -1;
       IntVector indexRep = new IntVector(1); // empty means not indexed
 
+   // @formatter:off
       /****************************************************************
-       * Loop for all feature specs * - handle features with _ reserved prefix, including _ref_ * -
-       * handle features without "_" prefix: * - if not Sofa *
+       * Loop for all feature specs                                   *
+       *   - handle features with _ reserved prefix, including _ref_  *
+       *   - handle features without "_" prefix:                      *
+       *      - if not Sofa                                           *
        ****************************************************************/
+   // @formatter:on
       for (int i = 0; i < attrs.getLength(); i++) {
         final String attrName = attrs.getQName(i);
         String attrValue = attrs.getValue(i);

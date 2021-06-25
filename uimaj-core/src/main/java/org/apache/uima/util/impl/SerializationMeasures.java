@@ -71,15 +71,19 @@ public class SerializationMeasures {
     return 1;
   }
 
+//@formatter:off
   /**
-   * Statistical details There's instances of this class for - the main heap - the aux heaps - the
-   * string offsets, the string lengths
-   * 
-   * Heap: xxxx [name-of-delta: [Total: &lt;TotalBytes&gt;(negative%) Histo: a(neg%) b(neg%) c(neg%)
-   * d(neg%) e(neg%)]] 2 styles: one uses only one counter, no delta - used for byte, short, and
-   * long heaps other is for main heap, uses 4 deltas.
-   *
+   * Statistical details
+   *   There's instances of this class for
+   *     - the main heap
+   *     - the aux heaps
+   *     - the string offsets, the string lengths
+   *     
+   * Heap: xxxx  [name-of-delta: [Total: &lt;TotalBytes&gt;(negative%)  Histo: a(neg%) b(neg%) c(neg%) d(neg%) e(neg%)]]
+   *   2 styles: one uses only one counter, no delta  - used for byte, short, and long heaps
+   *   other is for main heap, uses 4 deltas.
    */
+//@formatter:on
   public static class StatDetail {
     private final String name;
     public long original = -1; // if set, use this, otherwise use countTotal * bytesPerCount
@@ -295,11 +299,20 @@ public class SerializationMeasures {
   }
 
   public final AllStatDetails allSlots = new AllStatDetails("AllSlotKinds", Slot_ArrayLength,
-          Slot_HeapRef, Slot_Int, Slot_Byte, // used only for arrays
+          Slot_HeapRef, //
+          Slot_Int, Slot_Byte, // used only for arrays
           Slot_Short, // used only for arrays
-          Slot_TypeCode, Slot_StrOffset, Slot_StrLength, Slot_StrChars, Slot_Long_High,
-          Slot_Long_Low, Slot_Float_Mantissa_Sign, Slot_Float_Exponent, Slot_Double_Mantissa_Sign,
-          Slot_Double_Exponent, Slot_FsIndexes);
+          Slot_TypeCode, //
+          Slot_StrOffset, //
+          Slot_StrLength, //
+          Slot_StrChars, //
+          Slot_Long_High,//
+          Slot_Long_Low, //
+          Slot_Float_Mantissa_Sign, //
+          Slot_Float_Exponent, //
+          Slot_Double_Mantissa_Sign, //
+          Slot_Double_Exponent, //
+          Slot_FsIndexes); //
   public final AllStatDetails strSlots = new AllStatDetails("Strings", Slot_StrOffset,
           Slot_StrLength, Slot_StrChars);
 

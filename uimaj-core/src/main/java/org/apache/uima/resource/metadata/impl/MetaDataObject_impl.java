@@ -106,14 +106,18 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   // see javadocs for Attributes (sax)
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
+//@formatter:off
   /*
    * Cache for Java Bean lookup
    * 
-   * Key: the Class object of the MetaDataObject, corresponds to some XML element Value: a list of
-   * objects, one for each "attribute", holding: the attribute name the reader (a Method) the writer
-   * (a Method) the java Class of the data type of this attribute <converted to a wrapper class for
-   * primitives>
+   *   Key: the Class object of the MetaDataObject, corresponds to some XML element
+   *   Value: a list of objects, one for each "attribute", holding:
+   *     the attribute name
+   *     the reader (a Method)
+   *     the writer (a Method)
+   *     the java Class of the data type of this attribute <converted to a wrapper class for primitives>
    */
+//@formatter:on
 
   public static class MetaDataAttr {
     @Override
@@ -218,8 +222,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * Information, kept globally (by thread) for one serialization Inherited by some custom impls,
-   * e.g. TypeOrFeature_impl
+   * Information, kept globally (by thread) for one serialization 
+   * 
+   * Inherited by some custom impls, e.g. TypeOrFeature_impl
    */
   public static class SerialContext {
 
@@ -232,10 +237,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
   }
 
+//@formatter:off
   /**
-   * Keeps the serialContext by thread set when starting to serialize cleared at the end (in finally
-   * clause) to prevent memory leaks Inherited by some custom impls, e.g. TypeOrFeature_impl
-   */
+   * Keeps the serialContext by thread
+   *   set when starting to serialize
+   *   cleared at the end (in finally clause) to prevent memory leaks
+   *   Inherited by some custom impls, e.g. TypeOrFeature_impl
+  */
+//@formatter:on
   public static final ThreadLocal<SerialContext> serialContext = new ThreadLocal<>();
 
   public static SerialContext getSerialContext(ContentHandler ch) {
@@ -713,15 +722,19 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return true;
   }
 
+//@formatter:off
   /**
-   * Compare 2 values for equality. Reason val1.equals(val2) is not used: If val1 is of type
-   * Object[], the equal test is object identity equality, not element by element identity. So we
-   * use Arrays.equals or deepEquals instead.
+   * Compare 2 values for equality.  
+   * Reason val1.equals(val2) is not used:
+   *   If val1 is of type Object[], the equal test is object identity equality, not
+   *      element by element identity.
+   *   So we use Arrays.equals or deepEquals instead.
    * 
    * @param val1
    * @param val2
    * @return true if equal
    */
+//@formatter:on
   private boolean valuesEqual(Object val1, Object val2) {
     if (val1 == null) {
       return val2 == null;

@@ -1794,15 +1794,18 @@ public class CasCreationUtils {
             || (o2 != null && o2.equals(CAS.TYPE_NAME_TOP) && o1 == null);
   }
 
+//@formatter:off
   /*************************************************************************************************
-   * Caching of getMeta info that requires producing the resource * - done because producing the
-   * resource can be very expensive * including accessing remote things on the network * Cache is
-   * cleared approximately every 30 seconds because remote resource's statuses may change * * Cache
-   * key is the ResourceSpecifier's class loaders and the ResourceManager * Both the DataPath and
-   * the uima extension class loader are used as part of the key * because differences in these
-   * could cause different metadata to be loaded *
+   * Caching of getMeta info that requires producing the resource                                  *
+   *   - done because producing the resource can be very expensive                                 *                        
+   *     including accessing remote things on the network                                          *
+   * Cache is cleared approximately every 30 seconds because remote resource's statuses may change *
+   *                                                                                               *
+   * Cache key is the ResourceSpecifier's class loaders and the ResourceManager                    *
+   *   Both the DataPath and the uima extension class loader are used as part of the key           *
+   *   because differences in these could cause different metadata to be loaded                    *
    *************************************************************************************************/
-
+//@formatter:on
   private static class MetaDataCacheKey {
     final ResourceSpecifier resourceSpecifier;
     final ClassLoader rmClassLoader;

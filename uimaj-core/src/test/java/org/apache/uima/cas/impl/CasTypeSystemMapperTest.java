@@ -39,21 +39,25 @@ import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.jupiter.api.Test;
 
+// @formatter:off
 /**
- * CasTypeSystemMapper maintains resources to map between two type systems, and handles types
- * present in one but not the other, same-named types present in both but with different feature
- * sets
- * 
+ * CasTypeSystemMapper maintains resources to map between two type systems, and handles
+ *   types present in one but not the other,
+ *   same-named types present in both but with different feature sets
+ *   
  * The correspondence is by the name of the types and their features.
  * 
- * Same-named features must have the same range. Types with no features - OK
- * 
- * Testing: make instances of type systems - with / without missing types - with same-named types
- * having different features - with same named but not == types and features
- * 
- * Verify appropriate mapping is there.
+ * Same-named features must have the same range.
+ * Types with no features - OK
+ *    
+ * Testing: make instances of type systems 
+ *   - with / without missing types
+ *   - with same-named types having different features
+ *   - with same named but not == types and features
+ *   
+ *   Verify appropriate mapping is there.
  */
-
+//@formatter:on
 public class CasTypeSystemMapperTest {
 
   private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem(); // just to get
@@ -503,14 +507,24 @@ public class CasTypeSystemMapperTest {
         ftg2.set(i, v == (featsToInclude2 & v));
       }
     }
-
-    /**
-     * Type system called to initialize the type system.
-     * 
-     * akof - type: all kinds of features akofInt akofFloat akofByte akofBoolean akofShort akofStr
-     * akofLong akofDouble akofHeapRef akofArrayRef
+    
+ // @formatter:off
+    /** 
+     * Type system  called to initialize the type system.
+     *
+     * akof    - type: all kinds of features
+     *   akofInt  
+     *   akofFloat
+     *   akofByte
+     *   akofBoolean
+     *   akofShort
+     *   akofStr
+     *   akofLong
+     *   akofDouble
+     *   akofHeapRef
+     *   akofArrayRef 
      */
-
+ // @formatter:on
     @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       initBuiltInTypes(tsm);

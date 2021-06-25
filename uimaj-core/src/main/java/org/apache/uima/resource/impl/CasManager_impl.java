@@ -62,7 +62,7 @@ public class CasManager_impl implements CasManager {
 
   /**
    * accumulates the metadata needed for shared CASes for this resource manager Starts out "empty"
-   * when this is created; is added to (but never removed) Duplicates may be in the list.
+   * when this is created; is added to (but never removed). Duplicates may be in the list.
    * 
    * Threading: This list is always accessed under the class instance lock.
    */
@@ -113,11 +113,12 @@ public class CasManager_impl implements CasManager {
     // mCurrentTypeSystem = null; //this too
   }
 
+//@formatter:off
   /**
-   * This comparison is needed to avoid throwing errors in the use case: a) the pipeline has been
-   * fully initialized, and one or more CASes have been drawn from this pool b) Another instance of
-   * an annotator using the same resource manager is initialized.
-   * 
+   * This comparison is needed to avoid throwing errors in the use case:
+   *   a) the pipeline has been fully initialized, and one or more CASes have been drawn from this pool
+   *   b) Another instance of an annotator using the same resource manager is initialized.
+   *   
    * In this case there is no change to the metadata, and we do not want to disturb anything.
    * 
    * @param md
@@ -125,6 +126,7 @@ public class CasManager_impl implements CasManager {
    * @return true if the type system description, the type priority description, and the index
    *         collection are in the list already.
    */
+//@formatter:on
   private boolean containsSameTypeAndIndexInfo(ProcessingResourceMetaData md) {
     final TypeSystemDescription tsd = md.getTypeSystem();
     final TypePriorities tsp = md.getTypePriorities();

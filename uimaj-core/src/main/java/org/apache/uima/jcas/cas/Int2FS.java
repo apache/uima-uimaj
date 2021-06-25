@@ -69,24 +69,26 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
    * @return index of the type
    */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /**
-   * lifecycle - starts as empty array list - becomes non-empty when updated (add) -- used from that
-   * point on.
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+//@formatter:off
+  /** 
+   * lifecycle   
+   *   - starts as empty array list   
+   *   - becomes non-empty when updated (add)       
+   *   -- used from that point on. 
    */
-
+//@formatter:on
   private boolean isPendingInit = false;
   private boolean isSaveNeeded = false;
 
   private final Int2ObjHashMap<TOP, T> int2FS; // not set here to allow initial size version
 
-  /*
-   * ******************* Feature Offsets *
-   *******************/
-
+//@formatter:off
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+//@formatter:on
   public final static String _FeatName_fsArray = "fsArray";
 
   /* Feature Adjusted Offsets */

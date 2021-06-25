@@ -1745,9 +1745,11 @@ public class AnalysisEngine_implTest {
   }
 
   /*
-   * Test attempts to update the type-system after the lazy merge (UIMA-1249 & 5048) Creating a 2nd
-   * identical AE should be OK even if the types are assembled in a different order. Creating an AE
-   * with an unseen type, type-priority, or index should fail.
+   * Test attempts to update the type-system after the lazy merge (UIMA-1249 & 5048)
+   * 
+   * Creating a 2nd identical AE should be OK even if the types are assembled in a different order.
+   * 
+   * Creating an AE with an unseen type, type-priority, or index should fail.
    */
   @org.junit.jupiter.api.Test
   public void testAdditionalAEs() throws Exception {

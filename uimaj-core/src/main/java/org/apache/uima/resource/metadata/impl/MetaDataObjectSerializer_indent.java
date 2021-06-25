@@ -34,55 +34,78 @@ import org.xml.sax.SAXException;
 
 class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
 
+ // @formatter:off
   /**
    * Heuristics for comment and whitespace processing
    * 
-   * Example: <!-- at top --> <a> <!-- same line --> <b/> <d> <!-- cmt --> <e/> </d> <c/> <!-- same
-   * line --> <!-- unusual case, following final one at a level --> </a> <!-- same line --> <!-- at
-   * bottom -->
+   * Example:
+   *    <!-- at top -->
+   * <a>   <!-- same line -->
+   *   <b/>
+   *   <d> <!-- cmt --> <e/> </d>
+   *   <c/>  <!-- same line -->
+   *   <!-- unusual case, following final one at a level -->
+   * </a>  <!-- same line -->
+   *   <!-- at bottom -->
    * 
-   * Each element has 2 calls: startElement, endElement Surround these with:
-   * maybeOutputCommentsBefore maybeOutputCommentsAfter
+   * Each element has 2 calls: 
+   *     startElement, endElement
+   *   Surround these with:
+   *     maybeOutputCommentsBefore
+   * maybeOutputCommentsAfter
    * 
-   * Detect top level (by fact that parent is null), and for top level: collect all above -%gt;
-   * output before startelement BUT, note that the sax parser doesn't do callbacks for text (blank
-   * lines) before the start element, so all we can collect are the comment lines. collect all below
-   * -%gt; output after endelement
+   * Detect top level (by fact that parent is null), and for top level:
+   *   collect all above -%gt; output before startelement  
+   *     BUT, note that the sax parser doesn't do callbacks for text (blank lines) before the
+   *       start element, so all we can collect are the comment lines.
+   *   collect all below -%gt; output after endelement
    * 
-   * For normal element node, "start": --> output before element collect all prev white space
-   * siblings up to the one that contains the first newline because the prev white space siblings
-   * before and including that one will have been outputted as part of the previous start or end
-   * tag's "after element" processing
+   * For normal element node, "start":
+   *   --> output before element
+   *     collect all prev white space siblings up to the one that contains the first newline 
+   *         because the prev white space siblings before and including that one will
+   *         have been outputted as part of the previous start or end tag's "after element" processing
    * 
-   * if no nl assume comments go with previous element, and skip here (stop looking if get null for
-   * getPreviousSibling()) (stop looking if get other than comment or ignorable whitespace)
+   *       if no nl assume comments go with previous element, and skip here
+   *       (stop looking if get null for getPreviousSibling())
+   *       (stop looking if get other than comment or ignorable whitespace)
    * (ignorable whitespace not always distinguishable from text that is whitespace?)
    * 
-   * --> output after element: if children: eg: <start> <!-- cmt --> collect all up to and including
-   * first nl before first Element child (stop at first Element node; if no nl, then the source had
-   * multiple elements on one line: associate the comments and whitespace with previous (and output
-   * them).
+   *   --> output after element:
+   *     if children:    eg:  <start> <!-- cmt --> 
+   *       collect all up to and including first nl before first Element child
+   *         (stop at first Element node; if no nl, then the source had multiple elements on one line:
+   * associate the comments and whitespace with previous (and output them).
    * 
-   * if no children: - means it's written <xxx/> or <xxx></xxx> Note: <xxx> something </xxx> not
-   * possible, because then it would have some text children output nothing - after comments will be
-   * done following endElement call
+   *     if no children: - means it's written 
+   *          <xxx/> or 
+   *          <xxx></xxx>  
+   *              Note:  <xxx>   something  </xxx> not possible, because then it would have some text children
+   *       output nothing - after comments will be done following endElement call
    * 
-   * For normal element node, "end": --> output before element collect all after last child Element;
-   * skip all up to first nl (assume before that, the comment goes with last child node) if no nl
-   * (e.g. </lastChild> <!-- cmt --> </elementBeingEnded> ) assume comments go with previous
-   * element, and skip here (stop looking if get null for getNextSibling()) (stop looking if get
-   * Element)
+   * For normal element node, "end":
+   *   --> output before element
+   *       collect all after last child Element; skip all up to first nl (assume before that, the comment goes with last child node)
+   *       if no nl (e.g.   </lastChild> <!--  cmt -->  </elementBeingEnded> )
+   *         assume comments go with previous element, and skip here
+   *       (stop looking if get null for getNextSibling())
+   *       (stop looking if get Element)
    * 
-   * if no element children - output nothing --> output after element if this element has no
-   * successor sibling elements collect all up to the null else collect all up to and including
-   * first nl from getNextSibling(). (stop at first Element)
+   *     if no element children - output nothing  
+   *   --> output after element    
+   *       if this element has no successor sibling elements
+   *         collect all up to the null
+   *       else  
+   *         collect all up to and including first nl from getNextSibling().
+   *           (stop at first Element)
    * 
-   * For implied element nodes (no Java model object corresponding) We have only the "parent" node,
-   * and the element name. Try to do matching on the element name In this case, we always are
-   * working with the children in the Dom infoset; we have a last-outputted reference Scan from
-   * last-outputted, to find element match, and then use that element as the "root".
+   * For implied element nodes (no Java model object corresponding)
+   * We have only the "parent" node, and the element name.  Try to do matching on the element name
+   * In this case, we always are working with the children in the Dom infoset; we have a last-outputted reference
+   *   Scan from last-outputted, to find element match, and then use that element as the "root".       
    * 
    */
+ // @formatter:on
 
   static private String lineEnd = System.getProperty("line.separator");
 
@@ -274,18 +297,24 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
     outputCoIwAfterElement(node.getNextSibling());
   }
 
+//@formatter:off
   /**
-   * Output comments and ignorable whitespace after an element. Comments following an element can
-   * either be grouped with the preceeding element or with the following one. e.g. <element>
-   * <!--comment 1--> <!--comment 2--> <!--comment 3--> <subelement>
+   * Output comments and ignorable whitespace after an element.
+   * Comments following an element can either be grouped with the preceeding element or with the following one.
+   *   e.g.    <element>   <!--comment 1-->
+   *             <!--comment 2-->
+   *             <!--comment 3-->
+   * <subelement>
    * 
-   * We arbitrarily group comment 1 with the element, and comment 2 and 3 with the subelement. This
-   * is for purposes of when they get processed and put out. This also affects what happens when new
-   * elements are "inserted" by an editor.
+   *   We arbitrarily group comment 1 with the element, and comment 2 and 3 with the subelement.
+   *   This is for purposes of when they get processed and put out.
+   *   This also affects what happens when new elements are "inserted" by an editor.
    * 
-   * This routine outputs only the whitespace and comment on the same line (e.g., it stops after
-   * outputting the ignorable whitespace that contains a nl.) If find text which is not whitespace,
-   * don't output anything. Use case: <someElement> some text
+   * This routine outputs only the whitespace and comment on the same line (e.g., 
+   * it stops after outputting the ignorable whitespace that contains a nl.)
+   * If find text which is not whitespace, don't output anything.
+   *   Use case: 
+   * <someElement> some text
    * 
    * @param startNode
    *          - the node corresponding to the start or end element just outputted
@@ -294,6 +323,7 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
    * @throws SAXException
    *           passthru
    */
+//@formatter:on
   private void outputCoIwAfterElement(Node startNode) throws DOMException, SAXException {
     if (null != startNode) {
       // scan for last node to output

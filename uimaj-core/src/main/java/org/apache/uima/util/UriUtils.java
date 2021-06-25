@@ -29,19 +29,22 @@ import java.net.URL;
  */
 public class UriUtils {
 
+ // @formatter:off
   /**
-   * Create a URI from a string, with proper quoting. Already quoted things in the input string are
-   * not re-quoted. There are several cases: String has no characters needing quoting String has
-   * chars needing quoting, but no chars are currently quoted (e.g. %20) String has quoted (e.g.
-   * %20) characters but no other chars needing quoting String has quoted (e.g. %20) characters and
-   * chars needing quoting, not currently quoted -- this case will throw an exception
-   * 
-   * @param s
-   *          the string to quote
+   * Create a URI from a string, with proper quoting.
+   * Already quoted things in the input string are not re-quoted.
+   * There are several cases:
+   *   String has no characters needing quoting
+   *   String has chars needing quoting, but no chars are currently quoted (e.g. %20)
+   *   String has quoted (e.g. %20) characters but no other chars needing quoting
+   *   String has quoted (e.g. %20) characters and chars needing quoting, not currently quoted
+   *     -- this case will throw an exception
+   * @param s the string to quote
    * @return URI with proper quoting
    * @throws URISyntaxException
    *           passthru
    */
+ // @formatter:on
   public static URI quote(String s) throws URISyntaxException {
     if (-1 == s.indexOf('%')) {
       // 3 argument constructor does any needed quoting of otherwise illegal chars

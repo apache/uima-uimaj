@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
+//@formatter:off
 /**
  * This one is being used, the other one (ending in 2) may be put back into service for large sizes,
  * later. (7/2017)
@@ -38,15 +39,17 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  * Use: set-sorted indexes in UIMA
  * 
- * Entries kept in order in 1 big TOP[] have ensureCapacity - grows by doubling up to
- * multiplication-limit point, then by addition
+ * Entries kept in order in 1 big TOP[]
+ *   have ensureCapacity - grows by doubling up to multiplication-limit point, then by addition
  * 
- * Adds optimized: - maintain high mark, if &gt;, add to end
+ * Adds optimized:
+ *   - maintain high mark, if &gt;, add to end
  * 
- * shifting optimization: for removes: shift space to back or front, whichever is closer for adds:
- * shift space from back or front, whichever is closer
- * 
+ * shifting optimization:
+ *   for removes: shift space to back or front, whichever is closer 
+ *   for adds: shift space from back or front, whichever is closer
  */
+//@formatter:on
 public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<T> {
   // public boolean specialDebug = false;
   final private static boolean TRACE = false;
@@ -200,18 +203,22 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     a = Arrays.copyOf(a, newSize);
   }
 
+//@formatter:off
   /**
    * This is called when inserting new items. May be called to insert at top
    * 
-   * Side effects: a_firstUsedslot adjusted if insert before first a_nextFreeslot adjusted if after
-   * last
+   * Side effects:  a_firstUsedslot adjusted if insert before first
+   *                a_nextFreeslot adjusted if after last
    * 
-   * Rebalancing: normally not done, instead just the smaller distance to front/back things are
-   * moved by 1 position.
+   * Rebalancing: 
+   *   normally not done, instead just the smaller distance to front/back things are moved
+   *     by 1 position.
    * 
-   * for highest insert when out of space there rebalance by moving 1/2 the space from front to end.
+   *   for highest insert when out of space there 
+   *      rebalance by moving 1/2 the space from front to end.
    * 
-   * for lowest insert when out of space there rebalance by moving 1/2 the space from end to front.
+   *   for lowest  insert when out of space there
+   *      rebalance by moving 1/2 the space from end to front.
    * 
    * @param insertPosOfAddedSpace
    *          position where new item goes 1 to the left
@@ -219,6 +226,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    *          true if inserting at end
    * @return adjusted insertPosOfAddedSpace, the free spot is just to the left of this position
    */
+//@formatter:on
   private int insertSpace(int insertPosOfAddedSpace, boolean highest) {
     if (TRACE) {
       tr.setLength(0);
