@@ -200,15 +200,19 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * (and therefore, is no longer present at "catch" time), and you don't want to use the
    * default-locale for getting the message out of the message bundle,
    * 
-   * then do something like this Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE,
-   * "TEST_KEY", objects); e.setResourceBundle(my_locale); // call this method, pass in the needed
-   * locale object throw e; // or whatever should be done with it
+   * then do something like this
    * 
-   * then do something like this <code><pre>
-   *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
-   *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
-   *   throw e;  // or whatever should be done with it
-   * </pre></code>
+   * <pre>
+   * Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects); 
+   * e.setResourceBundle(my_locale); // call this method, pass in the needed
+   * locale object throw e; // or whatever should be done with it then do something like this
+   * </pre>
+   * 
+   * <pre>
+   * Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
+   * e.setResourceBundle(my_locale); // call this method, pass in the needed locale object
+   * throw e; // or whatever should be done with it
+   * </pre>
    * 
    * @param aLocale
    *          the locale to use when getting the message from the message bundle at a later time

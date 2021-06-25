@@ -26,9 +26,9 @@ package org.apache.uima;
  * 
  * For example a POJO can access the shared External Override Settings with:
  * 
- * <code><pre>
+ * <pre>
  * String paramValue = UimaContextHolder.getContext().getSetting(paramName);
- * </pre></code>
+ * </pre>
  */
 public class UimaContextHolder {
 
