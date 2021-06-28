@@ -220,80 +220,80 @@ public class SelectFsAssert {
             assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, description,
                     typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // false | false | false
-            // formatter:on
+            // false           | false   | false
+            // @formatter:on
             assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                     description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards | Shifted
-            // false | false | false | true
-            // formatter:on
+            // false           | false   | false     | true
+            // @formatter:on
             assertShiftedSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                     description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // false | false | true
-            // formatter:on
+            // false           | false   | true
+            // @formatter:on
             assertBackwardsSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                     description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // false | true | false
-            // formatter:on
+            // false           | true    | false
+            // @formatter:on
             assertLimitedSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                     description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // false | true | true
-            // formatter:on
+            // false           | true    | true
+            // @formatter:on
             assertLimitedBackwardsSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
                     xRelToY, description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards | Shifted
-            // false | true | true | true
-            // formatter:on
+            // false           | true    | true      | true
+            // @formatter:on
             assertShiftedLimitedBackwardsSelectionAsRandomIteration(rnd, expected, randomCas,
                     aActual, xRelToY, description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // true | false | false
-            // formatter:on
+            // true            | false   | false
+            // @formatter:on
             assertNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
                     xRelToY, description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // true | false | true
-            // formatter:on
+            // true            | false   | true
+            // @formatter:on
             assertBackwardsNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas,
                     aActual, xRelToY, description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // true | true | false
-            // formatter:on
+            // true            | true    | false
+            // @formatter:on
             assertLimitedNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
                     xRelToY, description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards
-            // true | true | true
-            // formatter:on
+            // true            | true    | true
+            // @formatter:on
             assertLimitedBackwardsNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas,
                     aActual, xRelToY, description, typeX, typeY, y, timings);
 
-            // formatter:off
+            // @formatter:off
             // Non-Overlapping | Limited | Backwards | Shifted
-            // true | true | true | true
-            // formatter:on
+            // true            | true    | true      | true
+            // @formatter:on
             assertShiftedLimitedBackwardsNonOverlappingSelectionAsRandomIteration(rnd, expected,
                     randomCas, aActual, xRelToY, description, typeX, typeY, y, timings);
           } catch (Throwable e) {
@@ -472,7 +472,6 @@ public class SelectFsAssert {
 
     List<Annotation> adjustedExpectation = unambiguous(expected);
     adjustedExpectation = limit(adjustedExpectation, limit, aXRelToY);
-    ;
 
     assertSelectionAsRandomIteration(rnd, adjustedExpectation, randomCas,
             (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping()
@@ -691,11 +690,9 @@ public class SelectFsAssert {
                       description, casToString(randomCas), expectedLog,
                       history.stream().collect(joining("\n")))
               // We do not compare the exact annotation here because the moveTo operation moves to
-              // the
-              // first annotation that matches the target annotation. If there are multiple
-              // annoations
-              // with the same type/begin/end, then it moves to the first one of these, even if the
-              // cursor is e.g. pointing to the second one.
+              // the first annotation that matches the target annotation. If there are multiple
+              // annoations with the same type/begin/end, then it moves to the first one of these,
+              // even if the cursor is e.g. pointing to the second one.
               .isEqualToComparingOnlyGivenFields(expected.get(cursor), "begin", "end");
 
       // Since the moveTo operation may not select the annotation the cursor is pointing to but
