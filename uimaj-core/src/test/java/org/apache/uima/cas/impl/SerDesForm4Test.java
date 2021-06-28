@@ -85,25 +85,6 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   private Type akof;
   private Type topType;
-  private Type typeArrayInt;
-  private Type typeArrayFs;
-  private Type typeArrayFloat;
-  private Type typeArrayDouble;
-  private Type typeArrayLong;
-  private Type typeArrayShort;
-  private Type typeArrayByte;
-  private Type typeArrayBoolean;
-  private Type typeArrayString;
-
-  private Type typeInt;
-  private Type typeFloat;
-  private Type typeDouble;
-  private Type typeLong;
-  private Type typeShort;
-  private Type typeByte;
-  private Type typeBoolean;
-  private Type typeString;
-  private Type typeFs;
 
   private Feature akofUid;
   private Feature akofInt;
@@ -164,76 +145,38 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
       akof = tsm.addType("akof", topType);
 
-      typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-      typeArrayFs = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
-      typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
-      typeArrayDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
-      typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
-      typeArrayShort = tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY);
-      typeArrayByte = tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY);
-      typeArrayBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-      typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
+      akofUid = includeUid ? tsm.addFeature("akofUid", akof, tsm.getType(CAS.TYPE_NAME_INTEGER))
+              : null;
+      akofInt = tsm.addFeature("akofInt", akof, tsm.getType(CAS.TYPE_NAME_INTEGER));
+      akofFs = tsm.addFeature("akofFs", akof, tsm.getType(CAS.TYPE_NAME_TOP));
+      akofFloat = tsm.addFeature("akofFloat", akof, tsm.getType(CAS.TYPE_NAME_FLOAT));
+      akofDouble = tsm.addFeature("akofDouble", akof, tsm.getType(CAS.TYPE_NAME_DOUBLE));
+      akofLong = tsm.addFeature("akofLong", akof, tsm.getType(CAS.TYPE_NAME_LONG));
+      akofShort = tsm.addFeature("akofShort", akof, tsm.getType(CAS.TYPE_NAME_SHORT));
+      akofByte = tsm.addFeature("akofByte", akof, tsm.getType(CAS.TYPE_NAME_BYTE));
+      akofBoolean = tsm.addFeature("akofBoolean", akof, tsm.getType(CAS.TYPE_NAME_BOOLEAN));
+      akofString = tsm.addFeature("akofStr", akof, tsm.getType(CAS.TYPE_NAME_STRING));
 
-      typeInt = tsm.getType(CAS.TYPE_NAME_INTEGER);
-      typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
-      typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
-      typeLong = tsm.getType(CAS.TYPE_NAME_LONG);
-      typeShort = tsm.getType(CAS.TYPE_NAME_SHORT);
-      typeByte = tsm.getType(CAS.TYPE_NAME_BYTE);
-      typeBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN);
-      typeString = tsm.getType(CAS.TYPE_NAME_STRING);
-      typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
-
-      akofUid = includeUid ? tsm.addFeature("akofUid", akof, typeInt) : null;
-      akofInt = tsm.addFeature("akofInt", akof, typeInt);
-      akofFs = tsm.addFeature("akofFs", akof, typeFs);
-      akofFloat = tsm.addFeature("akofFloat", akof, typeFloat);
-      akofDouble = tsm.addFeature("akofDouble", akof, typeDouble);
-      akofLong = tsm.addFeature("akofLong", akof, typeLong);
-      akofShort = tsm.addFeature("akofShort", akof, typeShort);
-      akofByte = tsm.addFeature("akofByte", akof, typeByte);
-      akofBoolean = tsm.addFeature("akofBoolean", akof, typeBoolean);
-      akofString = tsm.addFeature("akofStr", akof, typeString);
-
-      akofAint = tsm.addFeature("akofAint", akof, typeArrayInt);
-      akofAfs = tsm.addFeature("akofAfs", akof, typeArrayFs);
-      akofAfloat = tsm.addFeature("akofAfloat", akof, typeArrayFloat);
-      akofAdouble = tsm.addFeature("akofAdouble", akof, typeArrayDouble);
-      akofAlong = tsm.addFeature("akofAlong", akof, typeArrayLong);
-      akofAshort = tsm.addFeature("akofAshort", akof, typeArrayShort);
-      akofAbyte = tsm.addFeature("akofAbyte", akof, typeArrayByte);
-      akofAboolean = tsm.addFeature("akofAboolean", akof, typeArrayBoolean);
-      akofAstring = tsm.addFeature("akofAstring", akof, typeArrayString);
+      akofAint = tsm.addFeature("akofAint", akof, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
+      akofAfs = tsm.addFeature("akofAfs", akof, tsm.getType(CAS.TYPE_NAME_FS_ARRAY));
+      akofAfloat = tsm.addFeature("akofAfloat", akof, tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY));
+      akofAdouble = tsm.addFeature("akofAdouble", akof, tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY));
+      akofAlong = tsm.addFeature("akofAlong", akof, tsm.getType(CAS.TYPE_NAME_LONG_ARRAY));
+      akofAshort = tsm.addFeature("akofAshort", akof, tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY));
+      akofAbyte = tsm.addFeature("akofAbyte", akof, tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY));
+      akofAboolean = tsm.addFeature("akofAboolean", akof, tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
+      akofAstring = tsm.addFeature("akofAstring", akof, tsm.getType(CAS.TYPE_NAME_STRING_ARRAY));
     }
 
     @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem typeSystem) {
+      // Nothing to do
     }
 
     void reinitTypeSystem(TypeSystemImpl tsm) {
       topType = tsm.getTopType();
 
       akof = tsm.refreshType(akof);
-
-      typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-      typeArrayFs = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
-      typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
-      typeArrayDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
-      typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
-      typeArrayShort = tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY);
-      typeArrayByte = tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY);
-      typeArrayBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-      typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
-
-      typeInt = tsm.getType(CAS.TYPE_NAME_INTEGER);
-      typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
-      typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
-      typeLong = tsm.getType(CAS.TYPE_NAME_LONG);
-      typeShort = tsm.getType(CAS.TYPE_NAME_SHORT);
-      typeByte = tsm.getType(CAS.TYPE_NAME_BYTE);
-      typeBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN);
-      typeString = tsm.getType(CAS.TYPE_NAME_STRING);
-      typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
 
       akofUid = includeUid ? tsm.refreshFeature(akofUid) : null;
       akofInt = tsm.refreshFeature(akofInt);
