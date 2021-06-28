@@ -258,11 +258,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
-  public SerDesForm4Test() {
-  }
-
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws Exception {
     // long seed = 1_449_257_605_347_913_923L;
     // long seed = 949_754_466_380_345_024L;
     // long seed = 6_761_039_426_734_540_557L;
@@ -270,24 +267,20 @@ public class SerDesForm4Test extends SerDesTstCommon {
     // random.setSeed(randomseed.nextLong());
     // System.out.format("SerDesTest4 setup RandomSeed: %,d%n", seed);
 
-    try {
-      CASTestSetup cts = new CASTestSetup();
-      this.cas = (CASImpl) CASInitializer.initCas(cts, t -> cts.reinitTypeSystem(t));
-      this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
-      this.cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      lfs = new ArrayList<>();
-      lfs2 = new ArrayList<>();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
+    CASTestSetup cts = new CASTestSetup();
+    cas = (CASImpl) CASInitializer.initCas(cts, t -> cts.reinitTypeSystem(t));
+    ts = (TypeSystemImpl) this.cas.getTypeSystem();
+    cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+    deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+    deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+    lfs = new ArrayList<>();
+    lfs2 = new ArrayList<>();
   }
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
     deserCas = null;
     deltaCas = null;
     lfs = null;
@@ -390,7 +383,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * Driver for random values pick among random and "interesting" edge case values
    */
   @Test
-  public void testDeltaWithAllMods() throws IOException {
+  public void testDeltaWithAllMods() throws Exception {
     boolean prev = isKeep;
     isKeep = true;
     for (int i = 0; i < 100; i++) {
@@ -588,34 +581,38 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testWithOtherSerializer() throws IOException {
+  public void testWithOtherSerializer() throws Exception {
     doPlain = true;
     testDeltaWithMods();
     tearDown();
+
     setUp();
     testDeltaWithRefsBelow();
     tearDown();
+
     setUp();
     testDeltaWithAllMods();
     tearDown();
+
     setUp();
     testAllKinds();
     tearDown();
+
     setUp();
     testArrayAux();
   }
 
   // @formatter:off
   /**
-   * See if can read Version 2 serialized things and deserialize them
+   * See if can read Version 2 serialized things and de-serialize them
+   * 
    * Note: Delta won't work unless the previous v2 test case indexed or ref'd all the FSs,
-   *   because otherwise, some FSs will be "deleted" by the modelling V3 does for the CAS
+   *   because otherwise, some FSs will be "deleted" by the modeling V3 does for the CAS
    *   layout because they're not findable during scanning, and therefore, delta mods won't be correct.
-   * @throws IOException
    */
   // @formatter:on
   @Test
-  public void testWithPrevGenerated() throws IOException {
+  public void testWithPrevGenerated() throws Exception {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
     initReadSavedInts();
@@ -644,7 +641,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     savedIntsStream.close();
   }
 
-  private void tstPrevGenV2(Runnable m) {
+  private void tstPrevGenV2(Runnable m) throws Exception {
     tearDown();
     setUp();
 
@@ -652,26 +649,33 @@ public class SerDesForm4Test extends SerDesTstCommon {
             .satisfies(e -> e.hasMessageKey(CASRuntimeException.DESERIALIZING_V2_DELTA_V3));
   }
 
-  public void captureGenerated() throws IOException {
+  public void captureGenerated() throws Exception {
     capture = true;
     initWriteSavedInts();
+
     setUp();
     testDeltaWithMods();
     tearDown();
+
     setUp();
     testDeltaWithRefsBelow();
     tearDown();
+
     setUp();
     testDeltaWithAllMods();
     tearDown();
+
     setUp();
     testDeltaWithIndexMods();
     tearDown();
+
     setUp();
     testAllKinds();
     tearDown();
+
     setUp();
     testArrayAux();
+
     savedIntsOutStream.close();
   }
 
