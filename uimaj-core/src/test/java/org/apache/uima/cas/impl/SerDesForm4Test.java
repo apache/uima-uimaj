@@ -18,6 +18,11 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -131,8 +136,6 @@ public class SerDesForm4Test extends SerDesTstCommon {
   private List<FeatureStructure> lfs;
   private List<FeatureStructure> lfs2;
 
-  private int[] cas1FsIndexes;
-  private int[] cas2FsIndexes;
   private MarkerImpl marker;
 
   public class CASTestSetup implements AnnotatorInitializer {
@@ -258,7 +261,6 @@ public class SerDesForm4Test extends SerDesTstCommon {
   public SerDesForm4Test() {
   }
 
-  @Override
   @BeforeEach
   public void setUp() {
     // long seed = 1_449_257_605_347_913_923L;
@@ -282,7 +284,6 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
-  @Override
   @AfterEach
   public void tearDown() {
     this.cas = null;
@@ -646,13 +647,9 @@ public class SerDesForm4Test extends SerDesTstCommon {
   private void tstPrevGenV2(Runnable m) {
     tearDown();
     setUp();
-    boolean caught = false;
-    try {
-      m.run();
-    } catch (CASRuntimeException e) {
-      caught = e.hasMessageKey(CASRuntimeException.DESERIALIZING_V2_DELTA_V3);
-    }
-    assertTrue("Should have thrown exception serializing v2 into v3", caught);
+
+    assertThatExceptionOfType(CASRuntimeException.class).isThrownBy(() -> m.run())
+            .satisfies(e -> e.hasMessageKey(CASRuntimeException.DESERIALIZING_V2_DELTA_V3));
   }
 
   public void captureGenerated() throws IOException {
@@ -1121,16 +1118,11 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
       BinaryCasSerDes bcsd_cas1 = cas.getBinaryCasSerDes();
       bcsd_cas1.reinit(bais);
-      assertTrue(CasCompare.compareCASes(cas, cas2));
+      assertThat(CasCompare.compareCASes(cas, cas2)).isTrue();
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
-      getIndexes();
-
-      // if (!Arrays.equals(cas1FsIndexes, cas2FsIndexes)) {
-      // System.out.println("debug");
-      // }
-      assertTrue(Arrays.equals(cas1FsIndexes, cas2FsIndexes));
+      assertThat(getIndexInfo(cas1)).containsExactly(getIndexInfo(cas2));
 
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -1172,25 +1164,15 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
       BinaryCasSerDes bcsd_cas2 = cas2.getBinaryCasSerDes();
       bcsd_cas2.reinit(bais);
-      assertTrue(CasCompare.compareCASes(cas, cas2));
+      assertThat(CasCompare.compareCASes(cas, cas2)).isTrue();
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
-      getIndexes();
-
-      // if (!Arrays.equals(cas1FsIndexes, cas2FsIndexes)) {
-      // System.out.println("debug");
-      // }
-      assertTrue(Arrays.equals(cas1FsIndexes, cas2FsIndexes));
+      assertThat(getIndexInfo(cas1)).containsExactly(getIndexInfo(cas2));
 
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void getIndexes() {
-    cas1FsIndexes = getIndexInfo(cas1);
-    cas2FsIndexes = getIndexInfo(cas2);
   }
 
   // seems like an invalid thing since includeUid is false. Nov 2016
