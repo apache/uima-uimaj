@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.10.4 Release Notes</title>
+  <title>Apache UIMA v2.11.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.4 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.11.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -82,13 +82,15 @@
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 <p>The major changes in this release include:</p>
 
-<ul> 
-  <li>The Eclipse plugin for the Component Descriptor editor was fixed to work with
-      the latest version of Eclipse.</li>
-  <li>Internationalized Exceptions more reliably find their message bundles.</li>
-  <li>An additional use case for running pipeline within pipelines is now supported.</li>
-  <li>An override was added to enable using External DTDs in XML descriptors.</li>
-  <li>The destroy cleanups around PEARs was improved.</li>
+<ul>
+  <li>Added ability to serialize as XMIs as XML 1.1</li>
+  <li>Added typed parameter support to PEARs</li>
+  <li>Improved speed of constructing aggregate engines</li>
+  <li>Fixed deep cloning of AnalysisEngineDescription</li>
+  <li>Fixed bug causing Annotation to be returned when asking JCas for a specific type</li>
+  <li>Fixed ability to install PEARs into directories containing XML special characters in the name</li>
+  <li>Fixed index protection for cases that no FSes were indexed</li>
+  <li>No longer ship Pack200-compressed versions of the Eclipse plugins</li>
 </ul>
   
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>

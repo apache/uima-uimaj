@@ -17,15 +17,13 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>2.11.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -34,27 +32,6 @@
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>Allows editing the contents of a saved CAS</description>
   <url>${uimaWebsiteUrl}</url>
-
-  <!-- Special inheritance note
-    even though the <scm> element that follows is exactly the
-    same as those in super poms, it cannot be inherited because
-    there is some special code that computes the connection elements
-    from the chain of parent poms, if this is omitted.
-
-    Keeping this a bit factored allows cutting/pasting the <scm>
-    element, and just changing the following two properties -->
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-cas-editor-ide
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-cas-editor-ide
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-cas-editor-ide
-    </url>
-    <tag>HEAD</tag>
-  </scm>
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>

@@ -23,29 +23,17 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>  <!-- change to non-snapshot version after release of uimaj-parent -->
+    <version>2.11.0</version>  <!-- change to non-snapshot version after release of uimaj-parent -->
     <relativePath />
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>2.10.5-SNAPSHOT</version>
+  <version>2.11.0</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Java SDK Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
-
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-eclipse-update-site
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-eclipse-update-site
-    </url>
-  </scm>
 
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>

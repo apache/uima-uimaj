@@ -92,10 +92,9 @@ Please refer to the RELEASE_NOTES.html
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java version 8 or later; it has been tested with Sun/Oracle 8, 
-and IBM Java 8.
+Apache UIMA requires Java version 8 or later; it has been tested with OpenJDK 8.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later, as well.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later.
 
 The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (8+) 
 implementations should work, but have not been significantly tested.

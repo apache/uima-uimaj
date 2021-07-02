@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>2.11.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -34,26 +34,6 @@
   <description>Utilities for testing UIMA</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the 
-       same as those in super poms, it cannot be inherited because 
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted. 
-       
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->  
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
-    </url>
-  </scm>
-  
   <properties>
     <uimaScmProject>jvinci</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
