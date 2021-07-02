@@ -49,7 +49,7 @@ public class SelectFsPredicateAlignmentTest {
   private static final int DEFAULT_ITERATIONS = 30;
   private static final int DEFAULT_TYPE_COUNT = 10;
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatSelectFollowingAlignsWithPrecedingPredicate() throws Exception {
     // In order to find annotations that X is preceding, we select the following annotations
     assertSelectFS(PRECEDING,
@@ -134,7 +134,7 @@ public class SelectFsPredicateAlignmentTest {
             (cas, type, y) -> cas.<Annotation> select(type).following(y));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatSelectFollowingAlignsWithFollowingPredicateOnIndexRandomized() throws Exception {
     System.out.print("Following (Index select by annotation) -- ");
     assertSelectionIsEqualOnRandomData(FOLLOWING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
@@ -199,7 +199,7 @@ public class SelectFsPredicateAlignmentTest {
             (cas, type, y) -> cas.<Annotation> select(type).coveredBy(y.getBegin(), y.getEnd()));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomized() throws Exception {
     System.out.print("CoveredBy (Index select by annotation) -- ");
     assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
@@ -215,7 +215,7 @@ public class SelectFsPredicateAlignmentTest {
                     .coveredBy(y.getBegin(), y.getEnd()));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomizedNonStrict()
           throws Exception {
     System.out.print("CoveredBy* (CAS select by annotation)  -- ");

@@ -52,7 +52,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for Analysis Engine descriptor.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAeDescriptor() throws Exception {
     File aeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + AE_DESC_NAME);
     if (!aeDescFile.isFile())
@@ -64,7 +64,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for CAS Consumer descriptor.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCcDescriptor() throws Exception {
     File ccDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CC_DESC_NAME);
     if (!ccDescFile.isFile())
@@ -76,7 +76,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for CAS Initializer descriptor.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCiDescriptor() throws Exception {
     File ciDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CI_DESC_NAME);
     if (!ciDescFile.isFile())
@@ -88,7 +88,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for Collection Reader descriptor.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCrDescriptor() throws Exception {
     File crDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CR_DESC_NAME);
     if (!crDescFile.isFile())

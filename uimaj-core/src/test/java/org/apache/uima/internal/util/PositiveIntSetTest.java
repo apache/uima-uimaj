@@ -80,7 +80,7 @@ public class PositiveIntSetTest {
     assertFalse(s.contains(1));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBasic() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     s.add(128);
@@ -277,7 +277,7 @@ public class PositiveIntSetTest {
         1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1259 }));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRandom() {
     long seed = rand.nextLong();
     System.out.println("PositiveIntSet test random seed = " + seed);

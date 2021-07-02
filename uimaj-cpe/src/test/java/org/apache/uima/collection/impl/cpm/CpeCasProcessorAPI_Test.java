@@ -133,7 +133,7 @@ public class CpeCasProcessorAPI_Test {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testAddRemoteCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
@@ -174,7 +174,7 @@ public class CpeCasProcessorAPI_Test {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testAddLocalCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 

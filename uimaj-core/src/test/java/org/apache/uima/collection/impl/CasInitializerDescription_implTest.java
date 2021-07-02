@@ -203,7 +203,7 @@ public class CasInitializerDescription_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSerialization() throws Exception {
     try {
       // serialize objects to byte array

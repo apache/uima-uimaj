@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 public class Int2IntRBTTest {
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testexpand() {
     Int2IntRBT ia = new Int2IntRBT();
 

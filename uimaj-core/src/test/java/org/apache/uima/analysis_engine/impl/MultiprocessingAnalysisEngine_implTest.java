@@ -100,7 +100,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testInitialize() throws Exception {
     try {
       // initialize MultiprocesingTextAnalysisEngine
@@ -132,7 +132,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetAnalysisEngineMetaData() throws Exception {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
@@ -147,7 +147,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testNewCAS() throws Exception {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
@@ -185,7 +185,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testProcess() throws Exception {
     try {
       // test simple primitive MultiprocessingTextAnalysisEngine
@@ -269,7 +269,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testProcessManyCM() throws Exception {
     // get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleCasGenerator.xml");
@@ -279,7 +279,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testProcessManyAgg() throws Exception {
     // get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");

@@ -253,7 +253,7 @@ public class JsonCasSerializerTest {
     
   }
   
-    @org.junit.jupiter.api.Test
+    @Test
     public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
@@ -268,7 +268,7 @@ public class JsonCasSerializerTest {
     
   }
   
-    @org.junit.jupiter.api.Test
+    @Test
     public void testMultipleViews() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(1);
@@ -279,7 +279,7 @@ public class JsonCasSerializerTest {
     serializeAndCompare("multipleViews.txt");
         
   }
-    @org.junit.jupiter.api.Test
+    @Test
     public void testDynamicLists() throws Exception {
     setupTypeSystem("allTypes.xml");
     

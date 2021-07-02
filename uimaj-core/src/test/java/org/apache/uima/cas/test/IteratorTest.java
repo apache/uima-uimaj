@@ -240,7 +240,7 @@ public class IteratorTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testEmptySnapshotIterator() {
     setupindexes();
     FSIterator<FeatureStructure> it = sortedIndex.iterator();
@@ -266,7 +266,7 @@ public class IteratorTest {
     assertTrue(ok);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetIndexes() {
     Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
@@ -274,7 +274,7 @@ public class IteratorTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMoveTo() {
     // Add some arbitrary annotations
     for (int i = 0; i < 10; i++) {
@@ -307,7 +307,7 @@ public class IteratorTest {
     assertTrue(index.compare(match, ssit.get()) > 0);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMoveToPastEnd() { // https://issues.apache.org/jira/browse/UIMA-4094
     this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.annotationType, 1, 2));
 
@@ -416,7 +416,7 @@ public class IteratorTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMultithreadedIterator() {
     setupFSs();
     final FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository()
@@ -478,7 +478,7 @@ public class IteratorTest {
     MultiThreadUtils.terminateThreads(threads);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIterator() {
     setupFSs();
 
@@ -1108,7 +1108,7 @@ public class IteratorTest {
   /**
    * Test deleting FSs from indexes.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDelete() {
     // Create a bunch of FSs.
     // have 10% of them be the same key
@@ -1228,7 +1228,7 @@ public class IteratorTest {
     assertEquals(nbr, i);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRemoveAll() {
     AnnotationFS[] fsArray = new AnnotationFS[100];
     AnnotationFS[] subFsArray = new AnnotationFS[100];
@@ -1390,7 +1390,7 @@ public class IteratorTest {
     // }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testInvalidIndexRequest() {
     boolean exc = false;
     try {

@@ -293,7 +293,7 @@ public class FeaturePathTest {
   /*
    * Tests the supported built-in functions for the feature path
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBuiltInFeaturePathFunctions() throws Exception {
 
     XMLInputSource in = new XMLInputSource(
@@ -590,7 +590,7 @@ public class FeaturePathTest {
   /*
    * Tests the addFeature() API together with initialize()
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testInitializeWithAddAPI() throws Exception {
 
     XMLInputSource in = new XMLInputSource(

@@ -241,7 +241,7 @@ public class TaeDescription_implTest {
     aggregateDesc = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testXMLization() throws Exception {
     try {
       // write objects to XML

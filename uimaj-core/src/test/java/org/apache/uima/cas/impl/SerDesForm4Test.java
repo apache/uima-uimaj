@@ -18,6 +18,11 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -80,25 +85,6 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   private Type akof;
   private Type topType;
-  private Type typeArrayInt;
-  private Type typeArrayFs;
-  private Type typeArrayFloat;
-  private Type typeArrayDouble;
-  private Type typeArrayLong;
-  private Type typeArrayShort;
-  private Type typeArrayByte;
-  private Type typeArrayBoolean;
-  private Type typeArrayString;
-
-  private Type typeInt;
-  private Type typeFloat;
-  private Type typeDouble;
-  private Type typeLong;
-  private Type typeShort;
-  private Type typeByte;
-  private Type typeBoolean;
-  private Type typeString;
-  private Type typeFs;
 
   private Feature akofUid;
   private Feature akofInt;
@@ -131,8 +117,6 @@ public class SerDesForm4Test extends SerDesTstCommon {
   private List<FeatureStructure> lfs;
   private List<FeatureStructure> lfs2;
 
-  private int[] cas1FsIndexes;
-  private int[] cas2FsIndexes;
   private MarkerImpl marker;
 
   public class CASTestSetup implements AnnotatorInitializer {
@@ -161,76 +145,38 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
       akof = tsm.addType("akof", topType);
 
-      typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-      typeArrayFs = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
-      typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
-      typeArrayDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
-      typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
-      typeArrayShort = tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY);
-      typeArrayByte = tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY);
-      typeArrayBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-      typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
+      akofUid = includeUid ? tsm.addFeature("akofUid", akof, tsm.getType(CAS.TYPE_NAME_INTEGER))
+              : null;
+      akofInt = tsm.addFeature("akofInt", akof, tsm.getType(CAS.TYPE_NAME_INTEGER));
+      akofFs = tsm.addFeature("akofFs", akof, tsm.getType(CAS.TYPE_NAME_TOP));
+      akofFloat = tsm.addFeature("akofFloat", akof, tsm.getType(CAS.TYPE_NAME_FLOAT));
+      akofDouble = tsm.addFeature("akofDouble", akof, tsm.getType(CAS.TYPE_NAME_DOUBLE));
+      akofLong = tsm.addFeature("akofLong", akof, tsm.getType(CAS.TYPE_NAME_LONG));
+      akofShort = tsm.addFeature("akofShort", akof, tsm.getType(CAS.TYPE_NAME_SHORT));
+      akofByte = tsm.addFeature("akofByte", akof, tsm.getType(CAS.TYPE_NAME_BYTE));
+      akofBoolean = tsm.addFeature("akofBoolean", akof, tsm.getType(CAS.TYPE_NAME_BOOLEAN));
+      akofString = tsm.addFeature("akofStr", akof, tsm.getType(CAS.TYPE_NAME_STRING));
 
-      typeInt = tsm.getType(CAS.TYPE_NAME_INTEGER);
-      typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
-      typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
-      typeLong = tsm.getType(CAS.TYPE_NAME_LONG);
-      typeShort = tsm.getType(CAS.TYPE_NAME_SHORT);
-      typeByte = tsm.getType(CAS.TYPE_NAME_BYTE);
-      typeBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN);
-      typeString = tsm.getType(CAS.TYPE_NAME_STRING);
-      typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
-
-      akofUid = includeUid ? tsm.addFeature("akofUid", akof, typeInt) : null;
-      akofInt = tsm.addFeature("akofInt", akof, typeInt);
-      akofFs = tsm.addFeature("akofFs", akof, typeFs);
-      akofFloat = tsm.addFeature("akofFloat", akof, typeFloat);
-      akofDouble = tsm.addFeature("akofDouble", akof, typeDouble);
-      akofLong = tsm.addFeature("akofLong", akof, typeLong);
-      akofShort = tsm.addFeature("akofShort", akof, typeShort);
-      akofByte = tsm.addFeature("akofByte", akof, typeByte);
-      akofBoolean = tsm.addFeature("akofBoolean", akof, typeBoolean);
-      akofString = tsm.addFeature("akofStr", akof, typeString);
-
-      akofAint = tsm.addFeature("akofAint", akof, typeArrayInt);
-      akofAfs = tsm.addFeature("akofAfs", akof, typeArrayFs);
-      akofAfloat = tsm.addFeature("akofAfloat", akof, typeArrayFloat);
-      akofAdouble = tsm.addFeature("akofAdouble", akof, typeArrayDouble);
-      akofAlong = tsm.addFeature("akofAlong", akof, typeArrayLong);
-      akofAshort = tsm.addFeature("akofAshort", akof, typeArrayShort);
-      akofAbyte = tsm.addFeature("akofAbyte", akof, typeArrayByte);
-      akofAboolean = tsm.addFeature("akofAboolean", akof, typeArrayBoolean);
-      akofAstring = tsm.addFeature("akofAstring", akof, typeArrayString);
+      akofAint = tsm.addFeature("akofAint", akof, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
+      akofAfs = tsm.addFeature("akofAfs", akof, tsm.getType(CAS.TYPE_NAME_FS_ARRAY));
+      akofAfloat = tsm.addFeature("akofAfloat", akof, tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY));
+      akofAdouble = tsm.addFeature("akofAdouble", akof, tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY));
+      akofAlong = tsm.addFeature("akofAlong", akof, tsm.getType(CAS.TYPE_NAME_LONG_ARRAY));
+      akofAshort = tsm.addFeature("akofAshort", akof, tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY));
+      akofAbyte = tsm.addFeature("akofAbyte", akof, tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY));
+      akofAboolean = tsm.addFeature("akofAboolean", akof, tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
+      akofAstring = tsm.addFeature("akofAstring", akof, tsm.getType(CAS.TYPE_NAME_STRING_ARRAY));
     }
 
     @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem typeSystem) {
+      // Nothing to do
     }
 
     void reinitTypeSystem(TypeSystemImpl tsm) {
       topType = tsm.getTopType();
 
       akof = tsm.refreshType(akof);
-
-      typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-      typeArrayFs = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
-      typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
-      typeArrayDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
-      typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
-      typeArrayShort = tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY);
-      typeArrayByte = tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY);
-      typeArrayBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-      typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
-
-      typeInt = tsm.getType(CAS.TYPE_NAME_INTEGER);
-      typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
-      typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
-      typeLong = tsm.getType(CAS.TYPE_NAME_LONG);
-      typeShort = tsm.getType(CAS.TYPE_NAME_SHORT);
-      typeByte = tsm.getType(CAS.TYPE_NAME_BYTE);
-      typeBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN);
-      typeString = tsm.getType(CAS.TYPE_NAME_STRING);
-      typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
 
       akofUid = includeUid ? tsm.refreshFeature(akofUid) : null;
       akofInt = tsm.refreshFeature(akofInt);
@@ -255,12 +201,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
-  public SerDesForm4Test() {
-  }
-
-  @Override
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws Exception {
     // long seed = 1_449_257_605_347_913_923L;
     // long seed = 949_754_466_380_345_024L;
     // long seed = 6_761_039_426_734_540_557L;
@@ -268,25 +210,20 @@ public class SerDesForm4Test extends SerDesTstCommon {
     // random.setSeed(randomseed.nextLong());
     // System.out.format("SerDesTest4 setup RandomSeed: %,d%n", seed);
 
-    try {
-      CASTestSetup cts = new CASTestSetup();
-      this.cas = (CASImpl) CASInitializer.initCas(cts, t -> cts.reinitTypeSystem(t));
-      this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
-      this.cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      lfs = new ArrayList<>();
-      lfs2 = new ArrayList<>();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
+    CASTestSetup cts = new CASTestSetup();
+    cas = (CASImpl) CASInitializer.initCas(cts, t -> cts.reinitTypeSystem(t));
+    ts = (TypeSystemImpl) this.cas.getTypeSystem();
+    cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+    deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+    deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+    lfs = new ArrayList<>();
+    lfs2 = new ArrayList<>();
   }
 
-  @Override
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
     deserCas = null;
     deltaCas = null;
     lfs = null;
@@ -389,7 +326,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * Driver for random values pick among random and "interesting" edge case values
    */
   @Test
-  public void testDeltaWithAllMods() throws IOException {
+  public void testDeltaWithAllMods() throws Exception {
     boolean prev = isKeep;
     isKeep = true;
     for (int i = 0; i < 100; i++) {
@@ -587,34 +524,38 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testWithOtherSerializer() throws IOException {
+  public void testWithOtherSerializer() throws Exception {
     doPlain = true;
     testDeltaWithMods();
     tearDown();
+
     setUp();
     testDeltaWithRefsBelow();
     tearDown();
+
     setUp();
     testDeltaWithAllMods();
     tearDown();
+
     setUp();
     testAllKinds();
     tearDown();
+
     setUp();
     testArrayAux();
   }
 
   // @formatter:off
   /**
-   * See if can read Version 2 serialized things and deserialize them
+   * See if can read Version 2 serialized things and de-serialize them
+   * 
    * Note: Delta won't work unless the previous v2 test case indexed or ref'd all the FSs,
-   *   because otherwise, some FSs will be "deleted" by the modelling V3 does for the CAS
+   *   because otherwise, some FSs will be "deleted" by the modeling V3 does for the CAS
    *   layout because they're not findable during scanning, and therefore, delta mods won't be correct.
-   * @throws IOException
    */
   // @formatter:on
   @Test
-  public void testWithPrevGenerated() throws IOException {
+  public void testWithPrevGenerated() throws Exception {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
     initReadSavedInts();
@@ -643,38 +584,41 @@ public class SerDesForm4Test extends SerDesTstCommon {
     savedIntsStream.close();
   }
 
-  private void tstPrevGenV2(Runnable m) {
+  private void tstPrevGenV2(Runnable m) throws Exception {
     tearDown();
     setUp();
-    boolean caught = false;
-    try {
-      m.run();
-    } catch (CASRuntimeException e) {
-      caught = e.hasMessageKey(CASRuntimeException.DESERIALIZING_V2_DELTA_V3);
-    }
-    assertTrue("Should have thrown exception serializing v2 into v3", caught);
+
+    assertThatExceptionOfType(CASRuntimeException.class).isThrownBy(() -> m.run())
+            .satisfies(e -> e.hasMessageKey(CASRuntimeException.DESERIALIZING_V2_DELTA_V3));
   }
 
-  public void captureGenerated() throws IOException {
+  public void captureGenerated() throws Exception {
     capture = true;
     initWriteSavedInts();
+
     setUp();
     testDeltaWithMods();
     tearDown();
+
     setUp();
     testDeltaWithRefsBelow();
     tearDown();
+
     setUp();
     testDeltaWithAllMods();
     tearDown();
+
     setUp();
     testDeltaWithIndexMods();
     tearDown();
+
     setUp();
     testAllKinds();
     tearDown();
+
     setUp();
     testArrayAux();
+
     savedIntsOutStream.close();
   }
 
@@ -1121,16 +1065,11 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
       BinaryCasSerDes bcsd_cas1 = cas.getBinaryCasSerDes();
       bcsd_cas1.reinit(bais);
-      assertTrue(CasCompare.compareCASes(cas, cas2));
+      assertThat(CasCompare.compareCASes(cas, cas2)).isTrue();
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
-      getIndexes();
-
-      // if (!Arrays.equals(cas1FsIndexes, cas2FsIndexes)) {
-      // System.out.println("debug");
-      // }
-      assertTrue(Arrays.equals(cas1FsIndexes, cas2FsIndexes));
+      assertThat(getIndexInfo(cas1)).containsExactly(getIndexInfo(cas2));
 
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -1172,25 +1111,15 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
       BinaryCasSerDes bcsd_cas2 = cas2.getBinaryCasSerDes();
       bcsd_cas2.reinit(bais);
-      assertTrue(CasCompare.compareCASes(cas, cas2));
+      assertThat(CasCompare.compareCASes(cas, cas2)).isTrue();
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
-      getIndexes();
-
-      // if (!Arrays.equals(cas1FsIndexes, cas2FsIndexes)) {
-      // System.out.println("debug");
-      // }
-      assertTrue(Arrays.equals(cas1FsIndexes, cas2FsIndexes));
+      assertThat(getIndexInfo(cas1)).containsExactly(getIndexInfo(cas2));
 
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void getIndexes() {
-    cas1FsIndexes = getIndexInfo(cas1);
-    cas2FsIndexes = getIndexInfo(cas2);
   }
 
   // seems like an invalid thing since includeUid is false. Nov 2016

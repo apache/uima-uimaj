@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class LevelTest {
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelOff() throws Exception {
     Level level = Level.OFF;
 
@@ -63,7 +63,7 @@ public class LevelTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelALL() throws Exception {
     Level level = Level.ALL;
 
@@ -98,7 +98,7 @@ public class LevelTest {
     Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelFINEST() throws Exception {
     Level level = Level.FINEST;
 
@@ -134,7 +134,7 @@ public class LevelTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelFINER() throws Exception {
     Level level = Level.FINER;
 
@@ -206,7 +206,7 @@ public class LevelTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelCONFIG() throws Exception {
     Level level = Level.CONFIG;
 
@@ -242,7 +242,7 @@ public class LevelTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelINFO() throws Exception {
     Level level = Level.INFO;
 
@@ -277,7 +277,7 @@ public class LevelTest {
     Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelWARNING() throws Exception {
     Level level = Level.WARNING;
 
@@ -313,7 +313,7 @@ public class LevelTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLevelSEVERE() throws Exception {
     Level level = Level.SEVERE;
 
@@ -349,7 +349,7 @@ public class LevelTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testEquals() throws Exception {
     Level level = Level.SEVERE;
     Integer myInt = 70000;
@@ -362,7 +362,7 @@ public class LevelTest {
     Assert.assertFalse(level.equals(null));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testisGreaterOrEqual() throws Exception {
     Level level = Level.INFO;
 

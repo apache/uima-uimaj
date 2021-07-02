@@ -65,7 +65,7 @@ public class ResultSpecTest {
   /**
    * Tests for https://issues.apache.org/jira/browse/UIMA-1840
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIntersection() {
     checkl(X, I, X, I, X);
     checkl(X, I, EN, I, EN);
@@ -157,7 +157,7 @@ public class ResultSpecTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testComputeAnalysisComponentResultSpecInherit() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()

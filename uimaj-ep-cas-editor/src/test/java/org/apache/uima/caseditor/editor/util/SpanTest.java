@@ -30,7 +30,7 @@ public class SpanTest {
   /**
    * Test the Span.equals() method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testEquals() {
     Span a = new Span(100, 1000);
     Span b = new Span(100, 1000);
@@ -41,7 +41,7 @@ public class SpanTest {
   /**
    * Test the Span.equals() method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testEqualsWithAnotherObject() {
 
       assertThat(new Span(0, 0)).isNotEqualTo(Boolean.TRUE);
@@ -50,7 +50,7 @@ public class SpanTest {
   /**
    * Test the Span.equals() method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testEqualsWithNull() {
     Span a = new Span(0, 0);
     assertThat(a.equals(null)).isFalse();
@@ -59,7 +59,7 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCompareToWithBiggerSpan() {
     Span a = new Span(100, 1000);
     Span b = new Span(5000, 900);
@@ -70,7 +70,7 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCompareToWithBiggerIntersectSpan() {
     Span a = new Span(100, 1000);
     Span b = new Span(900, 900);
@@ -81,7 +81,7 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCompareToWithLowerSpan() {
     Span a = new Span(5000, 900);
     Span b = new Span(100, 1000);
@@ -92,7 +92,7 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCompareToWithLowerIntersectSpan() {
     Span a = new Span(5000, 900);
     Span b = new Span(4900, 1000);
@@ -103,7 +103,7 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCompareToEquals() {
     Span a = new Span(4900, 1000);
     Span b = new Span(4900, 1000);
@@ -114,7 +114,7 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testIsContaining() {
     Span a = new Span(5000, 900);
     Span b = new Span(5200, 600);
@@ -135,7 +135,7 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testIsContainingWithLowerIntersect() {
     Span a = new Span(5000, 900);
     Span b = new Span(4500, 1000);
@@ -146,7 +146,7 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testIsContainingWithHigherIntersect() {
     Span a = new Span(5000, 900);
     Span b = new Span(5000, 1000);

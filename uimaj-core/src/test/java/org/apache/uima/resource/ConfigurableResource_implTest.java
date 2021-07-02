@@ -214,7 +214,7 @@ public class ConfigurableResource_implTest {
   /*
    * Test for Object getConfigParameterValue(String)
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension

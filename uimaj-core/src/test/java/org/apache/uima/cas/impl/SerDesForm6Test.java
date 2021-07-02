@@ -26,6 +26,10 @@ import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.TwoTypesNoFea
 import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.TwoTypesSubsetFeatures;
 import static org.apache.uima.cas.impl.SerDesForm6Test.Types.Akof1;
 import static org.apache.uima.cas.impl.SerDesForm6Test.Types.Akof2;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,6 +62,7 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
+import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -295,7 +300,6 @@ public class SerDesForm6Test extends SerDesTstCommon {
     return m;
   }
 
-  @Override
   @BeforeEach
   public void setUp() {
     // long startTime = System.nanoTime();
@@ -313,7 +317,6 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
   }
 
-  @Override
   @AfterEach
   public void tearDown() {
     remoteCas = null;
@@ -347,29 +350,25 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
-  public void testDocText() {
-    try {
-      CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
-      cas.setDocumentLanguage("latin");
-      cas.setDocumentText("test");
+  @Test
+  public void testDocText() throws Exception {
+    CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+    cas.setDocumentLanguage("latin");
+    cas.setDocumentText("test");
 
-      ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
 
-      Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
+    Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
 
-      CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      Serialization.deserializeCAS(cas2, bais);
+    CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    Serialization.deserializeCAS(cas2, bais);
 
-      assertEquals("latin", cas2.getDocumentLanguage());
-      assertEquals("test", cas2.getDocumentText());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    assertThat(cas2.getDocumentLanguage()).isEqualTo("latin");
+    assertThat(cas2.getDocumentText()).isEqualTo("test");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDocumentText() {
     // serdesSimple(getTT(EqTwoTypes));
     remoteCas = setupCas(getTT(EqTwoTypes));
@@ -391,7 +390,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * new cas, compare
    */
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAllKinds() {
     if (doPlain) {
       serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
@@ -421,7 +420,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAllKindsV2() {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs();
             AutoCloseableNoException b = casSrc.ll_enableV2IdRefs()) { // because casSrc set in
@@ -438,7 +437,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   // T1 fsArray ref -> T2 -> T1 (new) (indexed)
   // T1 ref -> T2 -> T1 (new) (indexed)
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRefThroughFilteredType() {
     reftft(OneType, 0);
     for (int i = 0; i < 10; i++) {
@@ -514,7 +513,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithDblArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -542,7 +541,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithByteArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -570,7 +569,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithStrArrayMod() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
@@ -673,7 +672,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithMods() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
@@ -734,10 +733,9 @@ public class SerDesForm6Test extends SerDesTstCommon {
     makeRandomUpdatesBelowMark(remoteCas, m, Akof1);
 
     verifyDelta(marker, ri);
-
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeltaWithIndexMods() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
@@ -761,120 +759,43 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testWithOtherSerializer() {
     doPlain = true;
     testDeltaWithMods();
     tearDown();
+
     setUp();
     testDeltaWithRefsBelow();
     tearDown();
+
     setUp();
     // testDeltaWithAllMods();
     tearDown();
+
     setUp();
     testAllKinds();
     tearDown();
+
     setUp();
     testArrayAux();
   }
 
   private void runCaptureSet() {
     // Java 8 style
-    // setupRunTeardown(this::testDocText);
-    // setupRunTeardown(this::testDocumentText);
-    // setupRunTeardown(this::testAllKinds);
-    // setupRunTeardown(this::testRefThroughFilteredType);
-    // setupRunTeardown(this::testDeltaWithStringArrayMod);
-    // setupRunTeardown(this::testDeltaWithDblArrayMod);
-    // setupRunTeardown(this::testDeltaWithByteArrayMod);
-    // setupRunTeardown(this::testDeltaWithStrArrayMod);
-    // setupRunTeardown(this::testDelta);
-    // setupRunTeardown(this::testDeltaWithRefsBelow);
-    // setupRunTeardown(this::testDeltaWithMods);
-    // setupRunTeardown(this::testDeltaWithIndexMods);
-    // setupRunTeardown(this::testArrayAux);
-
-    // Java 7 style
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDocText();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDocumentText();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testAllKinds();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testRefThroughFilteredType();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithStringArrayMod();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithDblArrayMod();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithByteArrayMod();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithStrArrayMod();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDelta();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithRefsBelow();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithMods();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testDeltaWithIndexMods();
-      }
-    });
-    setupRunTeardown(new Runnable() {
-      @Override
-      public void run() {
-        testArrayAux();
-      }
-    });
-
+    setupRunTeardown(this::testDocText);
+    setupRunTeardown(this::testDocumentText);
+    setupRunTeardown(this::testAllKinds);
+    setupRunTeardown(this::testRefThroughFilteredType);
+    setupRunTeardown(this::testDeltaWithStringArrayMod);
+    setupRunTeardown(this::testDeltaWithDblArrayMod);
+    setupRunTeardown(this::testDeltaWithByteArrayMod);
+    setupRunTeardown(this::testDeltaWithStrArrayMod);
+    setupRunTeardown(this::testDelta);
+    setupRunTeardown(this::testDeltaWithRefsBelow);
+    setupRunTeardown(this::testDeltaWithMods);
+    setupRunTeardown(this::testDeltaWithIndexMods);
+    setupRunTeardown(this::testArrayAux);
   }
 
   // change tst to test to run this as a looper to catch infrequent errors
@@ -901,7 +822,6 @@ public class SerDesForm6Test extends SerDesTstCommon {
       throw new RuntimeException(e);
     }
     capture = false;
-
   }
 
   /**
@@ -910,7 +830,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * "deleted" by the modelling V3 does for the CAS layout because they're not findable during
    * scanning, and therefore, delta mods won't be correct.
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testWithPrevGenerated() {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
@@ -925,9 +845,13 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  public void setupRunTeardown(Runnable tst) {
+  public void setupRunTeardown(Runnable_withException tst) {
     setUp();
-    tst.run();
+    try {
+      tst.run();
+    } catch (Exception e) {
+      fail(e);
+    }
     tearDown();
   }
 

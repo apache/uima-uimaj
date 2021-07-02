@@ -112,7 +112,7 @@ public class CasTypeSystemMapperTest {
   // }
   // }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); // become == type systems
@@ -121,7 +121,7 @@ public class CasTypeSystemMapperTest {
     assertTrue(m.isEqual());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingType1() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t2 = t2t;
@@ -149,7 +149,7 @@ public class CasTypeSystemMapperTest {
     assertFalse(m.isEqual());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingType3() throws ResourceInitializationException {
     ts1 = createTs(1, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
@@ -175,7 +175,7 @@ public class CasTypeSystemMapperTest {
     assertFalse(m.isEqual());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingType5() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeImpl ts1t1 = t1t;
@@ -223,7 +223,7 @@ public class CasTypeSystemMapperTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingFeature0r() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
@@ -283,7 +283,7 @@ public class CasTypeSystemMapperTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingAllFeat1() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff);

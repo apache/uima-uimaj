@@ -125,7 +125,7 @@ public class XCASDeserializerTest {
     doTestDeserializeAndReserialize(true);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testDeserializeAndReserializeV2Ids() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       doTestDeserializeAndReserialize(false);

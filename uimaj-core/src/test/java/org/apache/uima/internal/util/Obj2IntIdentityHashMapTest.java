@@ -50,7 +50,7 @@ public class Obj2IntIdentityHashMapTest {
     ihm = new Obj2IntIdentityHashMap<>(Integer.class, Integer.MIN_VALUE);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBasic() {
 
     Integer I15 = 15;
@@ -116,7 +116,7 @@ public class Obj2IntIdentityHashMapTest {
     return im.get(v);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;

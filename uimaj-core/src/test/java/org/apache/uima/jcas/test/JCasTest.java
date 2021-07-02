@@ -151,7 +151,7 @@ public class JCasTest {
     this.endOfSentenceInstance = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMissingFeatureInCas() throws Exception {
     try {
       // jcasCasMisMatch(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS, CASException.JCAS_INIT_ERROR);
@@ -170,7 +170,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testChangedFType() throws Exception {
     try {
       jcasCasMisMatch(CASTestSetup.BAD_CHANGED_FEATURE_TYPE, UIMARuntimeException.INTERNAL_ERROR);
@@ -203,7 +203,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIteratorCopy() {
     Annotation something = new Annotation(jcas);
     something.addToIndexes();
@@ -215,7 +215,7 @@ public class JCasTest {
     assertTrue(i3 != null);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetFSIndexRepository() throws Exception {
     try {
       FSIndexRepository ir = jcas.getFSIndexRepository();
@@ -230,7 +230,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMisc() throws Exception {
     try {
       try {
@@ -271,7 +271,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testJCasAccessing() throws Exception {
     try {
       Root r1 = new Root(jcas);
@@ -410,7 +410,7 @@ public class JCasTest {
    * 
    */
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRandom() throws Exception {
     try {
       // System.out.print("Making Random: ");
@@ -434,7 +434,7 @@ public class JCasTest {
   interface MakeAndTest {
     void make();
 
-    @org.junit.jupiter.api.Test
+    @Test
     void test(Object o);
   }
 
@@ -459,7 +459,7 @@ public class JCasTest {
     }
 
     @Override
-    @org.junit.jupiter.api.Test
+    @Test
     public void test(Object o1) {
       assertTrue(o1 instanceof Root);
       Root r1 = (Root) o1;
@@ -476,7 +476,7 @@ public class JCasTest {
     }
   };
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void test2CASs() throws Exception {
     try {
       try {
@@ -497,7 +497,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAbstract() throws Exception {
     try {
       boolean caughtExc = true;
@@ -522,7 +522,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testNonJCasCoveredByJCas() throws Exception {
     try {
       CAS localCas = jcas.getCas();
@@ -564,7 +564,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCreateFSafterReset() throws Exception {
     try {
       // CAS localCas = jcas.getCas();
@@ -578,7 +578,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIteratorGetsJCasType() throws Exception {
     try {
       Token tok1 = new Token(jcas);
@@ -643,7 +643,7 @@ public class JCasTest {
   // 8
   // }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetNthFSList() throws Exception {
     try {
       Token tok1 = new Token(jcas);
@@ -691,7 +691,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetNthIntegerList() throws Exception {
     try {
 
@@ -737,7 +737,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetNthFloatList() throws Exception {
     try {
 
@@ -783,7 +783,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetNthStringList() throws Exception {
     try {
       NonEmptyStringList stringList1 = new NonEmptyStringList(jcas);
@@ -828,7 +828,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testStringListAPI() {
     StringList sl = new EmptyStringList(jcas);
     sl = sl.push("2");
@@ -844,7 +844,7 @@ public class JCasTest {
     assert (Arrays.equals(expected, sa));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testStringArrayAPI() {
     StringArray sa = new StringArray(jcas, 3);
     String[] values = { "1", "2", "3" };
@@ -856,7 +856,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testFSListAPI() {
     FSList<TOP> sl = new EmptyFSList<>(jcas);
     TOP fs1 = new TOP(jcas);
@@ -880,7 +880,7 @@ public class JCasTest {
     assert (Arrays.equals(expected, fss));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testFSArrayAPI() {
     FSArray sa = new FSArray<>(jcas, 2);
     TOP fs1 = new TOP(jcas);
@@ -896,7 +896,7 @@ public class JCasTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testOtherListAPI() {
     // float and integer
     IntegerList sl = new EmptyIntegerList(jcas);
@@ -995,7 +995,7 @@ public class JCasTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testUndefinedType() throws Exception {
     // create jcas with no type system
     JCas localJcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null)

@@ -67,7 +67,7 @@ public class Int2ObjHashMapTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRebalance() {
     // 100 elements, require 256 table (128 * .66 = 85)
     for (int i = 1; i < 101; i++) {
@@ -99,7 +99,7 @@ public class Int2ObjHashMapTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;

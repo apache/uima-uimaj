@@ -145,7 +145,7 @@ public class ResultSpecWithTypeSystemTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testFeatInheritanceL() {
     check(tofT1allFeat, X, K.Contains, f1, X);
     check(tofT1allFeat, EN, K.NotContain, f1, X);

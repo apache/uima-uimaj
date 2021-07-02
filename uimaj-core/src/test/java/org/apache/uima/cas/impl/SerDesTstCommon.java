@@ -31,8 +31,6 @@ import java.io.OutputStreamWriter;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
-
 //@formatter:off
 /**
  * Serializer and Deserializer testing
@@ -46,7 +44,7 @@ import junit.framework.TestCase;
  *   ** Not one instance per "setup" call **
  */
 //@formatter:on
-public abstract class SerDesTstCommon extends TestCase {
+public abstract class SerDesTstCommon {
 
   // FIXME need to understand why includeUid is false, seems to be disabling some testing Nov 2016
   private static final boolean includeUid = false;
@@ -64,8 +62,9 @@ public abstract class SerDesTstCommon extends TestCase {
     @Override
     public int nextInt(int n) {
       int r = usePrevData ? readNextSavedInt() : super.nextInt(n);
-      if (capture)
+      if (capture) {
         writeSavedInt(r);
+      }
       if (r >= n) {
         throw new RuntimeException(
                 "Internal error - using prev value, max is " + n + ", val read was " + r);
@@ -76,40 +75,45 @@ public abstract class SerDesTstCommon extends TestCase {
     @Override
     public int nextInt() {
       int r = usePrevData ? readNextSavedInt() : super.nextInt();
-      if (capture)
+      if (capture) {
         writeSavedInt(r);
+      }
       return r;
     }
 
     @Override
     public long nextLong() {
       int r = usePrevData ? readNextSavedInt() : super.nextInt();
-      if (capture)
+      if (capture) {
         writeSavedInt(r);
+      }
       return r;
     }
 
     @Override
     public boolean nextBoolean() {
       int r = usePrevData ? readNextSavedInt() : super.nextInt(2);
-      if (capture)
+      if (capture) {
         writeSavedInt(r);
+      }
       return r == 0;
     }
 
     @Override
     public float nextFloat() {
       int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
-      if (capture)
+      if (capture) {
         writeSavedInt(r);
+      }
       return Float.intBitsToFloat(r);
     }
 
     @Override
     public double nextDouble() {
       int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
-      if (capture)
+      if (capture) {
         writeSavedInt(r);
+      }
       return CASImpl.long2double((long) r);
     }
 
@@ -149,7 +153,7 @@ public abstract class SerDesTstCommon extends TestCase {
   }
 
   /**
-   * set to true to change FS creation to keep references to all created FS. 
+   * set to true to change FS creation to keep references to all created FS.
    * 
    * Needed for testing backward compatibility with delta CAS.
    * 

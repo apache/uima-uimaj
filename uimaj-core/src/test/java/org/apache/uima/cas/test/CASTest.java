@@ -59,7 +59,7 @@ public class CASTest {
     this.ts = null;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetTypeSystem() {
     assertTrue(this.cas.getTypeSystem() != null);
   }

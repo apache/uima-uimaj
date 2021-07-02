@@ -100,7 +100,7 @@ public class CpmProcessingTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
     // process 100 documents and a single thread
     int documentCount = 100;
@@ -138,7 +138,7 @@ public class CpmProcessingTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
     // process only a single document and multiple threads
     int documentCount = 1;
@@ -176,7 +176,7 @@ public class CpmProcessingTest {
    * 
    * @throws Exception -
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
     // process 100 documents and multiple threads
     int documentCount = 100;

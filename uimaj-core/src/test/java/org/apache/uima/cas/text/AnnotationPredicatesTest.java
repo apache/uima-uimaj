@@ -81,7 +81,7 @@ public class AnnotationPredicatesTest {
                     .forEach(predicate -> assertPosition(softly, COVERING, predicate, testCases));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatAxiomaticCoveringWorks() throws Exception {
     assertPosition(softly, COVERING, AxiomaticAnnotationPredicates::covering, testCases);
   }
@@ -109,12 +109,12 @@ public class AnnotationPredicatesTest {
                     .forEach(predicate -> assertPosition(softly, COLOCATED, predicate, testCases));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatAxiomaticColocatedWorks() throws Exception {
     assertPosition(softly, COLOCATED, AxiomaticAnnotationPredicates::colocated, testCases);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatOverlappingAtBeginWorks() throws Exception {
     asList(AnnotationPredicates::overlappingAtBegin,
             toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtBegin),
@@ -129,7 +129,7 @@ public class AnnotationPredicatesTest {
             testCases);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatOverlappingAtEndWorks() throws Exception {
     asList(AnnotationPredicates::overlappingAtEnd,
             toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtEnd),
@@ -143,7 +143,7 @@ public class AnnotationPredicatesTest {
             testCases);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatOverlappingWorks() throws Exception {
     asList(AnnotationPredicates::overlapping,
             toRelativePositionPredicate1(cas, AnnotationPredicates::overlapping),
@@ -153,12 +153,12 @@ public class AnnotationPredicatesTest {
                     predicate -> assertPosition(softly, OVERLAPPING, predicate, testCases));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatAxiomaticOverlappingWorks() throws Exception {
     assertPosition(softly, OVERLAPPING, AxiomaticAnnotationPredicates::overlapping, testCases);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatPrecedingWorks() throws Exception {
     asList(AnnotationPredicates::preceding,
             toRelativePositionPredicate1(cas, AnnotationPredicates::preceding),
@@ -197,7 +197,7 @@ public class AnnotationPredicatesTest {
     assertPosition(softly, BEGINNING_WITH, AxiomaticAnnotationPredicates::beginningWith, testCases);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatEndingWithWorks() throws Exception {
     asList(AnnotationPredicates::endingWith,
             toRelativePositionPredicate1(cas, AnnotationPredicates::endingWith),

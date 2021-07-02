@@ -277,7 +277,7 @@ public class CasIOUtilsTest {
     Assert.fail("An exception should have been thrown for wrong input.");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testWrongFormat() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.wrong");
     try {

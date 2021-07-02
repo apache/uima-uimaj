@@ -92,7 +92,7 @@ public class SofaNamingInAggregateTest {
   /**
    * Do full validation of descriptor; this checks validity of Sofa Mappings.
    */
-    @org.junit.jupiter.api.Test
+    @Test
     public void testFullValidation() throws Exception {
     try {
       aeDescriptor.doFullValidation();

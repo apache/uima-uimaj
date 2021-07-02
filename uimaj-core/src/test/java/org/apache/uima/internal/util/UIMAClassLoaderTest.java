@@ -73,7 +73,7 @@ public class UIMAClassLoaderTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
@@ -85,7 +85,7 @@ public class UIMAClassLoaderTest {
 
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSimpleClassloadingSampleString() throws Exception {
     UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
@@ -101,7 +101,7 @@ public class UIMAClassLoaderTest {
     assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testParallelClassLoading() throws Exception {
     final UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath,
             this.getClass().getClassLoader());
@@ -123,7 +123,7 @@ public class UIMAClassLoaderTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSimpleClassloadingSampleURL() throws Exception {
     URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
@@ -140,7 +140,7 @@ public class UIMAClassLoaderTest {
     assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAdvancedClassloadingSampleString() throws Exception {
     UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;

@@ -30,7 +30,7 @@ public class ProcessTrace_implTest {
   /*
    * @see TestCase#setUp()
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
@@ -82,7 +82,7 @@ public class ProcessTrace_implTest {
     Assert.assertEquals(3, evt1.getSubEvents().size());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
@@ -153,7 +153,7 @@ public class ProcessTrace_implTest {
   /*
    * Test for List getEventsByType(String, boolean)
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetEventsByType() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
@@ -187,7 +187,7 @@ public class ProcessTrace_implTest {
   /*
    * Test for ProcessTraceEvent getEvent(String, String)
    */
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // create some events
@@ -211,7 +211,7 @@ public class ProcessTrace_implTest {
     Assert.assertNull(evt);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAggregate() {
     // create two ProcessTrace objects
     ProcessTrace_impl pt1 = new ProcessTrace_impl();

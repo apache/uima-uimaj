@@ -46,7 +46,7 @@ public class AnnotationTest {
             .containsExactly(2, 2, "");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatSpanIsTrimmedToEmptySpanStartingAtOriginalStart() {
     cas.setDocumentText("    ");
 
@@ -58,7 +58,7 @@ public class AnnotationTest {
             .containsExactly(2, 2, "");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatLeadingAndTrailingWhitespaceIsRemoved() {
     cas.setDocumentText(" ab ");
 
@@ -70,7 +70,7 @@ public class AnnotationTest {
             .containsExactly(1, 3, "ab");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatInnerWhitespaceIsRemoved1() {
     cas.setDocumentText(" a b ");
 
@@ -82,7 +82,7 @@ public class AnnotationTest {
             .containsExactly(1, 2, "a");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void thatInnerWhitespaceIsRemoved2() {
     cas.setDocumentText(" a b ");
 
@@ -94,7 +94,7 @@ public class AnnotationTest {
             .containsExactly(3, 4, "b");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSingleCharacter() {
     cas.setDocumentText(".");
 
@@ -106,7 +106,7 @@ public class AnnotationTest {
             .containsExactly(0, 1, ".");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLeadingWhitespace() {
     cas.setDocumentText(" \t\n\r.");
 
@@ -118,7 +118,7 @@ public class AnnotationTest {
             .containsExactly(4, 5, ".");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLeadingWhitespaceWithSurrogates() {
     cas.setDocumentText(" \t\n\r😀");
 
@@ -130,7 +130,7 @@ public class AnnotationTest {
             .containsExactly(4, 6, "😀");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testTrailingWhitespace() {
     cas.setDocumentText(". \n\r\t");
 
@@ -142,7 +142,7 @@ public class AnnotationTest {
             .containsExactly(0, 1, ".");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testTrailingWhitespaceWithSurrogates() {
     cas.setDocumentText("😀 \n\r\t");
 
@@ -154,7 +154,7 @@ public class AnnotationTest {
             .containsExactly(0, 2, "😀");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLeadingTrailingWhitespace() {
     cas.setDocumentText(" \t\n\r. \n\r\t");
 
@@ -164,7 +164,7 @@ public class AnnotationTest {
     assertThat(ann).extracting(AnnotationFS::getBegin, AnnotationFS::getEnd).containsExactly(4, 5);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testLeadingTrailingWhitespaceWithSurrogatesAndCustomPredicate() {
     // 𝪀 (U+1DA80) is the SIGNWRITING LOCATION-FLOORPLANE SPACE. It is not recognized by
     // Character.isWhitespace(...), so we use a custom predicate to filter it out
@@ -178,7 +178,7 @@ public class AnnotationTest {
             .containsExactly(6, 7, ".");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBlankString() {
     cas.setDocumentText("   ");
 

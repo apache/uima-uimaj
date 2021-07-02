@@ -73,7 +73,7 @@ public class DataResource_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetInputStream() throws Exception {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)

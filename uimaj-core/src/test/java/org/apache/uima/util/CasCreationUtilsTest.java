@@ -85,7 +85,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMergeTypeSystems() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -186,7 +186,7 @@ public class CasCreationUtilsTest {
     return mergedTS;
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMergeTypeSystemsWithDifferentSupertypes() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser()
@@ -275,7 +275,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMergeDelegateAnalysisEngineTypeSystems() throws Exception {
     try {
       File descFile = JUnitExtension
@@ -342,7 +342,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMergeDelegateAnalysisEngineTypePriorities() throws Exception {
     try {
       File descFile = JUnitExtension
@@ -368,7 +368,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMergeDelegateAnalysisEngineFsIndexCollections() throws Exception {
     try {
       File descFile = JUnitExtension
@@ -397,7 +397,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSetupTypeSystem() throws Exception {
     try {
       // test that duplicate feature names on supertype and subtype works
@@ -426,7 +426,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCreateCasCollectionPropertiesResourceManager() throws Exception {
     try {
       // parse an AE descriptor
@@ -467,7 +467,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCreateCasCollection() throws Exception {
     try {
       // create two Type System description objects
@@ -546,7 +546,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testCreateCasTypeSystemDescription() throws Exception {
     try {
       // parse type system description
@@ -568,7 +568,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
     try {
       File descFile = JUnitExtension

@@ -49,7 +49,7 @@ public class Logger_implTest {
     Assert.assertNotSame(classLogger, classLogger1);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testMessageLeveling() throws Exception {
     // create logger
 

@@ -212,7 +212,7 @@ public class ResultSpecification_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testAddResultTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();

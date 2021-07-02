@@ -98,7 +98,7 @@ public class XMLSerializerTest {
     assertTrue(eh);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testXml11Error() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);

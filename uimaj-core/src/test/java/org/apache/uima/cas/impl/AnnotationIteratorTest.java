@@ -185,7 +185,7 @@ public class AnnotationIteratorTest {
   // System.out.println("debug count = " + c);
   // }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
 

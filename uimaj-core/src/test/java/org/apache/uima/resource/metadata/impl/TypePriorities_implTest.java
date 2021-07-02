@@ -52,7 +52,7 @@ public class TypePriorities_implTest {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testBuildFromXmlElement() throws Exception {
     try {
       // simple type priorties (backwards compatibility check)
@@ -136,7 +136,7 @@ public class TypePriorities_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testClone() throws Exception {
     try {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");

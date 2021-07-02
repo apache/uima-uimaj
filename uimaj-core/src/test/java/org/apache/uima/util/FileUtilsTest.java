@@ -44,7 +44,7 @@ public class FileUtilsTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testReadWriteTempFile() throws IOException {
     final String tmpDirPath = System.getProperty("java.io.tmpdir");
     assertNotNull("java.io.tmpdir system property not available", tmpDirPath);

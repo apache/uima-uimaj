@@ -294,7 +294,7 @@ public class UimaContext_implTest {
     Assert.assertEquals("GrouplessParam2", names[1]);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetConfigParameterNamesString() {
     String[] names = mContext2.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
@@ -361,7 +361,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -416,7 +416,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -470,7 +470,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -525,7 +525,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -701,7 +701,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetResourceURLStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -815,7 +815,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetResourceFilePathStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -884,7 +884,7 @@ public class UimaContext_implTest {
     }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testGetEmptyCas() throws Exception {
     try {
       CAS emptyCas = mContext5.getEmptyCas(CAS.class);

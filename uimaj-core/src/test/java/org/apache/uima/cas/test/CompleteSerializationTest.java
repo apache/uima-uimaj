@@ -69,7 +69,7 @@ public class CompleteSerializationTest {
     System.getProperties().remove("uima.enable_strict_type_source_check");
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSerialization() throws Exception {
     CASMgr cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
 
@@ -99,7 +99,7 @@ public class CompleteSerializationTest {
             .isThrownBy(() -> ((LowLevelCAS) newCas).ll_enableV2IdRefs());
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testSerializationV2IdRefs() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       CAS cas = CASInitializer.initCas(new CASTestSetup(), null);

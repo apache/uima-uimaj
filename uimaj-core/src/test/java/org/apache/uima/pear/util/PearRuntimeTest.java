@@ -105,7 +105,7 @@ public class PearRuntimeTest {
     CAS cas = runDesc(desc);
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testPearRuntime() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(
@@ -122,7 +122,7 @@ public class PearRuntimeTest {
     // }
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   public void testPearRuntimeDocAnnot() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(

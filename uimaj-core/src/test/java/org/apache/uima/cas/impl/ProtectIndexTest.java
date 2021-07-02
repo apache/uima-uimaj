@@ -16,30 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
+import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
 
 public class ProtectIndexTest {
 
   @Test
   public void testProtectIndex() throws CASException, ResourceInitializationException {
-    JCas jcas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null).getJCas();
+    JCas jcas = createCas().getJCas();
 
     Annotation a = new Annotation(jcas, 0, 2);
 
-    jcas.protectIndexes(() -> {
-      a.setBegin(a.getBegin() + 1);
-    });
+    jcas.protectIndexes(() -> a.setBegin(a.getBegin() + 1));
 
     assertEquals(a.getBegin(), 1);
   }
