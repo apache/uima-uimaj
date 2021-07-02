@@ -29,7 +29,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
@@ -50,6 +49,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.serdes.generators.RandomCasGenerator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
 import org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition;
@@ -143,43 +143,25 @@ public class SelectFsAssert {
           System.out.print(".");
         }
 
-        TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+        RandomCasGenerator casRandomizer = new RandomCasGenerator() //
+                .randomGenerator(rnd) //
+                .annotationsToGenerate(annotationsPerIteration.apply(i + 1)) //
+                .minimumAnnotationLength(0) //
+                .logAnnotationCreation(logAnnotationCreation) //
+                .typeCount(aTypes);
+
+        TypeSystemDescription tsd = casRandomizer.generateRandomTypeSystem();
+        CAS randomCas = casRandomizer.generateRandomCas(tsd);
+
         Map<String, Type> types = new LinkedHashMap<>();
-        if (logAnnotationCreation) {
-          System.out.println();
-        }
-        for (int ti = 0; ti < aTypes; ti++) {
-          String typeName = "test.Type" + (ti + 1);
-          TypeDescription newType;
-          if (rnd.nextInt() % 2 == 0 || types.size() == 0) {
-            newType = tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
-          } else {
-            newType = tsd.addType(typeName, "",
-                    new ArrayList<>(types.keySet()).get(rnd.nextInt(types.size())));
-          }
-
-          if (logAnnotationCreation) {
-            System.out.printf("tsd.addType(\"%s\", \"\", \"%s\");%n", newType.getName(),
-                    newType.getSupertypeName());
-          }
-
-          types.put(typeName, null);
-        }
-
-        CAS randomCas = CasCreationUtils.createCas(tsd, null, null, null);
-
-        for (String typeName : types.keySet()) {
-          types.put(typeName, randomCas.getTypeSystem().getType(typeName));
+        for (TypeDescription td : tsd.getTypes()) {
+          types.put(td.getName(), randomCas.getTypeSystem().getType(td.getName()));
         }
 
         Iterator<Type> ti = types.values().iterator();
         Type typeY = ti.next();
         Type typeX = ti.hasNext() ? ti.next() : typeY;
         Type[] typeList = types.values().toArray(new Type[types.size()]);
-
-        randomCas.reset();
-
-        initRandomCas(rnd, randomCas, annotationsPerIteration.apply(i), 0, typeList);
 
         for (Annotation y : randomCas.<Annotation> select(typeY)) {
           switch (rnd.nextInt(3)) {
@@ -724,34 +706,6 @@ public class SelectFsAssert {
       }
     });
     return sb.toString();
-  }
-
-  private static void initRandomCas(Random rnd, CAS aCas, int aSize, int aMinimumWidth,
-          Type... aTypes) {
-    List<Type> types = new ArrayList<>(asList(aTypes));
-
-    // Shuffle the types
-    for (int n = 0; n < 10; n++) {
-      Type t = types.remove(rnd.nextInt(types.size()));
-      types.add(t);
-    }
-
-    // Randomly generate annotations
-    if (logAnnotationCreation) {
-      System.out.println();
-    }
-    for (int n = 0; n < aSize; n++) {
-      for (Type t : types) {
-        int begin = rnd.nextInt(100);
-        int end = begin + rnd.nextInt(30) + aMinimumWidth;
-        AnnotationFS ann = aCas.createAnnotation(t, begin, end);
-        if (logAnnotationCreation) {
-          System.out.printf("cas.createAnnotation(%s, %d, %d)\t[%d]%n",
-                  t.getShortName().toLowerCase(), begin, end, identityHashCode(ann));
-        }
-        aCas.addFsToIndexes(ann);
-      }
-    }
   }
 
   private static boolean nonOverlappingSupported(RelativePosition aXRelToY) {
