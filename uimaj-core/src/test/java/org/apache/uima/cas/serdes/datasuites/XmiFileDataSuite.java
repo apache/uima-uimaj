@@ -40,7 +40,7 @@ import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-public class TestSuiteData_XmiFiles {
+public class XmiFileDataSuite {
   public static final String TYPESYSTEM_XML = "typesystem.xml";
   public static final String DATA_XMI = "data.xmi";
 

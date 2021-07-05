@@ -58,6 +58,7 @@ public class DesSerTestScenario implements Runnable {
     targetCasFolder.toFile().mkdirs();
     Path targetCasFile = targetCasFolder.resolve(referenceCasFile.getFileName().toString());
 
+    // Perform actual test cycle
     deserializationSerializationCycle(getSourceCasFile(), targetCasFile);
 
     // Compare the serialized CAS file against the reference

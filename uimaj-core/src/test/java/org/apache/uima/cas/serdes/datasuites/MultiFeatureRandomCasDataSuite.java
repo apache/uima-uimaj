@@ -21,37 +21,29 @@ package org.apache.uima.cas.serdes.datasuites;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.serdes.generators.RandomCasGenerator;
+import org.apache.uima.cas.serdes.generators.CasConfiguration;
+import org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.CasCreationUtils;
 
-public class RandomCasDataSuite {
+public class MultiFeatureRandomCasDataSuite {
 
   public static List<CasSourceTargetConfiguration> configurations(int aCount) {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();
 
     for (int n = 0; n < aCount; n++) {
+      MultiFeatureRandomCasGenerator randomizer = MultiFeatureRandomCasGenerator.builder() //
+              .withSize((aCount + 1) * 10) //
+              .build();
+
+      CasConfiguration cfg = new CasConfiguration(randomizer);
+
       confs.add(CasSourceTargetConfiguration.builder() //
               .withTitle("randomCas-" + (n + 1)) //
-              .withSourceCasSupplier(() -> randomCas(aCount + 1, (aCount + 1) * 10)) //
-              .withTargetCasSupplier(CasCreationUtils::createCas) //
+              .withSourceCasSupplier(cfg::generateRandomCas) //
+              .withTargetCasSupplier(cfg::generateTargetCas) //
               .build());
     }
 
     return confs;
-  }
-
-  public static CAS emptyCas() throws Exception {
-    return CasCreationUtils.createCas();
-  }
-
-  public static CAS randomCas(int aTypeCount, int aAnnotationCount) throws Exception {
-    RandomCasGenerator randomizer = new RandomCasGenerator().typeCount(aTypeCount)
-            .minimumAnnotationLength(0).annotationsToGenerate(aAnnotationCount);
-
-    TypeSystemDescription tsd = randomizer.generateRandomTypeSystem();
-    return randomizer.generateRandomCas(tsd);
   }
 }

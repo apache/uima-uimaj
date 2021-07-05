@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.serdes.datasuites.TestSuiteData_CasBornInMemory;
-import org.apache.uima.cas.serdes.datasuites.TestSuiteData_XmiFiles;
+import org.apache.uima.cas.serdes.datasuites.ProgrammaticallyCreatedCasDataSuite;
+import org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
@@ -64,12 +64,12 @@ public class CasSerializationDeserialization_BINARY_TSI_Test {
 
   /**
    * SERIALIZE -> COMARE-TO-REFERENCE scenarios using the example CASes provided by
-   * {@link TestSuiteData_CasBornInMemory}.
+   * {@link ProgrammaticallyCreatedCasDataSuite}.
    */
   private static List<SerRefTestScenario> serRefScenarios() {
     List<SerRefTestScenario> confs = new ArrayList<>();
 
-    for (CasSourceTargetConfiguration data : TestSuiteData_CasBornInMemory.configurations()) {
+    for (CasSourceTargetConfiguration data : ProgrammaticallyCreatedCasDataSuite.configurations()) {
       confs.add(new SerRefTestScenario( //
               SER_REF_BASE_PATH, //
               SER_REF_TARGET_BASE_PATH, //
@@ -83,7 +83,7 @@ public class CasSerializationDeserialization_BINARY_TSI_Test {
 
   /**
    * SERIALIZE -> DESERIALIZE scenarios using the example CASes provided by
-   * {@link TestSuiteData_CasBornInMemory} and applying them to each of the configured
+   * {@link ProgrammaticallyCreatedCasDataSuite} and applying them to each of the configured
    * serialization/deserialization cycles.
    */
   private static List<SerDesTestScenario> serDesScenarios() {
@@ -96,7 +96,7 @@ public class CasSerializationDeserialization_BINARY_TSI_Test {
     List<SerDesTestScenario> confs = new ArrayList<>();
 
     for (CasSerDesCycleConfiguration cycle : cycles) {
-      for (CasSourceTargetConfiguration data : TestSuiteData_CasBornInMemory.configurations()) {
+      for (CasSourceTargetConfiguration data : ProgrammaticallyCreatedCasDataSuite.configurations()) {
         confs.add(new SerDesTestScenario(data, cycle));
       }
     }
@@ -132,7 +132,7 @@ public class CasSerializationDeserialization_BINARY_TSI_Test {
   private static List<SerRefTestScenario> oneWayDesSerScenarios() throws Exception {
     List<SerRefTestScenario> confs = new ArrayList<>();
 
-    for (CasSourceTargetConfiguration conf : TestSuiteData_XmiFiles.configurations()) {
+    for (CasSourceTargetConfiguration conf : XmiFileDataSuite.configurations()) {
       confs.add(SerRefTestScenario.builder() //
               .withTitle(conf.getTitle()) //
               .withSourceCasSupplier(conf::createSourceCas) //

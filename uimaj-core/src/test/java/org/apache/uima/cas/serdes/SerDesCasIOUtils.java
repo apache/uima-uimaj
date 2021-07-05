@@ -18,7 +18,10 @@
  */
 package org.apache.uima.cas.serdes;
 
+import static java.nio.file.Files.newOutputStream;
 import static java.util.Arrays.asList;
+import static org.apache.uima.cas.SerialFormat.XMI_PRETTY;
+import static org.apache.uima.util.TypeSystemUtil.typeSystem2TypeSystemDescription;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +35,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.CasLoadMode;
+import org.assertj.core.internal.Failures;
 
 public class SerDesCasIOUtils {
   public static void ser(CAS aSourceCas, Path aTargetCasFile, SerialFormat aFormat)
@@ -81,6 +85,29 @@ public class SerDesCasIOUtils {
       } else {
         CasIOUtils.load(casSource, null, aTargetCas, aMode);
       }
+    }
+  }
+
+  public static void writeXmi(CAS aCas, Path aTarget) {
+    // Additionally, serialize the data as XMI and also write the type system
+    try (OutputStream out = newOutputStream(aTarget)) {
+      CasIOUtils.save(aCas, out, XMI_PRETTY);
+    } catch (Throwable e) {
+      AssertionError error = Failures.instance().failure("Unable to create debug XMI from CAS");
+      error.initCause(e);
+      throw error;
+    }
+  }
+
+  public static void writeTypeSystemDescription(CAS aCas, Path aTarget) {
+    // Additionally, serialize the data as XMI and also write the type system
+    try (OutputStream out = newOutputStream(aTarget)) {
+      typeSystem2TypeSystemDescription(aCas.getTypeSystem()).toXML(out);
+    } catch (Throwable e) {
+      AssertionError error = Failures.instance()
+              .failure("Unable to create debug typesystem from CAS");
+      error.initCause(e);
+      throw error;
     }
   }
 

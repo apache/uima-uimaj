@@ -27,18 +27,18 @@ import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
 
-public class TestSuiteData_CasBornInMemory {
+public class ProgrammaticallyCreatedCasDataSuite {
 
   public static List<CasSourceTargetConfiguration> configurations() {
     return asList( //
             CasSourceTargetConfiguration.builder() //
                     .withTitle("casWithText") //
-                    .withSourceCasSupplier(TestSuiteData_CasBornInMemory::casWithText) //
+                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithText) //
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build(),
             CasSourceTargetConfiguration.builder() //
                     .withTitle("casWithTextAndAnnotation") //
-                    .withSourceCasSupplier(TestSuiteData_CasBornInMemory::casWithTextAndAnnotation)
+                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithTextAndAnnotation)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build());
   }

@@ -18,6 +18,8 @@
  */
 package org.apache.uima.cas.serdes.scenario;
 
+import static org.apache.uima.cas.serdes.SerDesCasIOUtils.writeTypeSystemDescription;
+import static org.apache.uima.cas.serdes.SerDesCasIOUtils.writeXmi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
 
@@ -57,26 +59,6 @@ public class SerRefTestScenario implements Runnable {
     serializer = aSerializer;
   }
 
-  // public SerRefTestScenario(Path aReferenceBasePath, Path aTargetBasePath, String aTitle,
-  // FailableSupplier<CAS, ?> aSourceCasSupplier, String aTargetFileName,
-  // FailableBiConsumer<CAS, Path, ?> aSerializer) {
-  // title = aTitle;
-  // sourceCasSupplier = aSourceCasSupplier;
-  // referenceCasFile = aReferenceBasePath.resolve(title).resolve(aTargetFileName);
-  // targetCasFile = aTargetBasePath.resolve(title).resolve(aTargetFileName);
-  // serializer = aSerializer;
-  // }
-
-  // public SerRefTestScenario(String aTitle, FailableSupplier<CAS, ?> aSourceCasSupplier,
-  // Path aReferenceCasFile, Path aTargetCasFile,
-  // FailableBiConsumer<CAS, Path, ?> aSerializer) {
-  // title = aTitle;
-  // sourceCasSupplier = aSourceCasSupplier;
-  // referenceCasFile = aReferenceCasFile;
-  // targetCasFile = aTargetCasFile;
-  // serializer = aSerializer;
-  // }
-
   public CAS createSourceCas() {
     try {
       return sourceCasSupplier.get();
@@ -102,6 +84,10 @@ public class SerRefTestScenario implements Runnable {
 
     // Serialize CAS to target file
     serialize(sourceCas, targetCasFile);
+
+    // Additionally, serialize the data as XMI and also write the type system
+    writeXmi(sourceCas, targetCasFile.resolveSibling("debug.xmi"));
+    writeTypeSystemDescription(sourceCas, targetCasFile.resolveSibling("debug-typesystem.xml"));
 
     // Compare the serialized CAS file against the reference
     assertThat(referenceCasFile.toFile()) //

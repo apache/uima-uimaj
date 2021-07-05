@@ -49,7 +49,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.serdes.generators.RandomCasGenerator;
+import org.apache.uima.cas.serdes.generators.MultiTypeRandomCasGenerator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
 import org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition;
@@ -143,15 +143,16 @@ public class SelectFsAssert {
           System.out.print(".");
         }
 
-        RandomCasGenerator casRandomizer = new RandomCasGenerator() //
-                .randomGenerator(rnd) //
-                .annotationsToGenerate(annotationsPerIteration.apply(i + 1)) //
-                .minimumAnnotationLength(0) //
-                .logAnnotationCreation(logAnnotationCreation) //
-                .typeCount(aTypes);
+        MultiTypeRandomCasGenerator casRandomizer = MultiTypeRandomCasGenerator.builder() //
+                .withRandomGenerator(rnd) //
+                .withSize(annotationsPerIteration.apply(i + 1)) //
+                .withMinimumAnnotationLength(0) //
+                .withAnnotationLogOutput(logAnnotationCreation) //
+                .withTypeCount(aTypes) //
+                .build();
 
-        TypeSystemDescription tsd = casRandomizer.generateRandomTypeSystem();
-        CAS randomCas = casRandomizer.generateRandomCas(tsd);
+        TypeSystemDescription tsd = casRandomizer.generateTypeSystem();
+        CAS randomCas = casRandomizer.generateCas(tsd);
 
         Map<String, Type> types = new LinkedHashMap<>();
         for (TypeDescription td : tsd.getTypes()) {

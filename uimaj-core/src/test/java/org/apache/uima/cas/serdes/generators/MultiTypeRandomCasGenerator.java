@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.annotation.Generated;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -35,44 +37,24 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
-public class RandomCasGenerator {
-  private Random rnd = new Random();
-  private int size;
-  private int minimumWidth;
-  private boolean writeLog = false;
-  private int typeCount;
+public class MultiTypeRandomCasGenerator implements CasGenerator {
+  private final Random rnd;
+  private final int size;
+  private final int minimumWidth;
+  private final boolean writeLog;
+  private final int typeCount;
 
-  public RandomCasGenerator randomSeed(long aRandomSeed) {
-    rnd = new Random(aRandomSeed);
-    return this;
+  @Generated("SparkTools")
+  private MultiTypeRandomCasGenerator(Builder builder) {
+    this.rnd = builder.randomGenerator;
+    this.size = builder.size;
+    this.minimumWidth = builder.minimumWidth;
+    this.writeLog = builder.writeLog;
+    this.typeCount = builder.typeCount;
   }
 
-  public RandomCasGenerator randomGenerator(Random aRandom) {
-    rnd = aRandom;
-    return this;
-  }
-
-  public RandomCasGenerator typeCount(int aTypeCount) {
-    typeCount = aTypeCount;
-    return this;
-  }
-
-  public RandomCasGenerator annotationsToGenerate(int aSize) {
-    size = aSize;
-    return this;
-  }
-
-  public RandomCasGenerator minimumAnnotationLength(int aMinimumWidth) {
-    minimumWidth = aMinimumWidth;
-    return this;
-  }
-
-  public RandomCasGenerator logAnnotationCreation(boolean aLogAnnotationCreation) {
-    writeLog = aLogAnnotationCreation;
-    return this;
-  }
-
-  public TypeSystemDescription generateRandomTypeSystem() {
+  @Override
+  public TypeSystemDescription generateTypeSystem() {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     Map<String, Type> types = new LinkedHashMap<>();
 
@@ -101,7 +83,8 @@ public class RandomCasGenerator {
     return tsd;
   }
 
-  public CAS generateRandomCas(TypeSystemDescription aTsd) throws ResourceInitializationException {
+  @Override
+  public CAS generateCas(TypeSystemDescription aTsd) throws ResourceInitializationException {
     CAS cas = CasCreationUtils.createCas(aTsd, null, null, null);
     cas.reset();
 
@@ -135,5 +118,63 @@ public class RandomCasGenerator {
     }
 
     return cas;
+  }
+
+  /**
+   * Creates builder to build {@link MultiTypeRandomCasGenerator}.
+   * 
+   * @return created builder
+   */
+  @Generated("SparkTools")
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * Builder to build {@link MultiTypeRandomCasGenerator}.
+   */
+  @Generated("SparkTools")
+  public static final class Builder {
+    private Random randomGenerator;
+    private int size;
+    private int minimumWidth;
+    private boolean writeLog;
+    private int typeCount;
+
+    private Builder() {
+    }
+
+    public Builder withRandomGenerator(Random rnd) {
+      this.randomGenerator = rnd;
+      return this;
+    }
+
+    public Builder withSize(int size) {
+      this.size = size;
+      return this;
+    }
+
+    public Builder withMinimumAnnotationLength(int minimumWidth) {
+      this.minimumWidth = minimumWidth;
+      return this;
+    }
+
+    public Builder withAnnotationLogOutput(boolean writeLog) {
+      this.writeLog = writeLog;
+      return this;
+    }
+
+    public Builder withTypeCount(int typeCount) {
+      this.typeCount = typeCount;
+      return this;
+    }
+
+    public MultiTypeRandomCasGenerator build() {
+      if (randomGenerator == null) {
+        randomGenerator = new Random();
+      }
+
+      return new MultiTypeRandomCasGenerator(this);
+    }
   }
 }
