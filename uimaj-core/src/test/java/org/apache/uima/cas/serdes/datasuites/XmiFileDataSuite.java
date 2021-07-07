@@ -45,7 +45,7 @@ public class XmiFileDataSuite {
   public static final String DATA_XMI = "data.xmi";
 
   private static final Path XMI_SUITE_BASE_PATH = Paths.get("src", "test", "resources",
-          "CasSerializationDeserialization_XMI_TestSuiteData");
+          "XmiFileDataSuite");
 
   public static List<CasSourceTargetConfiguration> configurations() throws IOException {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();

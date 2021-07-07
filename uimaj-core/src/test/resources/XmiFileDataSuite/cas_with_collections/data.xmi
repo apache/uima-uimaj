@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<xmi:XMI xmi:version="2.0" xmlns:cas="http:///uima/cas.ecore"
+		 xmlns:tcas="http:///uima/tcas.ecore"
+		 xmlns:xmi="http://www.omg.org/XMI"
+		 xmlns:cassis="http:///cassis.ecore">
+
+	<cas:NULL xmi:id="0"/>
+
+    <tcas:DocumentAnnotation xmi:id="2" sofa="1" begin="0" end="47" language="x-unspecified"/>
+
+	<cas:StringArray xmi:id="3">
+		<elements>LNC</elements>
+		<elements>MTH</elements>
+		<elements>SNOMEDCT_US</elements>
+	</cas:StringArray>
+
+	<cas:StringArray xmi:id="4">
+		<elements>A</elements>
+		<elements>B</elements>
+		<elements>C</elements>
+	</cas:StringArray>
+
+	<cassis:Group xmi:id="5" sofa="1">
+		<collection1>A</collection1>
+		<collection1>B</collection1>
+		<collection1>C</collection1>
+
+		<collection2>1</collection2>
+		<collection2>2</collection2>
+		<collection2>3</collection2>
+	</cassis:Group>
+
+	<cas:FSArray xmi:id="6" elements="2 3 4 5" />
+	<cas:FSArray xmi:id="7" elements="4 0 0 2" />
+
+	<cas:NonEmptyFSList xmi:id="8" head="4" tail="9" />
+	<cas:NonEmptyFSList xmi:id="9" head="5" tail="10" />
+	<cas:EmptyFSList xmi:id="10"/>
+
+	<cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text/plain"
+              sofaString="Joe waited for the train . The train was late ."/>
+	<cas:View members="2 3 4 5 6 7 8 9 10" sofa="1"/>
+</xmi:XMI>
