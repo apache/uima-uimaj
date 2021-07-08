@@ -102,8 +102,12 @@ public class SerDesTestScenario implements Runnable {
     }
   }
 
+  public String getTitle() {
+    return title;
+  }
+
   @Override
   public String toString() {
-    return title;
+    return getTitle();
   }
 }

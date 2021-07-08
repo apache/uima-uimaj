@@ -18,133 +18,61 @@
  */
 package org.apache.uima.cas.serdes;
 
-import static java.nio.file.Files.walk;
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.SerialFormat.BINARY;
-import static org.apache.uima.cas.serdes.SerDesCasIOUtils.desser;
-import static org.apache.uima.cas.serdes.SerDesCasIOUtils.ser;
-import static org.apache.uima.cas.serdes.SerDesCasIOUtils.serdes;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
+import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.REINIT;
 
-import java.lang.invoke.MethodHandles;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.serdes.datasuites.ProgrammaticallyCreatedCasDataSuite;
-import org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
+import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
-import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
-import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class CasSerializationDeserialization_BINARY_Test {
 
-  private static final String CLASSNAME = MethodHandles.lookup().lookupClass().getSimpleName();
-
-  private static final Path TEST_RESOURCE_PATH = Paths.get("src", "test", "resources", CLASSNAME);
-  private static final Path SER_REF_BASE_PATH = TEST_RESOURCE_PATH.resolve("ser-ref");
-  private static final Path ONE_WAY_REFERENCE_BASE_PATH = TEST_RESOURCE_PATH.resolve("one-way");
-
-  private static final Path TEST_OUTPUT_PATH = Paths.get("target", "test-output", CLASSNAME);
-  private static final Path ONE_WAY_TARGET_BASE_PATH = TEST_OUTPUT_PATH.resolve("one-way");
-  private static final Path ROUND_TRIP_TARGET_BASE_PATH = TEST_OUTPUT_PATH.resolve("round-trip");
-  private static final Path SER_REF_TARGET_BASE_PATH = TEST_OUTPUT_PATH.resolve("ser-ref");
-
   private static final SerialFormat FORMAT = BINARY;
   private static final String CAS_FILE_NAME = "cas.bin";
+  private static final int RANDOM_CAS_ITERATIONS = 20;
 
-  /**
-   * SERIALIZE -> COMARE-TO-REFERENCE scenarios using the example CASes provided by
-   * {@link ProgrammaticallyCreatedCasDataSuite}.
-   */
+  private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
+          new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
+                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
+          new CasSerDesCycleConfiguration(FORMAT + " / REINIT", //
+                  (a, b) -> serdes(a, b, FORMAT, REINIT)));
+
+  private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
+          new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //
+                  (a, b) -> desser(createCas(), a, b, FORMAT, DEFAULT)),
+          new CasDesSerCycleConfiguration(FORMAT + " / REINIT", //
+                  (a, b) -> desser(createCas(), a, b, FORMAT, REINIT)));
+
   private static List<SerRefTestScenario> serRefScenarios() {
-    List<SerRefTestScenario> confs = new ArrayList<>();
-
-    for (CasSourceTargetConfiguration data : ProgrammaticallyCreatedCasDataSuite.configurations()) {
-      confs.add(new SerRefTestScenario( //
-              SER_REF_BASE_PATH, //
-              SER_REF_TARGET_BASE_PATH, //
-              data, //
-              CAS_FILE_NAME, //
-              (cas, path) -> ser(cas, path, FORMAT)));
-    }
-
-    return confs;
+    return SerDesCasIOTestUtils.serRefScenarios(FORMAT, CAS_FILE_NAME);
   }
 
-  /**
-   * SERIALIZE -> DESERIALIZE scenarios using the example CASes provided by
-   * {@link ProgrammaticallyCreatedCasDataSuite} and applying them to each of the configured
-   * serialization/deserialization cycles.
-   */
-  private static List<SerDesTestScenario> serDesScenarios() {
-    List<CasSerDesCycleConfiguration> cycles = asList( //
-            new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-                    (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
-            new CasSerDesCycleConfiguration(FORMAT + " / REINIT", //
-                    (a, b) -> serdes(a, b, FORMAT, REINIT)));
-
-    List<SerDesTestScenario> confs = new ArrayList<>();
-
-    for (CasSerDesCycleConfiguration cycle : cycles) {
-      for (CasSourceTargetConfiguration data : ProgrammaticallyCreatedCasDataSuite.configurations()) {
-        confs.add(new SerDesTestScenario(data, cycle));
-      }
-    }
-
-    return confs;
-  }
-
-  /**
-   * DESERIALIZE -> SERIALIZE scenarios using the reference data from the
-   * serialize/compare-to-reference data.
-   */
-  private static List<DesSerTestScenario> roundTripDesSerScenarios() throws Exception {
-    List<DesSerTestScenario> confs = new ArrayList<>();
-
-    try (Stream<Path> fileStream = walk(SER_REF_BASE_PATH, 2)
-            .filter(p -> p.getFileName().toString().equals(CAS_FILE_NAME))) {
-
-      fileStream.forEach(dataFile -> confs.add(DesSerTestScenario.builder() //
-              .withTitle(dataFile.getParent().getFileName().toString())
-              .withTargetBasePath(ROUND_TRIP_TARGET_BASE_PATH) //
-              .withCasFile(dataFile) // source / reference (round-trip)
-              .withCycle((a, b) -> desser(CasCreationUtils.createCas(), a, b, FORMAT, REINIT))
-              .build()));
-    }
-
-    return confs;
-  }
-
-  /**
-   * DESERIALIZE -> SERIALIZE scenarios using the reference data from the
-   * serialize/compare-to-reference data.
-   */
   private static List<SerRefTestScenario> oneWayDesSerScenarios() throws Exception {
-    List<SerRefTestScenario> confs = new ArrayList<>();
+    return SerDesCasIOTestUtils.oneWayDesSerScenarios(FORMAT, CAS_FILE_NAME);
+  }
 
-    for (CasSourceTargetConfiguration conf : XmiFileDataSuite.configurations()) {
-      confs.add(SerRefTestScenario.builder() //
-              .withTitle(conf.getTitle()) //
-              .withSourceCasSupplier(conf::createSourceCas) //
-              .withTargetCasFile(
-                      ONE_WAY_TARGET_BASE_PATH.resolve(conf.getTitle()).resolve(CAS_FILE_NAME))
-              .withReferenceCasFile(
-                      ONE_WAY_REFERENCE_BASE_PATH.resolve(conf.getTitle()).resolve(CAS_FILE_NAME)) //
-              .withSerializer((cas, path) -> ser(cas, path, FORMAT)) //
-              .build());
-    }
+  private static List<DesSerTestScenario> roundTripDesSerScenarios() throws Exception {
+    return SerDesCasIOTestUtils.roundTripDesSerScenarios(desSerCycles, CAS_FILE_NAME);
+  }
 
-    return confs;
+  private static List<SerDesTestScenario> serDesScenarios() {
+    return SerDesCasIOTestUtils.serDesScenarios(serDesCycles);
+  }
+
+  private static List<SerDesTestScenario> randomSerDesScenarios() {
+    return SerDesCasIOTestUtils.randomSerDesScenarios(serDesCycles, RANDOM_CAS_ITERATIONS);
   }
 
   @ParameterizedTest
@@ -156,6 +84,12 @@ public class CasSerializationDeserialization_BINARY_Test {
   @ParameterizedTest
   @MethodSource("serDesScenarios")
   public void serializeDeserializeTest(Runnable aScenario) throws Exception {
+    aScenario.run();
+  }
+
+  @ParameterizedTest
+  @MethodSource("randomSerDesScenarios")
+  public void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 

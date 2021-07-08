@@ -270,6 +270,10 @@
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.xmi</exclude>
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
+                  <exclude>src/test/resources/CASTests/verjuice.txt</exclude>
+                  <exclude>src/test/resources/CASTests/CasTypeOrderTestRef.txt</exclude>
+                  <exclude>src/test/resources/CASTests/english.txt</exclude>
+                  <exclude>src/test/resources/XmiFileDataSuite/README.md</exclude>
                   <exclude>src/test/resources/XmiFileDataSuite/**/*.xmi</exclude> 
                   <exclude>src/test/resources/XmiFileDataSuite/**/typesystem.xml</exclude> 
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/cas.*</exclude>

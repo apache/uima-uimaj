@@ -18,14 +18,21 @@
  */
 package org.apache.uima.cas.serdes.scenario;
 
+import static java.nio.file.Files.isDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import javax.annotation.Generated;
 
 import org.apache.commons.lang3.function.FailableBiConsumer;
+import org.apache.uima.cas.serdes.TestType;
+import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
 import org.assertj.core.internal.Failures;
 
 public class DesSerTestScenario implements Runnable {
@@ -93,6 +100,18 @@ public class DesSerTestScenario implements Runnable {
   @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
+  }
+
+  public static Stream<Builder> builderCases(Class<?> aTestClass,
+          CasDesSerCycleConfiguration aCycle, TestType aTestType, String aCasFileName)
+          throws IOException {
+    return Files.list(SerRefTestScenario.getDataBasePath(aTestClass)) //
+            .filter(p -> isDirectory(p) && !p.toFile().isHidden()) //
+            .map(caseFolder -> builder() //
+                    .withTitle(aCycle.getTitle() + " - " + caseFolder.getFileName().toString()) //
+                    .withTargetBasePath(Paths.get("target", "test-output",
+                            aTestClass.getSimpleName(), aTestType.getTargetFolderName())) //
+                    .withCasFile(caseFolder.resolve(aCasFileName)));
   }
 
   /**

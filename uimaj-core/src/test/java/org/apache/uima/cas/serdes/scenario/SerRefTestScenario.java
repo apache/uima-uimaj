@@ -18,18 +18,20 @@
  */
 package org.apache.uima.cas.serdes.scenario;
 
-import static org.apache.uima.cas.serdes.SerDesCasIOUtils.writeTypeSystemDescription;
-import static org.apache.uima.cas.serdes.SerDesCasIOUtils.writeXmi;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.writeTypeSystemDescription;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.writeXmi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.annotation.Generated;
 
 import org.apache.commons.lang3.function.FailableBiConsumer;
 import org.apache.commons.lang3.function.FailableSupplier;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.serdes.TestType;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.assertj.core.internal.Failures;
 
@@ -78,6 +80,11 @@ public class SerRefTestScenario implements Runnable {
   }
 
   @Override
+  public String toString() {
+    return getTitle();
+  }
+
+  @Override
   public void run() {
     // Fetch the source and target CASes
     CAS sourceCas = createSourceCas();
@@ -108,9 +115,8 @@ public class SerRefTestScenario implements Runnable {
     }
   }
 
-  @Override
-  public String toString() {
-    return title;
+  public static Path getDataBasePath(Class<?> aTestClass) {
+    return Paths.get("src", "test", "resources", aTestClass.getSimpleName(), "ser-ref");
   }
 
   /**
@@ -121,6 +127,20 @@ public class SerRefTestScenario implements Runnable {
   @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
+  }
+
+  public static Builder builder(Class<?> aTestClass, CasSourceTargetConfiguration aConf,
+          TestType aTestType, String aCasFileName) {
+
+    Builder builder = builder() //
+            .withTitle(aConf.getTitle()) //
+            .withSourceCasSupplier(aConf::createSourceCas) //
+            .withReferenceCasFile(aTestType.getReferenceFolder(aTestClass).resolve(aConf.getTitle())
+                    .resolve(aCasFileName))
+            .withTargetCasFile(aTestType.getTargetFolder(aTestClass).resolve(aConf.getTitle())
+                    .resolve(aCasFileName));
+
+    return builder;
   }
 
   /**
