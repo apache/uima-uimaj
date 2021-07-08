@@ -270,12 +270,12 @@
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.xmi</exclude>
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
-                  <exclude>src/test/resources/src/test/resources/XmiFileDataSuite/**/*.xmi</exclude> 
-                  <exclude>src/test/resources/src/test/resources/XmiFileDataSuite/**/typesystem.xml</exclude> 
+                  <exclude>src/test/resources/XmiFileDataSuite/**/*.xmi</exclude> 
+                  <exclude>src/test/resources/XmiFileDataSuite/**/typesystem.xml</exclude> 
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/cas.*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/data.*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug.xmi</exclude>
-                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug-typesystem.xmi</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug-typesystem.xml</exclude>
                   <exclude>src/test/resources/data/moby.txt</exclude>
                   <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> 
                   <exclude>src/test/resources/pearTests/*.pear</exclude> 
