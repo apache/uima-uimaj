@@ -44,7 +44,7 @@ public class XmiFileDataSuite {
   public static final String TYPESYSTEM_XML = "typesystem.xml";
   public static final String DATA_XMI = "data.xmi";
 
-  private static final Path XMI_SUITE_BASE_PATH = Paths.get("src", "test", "resources",
+  public static final Path XMI_SUITE_BASE_PATH = Paths.get("src", "test", "resources",
           "XmiFileDataSuite");
 
   public static List<CasSourceTargetConfiguration> configurations() throws IOException {

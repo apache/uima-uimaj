@@ -17,3 +17,14 @@ the test scenario.
 * cas_with_two_sofas
 * empty_cas
 * small_cas
+
+
+Test files sourced from INCEpTION
+=================================
+
+Upstream URL    : https://github.com/inception-project/inception
+Upstream license: Apache License 2.0
+
+Type system descriptions were reduced to mostly only the used types/features.
+
+* tsv3-*

@@ -1,5 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <types>
-    </types>
-</typeSystemDescription>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier"/>

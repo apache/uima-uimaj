@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:pos="http:///de/tudarmstadt/ukp/dkpro/core/api/lexmorph/type/pos.ecore" xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:morph="http:///de/tudarmstadt/ukp/dkpro/core/api/lexmorph/type/morph.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type:DocumentMetaData xmi:id="2" sofa="1" begin="0" end="16" documentId="doc" isLastSegment="false"/>
+    <type2:Token xmi:id="3" sofa="1" begin="0" end="4" lemma="9" stem="12" pos="11" morph="10" order="0"/>
+    <type2:Token xmi:id="4" sofa="1" begin="5" end="7" order="0"/>
+    <type2:Token xmi:id="5" sofa="1" begin="8" end="9" order="0"/>
+    <type2:Token xmi:id="6" sofa="1" begin="10" end="14" order="0"/>
+    <type2:Token xmi:id="7" sofa="1" begin="15" end="16" order="0"/>
+    <type2:Sentence xmi:id="8" sofa="1" begin="0" end="16"/>
+    <type2:Lemma xmi:id="9" sofa="1" begin="0" end="4" value="lemma1"/>
+    <morph:MorphologicalFeatures xmi:id="10" sofa="1" begin="0" end="4" tense="tense1" value="morph"/>
+    <pos:POS xmi:id="11" sofa="1" begin="0" end="4" PosValue="pos1"/>
+    <type2:Stem xmi:id="12" sofa="1" begin="0" end="4" value="stem1"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="This is a test ."/>
+    <cas:View sofa="1" members="2 3 4 5 6 7 8 9 10 11 12"/>
+</xmi:XMI>

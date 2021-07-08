@@ -26,48 +26,6 @@
             </features>
         </typeDescription>
         <typeDescription>
-            <name>cassis.Tag</name>
-            <description/>
-            <supertypeName>uima.cas.TOP</supertypeName>
-        </typeDescription>
-        <typeDescription>
-            <name>de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData</name>
-            <description/>
-            <supertypeName>uima.tcas.DocumentAnnotation</supertypeName>
-            <features>
-                <featureDescription>
-                    <name>documentTitle</name>
-                    <description/>
-                    <rangeTypeName>uima.cas.String</rangeTypeName>
-                </featureDescription>
-                <featureDescription>
-                    <name>documentId</name>
-                    <description/>
-                    <rangeTypeName>uima.cas.String</rangeTypeName>
-                </featureDescription>
-                <featureDescription>
-                    <name>documentUri</name>
-                    <description/>
-                    <rangeTypeName>uima.cas.String</rangeTypeName>
-                </featureDescription>
-                <featureDescription>
-                    <name>collectionId</name>
-                    <description/>
-                    <rangeTypeName>uima.cas.String</rangeTypeName>
-                </featureDescription>
-                <featureDescription>
-                    <name>documentBaseUri</name>
-                    <description/>
-                    <rangeTypeName>uima.cas.String</rangeTypeName>
-                </featureDescription>
-                <featureDescription>
-                    <name>isLastSegment</name>
-                    <description/>
-                    <rangeTypeName>uima.cas.Boolean</rangeTypeName>
-                </featureDescription>
-            </features>
-        </typeDescription>
-        <typeDescription>
             <name>cassis.Child</name>
             <description/>
             <supertypeName>cassis.Parent</supertypeName>

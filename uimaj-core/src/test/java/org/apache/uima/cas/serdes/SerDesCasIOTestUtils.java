@@ -56,7 +56,6 @@ import org.apache.uima.util.CasLoadMode;
 import org.assertj.core.internal.Failures;
 
 public class SerDesCasIOTestUtils {
-
   private static Class<?> getCallerClass() {
     try {
       return Class.forName(new Throwable().getStackTrace()[2].getClassName());
