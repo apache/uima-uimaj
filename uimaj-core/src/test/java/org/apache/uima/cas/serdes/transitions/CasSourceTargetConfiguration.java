@@ -18,8 +18,6 @@
  */
 package org.apache.uima.cas.serdes.transitions;
 
-import javax.annotation.Generated;
-
 import org.apache.commons.lang3.function.FailableSupplier;
 import org.apache.uima.cas.CAS;
 import org.assertj.core.internal.Failures;
@@ -29,7 +27,6 @@ public class CasSourceTargetConfiguration {
   private final FailableSupplier<CAS, ?> sourceCasSupplier;
   private final FailableSupplier<CAS, ?> targetCasSupplier;
 
-  @Generated("SparkTools")
   private CasSourceTargetConfiguration(Builder builder) {
     this.title = builder.title;
     this.sourceCasSupplier = builder.sourceCasSupplier;
@@ -65,7 +62,6 @@ public class CasSourceTargetConfiguration {
    * 
    * @return created builder
    */
-  @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
   }
@@ -73,7 +69,6 @@ public class CasSourceTargetConfiguration {
   /**
    * Builder to build {@link CasSourceTargetConfiguration}.
    */
-  @Generated("SparkTools")
   public static final class Builder {
     private String title;
     private FailableSupplier<CAS, ?> sourceCasSupplier;

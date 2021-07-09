@@ -26,8 +26,6 @@ import static org.assertj.core.api.Assertions.contentOf;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.annotation.Generated;
-
 import org.apache.commons.lang3.function.FailableBiConsumer;
 import org.apache.commons.lang3.function.FailableSupplier;
 import org.apache.uima.cas.CAS;
@@ -42,7 +40,6 @@ public class SerRefTestScenario implements Runnable {
   private final Path targetCasFile;
   private final FailableBiConsumer<CAS, Path, ?> serializer;
 
-  @Generated("SparkTools")
   private SerRefTestScenario(Builder builder) {
     this.title = builder.title;
     this.sourceCasSupplier = builder.sourceCasSupplier;
@@ -124,7 +121,6 @@ public class SerRefTestScenario implements Runnable {
    * 
    * @return created builder
    */
-  @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
   }
@@ -146,7 +142,6 @@ public class SerRefTestScenario implements Runnable {
   /**
    * Builder to build {@link SerRefTestScenario}.
    */
-  @Generated("SparkTools")
   public static final class Builder {
     private String title;
     private FailableSupplier<CAS, ?> sourceCasSupplier;

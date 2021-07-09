@@ -28,8 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-import javax.annotation.Generated;
-
 import org.apache.commons.lang3.function.FailableBiConsumer;
 import org.apache.uima.cas.serdes.TestType;
 import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
@@ -42,7 +40,6 @@ public class DesSerTestScenario implements Runnable {
   private final Path targetBasePath;
   private final FailableBiConsumer<Path, Path, ?> cycle;
 
-  @Generated("SparkTools")
   private DesSerTestScenario(Builder builder) {
     this.title = builder.title;
     this.sourceCasFile = builder.sourceCasFile;
@@ -97,7 +94,6 @@ public class DesSerTestScenario implements Runnable {
    * 
    * @return created builder
    */
-  @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
   }
@@ -117,7 +113,6 @@ public class DesSerTestScenario implements Runnable {
   /**
    * Builder to build {@link DesSerTestScenario}.
    */
-  @Generated("SparkTools")
   public static final class Builder {
     private String title;
     private Path sourceCasFile;

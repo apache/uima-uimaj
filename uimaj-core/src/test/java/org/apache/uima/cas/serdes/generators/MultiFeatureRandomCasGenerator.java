@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Generated;
-
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.DoubleArrayFS;
@@ -117,7 +115,6 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private CASImpl cas;
   private AtomicInteger aint;
 
-  @Generated("SparkTools")
   private MultiFeatureRandomCasGenerator(Builder builder) {
     this.isKeep = builder.isKeep;
     this.includeUid = builder.includeUid;
@@ -329,7 +326,6 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
    * 
    * @return created builder
    */
-  @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
   }
@@ -337,7 +333,6 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   /**
    * Builder to build {@link MultiFeatureRandomCasGenerator}.
    */
-  @Generated("SparkTools")
   public static final class Builder {
     private boolean isKeep;
     private boolean includeUid;

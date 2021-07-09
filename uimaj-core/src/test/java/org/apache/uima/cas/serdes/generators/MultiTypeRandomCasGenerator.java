@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.annotation.Generated;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -44,7 +42,6 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
   private final boolean writeLog;
   private final int typeCount;
 
-  @Generated("SparkTools")
   private MultiTypeRandomCasGenerator(Builder builder) {
     this.rnd = builder.randomGenerator;
     this.size = builder.size;
@@ -125,7 +122,6 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
    * 
    * @return created builder
    */
-  @Generated("SparkTools")
   public static Builder builder() {
     return new Builder();
   }
@@ -133,7 +129,6 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
   /**
    * Builder to build {@link MultiTypeRandomCasGenerator}.
    */
-  @Generated("SparkTools")
   public static final class Builder {
     private Random randomGenerator;
     private int size;
