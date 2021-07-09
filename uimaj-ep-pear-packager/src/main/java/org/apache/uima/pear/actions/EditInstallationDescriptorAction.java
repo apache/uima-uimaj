@@ -49,7 +49,6 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
    * Constructor.
    */
   public EditInstallationDescriptorAction() {
-    super();
   }
 
   /**

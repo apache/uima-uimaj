@@ -18,6 +18,8 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -26,31 +28,30 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-
-public class ComponentInfoTest extends TestCase {
+public class ComponentInfoTest {
+  @Test
   public void testComponentInfo() throws Exception {
-    //test the CAS.getCurrentComponentInfo() is null after a component has
-    //been processed
+    // test the CAS.getCurrentComponentInfo() is null after a component has
+    // been processed
     File descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml");
-    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-            new XMLInputSource(descFile));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(descFile));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
     CAS cas = ae.newCAS();
     ae.process(cas);
-    assertNull(((CASImpl)cas).getCurrentComponentInfo());
-    
-    //same test for aggregate
-    //test the CAS.getCurrentComponentInfo() is null after a component has
-    //been processed
+    assertNull(((CASImpl) cas).getCurrentComponentInfo());
+
+    // same test for aggregate
+    // test the CAS.getCurrentComponentInfo() is null after a component has
+    // been processed
     descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
-    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-            new XMLInputSource(descFile));
+    desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(descFile));
     ae = UIMAFramework.produceAnalysisEngine(desc);
     cas = ae.newCAS();
     ae.process(cas);
-    assertNull(((CASImpl)cas).getCurrentComponentInfo());
+    assertNull(((CASImpl) cas).getCurrentComponentInfo());
   }
 }

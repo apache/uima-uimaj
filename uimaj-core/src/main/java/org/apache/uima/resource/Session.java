@@ -26,8 +26,7 @@ import java.io.Serializable;
  * particular client. In a local deployment, there will probably be only one session. Distributed
  * deployments often have multiple sessions. If multiple sessions are in use, it is the
  * application's or service wrapper's responsibility to make sure that a Resource's
- * <code>Session</code> object is properly set up prior to invoking any of that Resource's
- * methods.
+ * <code>Session</code> object is properly set up prior to invoking any of that Resource's methods.
  * <p>
  * Note that a particular component, such as an annotator, may get a handle to a Session object that
  * actually represents a particular namespace within a larger Session. This allows each component to
@@ -38,15 +37,20 @@ import java.io.Serializable;
 public interface Session extends Serializable {
   /**
    * Stores an object in the Session
-   * @param aKey Key
-   * @param aValue Value
+   * 
+   * @param aKey
+   *          Key
+   * @param aValue
+   *          Value
    */
-  public void put(String aKey, Object aValue);
+  void put(String aKey, Object aValue);
 
   /**
    * Gets an object from the Session
-   * @param aKey Key  
+   * 
+   * @param aKey
+   *          Key
    * @return the associated value
    */
-  public Object get(String aKey);
+  Object get(String aKey);
 }

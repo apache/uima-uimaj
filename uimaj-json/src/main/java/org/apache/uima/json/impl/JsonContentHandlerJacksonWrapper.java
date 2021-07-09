@@ -309,15 +309,25 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
    * a ContentHandler
    *******************************/
   private void unsupported() { throw new UnsupportedOperationException();} 
+  @Override
   public void characters(char[] ch, int start, int length) throws SAXException {unsupported();}
+  @Override
   public void endDocument() throws SAXException {}
+  @Override
   public void endPrefixMapping(String prefix) throws SAXException {}
+  @Override
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {unsupported();}
+  @Override
   public void processingInstruction(String target, String data) throws SAXException {unsupported();}
+  @Override
   public void setDocumentLocator(Locator locator) {unsupported();}
+  @Override
   public void skippedEntity(String name) throws SAXException {unsupported();}
+  @Override
   public void startDocument() throws SAXException {}
+  @Override
   public void startPrefixMapping(String prefix, String uri) throws SAXException {}
+  @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     try {
       if (qName != null) {
@@ -331,6 +341,7 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
     }
   }
   
+  @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
     try {
     if (null != qName) {

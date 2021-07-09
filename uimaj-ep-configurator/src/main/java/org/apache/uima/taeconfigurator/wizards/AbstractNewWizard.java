@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.uima.taeconfigurator.InternalErrorCDE;
+import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -48,9 +50,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-
-import org.apache.uima.taeconfigurator.InternalErrorCDE;
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
 
 /**
@@ -143,7 +142,6 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
    * @param windowTitle the window title
    */
   public AbstractNewWizard(String windowTitle) {
-    super();
     setDialogSettings(TAEConfiguratorPlugin.getDefault().getDialogSettings());
     setNeedsProgressMonitor(true);
     setForcePreviousAndNextButtons(false);

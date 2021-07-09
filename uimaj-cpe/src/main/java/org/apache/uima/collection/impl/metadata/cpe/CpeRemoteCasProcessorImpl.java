@@ -36,7 +36,6 @@ public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
    * Instantiates a new cpe remote cas processor impl.
    */
   public CpeRemoteCasProcessorImpl() {
-    super();
     try {
       addDefaults();
       super.setDeployment("remote");

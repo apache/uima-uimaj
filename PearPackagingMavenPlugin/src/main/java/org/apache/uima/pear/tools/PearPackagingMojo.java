@@ -30,7 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -112,7 +111,8 @@ public class PearPackagingMojo extends AbstractMojo {
     * 
     * @see org.apache.maven.plugin.AbstractMojo#execute()
     */
-   public void execute() throws MojoExecutionException {
+   @Override
+  public void execute() throws MojoExecutionException {
 
       // create the PEAR packaging directory in the target directory
       this.pearPackagingDir = new File(this.targetDir, "pearPackaging");
@@ -203,7 +203,8 @@ public class PearPackagingMojo extends AbstractMojo {
          File libDir = new File(this.pearPackagingDir, InstallationController.PACKAGE_LIB_DIR);
          if (libDir.isDirectory()) {
            FileFilter jarFilter = new FileFilter() {
-             public boolean accept(File pathname) {
+             @Override
+            public boolean accept(File pathname) {
                return pathname.isFile() && pathname.getAbsolutePath().toLowerCase().endsWith(".jar");
              }
            };

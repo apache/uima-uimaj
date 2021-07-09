@@ -19,13 +19,12 @@
 
 package org.apache.uima.json;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.metadata.MetaDataObject;
@@ -35,8 +34,11 @@ import org.apache.uima.resource.metadata.impl.TestFruitObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class JsonMetaDataObjectTest extends TestCase {
+public class JsonMetaDataObjectTest {
 
   private TestFruitObject apple1;
   private TestFruitObject apple2;
@@ -44,8 +46,8 @@ public class JsonMetaDataObjectTest extends TestCase {
   private TestFruitBagObject fruitBag;
 
 
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
@@ -78,11 +80,8 @@ public class JsonMetaDataObjectTest extends TestCase {
 
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
-  public void testTypeSystemDescriptionSerialization() throws Exception {
+    @Test
+    public void testTypeSystemDescriptionSerialization() throws Exception {
     
     XMLInputSource in = new XMLInputSource(JUnitExtension.getFile("CASTests/desc/casTestCaseTypesystem.xml"));
     TypeSystemDescription tsd;
@@ -104,7 +103,8 @@ public class JsonMetaDataObjectTest extends TestCase {
   /**
    * Tests the {@link MetaDataObject#toJSON(Writer)} method. 
    */
-  public void testJsonSerialization() throws Exception {
+    @Test
+    public void testJsonSerialization() throws Exception {
     try {
       // write objects to JSON
 
@@ -164,16 +164,20 @@ public class JsonMetaDataObjectTest extends TestCase {
   }
   
   
-  public void testToJSONWriter() {
+    @Test
+    public void testToJSONWriter() {
   }
 
-  public void testToJSONJsonGeneratorBoolean() {
+    @Test
+    public void testToJSONJsonGeneratorBoolean() {
   }
 
-  public void testToJSONOutputStream() {
+    @Test
+    public void testToJSONOutputStream() {
   }
 
-  public void testToJSONFile() {
+    @Test
+    public void testToJSONFile() {
   }
 
   private String getExpected(String expectedResultsName) throws IOException {

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 /**
@@ -33,24 +32,26 @@ public interface SofaID {
   /**
    * Set the Sofa ID of a Sofa FS in the CAS.
    * 
-   * @param aSofaID -
+   * @param aSofaID
+   *          -
    */
-  public void setSofaID(String aSofaID);
+  void setSofaID(String aSofaID);
 
   /**
    * Get the Sofa ID.
    * 
    * @return Sofa ID
    */
-  public String getSofaID();
+  String getSofaID();
 
   /**
    * Set the component Sofa name that was used to obtain this SofaID by calling
    * {@link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
    * 
-   * @param aSofaName -
+   * @param aSofaName
+   *          -
    */
-  public void setComponentSofaName(String aSofaName);
+  void setComponentSofaName(String aSofaName);
 
   /**
    * Get the component Sofa name that was used to obtain this SofaID by calling {
@@ -58,6 +59,5 @@ public interface SofaID {
    * @see org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
    * @return Component Sofa Name
    */
-  public String getComponentSofaName();
-
+  String getComponentSofaName();
 }

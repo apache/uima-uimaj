@@ -20,94 +20,104 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.CAS;
 
+//@formatter:off
 /**
  * This interface defines static final constants for Type Systems
  *   For the built-in types and features:
  *     - the type and feature codes
  *     - the adjOffsets
- *
  */
+//@formatter:on
 public interface TypeSystemConstants {
 
   /******************************************
    * built-in type codes
    ******************************************/
   // Code of root of hierarchy (will be 1 with current implementation)
-  static final int topTypeCode = 1;
-  static final int intTypeCode = 2;
-  static final int floatTypeCode = 3;
-  static final int stringTypeCode = 4;
-  static final int arrayBaseTypeCode = 5;
-  static final int fsArrayTypeCode = 6;
-  static final int floatArrayTypeCode = 7;
-  static final int intArrayTypeCode = 8;
-  static final int stringArrayTypeCode = 9;
+  int topTypeCode = 1;
+  int intTypeCode = 2;
+  int floatTypeCode = 3;
+  int stringTypeCode = 4;
+  int arrayBaseTypeCode = 5;
+  int fsArrayTypeCode = 6;
+  int floatArrayTypeCode = 7;
+  int intArrayTypeCode = 8;
+  int stringArrayTypeCode = 9;
   // 10 list base
-  static final int fsListTypeCode = 11; // 11           fs list
-  static final int fsEListTypeCode = 12;// 12 empty     fs list
-  static final int fsNeListTypeCode = 13;// 13 non-empty fs list
-  static final int floatListTypeCode = 14; // 14           float list
-  static final int floatEListTypeCode = 15;// 15 empty     float list
-  static final int floatNeListTypeCode = 16;  // 16 non-empty float list
-  static final int intListTypeCode = 17; // 17           integer list
-  static final int intEListTypeCode = 18;  // 18 empty     integer list
-  static final int intNeListTypeCode = 19; // 19 non-empty integer list
-  static final int stringListTypeCode = 20;  // 20           string list
-  static final int stringEListTypeCode = 21;  // 21 empty     string list
-  static final int stringNeListTypeCode = 22;  // 22 non-empty string list
+  int fsListTypeCode = 11; // 11 fs list
+  int fsEListTypeCode = 12;// 12 empty fs list
+  int fsNeListTypeCode = 13;// 13 non-empty fs list
+  int floatListTypeCode = 14; // 14 float list
+  int floatEListTypeCode = 15;// 15 empty float list
+  int floatNeListTypeCode = 16; // 16 non-empty float list
+  int intListTypeCode = 17; // 17 integer list
+  int intEListTypeCode = 18; // 18 empty integer list
+  int intNeListTypeCode = 19; // 19 non-empty integer list
+  int stringListTypeCode = 20; // 20 string list
+  int stringEListTypeCode = 21; // 21 empty string list
+  int stringNeListTypeCode = 22; // 22 non-empty string list
 
-  static final int booleanTypeCode = 23;
-  static final int byteTypeCode = 24;
-  static final int shortTypeCode = 25;
-  static final int longTypeCode = 26;
-  static final int doubleTypeCode = 27;
-  static final int booleanArrayTypeCode = 28;
-  static final int byteArrayTypeCode = 29;
-  static final int shortArrayTypeCode = 30;
-  static final int longArrayTypeCode = 31;
-  static final int doubleArrayTypeCode = 32;
-  static final int sofaTypeCode = 33;
-  static final int annotBaseTypeCode = 34;
-  static final int annotTypeCode = 35;
-  static final int docTypeCode = 36;  // DocumentAnnotation
+  int booleanTypeCode = 23;
+  int byteTypeCode = 24;
+  int shortTypeCode = 25;
+  int longTypeCode = 26;
+  int doubleTypeCode = 27;
+  int booleanArrayTypeCode = 28;
+  int byteArrayTypeCode = 29;
+  int shortArrayTypeCode = 30;
+  int longArrayTypeCode = 31;
+  int doubleArrayTypeCode = 32;
+  int sofaTypeCode = 33;
+  int annotBaseTypeCode = 34;
+  int annotTypeCode = 35;
+  int docTypeCode = 36; // DocumentAnnotation
 
-//  static final int lastBuiltinV2TypeCode = 36;
+  // static final int lastBuiltinV2TypeCode = 36;
 
   // new v3 type codes.. Above codes match v2
-//  static final int fsArrayListTypeCode = 37;
-//  static final int intArrayListTypeCode = 38;
-//  static final int fsHashSetTypeCode = 39;
+  // static final int fsArrayListTypeCode = 37;
+  // static final int intArrayListTypeCode = 38;
+  // static final int fsHashSetTypeCode = 39;
 
-//  static final int numberOfNewBuiltInsSinceV2 = 3;
+  // static final int numberOfNewBuiltInsSinceV2 = 3;
 
-//  static final int javaObjectTypeCode = 37;
-//  static final int javaObjectArrayTypeCode = 38;
+  // static final int javaObjectTypeCode = 37;
+  // static final int javaObjectArrayTypeCode = 38;
 
   /**
    * Static final constants for built-in features
    */
-  static final int sofaNumFeatCode = 9;  // ref from another pkg
-  static final int sofaIdFeatCode = 10;
-  static final int sofaStringFeatCode = 13;
-  static final int sofaMimeFeatCode = 11;
-  static final int sofaUriFeatCode = 14;
-  static final int sofaArrayFeatCode = 12;
-  static final int annotBaseSofaFeatCode = 15; // ref from another pkg
-  static final int beginFeatCode = 16;
-  static final int endFeatCode = 17;
-  static final int langFeatCode = 18;
+  int sofaNumFeatCode = 9; // ref from another pkg
+  int sofaIdFeatCode = 10;
+  int sofaStringFeatCode = 13;
+  int sofaMimeFeatCode = 11;
+  int sofaUriFeatCode = 14;
+  int sofaArrayFeatCode = 12;
+  int annotBaseSofaFeatCode = 15; // ref from another pkg
+  int beginFeatCode = 16;
+  int endFeatCode = 17;
+  int langFeatCode = 18;
 
   /**
    * adjOffsets for builtin Features
    */
-  static final int sofaNumFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);  
-  static final int sofaIdFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
-  static final int sofaStringFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
-  static final int sofaMimeFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
-  static final int sofaUriFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
-  static final int sofaArrayFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
-  static final int annotBaseSofaFeatAdjOffset = TypeSystemImpl.staticTsi.annotBaseType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
-  static final int beginFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
-  static final int endFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_END);
-  static final int langFeatAdjOffset = TypeSystemImpl.staticTsi.docType.getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
+  int sofaNumFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);
+  int sofaIdFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
+  int sofaStringFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
+  int sofaMimeFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
+  int sofaUriFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
+  int sofaArrayFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
+  int annotBaseSofaFeatAdjOffset = TypeSystemImpl.staticTsi.annotBaseType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
+  int beginFeatAdjOffset = TypeSystemImpl.staticTsi.annotType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
+  int endFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_END);
+  int langFeatAdjOffset = TypeSystemImpl.staticTsi.docType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
 }

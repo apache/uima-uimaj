@@ -33,7 +33,7 @@ import org.apache.uima.util.InvalidXMLException;
  */
 public interface Import extends MetaDataObject {
 
- public static final Import[] EMPTY_IMPORTS = new Import[0];
+  Import[] EMPTY_IMPORTS = new Import[0];
 
   /**
    * Gets the name of this import's target.
@@ -41,7 +41,7 @@ public interface Import extends MetaDataObject {
    * @return a Java-style compound name which specifies the target of this import. This will be
    *         located by appending ".xml" to the name and searching the classpath.
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of this import's target.
@@ -50,14 +50,14 @@ public interface Import extends MetaDataObject {
    *          a Java-style compound name which specifies the target of this import. This will be
    *          located by appending ".xml" to the name and searching the classpath.
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the location of this import's target.
    * 
    * @return a URI specifying the location of this import's target.
    */
-  public String getLocation();
+  String getLocation();
 
   /**
    * Sets the location of this import's target.
@@ -65,7 +65,7 @@ public interface Import extends MetaDataObject {
    * @param aUri
    *          a URI specifying the location of this import's target.
    */
-  public void setLocation(String aUri);
+  void setLocation(String aUri);
 
   /**
    * Computes the absolute URL for this import, using the relative location or name, whichever is
@@ -79,6 +79,6 @@ public interface Import extends MetaDataObject {
    * @throws InvalidXMLException
    *           if the import could not be resolved
    */
-  public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException;
+  URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException;
 
 }

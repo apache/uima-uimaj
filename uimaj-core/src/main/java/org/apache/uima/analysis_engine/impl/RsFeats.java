@@ -24,46 +24,49 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * represents the updateable list of features, each with a particular language spec
- * a given feature only appears once in the list, with the union of all languages 
+ * represents the updateable list of features, each with a particular language spec a given feature
+ * only appears once in the list, with the union of all languages
  */
 public class RsFeats implements Iterable<RsFeat> {
-  List<RsFeat> features = null; 
-  
-  RsFeats() {}
-  
+  List<RsFeat> features = null;
+
+  RsFeats() {
+  }
+
   /**
    * copies into a new feature list, shares the languages
+   * 
    * @param other
    */
   RsFeats(RsFeats other) {
     if (other.features == null) {
       features = null;
       return;
-    }      
+    }
     features = new ArrayList<>(other.features.size());
-    for (RsFeat f : other.features){
-      features.add(new RsFeat(f));    
+    for (RsFeat f : other.features) {
+      features.add(new RsFeat(f));
     }
   }
-  
+
   int size() {
     return (features == null) ? 0 : features.size();
   }
-  
+
   /**
-   * ASSUMES feat not exist in features already 
+   * ASSUMES feat not exist in features already
+   * 
    * @param feat
    */
   void add(String shortFeatName, Object languages) {
     String[] saLangs;
-    RsLangs  rsLangs;
+    RsLangs rsLangs;
     RsFeat feat;
     if (languages instanceof String[]) {
-      saLangs = (String[])languages;
+      saLangs = (String[]) languages;
       feat = new RsFeat(shortFeatName, saLangs);
-    } else { 
-      rsLangs = (RsLangs)languages;
+    } else {
+      rsLangs = (RsLangs) languages;
       rsLangs.setShared();
       feat = new RsFeat(shortFeatName, rsLangs);
     }
@@ -72,10 +75,10 @@ public class RsFeats implements Iterable<RsFeat> {
     }
     features.add(feat);
   }
-  
+
   /**
-   * Assume features != null
-   * remove a feature, regardless of language(s)
+   * Assume features != null remove a feature, regardless of language(s)
+   * 
    * @param shortFeatName
    */
   void remove(String typeName, String shortFeatName) {
@@ -86,42 +89,48 @@ public class RsFeats implements Iterable<RsFeat> {
       }
     }
   }
-  
+
   boolean contains(String typeName, String shortFeatName) {
     if (null == features || features.size() == 0) {
       return false;
     }
     return null != get(shortFeatName);
   }
-  
+
   /**
    * linear search in list for short feat name
-   * @param shortFeatName - canonicalized short feature name
+   * 
+   * @param shortFeatName
+   *          - canonicalized short feature name
    * @return the RsFeat or null
    */
   RsFeat get(String shortFeatName) {
     for (RsFeat r : features) {
-      if (r.shortFeatName.equals(shortFeatName)) { 
+      if (r.shortFeatName.equals(shortFeatName)) {
         return r;
       }
     }
     return null;
   }
 
+  @Override
   public Iterator<RsFeat> iterator() {
     return (null == features) ? nullIterator : features.iterator();
   }
-  
+
   final static Iterator<RsFeat> nullIterator = new Iterator<RsFeat>() {
 
+    @Override
     public boolean hasNext() {
       return false;
     }
 
+    @Override
     public RsFeat next() {
       return null;
     }
 
+    @Override
     public void remove() {
     }
   };

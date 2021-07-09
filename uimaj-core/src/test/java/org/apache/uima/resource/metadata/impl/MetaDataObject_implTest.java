@@ -37,14 +37,11 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
-import org.apache.uima.test.junit_extension.PrintExceptionsWhenRunFromCommandLineRule;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -53,19 +50,17 @@ import org.xml.sax.SAXException;
  * Tests the MetaDataObject_impl class.
  */
 public class MetaDataObject_implTest {
-  public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
-
   private TestFruitObject unknownFruit;
   private TestFruitObject apple1;
   private TestFruitObject apple2;
   private TestFruitObject orange;
   private TestFruitBagObject fruitBag;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // create an object that can represent a fruit
     unknownFruit = new TestFruitObject();
-  
+
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
@@ -97,22 +92,22 @@ public class MetaDataObject_implTest {
     fruitBag.setAttributeValue("fruits", fruitArray);
   }
 
-//  /**
-//   * Tests the {@link MetaDataObject#listAttributes()} method.
-//   */
-//  public void testListAttributes() throws Exception {
-//    try {
-//      HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
-//      HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
-//      HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
-//
-//      Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
-//      Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
-//      Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
-//    } catch (RuntimeException e) {
-//      JUnitExtension.handleException(e);
-//    }
-//  }
+  // /**
+  // * Tests the {@link MetaDataObject#listAttributes()} method.
+  // */
+  // public void testListAttributes() throws Exception {
+  // try {
+  // HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
+  // HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
+  // HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
+  //
+  // Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
+  // Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
+  // Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
+  // } catch (RuntimeException e) {
+  // JUnitExtension.handleException(e);
+  // }
+  // }
 
   /**
    * Test the getAttributes method
@@ -123,7 +118,7 @@ public class MetaDataObject_implTest {
     assertThat(orange.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(fruitBag.getAttributes()).containsAll(TestFruitBagObject.getMetaDataAttrSet());
   }
-  
+
   /**
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */
@@ -139,21 +134,28 @@ public class MetaDataObject_implTest {
     assertThat(apple1).isEqualTo(apple1.clone());
     assertThat(fruitBag).isEqualTo(fruitBag.clone());
     assertThat(apple1).isNotEqualTo(orange.clone());
-        
+
     // test with maps
-    ConfigurationParameterSettings cps1 = getResourceSpecifierFactory().createConfigurationParameterSettings();
-    cps1.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
-    cps1.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
-    
-    ConfigurationParameterSettings cps2 = getResourceSpecifierFactory().createConfigurationParameterSettings();
-    cps2.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
-    cps2.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
-    
+    ConfigurationParameterSettings cps1 = getResourceSpecifierFactory()
+            .createConfigurationParameterSettings();
+    cps1.getSettingsForGroups().put("k1",
+            new NameValuePair[] { new NameValuePair_impl("s1", "o1") });
+    cps1.getSettingsForGroups().put("k2",
+            new NameValuePair[] { new NameValuePair_impl("s2", "o2") });
+
+    ConfigurationParameterSettings cps2 = getResourceSpecifierFactory()
+            .createConfigurationParameterSettings();
+    cps2.getSettingsForGroups().put("k1",
+            new NameValuePair[] { new NameValuePair_impl("s1", "o1") });
+    cps2.getSettingsForGroups().put("k2",
+            new NameValuePair[] { new NameValuePair_impl("s2", "o2") });
+
     assertThat(cps1).isEqualTo(cps2);
     assertThat(cps1).isEqualTo(cps2.clone());
-    
-    cps2.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "ox2")});
-    
+
+    cps2.getSettingsForGroups().put("k2",
+            new NameValuePair[] { new NameValuePair_impl("s2", "ox2") });
+
     assertThat(cps1).isNotEqualTo(cps2);
   }
 
@@ -249,26 +251,22 @@ public class MetaDataObject_implTest {
 
   @Test
   public void testSerialization() throws Exception {
-    assertThat(deserialize(serialize(apple1)))
-        .isInstanceOf(TestFruitObject.class)
-        .isEqualTo(apple1);
+    assertThat(deserialize(serialize(apple1))).isInstanceOf(TestFruitObject.class)
+            .isEqualTo(apple1);
 
-    assertThat(deserialize(serialize(apple2)))
-        .isInstanceOf(TestFruitObject.class)
-        .isEqualTo(apple2);
+    assertThat(deserialize(serialize(apple2))).isInstanceOf(TestFruitObject.class)
+            .isEqualTo(apple2);
 
     byte[] orangeBytes = serialize(orange);
-    assertThat(deserialize(orangeBytes))
-        .isInstanceOf(TestFruitObject.class)
-        .isEqualTo(orange);
+    assertThat(deserialize(orangeBytes)).isInstanceOf(TestFruitObject.class).isEqualTo(orange);
 
     // make sure XMLization still works
     String orange1xml = toXmlString(orange);
     String orange2xml = toXmlString((TestFruitObject) deserialize(orangeBytes));
-    
+
     assertThat(orange1xml).isEqualTo(orange2xml);
   }
-  
+
   private String toXmlString(XMLizable aObject) throws IOException, SAXException {
     StringWriter writer = new StringWriter();
     aObject.toXML(writer);

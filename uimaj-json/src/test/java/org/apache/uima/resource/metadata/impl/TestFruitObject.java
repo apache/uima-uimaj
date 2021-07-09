@@ -83,6 +83,7 @@ public class TestFruitObject extends MetaDataObject_impl {
     mCommonUses = aCommonUses;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

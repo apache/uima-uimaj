@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayDeque;
@@ -28,13 +27,12 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Type Utilities - all static, so class is abstract to prevent creation
- * Used by Feature Path
+ * Type Utilities - all static, so class is abstract to prevent creation Used by Feature Path
  */
 public abstract class TypeSystemUtils {
 
   // Return value constants for feature path checking on type system
-  public static enum PathValid {
+  public enum PathValid {
     NEVER, POSSIBLE, ALWAYS
   }
 
@@ -43,7 +41,6 @@ public abstract class TypeSystemUtils {
     private ParsingError error = null;
 
     protected TypeSystemParse() {
-      super();
     }
 
     boolean hasError() {
@@ -63,7 +60,7 @@ public abstract class TypeSystemUtils {
      * Sets the error.
      * 
      * @param error
-     *                The error to set
+     *          The error to set
      */
     void setError(ParsingError error) {
       this.error = error;
@@ -76,7 +73,6 @@ public abstract class TypeSystemUtils {
     private String name;
 
     NameSpaceParse() {
-      super();
     }
 
     /**
@@ -92,7 +88,7 @@ public abstract class TypeSystemUtils {
      * Sets the name.
      * 
      * @param name
-     *                The name to set
+     *          The name to set
      */
     void setName(String name) {
       this.name = name;
@@ -107,7 +103,6 @@ public abstract class TypeSystemUtils {
     private NameSpaceParse nameSpace;
 
     TypeParse() {
-      super();
     }
 
     TypeParse(String name) {
@@ -131,7 +126,7 @@ public abstract class TypeSystemUtils {
      * Sets the name.
      * 
      * @param name
-     *                The name to set
+     *          The name to set
      */
     public void setName(String name) {
       this.name = name;
@@ -141,7 +136,7 @@ public abstract class TypeSystemUtils {
      * Sets the nameSpace.
      * 
      * @param nameSpace
-     *                The nameSpace to set
+     *          The nameSpace to set
      */
     public void setNameSpace(NameSpaceParse nameSpace) {
       this.nameSpace = nameSpace;
@@ -177,7 +172,7 @@ public abstract class TypeSystemUtils {
      * Sets the name.
      * 
      * @param name
-     *                The name to set
+     *          The name to set
      */
     public void setName(String name) {
       this.name = name;
@@ -187,7 +182,7 @@ public abstract class TypeSystemUtils {
      * Sets the type.
      * 
      * @param type
-     *                The type to set
+     *          The type to set
      */
     public void setType(TypeParse type) {
       this.type = type;
@@ -223,7 +218,7 @@ public abstract class TypeSystemUtils {
      * Sets the errorCode.
      * 
      * @param errorCode
-     *                The errorCode to set
+     *          The errorCode to set
      */
     public void setErrorCode(int errorCode) {
       this.errorCode = errorCode;
@@ -233,7 +228,7 @@ public abstract class TypeSystemUtils {
      * Sets the errorPosition.
      * 
      * @param errorPosition
-     *                The errorPosition to set
+     *          The errorPosition to set
      */
     public void setErrorPosition(int errorPosition) {
       this.errorPosition = errorPosition;
@@ -283,7 +278,7 @@ public abstract class TypeSystemUtils {
    * exists!
    * 
    * @param name
-   *                The name to check.
+   *          The name to check.
    * @return <code>true</code> iff <code>name</code> is a possible type name.
    */
   static boolean isTypeName(String name) {
@@ -319,41 +314,45 @@ public abstract class TypeSystemUtils {
   }
 
   /**
-   * <p>Given a starting Type and a list of features representing a feature path, 
-   * checks if a feature path is valid for a given type.</p>
-
+   * <p>
+   * Given a starting Type and a list of features representing a feature path, checks if a feature
+   * path is valid for a given type.
+   * </p>
+   * 
    * <p>
    * We distinguish three cases:
    * <ol>
    * <li><code>PathValid.NEVER</code>: there is no object of <code>type</code> on which
    * <code>path</code> can ever be defined.</li>
    * <li><code>PathValid.ALWAYS</code>: if all intermediate objects are non-null, this
-   * <code>path</code> will always be defined on any object of <code>type</code>. </li>
-   * <li><code>PathValid.POSSIBLE</code>: some objects of <code>type</code> will have <code>path</code> 
-   * defined, while others may not.</li>
+   * <code>path</code> will always be defined on any object of <code>type</code>.</li>
+   * <li><code>PathValid.POSSIBLE</code>: some objects of <code>type</code> will have
+   * <code>path</code> defined, while others may not.</li>
    * </ol>
-   * <b>Note:</b> In computing validity, we always assume that all references are not null.  A return value of ALWAYS
-   * can of course not guarantee that all intermediate objects will always exist; only that if they
-   * exist, the path will be defined.
+   * <b>Note:</b> In computing validity, we always assume that all references are not null. A return
+   * value of ALWAYS can of course not guarantee that all intermediate objects will always exist;
+   * only that if they exist, the path will be defined.
    * 
-   * @param type The type.
-   * @param path The path to check.
+   * @param type
+   *          The type.
+   * @param path
+   *          The path to check.
    * @return One of {@link PathValid#ALWAYS ALWAYS}, {@link PathValid#POSSIBLE POSSIBLE}, or
-   * {@link PathValid#NEVER NEVER}.
+   *         {@link PathValid#NEVER NEVER}.
    */
   public static final PathValid isPathValid(Type type, List<String> path) {
-    return isPathValid((TypeImpl)type, new ArrayDeque<>(path), PathValid.ALWAYS);
+    return isPathValid((TypeImpl) type, new ArrayDeque<>(path), PathValid.ALWAYS);
   }
-   
+
   /**
-   * Recursively called on each successive path element.
-   * Pops a feature name off the path, and checks if it exists for the type.
-   *   -- if exists, gets its range type and iterates via recursion.
+   * Recursively called on each successive path element. Pops a feature name off the path, and
+   * checks if it exists for the type. -- if exists, gets its range type and iterates via recursion.
    * Stops when the queue of feature names is empty.
    * 
    * @param type
    * @param path
-   * @param status the returned value if the feature is found.
+   * @param status
+   *          the returned value if the feature is found.
    * @return
    */
   private static final PathValid isPathValid(TypeImpl type, Deque<String> path, PathValid status) {
@@ -372,9 +371,10 @@ public abstract class TypeSystemUtils {
     // path is defined (possible).
 
     return isPathValidInSubtypes(type, featName, path);
-    
+
   }
-   
+
+//@formatter:off
   /**
    * Called when the Feature Name is not a valid feature of the current <code>type</code>.
    * 
@@ -396,11 +396,15 @@ public abstract class TypeSystemUtils {
    * @param nextPath
    * @return
    */
-  private static final PathValid isPathValidInSubtypes(TypeImpl type, String fName, Deque<String> nextPath) {
+//@formatter:on
+  private static final PathValid isPathValidInSubtypes(TypeImpl type, String fName,
+          Deque<String> nextPath) {
     for (TypeImpl subtype : type.getDirectSubtypes()) {
-      FeatureImpl fi = subtype.getFeatureByBaseName(fName); 
+      FeatureImpl fi = subtype.getFeatureByBaseName(fName);
       if (fi != null) {
-        if (PathValid.POSSIBLE == isPathValid(fi.getRangeImpl(), nextPath, PathValid.POSSIBLE)) { // check subsequent types.
+        if (PathValid.POSSIBLE == isPathValid(fi.getRangeImpl(), nextPath, PathValid.POSSIBLE)) { // check
+                                                                                                  // subsequent
+                                                                                                  // types.
           return PathValid.POSSIBLE;
         } else {
           continue; // try another subtype
@@ -410,7 +414,7 @@ public abstract class TypeSystemUtils {
           return PathValid.POSSIBLE;
         }
       }
-    }  // loop for all subtypes, looking for a POSSIBLE path
+    } // loop for all subtypes, looking for a POSSIBLE path
     return PathValid.NEVER;
   }
 
@@ -420,11 +424,10 @@ public abstract class TypeSystemUtils {
    * {@link LowLevelCAS#ll_getTypeClass(int) LowLevelCAS.ll_getTypeClass(int)}.
    * 
    * @param type
-   *                The type to classify.
+   *          The type to classify.
    * @return An integer encoding the the type class. See above.
    */
   public static final int classifyType(Type type) {
     return TypeSystemImpl.getTypeClass((TypeImpl) type);
   }
-
 }

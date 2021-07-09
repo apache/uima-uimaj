@@ -35,14 +35,14 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FSIndexTest {
 
-//  static {
-//    System.setProperty(TypeSystemImpl.ENABLE_STRICT_TYPE_SOURCE_CHECK, "true");
-//  }
-  
+  // static {
+  // System.setProperty(TypeSystemImpl.ENABLE_STRICT_TYPE_SOURCE_CHECK, "true");
+  // }
+
   @Test
   public void thatTypeSystemChangesCanBeHandled() throws Exception {
 
@@ -71,13 +71,11 @@ public class FSIndexTest {
     Type myTypeFromCas2 = getType(cas2, myTypeName);
 
     if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
-      assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> {
+      assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
         AnnotationFS brokenFs = cas1.createAnnotation(myTypeFromCas2, 0, 0);
         cas1.addFsToIndexes(brokenFs);
       }).withMessageContaining("in CAS with different type system");
-    }
-    else {
+    } else {
       List<String> capturedOutput = captureOutput(() -> {
         AnnotationFS brokenFs = cas1.createAnnotation(myTypeFromCas2, 0, 0);
         cas1.addFsToIndexes(brokenFs);

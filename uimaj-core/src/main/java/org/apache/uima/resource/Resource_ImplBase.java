@@ -66,9 +66,10 @@ public abstract class Resource_ImplBase implements Resource {
   /**
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
-   *      
-   * multi-thread safe, given that each instance of this class is only called on one thread, once.
-   * The critical parts that update shared information (in shared uima context) are inside a synchronize block
+   * 
+   *      multi-thread safe, given that each instance of this class is only called on one thread,
+   *      once. The critical parts that update shared information (in shared uima context) are
+   *      inside a synchronize block
    */
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
@@ -89,13 +90,13 @@ public abstract class Resource_ImplBase implements Resource {
     if (aAdditionalParams != null) {
       mUimaContextAdmin = (UimaContextAdmin) aAdditionalParams.get(PARAM_UIMA_CONTEXT);
     }
-    if (mUimaContextAdmin == null) {// no, we have to create one    
-    
+    if (mUimaContextAdmin == null) {// no, we have to create one
+
       // skip this part if initializing an external resource
       // https://issues.apache.org/jira/browse/UIMA-5153
-      if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier) &&
-          !(aSpecifier instanceof FileLanguageResourceSpecifier) &&
-          !(aSpecifier instanceof FileResourceSpecifier)) {
+      if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier)
+              && !(aSpecifier instanceof FileLanguageResourceSpecifier)
+              && !(aSpecifier instanceof FileResourceSpecifier)) {
         // get or create ResourceManager
         ResourceManager resMgr = null;
         if (aAdditionalParams != null) {
@@ -109,10 +110,10 @@ public abstract class Resource_ImplBase implements Resource {
         // UIMA extension ClassLoader is used to locate message digests.
         Logger logger = UIMAFramework.getLogger(this.getClass());
         logger.setResourceManager(resMgr);
-      
+
         ConfigurationManager configMgr = null;
         if (aAdditionalParams != null) {
-          configMgr = (ConfigurationManager)aAdditionalParams.get(PARAM_CONFIG_MANAGER);
+          configMgr = (ConfigurationManager) aAdditionalParams.get(PARAM_CONFIG_MANAGER);
         }
         if (configMgr == null) {
           configMgr = UIMAFramework.newConfigurationManager();
@@ -121,9 +122,10 @@ public abstract class Resource_ImplBase implements Resource {
         // create and initialize UIMAContext
         mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
         if (aAdditionalParams != null) {
-          Object limit = aAdditionalParams.get(AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING);
+          Object limit = aAdditionalParams
+                  .get(AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING);
           if (limit != null) {
-            ((UimaContext_ImplBase)mUimaContextAdmin).setLoggingThrottleLimit((Integer)limit);
+            ((UimaContext_ImplBase) mUimaContextAdmin).setLoggingThrottleLimit((Integer) limit);
           }
         }
       }
@@ -151,44 +153,51 @@ public abstract class Resource_ImplBase implements Resource {
       }
       // store Resource metadata so it can be retrieved via getMetaData() method
       setMetaData(metadata);
-      
+
       // Check if a Settings object for the external overrides has been provided in the additional
-      // parameters map.  If not and not already set from the parent UimaContext then create one 
+      // parameters map. If not and not already set from the parent UimaContext then create one
       // (for the root context) from the system defaults
-      Settings externalOverrides = aAdditionalParams == null ? null : 
-                    (Settings) aAdditionalParams.get(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS);
+      Settings externalOverrides = aAdditionalParams == null ? null
+              : (Settings) aAdditionalParams.get(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS);
       if (externalOverrides != null) {
         mUimaContextAdmin.setExternalOverrides(externalOverrides);
       } else {
-        // synch around test/set of the (possibly shared) uima-context info about external param overrides
-        synchronized(mUimaContextAdmin) {
+        // synch around test/set of the (possibly shared) uima-context info about external param
+        // overrides
+        synchronized (mUimaContextAdmin) {
           if (mUimaContextAdmin.getExternalOverrides() == null) {
-            externalOverrides = UIMAFramework.getResourceSpecifierFactory().createSettings();  // i.e. new Settings_impl()
+            externalOverrides = UIMAFramework.getResourceSpecifierFactory().createSettings(); // i.e.
+                                                                                              // new
+                                                                                              // Settings_impl()
             try {
               externalOverrides.loadSystemDefaults();
             } catch (ResourceConfigurationException e) {
-              throw new ResourceInitializationException(ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+              throw new ResourceInitializationException(
+                      ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
                       new Object[] { name, metadata.getSourceUrlString() }, e);
             }
             mUimaContextAdmin.setExternalOverrides(externalOverrides);
           }
         }
       }
-      
+
       // initialize configuration
       try {
-        // createContext checks and skips repeated calls with same args (on different threads, for example)
+        // createContext checks and skips repeated calls with same args (on different threads, for
+        // example)
         mUimaContextAdmin.getConfigurationManager().createContext(
-                mUimaContextAdmin.getQualifiedContextName(), getMetaData(), mUimaContextAdmin.getExternalOverrides());
+                mUimaContextAdmin.getQualifiedContextName(), getMetaData(),
+                mUimaContextAdmin.getExternalOverrides());
         mUimaContextAdmin.getConfigurationManager().setSession(mUimaContextAdmin.getSession());
       } catch (ResourceConfigurationException e) {
         throw new ResourceInitializationException(
-                ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                    name, metadata.getSourceUrlString() }, e);
+                ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                new Object[] { name, metadata.getSourceUrlString() }, e);
       }
 
       // initialize any external resource declared in this descriptor
-      // UIMA-5274  Set & restore the UimaContextHolder so that resources created on this thread can use the Settings
+      // UIMA-5274 Set & restore the UimaContextHolder so that resources created on this thread can
+      // use the Settings
       ResourceManagerConfiguration resMgrCfg = ((ResourceCreationSpecifier) aSpecifier)
               .getResourceManagerConfiguration();
       if (resMgrCfg != null) {
@@ -214,7 +223,8 @@ public abstract class Resource_ImplBase implements Resource {
           // initializeExternalResources is synchronized
 
           // https://issues.apache.org/jira/browse/UIMA-5153
-          final HashMap<String, Object> aAdditionalParmsForExtResources = new HashMap<>(aAdditionalParams); // copy in case
+          final HashMap<String, Object> aAdditionalParmsForExtResources = new HashMap<>(
+                  aAdditionalParams); // copy in case
           aAdditionalParmsForExtResources.putIfAbsent(PARAM_UIMA_CONTEXT, mUimaContextAdmin);
 
           mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
@@ -253,8 +263,8 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   /**
-   * Sets the <code>ResourceMetaData</code> object associated with this <code>Resource</code>.
-   * Any previously existing metadata will be replaced.
+   * Sets the <code>ResourceMetaData</code> object associated with this <code>Resource</code>. Any
+   * previously existing metadata will be replaced.
    * <p>
    * Resource subclasses should call this method during initialization in order to set the metadata
    * before any calls to {@link #getMetaData()} are made.
@@ -267,8 +277,8 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   /**
-   * Get the logger for this UIMA framework class.
-   * Note that this is NOT the user's logger in the UimaContext
+   * Get the logger for this UIMA framework class. Note that this is NOT the user's logger in the
+   * UimaContext
    */
   @Override
   public Logger getLogger() {
@@ -276,7 +286,7 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   /**
-   * Set the logger in the current UimaContext for use by user annotators. 
+   * Set the logger in the current UimaContext for use by user annotators.
    */
   @Override
   public void setLogger(Logger aLogger) {
@@ -322,20 +332,21 @@ public abstract class Resource_ImplBase implements Resource {
   public CasManager getCasManager() {
     return getResourceManager().getCasManager();
   }
-  
+
   public Class<?> loadUserClass(String name) throws ClassNotFoundException {
     return getResourceManager().loadUserClass(name);
   }
-  
-  public Class<?> loadUserClassOrThrow(String name, ResourceSpecifier aSpecifier) 
-      throws ResourceInitializationException {
+
+  public Class<?> loadUserClassOrThrow(String name, ResourceSpecifier aSpecifier)
+          throws ResourceInitializationException {
     return ResourceManager_impl.loadUserClassOrThrow(name, getResourceManager(), aSpecifier);
   }
-    
+
   public RelativePathResolver getRelativePathResolver(Map<String, Object> aAdditionalParams) {
     RelativePathResolver relPathResolver = null;
     if (aAdditionalParams != null) {
-      relPathResolver = (RelativePathResolver) aAdditionalParams.get(DataResource.PARAM_RELATIVE_PATH_RESOLVER);
+      relPathResolver = (RelativePathResolver) aAdditionalParams
+              .get(DataResource.PARAM_RELATIVE_PATH_RESOLVER);
     }
     if (relPathResolver == null) {
       relPathResolver = new RelativePathResolver_impl();
@@ -346,11 +357,11 @@ public abstract class Resource_ImplBase implements Resource {
   public void withContextHolder(Runnable userCode) {
     Util.withContextHolder(getUimaContext(), userCode);
   }
-  
+
   public void setContextHolderX(Runnable_withException userCode) throws Exception {
     Util.withContextHolderX(getUimaContext(), userCode);
-  } 
-  
+  }
+
   public UimaContext setContextHolder() {
     return UimaContextHolder.setContext(getUimaContext());
   }

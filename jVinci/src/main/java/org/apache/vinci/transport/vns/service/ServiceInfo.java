@@ -45,6 +45,7 @@ public class ServiceInfo {
     this.instance = instance;
   }
 
+  @Override
   public String toString() {
     String result = "";
     result += "Workspace: " + ws + "\n";

@@ -32,7 +32,7 @@ public class AnnotatorMissingSuper extends CasAnnotator_ImplBase {
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     boolean caught = false;
     try {
-      getContext();  
+      getContext();
     } catch (UIMARuntimeException e) {
       caught = true;
     }
@@ -52,13 +52,12 @@ public class AnnotatorMissingSuper extends CasAnnotator_ImplBase {
 
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
-    
+
   }
 
   @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
-    
+
   }
 
-  
 }

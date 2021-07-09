@@ -25,7 +25,6 @@ package org.apache.vinci.transport;
 public class Attributes extends VinciFrame {
 
   public Attributes() {
-    super();
   }
 
   public Attributes(int initialCapacity) {
@@ -39,6 +38,7 @@ public class Attributes extends VinciFrame {
    * @exception UnsupportedOperationException
    *              thrown unconditionally.
    */
+  @Override
   public VinciFrame fset(String key, Frame val) {
     throw new UnsupportedOperationException("Can't set frame as attribute value.");
   }
@@ -50,6 +50,7 @@ public class Attributes extends VinciFrame {
    * @exception UnsupportedOperationException
    *              thrown unconditionally.
    */
+  @Override
   public Frame fadd(String key, Frame val) {
     throw new UnsupportedOperationException("Can't add frame as attribute value.");
   }
@@ -60,6 +61,7 @@ public class Attributes extends VinciFrame {
    * @exception UnsupportedOperationException
    *              thrown unconditionally.
    */
+  @Override
   public Frame fadd(String key) {
     throw new UnsupportedOperationException("Can't add empty attribute values.");
   }

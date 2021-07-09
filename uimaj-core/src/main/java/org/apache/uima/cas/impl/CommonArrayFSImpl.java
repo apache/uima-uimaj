@@ -22,9 +22,10 @@ import org.apache.uima.cas.CommonArrayFS;
 
 /**
  * For v2 backwards compatibility
+ * 
  * @deprecated
  */
 @Deprecated
 public interface CommonArrayFSImpl extends CommonArrayFS {
-  
+
 }

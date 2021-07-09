@@ -67,6 +67,7 @@ public class TestFruitBagObject extends MetaDataObject_impl {
     return result;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

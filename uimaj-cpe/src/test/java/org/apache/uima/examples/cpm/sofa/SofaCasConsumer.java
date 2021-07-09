@@ -19,8 +19,6 @@
 
 package org.apache.uima.examples.cpm.sofa;
 
-import org.junit.Assert;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -29,6 +27,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CasConsumer_ImplBase;
 import org.apache.uima.resource.ResourceProcessException;
+import org.junit.Assert;
 
 /**
  * CAS Consumer for Sofa test cases. Checks that CAS contains the SourceDocument and
@@ -41,6 +40,7 @@ public class SofaCasConsumer extends CasConsumer_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS cas) throws ResourceProcessException {
 
     // print out annotations of the Source SofA

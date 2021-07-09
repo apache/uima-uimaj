@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import org.apache.uima.cas.CAS;
@@ -35,8 +34,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A SAX ContentHandler that reads XCAS and creates a CasData.
- * 
- * 
  */
 public class XCasToCasDataSaxHandler extends DefaultHandler {
   // ///////////////////////////////////////////////////////////////////////
@@ -109,7 +106,6 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    *          the CasData to which FeatureStructures parsed from XCAS will be appended
    */
   public XCasToCasDataSaxHandler(CasData aCasData) {
-    super();
     this.buffer = new StringBuffer();
     this.cas = aCasData;
   }
@@ -124,6 +120,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ContentHandler#startDocument()
    */
+  @Override
   public void startDocument() throws SAXException {
     // Do setup work in the constructor.
     this.state = DOC_STATE;
@@ -135,8 +132,9 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * (non-Javadoc)
    * 
    * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
-   *      java.lang.String, org.xml.sax.Attributes)
+   * java.lang.String, org.xml.sax.Attributes)
    */
+  @Override
   public void startElement(String nameSpaceURI, String localName, String qualifiedName,
           Attributes attrs) throws SAXException {
     resetBuffer();
@@ -330,9 +328,10 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
+  @Override
   public void characters(char[] chars, int start, int length) throws SAXException {
-    if ((this.state == CONTENT_STATE)
-            || (this.state == ARRAY_ELE_CONTENT_STATE) || (this.state == FEAT_CONTENT_STATE)) {
+    if ((this.state == CONTENT_STATE) || (this.state == ARRAY_ELE_CONTENT_STATE)
+            || (this.state == FEAT_CONTENT_STATE)) {
       // When we're in a text expecting state, add the characters to the
       // text buffer. Else, do nothing.
       buffer.append(chars, start, length);
@@ -343,8 +342,9 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * (non-Javadoc)
    * 
    * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
-   *      java.lang.String)
+   * java.lang.String)
    */
+  @Override
   public void endElement(String nsURI, String localName, String qualifiedName) throws SAXException {
     switch (this.state) {
       case DOC_STATE: {
@@ -438,6 +438,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ContentHandler#endDocument()
    */
+  @Override
   public void endDocument() throws SAXException {
     // nothing to do
   }
@@ -475,6 +476,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
    */
+  @Override
   public void error(SAXParseException e) throws SAXException {
     throw e;
   }
@@ -484,6 +486,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
    */
+  @Override
   public void fatalError(SAXParseException e) throws SAXException {
     throw e;
   }
@@ -493,6 +496,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
    */
+  @Override
   public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {
     // Since we're not validating, we don't need to do anything; this won't
     // be called.
@@ -503,6 +507,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
    */
+  @Override
   public void setDocumentLocator(Locator loc) {
     // System.out.println("Setting document locator.");
     this.locator = loc;
@@ -513,6 +518,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * 
    * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
    */
+  @Override
   public void warning(SAXParseException e) throws SAXException {
     throw e;
   }
@@ -531,5 +537,4 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
             || CAS.TYPE_NAME_STRING_ARRAY.equals(typeName)
             || CAS.TYPE_NAME_FS_ARRAY.equals(typeName);
   }
-
 }

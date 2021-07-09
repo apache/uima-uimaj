@@ -18,6 +18,10 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -33,9 +37,9 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
+// @formatter:off
 /**
  * CasTypeSystemMapper maintains resources to map between two type systems, and handles
  *   types present in one but not the other,
@@ -53,85 +57,83 @@ import junit.framework.TestCase;
  *   
  *   Verify appropriate mapping is there.
  */
+//@formatter:on
+public class CasTypeSystemMapperTest {
 
-public class CasTypeSystemMapperTest extends TestCase {
-  
-  private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem();  // just to get the built-ins
+  private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem(); // just to get
+                                                                                      // the
+                                                                                      // built-ins
   private static int t0 = tsi.getNumberOfTypes();
   private static int t1 = t0 + 1;
   private static int t2 = t0 + 2;
-  
+
   private TypeSystemImpl ts1, ts2;
-  
+
   private TypeImpl t1t, t2t, ts1t1, ts1t2, ts2t1, ts2t2;
-  
+
   private CasTypeSystemMapper m;
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
+  // to run this test, change the visibility in TypeSystemImpl of typeSystemMappers to public
+  // public void testCasReuseWithDifferentTypeSystems() throws Exception {
+  // // Create a CAS
+  // CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+  // cas.setDocumentLanguage("latin");
+  // cas.setDocumentText("test");
+  //
+  // // Serialize it
+  // ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+  // Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
+  //
+  // // Create a new CAS
+  // long min = Long.MAX_VALUE;
+  // long max = 0;
+  // CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+  // for (int i = 0; i < 100000; i++) {
+  // // Simulate us reinitializing the CAS with a new type system.
+  // TypeSystemImpl tgt = new TypeSystemImpl();
+  // for (int t = 0; t < 1000; t++) {
+  // tgt.addType("random" + t, tgt.getTopType());
+  // }
+  // tgt.commit();
+  //
+  // // Deserialize into the new type system
+  // ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+  // Serialization.deserializeCAS(cas2, bais, tgt, null);
+  //
+  // long cur = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+  // max = Math.max(cur, max);
+  // min = Math.min(cur, min);
+  // if (i % 100 == 0) {
+  // System.out.printf("Cached: %d Max: %d Room left: %d %n",
+  // ((TypeSystemImpl) cas2.getTypeSystem()).typeSystemMappers.size(), max,
+  // Runtime.getRuntime().maxMemory()
+  // - max);
+  // }
+  // }
+  // }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
-   // to run this test, change the visibility in TypeSystemImpl of typeSystemMappers to public
-//  public void testCasReuseWithDifferentTypeSystems() throws Exception {
-//    // Create a CAS
-//    CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
-//    cas.setDocumentLanguage("latin");
-//    cas.setDocumentText("test");
-//
-//    // Serialize it
-//    ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-//    Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
-//
-//    // Create a new CAS
-//    long min = Long.MAX_VALUE;
-//    long max = 0;
-//    CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
-//    for (int i = 0; i < 100000; i++) {
-//      // Simulate us reinitializing the CAS with a new type system.
-//      TypeSystemImpl tgt = new TypeSystemImpl();
-//      for (int t = 0; t < 1000; t++) {
-//        tgt.addType("random" + t, tgt.getTopType());
-//      }
-//      tgt.commit();
-//
-//      // Deserialize into the new type system
-//      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-//      Serialization.deserializeCAS(cas2, bais, tgt, null);
-//
-//      long cur = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-//      max = Math.max(cur, max);
-//      min = Math.min(cur, min);
-//      if (i % 100 == 0) {
-//        System.out.printf("Cached: %d   Max: %d   Room left: %d   %n",
-//            ((TypeSystemImpl) cas2.getTypeSystem()).typeSystemMappers.size(), max, Runtime.getRuntime().maxMemory()
-//                - max);
-//      }
-//    }
-//  }
-
+  @Test
   public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); // become == type systems
     m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, t2);  // check all are equal
+    chkbase(m, t2); // check all are equal
     assertTrue(m.isEqual());
   }
-  
+
+  @Test
   public void testMissingType1() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t2 = t2t;
-    ts2 = createTs(1, 0x1ffff, 0x1ffff);  // missing t2t
-    
+    ts2 = createTs(1, 0x1ffff, 0x1ffff); // missing t2t
+
     m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, t1);  // should be the same up thru t1
-    assertEquals(null, m.mapTypeSrc2Tgt(ts1t2));  // ts1t2 is missing, so this should map to null
+    chkbase(m, t1); // should be the same up thru t1
+    assertEquals(null, m.mapTypeSrc2Tgt(ts1t2)); // ts1t2 is missing, so this should map to null
     assertFalse(m.isEqual());
   }
 
+  @Test
   public void testMissingType2() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
@@ -140,27 +142,29 @@ public class CasTypeSystemMapperTest extends TestCase {
 
     m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, t0);
-    assertEquals( null, m.mapTypeSrc2Tgt(ts1t1));
+    assertEquals(null, m.mapTypeSrc2Tgt(ts1t1));
     assertEquals(t1t, m.mapTypeSrc2Tgt(ts1t2));
     assertEquals(ts1t2, m.mapTypeCodeTgt2Src(t1));
-    chkfeats(m, ts1t2, t1t);  
+    chkfeats(m, ts1t2, t1t);
     assertFalse(m.isEqual());
   }
-  
+
+  @Test
   public void testMissingType3() throws ResourceInitializationException {
     ts1 = createTs(1, 0x1ffff, 0x1ffff);
-    ts2 = createTs(3, 0x1ffff, 0x1ffff); 
+    ts2 = createTs(3, 0x1ffff, 0x1ffff);
 
     m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, t1);
     assertEquals(null, m.mapTypeCodeTgt2Src(t2));
     assertFalse(m.isEqual());
   }
-  
+
+  @Test
   public void testMissingType4() throws ResourceInitializationException {
     ts1 = createTs(2, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
-    ts2 = createTs(3, 0x1ffff, 0x1ffff); 
+    ts2 = createTs(3, 0x1ffff, 0x1ffff);
 
     m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, t0);
@@ -170,13 +174,14 @@ public class CasTypeSystemMapperTest extends TestCase {
     chkfeats(m, ts1t1, t2t);
     assertFalse(m.isEqual());
   }
-  
+
+  @Test
   public void testMissingType5() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeImpl ts1t1 = t1t;
-    TypeImpl ts1t2 = t2t;    
-    ts2 = createTs(0, 0x1ffff, 0x1ffff); 
-    
+    TypeImpl ts1t2 = t2t;
+    ts2 = createTs(0, 0x1ffff, 0x1ffff);
+
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, t0);
     assertEquals(null, m.mapTypeSrc2Tgt(ts1t1));
@@ -184,11 +189,12 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
 
+  @Test
   public void testMissingType6() throws ResourceInitializationException {
     ts1 = createTs(0, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
-    ts1t2 = t2t;    
-    ts2 = createTs(3, 0x1ffff, 0x1ffff); 
+    ts1t2 = t2t;
+    ts2 = createTs(3, 0x1ffff, 0x1ffff);
 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, t0);
@@ -197,14 +203,14 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
 
-  
+  @Test
   public void testMissingFeature0() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
-    ts1t2 = t2t;    
+    ts1t2 = t2t;
 
-    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
-      ts2 = createTs(3, 0x1ffff - mf, 0x1ffff);  
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf << 1) {
+      ts2 = createTs(3, 0x1ffff - mf, 0x1ffff);
       m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
       assertEquals(t1t, m.mapTypeSrc2Tgt(ts1t1));
@@ -212,18 +218,19 @@ public class CasTypeSystemMapperTest extends TestCase {
       assertEquals(ts1t1, m.mapTypeCodeTgt2Src(t1));
       assertEquals(ts1t2, m.mapTypeCodeTgt2Src(t2));
       chkfeats(m, ts1t2, t2t);
-      chkMissingFeats1(m, t1, mf);    
+      chkMissingFeats1(m, t1, mf);
       assertFalse(m.isEqual());
-   } 
+    }
   }
 
+  @Test
   public void testMissingFeature0r() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
-    ts1t2 = t2t;    
+    ts1t2 = t2t;
 
-    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
-      ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);  
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf << 1) {
+      ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);
       m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
       assertEquals(t1t, m.mapTypeSrc2Tgt(ts1t1));
@@ -231,17 +238,18 @@ public class CasTypeSystemMapperTest extends TestCase {
       assertEquals(ts1t1, m.mapTypeCodeTgt2Src(t1));
       assertEquals(ts1t2, m.mapTypeCodeTgt2Src(t2));
       chkfeats(m, ts1t1, t1t);
-      chkMissingFeats1(m, t2, mf);      
+      chkMissingFeats1(m, t2, mf);
       assertFalse(m.isEqual());
     }
   }
 
+  @Test
   public void testMissingFeature0f() throws ResourceInitializationException {
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
     ts2t1 = t1t;
-    ts2t2 = t2t;    
+    ts2t2 = t2t;
 
-    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf << 1) {
       ts1 = createTs(3, 0x1ffff - mf, 0x1ffff); // feat 8
       m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
@@ -255,12 +263,13 @@ public class CasTypeSystemMapperTest extends TestCase {
     }
   }
 
+  @Test
   public void testMissingFeature0f2() throws ResourceInitializationException {
-    ts2 = createTs(3, 0x1ffff, 0x1ffff);  
+    ts2 = createTs(3, 0x1ffff, 0x1ffff);
     ts2t1 = t1t;
     ts2t2 = t2t;
-    
-    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
+
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf << 1) {
       ts1 = createTs(3, 0x1ffff, 0x1ffff - mf); // feat 8
       m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
@@ -273,14 +282,15 @@ public class CasTypeSystemMapperTest extends TestCase {
       assertFalse(m.isEqual());
     }
   }
-  
+
+  @Test
   public void testMissingAllFeat1() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
-    ts1t2 = t2t;    
+    ts1t2 = t2t;
     ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);
-    
+
     m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m);
     assertEquals(t1t, m.mapTypeSrc2Tgt(ts1t1));
@@ -288,17 +298,18 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertEquals(t1t, m.mapTypeCodeTgt2Src(t1));
     assertFalse(t2t.equals(m.mapTypeCodeTgt2Src(t2)));
     chkfeats(m, ts1t1, t1t);
-    chkMissingFeats1(m, t2, mf);      
+    chkMissingFeats1(m, t2, mf);
     assertFalse(m.isEqual());
   }
 
+  @Test
   public void testMissingAllFeat2() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff - mf);
     ts1t1 = t1t;
-    ts1t2 = t2t;    
+    ts1t2 = t2t;
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
-    
+
     m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m);
     assertEquals(t1t, m.mapTypeSrc2Tgt(ts1t1));
@@ -306,12 +317,13 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertEquals(t1t, m.mapTypeCodeTgt2Src(t1));
     assertFalse(t2t.equals(m.mapTypeCodeTgt2Src(t2)));
     chkfeats(m, ts1t1, t1t);
-    chkMissingFeats2(m, t2, mf);      
+    chkMissingFeats2(m, t2, mf);
     assertFalse(m.isEqual());
   }
 
   /**
    * Check that all source features are in the target type according to the mapper
+   * 
    * @param m
    * @param tCode
    */
@@ -322,63 +334,66 @@ public class CasTypeSystemMapperTest extends TestCase {
   }
 
   /**
-   * given bitset of missing feats in src for a particular type,
-   *   verify the map from target feat to source is either null or the right feat
-   * @param m -
-   * @param tCode -
-   * @param mFeats features that are missing
+   * given bitset of missing feats in src for a particular type, verify the map from target feat to
+   * source is either null or the right feat
+   * 
+   * @param m
+   *          -
+   * @param tCode
+   *          -
+   * @param mFeats
+   *          features that are missing
    */
 
   private void chkMissingFeats2(CasTypeSystemMapper m, int tCode, int mFeats) {
     TypeImpl srcType = m.tsSrc.getTypeForCode(tCode);
     TypeImpl tgtType = m.tsTgt.get().getTypeForCode(tCode);
-    
+
     FeatureImpl[] tgtFeats = tgtType.getFeatureImpls();
-    
-    for (int j = 0, mf = 1; 
-         j < tgtFeats.length; 
-         j++, mf = mf<<1) {
+
+    for (int j = 0, mf = 1; j < tgtFeats.length; j++, mf = mf << 1) {
       FeatureImpl tgtFeat = tgtFeats[j];
-      if ((mFeats & mf) == mf) {  // if the feature is supposed to be missing
+      if ((mFeats & mf) == mf) { // if the feature is supposed to be missing
         assertEquals(null, m.getSrcFeature(tgtType, tgtFeat));
         continue;
       }
-      assertEquals(srcType.getFeatureByBaseName(tgtFeat.getShortName()), 
-                   m.getSrcFeature(tgtType, tgtFeat));
+      assertEquals(srcType.getFeatureByBaseName(tgtFeat.getShortName()),
+              m.getSrcFeature(tgtType, tgtFeat));
     }
   }
 
   /**
-   * given bitset of missing feats in tgt for a particular type,
-   *   verify the map from target feat to source is ok and 
-   *   the map entries from source to tgt are either null (if missing in tgt) or ok
-   * @param m -
-   * @param tCode -
-   * @param mFeats features that are missing
+   * given bitset of missing feats in tgt for a particular type, verify the map from target feat to
+   * source is ok and the map entries from source to tgt are either null (if missing in tgt) or ok
+   * 
+   * @param m
+   *          -
+   * @param tCode
+   *          -
+   * @param mFeats
+   *          features that are missing
    */
   private void chkMissingFeats1(CasTypeSystemMapper m, int tCode, int mFeats) {
     TypeImpl srcType = m.tsSrc.getTypeForCode(tCode);
     TypeImpl tgtType = m.tsTgt.get().getTypeForCode(tCode);
-    
+
     FeatureImpl[] srcFeats = srcType.getFeatureImpls();
-    
-    for (int j = 0, mf = 1; 
-         j < srcFeats.length; 
-         j++, mf = mf<<1) {
+
+    for (int j = 0, mf = 1; j < srcFeats.length; j++, mf = mf << 1) {
       FeatureImpl srcFeat = srcFeats[j];
-      if ((mFeats & mf) == mf) {  // if the feature is supposed to be missing
+      if ((mFeats & mf) == mf) { // if the feature is supposed to be missing
         assertEquals(null, m.getTgtFeature(srcType, srcFeat));
         continue;
       }
-      assertEquals(tgtType.getFeatureByBaseName(srcFeat.getShortName()), 
-                   m.getTgtFeature(srcType, srcFeat));
+      assertEquals(tgtType.getFeatureByBaseName(srcFeat.getShortName()),
+              m.getTgtFeature(srcType, srcFeat));
     }
   }
-  
+
   private void chkbase(CasTypeSystemMapper m) {
     chkbase(m, 36);
   }
-  
+
   private void chkbase(CasTypeSystemMapper m, final int last) {
     for (int i = 1; i <= last; i++) {
       TypeImpl typeSrc = m.tsSrc.types.get(i);
@@ -386,9 +401,9 @@ public class CasTypeSystemMapperTest extends TestCase {
       assertEquals(m.mapTypeCodeTgt2Src(i), typeSrc);
       assertEquals(m.mapTypeSrc2Tgt(m.tsSrc.types.get(i)), typeTgt);
       assertEquals(m.mapTypeTgt2Src(typeTgt), typeSrc);
-      
+
       chkfeats(m, typeSrc, typeTgt);
-    }        
+    }
   }
 
   /**
@@ -398,9 +413,7 @@ public class CasTypeSystemMapperTest extends TestCase {
     CASTestSetup cts = new CASTestSetup(types, feats1, feats2);
     return (TypeSystemImpl) CASInitializer.initCas(cts, tsi -> cts.reinitTs(tsi)).getTypeSystem();
   }
-  
-  
-  
+
   private Type akof;
   private Type akof2;
 
@@ -414,7 +427,7 @@ public class CasTypeSystemMapperTest extends TestCase {
   private Type typeArrayByte;
   private Type typeArrayBoolean;
   private Type typeArrayString;
-  
+
   private Type typeInt;
   private Type typeFloat;
   private Type typeDouble;
@@ -424,7 +437,7 @@ public class CasTypeSystemMapperTest extends TestCase {
   private Type typeBoolean;
   private Type typeString;
   private Type typeFs;
-  
+
   private Feature akofInt;
   private Feature akofFloat;
   private Feature akofDouble;
@@ -444,7 +457,7 @@ public class CasTypeSystemMapperTest extends TestCase {
   private Feature akofAboolean;
   private Feature akofAstring;
   private Feature akofAfs;
-  
+
   private Feature akof2Int;
   private Feature akof2Float;
   private Feature akof2Double;
@@ -465,8 +478,7 @@ public class CasTypeSystemMapperTest extends TestCase {
   private Feature akof2Astring;
   private Feature akof2Afs;
 
-
-  public class CASTestSetup  implements AnnotatorInitializer {
+  public class CASTestSetup implements AnnotatorInitializer {
     final int typesToGenerate;
     final boolean[] ttgb;
     final int featsToInclude1;
@@ -476,8 +488,10 @@ public class CasTypeSystemMapperTest extends TestCase {
 
     /**
      * 
-     * @param types treated as a bit set - 3 generates both types
-     * @param feats1 treated as a bit set, bits converted to ftg1 and 2 which are bit sets
+     * @param types
+     *          treated as a bit set - 3 generates both types
+     * @param feats1
+     *          treated as a bit set, bits converted to ftg1 and 2 which are bit sets
      * @param feats2
      */
     CASTestSetup(int types, int feats1, int feats2) {
@@ -494,10 +508,10 @@ public class CasTypeSystemMapperTest extends TestCase {
       }
     }
     
-    
+ // @formatter:off
     /** 
      * Type system  called to initialize the type system.
-
+     *
      * akof    - type: all kinds of features
      *   akofInt  
      *   akofFloat
@@ -510,7 +524,8 @@ public class CasTypeSystemMapperTest extends TestCase {
      *   akofHeapRef
      *   akofArrayRef 
      */
-    
+ // @formatter:on
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       initBuiltInTypes(tsm);
 
@@ -518,47 +533,119 @@ public class CasTypeSystemMapperTest extends TestCase {
 
       if (ttgb[0]) {
         akof = tsm.addType("akof", topType);
-        if (ftg1.get(0)) {akofInt = tsm.addFeature("akofInt", akof, typeInt);}
-        if (ftg1.get(1)) {akofFs = tsm.addFeature("akofFs", akof, typeFs);}
-        if (ftg1.get(2)) {akofFloat = tsm.addFeature("akofFloat", akof, typeFloat);}
-        if (ftg1.get(3)) {akofDouble = tsm.addFeature("akofDouble", akof, typeDouble);}
-        if (ftg1.get(4)) {akofLong = tsm.addFeature("akofLong", akof, typeLong);}
-        if (ftg1.get(5)) {akofShort = tsm.addFeature("akofShort", akof, typeShort);}
-        if (ftg1.get(6)) {akofByte = tsm.addFeature("akofByte", akof, typeByte);}
-        if (ftg1.get(7)) {akofBoolean = tsm.addFeature("akofBoolean", akof, typeBoolean);}
-        if (ftg1.get(8)) {akofString = tsm.addFeature("akofStr", akof, typeString);}
-        
-        if (ftg1.get(9)) {akofAint = tsm.addFeature("akofAint", akof, typeArrayInt);}
-        if (ftg1.get(10)) {akofAfs = tsm.addFeature("akofAfs", akof, typeArrayFs);}
-        if (ftg1.get(11)) {akofAfloat = tsm.addFeature("akofAfloat", akof, typeArrayFloat);}
-        if (ftg1.get(12)) {akofAdouble = tsm.addFeature("akofAdouble", akof, typeArrayDouble);}
-        if (ftg1.get(13)) {akofAlong = tsm.addFeature("akofAlong", akof, typeArrayLong);}
-        if (ftg1.get(14)) {akofAshort = tsm.addFeature("akofAshort", akof, typeArrayShort);}
-        if (ftg1.get(15)) {akofAbyte = tsm.addFeature("akofAbyte", akof, typeArrayByte);}
-        if (ftg1.get(16)) {akofAboolean = tsm.addFeature("akofAboolean", akof, typeArrayBoolean);}
-        if (ftg1.get(17)) {akofAstring = tsm.addFeature("akofAstring", akof, typeArrayString);}        
+        if (ftg1.get(0)) {
+          akofInt = tsm.addFeature("akofInt", akof, typeInt);
+        }
+        if (ftg1.get(1)) {
+          akofFs = tsm.addFeature("akofFs", akof, typeFs);
+        }
+        if (ftg1.get(2)) {
+          akofFloat = tsm.addFeature("akofFloat", akof, typeFloat);
+        }
+        if (ftg1.get(3)) {
+          akofDouble = tsm.addFeature("akofDouble", akof, typeDouble);
+        }
+        if (ftg1.get(4)) {
+          akofLong = tsm.addFeature("akofLong", akof, typeLong);
+        }
+        if (ftg1.get(5)) {
+          akofShort = tsm.addFeature("akofShort", akof, typeShort);
+        }
+        if (ftg1.get(6)) {
+          akofByte = tsm.addFeature("akofByte", akof, typeByte);
+        }
+        if (ftg1.get(7)) {
+          akofBoolean = tsm.addFeature("akofBoolean", akof, typeBoolean);
+        }
+        if (ftg1.get(8)) {
+          akofString = tsm.addFeature("akofStr", akof, typeString);
+        }
+
+        if (ftg1.get(9)) {
+          akofAint = tsm.addFeature("akofAint", akof, typeArrayInt);
+        }
+        if (ftg1.get(10)) {
+          akofAfs = tsm.addFeature("akofAfs", akof, typeArrayFs);
+        }
+        if (ftg1.get(11)) {
+          akofAfloat = tsm.addFeature("akofAfloat", akof, typeArrayFloat);
+        }
+        if (ftg1.get(12)) {
+          akofAdouble = tsm.addFeature("akofAdouble", akof, typeArrayDouble);
+        }
+        if (ftg1.get(13)) {
+          akofAlong = tsm.addFeature("akofAlong", akof, typeArrayLong);
+        }
+        if (ftg1.get(14)) {
+          akofAshort = tsm.addFeature("akofAshort", akof, typeArrayShort);
+        }
+        if (ftg1.get(15)) {
+          akofAbyte = tsm.addFeature("akofAbyte", akof, typeArrayByte);
+        }
+        if (ftg1.get(16)) {
+          akofAboolean = tsm.addFeature("akofAboolean", akof, typeArrayBoolean);
+        }
+        if (ftg1.get(17)) {
+          akofAstring = tsm.addFeature("akofAstring", akof, typeArrayString);
+        }
       }
       if (ttgb[1]) {
         akof2 = tsm.addType("akof2", topType);
-        if (ftg2.get(0)) {akof2Int = tsm.addFeature("akof2Int", akof2, typeInt);}
-        if (ftg2.get(1)) {akof2Fs = tsm.addFeature("akof2Fs", akof2, typeFs);}
-        if (ftg2.get(2)) {akof2Float = tsm.addFeature("akof2Float", akof2, typeFloat);}
-        if (ftg2.get(3)) {akof2Double = tsm.addFeature("akof2Double", akof2, typeDouble);}
-        if (ftg2.get(4)) {akof2Long = tsm.addFeature("akof2Long", akof2, typeLong);}
-        if (ftg2.get(5)) {akof2Short = tsm.addFeature("akof2Short", akof2, typeShort);}
-        if (ftg2.get(6)) {akof2Byte = tsm.addFeature("akof2Byte", akof2, typeByte);}
-        if (ftg2.get(7)) {akof2Boolean = tsm.addFeature("akof2Boolean", akof2, typeBoolean);}
-        if (ftg2.get(8)) {akof2String = tsm.addFeature("akof2Str", akof2, typeString);}
-        
-        if (ftg2.get(9)) {akof2Aint = tsm.addFeature("akof2Aint", akof2, typeArrayInt);}
-        if (ftg2.get(10)) {akof2Afs = tsm.addFeature("akof2Afs", akof2, typeArrayFs);}
-        if (ftg2.get(11)) {akof2Afloat = tsm.addFeature("akof2Afloat", akof2, typeArrayFloat);}
-        if (ftg2.get(12)) {akof2Adouble = tsm.addFeature("akof2Adouble", akof2, typeArrayDouble);}
-        if (ftg2.get(13)) {akof2Along = tsm.addFeature("akof2Along", akof2, typeArrayLong);}
-        if (ftg2.get(14)) {akof2Ashort = tsm.addFeature("akof2Ashort", akof2, typeArrayShort);}
-        if (ftg2.get(15)) {akof2Abyte = tsm.addFeature("akof2Abyte", akof2, typeArrayByte);}
-        if (ftg2.get(16)) {akof2Aboolean = tsm.addFeature("akof2Aboolean", akof2, typeArrayBoolean);}
-        if (ftg2.get(17)) {akof2Astring = tsm.addFeature("akof2Astring", akof2, typeArrayString);}        
+        if (ftg2.get(0)) {
+          akof2Int = tsm.addFeature("akof2Int", akof2, typeInt);
+        }
+        if (ftg2.get(1)) {
+          akof2Fs = tsm.addFeature("akof2Fs", akof2, typeFs);
+        }
+        if (ftg2.get(2)) {
+          akof2Float = tsm.addFeature("akof2Float", akof2, typeFloat);
+        }
+        if (ftg2.get(3)) {
+          akof2Double = tsm.addFeature("akof2Double", akof2, typeDouble);
+        }
+        if (ftg2.get(4)) {
+          akof2Long = tsm.addFeature("akof2Long", akof2, typeLong);
+        }
+        if (ftg2.get(5)) {
+          akof2Short = tsm.addFeature("akof2Short", akof2, typeShort);
+        }
+        if (ftg2.get(6)) {
+          akof2Byte = tsm.addFeature("akof2Byte", akof2, typeByte);
+        }
+        if (ftg2.get(7)) {
+          akof2Boolean = tsm.addFeature("akof2Boolean", akof2, typeBoolean);
+        }
+        if (ftg2.get(8)) {
+          akof2String = tsm.addFeature("akof2Str", akof2, typeString);
+        }
+
+        if (ftg2.get(9)) {
+          akof2Aint = tsm.addFeature("akof2Aint", akof2, typeArrayInt);
+        }
+        if (ftg2.get(10)) {
+          akof2Afs = tsm.addFeature("akof2Afs", akof2, typeArrayFs);
+        }
+        if (ftg2.get(11)) {
+          akof2Afloat = tsm.addFeature("akof2Afloat", akof2, typeArrayFloat);
+        }
+        if (ftg2.get(12)) {
+          akof2Adouble = tsm.addFeature("akof2Adouble", akof2, typeArrayDouble);
+        }
+        if (ftg2.get(13)) {
+          akof2Along = tsm.addFeature("akof2Along", akof2, typeArrayLong);
+        }
+        if (ftg2.get(14)) {
+          akof2Ashort = tsm.addFeature("akof2Ashort", akof2, typeArrayShort);
+        }
+        if (ftg2.get(15)) {
+          akof2Abyte = tsm.addFeature("akof2Abyte", akof2, typeArrayByte);
+        }
+        if (ftg2.get(16)) {
+          akof2Aboolean = tsm.addFeature("akof2Aboolean", akof2, typeArrayBoolean);
+        }
+        if (ftg2.get(17)) {
+          akof2Astring = tsm.addFeature("akof2Astring", akof2, typeArrayString);
+        }
       }
       if (ttgb[0]) {
         t1t = (TypeImpl) akof;
@@ -568,56 +655,128 @@ public class CasTypeSystemMapperTest extends TestCase {
         t2t = null;
       }
     }
-    
+
     private void reinitTs(TypeSystemImpl tsm) {
       initBuiltInTypes(tsm);
-      
+
       if (ttgb[0]) {
         akof = tsm.getType("akof");
-        if (ftg1.get(0)) {akofInt = akof.getFeatureByBaseName("akofInt");}
-        if (ftg1.get(1)) {akofFs = akof.getFeatureByBaseName("akofFs");}
-        if (ftg1.get(2)) {akofFloat = akof.getFeatureByBaseName("akofFloat");}
-        if (ftg1.get(3)) {akofDouble = akof.getFeatureByBaseName("akofDouble");}
-        if (ftg1.get(4)) {akofLong = akof.getFeatureByBaseName("akofLong");}
-        if (ftg1.get(5)) {akofShort = akof.getFeatureByBaseName("akofShort");}
-        if (ftg1.get(6)) {akofByte = akof.getFeatureByBaseName("akofByte");}
-        if (ftg1.get(7)) {akofBoolean = akof.getFeatureByBaseName("akofBoolean");}
-        if (ftg1.get(8)) {akofString = akof.getFeatureByBaseName("akofStr");}
-        
-        if (ftg1.get(9)) {akofAint = akof.getFeatureByBaseName("akofAint");}
-        if (ftg1.get(10)) {akofAfs = akof.getFeatureByBaseName("akofAfs");}
-        if (ftg1.get(11)) {akofAfloat = akof.getFeatureByBaseName("akofAfloat");}
-        if (ftg1.get(12)) {akofAdouble = akof.getFeatureByBaseName("akofAdouble");}
-        if (ftg1.get(13)) {akofAlong = akof.getFeatureByBaseName("akofAlong");}
-        if (ftg1.get(14)) {akofAshort = akof.getFeatureByBaseName("akofAshort");}
-        if (ftg1.get(15)) {akofAbyte = akof.getFeatureByBaseName("akofAbyte");}
-        if (ftg1.get(16)) {akofAboolean = akof.getFeatureByBaseName("akofAboolean");}
-        if (ftg1.get(17)) {akofAstring = akof.getFeatureByBaseName("akofAstring");}        
+        if (ftg1.get(0)) {
+          akofInt = akof.getFeatureByBaseName("akofInt");
+        }
+        if (ftg1.get(1)) {
+          akofFs = akof.getFeatureByBaseName("akofFs");
+        }
+        if (ftg1.get(2)) {
+          akofFloat = akof.getFeatureByBaseName("akofFloat");
+        }
+        if (ftg1.get(3)) {
+          akofDouble = akof.getFeatureByBaseName("akofDouble");
+        }
+        if (ftg1.get(4)) {
+          akofLong = akof.getFeatureByBaseName("akofLong");
+        }
+        if (ftg1.get(5)) {
+          akofShort = akof.getFeatureByBaseName("akofShort");
+        }
+        if (ftg1.get(6)) {
+          akofByte = akof.getFeatureByBaseName("akofByte");
+        }
+        if (ftg1.get(7)) {
+          akofBoolean = akof.getFeatureByBaseName("akofBoolean");
+        }
+        if (ftg1.get(8)) {
+          akofString = akof.getFeatureByBaseName("akofStr");
+        }
+
+        if (ftg1.get(9)) {
+          akofAint = akof.getFeatureByBaseName("akofAint");
+        }
+        if (ftg1.get(10)) {
+          akofAfs = akof.getFeatureByBaseName("akofAfs");
+        }
+        if (ftg1.get(11)) {
+          akofAfloat = akof.getFeatureByBaseName("akofAfloat");
+        }
+        if (ftg1.get(12)) {
+          akofAdouble = akof.getFeatureByBaseName("akofAdouble");
+        }
+        if (ftg1.get(13)) {
+          akofAlong = akof.getFeatureByBaseName("akofAlong");
+        }
+        if (ftg1.get(14)) {
+          akofAshort = akof.getFeatureByBaseName("akofAshort");
+        }
+        if (ftg1.get(15)) {
+          akofAbyte = akof.getFeatureByBaseName("akofAbyte");
+        }
+        if (ftg1.get(16)) {
+          akofAboolean = akof.getFeatureByBaseName("akofAboolean");
+        }
+        if (ftg1.get(17)) {
+          akofAstring = akof.getFeatureByBaseName("akofAstring");
+        }
       }
       if (ttgb[1]) {
         akof2 = tsm.getType("akof2");
-        if (ftg2.get(0)) {akof2Int = akof2.getFeatureByBaseName("akof2Int");}
-        if (ftg2.get(1)) {akof2Fs = akof2.getFeatureByBaseName("akof2Fs");}
-        if (ftg2.get(2)) {akof2Float = akof2.getFeatureByBaseName("akof2Float");}
-        if (ftg2.get(3)) {akof2Double = akof2.getFeatureByBaseName("akof2Double");}
-        if (ftg2.get(4)) {akof2Long = akof2.getFeatureByBaseName("akof2Long");}
-        if (ftg2.get(5)) {akof2Short = akof2.getFeatureByBaseName("akof2Short");}
-        if (ftg2.get(6)) {akof2Byte = akof2.getFeatureByBaseName("akof2Byte");}
-        if (ftg2.get(7)) {akof2Boolean = akof2.getFeatureByBaseName("akof2Boolean");}
-        if (ftg2.get(8)) {akof2String = akof2.getFeatureByBaseName("akof2Str");}
-        
-        if (ftg2.get(9)) {akof2Aint = akof2.getFeatureByBaseName("akof2Aint");}
-        if (ftg2.get(10)) {akof2Afs = akof2.getFeatureByBaseName("akof2Afs");}
-        if (ftg2.get(11)) {akof2Afloat = akof2.getFeatureByBaseName("akof2Afloat");}
-        if (ftg2.get(12)) {akof2Adouble = akof2.getFeatureByBaseName("akof2Adouble");}
-        if (ftg2.get(13)) {akof2Along = akof2.getFeatureByBaseName("akof2Along");}
-        if (ftg2.get(14)) {akof2Ashort = akof2.getFeatureByBaseName("akof2Ashort");}
-        if (ftg2.get(15)) {akof2Abyte = akof2.getFeatureByBaseName("akof2Abyte");}
-        if (ftg2.get(16)) {akof2Aboolean = akof2.getFeatureByBaseName("akof2Aboolean");}
-        if (ftg2.get(17)) {akof2Astring = akof2.getFeatureByBaseName("akof2Astring");}        
+        if (ftg2.get(0)) {
+          akof2Int = akof2.getFeatureByBaseName("akof2Int");
+        }
+        if (ftg2.get(1)) {
+          akof2Fs = akof2.getFeatureByBaseName("akof2Fs");
+        }
+        if (ftg2.get(2)) {
+          akof2Float = akof2.getFeatureByBaseName("akof2Float");
+        }
+        if (ftg2.get(3)) {
+          akof2Double = akof2.getFeatureByBaseName("akof2Double");
+        }
+        if (ftg2.get(4)) {
+          akof2Long = akof2.getFeatureByBaseName("akof2Long");
+        }
+        if (ftg2.get(5)) {
+          akof2Short = akof2.getFeatureByBaseName("akof2Short");
+        }
+        if (ftg2.get(6)) {
+          akof2Byte = akof2.getFeatureByBaseName("akof2Byte");
+        }
+        if (ftg2.get(7)) {
+          akof2Boolean = akof2.getFeatureByBaseName("akof2Boolean");
+        }
+        if (ftg2.get(8)) {
+          akof2String = akof2.getFeatureByBaseName("akof2Str");
+        }
+
+        if (ftg2.get(9)) {
+          akof2Aint = akof2.getFeatureByBaseName("akof2Aint");
+        }
+        if (ftg2.get(10)) {
+          akof2Afs = akof2.getFeatureByBaseName("akof2Afs");
+        }
+        if (ftg2.get(11)) {
+          akof2Afloat = akof2.getFeatureByBaseName("akof2Afloat");
+        }
+        if (ftg2.get(12)) {
+          akof2Adouble = akof2.getFeatureByBaseName("akof2Adouble");
+        }
+        if (ftg2.get(13)) {
+          akof2Along = akof2.getFeatureByBaseName("akof2Along");
+        }
+        if (ftg2.get(14)) {
+          akof2Ashort = akof2.getFeatureByBaseName("akof2Ashort");
+        }
+        if (ftg2.get(15)) {
+          akof2Abyte = akof2.getFeatureByBaseName("akof2Abyte");
+        }
+        if (ftg2.get(16)) {
+          akof2Aboolean = akof2.getFeatureByBaseName("akof2Aboolean");
+        }
+        if (ftg2.get(17)) {
+          akof2Astring = akof2.getFeatureByBaseName("akof2Astring");
+        }
       }
     }
-    
+
     private void initBuiltInTypes(TypeSystemMgr tsm) {
       topType = tsm.getTopType();
       typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
@@ -627,9 +786,9 @@ public class CasTypeSystemMapperTest extends TestCase {
       typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
       typeArrayShort = tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY);
       typeArrayByte = tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY);
-      typeArrayBoolean= tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
+      typeArrayBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
       typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
-      
+
       typeInt = tsm.getType(CAS.TYPE_NAME_INTEGER);
       typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
       typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
@@ -640,11 +799,11 @@ public class CasTypeSystemMapperTest extends TestCase {
       typeString = tsm.getType(CAS.TYPE_NAME_STRING);
       typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
     }
-    
+
+    @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     }
-    
-  }
 
+  }
 
 }

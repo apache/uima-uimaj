@@ -44,13 +44,12 @@ import org.apache.uima.util.ProcessTrace;
 
 /**
  * An {@link AnalysisEngine} implementation that can process multiple {@link CAS} objects
- * simultaneously. This is accomplished by maintaining a pool of {@link AnalysisEngine}
- * instances. When initialized, this class checks for the parameter
- * {@link #PARAM_NUM_SIMULTANEOUS_REQUESTS} to determine how many <code>AnalysisEngine</code>
- * instances to put in the pool.
+ * simultaneously. This is accomplished by maintaining a pool of {@link AnalysisEngine} instances.
+ * When initialized, this class checks for the parameter {@link #PARAM_NUM_SIMULTANEOUS_REQUESTS} to
+ * determine how many <code>AnalysisEngine</code> instances to put in the pool.
  */
-public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase implements
-        TextAnalysisEngine {
+public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
+        implements TextAnalysisEngine {
 
   /**
    * AnalysisEngine pool used to serve process requests.
@@ -67,9 +66,10 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
-    
+
     // Read parameters from the aAdditionalParams map.
     // (First copy it so we can modify it and send the parameters on to
     // each Analysis Engine in the pool.)
@@ -80,38 +80,38 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     }
 
     // get or create ResourceManager
-    // This ResourceManager is shared among all the AEs in the pool, and also used by 
+    // This ResourceManager is shared among all the AEs in the pool, and also used by
     // this MultiprocessingAE instance
     // https://issues.apache.org/jira/browse/UIMA-2078
-    ResourceManager resMgr = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+    ResourceManager resMgr = (ResourceManager) aAdditionalParams
+            .get(Resource.PARAM_RESOURCE_MANAGER);
     if (resMgr == null) {
-      resMgr = UIMAFramework.newDefaultResourceManager(); 
+      resMgr = UIMAFramework.newDefaultResourceManager();
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, resMgr);
     }
-    
+
     // Share the configMgr so that (re)configure actions affect all instances
-    
-    ConfigurationManager configMgr = (ConfigurationManager) aAdditionalParams.get(Resource.PARAM_CONFIG_MANAGER);
+
+    ConfigurationManager configMgr = (ConfigurationManager) aAdditionalParams
+            .get(Resource.PARAM_CONFIG_MANAGER);
     if (configMgr == null) {
       configMgr = UIMAFramework.newConfigurationManager();
       aAdditionalParams.put(Resource.PARAM_CONFIG_MANAGER, configMgr);
     }
-    
+
     super.initialize(aSpecifier, aAdditionalParams);
 
     // determine size of Analysis Engine pool and timeout period
     Integer poolSizeInteger = (Integer) aAdditionalParams.get(PARAM_NUM_SIMULTANEOUS_REQUESTS);
-    int poolSize = (poolSizeInteger != null) ? poolSizeInteger
-            : DEFAULT_NUM_SIMULTANEOUS_REQUESTS;
+    int poolSize = (poolSizeInteger != null) ? poolSizeInteger : DEFAULT_NUM_SIMULTANEOUS_REQUESTS;
 
     Integer timeoutInteger = (Integer) aAdditionalParams.get(PARAM_TIMEOUT_PERIOD);
     mTimeout = (timeoutInteger != null) ? timeoutInteger : DEFAULT_TIMEOUT_PERIOD;
 
     // Share resource manager, but don't share uima-context
-//    // add UimaContext to params map so that all AEs in pool will share it
-//    aAdditionalParams.put(PARAM_UIMA_CONTEXT, getUimaContextAdmin());
+    // // add UimaContext to params map so that all AEs in pool will share it
+    // aAdditionalParams.put(PARAM_UIMA_CONTEXT, getUimaContextAdmin());
 
-    
     // create pool (REMOVE pool size parameter from map so we don't try to
     // fill pool with other MultiprocessingAnalysisEngines!)
     aAdditionalParams.remove(PARAM_NUM_SIMULTANEOUS_REQUESTS);
@@ -122,28 +122,26 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     return true;
   }
 
-
   private AnalysisEngine getAeFromPool() throws AnalysisEngineProcessException {
     AnalysisEngine ae = mPool.getAnalysisEngine(mTimeout);
     if (ae == null) { // timeout elapsed
       throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
-         new Object[] {getTimeout()});
-    }       
+              new Object[] { getTimeout() });
+    }
     return ae;
   }
-  
-  
+
   /***************************************************************
-   * The next set of methods override the normal Annotator APIs 
-   * with code that checks out an instance, runs that instance
-   * for the particular method being called, and then 
-   * returns the instance to the pool.
+   * The next set of methods override the normal Annotator APIs with code that checks out an
+   * instance, runs that instance for the particular method being called, and then returns the
+   * instance to the pool.
    ***************************************************************/
-  
+
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     AnalysisEngine ae = null;
@@ -161,11 +159,12 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     AnalysisEngine ae = null;
     try {
-      ae = getAeFromPool();       
+      ae = getAeFromPool();
       ae.process(aCAS, aResultSpec, aTrace);
     } finally {
       if (ae != null) {
@@ -173,10 +172,11 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       }
     }
   }
-  
+
+  @Override
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     // https://issues.apache.org/jira/browse/UIMA-5191
-    final long startTime = System.currentTimeMillis();    
+    final long startTime = System.currentTimeMillis();
     final AnalysisEngine ae = getAeFromPool();
     final CasIterator it_inner = ae.processAndOutputNewCASes(aCAS);
     final AnalysisEnginePool localMPool = mPool;
@@ -189,25 +189,34 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
           localMPool.releaseAnalysisEngine(ae);
           getMBean().reportAnalysisTime(System.currentTimeMillis() - startTime);
         }
-        return r;      }
+        return r;
+      }
 
       @Override
-      public CAS next() throws AnalysisEngineProcessException { return it_inner.next(); }
+      public CAS next() throws AnalysisEngineProcessException {
+        return it_inner.next();
+      }
+
       @Override
-      public void release() { it_inner.release(); }
+      public void release() {
+        it_inner.release();
+      }
     };
-    
+
     return it_outer;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.cas.CAS)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.cas.CAS)
    */
   @Override
   public ProcessTrace process(CAS aCAS) throws AnalysisEngineProcessException {
     AnalysisEngine ae = null;
     try {
-      ae = getAeFromPool();       
+      ae = getAeFromPool();
       return ae.process(aCAS);
     } finally {
       if (ae != null) {
@@ -216,15 +225,17 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     }
   }
 
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.jcas.JCas)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.jcas.JCas)
    */
   @Override
   public ProcessTrace process(JCas aJCas) throws AnalysisEngineProcessException {
     AnalysisEngine ae = null;
     try {
-      ae = getAeFromPool();       
+      ae = getAeFromPool();
       return ae.process(aJCas);
     } finally {
       if (ae != null) {
@@ -233,16 +244,19 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     }
   }
 
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.jcas.JCas, org.apache.uima.analysis_engine.ResultSpecification)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.jcas.JCas,
+   * org.apache.uima.analysis_engine.ResultSpecification)
    */
   @Override
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
-      throws ResultNotSupportedException, AnalysisEngineProcessException {
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     AnalysisEngine ae = null;
     try {
-      ae = getAeFromPool();       
+      ae = getAeFromPool();
       return ae.process(aJCas, aResultSpec);
     } finally {
       if (ae != null) {
@@ -251,16 +265,19 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     }
   }
 
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.jcas.JCas, org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#process(org.apache.uima.jcas.JCas,
+   * org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
   @Override
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
-      throws ResultNotSupportedException, AnalysisEngineProcessException {
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     AnalysisEngine ae = null;
     try {
-      ae = getAeFromPool();       
+      ae = getAeFromPool();
       ae.process(aJCas, aResultSpec, aTrace);
     } finally {
       if (ae != null) {
@@ -269,19 +286,22 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     }
   }
 
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#processAndOutputNewCASes(org.apache.uima.jcas.JCas)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#processAndOutputNewCASes(org.apache
+   * .uima.jcas.JCas)
    */
   @Override
   public JCasIterator processAndOutputNewCASes(JCas aJCas) throws AnalysisEngineProcessException {
     // https://issues.apache.org/jira/browse/UIMA-5191
-    final long startTime = System.currentTimeMillis();    
+    final long startTime = System.currentTimeMillis();
     final AnalysisEngine ae = getAeFromPool();
     final JCasIterator it_inner = ae.processAndOutputNewCASes(aJCas);
     final AnalysisEnginePool localMPool = mPool;
     JCasIterator it_outer = new JCasIterator() {
-      
+
       @Override
       public boolean hasNext() throws AnalysisEngineProcessException {
         boolean r = it_inner.hasNext();
@@ -293,27 +313,33 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       }
 
       @Override
-      public JCas next() throws AnalysisEngineProcessException { return it_inner.next(); }
+      public JCas next() throws AnalysisEngineProcessException {
+        return it_inner.next();
+      }
+
       @Override
-      public void release() { it_inner.release(); }
+      public void release() {
+        it_inner.release();
+      }
     };
     return it_outer;
   }
 
-
-  
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.
+   * analysis_engine.ResultSpecification)
    */
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
-   mPool.setResultSpecification(aResultSpec);
+    mPool.setResultSpecification(aResultSpec);
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     mPool.reconfigure();
   }
@@ -321,6 +347,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     mPool.destroy();
     super.destroy();
@@ -329,15 +356,18 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setLogger(org.apache.uima.util.Logger)
    */
+  @Override
   public void setLogger(Logger aLogger) {
     super.setLogger(aLogger);
     mPool.setLogger(aLogger);
   }
 
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     mPool.batchProcessComplete();
   }
 
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     mPool.collectionProcessComplete();
   }
@@ -360,7 +390,5 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
   protected int getTimeout() {
     return mTimeout;
   }
-
-
 
 }

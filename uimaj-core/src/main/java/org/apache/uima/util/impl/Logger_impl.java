@@ -30,16 +30,13 @@ import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
- * UIMA Logging interface implementation without using an logging toolkit
- * Logger names are not used 
+ * UIMA Logging interface implementation without using an logging toolkit Logger names are not used
  * 
- * The call getInstance() returns a common shared instance.
- * The call getInstance(String) ignores its argument but returns a
- *   new instance of this logger class
- *   
- * Each instance of this logger class can have a level set via 
- * the setAPI call - that is the only configuration possible.
- * If not set, the level is INFO.
+ * The call getInstance() returns a common shared instance. The call getInstance(String) ignores its
+ * argument but returns a new instance of this logger class.
+ * 
+ * Each instance of this logger class can have a level set via the setAPI call - that is the only
+ * configuration possible. If not set, the level is INFO.
  *
  */
 public class Logger_impl extends Logger_common_impl {
@@ -47,7 +44,7 @@ public class Logger_impl extends Logger_common_impl {
    * default PrintStream to which the log messages are printed. Defaults to <code>System.out</code>.
    */
   private static final PrintStream defaultOut = System.out;
-  
+
   /**
    * PrintStream which the object is used to log the messages, is by default set to defaultOut
    */
@@ -72,9 +69,7 @@ public class Logger_impl extends Logger_common_impl {
     super(component);
     // set default Output
     mOut = defaultOut;
-    loggerName = (null == component)
-                   ? ""
-                   : component.getName();
+    loggerName = (null == component) ? "" : component.getName();
   }
 
   private Logger_impl(Logger_impl l, int limit) {
@@ -104,18 +99,20 @@ public class Logger_impl extends Logger_common_impl {
     return defaultLogger;
   }
 
+  @Override
   public Logger_impl getLimitedLogger(int aLimit) {
     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
       return this;
     }
     return new Logger_impl(this, aLimit);
   }
- 
+
   /**
    * @deprecated use external configuration possibility
    * 
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
    */
+  @Override
   @Deprecated
   public void setOutputStream(OutputStream out) {
     if (out == null || out instanceof PrintStream) {
@@ -130,6 +127,7 @@ public class Logger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
    */
+  @Override
   @Deprecated
   public void setOutputStream(PrintStream out) {
     mOut = out;
@@ -140,18 +138,22 @@ public class Logger_impl extends Logger_common_impl {
    * 
    * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
    */
+  @Override
   public boolean isLoggable(Level level) {
     return configLevel.isGreaterOrEqual(level);
   }
-  
+
+  @Override
   public boolean isLoggable(Level level, Marker marker) {
     return configLevel.isGreaterOrEqual(level);
   }
-    
-  public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String message, Object[] args,
+          Throwable thrown) {
     log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
   }
-  
+
   @Override
   public void log(Marker m, String aFqcn, Level level, String message, Throwable thrown) {
     if (mOut != null) {
@@ -164,7 +166,9 @@ public class Logger_impl extends Logger_common_impl {
     }
   }
 
-  public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+  @Override
+  public void log2(Marker m, String aFqcn, Level level, String message, Object[] args,
+          Throwable thrown) {
     if (mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + level.toString() + ": ");
@@ -176,23 +180,22 @@ public class Logger_impl extends Logger_common_impl {
     }
   }
 
-
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
    */
+  @Override
   public void setLevel(Level level) {
     // set new config level
     configLevel = level;
   }
 
-
   @Override
   public String getName() {
     return loggerName;
   }
- 
+
   @Override
   public boolean isDebugEnabled() {
     return isLoggable(Level.FINE);
@@ -215,8 +218,7 @@ public class Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isInfoEnabled() {
-    return isLoggable(Level.INFO) ||
-           isLoggable(Level.CONFIG);
+    return isLoggable(Level.INFO) || isLoggable(Level.CONFIG);
   }
 
   @Override
@@ -226,8 +228,7 @@ public class Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isTraceEnabled() {
-    return isLoggable(Level.FINER) ||
-        isLoggable(Level.FINEST);
+    return isLoggable(Level.FINER) || isLoggable(Level.FINEST);
   }
 
   @Override

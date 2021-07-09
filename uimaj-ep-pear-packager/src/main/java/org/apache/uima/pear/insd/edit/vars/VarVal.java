@@ -49,7 +49,6 @@ public class VarVal {
    * @param varValue the var value
    */
   public VarVal(String varName, String varValue) {
-    super();
     this.varName = varName;
     this.varValue = varValue;
   }

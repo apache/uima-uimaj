@@ -60,13 +60,15 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XCASDeserializer {
 
+ // @formatter:off
   /**
    * Feature Structure plus all the indexes it is indexed in
    *    indexRep -> indexMap -> indexRepositories -> indexRepository or
    *    indexRep             -> indexRepositories -> indexRepository
    *
-   *  (2nd if indexMap size == 1)
+   * (2nd if indexMap size == 1)
    */
+ // @formatter:on
   private static class FSInfo {
 
     final private TOP fs;
@@ -79,7 +81,7 @@ public class XCASDeserializer {
     }
 
   }
-  
+
   private class XCASDeserializerHandler extends DefaultHandler {
 
     // ///////////////////////////////////////////////////////////////////////
@@ -151,7 +153,7 @@ public class XCASDeserializer {
 
     final private List<Runnable> fixupToDos = new ArrayList<>();
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
-    
+
     // What we expect next.
     private int state;
 
@@ -174,7 +176,6 @@ public class XCASDeserializer {
     // Current out of type system FS
     private FSData currentOotsFs;
 
-
     /** map from index -> indexRepository, [0] = base view, [1] initial view, [2 +] other views */
     final private List<FSIndexRepository> indexRepositories;
 
@@ -183,25 +184,25 @@ public class XCASDeserializer {
 
     // for processing v1.x format XCAS
     // map from sofaNum int values to external id references
-    final  private IntVector sofaRefMap;
+    final private IntVector sofaRefMap;
 
     // map incoming _indexed values
     /**
-     * Map external SofaNum -> internal sofaNum
-     *   internal sofaNums also used to index indexRepositories -> ref to FsIndexRepositoryImpl
+     * Map external SofaNum -> internal sofaNum 
+     * 
+     * internal sofaNums also used to index indexRepositories -> ref to FsIndexRepositoryImpl
      */
     final private IntVector indexMap;
 
     // working with initial view
     private int nextIndex;
-    
+
     private TOP highestIdFs = null;
 
     /** the fsId read from the _id attribute */
     private int fsId;
 
     private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
-      super();
       this.cas = aCAS.getBaseCAS();
       // Reset the CAS.
       cas.resetNoQuestions();
@@ -245,7 +246,7 @@ public class XCASDeserializer {
      * (non-Javadoc)
      * 
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
-     *      java.lang.String, org.xml.sax.Attributes)
+     * java.lang.String, org.xml.sax.Attributes)
      */
     @Override
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
@@ -306,14 +307,14 @@ public class XCASDeserializer {
     private void readFS(String qualifiedName, Attributes attrs) throws SAXParseException {
       // get the FeatureStructure id
       fsId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
-      
+
       if (qualifiedName.equals("uima.cas.SofA")) {
-        qualifiedName = "uima.cas.Sofa";  // fix for XCAS written with pre-public version of Sofas
+        qualifiedName = "uima.cas.Sofa"; // fix for XCAS written with pre-public version of Sofas
       }
-      
+
       String typeName = getCasTypeName(qualifiedName);
       TypeImpl type = ts.getType(typeName);
-      
+
       if (type == null) {
         if (this.outOfTypeSystemData == null) {
           throw createException(XCASParsingException.UNKNOWN_TYPE, typeName);
@@ -337,29 +338,30 @@ public class XCASDeserializer {
      * @param attrs
      * @param toIndex
      *          Special hack to accommodate document annotation, which is already in the index.
-     * @throws SAXParseException passthru
+     * @throws SAXParseException
+     *           passthru
      */
-    private void readFS(final TypeImpl type, Attributes attrs, boolean toIndex) throws SAXParseException {
-      final int typecode = type.getCode();        
+    private void readFS(final TypeImpl type, Attributes attrs, boolean toIndex)
+            throws SAXParseException {
+      final int typecode = type.getCode();
       final TOP fs;
-      
+
       if (sofaTypeCode == typecode) {
         // Special handling for Sofas
-        
+
         // get SofaID - the view name or the string _InitialView
         String sofaID = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAID);
         if (sofaID.equals("_DefaultTextSofaName")) {
           sofaID = CAS.NAME_DEFAULT_SOFA;
         }
         final boolean isInitialView = sofaID.equals(CAS.NAME_DEFAULT_SOFA);
-        
+
         // get sofaNum
         String sofaNum = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFANUM);
         final int extSofaNum = Integer.parseInt(sofaNum);
-        
+
         // get the sofa's FeatureStructure id
-//        final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
-        
+        // final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
 
         // create some maps to handle v1 format XCAS ...
         // ... where the sofa feature of annotations was an int not a ref
@@ -428,23 +430,25 @@ public class XCASDeserializer {
         // get the sofa's mimeType
         String sofaMimeType = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAMIME);
         String finalSofaId = sofaID;
-        fs = maybeCreateWithV2Id(fsId, () -> cas.createSofa(this.indexMap.get(extSofaNum), finalSofaId, sofaMimeType));        
-      } else {  // not a Sofa
+        fs = maybeCreateWithV2Id(fsId,
+                () -> cas.createSofa(this.indexMap.get(extSofaNum), finalSofaId, sofaMimeType));
+      } else { // not a Sofa
         if (type.isAnnotationBaseType()) {
-          
+
           // take pains to create FS in the right view.
           // the XCAS external form sometimes uses "sofa" and sometimes uses "_ref_sofa"
-          //   - these have different semantics:
-          //     --  sofa = value is the sofaNum
-          //     --  _ref_sofa = value is the external ID of the associated sofa feature structure
+          // - these have different semantics:
+          // -- sofa = value is the sofaNum
+          // -- _ref_sofa = value is the external ID of the associated sofa feature structure
           String extSofaNum = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFA);
           CAS casView;
           if (extSofaNum != null) {
-            casView = cas.getView( (this.indexMap.size() == 1) 
-                                   ? 1 // case of no Sofa, but view ref = 1 = _InitialView
-                                   : this.indexMap.get(Integer.parseInt(extSofaNum)));
+            casView = cas.getView((this.indexMap.size() == 1) ? 1 // case of no Sofa, but view ref =
+                                                                  // 1 = _InitialView
+                    : this.indexMap.get(Integer.parseInt(extSofaNum)));
           } else {
-            String extSofaRefString = attrs.getValue(XCASSerializer.REF_PREFIX + CAS.FEATURE_BASE_NAME_SOFA);
+            String extSofaRefString = attrs
+                    .getValue(XCASSerializer.REF_PREFIX + CAS.FEATURE_BASE_NAME_SOFA);
             if (null == extSofaRefString || extSofaRefString.length() == 0) {
               throw createException(XCASParsingException.SOFA_REF_MISSING);
             }
@@ -452,7 +456,7 @@ public class XCASDeserializer {
           }
           if (type.getCode() == TypeSystemConstants.docTypeCode) {
             fs = maybeCreateWithV2Id(fsId, () -> casView.getDocumentAnnotation());
-//            fs = casView.getDocumentAnnotation();
+            // fs = casView.getDocumentAnnotation();
             cas.removeFromCorruptableIndexAnyView(fs, cas.getAddbackSingle());
           } else {
             fs = maybeCreateWithV2Id(fsId, () -> casView.createFS(type));
@@ -461,7 +465,7 @@ public class XCASDeserializer {
               uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
             }
           }
-        } else {  // not an annotation base
+        } else { // not an annotation base
           fs = maybeCreateWithV2Id(fsId, () -> cas.createFS(type));
           if (currentFs instanceof UimaSerializable) {
             UimaSerializable ufs = (UimaSerializable) currentFs;
@@ -469,19 +473,20 @@ public class XCASDeserializer {
           }
         }
       }
-      
+
       // Hang on to FS for setting content feature (things coded as child xml elements)
       this.currentFs = fs;
       int extId = -1;
       IntVector indexRep = new IntVector(1); // empty means not indexed
-      
- 
+
+   // @formatter:off
       /****************************************************************
        * Loop for all feature specs                                   *
        *   - handle features with _ reserved prefix, including _ref_  *
        *   - handle features without "_" prefix:                      *
        *      - if not Sofa                                           *
        ****************************************************************/
+   // @formatter:on
       for (int i = 0; i < attrs.getLength(); i++) {
         final String attrName = attrs.getQName(i);
         String attrValue = attrs.getValue(i);
@@ -506,14 +511,16 @@ public class XCASDeserializer {
           }
         } else {
           if (sofaTypeCode == typecode) {
-            if (attrName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && attrValue.equals("_DefaultTextSofaName")) {
+            if (attrName.equals(CAS.FEATURE_BASE_NAME_SOFAID)
+                    && attrValue.equals("_DefaultTextSofaName")) {
               // fixup old default Sofa name to new one
-                attrValue = CAS.NAME_DEFAULT_SOFA;
+              attrValue = CAS.NAME_DEFAULT_SOFA;
             }
           }
-          
-          if (!type.isAnnotationBaseType() || !attrName.equals(CAS.FEATURE_BASE_NAME_SOFA)) {         
-            // skip the setting the sofa feature for Annotation base subtypes - this is set from the view
+
+          if (!type.isAnnotationBaseType() || !attrName.equals(CAS.FEATURE_BASE_NAME_SOFA)) {
+            // skip the setting the sofa feature for Annotation base subtypes - this is set from the
+            // view
             // otherwise handle the feature
             handleFeature(type, fs, attrName, attrValue, false);
           }
@@ -523,12 +530,12 @@ public class XCASDeserializer {
       if (type.getCode() == TypeSystemConstants.docTypeCode) {
         cas.addbackSingle(fs);
       }
-      
+
       if (sofaTypeCode == typecode) {
         Sofa sofa = (Sofa) fs;
         cas.getBaseIndexRepository().addFS(sofa);
         CAS view = cas.getView(sofa);
-        // internal sofaNum == 1 always means initial sofa  
+        // internal sofaNum == 1 always means initial sofa
         if (sofa.getSofaRef() == 1) {
           cas.registerInitialSofa();
         } else {
@@ -592,8 +599,8 @@ public class XCASDeserializer {
       }
       final int finalSize = size;
       TOP fs = maybeCreateWithV2Id(fsId, () -> cas.createArray(type, finalSize));
-//      TOP fs = cas.createArray(type, size);
-      
+      // TOP fs = cas.createArray(type, size);
+
       FSInfo fsInfo = new FSInfo(fs, indexRep);
       if (id >= 0) {
         fsTree.put(id, fsInfo);
@@ -627,32 +634,33 @@ public class XCASDeserializer {
       // final FeatureImpl feat = (FeatureImpl) featureMap.get(featName);
 
       // handle v1.x format annotations, mapping int to ref values
-      final String featVal = (featName.equals("sofa") && ((TypeImpl)type).isAnnotationBaseType()) 
-                             ? Integer.toString(this.sofaRefMap.get(
-                                 ((Sofa)fsTree.get(Integer.parseInt(featValIn)).fs).getSofaNum()))
-                             : featValIn;
-  
+      final String featVal = (featName.equals("sofa") && ((TypeImpl) type).isAnnotationBaseType())
+              ? Integer.toString(this.sofaRefMap
+                      .get(((Sofa) fsTree.get(Integer.parseInt(featValIn)).fs).getSofaNum()))
+              : featValIn;
+
       // handle v1.x sofanum values, remapping so that _InitialView always == 1
       // Bypassed in v3 of UIMA because sofa was already created with the right sofanum
-//      if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && (fs instanceof Sofa)) {
-//        Sofa sofa = (Sofa) fs;
-//        int sofaNum = sofa.getSofaNum();
-//        sofa._setIntValueNcNj(Sofa._FI_sofaNum, this.indexMap.get(sofaNum));
-//        
-////        Type sofaType = ts.sofaType;
-////        final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
-////                .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
-////        int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
-////        cas.setFeatureValue(addr, sofaNumFeat.getCode(), this.indexMap.get(sofaNum));
-//      }
+      // if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && (fs instanceof Sofa)) {
+      // Sofa sofa = (Sofa) fs;
+      // int sofaNum = sofa.getSofaNum();
+      // sofa._setIntValueNcNj(Sofa._FI_sofaNum, this.indexMap.get(sofaNum));
+      //
+      //// Type sofaType = ts.sofaType;
+      //// final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
+      //// .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
+      //// int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
+      //// cas.setFeatureValue(addr, sofaNumFeat.getCode(), this.indexMap.get(sofaNum));
+      // }
 
       String realFeatName = getRealFeatName(featName);
-      
+
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(realFeatName);
       if (feat == null) { // feature does not exist in typesystem
         if (outOfTypeSystemData != null) {
           // Add to Out-Of-Typesystem data (APL)
-          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.computeIfAbsent(fs, k -> new ArrayList<>());
+          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues
+                  .computeIfAbsent(fs, k -> new ArrayList<>());
           ootsAttrs.add(new Pair(featName, featVal));
         } else if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
@@ -660,12 +668,12 @@ public class XCASDeserializer {
       } else {
         // feature is not null
         if (feat.getRangeImpl().isRefType) {
-          // queue up a fixup action to be done 
-          // after the external ids get properly associated with 
+          // queue up a fixup action to be done
+          // after the external ids get properly associated with
           // internal ones.
-         
-          fixupToDos.add( () -> finalizeRefValue(Integer.parseInt(featVal), fs, feat));
-        } else {  // is not a ref type.
+
+          fixupToDos.add(() -> finalizeRefValue(Integer.parseInt(featVal), fs, feat));
+        } else { // is not a ref type.
           CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(fs, feat, featVal);
         }
 
@@ -673,10 +681,11 @@ public class XCASDeserializer {
     }
 
     private String getRealFeatName(String featName) {
-      return featName.startsWith(XCASSerializer.REF_PREFIX) 
-             ? featName.substring(XCASSerializer.REF_PREFIX.length())
-             : featName;
+      return featName.startsWith(XCASSerializer.REF_PREFIX)
+              ? featName.substring(XCASSerializer.REF_PREFIX.length())
+              : featName;
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -710,7 +719,7 @@ public class XCASDeserializer {
      * (non-Javadoc)
      * 
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
-     *      java.lang.String)
+     * java.lang.String)
      */
     @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
@@ -759,7 +768,7 @@ public class XCASDeserializer {
         case DOC_TEXT_STATE: {
           // Assume old style CAS with one text Sofa
           Sofa newSofa = (Sofa) maybeCreateWithV2Id(1, () -> cas.createInitialSofa("text"));
-//          Sofa newSofa = cas.createInitialSofa("text");
+          // Sofa newSofa = cas.createInitialSofa("text");
           CASImpl initialView = cas.getInitialView();
           initialView.registerView(newSofa);
           // Set the document text without creating a documentAnnotation
@@ -811,8 +820,8 @@ public class XCASDeserializer {
           final FSArray fsa = (FSArray) currentFs;
           final int pos = arrayPos;
           final int extId = Integer.parseInt(content);
-          
-          fixupToDos.add( () -> finalizeArrayRefValue(extId, pos, fsa));
+
+          fixupToDos.add(() -> finalizeArrayRefValue(extId, pos, fsa));
         }
       }
       ++arrayPos;
@@ -859,7 +868,7 @@ public class XCASDeserializer {
       for (CAS view : views) {
         AutoCloseable ac = view.protectIndexes();
         try {
-          ((CASImpl)view).updateDocumentAnnotation();
+          ((CASImpl) view).updateDocumentAnnotation();
         } finally {
           try {
             ac.close();
@@ -868,25 +877,30 @@ public class XCASDeserializer {
           }
         }
       }
-//      for (int i = 0; i < views.size(); i++) {       
-//        ((CASImpl) views.get(i)).updateDocumentAnnotation();
-//      }
+      // for (int i = 0; i < views.size(); i++) {
+      // ((CASImpl) views.get(i)).updateDocumentAnnotation();
+      // }
       for (Runnable r : uimaSerializableFixups) {
         r.run();
       }
     }
 
     private void finalizeFS(FSInfo fsInfo) {
-      finalizeAddToIndexes(fsInfo);  // must be done after fixes the sofa refs
+      finalizeAddToIndexes(fsInfo); // must be done after fixes the sofa refs
     }
 
     /**
      * Common code run at finalize time, to set ref values and handle out-of-typesystem data
      * 
-     * @param extId the external ID identifying either a deserialized FS or an out-of-typesystem instance
-     * @param fs Feature Structure whose fi reference feature is to be set with a value derived from extId and FSinfo
-     * @param fi the featureImpl
-    */
+     * @param extId
+     *          the external ID identifying either a deserialized FS or an out-of-typesystem
+     *          instance
+     * @param fs
+     *          Feature Structure whose fi reference feature is to be set with a value derived from
+     *          extId and FSinfo
+     * @param fi
+     *          the featureImpl
+     */
     private void finalizeRefValue(int extId, TOP fs, FeatureImpl fi) {
       FSInfo fsInfo = fsTree.get(extId);
       if (fsInfo == null) {
@@ -894,7 +908,8 @@ public class XCASDeserializer {
         // this feature may be a ref to an out-of-typesystem FS.
         // add it to the Out-of-typesystem features list (APL)
         if (extId != 0 && outOfTypeSystemData != null) {
-          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.computeIfAbsent(fs, k -> new ArrayList<>());
+          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues
+                  .computeIfAbsent(fs, k -> new ArrayList<>());
           String featFullName = fi.getName();
           int separatorOffset = featFullName.indexOf(TypeSystem.FEATURE_SEPARATOR);
           String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
@@ -903,41 +918,50 @@ public class XCASDeserializer {
         CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
       } else {
         // the sofa ref in annotationBase is set when the fs is created, not here
-        if (fi.getCode() != TypeSystemConstants.annotBaseSofaFeatCode) { 
+        if (fi.getCode() != TypeSystemConstants.annotBaseSofaFeatCode) {
           if (fs instanceof Sofa) {
             // special setters for sofa values
             Sofa sofa = (Sofa) fs;
             switch (fi.getRangeImpl().getCode()) {
-            case TypeSystemConstants.sofaArrayFeatCode: sofa.setLocalSofaData(fsInfo.fs); break;
-            default: throw new CASRuntimeException(UIMARuntimeException.INTERNAL_ERROR);
+              case TypeSystemConstants.sofaArrayFeatCode:
+                sofa.setLocalSofaData(fsInfo.fs);
+                break;
+              default:
+                throw new CASRuntimeException(UIMARuntimeException.INTERNAL_ERROR);
             }
             return;
           }
-          
-          // handle case where feature is xyz[] (an array ref, not primitive) but the value of fs is FSArray
+
+          // handle case where feature is xyz[] (an array ref, not primitive) but the value of fs is
+          // FSArray
           ts.fixupFSArrayTypes(fi.getRangeImpl(), fsInfo.fs);
           CASImpl.setFeatureValueMaybeSofa(fs, fi, fsInfo.fs);
         }
       }
     }
-    
+
     /**
      * Same as above, but specialized for array values, not feature slot values
+     * 
      * @param extId
-     * @param extId the external ID identifying either a deserialized FS or an out-of-typesystem instance
-     * @param pos the index in the array
+     * @param extId
+     *          the external ID identifying either a deserialized FS or an out-of-typesystem
+     *          instance
+     * @param pos
+     *          the index in the array
      * @return the TOP instance to be set as the value in an array or as the value of a feature.
      * @return
      */
     private void finalizeArrayRefValue(int extId, int pos, FSArray fs) {
       FSInfo fsInfo = fsTree.get(extId);
-        
+
       if (fsInfo == null) {
-         
+
         // this element may be a ref to an out-of-typesystem FS.
         // add it to the Out-of-typesystem array elements list (APL)
         if (extId != 0 && outOfTypeSystemData != null) {
-          List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.computeIfAbsent(fs, k -> new ArrayList<>());
+          List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.computeIfAbsent(fs,
+                  k -> new ArrayList<>());
           // the "value" of the reference is the ID, but we prefix with a letter to indicate
           // that this ID refers to an array OOTS FS
           ArrayElement ootsElem = new ArrayElement(pos, "a" + Integer.toString(extId));
@@ -948,13 +972,14 @@ public class XCASDeserializer {
         fs.set(pos, fsInfo.fs);
       }
     }
-    
+
     private void finalizeAddToIndexes(final FSInfo fsInfo) {
       if (fsInfo.indexRep.size() >= 0) {
         // Now add FS to all specified index repositories
         for (int i = 0; i < fsInfo.indexRep.size(); i++) {
           if (indexMap.size() == 1) {
-            ((FSIndexRepositoryImpl) indexRepositories.get(fsInfo.indexRep.get(i))).addFS(fsInfo.fs);
+            ((FSIndexRepositoryImpl) indexRepositories.get(fsInfo.indexRep.get(i)))
+                    .addFS(fsInfo.fs);
           } else {
             ((FSIndexRepositoryImpl) indexRepositories.get(indexMap.get(fsInfo.indexRep.get(i))))
                     .addFS(fsInfo.fs);
@@ -962,7 +987,7 @@ public class XCASDeserializer {
         }
       }
     }
-    
+
     /*
      * Finalizes an Out Of Type System FS by assigning a unique ID (prepending a letter) and
      * remapping ID references appropriately (both In-Type-System and Out-Of-TypeSystem refs).
@@ -972,15 +997,15 @@ public class XCASDeserializer {
       aFS.id = 'a' + aFS.id;
       // remap ref features
       for (Map.Entry<String, Object> entry : aFS.featVals.entrySet()) {
-        String attrName =  entry.getKey();
+        String attrName = entry.getKey();
         if (attrName.startsWith("_ref_")) {
-          int val = Integer.parseInt((String)entry.getValue());
+          int val = Integer.parseInt((String) entry.getValue());
           if (val >= 0) // negative numbers represent null and are left unchanged
           {
             // attempt to locate target in type system
             FSInfo fsValInfo = fsTree.get(val);
             if (fsValInfo != null) {
-//              entry.setValue(Integer.toString(fsValInfo.fs._id));
+              // entry.setValue(Integer.toString(fsValInfo.fs._id));
               entry.setValue(fsValInfo.fs);
             } else
             // out of type system - remap by prepending letter
@@ -1172,7 +1197,7 @@ public class XCASDeserializer {
                 "_dash_");
       }
     }
-    
+
     TOP maybeCreateWithV2Id(int id, Supplier<TOP> create) {
       if (cas.is_ll_enableV2IdRefs()) {
         cas.set_reuseId(id);
@@ -1181,14 +1206,14 @@ public class XCASDeserializer {
           if (highestIdFs == null) {
             highestIdFs = fs;
           } else if (highestIdFs._id < fs._id) {
-            highestIdFs = fs;  // for setting up getNextId at end
-          } 
+            highestIdFs = fs; // for setting up getNextId at end
+          }
           return fs;
-        } finally {           
+        } finally {
           cas.set_reuseId(0); // in case of error throw
         }
       } else {
-        return create.get();          
+        return create.get();
       }
     }
   }
@@ -1207,10 +1232,10 @@ public class XCASDeserializer {
    * 
    * @param ts
    *          The type system of the CASes to be deserialized.
-   * @param uimaContext the UIMA Context for the deserialization
+   * @param uimaContext
+   *          the UIMA Context for the deserialization
    */
   public XCASDeserializer(TypeSystem ts, UimaContext uimaContext) {
-    super();
     this.ts = (TypeSystemImpl) ts;
     // this.featureMap = new HashMap(); - APL
   }
@@ -1338,9 +1363,9 @@ public class XCASDeserializer {
           throws SAXException, IOException {
     deserialize(new InputSource(aStream), aCAS, aLenient);
   }
-  
+
   public static void deserialize(InputSource aSource, CAS aCAS, boolean aLenient)
-      throws SAXException, IOException {
+          throws SAXException, IOException {
 
     XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
@@ -1361,6 +1386,4 @@ public class XCASDeserializer {
       casImpl.setLastFsV2Size(highest_fs._getTypeImpl().getFsSpaceReq(highest_fs));
     }
   }
-  
-
 }
