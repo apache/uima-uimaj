@@ -40,10 +40,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlElementName;
-import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
@@ -899,6 +899,12 @@ public class CasSerializerSupport {
         // not JSON dynamic embedding, or dynamic embedding is turned off - compute static embedding just for lists and arrays
         boolean multiRefAllowed = fi.isMultipleReferencesAllowed() || isListNode;
         if (!multiRefAllowed) {
+          // Arrays cannot be resized, so it is ok if an empty array has multiple references to it
+          // even if multiRefAllowed is false because it is effectively immutable.
+          if ((featVal instanceof CommonArrayFS && ((CommonArrayFS<?>) featVal).isEmpty())) {
+            return false; // immutable empty array, no need to enqueue
+          }
+          
           // two cases: a list or non-list
           // if a list, check/mark all the nodes in the list for any being multiply referenced
           if ((isListFeat && isListElementsMultiplyReferenced(featVal)) ||
