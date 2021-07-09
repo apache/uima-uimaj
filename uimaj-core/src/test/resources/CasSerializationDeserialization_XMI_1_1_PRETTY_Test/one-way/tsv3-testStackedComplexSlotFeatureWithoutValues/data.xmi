@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmlns:custom="http:///webanno/custom.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type:DocumentMetaData xmi:id="6" sofa="5" begin="0" end="16" documentId="doc" isLastSegment="false"/>
+    <type2:Token xmi:id="7" sofa="5" begin="0" end="4" order="0"/>
+    <type2:Token xmi:id="8" sofa="5" begin="5" end="7" order="0"/>
+    <type2:Token xmi:id="9" sofa="5" begin="8" end="9" order="0"/>
+    <type2:Token xmi:id="10" sofa="5" begin="10" end="14" order="0"/>
+    <type2:Token xmi:id="11" sofa="5" begin="15" end="16" order="0"/>
+    <type2:Sentence xmi:id="12" sofa="5" begin="0" end="16"/>
+    <custom:SimpleSpan xmi:id="13" sofa="5" begin="5" end="7"/>
+    <custom:SimpleSpan xmi:id="14" sofa="5" begin="8" end="9"/>
+    <custom:ComplexLinkType xmi:id="3" target="13"/>
+    <custom:ComplexLinkType xmi:id="2" target="14"/>
+    <custom:ComplexLinkType xmi:id="1" target="14"/>
+    <custom:ComplexLinkType xmi:id="4" target="13"/>
+    <custom:ComplexLinkHost xmi:id="15" sofa="5" begin="0" end="4" links="4 1"/>
+    <custom:ComplexLinkHost xmi:id="17" sofa="5" begin="0" end="4" links="3 2"/>
+    <cas:Sofa xmi:id="5" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="This is a test ."/>
+    <cas:View sofa="5" members="6 7 8 9 10 11 12 13 14 3 2 1 4 15 17"/>
+</xmi:XMI>

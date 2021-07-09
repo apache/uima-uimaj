@@ -427,14 +427,14 @@ public class CasIOUtils {
     BinaryCasSerDes bcsd = casImpl.getBinaryCasSerDes();
 
     // scan the first part of the file for known formats
-    casInputStream.mark(6);
-    byte[] firstPartOfFile = new byte[6];
+    casInputStream.mark(9);
+    byte[] firstPartOfFile = new byte[9];
     int bytesReadCount = casInputStream.read(firstPartOfFile);
     casInputStream.reset();
     String start = new String(firstPartOfFile, 0, bytesReadCount, StandardCharsets.UTF_8)
             .toLowerCase();
 
-    if (start.startsWith("<?xml ")) { // could be XCAS or XMI
+    if (start.startsWith("<?xml ") || start.startsWith("<xmi:xmi ")) { // could be XCAS or XMI
       try {
         bcsd.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
         // next call decides on XMI or XCAS via content

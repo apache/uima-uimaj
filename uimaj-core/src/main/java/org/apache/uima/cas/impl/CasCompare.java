@@ -331,25 +331,33 @@ public class CasCompare {
      */
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       ScsKey other = (ScsKey) obj;
       if (feature == null) {
-        if (other.feature != null)
+        if (other.feature != null) {
           return false;
-      } else if (!feature.equals(other.feature))
+        }
+      } else if (!feature.equals(other.feature)) {
         return false;
-      if (index != other.index)
+      }
+      if (index != other.index) {
         return false;
+      }
       if (type == null) {
-        if (other.type != null)
+        if (other.type != null) {
           return false;
-      } else if (!type.equals(other.type))
+        }
+      } else if (!type.equals(other.type)) {
         return false;
+      }
       return true;
     }
   }
@@ -765,8 +773,9 @@ public class CasCompare {
 
       // processIndexedFeatureStructures(c1, false);
       Predicate<TOP> includeFilter = isTypeMapping ? (fs -> isTypeInTgt(fs)) : null;
-      if (IS_SHOW_PROGRESS)
+      if (IS_SHOW_PROGRESS) {
         System.out.println("Finding all FSs in cas 1");
+      }
       // this next call doesn't get just the indexed ones, it includes the "reachable" ones too
       c1FoundFSs = new AllFSs(c1, null, includeFilter, isTypeMapping ? typeMapper : null)
               .getAllFSsAllViews_sofas_reachable().getAllFSs();
@@ -774,8 +783,9 @@ public class CasCompare {
       // c1FoundFSs = fssToSerialize; // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
 
       // processIndexedFeatureStructures(c2, false);
-      if (IS_SHOW_PROGRESS)
+      if (IS_SHOW_PROGRESS) {
         System.out.println("Finding all FSs in cas 2");
+      }
       c2FoundFSs = new AllFSs(c2, null, null, null).getAllFSsAllViews_sofas_reachable().getAllFSs(); // get
                                                                                                      // just
                                                                                                      // the
@@ -822,13 +832,15 @@ public class CasCompare {
       final int sz2 = c2FoundFSs.size();
 
       isSrcCas = true; // avoids sorting on types/features not present in ts2
-      if (IS_SHOW_PROGRESS)
+      if (IS_SHOW_PROGRESS) {
         System.out.println("Sorting FSs in cas 1");
+      }
       sort(c1FoundFSs);
 
       isSrcCas = false; // avoids sorting on types/features not present in ts1
-      if (IS_SHOW_PROGRESS)
+      if (IS_SHOW_PROGRESS) {
         System.out.println("Sorting FSs in cas 2");
+      }
       sort(c2FoundFSs);
 
       // miscompares.clear();
@@ -874,11 +886,13 @@ public class CasCompare {
             int start = i1;
             while (true) {
               i1++;
-              if (i1 >= sz1)
+              if (i1 >= sz1) {
                 break;
+              }
               fs1 = c1FoundFSs.get(i1);
-              if (!(fs1 instanceof EmptyList))
+              if (!(fs1 instanceof EmptyList)) {
                 break;
+              }
             }
             System.out.println("CasCompare skipping " + (i1 - start)
                     + " emptylist FSs in 1st CAS to realign.");
@@ -886,11 +900,13 @@ public class CasCompare {
             int start = i2;
             while (true) {
               i2++;
-              if (i2 >= sz2)
+              if (i2 >= sz2) {
                 break;
+              }
               fs2 = c2FoundFSs.get(i2);
-              if (!(fs2 instanceof EmptyList))
+              if (!(fs2 instanceof EmptyList)) {
                 break;
+              }
             }
             System.out.println("CasCompare skipping " + (i2 - start)
                     + " emptylist FSs in 2nd CAS to realign.");
@@ -908,8 +924,9 @@ public class CasCompare {
           if (!typeMissingIn1 && !typeMissingIn2) {
             if (0 != compareFss(fs1, fs2, null, null)) {
               mismatchFsDisplay();
-              if (!isCompareAll)
+              if (!isCompareAll) {
                 return false;
+              }
               allOk = false;
               int tc = fs1._getTypeImpl().compareTo(fs2._getTypeImpl());
               if (tc < 0) {
@@ -961,8 +978,9 @@ public class CasCompare {
           if (0 != rr) {
 
             mismatchFsDisplay();
-            if (!isCompareAll)
+            if (!isCompareAll) {
               return false;
+            }
             allOk = false;
             int tc = fs1._getTypeImpl().compareTo(fs2._getTypeImpl());
             if (tc < 0) {
@@ -1169,19 +1187,26 @@ public class CasCompare {
     node_indexes.clear();
 
     int sz = fss.size();
+
+    if (sz == 0) {
+      return;
+    }
+
     for (int i = 0; i < sz; i++) {
       TOP fs = fss.get(i);
 
-      if (!(fs instanceof CommonList))
+      if (!(fs instanceof CommonList)) {
         continue; // skip: not list node
+      }
       CommonList node = (CommonList) fs;
       if (node.isEmpty()) {
         fss.set(i, null); // clear it, empty list elements don't need to be compared
         continue;
       }
 
-      if (non_linear_list_elements.contains(node._id()))
+      if (non_linear_list_elements.contains(node._id())) {
         continue; // skip: in non-linear list
+      }
       if (null != map_e_to_a_list.get(node._id())) {
         node_indexes.put(node, i + 1); // case: added as a successor
         continue; // skip: already seen/processed
@@ -1193,8 +1218,9 @@ public class CasCompare {
         al.add(node); // add this node
         map_e_to_a_list.put(node._id(), al);
 
-        if (addSuccessors(node, al))
+        if (addSuccessors(node, al)) {
           continue;
+        }
 
         // some successor was in a non-linear situation
         move_to_non_linear(al);
@@ -1206,6 +1232,7 @@ public class CasCompare {
               + "nbr of list elements considered: %,d, number of looped lists skipped: %,d%n",
               node_indexes.size(), non_linear_list_elements.size());
     }
+
     CASImpl view = fss.get(0)._casView;
     TypeSystemImpl tsi = view.getTypeSystemImpl();
 
@@ -1279,8 +1306,9 @@ public class CasCompare {
         fss.set(node_indexes.get(n) - 1, null);
       }
       fss.add(a);
-    } else
+    } else {
       Misc.internalError();
+    }
 
   }
 
@@ -1303,11 +1331,13 @@ public class CasCompare {
 
       while (!node.isEmpty()) {
         node = node.getCommonTail();
-        if (node == null || node.isEmpty())
+        if (node == null || node.isEmpty()) {
           break;
+        }
 
-        if (!list_successor_seen.add(node._id()))
+        if (!list_successor_seen.add(node._id())) {
           return false; // stop if loop is found
+        }
 
         ArrayList<CommonList> other = map_e_to_a_list.get(node._id());
         if (null != other) {
@@ -1339,12 +1369,14 @@ public class CasCompare {
     int i = 0;
     int sz2 = a2.size();
     for (; i < sz2; i++) {
-      if (commonNode == a2.get(i))
+      if (commonNode == a2.get(i)) {
         break;
+      }
     }
 
-    if (i == sz2)
+    if (i == sz2) {
       Misc.internalError();
+    }
 
     for (; i < sz2; i++) {
       CommonList node = a2.get(i);
@@ -2037,8 +2069,9 @@ public class CasCompare {
   }
 
   private void mismatchFs(TOP fs1, TOP fs2, TypeImpl callerTi, FeatureImpl callerFi) {
-    if (isSkipMismatch)
+    if (isSkipMismatch) {
       return;
+    }
     Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
 
     if (prevReport.contains(pair)) {
@@ -2081,8 +2114,9 @@ public class CasCompare {
   // }
 
   private void mismatchFs(TOP fs1, TOP fs2, Feature fi, Feature fi2) {
-    if (isSkipMismatch)
+    if (isSkipMismatch) {
       return;
+    }
 
     Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
     if (prevReport.contains(pair)) {
@@ -2113,8 +2147,9 @@ public class CasCompare {
   }
 
   private void mismatchFs(TOP fs1, TOP fs2, String msg, TypeImpl callerTi, FeatureImpl callerFi) {
-    if (isSkipMismatch)
+    if (isSkipMismatch) {
       return;
+    }
     Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
     if (prevReport.contains(pair)) {
       if (leafErrorReported == null) {
