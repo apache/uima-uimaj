@@ -244,6 +244,17 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- Can be removed after updating to the UIMA Parent POM 15 or higher  -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>3.6.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  
     <plugins>
       <plugin>
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->

@@ -19,13 +19,13 @@
 
 package org.apache.uima.internal.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.URL;
 
 import org.apache.uima.UIMAFramework;
@@ -53,24 +53,21 @@ public class UIMAClassLoaderTest {
   public void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
-    assertNull(rsrcMgr.getExtensionClassLoader());
+    assertThat(rsrcMgr.getExtensionClassLoader()) //
+            .as("Freshly created resource manager has no extension classloader") //
+            .isNull();
 
     rsrcMgr.setExtensionClassPath("../this/is/a/simple/test.jar", false);
-    ClassLoader cl = rsrcMgr.getExtensionClassLoader();
-    assertNotNull(cl);
-    // assertTrue(cl != cl.getClassLoadingLock("Aclass"));
-    Class classOfLoader = cl.getClass().getSuperclass();
-    while (!(classOfLoader.getName().equals("java.lang.ClassLoader"))) {
-      classOfLoader = classOfLoader.getSuperclass();
-    }
-    if (!Misc.isJava9ea) { // skip for java 9
-      Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
-      m.setAccessible(true);
-      Object o = m.invoke(cl, "someString");
-      Object o2 = m.invoke(cl, "s2");
-      assertTrue(o != o2);
-      assertTrue(cl != o);
-    }
+
+    assertThat(rsrcMgr.getExtensionClassLoader()) //
+            .as("After setting an extension classpath, there is an extension classloader") //
+            .isInstanceOf(UIMAClassLoader.class);
+
+    UIMAClassLoader cl = (UIMAClassLoader) rsrcMgr.getExtensionClassLoader();
+    Object o = cl.getClassLoadingLockForTesting("someString");
+    Object o2 = cl.getClassLoadingLockForTesting("s2");
+    assertTrue(o != o2);
+    assertTrue(cl != o);
   }
 
   @Test
