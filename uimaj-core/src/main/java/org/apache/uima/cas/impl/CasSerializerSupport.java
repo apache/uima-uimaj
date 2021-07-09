@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlElementName;
@@ -669,8 +670,9 @@ public class CasSerializerSupport {
      * back into the serialized form; those might reference some of these.
      */
     private void enqueueIncoming() {
-      if (sharedData == null)
+      if (sharedData == null) {
         return;
+      }
       TOP[] fss = this.sharedData.getAndSortByIdAllFSsInIdMap();
       previouslySerializedFSs = new ArrayList<>();
 
@@ -729,8 +731,9 @@ public class CasSerializerSupport {
      * been modified. The embedded nonshared-multivalued item could be a list or an array
      */
     private void enqueueNonsharedMultivaluedFS() {
-      if (sharedData == null || !isDelta)
+      if (sharedData == null || !isDelta) {
         return;
+      }
       TOP[] fss = sharedData.getNonsharedMulitValuedFSs();
       modifiedEmbeddedValueFSs = new ArrayList<>();
 
@@ -951,15 +954,21 @@ public class CasSerializerSupport {
       if (!isDynamicMultiRef) {
 
         // not JSON dynamic embedding, or dynamic embedding is turned off - compute static embedding
-        // just for lists and arrays
+        // just for lists and arrays.
         boolean multiRefAllowed = fi.isMultipleReferencesAllowed() || isListNode;
         if (!multiRefAllowed) {
+          // Arrays cannot be resized, so it is ok if an empty array has multiple references to it
+          // even if multiRefAllowed is false because it is effectively immutable.
+          if ((featVal instanceof CommonArrayFS && ((CommonArrayFS<?>) featVal).isEmpty())) {
+            return false; // immutable empty array, no need to enqueue
+          }
+
           // two cases: a list or non-list
           // if a list, check/mark all the nodes in the list for any being multiply referenced
-          if ((isListFeat && isListElementsMultiplyReferenced(featVal)) ||
           // say: multi-ref not allowed, but discovered a multi-ref, will be serialized as separate
           // item
-                  (!isListFeat && alreadyVisited)) {
+          if ((isListFeat && isListElementsMultiplyReferenced(featVal))
+                  || (!isListFeat && alreadyVisited)) {
             reportMultiRefWarning(fi);
           } else {
             // multi-ref not allowed, and this item is not multiply referenced (so far)
@@ -1239,12 +1248,14 @@ public class CasSerializerSupport {
           Annotation fs2a = (Annotation) fs2;
 
           c = Integer.compare(fs1a.getBegin(), fs2a.getBegin());
-          if (c != 0)
+          if (c != 0) {
             return c;
+          }
 
           c = Integer.compare(fs2a.getEnd(), fs1a.getEnd()); // reverse order
-          if (c != 0)
+          if (c != 0) {
             return c;
+          }
 
           // fall thru to do id compare
         }
