@@ -21,15 +21,17 @@ package org.apache.uima.json;
 import org.junit.jupiter.api.BeforeEach;
 
 public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
+  // @formatter:off
   /*********************************************************************
    *    This is a version of the Json tests that does XMI 
    *    serialization instead
    *    
    * It extends the other JsonCasSerializerTest but sets up some flags
    *********************************************************************/
-  @Override 
-    @BeforeEach
-    public void setUp() throws Exception {
+  // @formatter:on
+  @Override
+  @BeforeEach
+  public void setUp() throws Exception {
     super.setUp();
     jcs = new JsonCasSerializer();
     doJson = false;
