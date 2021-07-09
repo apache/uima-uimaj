@@ -45,9 +45,8 @@ public class JsonMetaDataObjectTest {
   private TestFruitObject orange;
   private TestFruitBagObject fruitBag;
 
-
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
@@ -56,7 +55,7 @@ public class JsonMetaDataObjectTest {
     apple1.setAttributeValue("avgCostCents", 40);
     apple1.setAttributeValue("citrus", Boolean.FALSE);
     apple1.setAttributeValue("commonUses", new String[] { "baking", "snack" });
-    
+
     apple2 = new TestFruitObject();
     apple2.setAttributeValue("name", "Apple");
     apple2.setAttributeValue("color", "red");
@@ -80,36 +79,36 @@ public class JsonMetaDataObjectTest {
 
   }
 
-    @Test
-    public void testTypeSystemDescriptionSerialization() throws Exception {
-    
-    XMLInputSource in = new XMLInputSource(JUnitExtension.getFile("CASTests/desc/casTestCaseTypesystem.xml"));
+  @Test
+  public void testTypeSystemDescriptionSerialization() throws Exception {
+
+    XMLInputSource in = new XMLInputSource(
+            JUnitExtension.getFile("CASTests/desc/casTestCaseTypesystem.xml"));
     TypeSystemDescription tsd;
     tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(in);
     in.close();
 
     StringWriter sw = new StringWriter();
-    
-    JsonMetaDataSerializer.toJSON(tsd, sw, false);  // no pretty print
-    assertEquals(getExpected("testTypesystem-plain.json"),sw.toString());
+
+    JsonMetaDataSerializer.toJSON(tsd, sw, false); // no pretty print
+    assertEquals(getExpected("testTypesystem-plain.json"), sw.toString());
 
     sw = new StringWriter();
     JsonMetaDataSerializer.toJSON(tsd, sw, true);
-    assertEquals(getExpected("testTypesystem.json"),canonicalizeNewLines(sw.toString()));
-    
+    assertEquals(getExpected("testTypesystem.json"), canonicalizeNewLines(sw.toString()));
+
   }
 
-  
   /**
-   * Tests the {@link MetaDataObject#toJSON(Writer)} method. 
+   * Tests the {@link MetaDataObject#toJSON(Writer)} method.
    */
-    @Test
-    public void testJsonSerialization() throws Exception {
+  @Test
+  public void testJsonSerialization() throws Exception {
     try {
       // write objects to JSON
 
       StringWriter writer = new StringWriter();
-      JsonMetaDataSerializer.toJSON(apple1,writer);
+      JsonMetaDataSerializer.toJSON(apple1, writer);
       String apple1json = writer.getBuffer().toString();
       // System.out.println(apple1json);
 
@@ -127,66 +126,69 @@ public class JsonMetaDataObjectTest {
 
       // identical objects should have identical JSON
       Assert.assertEquals(apple1json, apple2json);
-      assertEquals("{\"fruit\":{\"name\":\"Apple\",\"color\":\"red\",\"avgWeightLbs\":0.3,\"avgCostCents\":40,\"citrus\":false,\"commonUses\":[{\"string\":\"baking\"},{\"string\":\"snack\"}]}}", apple1json);
+      assertEquals(
+              "{\"fruit\":{\"name\":\"Apple\",\"color\":\"red\",\"avgWeightLbs\":0.3,\"avgCostCents\":40,\"citrus\":false,\"commonUses\":[{\"string\":\"baking\"},{\"string\":\"snack\"}]}}",
+              apple1json);
 
       // test special cases
 
-//      // single-property object where property name is omitted from XML
-//      String xmlStr = "<fruitBag><fruit><name>banana</name><color>yellow</color></fruit>"
-//              + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
-//      Document xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
-//      TestFruitBagObject bag = new TestFruitBagObject();
-//      bag.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
-//      TestFruitObject[] fruits = bag.getFruits();
-//      Assert.assertEquals(2, fruits.length);
-//      Assert.assertEquals("banana", fruits[0].getName());
-//      Assert.assertEquals("raspberry", fruits[1].getName());
-//
-//      // property name omitted but can be inferred from type of value
-//      xmlStr = "<fruit><name>banana</name><string>yellow</string></fruit>";
-//      xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
-//      TestFruitObject banana = new TestFruitObject();
-//      banana.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
-//      Assert.assertEquals("yellow", banana.getColor());
-//      Assert.assertEquals("banana", banana.getName());
-//
-//      // env var reference
-//      xmlStr = "<fruit><name>raspberry</name><string><envVarRef>test.raspberry.color</envVarRef></string></fruit>";
-//      System.setProperty("test.raspberry.color", "red");
-//      xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
-//      TestFruitObject raspberry = new TestFruitObject();
-//      raspberry.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
-//      Assert.assertEquals("red", raspberry.getColor());
-//      Assert.assertEquals("raspberry", raspberry.getName());
+      // // single-property object where property name is omitted from XML
+      // String xmlStr = "<fruitBag><fruit><name>banana</name><color>yellow</color></fruit>"
+      // + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
+      // Document xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+      // TestFruitBagObject bag = new TestFruitBagObject();
+      // bag.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
+      // TestFruitObject[] fruits = bag.getFruits();
+      // Assert.assertEquals(2, fruits.length);
+      // Assert.assertEquals("banana", fruits[0].getName());
+      // Assert.assertEquals("raspberry", fruits[1].getName());
+      //
+      // // property name omitted but can be inferred from type of value
+      // xmlStr = "<fruit><name>banana</name><string>yellow</string></fruit>";
+      // xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+      // TestFruitObject banana = new TestFruitObject();
+      // banana.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
+      // Assert.assertEquals("yellow", banana.getColor());
+      // Assert.assertEquals("banana", banana.getName());
+      //
+      // // env var reference
+      // xmlStr =
+      // "<fruit><name>raspberry</name><string><envVarRef>test.raspberry.color</envVarRef></string></fruit>";
+      // System.setProperty("test.raspberry.color", "red");
+      // xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+      // TestFruitObject raspberry = new TestFruitObject();
+      // raspberry.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
+      // Assert.assertEquals("red", raspberry.getColor());
+      // Assert.assertEquals("raspberry", raspberry.getName());
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
-  
-  
-    @Test
-    public void testToJSONWriter() {
+
+  @Test
+  public void testToJSONWriter() {
   }
 
-    @Test
-    public void testToJSONJsonGeneratorBoolean() {
+  @Test
+  public void testToJSONJsonGeneratorBoolean() {
   }
 
-    @Test
-    public void testToJSONOutputStream() {
+  @Test
+  public void testToJSONOutputStream() {
   }
 
-    @Test
-    public void testToJSONFile() {
+  @Test
+  public void testToJSONFile() {
   }
 
   private String getExpected(String expectedResultsName) throws IOException {
-    File expectedResultsFile = JUnitExtension.getFile("CASTests/json/expected/" + expectedResultsName);
+    File expectedResultsFile = JUnitExtension
+            .getFile("CASTests/json/expected/" + expectedResultsName);
     return canonicalizeNewLines(FileUtils.file2String(expectedResultsFile, "utf-8"));
   }
 
   private String canonicalizeNewLines(String r) {
-    return  r.replace("\n\r", "\n").replace("\r\n", "\n").replace('\r',  '\n');
+    return r.replace("\n\r", "\n").replace("\r\n", "\n").replace('\r', '\n');
   }
 
 }
