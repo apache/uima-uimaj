@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmlns:custom="http:///webanno/custom.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type:DocumentMetaData xmi:id="4" sofa="3" begin="0" end="34" documentId="doc" isLastSegment="false"/>
+    <type2:Token xmi:id="5" sofa="3" begin="0" end="2" order="0"/>
+    <type2:Token xmi:id="6" sofa="3" begin="3" end="8" order="0"/>
+    <type2:Token xmi:id="7" sofa="3" begin="9" end="12" order="0"/>
+    <type2:Token xmi:id="8" sofa="3" begin="13" end="14" order="0"/>
+    <type2:Token xmi:id="9" sofa="3" begin="15" end="18" order="0"/>
+    <type2:Token xmi:id="10" sofa="3" begin="19" end="24" order="0"/>
+    <type2:Token xmi:id="11" sofa="3" begin="25" end="28" order="0"/>
+    <type2:Token xmi:id="12" sofa="3" begin="29" end="32" order="0"/>
+    <type2:Token xmi:id="13" sofa="3" begin="33" end="34" order="0"/>
+    <type2:Sentence xmi:id="14" sofa="3" begin="0" end="14"/>
+    <type2:Sentence xmi:id="15" sofa="3" begin="15" end="34"/>
+    <custom:SimpleSpan xmi:id="16" sofa="3" begin="3" end="8"/>
+    <custom:SimpleSpan xmi:id="17" sofa="3" begin="25" end="28"/>
+    <custom:LinkType xmi:id="2" role="p1" target="16"/>
+    <custom:LinkType xmi:id="1" role="p2" target="17"/>
+    <custom:SimpleLinkHost xmi:id="18" sofa="3" begin="0" end="2" links="2 1"/>
+    <cas:Sofa xmi:id="3" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="He loves her .&#10;She loves him not ."/>
+    <cas:View sofa="3" members="4 5 6 7 8 9 10 11 12 13 14 15 16 17 2 1 18"/>
+</xmi:XMI>

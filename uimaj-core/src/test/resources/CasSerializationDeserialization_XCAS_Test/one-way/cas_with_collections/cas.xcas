@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="8" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="Joe waited for the train . The train was late ."/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="9" _ref_sofa="8" begin="0" end="47" language="x-unspecified"/>
+    <uima.cas.StringArray _indexed="1" _id="2" size="3">
+        <i>A</i>
+        <i>B</i>
+        <i>C</i>
+    </uima.cas.StringArray>
+    <uima.cas.StringArray _indexed="1" _id="1" size="3">
+        <i>LNC</i>
+        <i>MTH</i>
+        <i>SNOMEDCT_US</i>
+    </uima.cas.StringArray>
+    <cassis.Group _indexed="1" _id="10" _ref_sofa="8" begin="0" end="0" _ref_collection1="11" _ref_collection2="12"/>
+    <uima.cas.FSArray _indexed="1" _id="3" size="4">
+        <i>9</i>
+        <i>1</i>
+        <i>2</i>
+        <i>10</i>
+    </uima.cas.FSArray>
+    <uima.cas.FSArray _indexed="1" _id="4" size="4">
+        <i>2</i>
+        <i/>
+        <i/>
+        <i>9</i>
+    </uima.cas.FSArray>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="6" _ref_tail="7" _ref_head="10"/>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="5" _ref_tail="6" _ref_head="2"/>
+    <uima.cas.EmptyFSList _indexed="1" _id="7"/>
+    <uima.cas.IntegerArray _id="12" size="3">
+        <i>1</i>
+        <i>2</i>
+        <i>3</i>
+    </uima.cas.IntegerArray>
+    <uima.cas.StringArray _id="11" size="3">
+        <i>A</i>
+        <i>B</i>
+        <i>C</i>
+    </uima.cas.StringArray>
+</CAS>
