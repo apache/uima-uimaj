@@ -20,6 +20,7 @@ package org.apache.uima.cas.serdes;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.SerialFormat.BINARY;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
 import static org.apache.uima.util.CasCreationUtils.createCas;
@@ -51,7 +52,7 @@ public class CasSerializationDeserialization_BINARY_Test {
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
           new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> desser(createCas(), a, b, FORMAT, DEFAULT)),
+                  (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, DEFAULT)),
           new CasDesSerCycleConfiguration(FORMAT + " / REINIT", //
                   (a, b) -> desser(createCas(), a, b, FORMAT, REINIT)));
 

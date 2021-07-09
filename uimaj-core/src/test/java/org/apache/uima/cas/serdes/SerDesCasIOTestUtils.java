@@ -25,10 +25,12 @@ import static org.apache.uima.cas.SerialFormat.XMI_PRETTY;
 import static org.apache.uima.cas.serdes.TestType.ONE_WAY;
 import static org.apache.uima.cas.serdes.TestType.ROUND_TRIP;
 import static org.apache.uima.cas.serdes.TestType.SER_REF;
+import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.TypeSystemUtil.typeSystem2TypeSystemDescription;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -39,6 +41,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.serdes.datasuites.MultiFeatureRandomCasDataSuite;
@@ -51,12 +54,17 @@ import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
 import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.CasLoadMode;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
 import org.assertj.core.internal.Failures;
 
 public class SerDesCasIOTestUtils {
-  private static Class<?> getCallerClass() {
+  public static Class<?> getCallerClass() {
     try {
       return Class.forName(new Throwable().getStackTrace()[2].getClassName());
     } catch (ClassNotFoundException e) {
@@ -164,8 +172,8 @@ public class SerDesCasIOTestUtils {
     }
   }
 
-  public static void desser(CAS aBufferCas, Path aSourceCasPath, Path aTargetCasPath,
-          SerialFormat aFormat, CasLoadMode aMode, CasLoadOptions... aOptions) throws Exception {
+  public static void des(CAS aBufferCas, Path aSourceCasPath, CasLoadMode aMode,
+          CasLoadOptions... aOptions) throws IOException {
     // Deserialize the file into the buffer CAS
     try (InputStream casSource = Files.newInputStream(aSourceCasPath)) {
       if (asList(aOptions).contains(CasLoadOptions.WITH_TSI)) {
@@ -177,11 +185,13 @@ public class SerDesCasIOTestUtils {
         CasIOUtils.load(casSource, null, aBufferCas, aMode);
       }
     }
+  }
 
-    // Serialize the buffer CAS to the target file
-    try (OutputStream casTarget = Files.newOutputStream(aTargetCasPath)) {
-      CasIOUtils.save(aBufferCas, casTarget, aFormat);
-    }
+  public static void desser(CAS aBufferCas, Path aSourceCasPath, Path aTargetCasPath,
+          SerialFormat aFormat, CasLoadMode aMode, CasLoadOptions... aOptions) throws Exception {
+    des(aBufferCas, aSourceCasPath, aMode, aOptions);
+
+    ser(aBufferCas, aTargetCasPath, aFormat);
   }
 
   public static void serdes(CAS aSourceCas, CAS aTargetCas, SerialFormat aFormat, CasLoadMode aMode,
@@ -232,5 +242,18 @@ public class SerDesCasIOTestUtils {
 
   enum CasLoadOptions {
     WITH_TSI
+  }
+
+  public static CAS createCasMaybeWithTypesystem(Path aContextFile)
+          throws ResourceInitializationException, InvalidXMLException, IOException {
+    Path typeSystemFile = aContextFile.resolveSibling("typesystem.xml");
+
+    if (!Files.exists(typeSystemFile)) {
+      return createCas();
+    }
+
+    TypeSystemDescription tsd = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile.toFile()));
+    return CasCreationUtils.createCas(tsd, null, null, null);
   }
 }

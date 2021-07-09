@@ -22,9 +22,37 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public enum TestType {
-  ROUND_TRIP("ser-ref", "round-trip", "ser-ref"), //
+  /**
+   * Test creates a CAS in-memory (or obtains it from somewhere custom), serializes it and compares
+   * the serialized version to a reference file. This is used mainly to validate the serialization
+   * mechanism.
+   */
   SER_REF(null, "ser-ref", "ser-ref"), //
-  ONE_WAY("ser-ref", "one-way", "one-way");
+
+  /**
+   * Test deserializes a CAS from storage, then serializes it again and then compares it to a
+   * reference file. The reference file is typically different from the original file. This is
+   * typically used when the input file has a different format than the output file (e.g. read from
+   * XMI and write to JSON). It can also be used for cases where there are acceptable differences
+   * between the input and the output even if they technically are in the same format (e.g.
+   * ignorable whitespace in XMI files).
+   */
+  ONE_WAY("ser-ref", "one-way", "one-way"), //
+
+  /**
+   * Test uses uses the input file as the reference file. Optimally, a (de)serialization mechanism
+   * should be fully round-trip capable - i.e. when it reads a file and writes it back out, the
+   * output should be exactly the same as the input.
+   */
+  ROUND_TRIP("ser-ref", "round-trip", "ser-ref"), //
+
+  /**
+   * Test deserializes a CAS from storage, then <b>typically applies some additional logic</b>, then
+   * serializes it again and then compares it to a reference file. This is used mainly to validate
+   * the derserialization mechanism for special cases that cannot be covered by {@link #ONE_WAY} or
+   * {@link #ROUND_TRIP}.
+   */
+  DES_REF(null, "des-ref", "des-ref");
 
   private String sourceFolderName;
   private String referenceFolderName;
