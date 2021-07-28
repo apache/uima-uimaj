@@ -13,44 +13,39 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Json2DeserializerTest
-{
-    private static CAS cas;
-    
-    private JsonFactory jsonFactory;
-    
-    @BeforeClass
-    public static void setupOnce() throws Exception
-    {
-        cas = createCas();
-    }
+public class Json2DeserializerTest {
+  private static CAS cas;
 
-    @Before
-    public void setup() throws Exception
-    {
-        jsonFactory = new JsonFactory();
-        jsonFactory.setCodec(new ObjectMapper());
-    }
-    
-    @Test
-    public void thatQuotedStringCanBeParsed() throws Exception
-    {
-        Json2CasDeserializer deser = new Json2CasDeserializer(
-                jsonFactory.createParser(new File("src/test/resources/Json2Deserializer/text_only.json")));
+  private JsonFactory jsonFactory;
 
-        deser.read(cas);
-        
-        assertThat(cas.getDocumentText()).isEqualTo("Hello world.");
-    }
+  @BeforeClass
+  public static void setupOnce() throws Exception {
+    cas = createCas();
+  }
 
-    @Test
-    public void thatFeatureStructureArrayCanBeParsed() throws Exception
-    {
-        Json2CasDeserializer deser = new Json2CasDeserializer(
-                jsonFactory.createParser(new File("src/test/resources/Json2Deserializer/feature_structures_only.json")));
+  @Before
+  public void setup() throws Exception {
+    jsonFactory = new JsonFactory();
+    jsonFactory.setCodec(new ObjectMapper());
+  }
 
-        deser.read(cas);
-        
-        assertThat(cas.getDocumentText()).isEqualTo("Hello world.");
-    }
+  @Test
+  public void thatQuotedStringCanBeParsed() throws Exception {
+    Json2CasDeserializer deser = new Json2CasDeserializer(jsonFactory
+            .createParser(new File("src/test/resources/Json2Deserializer/text_only.json")));
+
+    deser.read(cas);
+
+    assertThat(cas.getDocumentText()).isEqualTo("Hello world.");
+  }
+
+  @Test
+  public void thatFeatureStructureArrayCanBeParsed() throws Exception {
+    Json2CasDeserializer deser = new Json2CasDeserializer(jsonFactory.createParser(
+            new File("src/test/resources/Json2Deserializer/feature_structures_only.json")));
+
+    deser.read(cas);
+
+    assertThat(cas.getDocumentText()).isEqualTo("Hello world.");
+  }
 }
