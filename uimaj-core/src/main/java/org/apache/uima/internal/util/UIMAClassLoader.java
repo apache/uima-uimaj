@@ -285,4 +285,8 @@ public class UIMAClassLoader extends URLClassLoader {
     super.close();
   }
 
+  // Package-scope visibility for testing
+  Object getClassLoadingLockForTesting(String aClassName) {
+    return super.getClassLoadingLock(aClassName);
+  }
 }
