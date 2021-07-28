@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json;
+package org.apache.uima.json.json2;
 
 import static com.fasterxml.jackson.core.JsonTokenId.ID_END_ARRAY;
 import static com.fasterxml.jackson.core.JsonTokenId.ID_END_OBJECT;
@@ -29,10 +29,10 @@ import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFASTRING;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SOFA;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
-import static org.apache.uima.json.Json2Names.FEATURE_STRUCTURES_FIELD;
-import static org.apache.uima.json.Json2Names.FLAG_DOCUMENT_ANNOTATION;
-import static org.apache.uima.json.Json2Names.TYPES_FIELD;
-import static org.apache.uima.json.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.json2.Json2Names.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.json2.Json2Names.FLAG_DOCUMENT_ANNOTATION;
+import static org.apache.uima.json.json2.Json2Names.TYPES_FIELD;
+import static org.apache.uima.json.json2.Json2Names.VIEWS_FIELD;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,8 +44,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.json.model.json2.Json2FeatureStructure;
-import org.apache.uima.json.model.json2.Json2Type;
+import org.apache.uima.json.json2.model.Json2FeatureStructure;
+import org.apache.uima.json.json2.model.Json2Type;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;

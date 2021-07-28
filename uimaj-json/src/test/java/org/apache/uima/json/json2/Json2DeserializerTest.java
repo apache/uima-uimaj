@@ -1,4 +1,4 @@
-package org.apache.uima.json;
+package org.apache.uima.json.json2;
 
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.json.json2.Json2CasDeserializer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json;
+package org.apache.uima.json.json2;
 
 import static com.fasterxml.jackson.core.JsonEncoding.UTF8;
 import static java.util.Arrays.asList;
@@ -25,18 +25,18 @@ import static java.util.Collections.sort;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
-import static org.apache.uima.json.Json2CasSerializer.FeatureStructuresMode.AS_ARRAY;
-import static org.apache.uima.json.Json2CasSerializer.ViewsMode.INLINE;
-import static org.apache.uima.json.Json2CasSerializer.ViewsMode.SEPARATE;
-import static org.apache.uima.json.Json2Names.COMPONENT_TYPE_FIELD;
-import static org.apache.uima.json.Json2Names.FEATURE_STRUCTURES_FIELD;
-import static org.apache.uima.json.Json2Names.FLAG_DOCUMENT_ANNOTATION;
-import static org.apache.uima.json.Json2Names.ID_FIELD;
-import static org.apache.uima.json.Json2Names.REF;
-import static org.apache.uima.json.Json2Names.SUPER_TYPE_FIELD;
-import static org.apache.uima.json.Json2Names.TYPES_FIELD;
-import static org.apache.uima.json.Json2Names.TYPE_FIELD;
-import static org.apache.uima.json.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.json2.Json2CasSerializer.FeatureStructuresMode.AS_ARRAY;
+import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.INLINE;
+import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.SEPARATE;
+import static org.apache.uima.json.json2.Json2Names.COMPONENT_TYPE_FIELD;
+import static org.apache.uima.json.json2.Json2Names.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.json2.Json2Names.FLAG_DOCUMENT_ANNOTATION;
+import static org.apache.uima.json.json2.Json2Names.ID_FIELD;
+import static org.apache.uima.json.json2.Json2Names.REF;
+import static org.apache.uima.json.json2.Json2Names.SUPER_TYPE_FIELD;
+import static org.apache.uima.json.json2.Json2Names.TYPES_FIELD;
+import static org.apache.uima.json.json2.Json2Names.TYPE_FIELD;
+import static org.apache.uima.json.json2.Json2Names.VIEWS_FIELD;
 
 import java.io.File;
 import java.io.IOException;

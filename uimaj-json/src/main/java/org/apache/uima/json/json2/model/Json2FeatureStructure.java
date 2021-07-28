@@ -16,18 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json.model.json2;
+package org.apache.uima.json.json2.model;
 
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.Json2Names.ID_FIELD;
-import static org.apache.uima.json.Json2Names.TYPE_FIELD;
-import static org.apache.uima.json.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.json2.Json2Names.ID_FIELD;
+import static org.apache.uima.json.json2.Json2Names.TYPE_FIELD;
+import static org.apache.uima.json.json2.Json2Names.VIEWS_FIELD;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import org.apache.uima.json.Json2Names;
+import org.apache.uima.json.json2.Json2Names;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

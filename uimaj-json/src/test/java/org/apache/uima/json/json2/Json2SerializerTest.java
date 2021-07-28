@@ -1,10 +1,10 @@
-package org.apache.uima.json;
+package org.apache.uima.json.json2;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.Json2CasSerializer.ViewsMode.INLINE;
-import static org.apache.uima.json.Json2CasSerializer.ViewsMode.SEPARATE;
+import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.INLINE;
+import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.SEPARATE;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.contentOf;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -16,6 +16,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.json.json2.Json2CasSerializer;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.Before;

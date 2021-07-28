@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json.model.json2;
+package org.apache.uima.json.json2.model;
 
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.Json2Names.COMPONENT_TYPE_FIELD;
-import static org.apache.uima.json.Json2Names.NAME_FIELD;
-import static org.apache.uima.json.Json2Names.SUPER_TYPE_FIELD;
+import static org.apache.uima.json.json2.Json2Names.COMPONENT_TYPE_FIELD;
+import static org.apache.uima.json.json2.Json2Names.NAME_FIELD;
+import static org.apache.uima.json.json2.Json2Names.SUPER_TYPE_FIELD;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

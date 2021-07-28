@@ -1,4 +1,4 @@
-package org.apache.uima.json;
+package org.apache.uima.json.json2;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
 import java.io.File;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.json.json2.Json2CasDeserializer;
+import org.apache.uima.json.json2.Json2CasSerializer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
