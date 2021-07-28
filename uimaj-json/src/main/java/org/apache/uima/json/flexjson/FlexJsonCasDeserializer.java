@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json.json2;
+package org.apache.uima.json.flexjson;
 
 import static com.fasterxml.jackson.core.JsonTokenId.ID_END_ARRAY;
 import static com.fasterxml.jackson.core.JsonTokenId.ID_END_OBJECT;
@@ -29,10 +29,10 @@ import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFASTRING;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SOFA;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
-import static org.apache.uima.json.json2.Json2Names.FEATURE_STRUCTURES_FIELD;
-import static org.apache.uima.json.json2.Json2Names.FLAG_DOCUMENT_ANNOTATION;
-import static org.apache.uima.json.json2.Json2Names.TYPES_FIELD;
-import static org.apache.uima.json.json2.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.FLAG_DOCUMENT_ANNOTATION;
+import static org.apache.uima.json.flexjson.Json2Names.TYPES_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.VIEWS_FIELD;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,20 +44,20 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.json.json2.model.Json2FeatureStructure;
-import org.apache.uima.json.json2.model.Json2Type;
+import org.apache.uima.json.flexjson.model.Json2FeatureStructure;
+import org.apache.uima.json.flexjson.model.Json2Type;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-public class Json2CasDeserializer {
+public class FlexJsonCasDeserializer {
   private final JsonParser parser;
 
   private Map<String, Json2Type> types;
 
   private Map<String, CAS> views;
 
-  public Json2CasDeserializer(JsonParser aParser) {
+  public FlexJsonCasDeserializer(JsonParser aParser) {
     parser = aParser;
   }
 

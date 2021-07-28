@@ -1,10 +1,10 @@
-package org.apache.uima.json.json2;
+package org.apache.uima.json.flexjson;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.INLINE;
-import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.SEPARATE;
+import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.ViewsMode.INLINE;
+import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.ViewsMode.SEPARATE;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.contentOf;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -16,7 +16,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.json.json2.Json2CasSerializer;
+import org.apache.uima.json.flexjson.FlexJsonCasSerializer;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.Before;
@@ -28,7 +28,7 @@ import org.junit.rules.TestName;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Json2SerializerTest {
+public class FlexJsonSerializerTest {
   public @Rule TemporaryFolder temp = new TemporaryFolder();
   public @Rule TestName name = new TestName();
 
@@ -58,7 +58,7 @@ public class Json2SerializerTest {
     CAS secondView = firstView.createView("secondView");
     secondView.setDocumentText("Second view");
 
-    Json2CasSerializer.write(cas, outputFile);
+    FlexJsonCasSerializer.write(cas, outputFile);
 
     assertEquals(contentOf(referenceFile, UTF_8), contentOf(outputFile, UTF_8), STRICT);
   }
@@ -76,7 +76,7 @@ public class Json2SerializerTest {
     secondView.setDocumentText("Second view");
     secondView.addFsToIndexes(fs);
 
-    Json2CasSerializer.builder() //
+    FlexJsonCasSerializer.builder() //
             .setViewsMode(INLINE) //
             .write(cas, outputFile);
 
@@ -96,7 +96,7 @@ public class Json2SerializerTest {
     secondView.setDocumentText("Second view");
     secondView.addFsToIndexes(fs);
 
-    Json2CasSerializer.builder() //
+    FlexJsonCasSerializer.builder() //
             .setViewsMode(SEPARATE) //
             .write(cas, outputFile);
 
@@ -117,7 +117,7 @@ public class Json2SerializerTest {
     AnnotationFS fs = cas.createAnnotation(customType, 0, 10);
     cas.addFsToIndexes(fs);
 
-    Json2CasSerializer.write(cas, outputFile);
+    FlexJsonCasSerializer.write(cas, outputFile);
 
     assertEquals(contentOf(referenceFile, UTF_8), contentOf(outputFile, UTF_8), STRICT);
   }

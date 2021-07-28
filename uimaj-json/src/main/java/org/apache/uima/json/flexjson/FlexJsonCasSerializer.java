@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json.json2;
+package org.apache.uima.json.flexjson;
 
 import static com.fasterxml.jackson.core.JsonEncoding.UTF8;
 import static java.util.Arrays.asList;
@@ -25,18 +25,18 @@ import static java.util.Collections.sort;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
-import static org.apache.uima.json.json2.Json2CasSerializer.FeatureStructuresMode.AS_ARRAY;
-import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.INLINE;
-import static org.apache.uima.json.json2.Json2CasSerializer.ViewsMode.SEPARATE;
-import static org.apache.uima.json.json2.Json2Names.COMPONENT_TYPE_FIELD;
-import static org.apache.uima.json.json2.Json2Names.FEATURE_STRUCTURES_FIELD;
-import static org.apache.uima.json.json2.Json2Names.FLAG_DOCUMENT_ANNOTATION;
-import static org.apache.uima.json.json2.Json2Names.ID_FIELD;
-import static org.apache.uima.json.json2.Json2Names.REF;
-import static org.apache.uima.json.json2.Json2Names.SUPER_TYPE_FIELD;
-import static org.apache.uima.json.json2.Json2Names.TYPES_FIELD;
-import static org.apache.uima.json.json2.Json2Names.TYPE_FIELD;
-import static org.apache.uima.json.json2.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.FeatureStructuresMode.AS_ARRAY;
+import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.ViewsMode.INLINE;
+import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.ViewsMode.SEPARATE;
+import static org.apache.uima.json.flexjson.Json2Names.COMPONENT_TYPE_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.FLAG_DOCUMENT_ANNOTATION;
+import static org.apache.uima.json.flexjson.Json2Names.ID_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.REF;
+import static org.apache.uima.json.flexjson.Json2Names.SUPER_TYPE_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.TYPES_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.TYPE_FIELD;
+import static org.apache.uima.json.flexjson.Json2Names.VIEWS_FIELD;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +64,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Json2CasSerializer {
+public class FlexJsonCasSerializer {
   public enum FeatureStructuresMode {
     AS_OBJECT, AS_ARRAY
   }
@@ -104,7 +104,7 @@ public class Json2CasSerializer {
 
   private Map<FeatureStructure, Set<String>> fsToViewsCache;
 
-  public Json2CasSerializer(JsonGenerator aJg) {
+  public FlexJsonCasSerializer(JsonGenerator aJg) {
     jg = aJg;
     setIdRefGeneratorSupplier(SequentialIdRefGenerator::new);
     setTypeRefGeneratorSupplier(FullyQualifiedTypeRefGenerator::new);
@@ -280,6 +280,9 @@ public class Json2CasSerializer {
       case CAS.TYPE_NAME_INTEGER:
         jg.writeNumber(aFs.getIntValue(aFeature));
         break;
+      case CAS.TYPE_NAME_BOOLEAN:
+        jg.writeBoolean(aFs.getBooleanValue(aFeature));
+        break;
       default:
         throw new IOException("Unsupported primitive type [" + rangeTypeName + "]");
     }
@@ -382,8 +385,8 @@ public class Json2CasSerializer {
       return this;
     }
 
-    public Json2CasSerializer build(JsonGenerator jg) {
-      Json2CasSerializer ser = new Json2CasSerializer(jg);
+    public FlexJsonCasSerializer build(JsonGenerator jg) {
+      FlexJsonCasSerializer ser = new FlexJsonCasSerializer(jg);
       ser.setFeatureStructuresMode(featureStructuresMode);
       ser.setViewsMode(viewsMode);
       ser.setIdRefGeneratorSupplier(idRefGeneratorSupplier);
@@ -396,7 +399,7 @@ public class Json2CasSerializer {
       jsonFactory.setCodec(new ObjectMapper());
       try (JsonGenerator jg = jsonFactory.createGenerator(aTargetFile, UTF8)
               .useDefaultPrettyPrinter()) {
-        Json2CasSerializer ser = build(jg);
+        FlexJsonCasSerializer ser = build(jg);
         ser.write(aCas);
       }
     }
@@ -407,7 +410,7 @@ public class Json2CasSerializer {
     jsonFactory.setCodec(new ObjectMapper());
     try (JsonGenerator jg = jsonFactory.createGenerator(aTargetFile, UTF8)
             .useDefaultPrettyPrinter()) {
-      Json2CasSerializer ser = new Json2CasSerializer(jg);
+      FlexJsonCasSerializer ser = new FlexJsonCasSerializer(jg);
       ser.write(aCas);
     }
   }

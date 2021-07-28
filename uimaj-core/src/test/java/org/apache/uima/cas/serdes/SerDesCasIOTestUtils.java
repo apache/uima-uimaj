@@ -240,7 +240,7 @@ public class SerDesCasIOTestUtils {
     }
   }
 
-  enum CasLoadOptions {
+  public enum CasLoadOptions {
     WITH_TSI
   }
 

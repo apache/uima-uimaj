@@ -48,9 +48,13 @@ public class XmiFileDataSuite {
           "XmiFileDataSuite");
 
   public static List<CasSourceTargetConfiguration> configurations() throws IOException {
+    return configurations(XMI_SUITE_BASE_PATH);
+  }
+
+  public static List<CasSourceTargetConfiguration> configurations(Path aBase) throws IOException {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();
 
-    try (Stream<Path> fileStream = Files.list(XMI_SUITE_BASE_PATH)
+    try (Stream<Path> fileStream = Files.list(aBase)
             .filter(p -> isDirectory(p) && !p.toFile().isHidden())) {
 
       fileStream.forEach(testSuiteFolder -> confs.add(buildConfiguration(testSuiteFolder)));

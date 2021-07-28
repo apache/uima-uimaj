@@ -1,4 +1,4 @@
-package org.apache.uima.json.json2;
+package org.apache.uima.json.flexjson;
 
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.json.json2.Json2CasDeserializer;
+import org.apache.uima.json.flexjson.FlexJsonCasDeserializer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Json2DeserializerTest {
+public class FlexJsonDeserializerTest {
   private static CAS cas;
 
   private JsonFactory jsonFactory;
@@ -32,7 +32,7 @@ public class Json2DeserializerTest {
 
   @Test
   public void thatQuotedStringCanBeParsed() throws Exception {
-    Json2CasDeserializer deser = new Json2CasDeserializer(jsonFactory
+    FlexJsonCasDeserializer deser = new FlexJsonCasDeserializer(jsonFactory
             .createParser(new File("src/test/resources/Json2Deserializer/text_only.json")));
 
     deser.read(cas);
@@ -42,7 +42,7 @@ public class Json2DeserializerTest {
 
   @Test
   public void thatFeatureStructureArrayCanBeParsed() throws Exception {
-    Json2CasDeserializer deser = new Json2CasDeserializer(jsonFactory.createParser(
+    FlexJsonCasDeserializer deser = new FlexJsonCasDeserializer(jsonFactory.createParser(
             new File("src/test/resources/Json2Deserializer/feature_structures_only.json")));
 
     deser.read(cas);

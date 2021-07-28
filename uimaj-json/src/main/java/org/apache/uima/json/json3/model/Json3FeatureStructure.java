@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.json.json2.model;
+package org.apache.uima.json.json3.model;
 
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.json2.Json2Names.ID_FIELD;
-import static org.apache.uima.json.json2.Json2Names.TYPE_FIELD;
-import static org.apache.uima.json.json2.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.json3.Json3Names.ID_FIELD;
+import static org.apache.uima.json.json3.Json3Names.TYPE_FIELD;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import org.apache.uima.json.json2.Json2Names;
+import org.apache.uima.json.json3.Json3Names;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -37,17 +36,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder(value = { "id", "type", "views" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Json2FeatureStructure {
+public class Json3FeatureStructure {
   @JsonProperty(value = ID_FIELD, required = false)
   private String id;
 
   @JsonProperty(value = TYPE_FIELD, required = true, defaultValue = TYPE_NAME_ANNOTATION)
   private String type;
 
-  @JsonProperty(value = Json2Names.FLAGS_FIELD, required = false)
+  @JsonProperty(value = Json3Names.FLAGS_FIELD, required = false)
   private LinkedHashSet<String> flags;
 
-  @JsonProperty(value = VIEWS_FIELD, required = false)
+  @JsonProperty(value = Json3Names.VIEWS_FIELD, required = false)
   private LinkedHashSet<String> views;
 
   private Map<String, Object> features = new LinkedHashMap<>();
@@ -86,7 +85,7 @@ public class Json2FeatureStructure {
 
   @JsonAnySetter
   public void setFeature(String name, Object value) {
-    if (name.startsWith(Json2Names.REF)) {
+    if (name.startsWith(Json3Names.REF)) {
       name = name.substring(1);
     }
 
