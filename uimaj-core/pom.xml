@@ -285,8 +285,9 @@
                   <exclude>src/test/resources/CASTests/CasTypeOrderTestRef.txt</exclude>
                   <exclude>src/test/resources/CASTests/english.txt</exclude>
                   <exclude>src/test/resources/XmiFileDataSuite/README.md</exclude>
-                  <exclude>src/test/resources/XmiFileDataSuite/**/*.xmi</exclude> 
+                  <exclude>src/test/resources/XmiFileDataSuite/**/*.xmi</exclude>
                   <exclude>src/test/resources/XmiFileDataSuite/**/typesystem.xml</exclude> 
+                  <exclude>src/test/resources/ProgrammaticallyCreatedCasDataSuite/**/*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/cas.*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/data.*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug.xmi</exclude>

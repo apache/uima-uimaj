@@ -20,8 +20,10 @@ package org.apache.uima.cas.serdes.datasuites;
 
 import static java.util.Arrays.asList;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -38,7 +40,19 @@ public class ProgrammaticallyCreatedCasDataSuite {
                     .build(),
             CasSourceTargetConfiguration.builder() //
                     .withTitle("casWithTextAndAnnotation") //
-                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithTextAndAnnotation)
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithTextAndAnnotation)
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithSofaDataURI") //
+                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithSofaDataURI)
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithSofaDataArray") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithSofaDataArray)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build());
   }
@@ -59,6 +73,30 @@ public class ProgrammaticallyCreatedCasDataSuite {
 
     Annotation a = new Annotation(cas.getJCas(), 0, cas.getDocumentText().length());
     a.addToIndexes();
+
+    return cas;
+  }
+
+  public static CAS casWithSofaDataURI() throws Exception {
+    CAS cas = CasCreationUtils.createCas();
+    cas.setSofaDataURI(
+            ProgrammaticallyCreatedCasDataSuite.class
+                    .getResource("/ProgrammaticallyCreatedCasDataSuite/document.txt").toString(),
+            "text/plain");
+
+    return cas;
+  }
+
+  public static CAS casWithSofaDataArray() throws Exception {
+    CAS cas = CasCreationUtils.createCas();
+
+    byte[] byteArray = "This is a test".getBytes(StandardCharsets.UTF_8);
+    ByteArrayFS sofaDataArray = cas.createByteArrayFS(byteArray.length);
+    for (int i = 0; i < byteArray.length; i++) {
+      sofaDataArray.set(i, byteArray[i]);
+    }
+
+    cas.setSofaDataArray(sofaDataArray, "text/plain");
 
     return cas;
   }
