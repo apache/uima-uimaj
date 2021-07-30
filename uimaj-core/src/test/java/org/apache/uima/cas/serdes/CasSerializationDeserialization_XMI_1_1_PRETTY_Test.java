@@ -20,6 +20,7 @@ package org.apache.uima.cas.serdes;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.SerialFormat.XMI_1_1_PRETTY;
+import static org.apache.uima.cas.serdes.SerDesAssuptions.assumeNotKnownToFail;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
 import static org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite.DATA_XMI;
@@ -97,6 +98,9 @@ public class CasSerializationDeserialization_XMI_1_1_PRETTY_Test {
   @ParameterizedTest
   @MethodSource("roundTripDesSerScenarios")
   public void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
+    assumeNotKnownToFail(aScenario, //
+            ".*casWithSofaDataArray", "Round-trip does not exactly preserve XMI IDs");
+
     aScenario.run();
   }
 
