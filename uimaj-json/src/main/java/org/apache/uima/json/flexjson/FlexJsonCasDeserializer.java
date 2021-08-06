@@ -29,10 +29,10 @@ import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFASTRING;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SOFA;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
-import static org.apache.uima.json.flexjson.Json2Names.FEATURE_STRUCTURES_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.FLAG_DOCUMENT_ANNOTATION;
-import static org.apache.uima.json.flexjson.Json2Names.TYPES_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.FLAG_DOCUMENT_ANNOTATION;
+import static org.apache.uima.json.flexjson.FlexJsonNames.TYPES_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.VIEWS_FIELD;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -50,6 +50,7 @@ import org.apache.uima.json.flexjson.model.Json2Type;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+@Deprecated
 public class FlexJsonCasDeserializer {
   private final JsonParser parser;
 

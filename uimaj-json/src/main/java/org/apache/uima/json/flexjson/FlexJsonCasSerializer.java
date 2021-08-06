@@ -28,15 +28,15 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.FeatureStructuresMode.AS_ARRAY;
 import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.ViewsMode.INLINE;
 import static org.apache.uima.json.flexjson.FlexJsonCasSerializer.ViewsMode.SEPARATE;
-import static org.apache.uima.json.flexjson.Json2Names.COMPONENT_TYPE_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.FEATURE_STRUCTURES_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.FLAG_DOCUMENT_ANNOTATION;
-import static org.apache.uima.json.flexjson.Json2Names.ID_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.REF;
-import static org.apache.uima.json.flexjson.Json2Names.SUPER_TYPE_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.TYPES_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.TYPE_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.COMPONENT_TYPE_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.FLAG_DOCUMENT_ANNOTATION;
+import static org.apache.uima.json.flexjson.FlexJsonNames.ID_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.REF;
+import static org.apache.uima.json.flexjson.FlexJsonNames.SUPER_TYPE_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.TYPES_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.TYPE_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.VIEWS_FIELD;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +64,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
 public class FlexJsonCasSerializer {
   public enum FeatureStructuresMode {
     AS_OBJECT, AS_ARRAY
@@ -242,7 +243,7 @@ public class FlexJsonCasSerializer {
     }
 
     if (!flags.isEmpty()) {
-      jg.writeArrayFieldStart(Json2Names.FLAGS_FIELD);
+      jg.writeArrayFieldStart(FlexJsonNames.FLAGS_FIELD);
       for (String flag : flags) {
         jg.writeString(flag);
       }
@@ -325,7 +326,7 @@ public class FlexJsonCasSerializer {
     jg.writeStartObject(aType);
 
     if (!typeRef(aType).equals(aType.getName())) {
-      jg.writeStringField(Json2Names.NAME_FIELD, aType.getName());
+      jg.writeStringField(FlexJsonNames.NAME_FIELD, aType.getName());
     }
 
     Type parent = aTypeSystem.getParent(aType);

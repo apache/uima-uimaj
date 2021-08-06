@@ -18,7 +18,8 @@
  */
 package org.apache.uima.json.flexjson;
 
-public class Json2Names {
+@Deprecated
+public class FlexJsonNames {
   private static final String SPECIAL = "%";
 
   public static final String TYPE_FIELD = SPECIAL + "TYPE";

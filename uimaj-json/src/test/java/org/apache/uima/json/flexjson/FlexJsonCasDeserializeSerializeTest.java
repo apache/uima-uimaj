@@ -5,10 +5,11 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
+
 import java.io.File;
+
 import org.apache.uima.cas.CAS;
-import org.apache.uima.json.flexjson.FlexJsonCasDeserializer;
-import org.apache.uima.json.flexjson.FlexJsonCasSerializer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -17,11 +18,13 @@ import org.junit.runners.Parameterized.Parameters;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
+@Ignore("The deserializer is not really implemented...")
 @RunWith(value = Parameterized.class)
 public class FlexJsonCasDeserializeSerializeTest {
   @Parameters(name = "{index}: running on file {0}")
   public static Iterable<File> tsvFiles() {
-    return asList(new File("src/test/resources/Json2SerializerTest/")
+    return asList(new File("src/test/resources/FlexJsonSerializerTest/")
             .listFiles(file -> file.isDirectory()));
   }
 
@@ -46,7 +49,8 @@ public class FlexJsonCasDeserializeSerializeTest {
 
   @Test
   public void testReadWrite() throws Exception {
-    FlexJsonCasDeserializer deser = new FlexJsonCasDeserializer(jsonFactory.createParser(referenceFile));
+    FlexJsonCasDeserializer deser = new FlexJsonCasDeserializer(
+            jsonFactory.createParser(referenceFile));
     deser.read(cas);
 
     FlexJsonCasSerializer.builder().write(cas, outputFile);

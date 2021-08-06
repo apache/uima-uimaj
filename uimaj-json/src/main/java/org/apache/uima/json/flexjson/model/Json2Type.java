@@ -19,9 +19,9 @@
 package org.apache.uima.json.flexjson.model;
 
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.flexjson.Json2Names.COMPONENT_TYPE_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.NAME_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.SUPER_TYPE_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.COMPONENT_TYPE_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.NAME_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.SUPER_TYPE_FIELD;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@Deprecated
 @JsonPropertyOrder(value = { "name", "parent", "componentType" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Json2Type {

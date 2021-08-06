@@ -19,15 +19,15 @@
 package org.apache.uima.json.flexjson.model;
 
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
-import static org.apache.uima.json.flexjson.Json2Names.ID_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.TYPE_FIELD;
-import static org.apache.uima.json.flexjson.Json2Names.VIEWS_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.ID_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.TYPE_FIELD;
+import static org.apache.uima.json.flexjson.FlexJsonNames.VIEWS_FIELD;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import org.apache.uima.json.flexjson.Json2Names;
+import org.apache.uima.json.jsoncas2.JsonCas2Names;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@Deprecated
 @JsonPropertyOrder(value = { "id", "type", "views" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Json2FeatureStructure {
@@ -44,7 +45,7 @@ public class Json2FeatureStructure {
   @JsonProperty(value = TYPE_FIELD, required = true, defaultValue = TYPE_NAME_ANNOTATION)
   private String type;
 
-  @JsonProperty(value = Json2Names.FLAGS_FIELD, required = false)
+  @JsonProperty(value = JsonCas2Names.FLAGS_FIELD, required = false)
   private LinkedHashSet<String> flags;
 
   @JsonProperty(value = VIEWS_FIELD, required = false)
@@ -86,7 +87,7 @@ public class Json2FeatureStructure {
 
   @JsonAnySetter
   public void setFeature(String name, Object value) {
-    if (name.startsWith(Json2Names.REF)) {
+    if (name.startsWith(JsonCas2Names.REF_FEATURE_PREFIX)) {
       name = name.substring(1);
     }
 

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.json.flexjson.FlexJsonCasDeserializer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
 public class FlexJsonDeserializerTest {
   private static CAS cas;
 
@@ -33,7 +33,7 @@ public class FlexJsonDeserializerTest {
   @Test
   public void thatQuotedStringCanBeParsed() throws Exception {
     FlexJsonCasDeserializer deser = new FlexJsonCasDeserializer(jsonFactory
-            .createParser(new File("src/test/resources/Json2Deserializer/text_only.json")));
+            .createParser(new File("src/test/resources/FlexJsonDeserializer/text_only.json")));
 
     deser.read(cas);
 
@@ -43,7 +43,7 @@ public class FlexJsonDeserializerTest {
   @Test
   public void thatFeatureStructureArrayCanBeParsed() throws Exception {
     FlexJsonCasDeserializer deser = new FlexJsonCasDeserializer(jsonFactory.createParser(
-            new File("src/test/resources/Json2Deserializer/feature_structures_only.json")));
+            new File("src/test/resources/FlexJsonDeserializer/feature_structures_only.json")));
 
     deser.read(cas);
 

@@ -22,6 +22,7 @@ import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.writeTypeSystemDes
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.writeXmi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -98,7 +99,7 @@ public class SerRefTestScenario implements Runnable {
     writeTypeSystemDescription(sourceCas, targetCasFile.resolveSibling("debug-typesystem.xml"));
 
     // Compare the serialized CAS file against the reference
-    assertThat(referenceCasFile.toFile()) //
+    assumeThat(referenceCasFile.toFile()) //
             .as("Reference file must exists at %s", referenceCasFile) //
             .exists();
     assertThat(contentOf(targetCasFile.toFile())) //
