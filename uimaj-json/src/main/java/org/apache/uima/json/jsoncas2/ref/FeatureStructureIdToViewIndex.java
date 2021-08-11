@@ -19,8 +19,8 @@
 package org.apache.uima.json.jsoncas2.ref;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class FeatureStructureIdToViewIndex {
   private Map<Integer, Set<String>> fsIdToViewsCache;
 
   public FeatureStructureIdToViewIndex() {
-    fsIdToViewsCache = new IdentityHashMap<>();
+    fsIdToViewsCache = new HashMap<>();
   }
 
   public Set<String> getViewsContainingFs(int aFsId) {

@@ -18,13 +18,20 @@
  */
 package org.apache.uima.json.jsoncas2;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.cas.serdes.TestType.ONE_WAY;
+import static org.apache.uima.cas.serdes.TestType.SER_DES;
 import static org.apache.uima.cas.serdes.TestType.SER_REF;
 import static org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite.XMI_SUITE_BASE_PATH;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -34,8 +41,10 @@ import org.apache.uima.cas.serdes.SerDesCasIOTestUtils;
 import org.apache.uima.cas.serdes.datasuites.ProgrammaticallyCreatedCasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
+import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
 import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
+import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
 import org.apache.uima.util.CasCreationUtils;
@@ -45,11 +54,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
 
   private static final String CAS_FILE_NAME = "data.json";
-  // private static final int RANDOM_CAS_ITERATIONS = 20;
-  //
-  // private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
-  // new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-  // (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
+  private static final int RANDOM_CAS_ITERATIONS = 20;
+
+  private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
+          new CasSerDesCycleConfiguration("DEFAULT", //
+                  (a, b) -> serdes(a, b)));
   // new CasSerDesCycleConfiguration(FORMAT + " / LENIENT", //
   // (a, b) -> serdes(a, b, FORMAT, LENIENT)));
 
@@ -69,10 +78,34 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
     deserializer.deserialize(aSourceCasFile.toFile(), aTargetCas);
   }
 
+  public static void serdes(CAS aSourceCas, CAS aTargetCas) throws Exception {
+    byte[] buffer;
+    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+      JsonCas2Serializer serializer = new JsonCas2Serializer();
+      serializer.setFsMode(FeatureStructuresMode.AS_ARRAY);
+      serializer.setSofaMode(SofaMode.AS_REGULAR_FEATURE_STRUCTURE);
+      serializer.serialize(aSourceCas, os);
+      buffer = os.toByteArray();
+    }
+
+    Path targetFile = SER_DES.getTargetFolder(lookup().lookupClass()).resolve(CAS_FILE_NAME);
+    Files.createDirectories(targetFile.getParent());
+    try (OutputStream os = Files.newOutputStream(targetFile)) {
+      os.write(buffer);
+    }
+
+    try (InputStream is = new ByteArrayInputStream(buffer)) {
+      JsonCas2Deserializer deserializer = new JsonCas2Deserializer();
+      deserializer.deserialize(is, aTargetCas);
+    }
+
+    System.out.printf("Source annotations: %d%n", aSourceCas.getAnnotationIndex().size());
+    System.out.printf("Target annotations: %d%n", aTargetCas.getAnnotationIndex().size());
+  }
+
   public static void desser(CAS aBufferCas, Path aSourceCasPath, Path aTargetCasPath)
           throws Exception {
     des(aBufferCas, aSourceCasPath);
-
     ser(aBufferCas, aTargetCasPath);
   }
 
@@ -100,10 +133,10 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
   // private static List<SerDesTestScenario> serDesScenarios() {
   // return SerDesCasIOTestUtils.serDesScenarios(serDesCycles);
   // }
-  //
-  // private static List<SerDesTestScenario> randomSerDesScenarios() {
-  // return SerDesCasIOTestUtils.randomSerDesScenarios(serDesCycles, RANDOM_CAS_ITERATIONS);
-  // }
+
+  private static List<SerDesTestScenario> randomSerDesScenarios() {
+    return SerDesCasIOTestUtils.randomSerDesScenarios(serDesCycles, RANDOM_CAS_ITERATIONS);
+  }
 
   @ParameterizedTest
   @MethodSource("serRefScenarios")
@@ -122,12 +155,12 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
   // public void serializeDeserializeTest(Runnable aScenario) throws Exception {
   // aScenario.run();
   // }
-  //
-  // @ParameterizedTest
-  // @MethodSource("randomSerDesScenarios")
-  // public void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
-  // aScenario.run();
-  // }
+
+  @ParameterizedTest
+  @MethodSource("randomSerDesScenarios")
+  public void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
+    aScenario.run();
+  }
 
   @ParameterizedTest
   @MethodSource("roundTripDesSerScenarios")

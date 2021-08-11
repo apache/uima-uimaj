@@ -20,6 +20,7 @@ package org.apache.uima.json.jsoncas2;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
@@ -38,10 +39,11 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class JsonCas2Deserializer {
-  public void deserialize(File aSourceFile, CAS aTargetCas) throws IOException {
+  private ObjectReader getReader() {
     SimpleModule module = new SimpleModule("UIMA CAS JSON", new Version(1, 0, 0, null, null, null));
 
     module.addDeserializer(CAS.class, new CasDeserializer());
@@ -54,9 +56,18 @@ public class JsonCas2Deserializer {
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(module);
-    mapper.reader() //
-            .forType(CAS.class) //
+    return mapper.reader().forType(CAS.class);
+  }
+
+  public void deserialize(File aSourceFile, CAS aTargetCas) throws IOException {
+    getReader() //
             .withAttribute(CasDeserializer.CONTEXT_CAS, aTargetCas) //
             .readValue(aSourceFile);
+  }
+
+  public void deserialize(InputStream aSourceStream, CAS aTargetCas) throws IOException {
+    getReader() //
+            .withAttribute(CasDeserializer.CONTEXT_CAS, aTargetCas) //
+            .readValue(aSourceStream);
   }
 }

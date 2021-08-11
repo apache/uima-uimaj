@@ -20,6 +20,7 @@ package org.apache.uima.json.jsoncas2;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
@@ -38,6 +39,7 @@ import org.apache.uima.json.jsoncas2.ser.ViewsSerializer;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class JsonCas2Serializer {
@@ -61,7 +63,7 @@ public class JsonCas2Serializer {
     return sofaMode;
   }
 
-  public void serialize(CAS aCas, File aTargetFile) throws IOException {
+  private ObjectWriter getWriter() {
     SimpleModule module = new SimpleModule("UIMA CAS JSON", new Version(1, 0, 0, null, null, null));
 
     ReferenceCache.Builder refCacheBuilder = ReferenceCache.builder();
@@ -95,9 +97,17 @@ public class JsonCas2Serializer {
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(module);
-    mapper.writerWithDefaultPrettyPrinter() //
+    return mapper.writerWithDefaultPrettyPrinter() //
             .withAttribute(SofaMode.KEY, sofaMode) //
-            .withAttribute(FeatureStructuresMode.KEY, fsMode) //
-            .writeValue(aTargetFile, aCas);
+            .withAttribute(FeatureStructuresMode.KEY, fsMode);
+
+  }
+
+  public void serialize(CAS aCas, File aTargetFile) throws IOException {
+    getWriter().writeValue(aTargetFile, aCas);
+  }
+
+  public void serialize(CAS aCas, OutputStream aTargetStream) throws IOException {
+    getWriter().writeValue(aTargetStream, aCas);
   }
 }
