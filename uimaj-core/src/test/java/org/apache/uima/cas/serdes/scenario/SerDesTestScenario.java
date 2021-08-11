@@ -18,7 +18,6 @@
  */
 package org.apache.uima.cas.serdes.scenario;
 
-import static java.util.Comparator.comparing;
 import static org.apache.uima.cas.serdes.CasToComparableText.toComparableString;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,6 +32,7 @@ import org.assertj.core.internal.Failures;
 
 public class SerDesTestScenario implements Runnable {
   private final String title;
+  private final String debugInfo;
   private final FailableSupplier<CAS, ?> sourceCasSupplier;
   private final FailableSupplier<CAS, ?> targetCasSupplier;
   private final FailableBiConsumer<CAS, CAS, ?> cycle;
@@ -40,6 +40,7 @@ public class SerDesTestScenario implements Runnable {
   public SerDesTestScenario(CasSourceTargetConfiguration aSourceTargetConfig,
           CasSerDesCycleConfiguration aCycle) {
     title = aCycle.getTitle() + " - " + aSourceTargetConfig.getTitle();
+    debugInfo = aSourceTargetConfig.getDebugInfo();
     sourceCasSupplier = aSourceTargetConfig::createSourceCas;
     targetCasSupplier = aSourceTargetConfig::createTargetCas;
     cycle = aCycle::performCycle;
@@ -48,6 +49,7 @@ public class SerDesTestScenario implements Runnable {
   public SerDesTestScenario(String aTitle, FailableSupplier<CAS, ?> aSourceCasSupplier,
           FailableSupplier<CAS, ?> aTargetCasSupplier, FailableBiConsumer<CAS, CAS, ?> aCycle) {
     title = aTitle;
+    debugInfo = "no additional details";
     sourceCasSupplier = aSourceCasSupplier;
     targetCasSupplier = aTargetCasSupplier;
     cycle = aCycle;
@@ -83,11 +85,12 @@ public class SerDesTestScenario implements Runnable {
     serializationDeserializationCycle(sourceCas, targetCas);
 
     // Compare the de-serialized CAS against the original CAS
-    assertThat(targetCas) //
-            .usingComparator(comparing(cas -> toComparableString(cas))) //
-            .isEqualTo(sourceCas);
+    assertThat(toComparableString(targetCas)) //
+            .as("Comparable string representation must match (%s)", debugInfo)
+            .isEqualTo(toComparableString(sourceCas));
 
     assertThat(targetCas) //
+            .as("CasCompare comparison must match (%s)", debugInfo)
             .usingComparator((a, b) -> CasCompare.compareCASes((CASImpl) a, (CASImpl) b) ? 0 : 1) //
             .isEqualTo(sourceCas);
   }

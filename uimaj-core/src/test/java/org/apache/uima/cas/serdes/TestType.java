@@ -52,7 +52,13 @@ public enum TestType {
    * the derserialization mechanism for special cases that cannot be covered by {@link #ONE_WAY} or
    * {@link #ROUND_TRIP}.
    */
-  DES_REF(null, "des-ref", "des-ref");
+  DES_REF(null, "des-ref", "des-ref"),
+
+  /**
+   * Test serializes a CAS object from memory and then de-serializes it again. The target folder is
+   * used to store the intermediate representation for debugging purposes.
+   */
+  SER_DES(null, "ser-des", null);
 
   private String sourceFolderName;
   private String referenceFolderName;

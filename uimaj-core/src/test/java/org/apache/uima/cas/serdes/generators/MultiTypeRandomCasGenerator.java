@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalLong;
 import java.util.Random;
 
 import org.apache.uima.cas.CAS;
@@ -36,6 +37,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
 public class MultiTypeRandomCasGenerator implements CasGenerator {
+  private final Long seed;
   private final Random rnd;
   private final int size;
   private final int minimumWidth;
@@ -43,11 +45,16 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
   private final int typeCount;
 
   private MultiTypeRandomCasGenerator(Builder builder) {
-    this.rnd = builder.randomGenerator;
+    this.seed = builder.seed;
+    this.rnd = builder.randomizer != null ? builder.randomizer : new Random(seed);
     this.size = builder.size;
     this.minimumWidth = builder.minimumWidth;
     this.writeLog = builder.writeLog;
     this.typeCount = builder.typeCount;
+  }
+
+  public OptionalLong getSeed() {
+    return seed != null ? OptionalLong.of(seed) : OptionalLong.empty();
   }
 
   @Override
@@ -130,7 +137,8 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
    * Builder to build {@link MultiTypeRandomCasGenerator}.
    */
   public static final class Builder {
-    private Random randomGenerator;
+    private Long seed;
+    private Random randomizer;
     private int size;
     private int minimumWidth;
     private boolean writeLog;
@@ -139,8 +147,11 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
     private Builder() {
     }
 
-    public Builder withRandomGenerator(Random rnd) {
-      this.randomGenerator = rnd;
+    public Builder withRandomSeed(long aSeed) {
+      if (randomizer != null) {
+        throw new IllegalStateException("Can either set a random seed or a randomizer");
+      }
+      this.seed = aSeed;
       return this;
     }
 
@@ -165,11 +176,19 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
     }
 
     public MultiTypeRandomCasGenerator build() {
-      if (randomGenerator == null) {
-        randomGenerator = new Random();
+      if (seed == null && randomizer == null) {
+        seed = new Random().nextLong();
       }
 
       return new MultiTypeRandomCasGenerator(this);
+    }
+
+    public Builder withRandomGenerator(Random aRnd) {
+      if (seed != null) {
+        throw new IllegalStateException("Can either set a random seed or a randomizer");
+      }
+      randomizer = aRnd;
+      return this;
     }
   }
 }

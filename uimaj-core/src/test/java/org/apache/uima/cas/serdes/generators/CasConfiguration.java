@@ -21,6 +21,7 @@ package org.apache.uima.cas.serdes.generators;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 
 public class CasConfiguration {
   private final CasGenerator randomizer;
@@ -44,6 +45,6 @@ public class CasConfiguration {
   }
 
   public CAS generateTargetCas() throws ResourceInitializationException {
-    return randomizer.generateCas(generateTypeSystem());
+    return CasCreationUtils.createCas(generateTypeSystem(), null, null, null);
   }
 }

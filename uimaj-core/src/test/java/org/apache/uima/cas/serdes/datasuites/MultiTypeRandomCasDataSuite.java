@@ -27,20 +27,26 @@ import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 
 public class MultiTypeRandomCasDataSuite {
 
+  private static final int SIZE_FACTOR = 10;
+
   public static List<CasSourceTargetConfiguration> configurations(int aCount) {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();
 
     for (int n = 0; n < aCount; n++) {
       MultiTypeRandomCasGenerator randomizer = MultiTypeRandomCasGenerator.builder() //
-              .withTypeCount(aCount + 1) //
+              // NOTE: When you need to debug a certain configuration, comment out and set the
+              // random seed for the broken configuration. Do not commit with this line active!
+              // .withRandomSeed(-5987713889340419492l) //
+              .withTypeCount(n + 1) //
               .withMinimumAnnotationLength(0) //
-              .withSize((aCount + 1) * 10) //
+              .withSize((n + 1) * SIZE_FACTOR) //
               .build();
 
       CasConfiguration cfg = new CasConfiguration(randomizer);
 
       confs.add(CasSourceTargetConfiguration.builder() //
-              .withTitle("randomCas-" + (n + 1)) //
+              .withTitle("MultiTypeRandomCasDataSuite-" + (n + 1)) //
+              .withDebugInfo("Random seed: " + randomizer.getSeed()) //
               .withSourceCasSupplier(cfg::generateRandomCas) //
               .withTargetCasSupplier(cfg::generateTargetCas) //
               .build());

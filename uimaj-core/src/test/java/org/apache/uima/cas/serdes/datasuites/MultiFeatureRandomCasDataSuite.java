@@ -38,7 +38,7 @@ public class MultiFeatureRandomCasDataSuite {
       CasConfiguration cfg = new CasConfiguration(randomizer);
 
       confs.add(CasSourceTargetConfiguration.builder() //
-              .withTitle("randomCas-" + (n + 1)) //
+              .withTitle("MultiFeatureRandomCasDataSuite-" + (n + 1)) //
               .withSourceCasSupplier(cfg::generateRandomCas) //
               .withTargetCasSupplier(cfg::generateTargetCas) //
               .build());
