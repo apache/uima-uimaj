@@ -18,16 +18,10 @@
  */
 package org.apache.uima.internal.util;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import junit.framework.TestCase;
 
 /**
  * Helper class for running multi-core tests.
@@ -37,7 +31,7 @@ import junit.framework.TestCase;
  * are reflected back.
  *
  */
-public class MultiThreadUtils extends TestCase {
+public class MultiThreadUtils {
 
   public final static boolean debug = false;
 
@@ -53,7 +47,7 @@ public class MultiThreadUtils extends TestCase {
 
   // also serves as a lock
 
-  private enum ThreadControl {
+  enum ThreadControl {
     WAIT, // causes test thread to wait, is the initial state
     RUN, // causes test thread to run; when run is done, thread goes back to waiting and sets global
          // entry in thread array to WAIT
@@ -63,58 +57,6 @@ public class MultiThreadUtils extends TestCase {
   private static final AtomicInteger numberRunning = new AtomicInteger(0);
 
   private static final AtomicInteger numberOfExceptions = new AtomicInteger(0);
-
-  public void testMultiThreadTimers() {
-
-    final int numberOfTimers = 50;
-    final Timer[] timers = new Timer[numberOfTimers];
-
-    final ThreadControl[][] threadState = new ThreadControl[50][1];
-
-    final int[] repeatNumber = { 0 };
-
-    long startTime = System.nanoTime();
-    for (int i = 0; i < numberOfTimers; i++) {
-      final int finalI = i;
-      threadState[i][0] = ThreadControl.WAIT;
-
-      final Timer timer = new Timer();
-      timers[i] = timer;
-      timer.schedule(new TimerTask() {
-        @Override
-        public void run() {
-          // System.out.format("%nTimer %d Popped%n", finalI);
-        }
-      }, 1);
-    }
-    System.out.format(
-            "Time to create and start %d timers with separate Timer instances: %,d microsec%n",
-            numberOfTimers, (System.nanoTime() - startTime) / 1000);
-  }
-
-  public static void testMultiThreadExecutors() {
-
-    final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    final int numberOfTimers = 50;
-    final ScheduledFuture<?>[] timers = new ScheduledFuture<?>[numberOfTimers];
-
-    long startTime = System.nanoTime();
-    for (int i = 0; i < numberOfTimers; i++) {
-      final int finalI = i;
-
-      final ScheduledFuture<?> timer = scheduler.schedule(new Runnable() {
-
-        @Override
-        public void run() {
-          // System.out.format("%nScheduled Timer %d Popped%n", finalI);
-        }
-      }, 1, TimeUnit.MILLISECONDS);
-      timers[i] = timer;
-    }
-    System.out.format(
-            "Time to create and start %d timers using a single, reused thread and ScheduledExecutorService: %,d microsec%n",
-            numberOfTimers, (System.nanoTime() - startTime) / 1000);
-  }
 
 //@formatter:off
   /**
@@ -195,11 +137,11 @@ public class MultiThreadUtils extends TestCase {
                   return;
                 }
               }
-              assertEquals(ThreadControl.RUN, threadState[finalI][0]);
+              assertThat(threadState[finalI][0]).isEqualTo(ThreadControl.RUN);
             }
 
             try {
-              assertTrue(numberRunning.get() > 0);
+              assertThat(numberRunning.get()).isGreaterThan(0);
               sb.append(name).append(", thread ").append(finalI).append(' ');
               // System.out.println(sb.toString());
               run2isb.call(finalI, repeatNumber[0], sb);
@@ -239,18 +181,18 @@ public class MultiThreadUtils extends TestCase {
       beforeRepeat.run();
 
       repeatNumber[0] = r;
-      assertTrue(numberRunning.get() == 0);
+      assertThat(numberRunning.get()).isEqualTo(0);
       if (numberOfExceptions.get() != 0) {
         System.out.println("debug");
       }
-      assertTrue(numberOfExceptions.get() == 0);
+      assertThat(numberOfExceptions.get()).isEqualTo(0);
 
       startTime = System.nanoTime();
 
       // release all threads from wait point
       for (int i = 0; i < numberOfThreads; i++) {
         synchronized (threadState[i]) {
-          assertEquals(ThreadControl.WAIT, threadState[i][0]);
+          assertThat(threadState[i][0]).isEqualTo(ThreadControl.WAIT);
           threadState[i][0] = ThreadControl.RUN;
           numberRunning.incrementAndGet();
           threadState[i].notify();
@@ -270,7 +212,7 @@ public class MultiThreadUtils extends TestCase {
       }
       for (int i = 0; i < numberOfThreads; i++) {
         synchronized (threadState[i]) {
-          assertEquals(ThreadControl.WAIT, threadState[i][0]);
+          assertThat(threadState[i][0]).isEqualTo(ThreadControl.WAIT);
         }
       }
     } // end of repeat loop
