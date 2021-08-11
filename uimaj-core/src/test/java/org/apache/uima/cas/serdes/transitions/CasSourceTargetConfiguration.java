@@ -24,11 +24,13 @@ import org.assertj.core.internal.Failures;
 
 public class CasSourceTargetConfiguration {
   private final String title;
+  private final String debugInfo;
   private final FailableSupplier<CAS, ?> sourceCasSupplier;
   private final FailableSupplier<CAS, ?> targetCasSupplier;
 
   private CasSourceTargetConfiguration(Builder builder) {
     this.title = builder.title;
+    this.debugInfo = builder.debugInfo;
     this.sourceCasSupplier = builder.sourceCasSupplier;
     this.targetCasSupplier = builder.targetCasSupplier;
   }
@@ -57,6 +59,10 @@ public class CasSourceTargetConfiguration {
     return title;
   }
 
+  public String getDebugInfo() {
+    return debugInfo;
+  }
+
   /**
    * Creates builder to build {@link CasSourceTargetConfiguration}.
    * 
@@ -71,6 +77,7 @@ public class CasSourceTargetConfiguration {
    */
   public static final class Builder {
     private String title;
+    private String debugInfo;
     private FailableSupplier<CAS, ?> sourceCasSupplier;
     private FailableSupplier<CAS, ?> targetCasSupplier;
 
@@ -79,6 +86,11 @@ public class CasSourceTargetConfiguration {
 
     public Builder withTitle(String aTitle) {
       title = aTitle;
+      return this;
+    }
+
+    public Builder withDebugInfo(String aDebugInfo) {
+      debugInfo = aDebugInfo;
       return this;
     }
 
