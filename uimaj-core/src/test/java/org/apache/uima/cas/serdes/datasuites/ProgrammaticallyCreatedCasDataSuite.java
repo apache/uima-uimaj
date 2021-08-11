@@ -79,10 +79,8 @@ public class ProgrammaticallyCreatedCasDataSuite {
 
   public static CAS casWithSofaDataURI() throws Exception {
     CAS cas = CasCreationUtils.createCas();
-    cas.setSofaDataURI(
-            ProgrammaticallyCreatedCasDataSuite.class
-                    .getResource("/ProgrammaticallyCreatedCasDataSuite/document.txt").toString(),
-            "text/plain");
+    // NOTE: UIMA does not try to resolve the URI and also does not support "classpath:" URIs!
+    cas.setSofaDataURI("classpath:/ProgrammaticallyCreatedCasDataSuite/document.txt", "text/plain");
 
     return cas;
   }
