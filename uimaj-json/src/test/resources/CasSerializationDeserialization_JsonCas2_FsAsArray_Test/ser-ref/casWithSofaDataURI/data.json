@@ -12,6 +12,6 @@
     "sofaNum" : 1,
     "sofaID" : "_InitialView",
     "mimeType" : "text/plain",
-    "sofaURI" : "file:/Users/rec/git/GROUP-oss/uima-uimaj/uimaj-core/target/test-classes/ProgrammaticallyCreatedCasDataSuite/document.txt"
+    "sofaURI" : "classpath:/ProgrammaticallyCreatedCasDataSuite/document.txt"
   } ]
 }
