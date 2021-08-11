@@ -30,21 +30,22 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class BinaryCasSerDesPerformance extends TestCase {
+public class BinaryCasSerDesPerformance {
 
   // Note: This test case requires an input directory that has
   // 1) a file typesystem.xml which has the type system for the serialized files
   // 2) a bunch of files having compressed serialized CASes
   // Set the directory in the 2nd line below
+  @Test
   public void testBinaryCasDeserialization6Performance() throws Exception {
 
     File dir = new File("" /* "/au/t/data/bin-compr-6/shakespeare.txt_40_processed" */);
 
-    if (!dir.exists())
+    if (!dir.exists()) {
       return;
+    }
 
     File typeSystemFile = new File(dir, "typesystem.xml");
     XMLInputSource in = new XMLInputSource(typeSystemFile);
