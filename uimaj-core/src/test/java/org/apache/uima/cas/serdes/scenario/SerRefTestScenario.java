@@ -32,8 +32,11 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.serdes.TestType;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.assertj.core.internal.Failures;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SerRefTestScenario implements Runnable {
+  private final Logger log = LoggerFactory.getLogger(getClass());
   private final String title;
   private final FailableSupplier<CAS, ?> sourceCasSupplier;
   private final Path referenceCasFile;
@@ -87,6 +90,7 @@ public class SerRefTestScenario implements Runnable {
     CAS sourceCas = createSourceCas();
 
     // Serialize CAS to target file
+    log.info("Serializing source CAS to {}", targetCasFile);
     serialize(sourceCas, targetCasFile);
 
     // Additionally, serialize the data as XMI and also write the type system

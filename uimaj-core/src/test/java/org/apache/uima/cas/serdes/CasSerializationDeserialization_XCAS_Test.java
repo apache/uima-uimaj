@@ -20,6 +20,7 @@ package org.apache.uima.cas.serdes;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.SerialFormat.XCAS;
+import static org.apache.uima.cas.serdes.SerDesAssuptions.assumeNotKnownToFail;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
@@ -85,6 +86,10 @@ public class CasSerializationDeserialization_XCAS_Test {
   @ParameterizedTest
   @MethodSource("serDesScenarios")
   public void serializeDeserializeTest(Runnable aScenario) throws Exception {
+    assumeNotKnownToFail(aScenario, //
+            ".*casWithSofaDataArray",
+            "XCAS does not suport SofA data arrays during deserialiaztion");
+
     aScenario.run();
   }
 
@@ -97,6 +102,10 @@ public class CasSerializationDeserialization_XCAS_Test {
   @ParameterizedTest
   @MethodSource("roundTripDesSerScenarios")
   public void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
+    assumeNotKnownToFail(aScenario, //
+            ".*casWithSofaDataArray",
+            "XCAS does not suport SofA data arrays during deserialiaztion");
+
     aScenario.run();
   }
 
