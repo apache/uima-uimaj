@@ -18,7 +18,7 @@
  */
 package org.apache.uima.json.jsoncas2.ref;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -34,8 +34,8 @@ public class FeatureStructureToIdIndex {
   private Map<Integer, FeatureStructure> idToFsIndex;
 
   public FeatureStructureToIdIndex() {
-    idToFsIndex = new IdentityHashMap<>();
-    fsToIdIndex = new IdentityHashMap<>();
+    idToFsIndex = new HashMap<>();
+    fsToIdIndex = new HashMap<>();
   }
 
   public void put(int aFsId, FeatureStructure aFs) {

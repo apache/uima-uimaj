@@ -22,6 +22,7 @@ import static org.apache.uima.json.jsoncas2.JsonCas2Names.ELEMENTS_FIELD;
 
 import java.io.IOException;
 
+import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
@@ -51,6 +52,15 @@ public class CommonArrayFSSerializer extends FeatureStructureSerializer_ImplBase
           throws IOException {
     aJg.writeFieldName(ELEMENTS_FIELD);
     switch (aFs.getType().getName()) {
+      case CAS.TYPE_NAME_BOOLEAN_ARRAY: {
+        aJg.writeStartArray();
+        boolean[] values = ((BooleanArrayFS) aFs).toArray();
+        for (int i = 0; i < values.length; i++) {
+          aJg.writeBoolean(values[i]);
+        }
+        aJg.writeEndArray();
+        break;
+      }
       case CAS.TYPE_NAME_BYTE_ARRAY: {
         aJg.writeBinary(((ByteArrayFS) aFs).toArray());
         break;

@@ -55,8 +55,6 @@ public class TypeDeSerializerTest {
             .withAttribute(ReferenceCache.KEY, ReferenceCache.builder().build()) //
             .writeValueAsString(ts.getType("Type1"));
 
-    log.info(json);
-
     TypeDescription tdActual = mapper.reader() //
             .forType(TypeDescription.class) //
             .readValue(json);

@@ -26,13 +26,14 @@ import org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 
 public class MultiFeatureRandomCasDataSuite {
+  private static final int SIZE_FACTOR = 10;
 
   public static List<CasSourceTargetConfiguration> configurations(int aCount) {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();
 
     for (int n = 0; n < aCount; n++) {
       MultiFeatureRandomCasGenerator randomizer = MultiFeatureRandomCasGenerator.builder() //
-              .withSize((aCount + 1) * 10) //
+              .withSize((aCount + 1) * SIZE_FACTOR) //
               .build();
 
       CasConfiguration cfg = new CasConfiguration(randomizer);

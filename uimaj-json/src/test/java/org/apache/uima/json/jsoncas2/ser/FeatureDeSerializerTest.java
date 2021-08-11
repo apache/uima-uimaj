@@ -115,13 +115,10 @@ public class FeatureDeSerializerTest {
 
     StringWriter buf = new StringWriter();
     TypeSystemUtil.type2TypeDescription(ts.getType(TYPE), ts).toXML(buf);
-    log.info("{}", buf);
 
     String json = mapper.writer() //
             .withAttribute(ReferenceCache.KEY, ReferenceCache.builder().build()) //
             .writeValueAsString(ts.getType(TYPE).getFeatureByBaseName(FEATURE));
-
-    log.info(json);
 
     FeatureDescription fdActual = mapper.reader() //
             .forType(FeatureDescription.class) //

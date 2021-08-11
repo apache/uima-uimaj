@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.DoubleArrayFS;
@@ -203,6 +204,7 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     // Randomly link feature structures to each other
     for (FeatureStructure fs : lfss) {
       fs.setFeatureValue(akofFs, lfss.get(rnd.nextInt(lfss.size())));
+      ((ArrayFS) fs.getFeatureValue(akofAfs)).set(0, lfss.get(rnd.nextInt(lfss.size())));
     }
   }
 
@@ -334,7 +336,7 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
    * Builder to build {@link MultiFeatureRandomCasGenerator}.
    */
   public static final class Builder {
-    private boolean isKeep;
+    private boolean isKeep = true;
     private boolean includeUid;
     private Random randomGenerator;
     private int size;

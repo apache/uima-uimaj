@@ -44,7 +44,8 @@ public class JsonCas2Names {
 
   public static final String VIEW_INDEX_FIELD = RESERVED_FIELD_PREFIX + "INDEX";
 
-  public static final String FEATURE_STRUCTURES_FIELD = RESERVED_FIELD_PREFIX + "FEATURE_STRUCTURES";
+  public static final String FEATURE_STRUCTURES_FIELD = RESERVED_FIELD_PREFIX
+          + "FEATURE_STRUCTURES";
 
   public static final String REF_FEATURE_PREFIX = "@";
 
@@ -64,7 +65,7 @@ public class JsonCas2Names {
 
   public static final String ID_FIELD = RESERVED_FIELD_PREFIX + "ID";
 
-  public static final String FLAGS_FIELD = RESERVED_FIELD_PREFIX + "FLAGS";
+  // public static final String FLAGS_FIELD = RESERVED_FIELD_PREFIX + "FLAGS";
 
   public static final String FLAG_DOCUMENT_ANNOTATION = "DocumentAnnotation";
 

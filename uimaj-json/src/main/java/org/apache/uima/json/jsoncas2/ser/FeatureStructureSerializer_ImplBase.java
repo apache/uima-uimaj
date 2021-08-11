@@ -19,17 +19,13 @@
 package org.apache.uima.json.jsoncas2.ser;
 
 import static java.util.Arrays.sort;
-import static org.apache.uima.json.jsoncas2.JsonCas2Names.FLAG_DOCUMENT_ANNOTATION;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.ID_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.TYPE_FIELD;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.json.jsoncas2.JsonCas2Names;
 import org.apache.uima.json.jsoncas2.mode.ViewsMode;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureToViewIndex;
@@ -71,18 +67,18 @@ public abstract class FeatureStructureSerializer_ImplBase<T extends FeatureStruc
       }
     }
 
-    List<String> flags = new ArrayList<>();
-    if (((CASImpl) aFs.getCAS()).getDocumentAnnotationNoCreate() == aFs) {
-      flags.add(FLAG_DOCUMENT_ANNOTATION);
-    }
-
-    if (!flags.isEmpty()) {
-      jg.writeArrayFieldStart(JsonCas2Names.FLAGS_FIELD);
-      for (String flag : flags) {
-        jg.writeString(flag);
-      }
-      jg.writeEndArray();
-    }
+    // List<String> flags = new ArrayList<>();
+    // if (((CASImpl) aFs.getCAS()).getDocumentAnnotationNoCreate() == aFs) {
+    // flags.add(FLAG_DOCUMENT_ANNOTATION);
+    // }
+    //
+    // if (!flags.isEmpty()) {
+    // jg.writeArrayFieldStart(JsonCas2Names.FLAGS_FIELD);
+    // for (String flag : flags) {
+    // jg.writeString(flag);
+    // }
+    // jg.writeEndArray();
+    // }
 
     writeBody(refCache, jg, aFs);
 

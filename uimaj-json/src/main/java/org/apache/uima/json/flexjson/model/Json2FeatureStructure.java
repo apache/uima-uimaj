@@ -19,6 +19,7 @@
 package org.apache.uima.json.flexjson.model;
 
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
+import static org.apache.uima.json.flexjson.FlexJsonNames.FLAGS_FIELD;
 import static org.apache.uima.json.flexjson.FlexJsonNames.ID_FIELD;
 import static org.apache.uima.json.flexjson.FlexJsonNames.TYPE_FIELD;
 import static org.apache.uima.json.flexjson.FlexJsonNames.VIEWS_FIELD;
@@ -45,7 +46,7 @@ public class Json2FeatureStructure {
   @JsonProperty(value = TYPE_FIELD, required = true, defaultValue = TYPE_NAME_ANNOTATION)
   private String type;
 
-  @JsonProperty(value = JsonCas2Names.FLAGS_FIELD, required = false)
+  @JsonProperty(value = FLAGS_FIELD, required = false)
   private LinkedHashSet<String> flags;
 
   @JsonProperty(value = VIEWS_FIELD, required = false)

@@ -16,7 +16,6 @@
   }, {
     "%ID" : 1,
     "%TYPE" : "uima.tcas.DocumentAnnotation",
-    "%FLAGS" : [ "DocumentAnnotation" ],
     "@sofa" : 0,
     "begin" : 0,
     "end" : 15,

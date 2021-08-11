@@ -98,9 +98,6 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
       JsonCas2Deserializer deserializer = new JsonCas2Deserializer();
       deserializer.deserialize(is, aTargetCas);
     }
-
-    System.out.printf("Source annotations: %d%n", aSourceCas.getAnnotationIndex().size());
-    System.out.printf("Target annotations: %d%n", aTargetCas.getAnnotationIndex().size());
   }
 
   public static void desser(CAS aBufferCas, Path aSourceCasPath, Path aTargetCasPath)

@@ -27,12 +27,14 @@ import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFAMIME;
 import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFANUM;
 import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFASTRING;
 import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_SOFAURI;
+import static org.apache.uima.cas.CAS.TYPE_NAME_BOOLEAN_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_BYTE;
 import static org.apache.uima.cas.CAS.TYPE_NAME_BYTE_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
 import static org.apache.uima.cas.CAS.TYPE_NAME_DOUBLE;
 import static org.apache.uima.cas.CAS.TYPE_NAME_DOUBLE_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_FLOAT;
+import static org.apache.uima.cas.CAS.TYPE_NAME_FLOAT_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_LONG;
@@ -40,22 +42,33 @@ import static org.apache.uima.cas.CAS.TYPE_NAME_LONG_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SHORT;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SHORT_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SOFA;
-import static org.apache.uima.json.jsoncas2.JsonCas2Names.FLAGS_FIELD;
+import static org.apache.uima.cas.CAS.TYPE_NAME_STRING_ARRAY;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.ID_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.REF_FEATURE_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.RESERVED_FIELD_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.TYPE_FIELD;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.uima.cas.ArrayFS;
+import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.FloatArrayFS;
+import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.LongArrayFS;
+import org.apache.uima.cas.ShortArrayFS;
+import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.cas.TOP;
@@ -96,7 +109,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     while (aParser.currentToken() != END_OBJECT) {
       String fieldName = aParser.currentName();
 
-      log.info("Deserializing {}: {}", fieldName, aParser.getText());
+      // log.trace("Deserializing {}: {}", fieldName, aParser.getText());
 
       if (fieldName.startsWith(RESERVED_FIELD_PREFIX)) {
         switch (fieldName) {
@@ -107,46 +120,60 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
             if (fsId == MIN_VALUE) {
               throw new JsonParseException(aParser, TYPE_FIELD + " must come after " + ID_FIELD);
             }
-            String typeName = aParser.getText();
+            String typeName = aParser.getValueAsString();
 
             switch (typeName) {
-              case CAS.TYPE_NAME_BOOLEAN_ARRAY:
-                fs = cas.createBooleanArrayFS(0);
+              case TYPE_NAME_BOOLEAN_ARRAY:
+                fs = deserializeBooleanArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
-              case TYPE_NAME_BYTE_ARRAY: {
-                aParser.nextValue();
-                byte[] bytes = aParser.getBinaryValue();
-                fs = cas.createByteArrayFS(bytes.length);
-                ((ByteArrayFS) fs).copyFromArray(bytes, 0, 0, bytes.length);
-                aParser.nextToken();
+              case TYPE_NAME_BYTE_ARRAY:
+                fs = deserializeByteArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
-              }
               case TYPE_NAME_DOUBLE_ARRAY:
-                fs = cas.createDoubleArrayFS(0);
+                fs = deserializeDoubleArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
+                continue;
+              case TYPE_NAME_FLOAT_ARRAY:
+                fs = deserializeFloatArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
               case TYPE_NAME_INTEGER_ARRAY:
-                fs = cas.createIntArrayFS(0);
+                fs = deserializeIntegerArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
               case TYPE_NAME_LONG_ARRAY:
-                fs = cas.createLongArrayFS(0);
+                fs = deserializeLongArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
               case TYPE_NAME_SHORT_ARRAY:
-                fs = cas.createShortArrayFS(0);
+                fs = deserializeShortArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
+                continue;
+              case TYPE_NAME_STRING_ARRAY:
+                fs = deserializeStringArray(aParser, cas);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
+                continue;
+              case CAS.TYPE_NAME_FS_ARRAY:
+                fs = deserializeFsArray(aParser, cas, aCtxt);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
               case TYPE_NAME_SOFA:
                 fs = createSofaFS(cas, aParser, aCtxt);
+                FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
                 continue;
               default:
                 fs = createFS(aParser, aCtxt, fsId, cas);
                 break;
             }
             break;
-          case FLAGS_FIELD:
-            // FIXME
-            aParser.nextToken();
-            aParser.skipChildren();
-            aParser.nextToken();
-            break;
+          // case FLAGS_FIELD:
+          // // FIXME: We probably don't need the flags field at all.
+          // aParser.nextToken();
+          // aParser.skipChildren();
+          // aParser.nextToken();
+          // break;
         }
 
         aParser.nextValue();
@@ -174,12 +201,12 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       }
 
       if (isRefField) {
-        mapFsReference(aParser, aCtxt, fs, fieldName);
+        deserializeFsReference(aParser, aCtxt, fs, fieldName);
         aParser.nextValue();
         continue;
       }
 
-      mapPrimitive(aParser, fs, fieldName);
+      deserializePrimitive(aParser, fs, fieldName);
       aParser.nextValue();
     }
 
@@ -197,7 +224,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
 
   private FeatureStructure createFS(JsonParser aParser, DeserializationContext aCtxt, int aFsId,
           CAS aCas) throws IOException {
-    String typeName = aParser.getText();
+    String typeName = aParser.getValueAsString();
     TypeSystem ts = aCas.getTypeSystem();
     Type t = ts.getType(typeName);
     if (t == null) {
@@ -323,7 +350,162 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     return view.getSofa();
   }
 
-  private void mapPrimitive(JsonParser aParser, FeatureStructure fs, String aFeatureName)
+  private BooleanArrayFS deserializeBooleanArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Skip array opening and go to first value (or end of array if there is no value)
+    aParser.nextValue();
+    aParser.nextValue();
+    List<Boolean> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add(aParser.getBooleanValue());
+      aParser.nextValue();
+    }
+    BooleanArrayFS arrayFs = aCas.createBooleanArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private ByteArrayFS deserializeByteArray(JsonParser aParser, CAS aCas) throws IOException {
+    aParser.nextValue();
+    byte[] bytes = aParser.getBinaryValue();
+    ByteArrayFS arrayFs = aCas.createByteArrayFS(bytes.length);
+    arrayFs.copyFromArray(bytes, 0, 0, bytes.length);
+    aParser.nextToken();
+    return arrayFs;
+  }
+
+  private DoubleArrayFS deserializeDoubleArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Skip array opening and go to first value (or end of array if there is no value)
+    aParser.nextValue();
+    aParser.nextValue();
+    List<Double> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add(aParser.getDoubleValue());
+      aParser.nextValue();
+    }
+    DoubleArrayFS arrayFs = aCas.createDoubleArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private FloatArrayFS deserializeFloatArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Skip array opening and go to first value (or end of array if there is no value)
+    aParser.nextValue();
+    aParser.nextValue();
+    List<Float> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add((float) aParser.getDoubleValue());
+      aParser.nextValue();
+    }
+    FloatArrayFS arrayFs = aCas.createFloatArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private IntArrayFS deserializeIntegerArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Skip array opening and go to first value (or end of array if there is no value)
+    aParser.nextValue();
+    aParser.nextValue();
+    List<Integer> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add(aParser.getIntValue());
+      aParser.nextValue();
+    }
+    IntArrayFS arrayFs = aCas.createIntArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private LongArrayFS deserializeLongArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Skip array opening and go to first value (or end of array if there is no value)
+    aParser.nextValue();
+    aParser.nextValue();
+    List<Long> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add(aParser.getLongValue());
+      aParser.nextValue();
+    }
+    LongArrayFS arrayFs = aCas.createLongArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private ShortArrayFS deserializeShortArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Skip array opening and go to first value (or end of array if there is no value)
+    aParser.nextValue();
+    aParser.nextValue();
+    List<Short> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add((short) aParser.getIntValue());
+      aParser.nextValue();
+    }
+    ShortArrayFS arrayFs = aCas.createShortArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private StringArrayFS deserializeStringArray(JsonParser aParser, CAS aCas) throws IOException {
+    // Go to array opening
+    aParser.nextValue();
+    // Go to first value if any or to end of array
+    aParser.nextValue();
+    List<String> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add(aParser.getValueAsString());
+      aParser.nextValue();
+    }
+    StringArrayFS arrayFs = aCas.createStringArrayFS(values.size());
+    for (int i = 0; i < values.size(); i++) {
+      arrayFs.set(i, values.get(i));
+    }
+    return arrayFs;
+  }
+
+  private ArrayFS<FeatureStructure> deserializeFsArray(JsonParser aParser, CAS aCas,
+          DeserializationContext aCtxt) throws IOException {
+    // Go to array opening
+    aParser.nextValue();
+    // Go to first value if any or to end of array
+    aParser.nextValue();
+    List<Integer> values = new ArrayList<>();
+    while (aParser.currentToken() != JsonToken.END_ARRAY) {
+      values.add(aParser.getIntValue());
+      aParser.nextValue();
+    }
+
+    @SuppressWarnings("unchecked")
+    ArrayFS<FeatureStructure> arrayFs = aCas.createArrayFS(values.size());
+    FeatureStructureToIdIndex idToFsIdx = FeatureStructureToIdIndex.get(aCtxt);
+    for (int i = 0; i < values.size(); i++) {
+      int targetFsId = values.get(i);
+      Optional<FeatureStructure> targetFs = idToFsIdx.get(targetFsId);
+      if (targetFs.isPresent()) {
+        arrayFs.set(i, targetFs.get());
+      } else {
+        int finalIndex = i;
+        schedulePostprocessing(aCtxt, () -> {
+          arrayFs.set(finalIndex,
+                  idToFsIdx.get(targetFsId)
+                          .orElseThrow(() -> new NoSuchElementException("Unable to resolve ID ["
+                                  + targetFsId + "] during array post-processing")));
+        });
+      }
+    }
+    return arrayFs;
+  }
+
+  private void deserializePrimitive(JsonParser aParser, FeatureStructure fs, String aFeatureName)
           throws CASRuntimeException, IOException {
     Feature feature = fs.getType().getFeatureByBaseName(aFeatureName);
     switch (aParser.currentToken()) {
@@ -337,11 +519,11 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       case VALUE_STRING:
         fs.setStringValue(feature, aParser.getValueAsString());
         break;
-      case VALUE_NUMBER_FLOAT:
-        mapDecimalValue(aParser, fs, feature);
+      case VALUE_NUMBER_FLOAT: // JSON does not distinguish between double and float
+        deserializeFloatingPointValue(aParser, fs, feature);
         break;
       case VALUE_NUMBER_INT:
-        mapIntegerValue(aParser, fs, feature);
+        deserializeIntegerValue(aParser, fs, feature);
         break;
       default:
         throw new JsonParseException(aParser,
@@ -350,31 +532,32 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     }
   }
 
-  private void mapFsReference(JsonParser aParser, DeserializationContext aCtxt, FeatureStructure fs,
-          String fieldName) throws IOException {
+  private void deserializeFsReference(JsonParser aParser, DeserializationContext aCtxt,
+          FeatureStructure fs, String fieldName) throws IOException {
     FeatureStructureToIdIndex idToFsIdx = FeatureStructureToIdIndex.get(aCtxt);
     int targetFsId = aParser.getIntValue();
     Optional<FeatureStructure> targetFs = idToFsIdx.get(targetFsId);
     Feature feature = fs.getType().getFeatureByBaseName(fieldName);
     if (targetFs.isPresent()) {
-      fs.setFeatureValue(feature, fs);
+      fs.setFeatureValue(feature, targetFs.get());
     } else {
       FeatureStructure finalFs = fs;
-      FeatureStructure finalTargetFs = targetFs.get();
       schedulePostprocessing(aCtxt, () -> {
-        finalFs.setFeatureValue(feature, finalTargetFs);
+        finalFs.setFeatureValue(feature,
+                idToFsIdx.get(targetFsId).orElseThrow(() -> new NoSuchElementException(
+                        "Unable to resolve ID [" + targetFsId + "] during post-processing")));
       });
     }
   }
 
-  private void mapDecimalValue(JsonParser aParser, FeatureStructure fs, Feature feature)
-          throws CASRuntimeException, IOException {
+  private void deserializeFloatingPointValue(JsonParser aParser, FeatureStructure fs,
+          Feature feature) throws CASRuntimeException, IOException {
     switch (feature.getRange().getName()) {
       case TYPE_NAME_DOUBLE:
         fs.setDoubleValue(feature, aParser.getValueAsDouble());
         break;
       case TYPE_NAME_FLOAT:
-        fs.setDoubleValue(feature, aParser.getValueAsDouble());
+        fs.setFloatValue(feature, (float) aParser.getValueAsDouble());
         break;
       default:
         throw new JsonParseException(aParser, "Feature of type " + feature.getRange().getName()
@@ -382,7 +565,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     }
   }
 
-  private void mapIntegerValue(JsonParser aParser, FeatureStructure fs, Feature feature)
+  private void deserializeIntegerValue(JsonParser aParser, FeatureStructure fs, Feature feature)
           throws CASRuntimeException, IOException {
     switch (feature.getRange().getName()) {
       case TYPE_NAME_BYTE:
