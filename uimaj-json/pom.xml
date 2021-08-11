@@ -17,7 +17,9 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.uima</groupId>
@@ -28,43 +30,43 @@
   <artifactId>uimaj-json</artifactId>
   <name>Apache UIMA Base: ${project.artifactId}: JSON</name>
   <description>JSON support for UIMA SDK</description>
-  
+
   <scm>
     <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
     <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
     <url>https://github.com/apache/uima-uimaj/</url>
     <tag>uimaj-3.2.0</tag>
   </scm>
-  
+
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
-  
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>${jackson.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>${jackson.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
@@ -112,32 +114,32 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <pluginManagement>
-	    <plugins>
-	      <plugin>
-	          <groupId>org.apache.rat</groupId>
-	          <artifactId>apache-rat-plugin</artifactId>
-	          <executions>
-	            <execution>
-	              <id>default-cli</id>
-	              <configuration>
-	                <excludes combine.children="append">
-	                  <exclude>src/test/resources/CasSerialization/expected/json/*.txt</exclude>
-                    <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>
-	                  <exclude>src/test/resources/CASTests/json/expected/*.json</exclude>
-	                  <exclude>src/test/java/org/apache/uima/test/*.java</exclude>
-	               </excludes>
-	              </configuration>
-	            </execution>
-	          </executions>
-	      </plugin>
-	    </plugins>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <exclude>src/test/resources/**/data.json</exclude>
+                  <exclude>src/test/resources/**/debug.xmi</exclude>
+                  <exclude>src/test/resources/**/debug-typesystem.xml</exclude>
+                  <exclude>src/test/resources/FlexJsonDeserializer/**/*.json</exclude>
+                  <exclude>src/test/resources/FlexJsonSerializerTest/**/*.json</exclude>
+                  <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>
+                  <exclude>src/test/resources/CASTests/json/expected/*.json</exclude>
+                  <exclude>src/test/java/org/apache/uima/test/*.java</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
     </pluginManagement>
-    
-    <plugins>
-    </plugins>
   </build>
-  
 </project>
