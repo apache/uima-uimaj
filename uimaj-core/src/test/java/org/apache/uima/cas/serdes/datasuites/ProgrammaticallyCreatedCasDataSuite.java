@@ -21,6 +21,8 @@ package org.apache.uima.cas.serdes.datasuites;
 import static java.util.Arrays.asList;
 
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractCollection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.cas.ByteArrayFS;
@@ -29,10 +31,13 @@ import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
 
-public class ProgrammaticallyCreatedCasDataSuite {
+public class ProgrammaticallyCreatedCasDataSuite
+        extends AbstractCollection<CasSourceTargetConfiguration> implements CasDataSuite {
 
-  public static List<CasSourceTargetConfiguration> configurations() {
-    return asList( //
+  private final List<CasSourceTargetConfiguration> confs;
+
+  private ProgrammaticallyCreatedCasDataSuite(Builder builder) {
+    confs = asList( //
             CasSourceTargetConfiguration.builder() //
                     .withTitle("casWithText") //
                     .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithText) //
@@ -55,6 +60,16 @@ public class ProgrammaticallyCreatedCasDataSuite {
                             ProgrammaticallyCreatedCasDataSuite::casWithSofaDataArray)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build());
+  }
+
+  @Override
+  public Iterator<CasSourceTargetConfiguration> iterator() {
+    return confs.iterator();
+  }
+
+  @Override
+  public int size() {
+    return confs.size();
   }
 
   public static CAS emptyCas() throws Exception {
@@ -97,5 +112,26 @@ public class ProgrammaticallyCreatedCasDataSuite {
     cas.setSofaDataArray(sofaDataArray, "text/plain");
 
     return cas;
+  }
+
+  /**
+   * Creates builder to build {@link ProgrammaticallyCreatedCasDataSuite}.
+   * 
+   * @return created builder
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * Builder to build {@link ProgrammaticallyCreatedCasDataSuite}.
+   */
+  public static final class Builder {
+    private Builder() {
+    }
+
+    public ProgrammaticallyCreatedCasDataSuite build() {
+      return new ProgrammaticallyCreatedCasDataSuite(this);
+    }
   }
 }

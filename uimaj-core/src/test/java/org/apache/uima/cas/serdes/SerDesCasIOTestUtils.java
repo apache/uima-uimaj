@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.uima.cas.SerialFormat.XMI_PRETTY;
 import static org.apache.uima.cas.serdes.TestType.ONE_WAY;
 import static org.apache.uima.cas.serdes.TestType.ROUND_TRIP;
+import static org.apache.uima.cas.serdes.TestType.SER_DES;
 import static org.apache.uima.cas.serdes.TestType.SER_REF;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.TypeSystemUtil.typeSystem2TypeSystemDescription;
@@ -44,8 +45,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.serdes.datasuites.MultiFeatureRandomCasDataSuite;
-import org.apache.uima.cas.serdes.datasuites.MultiTypeRandomCasDataSuite;
+import org.apache.uima.cas.serdes.datasuites.CasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.ProgrammaticallyCreatedCasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
@@ -53,7 +53,6 @@ import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
 import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
-import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -79,7 +78,7 @@ public class SerDesCasIOTestUtils {
   public static List<SerRefTestScenario> serRefScenarios(SerialFormat aFormat,
           String aCasFileName) {
     Class<?> caller = getCallerClass();
-    return ProgrammaticallyCreatedCasDataSuite.configurations().stream()
+    return ProgrammaticallyCreatedCasDataSuite.builder().build().stream()
             .map(conf -> SerRefTestScenario.builder(caller, conf, SER_REF, aCasFileName)
                     .withSerializer((cas, path) -> ser(cas, path, aFormat)) //
                     .build())
@@ -128,37 +127,23 @@ public class SerDesCasIOTestUtils {
    * {@link ProgrammaticallyCreatedCasDataSuite} and applying them to each of the configured
    * serialization/deserialization cycles.
    */
-  public static List<SerDesTestScenario> serDesScenarios(
+  public static List<SerDesTestScenario> programmaticSerDesScenarios(
           Collection<CasSerDesCycleConfiguration> aSerDesCycles) {
-    List<SerDesTestScenario> confs = new ArrayList<>();
 
-    for (CasSerDesCycleConfiguration cycle : aSerDesCycles) {
-      for (CasSourceTargetConfiguration data : ProgrammaticallyCreatedCasDataSuite
-              .configurations()) {
-        confs.add(new SerDesTestScenario(data, cycle));
-      }
-    }
-
-    return confs;
+    return serDesScenarios(aSerDesCycles, ProgrammaticallyCreatedCasDataSuite.builder().build());
   }
 
   /**
-   * SERIALIZE -> DESERIALIZE scenarios using randomized CASes
+   * SERIALIZE -> DESERIALIZE scenarios using the given data suites (typically randomized suites)
    */
-  public static List<SerDesTestScenario> randomSerDesScenarios(
-          Collection<CasSerDesCycleConfiguration> aSerDesCycles, int aIterations) {
+  public static List<SerDesTestScenario> serDesScenarios(
+          Collection<CasSerDesCycleConfiguration> aSerDesCycles, CasDataSuite... aDataSuites) {
 
     List<SerDesTestScenario> confs = new ArrayList<>();
 
     for (CasSerDesCycleConfiguration cycle : aSerDesCycles) {
-      for (CasSourceTargetConfiguration data : MultiTypeRandomCasDataSuite
-              .configurations(aIterations / 2)) {
-        confs.add(new SerDesTestScenario(data, cycle));
-      }
-
-      for (CasSourceTargetConfiguration data : MultiFeatureRandomCasDataSuite
-              .configurations(aIterations / 2)) {
-        confs.add(new SerDesTestScenario(data, cycle));
+      for (CasDataSuite suite : aDataSuites) {
+        suite.forEach(data -> confs.add(new SerDesTestScenario(data, cycle)));
       }
     }
 
@@ -204,6 +189,13 @@ public class SerDesCasIOTestUtils {
       CasIOUtils.save(aSourceCas, casTarget, tsiTarget, aFormat);
       casBuffer = casTarget.toByteArray();
       tsiBuffer = tsiTarget.toByteArray();
+    }
+
+    Path targetFile = SER_DES.getTargetFolder(getCallerClass())
+            .resolve("data." + aFormat.getDefaultFileExtension());
+    Files.createDirectories(targetFile.getParent());
+    try (OutputStream os = Files.newOutputStream(targetFile)) {
+      os.write(casBuffer);
     }
 
     // Deserialize the CAS

@@ -18,21 +18,37 @@
  */
 package org.apache.uima.cas.serdes.datasuites;
 
+import static org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode.ALLOW_NULL_AND_EMPTY_STRINGS;
+
+import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.cas.serdes.generators.CasConfiguration;
 import org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator;
+import org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 
-public class MultiFeatureRandomCasDataSuite {
+public class MultiFeatureRandomCasDataSuite extends AbstractCollection<CasSourceTargetConfiguration>
+        implements CasDataSuite {
+  private final int sizeFactor;
+  private final StringArrayMode stringArrayMode;
+  private final int iterations;
 
-  public static List<CasSourceTargetConfiguration> configurations(int aCount) {
+  private MultiFeatureRandomCasDataSuite(Builder builder) {
+    sizeFactor = builder.sizeFactor;
+    stringArrayMode = builder.stringArrayMode;
+    iterations = builder.iterations;
+  }
+
+  @Override
+  public Iterator<CasSourceTargetConfiguration> iterator() {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();
 
-    for (int n = 0; n < aCount; n++) {
+    for (int n = 0; n < iterations; n++) {
       MultiFeatureRandomCasGenerator randomizer = MultiFeatureRandomCasGenerator.builder() //
-              .withSize((aCount + 1) * 10) //
+              .withStringArrayMode(stringArrayMode).withSize((n + 1) * sizeFactor) //
               .build();
 
       CasConfiguration cfg = new CasConfiguration(randomizer);
@@ -44,6 +60,51 @@ public class MultiFeatureRandomCasDataSuite {
               .build());
     }
 
-    return confs;
+    return confs.iterator();
+  }
+
+  @Override
+  public int size() {
+    return iterations;
+  }
+
+  /**
+   * Creates builder to build {@link MultiFeatureRandomCasDataSuite}.
+   * 
+   * @return created builder
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * Builder to build {@link MultiFeatureRandomCasDataSuite}.
+   */
+  public static final class Builder {
+    private int iterations = 10;
+    private int sizeFactor = 10;
+    private StringArrayMode stringArrayMode = ALLOW_NULL_AND_EMPTY_STRINGS;
+
+    private Builder() {
+    }
+
+    public Builder withSizeFactory(int aSizeFactory) {
+      sizeFactor = aSizeFactory;
+      return this;
+    }
+
+    public Builder withStringArrayMode(StringArrayMode aStringArrayMode) {
+      stringArrayMode = aStringArrayMode;
+      return this;
+    }
+
+    public Builder withIterations(int aIterations) {
+      iterations = aIterations;
+      return this;
+    }
+
+    public MultiFeatureRandomCasDataSuite build() {
+      return new MultiFeatureRandomCasDataSuite(this);
+    }
   }
 }
