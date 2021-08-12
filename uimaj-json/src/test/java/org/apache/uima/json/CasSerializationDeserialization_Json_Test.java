@@ -52,7 +52,7 @@ public class CasSerializationDeserialization_Json_Test {
 
   private static List<SerRefTestScenario> serRefScenarios() {
     Class<?> caller = CasSerializationDeserialization_Json_Test.class;
-    return ProgrammaticallyCreatedCasDataSuite.configurations().stream()
+    return ProgrammaticallyCreatedCasDataSuite.builder().build().stream()
             .map(conf -> SerRefTestScenario.builder(caller, conf, SER_REF, CAS_FILE_NAME)
                     .withSerializer((cas, path) -> jsonSerialize(cas, null, path.toFile(), true,
                             null, null)) //

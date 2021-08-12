@@ -18,28 +18,42 @@
  */
 package org.apache.uima.cas.serdes.datasuites;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.cas.serdes.generators.CasConfiguration;
 import org.apache.uima.cas.serdes.generators.MultiTypeRandomCasGenerator;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 
-public class MultiTypeRandomCasDataSuite {
+public class MultiTypeRandomCasDataSuite extends AbstractCollection<CasSourceTargetConfiguration>
+        implements CasDataSuite {
 
-  private static final int SIZE_FACTOR = 10;
+  private final int iterations;
+  private final int sizeFactor;
+  private final int minimumAnnotationLength;
+  private final Long randomSeed;
 
-  public static List<CasSourceTargetConfiguration> configurations(int aCount) {
+  private MultiTypeRandomCasDataSuite(Builder builder) {
+    sizeFactor = builder.sizeFactor;
+    minimumAnnotationLength = builder.minimumAnnotationLength;
+    randomSeed = builder.randomSeed;
+    iterations = builder.iterations;
+  }
+
+  @Override
+  public Iterator<CasSourceTargetConfiguration> iterator() {
     List<CasSourceTargetConfiguration> confs = new ArrayList<>();
 
-    for (int n = 0; n < aCount; n++) {
-      MultiTypeRandomCasGenerator randomizer = MultiTypeRandomCasGenerator.builder() //
-              // NOTE: When you need to debug a certain configuration, comment out and set the
-              // random seed for the broken configuration. Do not commit with this line active!
-              // .withRandomSeed(-5987713889340419492l) //
-              .withTypeCount(n + 1) //
-              .withMinimumAnnotationLength(0) //
-              .withSize((n + 1) * SIZE_FACTOR) //
+    for (int n = 0; n < iterations; n++) {
+      MultiTypeRandomCasGenerator.Builder randomizerBuilder = MultiTypeRandomCasGenerator.builder();
+      if (randomSeed != null) {
+        randomizerBuilder.withRandomSeed(randomSeed);
+      }
+      MultiTypeRandomCasGenerator randomizer = randomizerBuilder.withTypeCount(n + 1) //
+              .withMinimumAnnotationLength(minimumAnnotationLength) //
+              .withSize((n + 1) * sizeFactor) //
               .build();
 
       CasConfiguration cfg = new CasConfiguration(randomizer);
@@ -52,6 +66,57 @@ public class MultiTypeRandomCasDataSuite {
               .build());
     }
 
-    return confs;
+    return confs.iterator();
+  }
+
+  @Override
+  public int size() {
+    return iterations;
+  }
+
+  /**
+   * Creates builder to build {@link MultiTypeRandomCasDataSuite}.
+   * 
+   * @return created builder
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * Builder to build {@link MultiTypeRandomCasDataSuite}.
+   */
+  public static final class Builder {
+    private int iterations = 10;
+    private int sizeFactor;
+    private int minimumAnnotationLength;
+    private Long randomSeed;
+
+    private Builder() {
+    }
+
+    public Builder withSizeFactor(int aSizeFactor) {
+      this.sizeFactor = aSizeFactor;
+      return this;
+    }
+
+    public Builder withMinimumAnnotationLength(int aMinimumAnnotationLength) {
+      this.minimumAnnotationLength = aMinimumAnnotationLength;
+      return this;
+    }
+
+    public Builder withRandomSeed(long aRandomSeed) {
+      this.randomSeed = aRandomSeed;
+      return this;
+    }
+
+    public Builder withIterations(int aIterations) {
+      iterations = aIterations;
+      return this;
+    }
+
+    public MultiTypeRandomCasDataSuite build() {
+      return new MultiTypeRandomCasDataSuite(this);
+    }
   }
 }

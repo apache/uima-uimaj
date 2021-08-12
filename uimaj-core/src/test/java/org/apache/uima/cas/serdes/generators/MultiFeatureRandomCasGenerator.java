@@ -19,6 +19,7 @@
 package org.apache.uima.cas.serdes.generators;
 
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode.ALLOW_NULL_AND_EMPTY_STRINGS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +92,9 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private final boolean includeUid;
   private final Random rnd;
   private final int size;
+  private final StringArrayMode stringArrayMode;
 
+  // akof = all kinds of features
   private Type akof;
   private Feature akofUid;
   private Feature akofInt;
@@ -117,10 +120,11 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private AtomicInteger aint;
 
   private MultiFeatureRandomCasGenerator(Builder builder) {
-    this.isKeep = builder.isKeep;
-    this.includeUid = builder.includeUid;
-    this.rnd = builder.randomGenerator;
-    this.size = builder.size;
+    isKeep = builder.isKeep;
+    includeUid = builder.includeUid;
+    rnd = builder.randomGenerator;
+    size = builder.size;
+    stringArrayMode = builder.stringArrayMode;
     aint = includeUid ? new AtomicInteger(0) : null;
   }
 
@@ -245,15 +249,25 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   }
 
   private String randomString(Random r) {
-    int i = r.nextInt(7);
-    return STRING_VALUES[i];
+    String v = STRING_VALUES[r.nextInt(STRING_VALUES.length)];
+
+    switch (stringArrayMode) {
+      case ALLOW_NULL_AND_EMPTY_STRINGS:
+        return v;
+      case EMPTY_STRINGS_AS_NULL:
+        return v != null && v.isEmpty() ? null : v;
+      case NULL_STRINGS_AS_EMPTY:
+        return v == null ? "" : v;
+      default:
+        throw new IllegalArgumentException("Unsupported string array mode: " + stringArrayMode);
+    }
   }
 
   private StringArrayFS randomStringA(Random r) {
     int length = r.nextInt(2) + 1;
     StringArrayFS fs = maybeKeep(cas.createStringArrayFS(length));
     for (int i = 0; i < length; i++) {
-      fs.set(i, STRING_VALUES[r.nextInt(STRING_VALUES.length)]);
+      fs.set(i, randomString(r));
     }
     return fs;
   }
@@ -340,27 +354,33 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     private boolean includeUid;
     private Random randomGenerator;
     private int size;
+    private StringArrayMode stringArrayMode = ALLOW_NULL_AND_EMPTY_STRINGS;
 
     private Builder() {
     }
 
-    public Builder withReferenceKeeping(boolean isKeep) {
-      this.isKeep = isKeep;
+    public Builder withReferenceKeeping(boolean aIsKeep) {
+      isKeep = aIsKeep;
       return this;
     }
 
-    public Builder withUid(boolean includeUid) {
-      this.includeUid = includeUid;
+    public Builder withUid(boolean aIncludeUid) {
+      includeUid = aIncludeUid;
       return this;
     }
 
-    public Builder withRandomGenerator(Random rnd) {
-      this.randomGenerator = rnd;
+    public Builder withRandomGenerator(Random aRandom) {
+      randomGenerator = aRandom;
       return this;
     }
 
-    public Builder withSize(int size) {
-      this.size = size;
+    public Builder withSize(int aSize) {
+      size = aSize;
+      return this;
+    }
+
+    public Builder withStringArrayMode(StringArrayMode aStringArrayMode) {
+      stringArrayMode = aStringArrayMode;
       return this;
     }
 
@@ -371,5 +391,23 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
 
       return new MultiFeatureRandomCasGenerator(this);
     }
+  }
+
+  public enum StringArrayMode {
+    /**
+     * Instead of generating an empty string, generate a {@code null} value (mainly for XCAS).
+     */
+    EMPTY_STRINGS_AS_NULL,
+
+    /**
+     * Instead of generating a {@code null} value, generate an empty string (mainly for XMI).
+     */
+    NULL_STRINGS_AS_EMPTY,
+
+    /**
+     * Generate both {@code null} values and empty strings (this is what (de)serializers should
+     * normally support and be tested with).
+     */
+    ALLOW_NULL_AND_EMPTY_STRINGS;
   }
 }

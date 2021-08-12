@@ -38,6 +38,8 @@ import java.util.List;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.serdes.SerDesCasIOTestUtils;
+import org.apache.uima.cas.serdes.datasuites.MultiFeatureRandomCasDataSuite;
+import org.apache.uima.cas.serdes.datasuites.MultiTypeRandomCasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.ProgrammaticallyCreatedCasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
@@ -108,7 +110,7 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
 
   private static List<SerRefTestScenario> serRefScenarios() {
     Class<?> caller = CasSerializationDeserialization_JsonCas2_FsAsArray_Test.class;
-    return ProgrammaticallyCreatedCasDataSuite.configurations().stream()
+    return ProgrammaticallyCreatedCasDataSuite.builder().build().stream()
             .map(conf -> SerRefTestScenario.builder(caller, conf, SER_REF, CAS_FILE_NAME)
                     .withSerializer((cas, path) -> ser(cas, path)).build())
             .collect(toList());
@@ -127,12 +129,14 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
     return SerDesCasIOTestUtils.roundTripDesSerScenarios(desSerCycles, CAS_FILE_NAME);
   }
 
-  // private static List<SerDesTestScenario> serDesScenarios() {
-  // return SerDesCasIOTestUtils.serDesScenarios(serDesCycles);
-  // }
+  private static List<SerDesTestScenario> serDesScenarios() {
+    return SerDesCasIOTestUtils.programmaticSerDesScenarios(serDesCycles);
+  }
 
   private static List<SerDesTestScenario> randomSerDesScenarios() {
-    return SerDesCasIOTestUtils.randomSerDesScenarios(serDesCycles, RANDOM_CAS_ITERATIONS);
+    return SerDesCasIOTestUtils.serDesScenarios(serDesCycles,
+            MultiFeatureRandomCasDataSuite.builder().withIterations(RANDOM_CAS_ITERATIONS).build(),
+            MultiTypeRandomCasDataSuite.builder().withIterations(RANDOM_CAS_ITERATIONS).build());
   }
 
   @ParameterizedTest
@@ -147,11 +151,11 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
     aScenario.run();
   }
 
-  // @ParameterizedTest
-  // @MethodSource("serDesScenarios")
-  // public void serializeDeserializeTest(Runnable aScenario) throws Exception {
-  // aScenario.run();
-  // }
+  @ParameterizedTest
+  @MethodSource("serDesScenarios")
+  public void serializeDeserializeTest(Runnable aScenario) throws Exception {
+    aScenario.run();
+  }
 
   @ParameterizedTest
   @MethodSource("randomSerDesScenarios")
