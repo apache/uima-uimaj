@@ -24,6 +24,7 @@ import static org.apache.uima.cas.serdes.SerDesAssuptions.assumeNotKnownToFail;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
+import static org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode.EMPTY_STRINGS_AS_NULL;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.LENIENT;
@@ -31,6 +32,8 @@ import static org.apache.uima.util.CasLoadMode.LENIENT;
 import java.util.List;
 
 import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.cas.serdes.datasuites.MultiFeatureRandomCasDataSuite;
+import org.apache.uima.cas.serdes.datasuites.MultiTypeRandomCasDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
@@ -70,11 +73,18 @@ public class CasSerializationDeserialization_XCAS_Test {
   }
 
   private static List<SerDesTestScenario> serDesScenarios() {
-    return SerDesCasIOTestUtils.serDesScenarios(serDesCycles);
+    return SerDesCasIOTestUtils.programmaticSerDesScenarios(serDesCycles);
   }
 
   private static List<SerDesTestScenario> randomSerDesScenarios() {
-    return SerDesCasIOTestUtils.randomSerDesScenarios(serDesCycles, RANDOM_CAS_ITERATIONS);
+    return SerDesCasIOTestUtils.serDesScenarios(serDesCycles,
+            MultiFeatureRandomCasDataSuite.builder() //
+                    .withIterations(RANDOM_CAS_ITERATIONS) //
+                    .withStringArrayMode(EMPTY_STRINGS_AS_NULL) //
+                    .build(),
+            MultiTypeRandomCasDataSuite.builder() //
+                    .withIterations(RANDOM_CAS_ITERATIONS) //
+                    .build());
   }
 
   @ParameterizedTest

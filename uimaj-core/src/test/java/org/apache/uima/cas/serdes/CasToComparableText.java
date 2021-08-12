@@ -63,6 +63,7 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.AnnotationBase;
@@ -77,6 +78,7 @@ public class CasToComparableText {
   private boolean markView = true;
   private boolean coveredTextColumnEnabled = true;
   private boolean indexedColumnEnabled = false;
+  private boolean treatEmptyStringsAsNull = false;
   private int maxLengthCoveredText = 30;
   private boolean sortAnnotationsInMultiValuedFeatures = true;
   private boolean uniqueAnchors = true;
@@ -231,6 +233,14 @@ public class CasToComparableText {
     nullValue = aNullValue;
   }
 
+  public void setTreatEmptyStringsAsNull(boolean aTreatEmptyStringsAsNull) {
+    treatEmptyStringsAsNull = aTreatEmptyStringsAsNull;
+  }
+
+  public boolean isTreatEmptyStringsAsNull() {
+    return treatEmptyStringsAsNull;
+  }
+
   private Pattern pattern(String aRegex) {
 
     return regexCache.computeIfAbsent(aRegex, ex -> Pattern.compile(ex));
@@ -281,8 +291,10 @@ public class CasToComparableText {
       return;
     }
 
-    if (aSeeds.stream().anyMatch(fs -> fs.getCAS() != cas)) {
-      throw new IllegalArgumentException("FeatureStructure does not belong to CAS");
+    for (FeatureStructure fs : aSeeds) {
+      if (fs.getCAS() != cas && fs.getCAS() != ((CASImpl) cas).getBaseCAS()) {
+        throw new IllegalArgumentException("FeatureStructure does not belong to CAS");
+      }
     }
 
     Set<FeatureStructure> reachableFses = findReachableFeatureStructures(aSeeds);
@@ -427,6 +439,11 @@ public class CasToComparableText {
       }
 
       // Primitive features can be rendered as strings
+      if (feature.getRange().isStringOrStringSubtype()) {
+        data.add(escape(renderStringValue(aFS.getFeatureValueAsString(feature))));
+        continue;
+      }
+
       if (feature.getRange().isPrimitive()) {
         data.add(escape(aFS.getFeatureValueAsString(feature)));
         continue;
@@ -513,8 +530,13 @@ public class CasToComparableText {
         continue nextItem;
       }
 
-      if (item instanceof String || item.getClass().isPrimitive()) {
-        items.add(String.valueOf(item));
+      if (item instanceof String) {
+        items.add(escape(renderStringValue((String) item)));
+        continue nextItem;
+      }
+
+      if (item.getClass().isPrimitive()) {
+        items.add(escape(String.valueOf(item)));
         continue nextItem;
       }
 
@@ -534,6 +556,18 @@ public class CasToComparableText {
     }
 
     return items.stream().collect(joining(",", "[", "]"));
+  }
+
+  private String renderStringValue(String aString) {
+    if (aString == null) {
+      return nullValue;
+    }
+
+    if (treatEmptyStringsAsNull && aString.isEmpty()) {
+      return nullValue;
+    }
+
+    return aString;
   }
 
   // This method was derived from uimaFIT FSUtil.getFeature()
@@ -730,6 +764,108 @@ public class CasToComparableText {
     return seen;
   }
 
+  private int featureHash(FeatureStructure aFS) {
+    int hash = 0;
+    for (Feature f : aFS.getType().getFeatures()) {
+      if (f.getRange().isStringOrStringSubtype() || f.getRange().isPrimitive()) {
+        String value = renderStringValue(aFS.getFeatureValueAsString(f));
+        hash += value != null ? value.hashCode() : 0;
+        continue;
+      }
+
+      if (f.getRange().isArray()) {
+        if (f.getRange().getComponentType().isStringOrStringSubtype()) {
+          StringArrayFS array = ((StringArrayFS) aFS.getFeatureValue(f));
+          if (array != null) {
+            for (int i = 0; i < array.size(); i++) {
+              String v = renderStringValue(array.get(i));
+              hash += v != null ? v.hashCode() : 0;
+            }
+          }
+          continue;
+        }
+
+        switch (f.getRange().getComponentType().getName()) {
+          case CAS.TYPE_NAME_BOOLEAN: {
+            BooleanArrayFS array = ((BooleanArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += array.get(i) ? -(i + 1) : (i + 1);
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_BYTE: {
+            ByteArrayFS array = ((ByteArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += array.get(i);
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_DOUBLE: {
+            DoubleArrayFS array = ((DoubleArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += Double.hashCode(array.get(i));
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_FLOAT: {
+            FloatArrayFS array = ((FloatArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += Float.hashCode(array.get(i));
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_INTEGER: {
+            IntArrayFS array = ((IntArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += array.get(i);
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_LONG: {
+            LongArrayFS array = ((LongArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += Long.hashCode(array.get(i));
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_SHORT: {
+            ShortArrayFS array = ((ShortArrayFS) aFS.getFeatureValue(f));
+            if (array != null) {
+              for (int i = 0; i < array.size(); i++) {
+                hash += array.get(i);
+              }
+            }
+            break;
+          }
+          case CAS.TYPE_NAME_FS_ARRAY:
+            // We cannot really recursively calculate the hash... let's just use the array length
+            if (aFS.getFeatureValue(f) != null) {
+              hash *= ((CommonArrayFS) aFS.getFeatureValue(f)).size() + 1;
+            }
+            break;
+        }
+      }
+
+      // If we get here, it is a feature structure reference... we cannot really recursively
+      // go into it to calculate a recursive hash... so we just check if the value is non-null
+      hash *= aFS.getFeatureValue(f) != null ? 1 : -1;
+    }
+
+    return hash;
+  }
+
   private static class CloseShieldAppendable implements Appendable, Closeable {
 
     private final Appendable delegate;
@@ -764,10 +900,14 @@ public class CasToComparableText {
     }
   }
 
-  private static class FSComparator implements Comparator<FeatureStructure> {
+  private class FSComparator implements Comparator<FeatureStructure> {
 
     @Override
     public int compare(FeatureStructure aFS1, FeatureStructure aFS2) {
+
+      if (aFS1 == aFS2) {
+        return 0;
+      }
 
       // Same name?
       int nameCmp = aFS2.getType().getName().compareTo(aFS2.getType().getName());
@@ -793,8 +933,15 @@ public class CasToComparableText {
         }
       }
 
-      // Giving up here. Hopefully the caller has a good idea to further sort FSes which
-      // have the same type and location
+      // Ok, so let's calculate a hash over the features then...
+      int fh1 = featureHash(aFS1);
+      int fh2 = featureHash(aFS2);
+      if (fh1 < fh2) {
+        return -1;
+      }
+      if (fh1 > fh2) {
+        return 1;
+      }
       return 0;
     }
   }

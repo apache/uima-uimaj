@@ -28,6 +28,8 @@ import static org.apache.uima.util.CasLoadMode.REINIT;
 import java.util.List;
 
 import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.cas.serdes.datasuites.MultiFeatureRandomCasDataSuite;
+import org.apache.uima.cas.serdes.datasuites.MultiTypeRandomCasDataSuite;
 import org.apache.uima.cas.serdes.scenario.DesSerTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
@@ -67,11 +69,13 @@ public class CasSerializationDeserialization_SERIALIZED_TSI_Test {
   }
 
   private static List<SerDesTestScenario> serDesScenarios() {
-    return SerDesCasIOTestUtils.serDesScenarios(serDesCycles);
+    return SerDesCasIOTestUtils.programmaticSerDesScenarios(serDesCycles);
   }
 
   private static List<SerDesTestScenario> randomSerDesScenarios() {
-    return SerDesCasIOTestUtils.randomSerDesScenarios(serDesCycles, RANDOM_CAS_ITERATIONS);
+    return SerDesCasIOTestUtils.serDesScenarios(serDesCycles,
+            MultiFeatureRandomCasDataSuite.builder().withIterations(RANDOM_CAS_ITERATIONS).build(),
+            MultiTypeRandomCasDataSuite.builder().withIterations(RANDOM_CAS_ITERATIONS).build());
   }
 
   @ParameterizedTest
