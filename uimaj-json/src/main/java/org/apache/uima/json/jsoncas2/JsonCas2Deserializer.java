@@ -24,12 +24,14 @@ import java.io.InputStream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.model.FeatureStructures;
 import org.apache.uima.json.jsoncas2.model.Views;
 import org.apache.uima.json.jsoncas2.ser.CasDeserializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureDeserializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructureDeserializer;
-import org.apache.uima.json.jsoncas2.ser.FeatureStructuresDeserializer;
+import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsArrayDeserializer;
+import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsObjectDeserializer;
 import org.apache.uima.json.jsoncas2.ser.TypeDeserializer;
 import org.apache.uima.json.jsoncas2.ser.TypeSystemDeserializer;
 import org.apache.uima.json.jsoncas2.ser.ViewsDeserializer;
@@ -43,12 +45,32 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class JsonCas2Deserializer {
+  private FeatureStructuresMode fsMode = FeatureStructuresMode.AS_ARRAY;
+
+  public void setFsMode(FeatureStructuresMode aFsMode) {
+    fsMode = aFsMode;
+  }
+
+  public FeatureStructuresMode getFsMode() {
+    return fsMode;
+  }
+
   private ObjectReader getReader() {
     SimpleModule module = new SimpleModule("UIMA CAS JSON", new Version(1, 0, 0, null, null, null));
 
     module.addDeserializer(CAS.class, new CasDeserializer());
     module.addDeserializer(FeatureStructure.class, new FeatureStructureDeserializer());
-    module.addDeserializer(FeatureStructures.class, new FeatureStructuresDeserializer());
+
+    switch (fsMode) {
+      case AS_ARRAY:
+        module.addDeserializer(FeatureStructures.class, new FeatureStructuresAsArrayDeserializer());
+        break;
+      case AS_OBJECT:
+        module.addDeserializer(FeatureStructures.class,
+                new FeatureStructuresAsObjectDeserializer());
+        break;
+    }
+
     module.addDeserializer(FeatureDescription.class, new FeatureDeserializer());
     module.addDeserializer(TypeDescription.class, new TypeDeserializer());
     module.addDeserializer(TypeSystemDescription.class, new TypeSystemDeserializer());

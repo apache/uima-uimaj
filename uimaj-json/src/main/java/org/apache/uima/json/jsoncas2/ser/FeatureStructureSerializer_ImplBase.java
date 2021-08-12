@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.json.jsoncas2.JsonCas2Names;
+import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.mode.ViewsMode;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureToViewIndex;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
@@ -48,9 +49,12 @@ public abstract class FeatureStructureSerializer_ImplBase<T extends FeatureStruc
     ReferenceCache refCache = ReferenceCache.get(aProvider);
     FeatureStructureToViewIndex fsToViewIndex = FeatureStructureToViewIndex.get(aProvider);
     ViewsMode viewsMode = ViewsMode.get(aProvider);
+    FeatureStructuresMode featureStructuresMode = FeatureStructuresMode.get(aProvider);
 
     jg.writeStartObject();
-    jg.writeNumberField(ID_FIELD, refCache.fsRef(aFs));
+    if (featureStructuresMode == FeatureStructuresMode.AS_ARRAY) {
+      jg.writeNumberField(ID_FIELD, refCache.fsRef(aFs));
+    }
     jg.writeStringField(TYPE_FIELD, refCache.typeRef(aFs.getType()));
 
     if (viewsMode == ViewsMode.INLINE) {

@@ -103,8 +103,13 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
               + START_OBJECT + " but found " + aParser.currentToken() + " instead");
     }
 
-    FeatureStructure fs = null;
     int fsId = MIN_VALUE;
+    // Handle case where feature structures section is represented as a map instead of an array
+    if (aParser.getCurrentName() != null) {
+      fsId = Integer.parseInt(aParser.getCurrentName());
+    }
+
+    FeatureStructure fs = null;
     aParser.nextValue();
     while (aParser.currentToken() != END_OBJECT) {
       String fieldName = aParser.currentName();
@@ -114,6 +119,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       if (fieldName.startsWith(RESERVED_FIELD_PREFIX)) {
         switch (fieldName) {
           case ID_FIELD:
+            // Handle case where feature structures section is represented as an array
             fsId = aParser.getIntValue();
             break;
           case TYPE_FIELD:

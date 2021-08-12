@@ -77,6 +77,7 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
 
   private static void des(CAS aTargetCas, Path aSourceCasFile) throws IOException {
     JsonCas2Deserializer deserializer = new JsonCas2Deserializer();
+    deserializer.setFsMode(FeatureStructuresMode.AS_ARRAY);
     deserializer.deserialize(aSourceCasFile.toFile(), aTargetCas);
   }
 
@@ -98,6 +99,7 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
 
     try (InputStream is = new ByteArrayInputStream(buffer)) {
       JsonCas2Deserializer deserializer = new JsonCas2Deserializer();
+      deserializer.setFsMode(FeatureStructuresMode.AS_ARRAY);
       deserializer.deserialize(is, aTargetCas);
     }
   }
