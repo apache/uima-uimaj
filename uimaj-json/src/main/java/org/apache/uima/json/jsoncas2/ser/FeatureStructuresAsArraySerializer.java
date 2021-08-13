@@ -19,10 +19,6 @@
 package org.apache.uima.json.jsoncas2.ser;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.json.jsoncas2.model.FeatureStructures;
@@ -47,24 +43,11 @@ public class FeatureStructuresAsArraySerializer extends StdSerializer<FeatureStr
       return;
     }
 
-    Map<FeatureStructure, Set<String>> fsToViewIndex = buildFsToViewIndex(aFeatureStructures);
-
     jg.writeStartArray();
 
     for (FeatureStructure fs : aFeatureStructures) {
       aProvider.defaultSerializeValue(fs, jg);
     }
     jg.writeEndArray();
-  }
-
-  private Map<FeatureStructure, Set<String>> buildFsToViewIndex(
-          FeatureStructures aFeatureStructures) {
-    Map<FeatureStructure, Set<String>> fsToViewsCache = new IdentityHashMap<>();
-    aFeatureStructures.iterator().next().getCAS().getViewIterator().forEachRemaining(view -> {
-      for (FeatureStructure fs : view.select()) {
-        fsToViewsCache.computeIfAbsent(fs, _fs -> new HashSet<>()).add(view.getViewName());
-      }
-    });
-    return fsToViewsCache;
   }
 }

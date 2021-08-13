@@ -2,21 +2,21 @@
   "%TYPES" : { },
   "%VIEWS" : {
     "_InitialView" : {
-      "%SOFA" : 0,
-      "%INDEX" : [ 1 ]
+      "%SOFA" : 1,
+      "%INDEX" : [ 2 ]
     }
   },
   "%FEATURE_STRUCTURES" : {
-    "0" : {
+    "1" : {
       "%TYPE" : "uima.cas.Sofa",
       "sofaNum" : 1,
       "sofaID" : "_InitialView",
       "mimeType" : "text",
       "sofaString" : "This is a test."
     },
-    "1" : {
+    "2" : {
       "%TYPE" : "uima.tcas.DocumentAnnotation",
-      "@sofa" : 0,
+      "@sofa" : 1,
       "begin" : 0,
       "end" : 15,
       "language" : "x-unspecified"

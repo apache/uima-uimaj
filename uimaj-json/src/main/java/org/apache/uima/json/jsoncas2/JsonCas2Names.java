@@ -58,10 +58,18 @@ public class JsonCas2Names {
   public static final String SUPER_TYPE_FIELD = RESERVED_FIELD_PREFIX + "SUPER_TYPE";
 
   /**
+   * @see TypeDescription#getDescription()
+   */
+  public static final String DESCRIPTION_FIELD = RESERVED_FIELD_PREFIX + "DESCRIPTION";
+
+  /**
    * @see FeatureDescription#getElementType()
    * @see Type#getComponentType()
    */
   public static final String ELEMENT_TYPE_FIELD = RESERVED_FIELD_PREFIX + "ELEMENT_TYPE";
+
+  public static final String MULTIPLE_REFERENCES_ALLOWED_FIELD = RESERVED_FIELD_PREFIX
+          + "MULTIPLE_REFERENCES_ALLOWED";
 
   public static final String ID_FIELD = RESERVED_FIELD_PREFIX + "ID";
 

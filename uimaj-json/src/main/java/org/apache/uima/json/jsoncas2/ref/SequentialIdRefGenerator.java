@@ -23,7 +23,12 @@ import java.util.function.ToIntFunction;
 import org.apache.uima.cas.FeatureStructure;
 
 public class SequentialIdRefGenerator implements ToIntFunction<FeatureStructure> {
-  private int nextId = 0;
+  /**
+   * IDs start at 1. 0 is reserved.
+   * 
+   * @see "org.apache.uima.cas.impl.XmiCasSerializer.XmiDocSerializer#writeNullObject()"
+   */
+  private int nextId = 1;
 
   @Override
   public int applyAsInt(FeatureStructure aT) {
