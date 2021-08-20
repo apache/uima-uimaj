@@ -18,7 +18,7 @@
  */
 package org.apache.uima.json.jsoncas2.ser;
 
-import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEW_INDEX_FIELD;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEW_MEMBERS_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEW_SOFA_FIELD;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class ViewsSerializer extends StdSerializer<Views> {
           break;
       }
 
-      jg.writeFieldName(VIEW_INDEX_FIELD);
+      jg.writeFieldName(VIEW_MEMBERS_FIELD);
       jg.writeStartArray();
       for (TOP fs : view.getIndexedFSs()) {
         jg.writeNumber(refCache.fsRef(fs));

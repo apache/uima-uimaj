@@ -66,7 +66,7 @@ public class ViewsDeserializer extends CasDeserializer_ImplBase<Views> {
         case JsonCas2Names.VIEW_SOFA_FIELD:
           // Ignore
           break;
-        case JsonCas2Names.VIEW_INDEX_FIELD:
+        case JsonCas2Names.VIEW_MEMBERS_FIELD:
           deserializeIndex(aParser, aCtxt, aViewName);
           break;
       }

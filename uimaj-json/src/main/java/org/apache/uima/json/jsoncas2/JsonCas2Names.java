@@ -42,7 +42,7 @@ public class JsonCas2Names {
    */
   public static final String VIEW_SOFA_FIELD = RESERVED_FIELD_PREFIX + "SOFA";
 
-  public static final String VIEW_INDEX_FIELD = RESERVED_FIELD_PREFIX + "INDEX";
+  public static final String VIEW_MEMBERS_FIELD = RESERVED_FIELD_PREFIX + "MEMBERS";
 
   public static final String FEATURE_STRUCTURES_FIELD = RESERVED_FIELD_PREFIX
           + "FEATURE_STRUCTURES";

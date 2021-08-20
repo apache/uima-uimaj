@@ -18,7 +18,7 @@
  */
 package org.apache.uima.json.jsoncas2.ser;
 
-import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEW_INDEX_FIELD;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEW_MEMBERS_FIELD;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ public class SofaSerializer extends FeatureStructureSerializer {
 
     Sofa sofa = (Sofa) aFs;
 
-    jg.writeFieldName(VIEW_INDEX_FIELD);
+    jg.writeFieldName(VIEW_MEMBERS_FIELD);
     jg.writeStartArray();
     for (TOP fs : sofa.getCAS().getView(sofa.getSofaID()).getIndexedFSs()) {
       jg.writeNumber(refCache.fsRef(fs));
