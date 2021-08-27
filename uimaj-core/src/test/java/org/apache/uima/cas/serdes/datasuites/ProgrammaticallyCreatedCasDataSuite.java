@@ -28,7 +28,7 @@ import java.util.List;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
-import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.util.CasCreationUtils;
 
 public class ProgrammaticallyCreatedCasDataSuite
@@ -44,9 +44,27 @@ public class ProgrammaticallyCreatedCasDataSuite
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build(),
             CasSourceTargetConfiguration.builder() //
-                    .withTitle("casWithTextAndAnnotation") //
+                    .withTitle("casWithTextAndAnnotations") //
                     .withSourceCasSupplier(
-                            ProgrammaticallyCreatedCasDataSuite::casWithTextAndAnnotation)
+                            ProgrammaticallyCreatedCasDataSuite::casWithTextAndAnnotations)
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithEmojiUnicodeTextAndAnnotations") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithEmojiUnicodeTextAndAnnotations)
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithLeftToRightTextAndAnnotations") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithLeftToRightTextAndAnnotations)
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithTraditionalChineseTextAndAnnotations") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithTraditionalChineseTextAndAnnotations)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build(),
             CasSourceTargetConfiguration.builder() //
@@ -82,13 +100,51 @@ public class ProgrammaticallyCreatedCasDataSuite
     return cas;
   }
 
-  public static CAS casWithTextAndAnnotation() throws Exception {
+  public static CAS casWithTextAndAnnotations() throws Exception {
     CAS cas = CasCreationUtils.createCas();
-    cas.setDocumentText("This is a test.");
+    StringBuilder sb = new StringBuilder();
+    createAnnotatedText(cas, sb, "This", " ");
+    createAnnotatedText(cas, sb, "is", " ");
+    createAnnotatedText(cas, sb, "a", " ");
+    createAnnotatedText(cas, sb, "test");
+    return cas;
+  }
 
-    Annotation a = new Annotation(cas.getJCas(), 0, cas.getDocumentText().length());
-    a.addToIndexes();
+  public static CAS casWithEmojiUnicodeTextAndAnnotations() throws Exception {
+    CAS cas = CasCreationUtils.createCas();
+    StringBuilder sb = new StringBuilder();
+    createAnnotatedText(cas, sb, "🥳", " ");
+    createAnnotatedText(cas, sb, "This", " ");
+    createAnnotatedText(cas, sb, "👳🏻‍♀️", " ");
+    createAnnotatedText(cas, sb, "is", " ");
+    createAnnotatedText(cas, sb, "✆", " ");
+    createAnnotatedText(cas, sb, "a", " ");
+    createAnnotatedText(cas, sb, "🧔🏾‍♂️", " ");
+    createAnnotatedText(cas, sb, "test", " ");
+    createAnnotatedText(cas, sb, "👻");
+    cas.setDocumentText(sb.toString());
+    return cas;
+  }
 
+  public static CAS casWithLeftToRightTextAndAnnotations() throws Exception {
+    CAS cas = CasCreationUtils.createCas();
+    StringBuilder sb = new StringBuilder();
+    // "this is a test" per Google Translate
+    createAnnotatedText(cas, sb, "هذا", " ");
+    createAnnotatedText(cas, sb, "اختبار");
+    cas.setDocumentText(sb.toString());
+    return cas;
+  }
+
+  public static CAS casWithTraditionalChineseTextAndAnnotations() throws Exception {
+    CAS cas = CasCreationUtils.createCas();
+    StringBuilder sb = new StringBuilder();
+    // "This is a test" per Google Translate
+    createAnnotatedText(cas, sb, "這");
+    createAnnotatedText(cas, sb, "是");
+    createAnnotatedText(cas, sb, "一個");
+    createAnnotatedText(cas, sb, "測試");
+    cas.setDocumentText(sb.toString());
     return cas;
   }
 
@@ -112,6 +168,17 @@ public class ProgrammaticallyCreatedCasDataSuite
     cas.setSofaDataArray(sofaDataArray, "text/plain");
 
     return cas;
+  }
+
+  private static void createAnnotatedText(CAS aCas, StringBuilder aBuffer, String aText,
+          String... aSuffix) {
+    int begin = aBuffer.length();
+    aBuffer.append(aText);
+    AnnotationFS a = aCas.createAnnotation(aCas.getAnnotationType(), begin, aBuffer.length());
+    aCas.addFsToIndexes(a);
+    for (String s : aSuffix) {
+      aBuffer.append(s);
+    }
   }
 
   /**
