@@ -22,12 +22,14 @@ import static java.nio.file.Files.newOutputStream;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.cas.SerialFormat.XMI_PRETTY;
+import static org.apache.uima.cas.serdes.CasToComparableText.toComparableString;
 import static org.apache.uima.cas.serdes.TestType.ONE_WAY;
 import static org.apache.uima.cas.serdes.TestType.ROUND_TRIP;
 import static org.apache.uima.cas.serdes.TestType.SER_DES;
 import static org.apache.uima.cas.serdes.TestType.SER_REF;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.TypeSystemUtil.typeSystem2TypeSystemDescription;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -103,7 +105,7 @@ public class SerDesCasIOTestUtils {
    * DESERIALIZE -> SERIALIZE scenarios using the reference data from the
    * serialize/compare-to-reference data.
    */
-  public static List<DesSerTestScenario> roundTripDesSerScenarios(
+  public static List<DesSerTestScenario> roundTripDesSerScenariosComparingFileContents(
           Collection<CasDesSerCycleConfiguration> aDesSerCycles, String aCasFileName)
           throws Exception {
     Class<?> caller = getCallerClass();
@@ -115,6 +117,39 @@ public class SerDesCasIOTestUtils {
               cycle, ROUND_TRIP, aCasFileName)) {
 
         builders.map(builder -> builder.withCycle(cycle::performCycle).build()) //
+                .forEach(confs::add);
+      }
+    }
+
+    return confs;
+  }
+
+  /**
+   * DESERIALIZE -> SERIALIZE scenarios using the reference data from the
+   * serialize/compare-to-reference data.
+   */
+  public static List<DesSerTestScenario> roundTripDesSerScenariosComparingCasContents(
+          Collection<CasDesSerCycleConfiguration> aDesSerCycles, String aCasFileName)
+          throws Exception {
+    Class<?> caller = getCallerClass();
+
+    List<DesSerTestScenario> confs = new ArrayList<>();
+
+    for (CasDesSerCycleConfiguration cycle : aDesSerCycles) {
+      try (Stream<DesSerTestScenario.Builder> builders = DesSerTestScenario.builderCases(caller,
+              cycle, ROUND_TRIP, aCasFileName)) {
+
+        builders.map(builder -> builder //
+                .withCycle(cycle::performCycle) //
+                .withAssertion((targetCasFile, referenceCasFile) -> {
+                  CAS targetCas = CasCreationUtils.createCas();
+                  des(targetCas, targetCasFile, CasLoadMode.DEFAULT);
+                  CAS referenceCas = CasCreationUtils.createCas();
+                  des(referenceCas, referenceCasFile, CasLoadMode.DEFAULT);
+                  assertThat(toComparableString(targetCas))
+                          .isEqualTo(toComparableString(referenceCas));
+
+                }).build()) //
                 .forEach(confs::add);
       }
     }
