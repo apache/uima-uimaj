@@ -18,10 +18,14 @@
  */
 package org.apache.uima.json.jsoncas2.ref;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
 import org.apache.uima.cas.FeatureStructure;
 
@@ -46,6 +50,12 @@ public class FeatureStructureToIdIndex {
   public OptionalInt get(FeatureStructure aFs) {
     Integer id = fsToIdIndex.get(aFs);
     return id != null ? OptionalInt.of(id) : OptionalInt.empty();
+  }
+
+  public List<Entry<Integer, FeatureStructure>> getAllFeatureStructures() {
+    return idToFsIndex.entrySet().stream() //
+            .sorted(Comparator.comparing(Entry::getKey)) //
+            .collect(Collectors.toList());
   }
 
   public Optional<FeatureStructure> get(int aId) {

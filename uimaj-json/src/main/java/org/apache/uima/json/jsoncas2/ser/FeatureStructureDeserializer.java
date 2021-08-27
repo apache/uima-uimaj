@@ -54,7 +54,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -68,11 +67,13 @@ import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.ShortArrayFS;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.json.jsoncas2.ref.FeatureStructureIdToViewIndex;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureToIdIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,11 +217,8 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       aParser.nextValue();
     }
 
-    // Index FS in the respective views
-    FeatureStructureIdToViewIndex fsIdToViewIndex = FeatureStructureIdToViewIndex.get(aCtxt);
-    for (String viewName : fsIdToViewIndex.getViewsContainingFs(fsId)) {
-      cas.getView(viewName).addFsToIndexes(fs);
-    }
+    // Special handling of the document annotation
+    handleDocumentAnnotation(aCtxt, cas, fs);
 
     // Register the loaded FS
     FeatureStructureToIdIndex.get(aCtxt).put(fsId, fs);
@@ -237,17 +235,13 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       throw new JsonParseException(aParser, "Type not found in type system: " + typeName);
     }
 
-    Type docAnnoType = ts.getType(TYPE_NAME_DOCUMENT_ANNOTATION);
-    if (ts.subsumes(docAnnoType, t)) {
-      return createDocumentAnnotation(aParser, aCtxt, aFsId, aCas, docAnnoType, t);
-    }
-
     return aCas.createFS(t);
   }
 
-  // Case 1: there is no document annotation yet (unlikely since the document text has probable
+  // Case 1: there is no document annotation yet (unlikely since the document text has probably
   // been set already and this implicitly triggers the creation of a document annotation)
-  // -> create one of the appropriate type
+  // -> the document annotation that was created became the primary document annotation,
+  // nothing else to do
   //
   // Case 2: there is already a document annotation of the same type as what we deserialize
   // 2a> if it is the first time we deserialize a document annotation, then fill it
@@ -256,45 +250,39 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   // Case 3: there is already a document annotation but is has a different type
   // 3a> if it is the first time we deserialize a document annotation, then replace it
   // 3b> otherwise add the new document annotation
-  private FeatureStructure createDocumentAnnotation(JsonParser aParser,
-          DeserializationContext aCtxt, int aFsId, CAS aCas, Type aDocAnnoType, Type aType)
-          throws JsonParseException {
-    Collection<TOP> docAnnotations = aCas.getIndexedFSs(aDocAnnoType);
-    // Case1: there is no document annotation yet
-    if (docAnnotations.isEmpty()) {
-      return aCas.createFS(aType);
+  private void handleDocumentAnnotation(DeserializationContext aCtxt, CAS aCas,
+          FeatureStructure aFS) throws JsonParseException {
+    TypeSystem ts = aCas.getTypeSystem();
+    Type docAnnoType = ts.getType(TYPE_NAME_DOCUMENT_ANNOTATION);
+    if (!ts.subsumes(docAnnoType, aFS.getType())) {
+      return;
     }
 
-    FeatureStructureIdToViewIndex fsIdToViewIndex = FeatureStructureIdToViewIndex.get(aCtxt);
-    Set<String> viewNames = fsIdToViewIndex.getViewsContainingFs(aFsId);
-    if (viewNames.size() != 1) {
-      throw new JsonParseException(aParser,
-              "Document annotation must be indexed exactly on one view but is indexed in "
-                      + viewNames);
-    }
-    String viewName = viewNames.iterator().next();
+    String viewName = ((Annotation) aFS).getSofa().getSofaID();
 
-    // Case 2b/3b: we already have handled the primaray document annotation, this one is an extra
+    // Case 2b/3b: we already have handled the primary document annotation, this one is an extra
     if (isDocumentAnnotationCreated(aCtxt, viewName)) {
-      return aCas.createFS(aType);
+      // Nothing extra to do
+      return;
     }
 
-    // Case 2a: existing document annotation has the right type and we have't read a document
-    // annotation into this view yet
-    FeatureStructure docAnnotation = docAnnotations.iterator().next();
-    if (docAnnotation.getType() == aType) {
+    Collection<TOP> docAnnotations = aCas.getIndexedFSs(docAnnoType);
+    // Case 1: was no document annotation yet
+    if (docAnnotations.isEmpty()) {
       markDocumentAnnotationCreated(aCtxt, viewName);
-      return docAnnotation;
+      return;
     }
 
     // Case 3a: need to replace the existing document annotation because it has a different type
-    aCas.removeFsFromIndexes(docAnnotation);
-    FeatureStructure newDocAnnotation = aCas.createFS(aType);
-    aCas.addFsToIndexes(newDocAnnotation);
+    docAnnotations.forEach(aCas::removeFsFromIndexes);
+    aCas.addFsToIndexes(aFS);
     markDocumentAnnotationCreated(aCtxt, viewName);
-    return newDocAnnotation;
   }
 
+  /**
+   * Parses SofaFS entries from the feature structure list. If no data has been set in the SofaFS,
+   * this method will return null.
+   */
   private FeatureStructure createSofaFS(CAS aCas, JsonParser aParser, DeserializationContext aCtxt)
           throws IOException {
     int sofaNum = -1;
@@ -353,7 +341,12 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       view.setSofaDataArray(sofaArray, mimeType);
     }
 
-    return view.getSofa();
+    SofaFS sofa = view.getSofa();
+    if (sofa != null) {
+      return sofa;
+    }
+
+    return ((CASImpl) view).getSofaRef();
   }
 
   private BooleanArrayFS deserializeBooleanArray(JsonParser aParser, CAS aCas) throws IOException {

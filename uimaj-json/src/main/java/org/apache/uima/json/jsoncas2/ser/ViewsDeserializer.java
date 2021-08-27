@@ -20,7 +20,6 @@ package org.apache.uima.json.jsoncas2.ser;
 
 import java.io.IOException;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.json.jsoncas2.JsonCas2Names;
 import org.apache.uima.json.jsoncas2.model.Views;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureIdToViewIndex;
@@ -45,15 +44,15 @@ public class ViewsDeserializer extends CasDeserializer_ImplBase<Views> {
       throw new JsonParseException(aParser, "Views declaration must be a JSON object");
     }
 
-    CAS cas = getCas(aCtxt);
-
+    // Move to the first view if there is one
     aParser.nextValue();
     while (aParser.currentToken() != JsonToken.END_OBJECT) {
       String viewName = aParser.getCurrentName();
       deserializeView(aParser, aCtxt, viewName);
+      aParser.nextValue();
     }
 
-    return new Views(cas);
+    return new Views(getCas(aCtxt));
   }
 
   private void deserializeView(JsonParser aParser, DeserializationContext aCtxt, String aViewName)
@@ -71,8 +70,6 @@ public class ViewsDeserializer extends CasDeserializer_ImplBase<Views> {
           break;
       }
     }
-
-    aParser.nextToken();
   }
 
   private void deserializeIndex(JsonParser aParser, DeserializationContext aCtxt, String aViewName)

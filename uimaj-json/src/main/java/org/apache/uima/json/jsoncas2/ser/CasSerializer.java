@@ -54,29 +54,44 @@ public class CasSerializer extends StdSerializer<CAS> {
   }
 
   @Override
-  public void serialize(CAS aCas, JsonGenerator jg, SerializerProvider aProvider)
+  public void serialize(CAS aCas, JsonGenerator aJg, SerializerProvider aProvider)
           throws IOException {
     ReferenceCache.set(aProvider, refCacheSupplier.get());
 
-    jg.writeStartObject(aCas);
+    aJg.writeStartObject(aCas);
 
-    jg.writeFieldName(TYPES_FIELD);
-    aProvider.defaultSerializeValue(aCas.getTypeSystem(), jg);
+    serializeTypes(aCas, aJg, aProvider);
 
-    Views views = new Views(aCas);
-    if (!views.isEmpty()) {
-      jg.writeFieldName(VIEWS_FIELD);
-      aProvider.defaultSerializeValue(views, jg);
-    }
+    serializeFeatureStructures(aCas, aJg, aProvider);
 
+    serializeViews(aCas, aJg, aProvider);
+
+    aJg.writeEndObject();
+  }
+
+  private void serializeTypes(CAS aCas, JsonGenerator aJg, SerializerProvider aProvider)
+          throws IOException {
+    aJg.writeFieldName(TYPES_FIELD);
+    aProvider.defaultSerializeValue(aCas.getTypeSystem(), aJg);
+  }
+
+  private void serializeFeatureStructures(CAS aCas, JsonGenerator aJg, SerializerProvider aProvider)
+          throws IOException {
     FeatureStructures allFSes = findAllFeatureStructures(aCas);
     FeatureStructureToViewIndex.set(aProvider, new FeatureStructureToViewIndex(allFSes));
     if (!allFSes.isEmpty()) {
-      jg.writeFieldName(FEATURE_STRUCTURES_FIELD);
-      aProvider.defaultSerializeValue(allFSes, jg);
+      aJg.writeFieldName(FEATURE_STRUCTURES_FIELD);
+      aProvider.defaultSerializeValue(allFSes, aJg);
     }
+  }
 
-    jg.writeEndObject();
+  private void serializeViews(CAS aCas, JsonGenerator aJg, SerializerProvider aProvider)
+          throws IOException {
+    Views views = new Views(aCas);
+    if (!views.isEmpty()) {
+      aJg.writeFieldName(VIEWS_FIELD);
+      aProvider.defaultSerializeValue(views, aJg);
+    }
   }
 
   private FeatureStructures findAllFeatureStructures(CAS aCas) {

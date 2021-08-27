@@ -24,7 +24,6 @@ import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEW_SOFA_FIELD;
 import java.io.IOException;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
 import org.apache.uima.json.jsoncas2.model.Views;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
@@ -65,8 +64,8 @@ public class ViewsSerializer extends StdSerializer<Views> {
 
       jg.writeFieldName(VIEW_MEMBERS_FIELD);
       jg.writeStartArray();
-      for (TOP fs : view.getIndexedFSs()) {
-        jg.writeNumber(refCache.fsRef(fs));
+      for (int fsId : view.getIndexedFSs().stream().mapToInt(refCache::fsRef).sorted().toArray()) {
+        jg.writeNumber(fsId);
       }
       jg.writeEndArray();
 

@@ -26,8 +26,10 @@ import static org.apache.uima.json.jsoncas2.JsonCas2Names.TYPES_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEWS_FIELD;
 
 import java.io.IOException;
+import java.util.Map.Entry;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.json.jsoncas2.model.FeatureStructures;
 import org.apache.uima.json.jsoncas2.model.Views;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureIdToViewIndex;
@@ -84,23 +86,28 @@ public class CasDeserializer extends CasDeserializer_ImplBase<CAS> {
       }
 
       // If we get here, we are operating on an object-type representation of the full CAS
-      switch (aParser.getValueAsString()) {
+      switch (aParser.getCurrentName()) {
         case TYPES_FIELD:
           aParser.nextValue();
           types = aCtxt.readValue(aParser, TypeSystemDescription.class);
-          aParser.nextToken();
+          aParser.nextValue();
+          cas = createCasOrGetFromContext(aCtxt, types);
           break;
         case VIEWS_FIELD:
-          cas = createCasOrGetFromContext(aCtxt, types);
-          aParser.nextValue();
           aCtxt.readValue(aParser, Views.class);
-          aParser.nextToken();
           break;
         case FEATURE_STRUCTURES_FIELD:
-          aParser.nextValue();
           aCtxt.readValue(aParser, FeatureStructures.class);
-          aParser.nextToken();
           break;
+      }
+    }
+
+    // Index FS in the respective views
+    FeatureStructureIdToViewIndex fsIdToViewIndex = FeatureStructureIdToViewIndex.get(aCtxt);
+    for (Entry<Integer, FeatureStructure> fsEntry : FeatureStructureToIdIndex.get(aCtxt)
+            .getAllFeatureStructures()) {
+      for (String viewName : fsIdToViewIndex.getViewsContainingFs(fsEntry.getKey())) {
+        cas.getView(viewName).addFsToIndexes(fsEntry.getValue());
       }
     }
 

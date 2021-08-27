@@ -1,22 +1,22 @@
 {
   "%TYPES" : { },
-  "%VIEWS" : {
-    "_InitialView" : {
-      "%SOFA" : 1,
-      "%MEMBERS" : [ ]
-    }
-  },
   "%FEATURE_STRUCTURES" : {
-    "2" : {
+    "1" : {
       "%TYPE" : "uima.cas.ByteArray",
       "%ELEMENTS" : "VGhpcyBpcyBhIHRlc3Q="
     },
-    "1" : {
+    "2" : {
       "%TYPE" : "uima.cas.Sofa",
       "sofaNum" : 1,
       "sofaID" : "_InitialView",
       "mimeType" : "text/plain",
-      "@sofaArray" : 2
+      "@sofaArray" : 1
+    }
+  },
+  "%VIEWS" : {
+    "_InitialView" : {
+      "%SOFA" : 2,
+      "%MEMBERS" : [ ]
     }
   }
 }

@@ -18,16 +18,24 @@
  */
 package org.apache.uima.json.jsoncas2.model;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.uima.cas.FeatureStructure;
 
 public class FeatureStructures implements Iterable<FeatureStructure> {
-  private final Collection<FeatureStructure> featureStructures;
+  private final List<FeatureStructure> featureStructures;
 
   public FeatureStructures(Collection<FeatureStructure> aFeatureStructures) {
-    featureStructures = aFeatureStructures;
+    featureStructures = aFeatureStructures.stream() //
+            .sorted(Comparator.comparing(fs -> {
+              return fs.getType().getName();
+            })) //
+            .collect(toList());
   }
 
   @Override

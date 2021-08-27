@@ -144,6 +144,7 @@
                   <exclude>src/test/resources/FlexJsonDeserializer/**/*.json</exclude>
                   <exclude>src/test/resources/FlexJsonSerializerTest/**/*.json</exclude>
                   <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>
+                  <exclude>src/test/resources/CasSerialization/expected/json/*.txt</exclude>
                   <exclude>src/test/resources/CASTests/json/expected/*.json</exclude>
                   <exclude>src/test/java/org/apache/uima/test/*.java</exclude>
                 </excludes>

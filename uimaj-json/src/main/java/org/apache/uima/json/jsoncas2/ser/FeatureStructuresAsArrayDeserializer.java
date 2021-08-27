@@ -30,7 +30,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-public class FeatureStructuresAsArrayDeserializer extends CasDeserializer_ImplBase<FeatureStructures> {
+public class FeatureStructuresAsArrayDeserializer
+        extends CasDeserializer_ImplBase<FeatureStructures> {
   private static final long serialVersionUID = -5937326876753347248L;
 
   public FeatureStructuresAsArrayDeserializer() {
@@ -53,7 +54,7 @@ public class FeatureStructuresAsArrayDeserializer extends CasDeserializer_ImplBa
     runPostprocessors(aCtxt);
 
     // Consume array end
-    aParser.nextToken();
+    aParser.nextValue();
 
     return new FeatureStructures(featureStructures);
   }
