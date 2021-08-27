@@ -21,6 +21,7 @@ package org.apache.uima.cas.serdes.scenario;
 import static java.nio.file.Files.isDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,6 +40,7 @@ public class DesSerTestScenario implements Runnable {
   private final Path referenceCasFile;
   private final Path targetBasePath;
   private final FailableBiConsumer<Path, Path, ?> cycle;
+  private final FailableBiConsumer<Path, Path, ?> assertion;
 
   private DesSerTestScenario(Builder builder) {
     this.title = builder.title;
@@ -46,6 +48,7 @@ public class DesSerTestScenario implements Runnable {
     this.referenceCasFile = builder.referenceCasFile;
     this.targetBasePath = builder.targetBasePath;
     this.cycle = builder.cycle;
+    this.assertion = builder.assertion;
   }
 
   public Path getSourceCasFile() {
@@ -65,9 +68,13 @@ public class DesSerTestScenario implements Runnable {
     // Perform actual test cycle
     deserializationSerializationCycle(getSourceCasFile(), targetCasFile);
 
-    // Compare the serialized CAS file against the reference
-    assertThat(contentOf(targetCasFile.toFile())) //
-            .isEqualTo(contentOf(referenceCasFile.toFile()));
+    try {
+      assertion.accept(targetCasFile, referenceCasFile);
+    } catch (RuntimeException | Error e) {
+      throw e;
+    } catch (Throwable e) {
+      fail("Unable to apply assertion", e);
+    }
   }
 
   public void deserializationSerializationCycle(Path aSourceCas, Path aTargetCas) {
@@ -110,6 +117,10 @@ public class DesSerTestScenario implements Runnable {
                     .withCasFile(caseFolder.resolve(aCasFileName)));
   }
 
+  public static void assertFileContentsAreEqual(Path aTargetCasFile, Path aReferenceCasFile) {
+    assertThat(contentOf(aTargetCasFile.toFile())).isEqualTo(contentOf(aReferenceCasFile.toFile()));
+  }
+
   /**
    * Builder to build {@link DesSerTestScenario}.
    */
@@ -119,8 +130,11 @@ public class DesSerTestScenario implements Runnable {
     private Path referenceCasFile;
     private Path targetBasePath;
     private FailableBiConsumer<Path, Path, ?> cycle;
+    private FailableBiConsumer<Path, Path, ?> assertion;
 
     private Builder() {
+      // Compare the serialized CAS file against the reference
+      assertion = DesSerTestScenario::assertFileContentsAreEqual;
     }
 
     public Builder withTitle(String title) {
@@ -151,6 +165,11 @@ public class DesSerTestScenario implements Runnable {
 
     public Builder withCycle(FailableBiConsumer<Path, Path, ?> cycle) {
       this.cycle = cycle;
+      return this;
+    }
+
+    public Builder withAssertion(FailableBiConsumer<Path, Path, ?> aAssertion) {
+      this.assertion = aAssertion;
       return this;
     }
 
