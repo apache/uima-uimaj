@@ -39,8 +39,19 @@ public class ProgrammaticallyCreatedCasDataSuite
   private ProgrammaticallyCreatedCasDataSuite(Builder builder) {
     confs = asList( //
             CasSourceTargetConfiguration.builder() //
+                    .withTitle("emptyCas") //
+                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::emptyCas) //
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
                     .withTitle("casWithText") //
                     .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithText) //
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithoutTextButWithAnnotations") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithoutTextButWithAnnotations)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build(),
             CasSourceTargetConfiguration.builder() //
@@ -100,6 +111,17 @@ public class ProgrammaticallyCreatedCasDataSuite
     return cas;
   }
 
+  public static CAS casWithoutTextButWithAnnotations() throws Exception {
+    CAS cas = CasCreationUtils.createCas();
+    StringBuilder sb = new StringBuilder();
+    createAnnotatedText(cas, sb, "This", " ");
+    createAnnotatedText(cas, sb, "is", " ");
+    createAnnotatedText(cas, sb, "a", " ");
+    createAnnotatedText(cas, sb, "test");
+    // Not adding the text to the CAS here! This is intentional!
+    return cas;
+  }
+
   public static CAS casWithTextAndAnnotations() throws Exception {
     CAS cas = CasCreationUtils.createCas();
     StringBuilder sb = new StringBuilder();
@@ -107,6 +129,7 @@ public class ProgrammaticallyCreatedCasDataSuite
     createAnnotatedText(cas, sb, "is", " ");
     createAnnotatedText(cas, sb, "a", " ");
     createAnnotatedText(cas, sb, "test");
+    cas.setDocumentText(sb.toString());
     return cas;
   }
 
