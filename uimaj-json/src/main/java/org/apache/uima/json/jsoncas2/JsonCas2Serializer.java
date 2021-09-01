@@ -32,6 +32,7 @@ import org.apache.uima.json.jsoncas2.ser.FeatureSerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructureSerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsArraySerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsObjectSerializer;
+import org.apache.uima.json.jsoncas2.ser.HeaderSerializer;
 import org.apache.uima.json.jsoncas2.ser.SofaSerializer;
 import org.apache.uima.json.jsoncas2.ser.TypeSerializer;
 import org.apache.uima.json.jsoncas2.ser.TypeSystemSerializer;
@@ -46,6 +47,7 @@ public class JsonCas2Serializer {
 
   private FeatureStructuresMode fsMode = FeatureStructuresMode.AS_ARRAY;
   private SofaMode sofaMode = SofaMode.AS_REGULAR_FEATURE_STRUCTURE;
+  private ObjectMapper cachedMapper;
 
   public void setFsMode(FeatureStructuresMode aFsMode) {
     fsMode = aFsMode;
@@ -63,44 +65,52 @@ public class JsonCas2Serializer {
     return sofaMode;
   }
 
+  private synchronized ObjectMapper getMapper() {
+    if (cachedMapper == null) {
+      SimpleModule module = new SimpleModule("UIMA CAS JSON",
+              new Version(1, 0, 0, null, null, null));
+
+      ReferenceCache.Builder refCacheBuilder = ReferenceCache.builder();
+      module.addSerializer(new CasSerializer(refCacheBuilder::build));
+      module.addSerializer(new TypeSystemSerializer());
+      module.addSerializer(new TypeSerializer());
+      module.addSerializer(new FeatureSerializer());
+      module.addSerializer(new CommonArrayFSSerializer());
+
+      switch (sofaMode) {
+        case AS_PART_OF_VIEW:
+          module.addSerializer(new SofaSerializer());
+          break;
+        case AS_REGULAR_FEATURE_STRUCTURE:
+          // Nothing to do
+          break;
+      }
+
+      module.addSerializer(new FeatureStructureSerializer());
+
+      switch (fsMode) {
+        case AS_ARRAY:
+          module.addSerializer(new FeatureStructuresAsArraySerializer());
+          break;
+        case AS_OBJECT:
+          module.addSerializer(new FeatureStructuresAsObjectSerializer());
+          break;
+      }
+
+      module.addSerializer(new ViewsSerializer());
+      module.addSerializer(new HeaderSerializer());
+
+      cachedMapper = new ObjectMapper();
+      cachedMapper.registerModule(module);
+    }
+
+    return cachedMapper;
+  }
+
   private ObjectWriter getWriter() {
-    SimpleModule module = new SimpleModule("UIMA CAS JSON", new Version(1, 0, 0, null, null, null));
-
-    ReferenceCache.Builder refCacheBuilder = ReferenceCache.builder();
-    module.addSerializer(new CasSerializer(refCacheBuilder::build));
-    module.addSerializer(new TypeSystemSerializer());
-    module.addSerializer(new TypeSerializer());
-    module.addSerializer(new FeatureSerializer());
-    module.addSerializer(new CommonArrayFSSerializer());
-
-    switch (sofaMode) {
-      case AS_PART_OF_VIEW:
-        module.addSerializer(new SofaSerializer());
-        break;
-      case AS_REGULAR_FEATURE_STRUCTURE:
-        // Nothing to do
-        break;
-    }
-
-    module.addSerializer(new FeatureStructureSerializer());
-
-    switch (fsMode) {
-      case AS_ARRAY:
-        module.addSerializer(new FeatureStructuresAsArraySerializer());
-        break;
-      case AS_OBJECT:
-        module.addSerializer(new FeatureStructuresAsObjectSerializer());
-        break;
-    }
-
-    module.addSerializer(new ViewsSerializer());
-
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(module);
-    return mapper.writerWithDefaultPrettyPrinter() //
+    return getMapper().writerWithDefaultPrettyPrinter() //
             .withAttribute(SofaMode.KEY, sofaMode) //
             .withAttribute(FeatureStructuresMode.KEY, fsMode);
-
   }
 
   public void serialize(CAS aCas, File aTargetFile) throws IOException {

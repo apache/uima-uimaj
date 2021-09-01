@@ -26,12 +26,14 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.model.FeatureStructures;
+import org.apache.uima.json.jsoncas2.model.Header;
 import org.apache.uima.json.jsoncas2.model.Views;
 import org.apache.uima.json.jsoncas2.ser.CasDeserializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureDeserializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructureDeserializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsArrayDeserializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsObjectDeserializer;
+import org.apache.uima.json.jsoncas2.ser.HeaderDeserializer;
 import org.apache.uima.json.jsoncas2.ser.TypeDeserializer;
 import org.apache.uima.json.jsoncas2.ser.TypeSystemDeserializer;
 import org.apache.uima.json.jsoncas2.ser.ViewsDeserializer;
@@ -75,6 +77,7 @@ public class JsonCas2Deserializer {
     module.addDeserializer(TypeDescription.class, new TypeDeserializer());
     module.addDeserializer(TypeSystemDescription.class, new TypeSystemDeserializer());
     module.addDeserializer(Views.class, new ViewsDeserializer());
+    module.addDeserializer(Header.class, new HeaderDeserializer());
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(module);
