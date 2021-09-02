@@ -32,7 +32,6 @@ import org.apache.uima.json.jsoncas2.ser.FeatureSerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructureSerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsArraySerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureStructuresAsObjectSerializer;
-import org.apache.uima.json.jsoncas2.ser.HeaderSerializer;
 import org.apache.uima.json.jsoncas2.ser.SofaSerializer;
 import org.apache.uima.json.jsoncas2.ser.TypeSerializer;
 import org.apache.uima.json.jsoncas2.ser.TypeSystemSerializer;
@@ -98,7 +97,7 @@ public class JsonCas2Serializer {
       }
 
       module.addSerializer(new ViewsSerializer());
-      module.addSerializer(new HeaderSerializer());
+      // module.addSerializer(new HeaderSerializer());
 
       cachedMapper = new ObjectMapper();
       cachedMapper.registerModule(module);

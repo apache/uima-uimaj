@@ -30,18 +30,20 @@ import org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class JsonCas2_FsAsArray_PerformanceTest {
 
   private static final int ITERATIONS = 100;
-  private static final int CAS_SIZE = 1000;
+  private static final int CAS_SIZE = 1_000;
 
   private static MultiFeatureRandomCasGenerator generator;
   private static JsonCas2Serializer jsonSerializer;
   private static JsonCas2Deserializer jsonDeserializer;
   private static CAS randomizedCas;
+  private static CAS targetCas;
   private static String randomizedCasJson;
   private static byte[] randomizedCasJsonUtf8Bytes;
 
@@ -53,6 +55,7 @@ public class JsonCas2_FsAsArray_PerformanceTest {
 
     TypeSystemDescription tsd = generator.generateTypeSystem();
     randomizedCas = generator.generateCas(tsd);
+    targetCas = CasCreationUtils.createCas(tsd, null, null, null);
 
     jsonSerializer = new JsonCas2Serializer();
     jsonSerializer.setFsMode(FeatureStructuresMode.AS_ARRAY);
@@ -86,17 +89,20 @@ public class JsonCas2_FsAsArray_PerformanceTest {
 
   @Test
   public void jsonDeserialization() throws Exception {
-
-    long start = currentTimeMillis();
+    long total = 0;
     for (int i = 0; i < ITERATIONS; i++) {
+      long start = currentTimeMillis();
       try (ByteArrayInputStream bos = new ByteArrayInputStream(randomizedCasJsonUtf8Bytes)) {
-        jsonDeserializer.deserialize(bos, randomizedCas);
+        jsonDeserializer.deserialize(bos, targetCas);
       }
+      long end = currentTimeMillis();
+      total += end - start;
+
+      targetCas.reset();
     }
-    long end = currentTimeMillis();
 
     System.out.printf(
             "JSON Deserializing %d CASes with %d feature stuctures each took %s ms (%d bytes each)%n",
-            ITERATIONS, CAS_SIZE, end - start, randomizedCasJsonUtf8Bytes.length);
+            ITERATIONS, CAS_SIZE, total, randomizedCasJsonUtf8Bytes.length);
   }
 }
