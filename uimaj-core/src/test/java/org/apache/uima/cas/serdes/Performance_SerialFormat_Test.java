@@ -43,11 +43,15 @@ public class Performance_SerialFormat_Test {
     System.out.printf("[%23s] %d CASes with %d feature structures (%7d bytes each)%n", aFormat,
             ITERATIONS, SIZE, runner.getDataSize());
 
-    System.out.printf("[%23s]   %4s ms serialization %n", aFormat, serDuration);
+    System.out.printf("[%23s]   %6s ms serialization    %6.2f fs/sec  %6.2f CAS/sec %n", aFormat,
+            serDuration, (ITERATIONS * SIZE) / (serDuration / 1000.0d),
+            ITERATIONS / (serDuration / 1000.0d));
 
-    long desDuration = runner.measureSerializationPerformance();
+    long desDuration = runner.measureDeserializationPerformance();
 
-    System.out.printf("[%23s]   %4s ms deserialization %n", aFormat, desDuration);
+    System.out.printf("[%23s]   %6s ms deserialization  %6.2f fs/sec  %6.2f CAS/sec %n", aFormat,
+            desDuration, (ITERATIONS * SIZE) / (desDuration / 1000.0d),
+            ITERATIONS / (desDuration / 1000.0d));
   }
 
   public PerformanceTestRunner buildRunner(SerialFormat aFormat) throws Exception {

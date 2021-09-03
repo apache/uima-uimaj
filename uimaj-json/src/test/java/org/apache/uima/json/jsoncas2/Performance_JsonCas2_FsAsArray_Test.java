@@ -53,11 +53,15 @@ public class Performance_JsonCas2_FsAsArray_Test {
     System.out.printf("[%23s] %d CASes with %d feature structures (%7d bytes each)%n", "JSON",
             ITERATIONS, SIZE, runner.getDataSize());
 
-    System.out.printf("[%23s]   %4s ms serialization %n", "JSON", serDuration);
+    System.out.printf("[%23s]   %6s ms serialization    %6.2f fs/sec  %6.2f CAS/sec %n", "JSON",
+            serDuration, (ITERATIONS * SIZE) / (serDuration / 1000.0d),
+            ITERATIONS / (serDuration / 1000.0d));
 
-    long desDuration = runner.measureSerializationPerformance();
+    long desDuration = runner.measureDeserializationPerformance();
 
-    System.out.printf("[%23s]   %4s ms deserialization %n", "JSON", desDuration);
+    System.out.printf("[%23s]   %6s ms deserialization  %6.2f fs/sec  %6.2f CAS/sec %n", "JSON",
+            desDuration, (ITERATIONS * SIZE) / (desDuration / 1000.0d),
+            ITERATIONS / (desDuration / 1000.0d));
   }
 
   public PerformanceTestRunner buildRunner() throws Exception {

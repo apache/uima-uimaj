@@ -38,6 +38,7 @@ public class PerformanceTestRunner {
   private final FailableBiConsumer<InputStream, CAS, Exception> deserializer;
   private final FailableBiConsumer<CAS, OutputStream, Exception> serializer;
   private final int iterations;
+  private final int warmUpIterations;
 
   private CasGenerator generator;
   private CAS randomizedCas;
@@ -47,6 +48,7 @@ public class PerformanceTestRunner {
   @Generated("SparkTools")
   private PerformanceTestRunner(Builder builder) {
     this.iterations = builder.iterations;
+    this.warmUpIterations = builder.warmUpIterations;
     this.generator = builder.generator;
     this.serializer = builder.serializer;
     this.deserializer = builder.deserializer;
@@ -73,11 +75,13 @@ public class PerformanceTestRunner {
 
   public long measureSerializationPerformance() throws Exception {
     long total = 0;
-    for (int i = 0; i < iterations; i++) {
+    for (int i = 0; i < iterations + warmUpIterations; i++) {
       try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
         long start = currentTimeMillis();
         serializer.accept(randomizedCas, bos);
-        total += currentTimeMillis() - start;
+        if (i >= warmUpIterations) {
+          total += currentTimeMillis() - start;
+        }
       }
     }
 
@@ -86,11 +90,13 @@ public class PerformanceTestRunner {
 
   public long measureDeserializationPerformance() throws Exception {
     long total = 0;
-    for (int i = 0; i < iterations; i++) {
+    for (int i = 0; i < iterations + warmUpIterations; i++) {
       try (ByteArrayInputStream bis = new ByteArrayInputStream(randomizedCasBytes)) {
         long start = currentTimeMillis();
         deserializer.accept(bis, targetCas);
-        total += currentTimeMillis() - start;
+        if (i >= warmUpIterations) {
+          total += currentTimeMillis() - start;
+        }
       }
 
       targetCas.reset();
@@ -115,6 +121,7 @@ public class PerformanceTestRunner {
   @Generated("SparkTools")
   public static final class Builder {
     private int iterations = 100;
+    private int warmUpIterations = 5;
     private CasGenerator generator;
     private FailableBiConsumer<InputStream, CAS, Exception> deserializer;
     private FailableBiConsumer<CAS, OutputStream, Exception> serializer;
@@ -134,6 +141,11 @@ public class PerformanceTestRunner {
 
     public Builder withIterations(int iterations) {
       this.iterations = iterations;
+      return this;
+    }
+
+    public Builder withWarmUpIterations(int iterations) {
+      this.warmUpIterations = iterations;
       return this;
     }
 
