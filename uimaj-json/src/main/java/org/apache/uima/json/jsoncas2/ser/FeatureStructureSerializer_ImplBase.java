@@ -84,11 +84,11 @@ public abstract class FeatureStructureSerializer_ImplBase<T extends FeatureStruc
     // jg.writeEndArray();
     // }
 
-    writeBody(refCache, jg, aFs);
+    writeBody(aProvider, jg, aFs);
 
     jg.writeEndObject();
   }
 
-  protected abstract void writeBody(ReferenceCache refCache, JsonGenerator jg, FeatureStructure aFs)
-          throws IOException;
+  protected abstract void writeBody(SerializerProvider aProvider, JsonGenerator jg,
+          FeatureStructure aFs) throws IOException;
 }

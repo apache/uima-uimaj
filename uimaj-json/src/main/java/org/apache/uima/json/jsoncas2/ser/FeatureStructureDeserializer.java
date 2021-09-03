@@ -74,6 +74,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureToIdIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,7 +214,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
         continue;
       }
 
-      deserializePrimitive(aParser, fs, fieldName);
+      deserializePrimitive(aParser, aCtxt, fs, fieldName);
       aParser.nextValue();
     }
 
@@ -337,6 +338,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       view.setSofaDataURI(sofaURI, mimeType);
     } else if (sofaString != null) {
       view.setSofaDataString(sofaString, mimeType);
+      OffsetConversionMode.initConverter(aCtxt, sofaID, sofaString);
     } else if (sofaArray != null) {
       view.setSofaDataArray(sofaArray, mimeType);
     }
@@ -504,25 +506,25 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     return arrayFs;
   }
 
-  private void deserializePrimitive(JsonParser aParser, FeatureStructure fs, String aFeatureName)
-          throws CASRuntimeException, IOException {
-    Feature feature = fs.getType().getFeatureByBaseName(aFeatureName);
+  private void deserializePrimitive(JsonParser aParser, DeserializationContext aCtxt,
+          FeatureStructure aFs, String aFeatureName) throws CASRuntimeException, IOException {
+    Feature feature = aFs.getType().getFeatureByBaseName(aFeatureName);
     switch (aParser.currentToken()) {
       case VALUE_NULL:
         // No need do to anything really - we just leave the feature alone
         break;
       case VALUE_TRUE: // fall-through
       case VALUE_FALSE:
-        fs.setBooleanValue(feature, aParser.getBooleanValue());
+        aFs.setBooleanValue(feature, aParser.getBooleanValue());
         break;
       case VALUE_STRING:
-        fs.setStringValue(feature, aParser.getValueAsString());
+        aFs.setStringValue(feature, aParser.getValueAsString());
         break;
       case VALUE_NUMBER_FLOAT: // JSON does not distinguish between double and float
-        deserializeFloatingPointValue(aParser, fs, feature);
+        deserializeFloatingPointValue(aParser, aFs, feature);
         break;
       case VALUE_NUMBER_INT:
-        deserializeIntegerValue(aParser, fs, feature);
+        deserializeIntegerValue(aParser, aCtxt, aFs, feature);
         break;
       default:
         throw new JsonParseException(aParser,
@@ -532,15 +534,15 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   }
 
   private void deserializeFsReference(JsonParser aParser, DeserializationContext aCtxt,
-          FeatureStructure fs, String fieldName) throws IOException {
+          FeatureStructure aFs, String aFieldName) throws IOException {
     FeatureStructureToIdIndex idToFsIdx = FeatureStructureToIdIndex.get(aCtxt);
     int targetFsId = aParser.getIntValue();
     Optional<FeatureStructure> targetFs = idToFsIdx.get(targetFsId);
-    Feature feature = fs.getType().getFeatureByBaseName(fieldName);
+    Feature feature = aFs.getType().getFeatureByBaseName(aFieldName);
     if (targetFs.isPresent()) {
-      fs.setFeatureValue(feature, targetFs.get());
+      aFs.setFeatureValue(feature, targetFs.get());
     } else {
-      FeatureStructure finalFs = fs;
+      FeatureStructure finalFs = aFs;
       schedulePostprocessing(aCtxt, () -> {
         finalFs.setFeatureValue(feature,
                 idToFsIdx.get(targetFsId).orElseThrow(() -> new NoSuchElementException(
@@ -549,39 +551,54 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     }
   }
 
-  private void deserializeFloatingPointValue(JsonParser aParser, FeatureStructure fs,
-          Feature feature) throws CASRuntimeException, IOException {
-    switch (feature.getRange().getName()) {
+  private void deserializeFloatingPointValue(JsonParser aParser, FeatureStructure aFs,
+          Feature aFeature) throws CASRuntimeException, IOException {
+    switch (aFeature.getRange().getName()) {
       case TYPE_NAME_DOUBLE:
-        fs.setDoubleValue(feature, aParser.getValueAsDouble());
+        aFs.setDoubleValue(aFeature, aParser.getValueAsDouble());
         break;
       case TYPE_NAME_FLOAT:
-        fs.setFloatValue(feature, (float) aParser.getValueAsDouble());
+        aFs.setFloatValue(aFeature, (float) aParser.getValueAsDouble());
         break;
       default:
-        throw new JsonParseException(aParser, "Feature of type " + feature.getRange().getName()
+        throw new JsonParseException(aParser, "Feature of type " + aFeature.getRange().getName()
                 + " cannot be set from a JSON value of type " + aParser.currentToken());
     }
   }
 
-  private void deserializeIntegerValue(JsonParser aParser, FeatureStructure fs, Feature feature)
-          throws CASRuntimeException, IOException {
-    switch (feature.getRange().getName()) {
+  private void deserializeIntegerValue(JsonParser aParser, DeserializationContext aCtxt,
+          FeatureStructure aFs, Feature aFeature) throws CASRuntimeException, IOException {
+    switch (aFeature.getRange().getName()) {
       case TYPE_NAME_BYTE:
-        fs.setByteValue(feature, (byte) aParser.getValueAsInt());
+        aFs.setByteValue(aFeature, (byte) aParser.getValueAsInt());
         break;
       case TYPE_NAME_INTEGER:
-        fs.setIntValue(feature, aParser.getValueAsInt());
+        int value = aParser.getValueAsInt();
+        value = convertOffsetsIfNecessary(aCtxt, aFs, aFeature, value);
+        aFs.setIntValue(aFeature, value);
         break;
       case TYPE_NAME_LONG:
-        fs.setLongValue(feature, aParser.getValueAsLong());
+        aFs.setLongValue(aFeature, aParser.getValueAsLong());
         break;
       case TYPE_NAME_SHORT:
-        fs.setShortValue(feature, (short) aParser.getValueAsInt());
+        aFs.setShortValue(aFeature, (short) aParser.getValueAsInt());
         break;
       default:
-        throw new JsonParseException(aParser, "Feature of type " + feature.getRange().getName()
+        throw new JsonParseException(aParser, "Feature of type " + aFeature.getRange().getName()
                 + " cannot be set from a JSON value of type " + aParser.currentToken());
     }
+  }
+
+  private int convertOffsetsIfNecessary(DeserializationContext aCtxt, FeatureStructure aFs,
+          Feature aFeature, int aValue) {
+    if (aFs instanceof Annotation && (CAS.FEATURE_FULL_NAME_BEGIN.equals(aFeature.getName())
+            || CAS.FEATURE_FULL_NAME_END.equals(aFeature.getName()))) {
+      Annotation ann = (Annotation) aFs;
+      return OffsetConversionMode.getConverter(aCtxt, ann.getSofa().getSofaID()) //
+              .map(conv -> conv.mapExternal(aValue)) //
+              .orElse(aValue);
+    }
+
+    return aValue;
   }
 }

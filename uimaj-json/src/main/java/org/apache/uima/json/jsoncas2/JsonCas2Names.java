@@ -31,6 +31,8 @@ public class JsonCas2Names {
 
   public static final String RANGE_FIELD = RESERVED_FIELD_PREFIX + "RANGE";
 
+  public static final String HEADER_FIELD = RESERVED_FIELD_PREFIX + "HEADER";
+
   public static final String TYPES_FIELD = RESERVED_FIELD_PREFIX + "TYPES";
 
   public static final String FEATURES_FIELD = RESERVED_FIELD_PREFIX + "FEATURES";
@@ -80,4 +82,6 @@ public class JsonCas2Names {
   public static final String ARRAY_SUFFIX = "[]";
 
   public static final String ELEMENTS_FIELD = RESERVED_FIELD_PREFIX + "ELEMENTS";
+
+  public static final String HEADER_OFFSET_ENCODING = "offset-encoding";
 }

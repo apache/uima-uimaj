@@ -24,6 +24,7 @@ import java.io.OutputStream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
+import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
 import org.apache.uima.json.jsoncas2.ser.CasSerializer;
@@ -46,6 +47,7 @@ public class JsonCas2Serializer {
 
   private FeatureStructuresMode fsMode = FeatureStructuresMode.AS_ARRAY;
   private SofaMode sofaMode = SofaMode.AS_REGULAR_FEATURE_STRUCTURE;
+  private OffsetConversionMode offsetConversionMode = OffsetConversionMode.UTF_16;
   private ObjectMapper cachedMapper;
 
   public void setFsMode(FeatureStructuresMode aFsMode) {
@@ -62,6 +64,14 @@ public class JsonCas2Serializer {
 
   public SofaMode getSofaMode() {
     return sofaMode;
+  }
+
+  public void setOffsetConversionMode(OffsetConversionMode aOffsetConversionMode) {
+    offsetConversionMode = aOffsetConversionMode;
+  }
+
+  public OffsetConversionMode getOffsetConversionMode() {
+    return offsetConversionMode;
   }
 
   private synchronized ObjectMapper getMapper() {
@@ -109,7 +119,8 @@ public class JsonCas2Serializer {
   private ObjectWriter getWriter() {
     return getMapper().writerWithDefaultPrettyPrinter() //
             .withAttribute(SofaMode.KEY, sofaMode) //
-            .withAttribute(FeatureStructuresMode.KEY, fsMode);
+            .withAttribute(FeatureStructuresMode.KEY, fsMode)
+            .withAttribute(OffsetConversionMode.KEY, offsetConversionMode);
   }
 
   public void serialize(CAS aCas, File aTargetFile) throws IOException {

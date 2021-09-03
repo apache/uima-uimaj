@@ -48,6 +48,7 @@ import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
 import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
+import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,8 +60,14 @@ public class CasSerializationDeserialization_JsonCas2_FsAsObject_Test {
   private static final int RANDOM_CAS_ITERATIONS = 20;
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
-          new CasSerDesCycleConfiguration("DEFAULT", //
-                  (a, b) -> serdes(a, b)));
+          new CasSerDesCycleConfiguration("DEFAULT (default offsets)", //
+                  (a, b) -> serdes(a, b, null)),
+          new CasSerDesCycleConfiguration("DEFAULT (UTF-16 offsets)", //
+                  (a, b) -> serdes(a, b, OffsetConversionMode.UTF_16)),
+          new CasSerDesCycleConfiguration("DEFAULT (UTF-8 offsets)", //
+                  (a, b) -> serdes(a, b, OffsetConversionMode.UTF_8)),
+          new CasSerDesCycleConfiguration("DEFAULT (UTF-32 offsets)", //
+                  (a, b) -> serdes(a, b, OffsetConversionMode.UTF_32)));
   // new CasSerDesCycleConfiguration(FORMAT + " / LENIENT", //
   // (a, b) -> serdes(a, b, FORMAT, LENIENT)));
 
@@ -81,12 +88,14 @@ public class CasSerializationDeserialization_JsonCas2_FsAsObject_Test {
     deserializer.deserialize(aSourceCasFile.toFile(), aTargetCas);
   }
 
-  public static void serdes(CAS aSourceCas, CAS aTargetCas) throws Exception {
+  public static void serdes(CAS aSourceCas, CAS aTargetCas, OffsetConversionMode aOcm)
+          throws IOException {
     byte[] buffer;
     try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
       JsonCas2Serializer serializer = new JsonCas2Serializer();
       serializer.setFsMode(FeatureStructuresMode.AS_OBJECT);
       serializer.setSofaMode(SofaMode.AS_REGULAR_FEATURE_STRUCTURE);
+      serializer.setOffsetConversionMode(aOcm);
       serializer.serialize(aSourceCas, os);
       buffer = os.toByteArray();
     }

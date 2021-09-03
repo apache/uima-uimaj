@@ -28,6 +28,7 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 @Deprecated
 public class SofaSerializer extends FeatureStructureSerializer {
@@ -38,10 +39,11 @@ public class SofaSerializer extends FeatureStructureSerializer {
   }
 
   @Override
-  protected void writeBody(ReferenceCache refCache, JsonGenerator jg, FeatureStructure aFs)
+  protected void writeBody(SerializerProvider aProvider, JsonGenerator jg, FeatureStructure aFs)
           throws IOException {
-    super.writeBody(refCache, jg, aFs);
+    super.writeBody(aProvider, jg, aFs);
 
+    ReferenceCache refCache = ReferenceCache.get(aProvider);
     Sofa sofa = (Sofa) aFs;
 
     jg.writeFieldName(VIEW_MEMBERS_FIELD);

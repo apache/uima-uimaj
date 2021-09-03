@@ -37,6 +37,7 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 @SuppressWarnings("rawtypes")
 public class CommonArrayFSSerializer extends FeatureStructureSerializer_ImplBase<CommonArrayFS> {
@@ -48,7 +49,7 @@ public class CommonArrayFSSerializer extends FeatureStructureSerializer_ImplBase
 
   @SuppressWarnings("unchecked")
   @Override
-  protected void writeBody(ReferenceCache aRefCache, JsonGenerator aJg, FeatureStructure aFs)
+  protected void writeBody(SerializerProvider aProvider, JsonGenerator aJg, FeatureStructure aFs)
           throws IOException {
     aJg.writeFieldName(ELEMENTS_FIELD);
     switch (aFs.getType().getName()) {
@@ -106,8 +107,9 @@ public class CommonArrayFSSerializer extends FeatureStructureSerializer_ImplBase
       case CAS.TYPE_NAME_FS_ARRAY: // fall-through
       default: {
         aJg.writeStartArray();
+        ReferenceCache refCache = ReferenceCache.get(aProvider);
         for (FeatureStructure fs : ((FSArray<FeatureStructure>) aFs)) {
-          aJg.writeNumber(aRefCache.fsRef(fs));
+          aJg.writeNumber(refCache.fsRef(fs));
         }
         aJg.writeEndArray();
         break;

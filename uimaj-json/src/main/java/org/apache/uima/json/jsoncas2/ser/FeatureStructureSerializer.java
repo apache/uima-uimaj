@@ -25,9 +25,13 @@ import java.io.IOException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DatabindContext;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class FeatureStructureSerializer
         extends FeatureStructureSerializer_ImplBase<FeatureStructure> {
@@ -42,20 +46,21 @@ public class FeatureStructureSerializer
   }
 
   @Override
-  protected void writeBody(ReferenceCache refCache, JsonGenerator jg, FeatureStructure aFs)
+  protected void writeBody(SerializerProvider aProvider, JsonGenerator aJg, FeatureStructure aFs)
           throws IOException {
+    ReferenceCache refCache = ReferenceCache.get(aProvider);
     for (Feature feature : aFs.getType().getFeatures()) {
-      writeFeature(refCache, jg, aFs, feature);
+      writeFeature(aProvider, refCache, aJg, aFs, feature);
     }
   }
 
-  protected void writeFeature(ReferenceCache refCache, JsonGenerator jg, FeatureStructure aFs,
-          Feature aFeature) throws IOException {
+  protected void writeFeature(SerializerProvider aProvider, ReferenceCache aRefCache,
+          JsonGenerator aJg, FeatureStructure aFs, Feature aFeature) throws IOException {
     if (!aFeature.getRange().isPrimitive()) {
       FeatureStructure target = aFs.getFeatureValue(aFeature);
       if (target != null) {
-        jg.writeNumberField(REF_FEATURE_PREFIX + aFeature.getShortName(),
-                refCache.fsRef(aFs.getFeatureValue(aFeature)));
+        aJg.writeNumberField(REF_FEATURE_PREFIX + aFeature.getShortName(),
+                aRefCache.fsRef(aFs.getFeatureValue(aFeature)));
       }
       return;
     }
@@ -63,38 +68,54 @@ public class FeatureStructureSerializer
     if (aFeature.getRange().isStringOrStringSubtype()) {
       String value = aFs.getStringValue(aFeature);
       if (value != null) {
-        jg.writeStringField(aFeature.getShortName(), value);
+        aJg.writeStringField(aFeature.getShortName(), value);
       }
 
       return;
     }
 
-    jg.writeFieldName(aFeature.getShortName());
+    aJg.writeFieldName(aFeature.getShortName());
     String rangeTypeName = aFeature.getRange().getName();
     switch (rangeTypeName) {
       case CAS.TYPE_NAME_BOOLEAN:
-        jg.writeBoolean(aFs.getBooleanValue(aFeature));
+        aJg.writeBoolean(aFs.getBooleanValue(aFeature));
         break;
       case CAS.TYPE_NAME_BYTE:
-        jg.writeNumber(aFs.getByteValue(aFeature));
+        aJg.writeNumber(aFs.getByteValue(aFeature));
         break;
       case CAS.TYPE_NAME_DOUBLE:
-        jg.writeNumber(aFs.getDoubleValue(aFeature));
+        aJg.writeNumber(aFs.getDoubleValue(aFeature));
         break;
       case CAS.TYPE_NAME_FLOAT:
-        jg.writeNumber(aFs.getFloatValue(aFeature));
+        aJg.writeNumber(aFs.getFloatValue(aFeature));
         break;
-      case CAS.TYPE_NAME_INTEGER:
-        jg.writeNumber(aFs.getIntValue(aFeature));
+      case CAS.TYPE_NAME_INTEGER: {
+        int value = aFs.getIntValue(aFeature);
+        value = convertOffsetsIfNecessary(aProvider, aFs, aFeature, value);
+        aJg.writeNumber(value);
         break;
+      }
       case CAS.TYPE_NAME_LONG:
-        jg.writeNumber(aFs.getLongValue(aFeature));
+        aJg.writeNumber(aFs.getLongValue(aFeature));
         break;
       case CAS.TYPE_NAME_SHORT:
-        jg.writeNumber(aFs.getShortValue(aFeature));
+        aJg.writeNumber(aFs.getShortValue(aFeature));
         break;
       default:
         throw new IOException("Unsupported primitive type [" + rangeTypeName + "]");
     }
+  }
+
+  private int convertOffsetsIfNecessary(DatabindContext aCtxt, FeatureStructure aFs,
+          Feature aFeature, int aValue) {
+    if (aFs instanceof Annotation && (CAS.FEATURE_FULL_NAME_BEGIN.equals(aFeature.getName())
+            || CAS.FEATURE_FULL_NAME_END.equals(aFeature.getName()))) {
+      Annotation ann = (Annotation) aFs;
+      return OffsetConversionMode.getConverter(aCtxt, ann.getSofa().getSofaID()) //
+              .map(conv -> conv.mapInternal(aValue)) //
+              .orElse(aValue);
+    }
+
+    return aValue;
   }
 }

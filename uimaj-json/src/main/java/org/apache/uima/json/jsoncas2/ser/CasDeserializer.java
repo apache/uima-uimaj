@@ -22,6 +22,7 @@ import static com.fasterxml.jackson.core.JsonTokenId.ID_END_ARRAY;
 import static com.fasterxml.jackson.core.JsonTokenId.ID_END_OBJECT;
 import static com.fasterxml.jackson.core.JsonTokenId.ID_START_OBJECT;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.FEATURE_STRUCTURES_FIELD;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.HEADER_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.TYPES_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.VIEWS_FIELD;
 
@@ -30,7 +31,9 @@ import java.util.Map.Entry;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.model.FeatureStructures;
+import org.apache.uima.json.jsoncas2.model.Header;
 import org.apache.uima.json.jsoncas2.model.Views;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureIdToViewIndex;
 import org.apache.uima.json.jsoncas2.ref.FeatureStructureToIdIndex;
@@ -87,6 +90,13 @@ public class CasDeserializer extends CasDeserializer_ImplBase<CAS> {
 
       // If we get here, we are operating on an object-type representation of the full CAS
       switch (aParser.getCurrentName()) {
+        case HEADER_FIELD: {
+          aParser.nextValue();
+          Header header = aCtxt.readValue(aParser, Header.class);
+          OffsetConversionMode.set(aCtxt, header.getOffsetEncoding());
+          aParser.nextToken();
+          break;
+        }
         case TYPES_FIELD:
           aParser.nextValue();
           types = aCtxt.readValue(aParser, TypeSystemDescription.class);
