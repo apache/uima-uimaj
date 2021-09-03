@@ -78,7 +78,6 @@ public class JsonCas2Deserializer {
       module.addDeserializer(TypeDescription.class, new TypeDeserializer());
       module.addDeserializer(TypeSystemDescription.class, new TypeSystemDeserializer());
       module.addDeserializer(Views.class, new ViewsDeserializer());
-      // module.addDeserializer(Header.class, new HeaderDeserializer());
 
       cachedMapper = new ObjectMapper();
       cachedMapper.registerModule(module);

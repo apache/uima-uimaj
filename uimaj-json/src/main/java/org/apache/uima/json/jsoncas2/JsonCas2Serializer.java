@@ -107,7 +107,6 @@ public class JsonCas2Serializer {
       }
 
       module.addSerializer(new ViewsSerializer());
-      // module.addSerializer(new HeaderSerializer());
 
       cachedMapper = new ObjectMapper();
       cachedMapper.registerModule(module);
