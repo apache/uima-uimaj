@@ -21,12 +21,19 @@ package org.apache.uima.json.jsoncas2;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
+import org.apache.uima.json.jsoncas2.ref.FullyQualifiedTypeRefGenerator;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
+import org.apache.uima.json.jsoncas2.ref.SequentialIdRefGenerator;
 import org.apache.uima.json.jsoncas2.ser.CasSerializer;
 import org.apache.uima.json.jsoncas2.ser.CommonArrayFSSerializer;
 import org.apache.uima.json.jsoncas2.ser.FeatureSerializer;
@@ -49,6 +56,8 @@ public class JsonCas2Serializer {
   private SofaMode sofaMode = SofaMode.AS_REGULAR_FEATURE_STRUCTURE;
   private OffsetConversionMode offsetConversionMode = OffsetConversionMode.UTF_16;
   private ObjectMapper cachedMapper;
+  private Supplier<ToIntFunction<FeatureStructure>> idRefGeneratorSupplier = SequentialIdRefGenerator::new;
+  private Supplier<Function<Type, String>> typeRefGeneratorSupplier = FullyQualifiedTypeRefGenerator::new;
 
   public void setFsMode(FeatureStructuresMode aFsMode) {
     fsMode = aFsMode;
@@ -74,12 +83,32 @@ public class JsonCas2Serializer {
     return offsetConversionMode;
   }
 
+  public void setIdRefGeneratorSupplier(
+          Supplier<ToIntFunction<FeatureStructure>> aIdRefGeneratorSupplier) {
+    idRefGeneratorSupplier = aIdRefGeneratorSupplier;
+  }
+
+  public Supplier<ToIntFunction<FeatureStructure>> getIdRefGeneratorSupplier() {
+    return idRefGeneratorSupplier;
+  }
+
+  public void setTypeRefGeneratorSupplier(
+          Supplier<Function<Type, String>> aTypeRefGeneratorSupplier) {
+    typeRefGeneratorSupplier = aTypeRefGeneratorSupplier;
+  }
+
+  public Supplier<Function<Type, String>> getTypeRefGeneratorSupplier() {
+    return typeRefGeneratorSupplier;
+  }
+
   private synchronized ObjectMapper getMapper() {
     if (cachedMapper == null) {
       SimpleModule module = new SimpleModule("UIMA CAS JSON",
               new Version(1, 0, 0, null, null, null));
 
-      ReferenceCache.Builder refCacheBuilder = ReferenceCache.builder();
+      ReferenceCache.Builder refCacheBuilder = ReferenceCache.builder()
+              .withIdRefGeneratorSupplier(idRefGeneratorSupplier)
+              .withTypeRefGeneratorSupplier(typeRefGeneratorSupplier);
       module.addSerializer(new CasSerializer(refCacheBuilder::build));
       module.addSerializer(new TypeSystemSerializer());
       module.addSerializer(new TypeSerializer());

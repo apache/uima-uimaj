@@ -22,8 +22,11 @@ import static java.lang.System.currentTimeMillis;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.annotation.Generated;
 
@@ -45,7 +48,6 @@ public class PerformanceTestRunner {
   private CAS targetCas;
   private byte[] randomizedCasBytes;
 
-  @Generated("SparkTools")
   private PerformanceTestRunner(Builder builder) {
     this.iterations = builder.iterations;
     this.warmUpIterations = builder.warmUpIterations;
@@ -66,6 +68,13 @@ public class PerformanceTestRunner {
       randomizedCasBytes = bos.toByteArray();
     } catch (Exception e) {
       throw new IllegalStateException(e);
+    }
+  }
+
+  public void writeData(Path aPath) throws IOException {
+    Files.createDirectories(aPath.getParent());
+    try (OutputStream os = Files.newOutputStream(aPath)) {
+      os.write(randomizedCasBytes);
     }
   }
 
@@ -118,7 +127,6 @@ public class PerformanceTestRunner {
   /**
    * Builder to build {@link PerformanceTestRunner}.
    */
-  @Generated("SparkTools")
   public static final class Builder {
     private int iterations = 100;
     private int warmUpIterations = 5;
