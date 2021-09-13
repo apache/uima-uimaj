@@ -537,11 +537,6 @@ public class CasToComparableText {
         continue nextItem;
       }
 
-      if (item.getClass().isPrimitive()) {
-        items.add(escape(String.valueOf(item)));
-        continue nextItem;
-      }
-
       if (item instanceof FeatureStructure) {
         FeatureStructure fsItem = (FeatureStructure) item;
         if (isMultiValued(fsItem)) {
@@ -555,6 +550,8 @@ public class CasToComparableText {
         }
         continue nextItem;
       }
+
+      items.add(escape(String.valueOf(item)));
     }
 
     return items.stream().collect(joining(",", "[", "]"));
