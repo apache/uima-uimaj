@@ -51,6 +51,10 @@ public class JsonCas2Names {
 
   public static final String REF_FEATURE_PREFIX = "@";
 
+  public static final String NUMERIC_FEATURE_PREFIX = "#";
+
+  public static final String ANCHOR_FEATURE_PREFIX = "^";
+
   public static final String NAME_FIELD = RESERVED_FIELD_PREFIX + "NAME";
 
   /**

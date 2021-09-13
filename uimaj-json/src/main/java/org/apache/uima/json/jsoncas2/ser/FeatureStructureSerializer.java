@@ -18,6 +18,10 @@
  */
 package org.apache.uima.json.jsoncas2.ser;
 
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NAN;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NEGATIVE_INFINITY;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_POSITIVE_INFINITY;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMERIC_FEATURE_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.REF_FEATURE_PREFIX;
 
 import java.io.IOException;
@@ -74,35 +78,48 @@ public class FeatureStructureSerializer
       return;
     }
 
-    aJg.writeFieldName(aFeature.getShortName());
     String rangeTypeName = aFeature.getRange().getName();
     switch (rangeTypeName) {
       case CAS.TYPE_NAME_BOOLEAN:
-        aJg.writeBoolean(aFs.getBooleanValue(aFeature));
+        aJg.writeBooleanField(aFeature.getShortName(), aFs.getBooleanValue(aFeature));
         break;
       case CAS.TYPE_NAME_BYTE:
-        aJg.writeNumber(aFs.getByteValue(aFeature));
+        aJg.writeNumberField(aFeature.getShortName(), aFs.getByteValue(aFeature));
         break;
       case CAS.TYPE_NAME_DOUBLE:
-        aJg.writeNumber(aFs.getDoubleValue(aFeature));
+        writeFloatingPointField(aJg, aFeature.getShortName(), aFs.getDoubleValue(aFeature));
         break;
       case CAS.TYPE_NAME_FLOAT:
-        aJg.writeNumber(aFs.getFloatValue(aFeature));
+        writeFloatingPointField(aJg, aFeature.getShortName(), aFs.getFloatValue(aFeature));
         break;
       case CAS.TYPE_NAME_INTEGER: {
+        aJg.writeFieldName(aFeature.getShortName());
         int value = aFs.getIntValue(aFeature);
         value = convertOffsetsIfNecessary(aProvider, aFs, aFeature, value);
         aJg.writeNumber(value);
         break;
       }
       case CAS.TYPE_NAME_LONG:
-        aJg.writeNumber(aFs.getLongValue(aFeature));
+        aJg.writeNumberField(aFeature.getShortName(), aFs.getLongValue(aFeature));
         break;
       case CAS.TYPE_NAME_SHORT:
-        aJg.writeNumber(aFs.getShortValue(aFeature));
+        aJg.writeNumberField(aFeature.getShortName(), aFs.getShortValue(aFeature));
         break;
       default:
         throw new IOException("Unsupported primitive type [" + rangeTypeName + "]");
+    }
+  }
+
+  private void writeFloatingPointField(JsonGenerator aJg, String aFeatureName, double aValue)
+          throws IOException {
+    if (Double.isNaN(aValue)) {
+      aJg.writeStringField(NUMERIC_FEATURE_PREFIX + aFeatureName, NUMBER_FLOAT_NAN);
+    } else if (aValue == Double.NEGATIVE_INFINITY) {
+      aJg.writeStringField(NUMERIC_FEATURE_PREFIX + aFeatureName, NUMBER_FLOAT_NEGATIVE_INFINITY);
+    } else if (aValue == Double.POSITIVE_INFINITY) {
+      aJg.writeStringField(NUMERIC_FEATURE_PREFIX + aFeatureName, NUMBER_FLOAT_POSITIVE_INFINITY);
+    } else {
+      aJg.writeNumberField(aFeatureName, aValue);
     }
   }
 

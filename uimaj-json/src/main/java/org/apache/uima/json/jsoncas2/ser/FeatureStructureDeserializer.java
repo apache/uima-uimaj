@@ -43,12 +43,14 @@ import static org.apache.uima.cas.CAS.TYPE_NAME_SHORT;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SHORT_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SOFA;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING_ARRAY;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.ANCHOR_FEATURE_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.ID_FIELD;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NAN;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NEGATIVE_INFINITY;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NEGATIVE_INFINITY_ABBR;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_POSITIVE_INFINITY;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_POSITIVE_INFINITY_ABBR;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMERIC_FEATURE_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.REF_FEATURE_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.RESERVED_FIELD_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.TYPE_FIELD;
@@ -94,6 +96,10 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   private static final long serialVersionUID = -5937326876753347248L;
 
   private final Logger log = LoggerFactory.getLogger(getClass());
+
+  private enum FieldType {
+    REGULAR, REFERENCE, NUMBER, ANCHOR
+  }
 
   public FeatureStructureDeserializer() {
     super(FeatureStructure.class);
@@ -198,10 +204,16 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
                 "Features must come after " + ID_FIELD + "" + TYPE_FIELD);
       }
 
-      boolean isRefField = false;
+      FieldType fieldType = FieldType.REGULAR;
       if (fieldName.startsWith(REF_FEATURE_PREFIX)) {
         fieldName = fieldName.substring(REF_FEATURE_PREFIX.length());
-        isRefField = true;
+        fieldType = FieldType.REFERENCE;
+      } else if (fieldName.startsWith(NUMERIC_FEATURE_PREFIX)) {
+        fieldName = fieldName.substring(NUMERIC_FEATURE_PREFIX.length());
+        fieldType = FieldType.NUMBER;
+      } else if (fieldName.startsWith(ANCHOR_FEATURE_PREFIX)) {
+        fieldName = fieldName.substring(ANCHOR_FEATURE_PREFIX.length());
+        fieldType = FieldType.ANCHOR;
       }
 
       if (CAS.FEATURE_FULL_NAME_SOFA
@@ -213,13 +225,13 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
         continue;
       }
 
-      if (isRefField) {
+      if (fieldType == FieldType.REFERENCE) {
         deserializeFsReference(aParser, aCtxt, fs, fieldName);
         aParser.nextValue();
         continue;
       }
 
-      deserializePrimitive(aParser, aCtxt, fs, fieldName);
+      deserializePrimitive(aParser, aCtxt, fs, fieldName, fieldType);
       aParser.nextValue();
     }
 
@@ -540,7 +552,8 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   }
 
   private void deserializePrimitive(JsonParser aParser, DeserializationContext aCtxt,
-          FeatureStructure aFs, String aFeatureName) throws CASRuntimeException, IOException {
+          FeatureStructure aFs, String aFeatureName, FieldType fieldType)
+          throws CASRuntimeException, IOException {
     Feature feature = aFs.getType().getFeatureByBaseName(aFeatureName);
     switch (aParser.currentToken()) {
       case VALUE_NULL:
@@ -554,10 +567,10 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
         aFs.setStringValue(feature, aParser.getValueAsString());
         break;
       case VALUE_NUMBER_FLOAT: // JSON does not distinguish between double and float
-        deserializeFloatingPointValue(aParser, aFs, feature);
+        deserializeFloatingPointValue(aParser, aFs, feature, fieldType);
         break;
       case VALUE_NUMBER_INT:
-        deserializeIntegerValue(aParser, aCtxt, aFs, feature);
+        deserializeIntegerValue(aParser, aCtxt, aFs, feature, fieldType);
         break;
       default:
         throw new JsonParseException(aParser,
@@ -585,7 +598,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   }
 
   private void deserializeFloatingPointValue(JsonParser aParser, FeatureStructure aFs,
-          Feature aFeature) throws CASRuntimeException, IOException {
+          Feature aFeature, FieldType fieldType) throws CASRuntimeException, IOException {
     switch (aFeature.getRange().getName()) {
       case TYPE_NAME_DOUBLE:
         aFs.setDoubleValue(aFeature, readDoubleValue(aParser));
@@ -600,14 +613,15 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   }
 
   private void deserializeIntegerValue(JsonParser aParser, DeserializationContext aCtxt,
-          FeatureStructure aFs, Feature aFeature) throws CASRuntimeException, IOException {
+          FeatureStructure aFs, Feature aFeature, FieldType fieldType)
+          throws CASRuntimeException, IOException {
     switch (aFeature.getRange().getName()) {
       case TYPE_NAME_BYTE:
         aFs.setByteValue(aFeature, (byte) aParser.getValueAsInt());
         break;
       case TYPE_NAME_INTEGER:
         int value = aParser.getValueAsInt();
-        value = convertOffsetsIfNecessary(aCtxt, aFs, aFeature, value);
+        value = convertOffsetsIfNecessary(aCtxt, aFs, aFeature, value, fieldType);
         aFs.setIntValue(aFeature, value);
         break;
       case TYPE_NAME_LONG:
@@ -623,9 +637,10 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   }
 
   private int convertOffsetsIfNecessary(DeserializationContext aCtxt, FeatureStructure aFs,
-          Feature aFeature, int aValue) {
+          Feature aFeature, int aValue, FieldType fieldType) {
     if (aFs instanceof Annotation && (CAS.FEATURE_FULL_NAME_BEGIN.equals(aFeature.getName())
-            || CAS.FEATURE_FULL_NAME_END.equals(aFeature.getName()))) {
+            || CAS.FEATURE_FULL_NAME_END.equals(aFeature.getName())
+            || fieldType == FieldType.ANCHOR)) {
       Annotation ann = (Annotation) aFs;
       return OffsetConversionMode.getConverter(aCtxt, ann.getSofa().getSofaID()) //
               .map(conv -> conv.mapExternal(aValue)) //
