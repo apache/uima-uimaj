@@ -44,6 +44,11 @@ import static org.apache.uima.cas.CAS.TYPE_NAME_SHORT_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_SOFA;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING_ARRAY;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.ID_FIELD;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NAN;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NEGATIVE_INFINITY;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_NEGATIVE_INFINITY_ABBR;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_POSITIVE_INFINITY;
+import static org.apache.uima.json.jsoncas2.JsonCas2Names.NUMBER_FLOAT_POSITIVE_INFINITY_ABBR;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.REF_FEATURE_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.RESERVED_FIELD_PREFIX;
 import static org.apache.uima.json.jsoncas2.JsonCas2Names.TYPE_FIELD;
@@ -382,7 +387,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     aParser.nextValue();
     List<Double> values = new ArrayList<>();
     while (aParser.currentToken() != JsonToken.END_ARRAY) {
-      values.add(aParser.getDoubleValue());
+      values.add(readDoubleValue(aParser));
       aParser.nextValue();
     }
     DoubleArrayFS arrayFs = aCas.createDoubleArrayFS(values.size());
@@ -398,7 +403,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
     aParser.nextValue();
     List<Float> values = new ArrayList<>();
     while (aParser.currentToken() != JsonToken.END_ARRAY) {
-      values.add((float) aParser.getDoubleValue());
+      values.add((float) readDoubleValue(aParser));
       aParser.nextValue();
     }
     FloatArrayFS arrayFs = aCas.createFloatArrayFS(values.size());
@@ -406,6 +411,34 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
       arrayFs.set(i, values.get(i));
     }
     return arrayFs;
+  }
+
+  private double readDoubleValue(JsonParser aParser) throws IOException {
+    if (aParser.currentToken() == JsonToken.VALUE_NUMBER_FLOAT) {
+      return aParser.getDoubleValue();
+    }
+
+    if (aParser.currentToken() == JsonToken.VALUE_STRING) {
+      switch (aParser.getValueAsString()) {
+        case NUMBER_FLOAT_NAN:
+          return Double.NaN;
+        case NUMBER_FLOAT_POSITIVE_INFINITY:
+        case NUMBER_FLOAT_POSITIVE_INFINITY_ABBR:
+          return Double.POSITIVE_INFINITY;
+        case NUMBER_FLOAT_NEGATIVE_INFINITY:
+        case NUMBER_FLOAT_NEGATIVE_INFINITY_ABBR:
+          return Double.NEGATIVE_INFINITY;
+        default:
+          throw new JsonParseException(aParser,
+                  "Expected special floating point value (NaN, -Inf, -Infinity, Inf, Infinity), "
+                          + "but got [" + aParser.getValueAsString() + "]");
+      }
+    }
+
+    throw new JsonParseException(aParser,
+            "Expected floating point value as VALUE_NUMBER_FLOAT or VALUE_STRING for special "
+                    + "values (Nan, -Infinity, +Infinity), but got [" + aParser.currentToken()
+                    + "]");
   }
 
   private IntArrayFS deserializeIntegerArray(JsonParser aParser, CAS aCas) throws IOException {
@@ -555,10 +588,10 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
           Feature aFeature) throws CASRuntimeException, IOException {
     switch (aFeature.getRange().getName()) {
       case TYPE_NAME_DOUBLE:
-        aFs.setDoubleValue(aFeature, aParser.getValueAsDouble());
+        aFs.setDoubleValue(aFeature, readDoubleValue(aParser));
         break;
       case TYPE_NAME_FLOAT:
-        aFs.setFloatValue(aFeature, (float) aParser.getValueAsDouble());
+        aFs.setFloatValue(aFeature, (float) readDoubleValue(aParser));
         break;
       default:
         throw new JsonParseException(aParser, "Feature of type " + aFeature.getRange().getName()

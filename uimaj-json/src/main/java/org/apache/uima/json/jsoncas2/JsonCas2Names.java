@@ -84,4 +84,14 @@ public class JsonCas2Names {
   public static final String ELEMENTS_FIELD = RESERVED_FIELD_PREFIX + "ELEMENTS";
 
   public static final String HEADER_OFFSET_ENCODING = "offset-encoding";
+
+  public static final String NUMBER_FLOAT_NAN = "NaN";
+
+  public static final String NUMBER_FLOAT_POSITIVE_INFINITY = "Infinity";
+
+  public static final String NUMBER_FLOAT_POSITIVE_INFINITY_ABBR = "Inf";
+
+  public static final String NUMBER_FLOAT_NEGATIVE_INFINITY = "-Infinity";
+
+  public static final String NUMBER_FLOAT_NEGATIVE_INFINITY_ABBR = "-Inf";
 }
