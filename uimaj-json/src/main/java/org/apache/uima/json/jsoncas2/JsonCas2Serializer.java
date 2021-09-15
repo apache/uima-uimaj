@@ -18,6 +18,11 @@
  */
 package org.apache.uima.json.jsoncas2;
 
+import static org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode.AS_ARRAY;
+import static org.apache.uima.json.jsoncas2.mode.OffsetConversionMode.UTF_16;
+import static org.apache.uima.json.jsoncas2.mode.SofaMode.AS_REGULAR_FEATURE_STRUCTURE;
+import static org.apache.uima.json.jsoncas2.mode.TypeSystemMode.FULL;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +36,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
+import org.apache.uima.json.jsoncas2.mode.TypeSystemMode;
 import org.apache.uima.json.jsoncas2.ref.FullyQualifiedTypeRefGenerator;
 import org.apache.uima.json.jsoncas2.ref.ReferenceCache;
 import org.apache.uima.json.jsoncas2.ref.SequentialIdRefGenerator;
@@ -52,9 +58,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class JsonCas2Serializer {
 
-  private FeatureStructuresMode fsMode = FeatureStructuresMode.AS_ARRAY;
-  private SofaMode sofaMode = SofaMode.AS_REGULAR_FEATURE_STRUCTURE;
-  private OffsetConversionMode offsetConversionMode = OffsetConversionMode.UTF_16;
+  private FeatureStructuresMode fsMode = AS_ARRAY;
+  private SofaMode sofaMode = AS_REGULAR_FEATURE_STRUCTURE;
+  private TypeSystemMode typeSystemMode = FULL;
+  private OffsetConversionMode offsetConversionMode = UTF_16;
   private ObjectMapper cachedMapper;
   private Supplier<ToIntFunction<FeatureStructure>> idRefGeneratorSupplier = SequentialIdRefGenerator::new;
   private Supplier<Function<Type, String>> typeRefGeneratorSupplier = FullyQualifiedTypeRefGenerator::new;
@@ -99,6 +106,14 @@ public class JsonCas2Serializer {
 
   public Supplier<Function<Type, String>> getTypeRefGeneratorSupplier() {
     return typeRefGeneratorSupplier;
+  }
+
+  public void setTypeSystemMode(TypeSystemMode aMode) {
+    typeSystemMode = aMode;
+  }
+
+  public TypeSystemMode getTypeSystemMode() {
+    return typeSystemMode;
   }
 
   private synchronized ObjectMapper getMapper() {
@@ -148,7 +163,8 @@ public class JsonCas2Serializer {
     return getMapper().writerWithDefaultPrettyPrinter() //
             .withAttribute(SofaMode.KEY, sofaMode) //
             .withAttribute(FeatureStructuresMode.KEY, fsMode)
-            .withAttribute(OffsetConversionMode.KEY, offsetConversionMode);
+            .withAttribute(OffsetConversionMode.KEY, offsetConversionMode)
+            .withAttribute(TypeSystemMode.KEY, typeSystemMode);
   }
 
   public void serialize(CAS aCas, File aTargetFile) throws IOException {

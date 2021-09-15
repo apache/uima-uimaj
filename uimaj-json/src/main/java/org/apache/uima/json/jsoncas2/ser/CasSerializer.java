@@ -32,6 +32,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
+import org.apache.uima.json.jsoncas2.mode.TypeSystemMode;
 import org.apache.uima.json.jsoncas2.model.FeatureStructures;
 import org.apache.uima.json.jsoncas2.model.Header;
 import org.apache.uima.json.jsoncas2.model.Views;
@@ -87,8 +88,10 @@ public class CasSerializer extends StdSerializer<CAS> {
 
   private void serializeTypes(CAS aCas, JsonGenerator aJg, SerializerProvider aProvider)
           throws IOException {
-    aJg.writeFieldName(TYPES_FIELD);
-    aProvider.defaultSerializeValue(aCas.getTypeSystem(), aJg);
+    if (TypeSystemMode.get(aProvider) != TypeSystemMode.NONE) {
+      aJg.writeFieldName(TYPES_FIELD);
+      aProvider.defaultSerializeValue(aCas.getTypeSystem(), aJg);
+    }
   }
 
   private void serializeFeatureStructures(CAS aCas, JsonGenerator aJg, SerializerProvider aProvider)
