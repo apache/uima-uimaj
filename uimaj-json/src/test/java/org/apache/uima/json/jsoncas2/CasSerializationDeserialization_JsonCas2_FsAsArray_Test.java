@@ -21,6 +21,7 @@ package org.apache.uima.json.jsoncas2;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.TestType.ONE_WAY;
 import static org.apache.uima.cas.serdes.TestType.SER_DES;
 import static org.apache.uima.cas.serdes.TestType.SER_REF;
@@ -50,7 +51,6 @@ import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.apache.uima.json.jsoncas2.mode.FeatureStructuresMode;
 import org.apache.uima.json.jsoncas2.mode.OffsetConversionMode;
 import org.apache.uima.json.jsoncas2.mode.SofaMode;
-import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -73,7 +73,7 @@ public class CasSerializationDeserialization_JsonCas2_FsAsArray_Test {
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
           new CasDesSerCycleConfiguration("DEFAULT", //
-                  (a, b) -> desser(CasCreationUtils.createCas(), a, b)));
+                  (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b)));
 
   private static void ser(CAS aSourceCas, Path aTargetCasFile) throws IOException {
     JsonCas2Serializer serializer = new JsonCas2Serializer();

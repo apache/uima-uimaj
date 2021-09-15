@@ -555,6 +555,12 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
           FeatureStructure aFs, String aFeatureName, FieldType fieldType)
           throws CASRuntimeException, IOException {
     Feature feature = aFs.getType().getFeatureByBaseName(aFeatureName);
+
+    if (fieldType == FieldType.NUMBER) {
+      deserializeFloatingPointValue(aParser, aFs, feature);
+      return;
+    }
+
     switch (aParser.currentToken()) {
       case VALUE_NULL:
         // No need do to anything really - we just leave the feature alone
@@ -567,7 +573,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
         aFs.setStringValue(feature, aParser.getValueAsString());
         break;
       case VALUE_NUMBER_FLOAT: // JSON does not distinguish between double and float
-        deserializeFloatingPointValue(aParser, aFs, feature, fieldType);
+        deserializeFloatingPointValue(aParser, aFs, feature);
         break;
       case VALUE_NUMBER_INT:
         deserializeIntegerValue(aParser, aCtxt, aFs, feature, fieldType);
@@ -598,7 +604,7 @@ public class FeatureStructureDeserializer extends CasDeserializer_ImplBase<Featu
   }
 
   private void deserializeFloatingPointValue(JsonParser aParser, FeatureStructure aFs,
-          Feature aFeature, FieldType fieldType) throws CASRuntimeException, IOException {
+          Feature aFeature) throws CASRuntimeException, IOException {
     switch (aFeature.getRange().getName()) {
       case TYPE_NAME_DOUBLE:
         aFs.setDoubleValue(aFeature, readDoubleValue(aParser));
