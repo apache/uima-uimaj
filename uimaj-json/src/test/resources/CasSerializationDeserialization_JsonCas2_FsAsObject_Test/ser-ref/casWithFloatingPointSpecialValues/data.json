@@ -1,0 +1,77 @@
+{
+  "%TYPES" : {
+    "SpecialValuesType" : {
+      "%NAME" : "SpecialValuesType",
+      "%SUPER_TYPE" : "uima.cas.TOP",
+      "doubleZero" : {
+        "%NAME" : "doubleZero",
+        "%RANGE" : "uima.cas.Double"
+      },
+      "doubleOne" : {
+        "%NAME" : "doubleOne",
+        "%RANGE" : "uima.cas.Double"
+      },
+      "doublePosInfinity" : {
+        "%NAME" : "doublePosInfinity",
+        "%RANGE" : "uima.cas.Double"
+      },
+      "doubleNegInfinity" : {
+        "%NAME" : "doubleNegInfinity",
+        "%RANGE" : "uima.cas.Double"
+      },
+      "doubleNan" : {
+        "%NAME" : "doubleNan",
+        "%RANGE" : "uima.cas.Double"
+      },
+      "floatZero" : {
+        "%NAME" : "floatZero",
+        "%RANGE" : "uima.cas.Float"
+      },
+      "floatOne" : {
+        "%NAME" : "floatOne",
+        "%RANGE" : "uima.cas.Float"
+      },
+      "floatPosInfinity" : {
+        "%NAME" : "floatPosInfinity",
+        "%RANGE" : "uima.cas.Float"
+      },
+      "floatNegInfinity" : {
+        "%NAME" : "floatNegInfinity",
+        "%RANGE" : "uima.cas.Float"
+      },
+      "floatNan" : {
+        "%NAME" : "floatNan",
+        "%RANGE" : "uima.cas.Float"
+      }
+    }
+  },
+  "%FEATURE_STRUCTURES" : {
+    "1" : {
+      "%TYPE" : "SpecialValuesType",
+      "doubleZero" : 0.0,
+      "doubleOne" : 1.0,
+      "#doublePosInfinity" : "Infinity",
+      "#doubleNegInfinity" : "-Infinity",
+      "#doubleNan" : "NaN",
+      "floatZero" : 0.0,
+      "floatOne" : 1.0,
+      "#floatPosInfinity" : "Infinity",
+      "#floatNegInfinity" : "-Infinity",
+      "#floatNan" : "NaN"
+    },
+    "2" : {
+      "%TYPE" : "uima.cas.DoubleArray",
+      "%ELEMENTS" : [ 0.0, 1.0, "-Infinity", "Infinity", "NaN" ]
+    },
+    "3" : {
+      "%TYPE" : "uima.cas.FloatArray",
+      "%ELEMENTS" : [ 0.0, 1.0, "-Infinity", "Infinity", "NaN" ]
+    }
+  },
+  "%VIEWS" : {
+    "_InitialView" : {
+      "%SOFA" : 4,
+      "%MEMBERS" : [ 1, 2, 3 ]
+    }
+  }
+}
