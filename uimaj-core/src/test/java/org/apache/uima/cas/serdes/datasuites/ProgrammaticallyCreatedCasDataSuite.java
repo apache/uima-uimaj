@@ -245,6 +245,7 @@ public class ProgrammaticallyCreatedCasDataSuite
     fs.setFloatValue(type.getFeatureByBaseName("floatPosInfinity"), Float.POSITIVE_INFINITY);
     fs.setFloatValue(type.getFeatureByBaseName("floatNegInfinity"), Float.NEGATIVE_INFINITY);
     fs.setFloatValue(type.getFeatureByBaseName("floatNan"), Float.NaN);
+    cas.addFsToIndexes(fs);
 
     DoubleArrayFS doubleArrayFs = cas.createDoubleArrayFS(5);
     doubleArrayFs.set(0, 0.0);

@@ -25,7 +25,6 @@ import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWith
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
 import static org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode.EMPTY_STRINGS_AS_NULL;
-import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.LENIENT;
 
@@ -58,7 +57,7 @@ public class CasSerializationDeserialization_XCAS_Test {
           new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //
                   (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, DEFAULT)),
           new CasDesSerCycleConfiguration(FORMAT + " / LENIENT", //
-                  (a, b) -> desser(createCas(), a, b, FORMAT, LENIENT)));
+                  (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, LENIENT)));
 
   private static List<SerRefTestScenario> serRefScenarios() {
     return SerDesCasIOTestUtils.serRefScenarios(FORMAT, CAS_FILE_NAME);
