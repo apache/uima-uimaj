@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.DoubleArray _indexed="1" _id="2" size="5">
+        <i>0.0</i>
+        <i>1.0</i>
+        <i>-Infinity</i>
+        <i>Infinity</i>
+        <i>NaN</i>
+    </uima.cas.DoubleArray>
+    <uima.cas.FloatArray _indexed="1" _id="3" size="5">
+        <i>0.0</i>
+        <i>1.0</i>
+        <i>-Infinity</i>
+        <i>Infinity</i>
+        <i>NaN</i>
+    </uima.cas.FloatArray>
+</CAS>
