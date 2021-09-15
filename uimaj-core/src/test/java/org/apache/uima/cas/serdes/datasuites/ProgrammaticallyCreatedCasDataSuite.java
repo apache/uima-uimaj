@@ -19,16 +19,27 @@
 package org.apache.uima.cas.serdes.datasuites;
 
 import static java.util.Arrays.asList;
+import static org.apache.uima.cas.CAS.TYPE_NAME_DOUBLE;
+import static org.apache.uima.cas.CAS.TYPE_NAME_FLOAT;
+import static org.apache.uima.cas.CAS.TYPE_NAME_TOP;
+import static org.apache.uima.util.CasCreationUtils.createCas;
 
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.DoubleArrayFS;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.FloatArrayFS;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
 public class ProgrammaticallyCreatedCasDataSuite
@@ -88,6 +99,13 @@ public class ProgrammaticallyCreatedCasDataSuite
                     .withSourceCasSupplier(
                             ProgrammaticallyCreatedCasDataSuite::casWithSofaDataArray)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithFloatingPointSpecialValues") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithFloatingPointSpecialValues)
+                    .withTargetCasSupplier(() -> createCas(
+                            typeSystemWithFloatingPointSpecialValues(), null, null, null)) //
                     .build());
   }
 
@@ -189,6 +207,60 @@ public class ProgrammaticallyCreatedCasDataSuite
     }
 
     cas.setSofaDataArray(sofaDataArray, "text/plain");
+
+    return cas;
+  }
+
+  public static TypeSystemDescription typeSystemWithFloatingPointSpecialValues() throws Exception {
+    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
+            .createTypeSystemDescription();
+
+    TypeDescription typeDesc = tsd.addType("SpecialValuesType", null, TYPE_NAME_TOP);
+    typeDesc.addFeature("doubleZero", null, TYPE_NAME_DOUBLE);
+    typeDesc.addFeature("doubleOne", null, TYPE_NAME_DOUBLE);
+    typeDesc.addFeature("doublePosInfinity", null, TYPE_NAME_DOUBLE);
+    typeDesc.addFeature("doubleNegInfinity", null, TYPE_NAME_DOUBLE);
+    typeDesc.addFeature("doubleNan", null, TYPE_NAME_DOUBLE);
+    typeDesc.addFeature("floatZero", null, TYPE_NAME_FLOAT);
+    typeDesc.addFeature("floatOne", null, TYPE_NAME_FLOAT);
+    typeDesc.addFeature("floatPosInfinity", null, TYPE_NAME_FLOAT);
+    typeDesc.addFeature("floatNegInfinity", null, TYPE_NAME_FLOAT);
+    typeDesc.addFeature("floatNan", null, TYPE_NAME_FLOAT);
+
+    return tsd;
+  }
+
+  public static CAS casWithFloatingPointSpecialValues() throws Exception {
+    CAS cas = createCas(typeSystemWithFloatingPointSpecialValues(), null, null, null);
+
+    Type type = cas.getTypeSystem().getType("SpecialValuesType");
+    FeatureStructure fs = cas.createFS(type);
+    fs.setDoubleValue(type.getFeatureByBaseName("doubleZero"), 0.0);
+    fs.setDoubleValue(type.getFeatureByBaseName("doubleOne"), 1.0);
+    fs.setDoubleValue(type.getFeatureByBaseName("doublePosInfinity"), Double.POSITIVE_INFINITY);
+    fs.setDoubleValue(type.getFeatureByBaseName("doubleNegInfinity"), Double.NEGATIVE_INFINITY);
+    fs.setDoubleValue(type.getFeatureByBaseName("doubleNan"), Double.NaN);
+    fs.setFloatValue(type.getFeatureByBaseName("floatZero"), 0.0f);
+    fs.setFloatValue(type.getFeatureByBaseName("floatOne"), 1.0f);
+    fs.setFloatValue(type.getFeatureByBaseName("floatPosInfinity"), Float.POSITIVE_INFINITY);
+    fs.setFloatValue(type.getFeatureByBaseName("floatNegInfinity"), Float.NEGATIVE_INFINITY);
+    fs.setFloatValue(type.getFeatureByBaseName("floatNan"), Float.NaN);
+
+    DoubleArrayFS doubleArrayFs = cas.createDoubleArrayFS(5);
+    doubleArrayFs.set(0, 0.0);
+    doubleArrayFs.set(1, 1.0);
+    doubleArrayFs.set(2, Double.NEGATIVE_INFINITY);
+    doubleArrayFs.set(3, Double.POSITIVE_INFINITY);
+    doubleArrayFs.set(4, Double.NaN);
+    cas.addFsToIndexes(doubleArrayFs);
+
+    FloatArrayFS floatArrayFs = cas.createFloatArrayFS(5);
+    floatArrayFs.set(0, 0.0f);
+    floatArrayFs.set(1, 1.0f);
+    floatArrayFs.set(2, Float.NEGATIVE_INFINITY);
+    floatArrayFs.set(3, Float.POSITIVE_INFINITY);
+    floatArrayFs.set(4, Float.NaN);
+    cas.addFsToIndexes(floatArrayFs);
 
     return cas;
   }
