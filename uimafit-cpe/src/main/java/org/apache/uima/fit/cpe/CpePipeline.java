@@ -102,7 +102,7 @@ public final class CpePipeline {
     CpeBuilder builder = new CpeBuilder();
     builder.setReader(readerDesc);
     builder.setAnalysisEngine(aaeDesc);
-    builder.setMaxProcessingUnitThreadCount(Runtime.getRuntime().availableProcessors() - 1);
+    builder.setMaxProcessingUnitThreadCount(parallelism);
 
     StatusCallbackListenerImpl status = new StatusCallbackListenerImpl();
     CollectionProcessingEngine engine = builder.createCpe(status);
