@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.factory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,9 +30,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.resource.impl.Parameter_impl;
+import org.apache.uima.resource.impl.PearSpecifier_impl;
+import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.junit.Test;
 
 public class ConfigurationParameterFactoryTest {
@@ -210,4 +216,52 @@ public class ConfigurationParameterFactoryTest {
     assertArrayEquals(expected, actual);
   }
 
+  @SuppressWarnings("deprecation")
+  @Test
+  public void thatModernAndLegacyPearParametersArePickedUp() {
+    PearSpecifier_impl spec = new PearSpecifier_impl();
+    spec.setParameters( //
+            new Parameter_impl("legacyKey", "legacyValue"), //
+            new Parameter_impl("key", "false"));
+    spec.setPearParameters( //
+            new NameValuePair_impl("modernKey", 1), //
+            new NameValuePair_impl("key", true));
+    
+    Map<String, Object> params = ConfigurationParameterFactory.getParameterSettings(spec);
+    
+    assertThat(params).containsOnly( //
+            entry("legacyKey", "legacyValue"), //
+            entry("modernKey", 1), 
+            entry("key", true));
+  }
+
+  @Test
+  public void thatModernParametersAreUpdated() {
+    PearSpecifier_impl spec = new PearSpecifier_impl();
+    spec.setPearParameters(new NameValuePair_impl("key", 1));
+
+    ConfigurationParameterFactory.setParameter(spec, "key", 2);
+    
+    assertThat(spec.getPearParameters()).containsOnly(new NameValuePair_impl("key", 2));
+  }
+
+  @Test
+  public void thatModernParametersAreAdded() {
+    PearSpecifier_impl spec = new PearSpecifier_impl();
+
+    ConfigurationParameterFactory.setParameter(spec, "key", "value");
+    
+    assertThat(spec.getPearParameters()).containsOnly(new NameValuePair_impl("key", "value"));
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void thatLegacyParametersAreUpdated() {
+    PearSpecifier_impl spec = new PearSpecifier_impl();
+    spec.setParameters(new Parameter_impl("legacyKey", "legacyValue"));
+
+    ConfigurationParameterFactory.setParameter(spec, "legacyKey", "newLegacyValue");
+    
+    assertThat(spec.getParameters()).containsOnly(new Parameter_impl("legacyKey", "newLegacyValue"));
+  }
 }

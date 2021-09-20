@@ -27,19 +27,21 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-parent</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimafit-parent</relativePath>
   </parent>
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
+      <version>3.2.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -47,12 +49,13 @@
       <version>3.6.1</version>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-core</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <licenses>
@@ -114,8 +117,6 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
-                  <!-- These test files are unreasonable to bear a license header -->
-                  <exclude>src/test/resources/log4j.properties</exclude>
                   <!-- These configuration files cannot bear a license header -->
                   <exclude>src/main/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
                 </excludes>

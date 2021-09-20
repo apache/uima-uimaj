@@ -29,7 +29,6 @@ public class JCasFactoryBenchmark
   @Test
   public void benchmarkCreateTypeSystemDescription() throws Exception {
     Benchmark template = new Benchmark("TEMPLATE")
-      .timer(System::currentTimeMillis)
       .repeat(1000);
     
     new Benchmark("createTypeSystemDescription", template)
@@ -40,7 +39,6 @@ public class JCasFactoryBenchmark
   @Test
   public void benchmarkCreateJCas() throws Exception {
     Benchmark template = new Benchmark("TEMPLATE")
-      .timer(System::currentTimeMillis)
       .repeat(1000);
     
     TypeSystemDescription tsd = createTypeSystemDescription();

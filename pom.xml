@@ -28,11 +28,11 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-parent</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>uimafit-parent</relativePath>
   </parent>
   <properties>
-    <jiraVersion>2.5.0uimaFIT</jiraVersion>
+    <jiraVersion>3.2.0uimaFIT</jiraVersion>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
@@ -51,27 +51,22 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
+      <version>3.2.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-cpe</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
+      <version>3.2.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-junit</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
+      <version>3.2.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-assertj</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimafit-legacy-support</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
+      <version>3.2.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>
@@ -113,23 +108,27 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-cli</id>
-            <configuration>
-              <excludes combine.children="append">
-                <!-- These files are unreasonable to bear a license header -->
-                <exclude>.github/**/*</exclude>
-                <exclude>CONTRIBUTING.md</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>.github/**/*</exclude>
+                  <exclude>CONTRIBUTING.md</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <modules>
@@ -139,7 +138,6 @@
     <module>uimafit-examples</module>
     <module>uimafit-spring</module>
     <module>uimafit-maven-plugin</module>
-    <module>uimafit-legacy-support</module>
     <module>uimafit-doc</module>
     <module>uimafit-cpe</module>
     <module>uimafit-benchmark</module>

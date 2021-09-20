@@ -22,12 +22,14 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-parent</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimafit-parent</relativePath>
   </parent>
   <artifactId>uimafit-maven-plugin</artifactId>
   <name>Apache UIMA uimaFIT - Maven Plugin</name>
   <packaging>maven-plugin</packaging>
+  <url>${uimaWebsiteUrl}</url>
+  <inceptionYear>2012</inceptionYear>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -46,8 +48,8 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
@@ -56,7 +58,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>2.5.1-SNAPSHOT</version>
+      <version>3.2.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.javassist</groupId>
@@ -178,7 +180,7 @@
               <configuration>
                 <excludes combine.children="append">
                   <!-- These configuration files cannot bear a license header -->
-                  <exclude>**/META-INF/org.apache.uima.fit/types.txt</exclude>
+                  <exclude>src/it/with-typesystem-in-descriptors/src/main/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
                 </excludes>
               </configuration>
             </execution>
@@ -187,6 +189,4 @@
       </plugins>
     </pluginManagement>
   </build>
-  <url>${uimaWebsiteUrl}</url>
-  <inceptionYear>2012</inceptionYear>
 </project>

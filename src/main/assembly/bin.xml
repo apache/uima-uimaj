@@ -44,7 +44,6 @@
         <exclude>org.springframework:spring-aop</exclude>
         <exclude>aopalliance:aopalliance</exclude>
         <exclude>org.apache.uima:uimafit-cpe</exclude>
-        <exclude>org.apache.uima:uimafit-legacy-support</exclude>
       </excludes>
     </dependencySet>
     
@@ -56,7 +55,6 @@
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <includes>
         <include>org.apache.uima:uimafit-cpe</include>
-        <include>org.apache.uima:uimafit-legacy-support</include>
       </includes>
     </dependencySet>
   </dependencySets>  
@@ -136,5 +134,31 @@
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
+    
+    <!-- Copy the API Change reports -->
+    <fileSet>
+      <directory>uimafit-core/api-change-report</directory>
+      <outputDirectory>uimafit-core/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimafit-cpe/api-change-report</directory>
+      <outputDirectory>uimafit-cpe/api-change-report</outputDirectory>
+      <directoryMode>755</directoryMode>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimafit-spring/api-change-report</directory>
+      <outputDirectory>uimafit-spring/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>api-change-report.html</source>
+      <outputDirectory>.</outputDirectory>
+    </file>
+  </files>
 </assembly>

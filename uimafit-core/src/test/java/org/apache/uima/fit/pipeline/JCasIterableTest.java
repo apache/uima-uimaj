@@ -18,11 +18,11 @@
  */
 package org.apache.uima.fit.pipeline;
 
-import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.apache.uima.fit.internal.ResourceManagerFactory.getResourceManagerCreator;
+import static org.apache.uima.fit.internal.ResourceManagerFactory.newResourceManager;
 import static org.apache.uima.fit.internal.ResourceManagerFactory.setResourceManagerCreator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -90,7 +90,7 @@ public class JCasIterableTest {
 
   @Test
   public void thatResourceCanBeShared() throws Exception {
-    ExternalResourceDescription res = createExternalResourceDescription(DummySharedResource.class);
+    ExternalResourceDescription res = createResourceDescription(DummySharedResource.class);
     
     consume(new JCasIterable(
             createReaderDescription(ThreeDocsReader.class, "resource", res),
@@ -103,7 +103,7 @@ public class JCasIterableTest {
   
   @Test 
   public void thatSharedResourceManagerIsNotDestroyed() throws Exception {
-    ResourceManager resMgr = spy(newDefaultResourceManager());
+    ResourceManager resMgr = spy(newResourceManager());
     
     consume(new JCasIterable(resMgr,
             createReaderDescription(ThreeDocsReader.class),
@@ -120,7 +120,7 @@ public class JCasIterableTest {
    */
   @Test 
   public void thatInternallyCreatedResourceManagerIsDestroyed() throws Exception {
-    ResourceManager resMgr = spy(newDefaultResourceManager());
+    ResourceManager resMgr = spy(newResourceManager());
     setResourceManagerCreator(() -> resMgr); 
     
     consume(new JCasIterable(

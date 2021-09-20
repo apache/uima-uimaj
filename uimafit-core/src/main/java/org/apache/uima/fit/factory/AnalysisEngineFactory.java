@@ -25,8 +25,8 @@ import static org.apache.uima.fit.descriptor.OperationalProperties.OUTPUTS_NEW_C
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnce;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDependencies;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
@@ -1138,7 +1138,7 @@ public final class AnalysisEngineFactory {
     // Extract ExternalResourceDescriptions from configurationData
     // <ParamterName, ExternalResourceDescription> will be stored in this map
     Map<String, ExternalResourceDescription> externalResources = ExternalResourceFactory
-            .extractExternalResourceParameters(configurationData);
+            .extractResourceParameters(configurationData);
 
     // Create primitive description normally
     ConfigurationData cdata = createConfigurationData(configurationData);
@@ -1357,12 +1357,12 @@ public final class AnalysisEngineFactory {
     }
 
     // Extract external resource dependencies
-    desc.setExternalResourceDependencies(createExternalResourceDependencies(componentClass));
+    desc.setExternalResourceDependencies(createResourceDependencies(componentClass));
 
     // Bind External Resources
     if (externalResources != null) {
       for (Entry<String, ExternalResourceDescription> e : externalResources.entrySet()) {
-        bindExternalResource(desc, e.getKey(), e.getValue());
+        bindResourceOnce(desc, e.getKey(), e.getValue());
       }
     }
 

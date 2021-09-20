@@ -22,7 +22,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.descriptor.OperationalProperties;
-import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -32,20 +31,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 @OperationalProperties(outputsNewCases = true)
 public abstract class CasMultiplier_ImplBase extends
         org.apache.uima.analysis_component.CasMultiplier_ImplBase {
-  private ExtendedLogger logger;
-
-  /**
-   * Get the logger.
-   * 
-   * @return the logger.
-   */
-  public ExtendedLogger getLogger() {
-    if (logger == null) {
-      logger = new ExtendedLogger(getContext());
-    }
-    return logger;
-  }
-
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);

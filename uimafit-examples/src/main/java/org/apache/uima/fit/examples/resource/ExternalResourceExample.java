@@ -21,7 +21,7 @@ package org.apache.uima.fit.examples.resource;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
 
 import java.io.File;
 
@@ -48,6 +48,7 @@ public class ExternalResourceExample {
   public static final class SharedModel implements SharedResourceObject {
     private String uri;
 
+    @Override
     public void load(DataResource aData) throws ResourceInitializationException {
       uri = aData.getUri().toString();
     }
@@ -79,8 +80,8 @@ public class ExternalResourceExample {
    * Illustrate how to configure the annotator with the shared model object.
    */
   public static void main(String[] args) throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(SharedModel.class,
-            new File("somemodel.bin"));
+    ExternalResourceDescription extDesc = createSharedResourceDescription(
+            new File("somemodel.bin"), SharedModel.class);
 
     // Binding external resource to each Annotator individually
     AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class, Annotator.RES_MODEL,

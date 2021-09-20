@@ -20,7 +20,6 @@ package org.apache.uima.fit.component;
 
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
-import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -29,20 +28,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 public abstract class CasFlowController_ImplBase extends
         org.apache.uima.flow.CasFlowController_ImplBase {
-  private ExtendedLogger logger;
-
-  /**
-   * Get the logger.
-   * 
-   * @return the logger.
-   */
-  public ExtendedLogger getLogger() {
-    if (logger == null) {
-      logger = new ExtendedLogger(getContext());
-    }
-    return logger;
-  }
-
   @Override
   public void initialize(final FlowControllerContext context)
           throws ResourceInitializationException {
