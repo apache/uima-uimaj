@@ -107,9 +107,9 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigurationManager) {
     mLogger = aLogger;
-//    mResourceManager = aResourceManager;
-//    mConfigurationManager = aConfigurationManager;
-    mSession = new Session_impl();
+    // mResourceManager = aResourceManager;
+    // mConfigurationManager = aConfigurationManager;
+    setSession(new Session_impl());
   }
 
   /**

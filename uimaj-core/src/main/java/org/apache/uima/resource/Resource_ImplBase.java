@@ -180,7 +180,6 @@ public abstract class Resource_ImplBase implements Resource {
         // createContext checks and skips repeated calls with same args (on different threads, for example)
         mUimaContextAdmin.getConfigurationManager().createContext(
                 mUimaContextAdmin.getQualifiedContextName(), getMetaData(), mUimaContextAdmin.getExternalOverrides());
-        mUimaContextAdmin.getConfigurationManager().setSession(mUimaContextAdmin.getSession());
       } catch (ResourceConfigurationException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
