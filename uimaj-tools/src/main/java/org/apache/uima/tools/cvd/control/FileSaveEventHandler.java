@@ -25,15 +25,29 @@ import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class FileSaveEventHandler.
+ */
 public class FileSaveEventHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new file save event handler.
+   *
+   * @param frame the frame
+   */
   public FileSaveEventHandler(MainFrame frame) {
     super();
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent event) {
     this.main.saveFile();
     this.main.setStatusbarMessage("Text file " + this.main.getTextFile().getName() + " saved.");

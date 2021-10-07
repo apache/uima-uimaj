@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
@@ -38,6 +39,8 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class CasDefinition {
   private TypeSystemDescription typeSystemDescription;
+  
+  private TypeSystemImpl typeSystemImpl;
 
   private TypePriorities typePriorities;
 
@@ -57,9 +60,9 @@ public class CasDefinition {
   public CasDefinition(Collection<? extends ProcessingResourceMetaData> aMetaDataToMerge, ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
-    List<TypePriorities> typePrioritiesList = new ArrayList<TypePriorities>();
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
+    List<TypePriorities> typePrioritiesList = new ArrayList<>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     Iterator<? extends ProcessingResourceMetaData> it = aMetaDataToMerge.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -173,5 +176,19 @@ public class CasDefinition {
     indColl.setFsIndexes(getFsIndexDescriptions());
     md.setFsIndexCollection(indColl);
     return md;
+  }
+
+  /**
+   * @return the typeSystemImpl
+   */
+  public TypeSystemImpl getTypeSystemImpl() {
+    return typeSystemImpl;
+  }
+
+  /**
+   * @param typeSystemImpl the typeSystemImpl to set
+   */
+  public void setTypeSystemImpl(TypeSystemImpl typeSystemImpl) {
+    this.typeSystemImpl = typeSystemImpl;
   }
 }

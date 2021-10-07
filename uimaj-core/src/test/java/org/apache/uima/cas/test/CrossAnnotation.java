@@ -1,5 +1,5 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
+
+/* Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -17,57 +17,128 @@
  * under the License.
  */
 
+   
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
+
 package org.apache.uima.cas.test;
 
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.TOP_Type;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.tcas.Annotation;
 
-/**
- * An annotation holding another annotation.
- */
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * @generated */
 public class CrossAnnotation extends Annotation {
-
-  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(CrossAnnotation.class);
-
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.cas.test.CrossAnnotation";
+  
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static int typeIndexID = JCasRegistry.register(CrossAnnotation.class);
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
+  /** @generated
+   * @return index of the type  
+   */
+  @Override
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_otherAnnotation = "otherAnnotation";
 
-  public int getTypeIndexID() {
-    return typeIndexID;
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_otherAnnotation = TypeSystemImpl.createCallSite(CrossAnnotation.class, "otherAnnotation");
+  private final static MethodHandle _FH_otherAnnotation = _FC_otherAnnotation.dynamicInvoker();
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected CrossAnnotation() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public CrossAnnotation(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    readObject();
   }
-
-  // Never called. Disable default constructor
-  protected CrossAnnotation() {
-    //do nothing
-  }
-
- /* Internal - Constructor used by generator */
-  public CrossAnnotation(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public CrossAnnotation(JCas jcas) {
     super(jcas);
-  }
+    readObject();   
+  } 
 
-  // *------------------*
-  // * Feature: otherAnnotation
-  /* getter for otherAnnotation * */
-  public Annotation getOtherAnnotation() {
-    if (CrossAnnotation_Type.featOkTst
-            && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
-      this.jcasType.jcas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
-    return (Annotation) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation)));
-  }
 
-  /* setter for otherAnnotation * */
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
+  public CrossAnnotation(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
+
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
+   */
+  private void readObject() {/*default - does nothing empty block */}
+     
+ 
+    
+  //*--------------*
+  //* Feature: otherAnnotation
+
+  /** getter for otherAnnotation - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public Annotation getOtherAnnotation() { return (Annotation)(_getFeatureValueNc(wrapGetIntCatchException(_FH_otherAnnotation)));}
+    
+  /** setter for otherAnnotation - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setOtherAnnotation(Annotation v) {
-    if (CrossAnnotation_Type.featOkTst
-            && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
-      this.jcasType.jcas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
-    jcasType.ll_cas.ll_setRefValue(addr,
-            ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation, jcasType.ll_cas
-                    .ll_getFSRef(v));
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_otherAnnotation), v);
+  }    
+    
   }
-}
+
+    

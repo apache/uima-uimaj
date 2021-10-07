@@ -46,32 +46,47 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   public PearSpecifier_impl() {
   }
 
+  @Override
   @Deprecated
   public Parameter[] getParameters() {
+    if (this.mParameters == null) {
+      return new Parameter[0];
+    }
+
     return this.mParameters;
   }
   
+  @Override
   public NameValuePair[] getPearParameters() {
+    if (this.mPearParameters == null) {
+      return new NameValuePair[0];
+    }
+    
     return this.mPearParameters;
   }
 
+  @Override
   @Deprecated
   public void setParameters(Parameter... parameters) {
     this.mParameters = parameters;
   }
   
+  @Override
   public void setPearParameters(NameValuePair... pearParameters) {
     this.mPearParameters = pearParameters;
   }
 
+  @Override
   public String getPearPath() {
     return this.mPearPath;
   }
 
+  @Override
   public void setPearPath(String aPearPath) {
     this.mPearPath = aPearPath;    
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

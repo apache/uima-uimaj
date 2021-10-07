@@ -47,10 +47,10 @@ public class DescriptorMakeUtil {
     AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     // set the function to crash, if desired
     aed.getMetaData().getConfigurationParameterSettings().setParameterValue("default",
-            "TestAnnotator", Boolean.valueOf(shouldCrash));
+            "TestAnnotator", shouldCrash);
     if (shouldCrash) {
       aed.getMetaData().getConfigurationParameterSettings().setParameterValue(functionName,
-              "ErrorCount", Integer.valueOf(errorCount));
+              "ErrorCount", errorCount);
       aed.getMetaData().getConfigurationParameterSettings().setParameterValue(functionName,
               "Exception", exceptionName);
     }
@@ -84,7 +84,7 @@ public class DescriptorMakeUtil {
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorFunction", functionName);
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorCount", Integer.valueOf(errorCount));
+              "ErrorCount", errorCount);
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorException", exceptionName);
     }
@@ -116,13 +116,13 @@ public class DescriptorMakeUtil {
     CollectionReaderDescription crd = UIMAFramework.getXMLParser()
             .parseCollectionReaderDescription(in);
     crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-            "DocumentCount", Integer.valueOf(documentCount));
+            "DocumentCount", documentCount);
     // set the function to crash, if desired
     if (shouldCrash) {
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorFunction", functionName);
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorCount", Integer.valueOf(errorCount));
+              "ErrorCount", errorCount);
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorException", exceptionName);
     }

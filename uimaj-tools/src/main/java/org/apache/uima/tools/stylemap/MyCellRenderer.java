@@ -29,12 +29,31 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.uima.tools.images.Images;
 
+
+/**
+ * The Class MyCellRenderer.
+ */
 // cell renderer for the JTable
 class MyCellRenderer extends DefaultTableCellRenderer {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8130948041146818381L;
 
+  /** The small arrow icon. */
   private ImageIcon smallArrowIcon = Images.getImageIcon(Images.SMALL_ARROW);
 
+  /**
+   * Gets the table cell renderer component.
+   *
+   * @param table the table
+   * @param value the value
+   * @param isSelected the is selected
+   * @param hasFocus the has focus
+   * @param row the row
+   * @param column the column
+   * @param styleList the style list
+   * @return the table cell renderer component
+   */
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
           boolean hasFocus, int row, int column, ArrayList styleList) {
     Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,

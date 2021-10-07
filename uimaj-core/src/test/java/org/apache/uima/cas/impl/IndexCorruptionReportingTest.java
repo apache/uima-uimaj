@@ -21,12 +21,13 @@ package org.apache.uima.cas.impl;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -34,6 +35,8 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class IndexCorruptionReportingTest extends TestCase {
   
@@ -63,8 +66,9 @@ public class IndexCorruptionReportingTest extends TestCase {
     ts = cas.getTypeSystem();
   }
   
-  private FSBagIndex cbi() {
-    return new FSBagIndex(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX);
+  private FsIndex_bag<TOP> cbi() {
+    FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
+    return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
   protected void tearDown() throws Exception {
@@ -75,8 +79,11 @@ public class IndexCorruptionReportingTest extends TestCase {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 10);
     a.addToIndexes();
-    a.setBegin(2);
-    a.setEnd(3);
+    try {
+      a.setBegin(2);
+    } catch (UIMARuntimeException e) {
+      assertTrue(e.getMessageKey().equals(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE));
+    }
   }
 
 }

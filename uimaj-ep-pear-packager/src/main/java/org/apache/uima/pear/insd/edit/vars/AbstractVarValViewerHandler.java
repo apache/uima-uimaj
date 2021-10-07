@@ -29,24 +29,44 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+/**
+ * The Class AbstractVarValViewerHandler.
+ */
 abstract class AbstractVarValViewerHandler {
 
+  /** The table. */
   public Table table;
 
+  /** The table viewer. */
   public TableViewer tableViewer;
 
+  /** The add. */
   public Button add;
 
+  /** The delete. */
   public Button delete;
 
+  /** The close button. */
   protected Button closeButton;
 
+  /** The label provider. */
   protected ITableLabelProvider labelProvider;
 
+  /** The table row list. */
   protected VarValList tableRowList = new VarValList();
 
+  /** The column names. */
   protected String[] columnNames;
 
+  /**
+   * Instantiates a new abstract var val viewer handler.
+   *
+   * @param parent the parent
+   * @param columnNames the column names
+   * @param numParentColumns the num parent columns
+   * @param tableRowList the table row list
+   * @param labelProvider the label provider
+   */
   public AbstractVarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
           VarValList tableRowList, ITableLabelProvider labelProvider) {
     this.tableRowList = tableRowList;
@@ -56,16 +76,34 @@ abstract class AbstractVarValViewerHandler {
     this.addChildControls(parent, numParentColumns);
   }
 
+  /**
+   * Creates the table columns.
+   */
   protected abstract void createTableColumns();
 
+  /**
+   * Creates the cell editors.
+   *
+   * @return the cell editor[]
+   */
   protected abstract CellEditor[] createCellEditors();
 
+  /**
+   * Creates the cell modifiers.
+   *
+   * @return the i cell modifier
+   */
   protected abstract ICellModifier createCellModifiers();
 
+  /**
+   * Creates the sorter.
+   *
+   * @return the viewer sorter
+   */
   protected abstract ViewerSorter createSorter();
 
   /**
-   * Release resources
+   * Release resources.
    */
   public void dispose() {
     // Tell the label provider to release its ressources
@@ -73,10 +111,10 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * Create a new shell, add the widgets, open the shell
-   * 
-   * @param composite -
-   * @param numColumns -
+   * Create a new shell, add the widgets, open the shell.
+   *
+   * @param composite the composite
+   * @param numColumns the num columns
    */
   protected void addChildControls(Composite composite, int numColumns) {
 
@@ -99,9 +137,9 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * Create the Table
-   * 
-   * @param parent -
+   * Create the Table.
+   *
+   * @param parent the parent
    */
   protected void createTable(Composite parent) {
     int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
@@ -122,7 +160,7 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * Create the TableViewer
+   * Create the TableViewer.
    */
   protected void createTableViewer() {
 
@@ -139,6 +177,9 @@ abstract class AbstractVarValViewerHandler {
     tableViewer.setSorter(createSorter());
   }
 
+  /**
+   * Close.
+   */
   /*
    * Close the window and dispose of resources
    */
@@ -157,6 +198,9 @@ abstract class AbstractVarValViewerHandler {
    */
   class ExampleContentProvider implements IStructuredContentProvider, IVarValListViewer {
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+     */
     @Override
     public void inputChanged(Viewer v, Object oldInput, Object newInput) {
       if (newInput != null) {
@@ -167,11 +211,17 @@ abstract class AbstractVarValViewerHandler {
     }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+     */
     @Override
     public void dispose() {
       tableRowList.removeChangeListener(this);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+     */
     // Return the tableRows as an array of Objects
     @Override
     public Object[] getElements(Object parent) {
@@ -210,10 +260,9 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * Add the "Add", "Delete" and "Close" buttons
-   * 
-   * @param parent
-   *          the parent composite
+   * Add the "Add", "Delete" and "Close" buttons.
+   *
+   * @param parent          the parent composite
    */
   protected void createButtons(Composite parent) {
 
@@ -228,7 +277,7 @@ abstract class AbstractVarValViewerHandler {
 
       // Add a tableRow to the VarValList and refresh the view
       @Override
-    public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e) {
         if (!tableRowList.addTableRow()) {
           MessageDialog.openWarning(new Shell(), "Duplicate Variable",
                   "The variable 'New_Variable' already exists");
@@ -247,7 +296,7 @@ abstract class AbstractVarValViewerHandler {
 
       // Remove the selection and refresh the view
       @Override
-    public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e) {
         VarVal tableRow = (VarVal) ((IStructuredSelection) tableViewer.getSelection())
                 .getFirstElement();
         if (tableRow != null) {
@@ -259,8 +308,8 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * Return the column names in a collection
-   * 
+   * Return the column names in a collection.
+   *
    * @return List containing column names
    */
   public java.util.List getColumnNames() {
@@ -268,6 +317,8 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
+   * Gets the selection.
+   *
    * @return currently selected item
    */
   public ISelection getSelection() {
@@ -275,21 +326,27 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * @return the VarValList
+   * Return the VarValList.
+   *
+   * @return the table row list
    */
   public VarValList getTableRowList() {
     return tableRowList;
   }
 
   /**
-   * @return the parent composite
+   * Return the parent composite.
+   *
+   * @return the control
    */
   public Control getControl() {
     return table.getParent();
   }
 
   /**
-   * @return the 'close' Button
+   * Return the 'close' Button.
+   *
+   * @return the close button
    */
   public Button getCloseButton() {
     return closeButton;

@@ -36,9 +36,11 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
+
 
 /**
  * A simple example of how to extract information from the CAS. This example retrieves all
@@ -58,15 +60,26 @@ public class PrintAnnotations {
    *          the PrintStream to which output will be written
    */
   public static void printAnnotations(CAS aCAS, PrintStream aOut) {
-    // get iterator over annotations
-    FSIterator iter = aCAS.getAnnotationIndex().iterator();
+    
+    // Version 3 using select with Stream support
+    aCAS.select(Annotation.class).forEach(fs -> printFS(fs, aCAS, 0, aOut));
 
-    // iterate
-    while (iter.isValid()) {
-      FeatureStructure fs = iter.get();
-      printFS(fs, aCAS, 0, aOut);
-      iter.moveToNext();
-    }
+//    // Version 3 using select with extended for
+//    for (Annotation fs : aCAS.getAnnotationIndex().select(Annotation.class)) {
+//      printFS(fs, aCAS, 0, aOut);
+//    }
+//    
+//    // version 2 style using iterators
+//    FSIterator<AnnotationFS> iter = aCAS.getAnnotationIndex().iterator();
+//
+//    // iterate
+//    while (iter.isValid()) {
+//      FeatureStructure fs = iter.get();
+//      printFS(fs, aCAS, 0, aOut);
+//      iter.moveToNext();
+//    }
+    
+    
   }
 
   /**
@@ -230,6 +243,7 @@ public class PrintAnnotations {
    * Main program for testing this class. There are two required arguments - the path to the XML
    * descriptor for the TAE to run and an input file. Additional arguments are Type or Feature names
    * to be included in the ResultSpecification passed to the TAE.
+   *
    * @param args - see above
    */
   public static void main(String[] args) {

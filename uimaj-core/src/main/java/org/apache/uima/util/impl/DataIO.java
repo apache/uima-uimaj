@@ -29,6 +29,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Methods for working with Data during I/O
@@ -37,12 +38,11 @@ public class DataIO {
   
   
   public static final Charset UTF8 = Charset.forName("UTF-8");  // use with String is a java 6, not 5, feature
-  public static final String UTF8_FAST = "UTF-8"; // for faster impls
   private static final int SIGNED_INT_VALUE_0x80 = 0x80;
   private static final int MASK_LOW_7 = 0x7f;
   private static final long MASK_LOW_7_LONG = 0x7fL;
  
-  private static ThreadLocal<CharsetDecoder> DECODER = new ThreadLocal<CharsetDecoder>();
+  private static ThreadLocal<CharsetDecoder> DECODER = new ThreadLocal<>();
   
   
   public static String decodeUTF8(ByteBuffer in, final int length) {
@@ -105,7 +105,7 @@ public class DataIO {
       out.write(0);
       return;
     }
-    byte[] bb = string.getBytes(UTF8_FAST);
+    byte[] bb = string.getBytes(StandardCharsets.UTF_8);
     if (bb.length > (Integer.MAX_VALUE - 1)) {
       throw new RuntimeException(String.format("String UTF-8 representation too long, was %,d", bb.length));
     }
@@ -128,7 +128,7 @@ public class DataIO {
     if (null == string) {
       return 1;
     }
-    byte[] bb = string.getBytes(UTF8_FAST);
+    byte[] bb = string.getBytes(StandardCharsets.UTF_8);
     if (bb.length > (Integer.MAX_VALUE - 1)) {
       throw new RuntimeException(String.format("String UTF-8 representation too long, was %,d", bb.length));
     }

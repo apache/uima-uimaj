@@ -25,13 +25,26 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+
+/**
+ * The Class LabelCellEditor.
+ */
 public class LabelCellEditor extends DefaultCellEditor {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7810191917704574202L;
 
+  /**
+   * Instantiates a new label cell editor.
+   */
   public LabelCellEditor() {
     super(new JTextField());
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+   */
+  @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
           int row, int column) {
     JTextField textField = (JTextField) getComponent();

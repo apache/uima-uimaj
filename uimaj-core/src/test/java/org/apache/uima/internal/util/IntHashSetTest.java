@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import junit.framework.TestCase;
 
@@ -27,6 +28,8 @@ import junit.framework.TestCase;
 public class IntHashSetTest extends TestCase {
   
   IntHashSet ihs;
+  
+  Random random;
   
   public void setUp() {
     ihs = new IntHashSet();
@@ -87,7 +90,7 @@ public class IntHashSetTest extends TestCase {
     int[] r = new int[s.size()];
     int i = 0;
     while (it.hasNext()) {
-      r[i++] = it.next();
+      r[i++] = it.nextNvc();
     }
     Arrays.sort(r);
     return r;
@@ -102,11 +105,11 @@ public class IntHashSetTest extends TestCase {
     assertFalse(ihs.contains(99));  
   }
   
-  public void testTableSpace() {
-    assertEquals(32, IntHashSet.tableSpace(19, 0.6f));    // 19 / .6 = 31.xxx, round to 32
-    assertEquals(64, IntHashSet.tableSpace(21, 0.6f));
-    assertEquals(32, ihs.tableSpace(21));
-  }
+//  public void testTableSpace() {
+//    assertEquals(32, IntHashSet.tableSpace(19, 0.6f));    // 19 / .6 = 31.xxx, round to 32
+//    assertEquals(64, IntHashSet.tableSpace(21, 0.6f));
+//    assertEquals(32, ihs.tableSpace(21));
+//  }
   
   public void testWontExpand() {
     ihs = new IntHashSet(21);
@@ -124,7 +127,119 @@ public class IntHashSetTest extends TestCase {
     }
   }
   
+  public void testAddIntoRemovedSlot() {
+    long seed = // 6738591171221169418L;
+        new Random().nextLong();
+    System.out.println("Random seed for testAddIntoRemovedSlot in " + this.getClass().getName() + ": "  + seed);
+    random = new Random(seed);
+
+    for (int i = 1; i < 100; i++) {
+      ihs.add(i);
+      assertEquals(i, ihs.size());
+    }
+    
+    assertEquals(99, ihs.size());
+    
+    /** Test with 2 byte numbers */
+    checkRemovedReuse(true);
+    
+    ihs = new IntHashSet();
+    for (int i = 1; i < 99; i++) {
+      ihs.add(i);
+    }
+    ihs.add(100000);  // force 4 byte
+    checkRemovedReuse(false);
+  }
   
+  private void checkRemovedReuse(boolean is2) {
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 128 : 256));
+    for (int i = 0; i < 100000; i++) {
+      int v = 1 + random.nextInt(100 + (i % 30000)); // random between 1 and 30,101
+      int sz = ihs.size();
+      boolean wasRemoved = ihs.remove(v);
+      assertEquals(sz - (wasRemoved ? 1 : 0), ihs.size());
+      assertTrue(!(ihs.contains(v)));
+      v = 1 + random.nextInt(100 + (i % 30000));
+      sz = ihs.size();
+      boolean wasAdded = ihs.add(v);
+      assertEquals(sz + (wasAdded ? 1 : 0), ihs.size());
+      assertTrue(ihs.contains(v));
+    }
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 16384 : 32768) );
+    
+    //  32,768, 16,384, 8,192, 4096, 2048, 1024, 512, 256
+    // for 2 byte storage, is2 = true, and expected is: i / 2
+    // for 4 byte storage, is2 = false, and expected is i
+    
+    ihs.clear(); // doesn't set 2nd time because size + removed > 1/2 the capacity
+    
+    for (int i = 32768; i > 128; i = i / 2) {
+      ihs.clear(); // sets 2nd time shrinkable
+      assertTrue(ihs.getSpaceUsedInWords() == (is2 ? i/2 : i));
+      ihs.clear();  // shrinks
+      assertTrue(ihs.getSpaceUsedInWords() == (is2 ? i/4 : i/2));
+    }
+//    ihs.clear();
+//    
+    assertTrue(ihs.getSpaceUsedInWords() == (is2 ? 64: 128));
+
+    // table size should be 128, adding 100 items should cause expansion (84 == .66 * 128)
+    for (int i = 1; i < ((is2) ? 100 : 99); i++) {
+      ihs.add(i);
+    }
+    if (!is2) {
+      ihs.add(100000);
+    }
+    
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 128 : 256));
+    for (int i = 0; i < 1000; i++) {
+      int v = 1 + random.nextInt(100);
+      ihs.remove(v);
+      assertTrue(!(ihs.contains(v)));
+      ihs.add(v);
+      assertTrue(ihs.contains(v));
+    }
+    
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 128 : 256));
+    
+  }
  
-  
+  public void testRandom() {
+    int countAdd = 0;
+    int dupsA = 0;
+    int notPres = 0;
+    int countRmv = 0;
+    
+    long seed = 
+        new Random().nextLong();
+    System.out.println("Random seed for testRandom in " + this.getClass().getName() + ": "  + seed);
+    random = new Random(seed);
+    
+    for (int i = 1; i < 1024 * 1024; i++) {
+      int k = i & (1024 * 256) - 1;
+      if (k == 0) continue;
+      if (random.nextInt(3) > 0) {
+        int sz = ihs.size();
+        if (ihs.add(k)) {
+          countAdd ++;
+          assertEquals(sz + 1, ihs.size());
+        } else {
+          dupsA ++;
+        }
+        
+      } else {
+        int sz = ihs.size();
+        if (ihs.remove(k)) {
+          countRmv ++;
+          assertEquals(sz - 1, ihs.size());
+        } else {
+          notPres ++;
+        }
+        
+      }
+    }
+    
+    System.out.format("added: %,d dups: %,d rmvd: %,d notPres: %,d, size: %d%n", countAdd, dupsA, countRmv, notPres, ihs.size());
+    assertEquals(countAdd - countRmv, ihs.size() );
+  }
 }

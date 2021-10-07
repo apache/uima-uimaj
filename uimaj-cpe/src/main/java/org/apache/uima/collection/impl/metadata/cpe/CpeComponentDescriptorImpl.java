@@ -33,14 +33,25 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 
+
+/**
+ * The Class CpeComponentDescriptorImpl.
+ */
 public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
         CpeComponentDescriptor {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1607312024379882416L;
 
+  /** The m include. */
   private CpeInclude mInclude;
   
+  /** The m import. */
   private Import mImport;
 
+  /**
+   * Instantiates a new cpe component descriptor impl.
+   */
   public CpeComponentDescriptorImpl() {
   }
 
@@ -49,6 +60,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setInclude(org.apache.uima.collection.metadata.CpeInclude)
    */
+  @Override
   public void setInclude(CpeInclude aInclude) {
     mInclude = aInclude;
   }
@@ -58,6 +70,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#getInclude()
    */
+  @Override
   public CpeInclude getInclude() {
     return mInclude;
   }
@@ -67,6 +80,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#getImport()
    */
+  @Override
   public Import getImport() {
     return mImport;
   }
@@ -74,13 +88,20 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
   /* (non-Javadoc)
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setImport(org.apache.uima.resource.metadata.Import)
    */
+  @Override
   public void setImport(Import aImport) {
     mImport = aImport;
   }
   
   /**
+   * Find absolute url.
+   *
+   * @param aResourceManager the a resource manager
+   * @return the url
+   * @throws ResourceConfigurationException the resource configuration exception
    * @see CpeComponentDescriptor#findAbsoluteUrl(ResourceManager)
    */
+  @Override
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException {
     try {
       if (mImport != null) {
@@ -113,10 +134,15 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("descriptor",
           new PropertyXmlInfo[] { 
            new PropertyXmlInfo("include", null), 

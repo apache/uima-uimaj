@@ -29,17 +29,31 @@ import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class ColorPrefsOpenHandler.
+ */
 public class ColorPrefsOpenHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new color prefs open handler.
+   *
+   * @param frame the frame
+   */
   public ColorPrefsOpenHandler(MainFrame frame) {
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Load color preferences file");

@@ -130,7 +130,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    *         new one.
    */
   public final boolean put(int key, T el) {
-    if (put(new RBTNode<T>(key, el))) {
+    if (put(new RBTNode<>(key, el))) {
       this.size++;
       return true;
     }
@@ -227,7 +227,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    *         of the corresponding keys.
    */
   public Iterator<T> iterator() {
-    return new RBTIterator<T>(this);
+    return new RBTIterator<>(this);
   }
 
   // Iterator implementation.
@@ -287,7 +287,7 @@ public class RedBlackTree<T> implements Iterable<T> {
   }
 
   public static void main(String[] args) {
-    RedBlackTree<String> tree = new RedBlackTree<String>();
+    RedBlackTree<String> tree = new RedBlackTree<>();
     tree.put(1, "a");
     tree.printKeys();
     System.out.println("");

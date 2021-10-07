@@ -1,0 +1,180 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.overview]]
+= Overview of UIMA Version 3
+
+UIMA Version 3 adds significant new functionality for the Java SDK, while remaining  backward compatible with Version 2.
+Much of this new function is enabled by a shift in the  internal details of how Feature Structures are represented.
+In Version 3, these are represented internally as ordinary Java objects, and subject to garbage collection.
+
+In contrast, version 2 stored Feature Structure data in special internal arrays of `ints` and other data types.
+Any Java object representation of Feature Structures in version 2 was merely forwarding references to these internal data representations. 
+
+If JCas is being used in an application, the JCas classes must be migrated, but this can often be done automatically.
+In Version 3, the JCas classes ending in "_Type" are no longer used, and the  main JCas class definitions are much simplified.
+
+If an application doesn't use JCas classes, then nothing need be done for migration.
+Otherwise, the JCas classes can be migrated in several ways: 
+
+*generating during build*::
+If the project is built by Maven, it's possible the JCas classes are built from the type descriptions,  using UIMA's Maven JCasGen plugin.
+If so, you can just rebuild the project; the JCasGen plugin for V3 generates the new JCas classes. 
+
+*running the migration utility*::
+This is the recommended way if you can't regenerate the classes from the type descriptions.
++
+This does the work of migrating and produces new versions of the JCas classes, which need to replace the existing ones.
+It allows complex existing JCas classes to migrated, perhaps with developer assistance as needed.
+Once done, the application has no migration startup cost.
++
+The migration tool is capable of using existing source or compiled JCas classes as input, and  can migrate classes contained within Jars or PEARs. 
+
+*regenerating the JCas classes using the JCasGen tool*::
+The JCasGen tool (available as a Eclipse or Maven plugin, or a stand-alone application)  generates Version 3 JCas classes from the XML descriptors.
++
+This is perfectly adequate for migrating non-customized JCas classes.
+When run from the UIMA Eclipse plugin for editing XML component descriptors, it will attempt to merge customizations with generated code.
+However, its approach is not as comprehensive as the migration tool, which parses the Java source code.
+
+Migration of JCas classes is the first step needed to start using UIMA version 3.
+See the later chapter on migration for details on using the migration tool. 
+
+[[_uv3.overview.new]]
+== What's new in UIMA 3
+
+The major improvements in version 3 include: 
+
+*Support for arbitrary Java objects, transportable in the CAS*::
+Support is added to allow users to define additional UIMA Types whose JCas implementation may  include Java objects, with serialization and deserialization performed using normal CAS transportable data.
+A following chapter on Custom Java Objects describes this new facility.
+
+*New UIMA semi-built-in types, built using the custom Java object support*::
+The new support that allows custom serialization of arbitrary Java objects so they can be transported in the CAS (above) is used to implement several new semi-built-in UIMA types. 
+
+*FSArrayList*::
+a Java ArrayList of Feature Structures.
+The JCas class implements the List API.
+
+*IntegerArrayList*::
+a variable length int array.
+Supports OfInt iterators.
+
+*FSHashSet, FSLinkedHashSet*::
+a Java HashSet or LinkedHashSet containing Feature Structures.
+This JCas class implements the Set API.
+
+*Select framework for accessing Feature Structures*::
+A new _select framework_ provides a concise way to work with Feature Structure data stored in the CAS or other collections.
+It is integrated with the Java 8 _stream_ framework, while providing additional capabilities supported by UIMA, such as the ability to move both forwards and backwards while iterating, moving to specific positions, and doing various kinds of specialized Annotation selection such as working with Annotations spanned by another annotation. 
++
+By default, when sorted iterators are set up by the select framework, they ignore typePriorities; this addresses a need of many use cases, and makes operation when there are many annotations spanning the same begin and end more reliable.
+Each select can specify to use typePriority as part of the ordering when required.
++
+This user's guide has a chapter devoted to this new framework. 
+
+*Elimination of ConcurrentModificationException while iterating over UIMA indexes*::
+The index and iteration mechanisms are improved; it is now allowed to modify the indexes while iterating over them (the iteration will be unaffected by the modification).
++
+Note that the automatic index corruption avoidance introduced in more recent versions of UIMA could be automatically removing Feature Structures from indexes and adding them back, if the user was updating some Feature of a Feature Structure that was part of an index specification for inclusion or ordering purposes.
++
+In version 2, you would accomplish this using a two pass scheme: Pass 1 would iterate and merely collect the Feature Structures to be updated into a Java collection of some kind.
+Pass 2 would use a plain Java iterator over that collection and modify the Feature Structures and/or the UIMA indexes.
+This is no longer needed in version 3; UIMA iterators use a copy-on-write technique to allow index updating, while doing whatever minimal copying is needed to continue iteration over the original index.
++
+In both version 2 and 3, there are 3 iterator movement APIs which have a side effect of insuring the iterator is operating correctly over the current index contents.
+These are the `moveToFirst, 
+moveToLast, and moveTo(some_feature_structure)` API calls.
+In version 3, using these will reinitialize the iterator (if needed) so that it is iterating over the current index contents; if the index has not been modified, no reinitialization is needed (or done).
++
+CAS reset and index removeAll operations clear the index without preserving any existing iteration.
+If you try to continue an iteration over an index cleared by these operations, the results are undefined, and may throw exceptions.
+
+*Logging updated*::
+The UIMA logger is a facade that can be hooked up at deploy time to one of several logging backends.
+It has been extended to implement all of the Logger API calls provided in the SLF4j `Logger` interface, and has been changed to use SLF4j as its back-end.
+SLF4j, in turn,  requires a logging back-end which it  determines by examining what's available in the classpath, at deploy time.
+This design allows UIMA to be more easily embedded in other systems which have their own logging frameworks.
++
+Modern loggers support MDC/NDC and Markers; these are supported now via the slf4j facade.
+UIMA itself is extended to use these to provide contexts around logging. 
++
+See the following chapter on logging for details.
+
+*Automatic garbage collection of unreferenced Feature Structures*::
+This allows creating of temporary Feature Structures, and automatically reclaiming  space resources when they are no longer needed.
+In version 2, space was reclaimed only when a  CAS was reset at the end of processing.
+
+*better performance*::
+The internal design details have been extensively reworked to align with  recent trends in computer hardware  over the last 10-15 years.
+In particular, space and time tradeoffs are adjusted in favor of using more memory for better locality-of-reference, which improves performance.
+In addition, the many internal algorithms (such as managing Feature Structure indexes) have been improved. 
++
+Type system implementations are reused where possible, reducing the footprint in many scaled-out cases.
+
+*Backwards compatible*::
+Version 3 is intended to be binary backwards compatible - the goal is that you should be able to run  existing applications without recompiling them, except for the need to migrate or regenerate  any User supplied JCas Classes.
+Utilities are provided to help do the necessary JCas migration mostly automatically.
+
+*Integration with Java 8*::
+Version 3 requires Java 8 as the minimum level.
+Some of version 3's new facilities, such as the `select` framework for accessing Feature Structures from CASs or other collections,  integrate with the new Java 8 language constructs, such as `Streams` and ``Spliterators``.
+
+*Programming convenience*::
+Many APIs have been made more consistent and better integrated; see the chapter on new and extended APIs.
+Examples:  UIMA Indexes now implement Iterable, so you can use the Java "extended for" construct directly; UIMA Lists have new push and pushNode methods to create and link a new node onto the front of a list; there are new methods on the CAS and JCas to get a shared instance of common immutable objects, like 0-length arrays and empty lists.
+
+Just to give a small taste of the kinds of things Java 8 integration provides,  here's an example of using the new `select` framework, where the task is to compute a Set of all the found types 
+
+* in a UIMA index
+* under some top-most type "MyType"
+* occurring as Annotations within a particular bounding Annotation
+* that are nonOverlapping
+
+Here is the Java code using the new `select` framework together with Java 8 streaming functions: 
+
+====
+[source,java]
+----
+Set<Type> foundTypes =
+   myIndex.select(MyType.class) 
+   .coveredBy(myBoundingAnnotation)
+   .nonOverlapping()
+   .map(fs -> fs.getType())
+   .collect(Collectors.toCollection(TreeSet::new));
+----
+====
+
+Another example: to collect, by category, the average length of the annotations having that category.
+Here we assume that `MyType` is an `Annotation` and that it has a feature called `category` which returns a String denoting the category: 
+
+====
+[source,java]
+----
+Map<String, Double> freqByCategory =
+   myIndex.select(MyType.class)
+   .collect(Collectors
+     .groupingBy(MyType::getCategory,
+                 Collectors.averagingDouble(f -> 
+                   (double)(f.getEnd() - f.getBegin()))));
+----
+====
+
+[[_uv3.overview.java8]]
+== Java 8 is required
+
+The UIMA Java SDK Version 3 requires Java 8.

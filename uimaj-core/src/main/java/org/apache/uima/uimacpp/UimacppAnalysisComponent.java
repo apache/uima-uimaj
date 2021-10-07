@@ -421,7 +421,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
       log.logrb(Level.SEVERE, CLASS_NAME.getName(), "logJTafException", LOG_RESOURCE_BUNDLE,
               "UIMA_taf_internal_exception__SEVERE",
-              new Object[] { Long.valueOf(errorCode), errorName });
+              new Object[] {errorCode, errorName });
     }
     Exception et = e.getEmbeddedException();
 

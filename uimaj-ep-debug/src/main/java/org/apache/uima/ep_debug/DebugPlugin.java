@@ -25,11 +25,13 @@ import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.BundleContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The main plugin class to be used in the desktop.
  */
 public class DebugPlugin extends Plugin {
 
+  /** The plugin. */
   // The shared instance.
   private static DebugPlugin plugin;
 
@@ -39,7 +41,7 @@ public class DebugPlugin extends Plugin {
   public DebugPlugin() {
     plugin = this;
   }
-
+  
 // next moved to DebugPluginStartup class, per change in Eclipse Platform Design
 //  /**
 //   * This method is called upon plug-in activation.

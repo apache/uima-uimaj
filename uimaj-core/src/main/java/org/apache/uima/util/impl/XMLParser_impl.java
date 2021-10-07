@@ -108,7 +108,7 @@ public class XMLParser_impl implements XMLParser {
    * Map from XML element names to Class objects.
    */
   protected Map<String, Class<? extends XMLizable>> mElementToClassMap = Collections.synchronizedMap(
-		  new HashMap<String, Class<? extends XMLizable>>());
+      new HashMap<>());
 
   /**
    * Whether schema validation is enabled.

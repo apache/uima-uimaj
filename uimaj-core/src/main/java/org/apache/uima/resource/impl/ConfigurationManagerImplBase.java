@@ -65,8 +65,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *   The setup is done under a sync'd control to insure only one setup is done, and to
    *   publish the updated results to other threads
    */
-  final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = 
-      new HashMap<String, ConfigurationParameterDeclarations>();
+  final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap =
+      new HashMap<>();
 
   /**
    * Map the fully-qualified name of a parameter to the fully-qualified name of the parameter it is
@@ -76,7 +76,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *   The setup is done under a sync'd control to insure only one setup is done
    * 
    */
-  final protected Map<String, String> mLinkMap = new HashMap<String, String>();
+  final protected Map<String, String> mLinkMap = new HashMap<>();
 
   /**
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to
@@ -414,7 +414,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   private NameValuePair[] getParamSettings(String aGroupName, ConfigurationParameter[] aParams,
           String aContextName) {
-    List<NameValuePair> result = new ArrayList<NameValuePair>();
+    List<NameValuePair> result = new ArrayList<>();
     // iterate over config. param _declarations_
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
@@ -717,7 +717,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     } else {
       Map<String, Object> m = (Map<String, Object>) mSession.get(SESSION_CONFIGURATION_KEY);
       if (m == null) {
-        m = Collections.synchronizedMap(new HashMap<String, Object>());
+        m = Collections.synchronizedMap(new HashMap<>());
         mSession.put(SESSION_CONFIGURATION_KEY, m);
       }
       m.put(aCompleteName, aValue);

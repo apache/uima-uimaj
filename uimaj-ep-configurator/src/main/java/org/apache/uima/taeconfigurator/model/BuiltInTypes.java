@@ -40,13 +40,16 @@ import org.apache.uima.resource.metadata.impl.TypeDescription_impl;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.util.CasCreationUtils;
 
+
 /**
- * Gets and caches an array list of all the built-in tcas types
+ * Gets and caches an array list of all the built-in tcas types.
  */
 public class BuiltInTypes extends AbstractModelPart {
 
+  /** The Constant typeSystem. */
   public static final TypeSystem typeSystem;
 
+  /** The Constant typeDescriptions. */
   public static final Map typeDescriptions = new TreeMap();
 
   static {
@@ -92,6 +95,9 @@ public class BuiltInTypes extends AbstractModelPart {
     }
   }
 
+  /**
+   * Instantiates a new built in types.
+   */
   BuiltInTypes() {
     super(null);
   }

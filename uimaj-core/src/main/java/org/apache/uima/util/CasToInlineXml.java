@@ -39,6 +39,7 @@ import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -131,7 +132,7 @@ public class CasToInlineXml {
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator<AnnotationFS> iterator = aCAS.getAnnotationIndex().iterator();
+    FSIterator<Annotation> iterator = aCAS.<Annotation>getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -143,7 +144,7 @@ public class CasToInlineXml {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
-    List<AnnotationFS> stack = new ArrayList<AnnotationFS>();
+    List<AnnotationFS> stack = new ArrayList<>();
     int pos = 0;
 
     try {

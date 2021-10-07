@@ -48,31 +48,46 @@ import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
 import org.apache.uima.pear.tools.InstallationDescriptor;
 
+
 /**
- * 
- * This is wizard page to edit UIMA component basic information
- * 
+ * This is wizard page to edit UIMA component basic information.
  */
 public class INSDComponentPage extends WizardPage implements InsdConstants {
 
+  /** The insd. */
   InstallationDescriptor insd;
 
+  /** The gr. */
   private Group gr;
 
+  /** The comp ID. */
   public String compID = "";
 
+  /** The comp descriptor path. */
   public String compDescriptorPath = "";
 
+  /** The comp type. */
   public String compType = COMP_TYPE_ANALYSIS_ENGINE;
 
+  /** The comp ID text. */
   private Text compIDText;
 
+  /** The comp descriptor path text. */
   private Text compDescriptorPathText;
 
+  /** The current container. */
   IContainer currentContainer;
 
+  /** The wizard data. */
   Hashtable wizardData;
 
+  /**
+   * Constructor.
+   *
+   * @param currentContainer the current container
+   * @param insd the insd
+   * @param wizardData the wizard data
+   */
   public INSDComponentPage(IContainer currentContainer, InstallationDescriptor insd,
           Hashtable wizardData) {
     super("wizardPage");
@@ -111,6 +126,9 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     return s;
   }
 
+  /**
+   * Initialize page.
+   */
   void initializePage() {
 
     String temp = "";
@@ -128,6 +146,15 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
   }
 
+  /**
+   * Adds the text field.
+   *
+   * @param parent the parent
+   * @param strLabel the str label
+   * @param strText the str text
+   * @param editable the editable
+   * @return the text
+   */
   public Text addTextField(Composite parent, String strLabel, String strText, boolean editable) {
     Label label = new Label(parent, SWT.NULL);
     label.setText(strLabel);
@@ -137,7 +164,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     text.setText(strText);
     text.addModifyListener(new ModifyListener() {
       @Override
-    public void modifyText(ModifyEvent e) {
+      public void modifyText(ModifyEvent e) {
         dialogChanged();
       }
     });
@@ -146,10 +173,12 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   }
 
   /**
-   * See IDialogPage#createControl(Composite)
+   * See IDialogPage#createControl(Composite).
+   *
+   * @param parent the parent
    */
   @Override
-public void createControl(Composite parent) {
+  public void createControl(Composite parent) {
 
     try {
 
@@ -218,6 +247,9 @@ public void createControl(Composite parent) {
 
   }
 
+  /**
+   * Validate comp info.
+   */
   void validateCompInfo() {
     if (compID == null || compID.trim().length() == 0 || compDescriptorPath == null
             || compDescriptorPath.trim().length() == 0) {
@@ -230,10 +262,18 @@ public void createControl(Composite parent) {
     }
   }
 
+  /**
+   * Save wizard data.
+   */
   void saveWizardData() {
     wizardData.put(COMP_DESCRIPTOR_PATH, compDescriptorPath);
   }
 
+  /**
+   * Update status.
+   *
+   * @param message the message
+   */
   private void updateStatus(String message) {
 
     if (message == null) {
@@ -246,6 +286,11 @@ public void createControl(Composite parent) {
     }
   }
 
+  /**
+   * Validate files.
+   *
+   * @return the string
+   */
   private String validateFiles() {
     String message = null;
     StringBuffer sb = new StringBuffer();
@@ -282,16 +327,13 @@ public void createControl(Composite parent) {
    * layout is assumed to be a GridLayout and the number of columns in this layout is incremented.
    * Subclasses may override.
    * </p>
-   * 
-   * @param parent
-   *          the parent composite
-   * @param label
-   *          the label from the button
-   * @param defaultButton
-   *          <code>true</code> if the button is to be the default button, and <code>false</code>
+   *
+   * @param parent          the parent composite
+   * @param label          the label from the button
+   * @param defaultButton          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
-   * @param text -
-   * @return -
+   * @param text the text
+   * @return the button
    */
   protected Button addButton(Composite parent, String label, boolean defaultButton, final Text text) {
 
@@ -309,7 +351,7 @@ public void createControl(Composite parent) {
 
     SelectionListener listener = new SelectionAdapter() {
       @Override
-    public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e) {
 
         ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), currentContainer,
                 "Selection Dialog");
@@ -330,16 +372,13 @@ public void createControl(Composite parent) {
   }
 
   /**
-   * Creates a new Radio button
-   * 
-   * @param parent
-   *          the parent composite
-   * @param label
-   *          the label from the button
-   * @param initialSelection
-   *          <code>true</code> if the button is to be the default button, and <code>false</code>
+   * Creates a new Radio button.
+   *
+   * @param parent          the parent composite
+   * @param label          the label from the button
+   * @param initialSelection          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
-   * @return -
+   * @return the button
    */
   protected Button addRadioButton(Composite parent, String label, boolean initialSelection) {
 
@@ -350,7 +389,7 @@ public void createControl(Composite parent) {
 
     SelectionListener listener = new SelectionAdapter() {
       @Override
-    public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e) {
         dialogChanged();
       }
     };
@@ -358,11 +397,11 @@ public void createControl(Composite parent) {
     return button;
   }
 
-  /*
-   * see @DialogPage.setVisible(boolean)
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
    */
   @Override
-public void setVisible(boolean visible) {
+  public void setVisible(boolean visible) {
     super.setVisible(visible);
     if (visible) {
         compIDText.setFocus();

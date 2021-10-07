@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +42,6 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.ide.searchstrategy.ITypeSystemSearchStrategy;
 import org.apache.uima.caseditor.ide.searchstrategy.TypeSystemSearchStrategyFactory;
-import org.apache.uima.util.CasIOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -147,10 +147,8 @@ public class DefaultCasDocumentProvider extends
 
       try {
         tsFile.setPersistentProperty(new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES),
-                new String(prefBytes.toByteArray(), "UTF-8"));
+                new String(prefBytes.toByteArray(), StandardCharsets.UTF_8));
       } catch (CoreException e) {
-        CasEditorIdePlugin.log(e);
-      } catch (IOException e) {
         CasEditorIdePlugin.log(e);
       }
     }
@@ -164,7 +162,7 @@ public class DefaultCasDocumentProvider extends
    * The tracking is done in the provider because the document element itself does not has any link
    * to the style object.
    */
-  private Map<String, String> documentToTypeSystemMap = new HashMap<String, String>();
+  private Map<String, String> documentToTypeSystemMap = new HashMap<>();
 
   /**
    * This map stores temporarily the type system that should be used to open the next document.
@@ -172,15 +170,15 @@ public class DefaultCasDocumentProvider extends
    * the previously selected type system can be deactivated. The inlined file choose, for example, 
    * uses this field to remember the chosen type system.
    */
-  private Map<String, String> typeSystemForNextDocumentOnly = new HashMap<String, String>();
+  private Map<String, String> typeSystemForNextDocumentOnly = new HashMap<>();
   
-  private Map<String, IPreferenceStore> sessionPreferenceStores = new HashMap<String, IPreferenceStore>();
+  private Map<String, IPreferenceStore> sessionPreferenceStores = new HashMap<>();
 
   /**
    * This map resolves a type system to a style. It is used to cache type system preference instance
    * while the editor is open.
    */
-  private Map<String, PreferenceStore> typeSystemPreferences = new HashMap<String, PreferenceStore>();
+  private Map<String, PreferenceStore> typeSystemPreferences = new HashMap<>();
   
   private boolean isFileChangeTrackingEnabled = true;
 
@@ -205,12 +203,9 @@ public class DefaultCasDocumentProvider extends
 
   private Collection<AnnotationStyle> getConfiguredAnnotationStyles(IPreferenceStore store,
           TypeSystem types) {
-
-    Collection<AnnotationStyle> styles = new HashSet<AnnotationStyle>();
-
     // TODO: for each annotation type, try to retrieve annotation styles
 
-    return styles;
+    return new HashSet<>();
   }
 
   @Override
@@ -315,7 +310,7 @@ public class DefaultCasDocumentProvider extends
 
             if (styleFile.exists()) {
               InputStream styleFileIn = null;
-              DotCorpus dotCorpus = null;
+              DotCorpus dotCorpus;
               try {
                 styleFileIn = styleFile.getContents();
                 dotCorpus = DotCorpusSerializer.parseDotCorpus(styleFileIn);
@@ -389,7 +384,7 @@ public class DefaultCasDocumentProvider extends
 
           if (sessionPreferenceString != null) {
             try {
-              newStore.load(new ByteArrayInputStream(sessionPreferenceString.getBytes("UTF-8")));
+              newStore.load(new ByteArrayInputStream(sessionPreferenceString.getBytes(StandardCharsets.UTF_8)));
             } catch (IOException e) {
               CasEditorPlugin.log(e);
             }
@@ -409,7 +404,7 @@ public class DefaultCasDocumentProvider extends
         return doc;
       } else {
 
-        String message = null;
+        String message;
 
         if (typeSystemFile != null) {
           message = "Cannot find type system!\nPlease place a valid type system in this path:\n"
@@ -602,5 +597,4 @@ public class DefaultCasDocumentProvider extends
   private void handleElementChanged(Object element) {
     fireElementChanged(element);
   }
-
 }

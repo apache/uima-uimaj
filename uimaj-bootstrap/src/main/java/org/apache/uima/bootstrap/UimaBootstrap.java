@@ -96,7 +96,7 @@ public class UimaBootstrap {
     if (!suppressClassPathDisplay) {
       System.out.println("UimaBootstrap ClassPath:");
     }
-    List<URL> urls = new ArrayList<URL>();
+    List<URL> urls = new ArrayList<>();
     String[] jpaths = jps.split(File.pathSeparator);
     for (String p : jpaths) {
       addUrlsFromPath(p, urls);

@@ -24,9 +24,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -42,14 +42,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.json.JsonCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.test.AllTypes;
 import org.apache.uima.test.RefTypes;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -236,9 +234,9 @@ public class JsonCasSerializerTest extends TestCase {
     Type a2t = tsMgr.getType(CAS.TYPE_NAME_ANNOTATION);
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
-    tsMgr.commit();
+    TypeSystemImpl tsi = (TypeSystemImpl) tsMgr.commit();
     jcs = new JsonCasSerializer().setOmit0Values(true);
-    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    jcs.setFilterTypes(tsi);
     serializeAndCompare("nameSpaceNoCollsionFiltered.txt");
     
     // filter, but not enough - should have 1 collison
@@ -247,8 +245,8 @@ public class JsonCasSerializerTest extends TestCase {
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
     tsMgr.addType("org.apache.uimax.test.Token", a2t);
-    tsMgr.commit();
-    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    tsi = (TypeSystemImpl) tsMgr.commit();
+    jcs.setFilterTypes(tsi);
     serializeAndCompare("nameSpaceCollsionFiltered.txt");    
     
   }
@@ -451,6 +449,7 @@ public class JsonCasSerializerTest extends TestCase {
 //  }
   
   private FeatureStructure setAllValues(int v) throws CASException {
+    cas = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);  // create the default initial view sofa.
     JCas jcas = cas.getJCas();
     boolean s1 = v == 0;
     boolean s2 = v == 1;
@@ -528,6 +527,7 @@ public class JsonCasSerializerTest extends TestCase {
     File tsdFile = JUnitExtension.getFile("CasSerialization/desc/" + tsdName);
     tsd = parser.parseTypeSystemDescription(new XMLInputSource(tsdFile));
     cas = (CASImpl) CasCreationUtils.createCas(tsd, null, null);
+//    cas.getSofaRef();  // creates the default sofa
     jcas = cas.getJCas();
     tsi = cas.getTypeSystemImpl();
     topType = (TypeImpl) tsi.getTopType();
@@ -551,9 +551,9 @@ public class JsonCasSerializerTest extends TestCase {
       File d = new File (generateDirPlus);
       d.mkdirs();
       File file = new File (generateDirPlus  + expectedResultsName);
-      FileWriter writer = new FileWriter(file);
-      writer.write(r);
-      writer.close();
+      try (Writer writer = new FileWriter(file)) {
+        writer.write(r);
+      }
       return r;
     } else {
     File expectedResultsFile = JUnitExtension.getFile("CasSerialization/expected/" + ((doJson) ? "json/" : "xmi/") + expectedResultsName);

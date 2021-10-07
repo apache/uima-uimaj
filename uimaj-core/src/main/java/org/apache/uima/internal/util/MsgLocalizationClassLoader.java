@@ -20,8 +20,6 @@
 package org.apache.uima.internal.util;
 
 import java.net.URL;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * Class Loader for loading localized messages
@@ -54,11 +52,25 @@ public class MsgLocalizationClassLoader {
     }
   }
   
-  static final CallStack csi = new CallStack();
+//  static final CallStack csi = new CallStack();  // not used 2/2018
 
+  /**
+   * One instance of this class made
+   * Must be thread-safe
+   */
   static class CallClimbingClassLoader extends ClassLoader {
-  
-    static final ThreadLocal<ClassLoader> originalTccl = new ThreadLocal<>();
+    
+    /**
+     * This value is set / cleared in a try / finally block, from 
+     * the value of originalContextClassLoader in the 
+     *   two classes org.apache.uima.InternationalizedRuntimeException and
+     *               org.apache.uima.InternationalizedException
+     *               
+     * The purpose is to enable using the class loader from the context where the 
+     * exception was created.
+     */
+    static final ThreadLocal<ClassLoader> original_thread_context_class_loader = new ThreadLocal<>();
+       
     /*
      * Try to load the class itself before delegate the class loading to its parent
      */
@@ -83,78 +95,114 @@ public class MsgLocalizationClassLoader {
      */
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<ClassLoader, ClassLoader>(7);
-      // get the call stack
-      Class<?>[] cs = new CallStack().getCallStack();
-      // start at the caller of the caller's class loader
-      // cs[0] is getClassContext
-      // cs[1] is getCallStack
-      // cs[2] is this method, find class     
-      for (int i = 3; i < cs.length; i++) {
-        Class<?> callingClass = cs[i];
-        ClassLoader cl = callingClass.getClassLoader();
-        if (null == cl) { // means system class loader
-          cl = ClassLoader.getSystemClassLoader();
-        }
-        if (null != alreadySearched.get(cl)) {
-          continue;
-        }
-        alreadySearched.put(cl, cl);
-        Class<?> c = null;
-        try {
-          c = cl.loadClass(name);  // include delegation
-          return c;
-        } catch (ClassNotFoundException e) {
-          // leave c == null
-        }      
-      }
+        
       // UIMA-3692, UIMA-4793 try the thread context class loader
       // if not found, will return class not found exception
-      try {
-        ClassLoader cl = originalTccl.get();
-        if (cl != null) {
+      
+      ClassLoader cl = original_thread_context_class_loader.get();
+      if (cl != null) {
+        try {
           return cl.loadClass(name);
+        } catch (ClassNotFoundException e) {}
+      }
+      
+      // 2nd try: the current thread context class loader
+      ClassLoader context_classLoader = Thread.currentThread().getContextClassLoader();
+      if (null != context_classLoader && cl != context_classLoader) {
+        try {
+          return context_classLoader.loadClass(name);
+        } catch (ClassNotFoundException e) {}
+      }
+      
+      // get the call stack; "new" is needed to get the current context call stack
+      ClassLoader[] cls = Misc.getCallingClass_classLoaders();
+      
+      for (ClassLoader ccl : cls) {
+        if (ccl == cl || ccl == context_classLoader) {
+          continue; // alread tried
         }
-      } catch (ClassNotFoundException e) {}
-      // last try: the current thread context class loader
-      return Thread.currentThread().getContextClassLoader().loadClass(name);
+        Class<?> c = null;
+        try {
+          c = ccl.loadClass(name);  // include delegation
+          return c;
+        } catch (ClassNotFoundException e) {}
+      }  // end of for loop, looking through all the super classes      
+      
+      throw new ClassNotFoundException(name);
     }
+    
     
     @Override
     public URL getResource(String name) {
-      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<ClassLoader, ClassLoader>(7);
-      // get the call stack
-      Class<?>[] cs = new CallStack().getCallStack();
-      // start at the caller of the caller's class loader
-      // cs[0] is getClassContext
-      // cs[1] is getCallStack
-      // cs[2] is this method, find class
-      for (int i = 3; i < cs.length; i++) {
-        Class<?> callingClass = cs[i];
-        ClassLoader cl = callingClass.getClassLoader();
-        if (null == cl) { // means system class loader
-          cl = ClassLoader.getSystemClassLoader();
-        }
-        if (null != alreadySearched.get(cl)) {
-          continue;
-        }
-        alreadySearched.put(cl, cl);
 
-        URL c = cl.getResource(name);  // include delegation
-        if (null != c) {
-          return c;
-        }    
-      }
-      // UIMA-3692, UIMA-4793  try the thread context class loader
+      // UIMA-3692, UIMA-4793 try the thread context class loader
       // if not found, will return class not found exception
-      ClassLoader cl = originalTccl.get();
+      
+      ClassLoader cl = original_thread_context_class_loader.get();
       if (cl != null) {
         URL c = cl.getResource(name);
         if (null != c) {
           return c;
         }
       }
-      return Thread.currentThread().getContextClassLoader().getResource(name);
+      
+      // 2nd try: the current thread context class loader
+      ClassLoader context_classLoader = Thread.currentThread().getContextClassLoader();
+      if (null != context_classLoader && cl != context_classLoader) {
+        URL c = context_classLoader.getResource(name);
+        if (null != c) {
+          return c;
+        }
+      }
+      
+      ClassLoader[] cls = Misc.getCallingClass_classLoaders();
+      
+      for (ClassLoader ccl : cls) {
+        if (ccl == cl || ccl == context_classLoader) {
+          continue; // alread tried
+        }
+        URL c = ccl.getResource(name);
+        if (null != c) {
+          return c;
+        }
+      }  // end of for loop, looking through all the super classes      
+ 
+      return null;
+    
+//      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<>(7);
+//      // get the call stack
+//      Class<?>[] cs = new CallStack().getCallStack();
+//      // start at the caller of the caller's class loader
+//      // cs[0] is getClassContext
+//      // cs[1] is getCallStack
+//      // cs[2] is this method, find class
+//      for (int i = 3; i < cs.length; i++) {
+//        Class<?> callingClass = cs[i];
+//        ClassLoader cl = callingClass.getClassLoader();
+//        if (null == cl) { // means system class loader
+//          cl = ClassLoader.getSystemClassLoader();
+//        }
+//        if (null != alreadySearched.get(cl)) {
+//          continue;
+//        }
+//        alreadySearched.put(cl, cl);
+//
+//        URL c = cl.getResource(name);  // include delegation
+//        if (null != c) {
+//          return c;
+//        }    
+//      }
+//      // UIMA-3692, UIMA-4793  try the thread context class loader
+//      // if not found, will return class not found exception
+//      ClassLoader cl = original_thread_context_class_loader.get();
+//      if (cl != null) {
+//        URL c = cl.getResource(name);
+//        if (null != c) {
+//          return c;
+//        }
+//      }
+//      return Thread.currentThread().getContextClassLoader().getResource(name);
+//    }
     }
   }
   

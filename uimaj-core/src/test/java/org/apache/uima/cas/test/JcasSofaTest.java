@@ -31,8 +31,6 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
@@ -68,6 +66,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
 
 
 public class JcasSofaTest extends TestCase {
@@ -125,14 +125,16 @@ public class JcasSofaTest extends TestCase {
     try {
 
       // Create a Sofa using OLD APIs for now
-      SofaID_impl id = new SofaID_impl();
-      id.setSofaID("EnglishDocument");
-      Sofa es = new Sofa(jcas, id, "text");
+      CAS view = cas.createView("EnglishDocument");
+//      SofaID_impl id = new SofaID_impl();
+//      id.setSofaID("EnglishDocument");
+//      Sofa es = new Sofa(jcas, id, "text");
       // Initial View is #1!!!
-      assertTrue(2 == es.getSofaRef());
+      assertTrue(2 == view.getSofa().getSofaRef());
+//      assertTrue(2 == es.getSofaRef());
 
       // Set the document text
-      es.setLocalSofaData("this beer is good");
+      view.setSofaDataString("this beer is good", null);
 
       // Test Multiple Sofas across XCAS serialization
       String xcasFilename = "Sofa.xcas";
@@ -189,7 +191,7 @@ public class JcasSofaTest extends TestCase {
       assertTrue(4 == fs.getSofaRef());
 
       // Open JCas views of some Sofas
-      JCas engJcas = cas.getJCas(es);
+      JCas engJcas = view.getJCas();
       JCas frJcas = jcas.getView("FrenchDocument");
 
       // Set the document text after the Jcas view exists using JCas.setDocumentText method

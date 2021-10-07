@@ -566,15 +566,10 @@ germAnnot.setFeatureValue(other, engAnnot);</programlisting>
         annotations for each associated CAS view. For the English Sofa:</para>
       
       
-      <programlisting>//get annotation iterator for this CAS
-FSIndex anIndex = aView.getAnnotationIndex();
-FSIterator anIter = anIndex.iterator();
-while (anIter.isValid()) {
-  AnnotationFS annot = (AnnotationFS) anIter.get();
+      <programlisting>for (Annotation annot : aView.getAnnotationIndex()) {
   System.out.println(" " + annot.getType().getName()
                          + ": " + annot.getCoveredText());
-  anIter.moveToNext();
-}</programlisting>
+}</programlisting>      
       
       <para>Iterating over all German annotations looks the same, except for the
         following:</para>
@@ -662,38 +657,4 @@ InputStream is = aCasOrJCas.getSofaDataStream();</programlisting>
     
   </section>
   
-  <section id="ugr.tug.mvs.sofa_incompatibilities_v1_v2">
-    <title>Sofa Incompatibilities between UIMA version 1 and version 2</title>
-    <titleabbrev>Sofa Incompatibilities: V1 and V2</titleabbrev>
-    
-    <para>A major change in version 2 is related to the support of Single-View components
-      and applications. Given an analysis engine, <literal>ae</literal>, the API
-      
-      <programlisting>CAS cas = ae.newCas();</programlisting>
-      used to return the base CAS. Now it returns a view of the Sofa named
-      <quote>_InitialView</quote>. This Sofa will actually only be created if any Sofa data
-      is set for this view. The initial view is used for Single-View applications and
-      Multi-View annotators with no Sofa mapping.</para>
-    
-    <para>The process method of Multi-View annotators receive the base CAS, however the base
-      CAS no longer has an index repository to hold <quote>global</quote> data. Global data
-      needs to be put in a specific named CAS view of your choice.</para>
-    
-      <note>New behavior as of version 2.7.0
-      <para>A Multi-View component is no longer passed the base CAS view.
-        See <xref linkend="ugr.tug.mvs.specifying_cas_view_for_process"/>.</para>
-      </note>
-    
-    <para>Because of these changes, the following scenarios will break with v2.0 clients:
-      
-      <itemizedlist spacing="compact"><listitem><para>Any version 1.x services (you
-        must migrate the services to version 2).</para></listitem>
-        
-        <listitem><para>Applications or components explicitly referencing
-          <quote>_DefaultTextSofaName</quote> in code or descriptors.</para>
-          </listitem>
-        
-        <listitem><para>Multi-View applications using the Base CAS index repository.
-          </para></listitem></itemizedlist></para>
-  </section>
 </chapter>

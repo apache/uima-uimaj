@@ -21,9 +21,6 @@ package org.apache.uima.resource;
 
 import java.util.Map;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -36,6 +33,9 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class ConfigurableResource_implTest extends TestCase {
@@ -102,13 +102,13 @@ public class ConfigurableResource_implTest extends TestCase {
           "StringArrayParam", "BooleanArrayParam", "IntegerArrayParam", "FloatArrayParam" };
 
       String theStr = "hello world";
-      Boolean theBool = Boolean.valueOf(false);
-      Integer theInt = Integer.valueOf(42);
-      Float theFloat = Float.valueOf(2.718281828459045F);
+      Boolean theBool = Boolean.FALSE;
+      Integer theInt = 42;
+      Float theFloat = 2.718281828459045F;
       String[] theStrArr = { "the", "quick", "brown", "fox" };
-      Boolean[] theBoolArr = { Boolean.valueOf(false), Boolean.valueOf(true) };
-      Integer[] theIntArr = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
-      Float[] theFloatArr = { Float.valueOf(3.0F), Float.valueOf(3.1F), Float.valueOf(3.14F) };
+      Boolean[] theBoolArr = {Boolean.FALSE, Boolean.TRUE};
+      Integer[] theIntArr = {1, 2, 3};
+      Float[] theFloatArr = {3.0F, 3.1F, 3.14F};
 
       Object[] values = new Object[] { theStr, theBool, theInt, theFloat, theStrArr, theBoolArr,
           theIntArr, theFloatArr };
@@ -127,7 +127,7 @@ public class ConfigurableResource_implTest extends TestCase {
       // invalid settings
       // wrong type
       Exception ex = null;
-      testResource1.setConfigParameterValue("StringParam", Integer.valueOf(13));
+      testResource1.setConfigParameterValue("StringParam", 13);
       try {
         testResource1.reconfigure();
       } catch (ResourceConfigurationException e) {
@@ -146,8 +146,8 @@ public class ConfigurableResource_implTest extends TestCase {
 
       // inappropriate array
       ex = null;
-      testResource1.setConfigParameterValue("FloatParam", new Float[] { Float.valueOf(0.1F),
-          Float.valueOf(0.2F), Float.valueOf(0.3F) });
+      testResource1.setConfigParameterValue("FloatParam", new Float[] {0.1F,
+          0.2F, 0.3F});
       try {
         testResource1.reconfigure();
       } catch (ResourceConfigurationException e) {
@@ -157,7 +157,7 @@ public class ConfigurableResource_implTest extends TestCase {
 
       // array required
       ex = null;
-      testResource1.setConfigParameterValue("BooleanArrayParam", Boolean.valueOf(true));
+      testResource1.setConfigParameterValue("BooleanArrayParam", Boolean.TRUE);
       try {
         testResource1.reconfigure();
       } catch (ResourceConfigurationException e) {
@@ -194,14 +194,14 @@ public class ConfigurableResource_implTest extends TestCase {
           new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
           new String[] { "StringParam", "StringArrayParam", "FloatParam", "FloatArrayParam" } };
       Object[][] grpValues = new Object[][] {
-          new Object[] { "test", new String[] { "foo", "bar" }, Integer.valueOf(1024),
-              new Integer[] { Integer.valueOf(1), Integer.valueOf(3), Integer.valueOf(5) } },
-          new Object[] { "blah", new String[] { "abc", "def" }, Integer.valueOf(32768),
-              new Integer[] { Integer.valueOf(-1), Integer.valueOf(-3), Integer.valueOf(-5) } },
-          new Object[] { "?", new String[] { "+", "-" }, Integer.valueOf(112376),
-              new Integer[] { Integer.valueOf(-1), Integer.valueOf(0), Integer.valueOf(1) } },
-          new Object[] { "different", new String[] { "test", "ing" }, Float.valueOf(49.95F),
-              new Float[] { Float.valueOf(3.14F), Float.valueOf(2.71F), Float.valueOf(1.4F) } } };
+          new Object[] { "test", new String[] { "foo", "bar" }, 1024,
+              new Integer[] {1, 3, 5} },
+          new Object[] { "blah", new String[] { "abc", "def" }, 32768,
+              new Integer[] {-1, -3, -5} },
+          new Object[] { "?", new String[] { "+", "-" }, 112376,
+              new Integer[] {-1, 0, 1} },
+          new Object[] { "different", new String[] { "test", "ing" }, 49.95F,
+              new Float[] {3.14F, 2.71F, 1.4F} } };
 
       for (int i = 0; i < groupNames.length; i++) {
         String[] paramsInGrp = grpParamNames[i];

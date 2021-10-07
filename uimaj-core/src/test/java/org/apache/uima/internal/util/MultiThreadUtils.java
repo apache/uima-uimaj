@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
@@ -221,6 +222,9 @@ public class MultiThreadUtils extends TestCase {
       
       repeatNumber[0] = r;
       assertTrue(numberRunning.get() == 0);
+      if (numberOfExceptions.get() != 0) {
+        System.out.println("debug");
+      }
       assertTrue(numberOfExceptions.get() == 0);
       
       startTime = System.nanoTime();       
@@ -282,6 +286,11 @@ public class MultiThreadUtils extends TestCase {
   private final static int THREAD_ABOUT_TO_RUN = 4;
   
   public static class ThreadM extends Thread {   
+
+    public volatile int state = 0;
+
+    public AtomicBoolean utilBoolean = new AtomicBoolean(); // used by a test
+
     public ThreadM(Runnable runnable) {
       super(runnable);
     }
@@ -289,8 +298,6 @@ public class MultiThreadUtils extends TestCase {
     public ThreadM() {
       super();
     }
-
-    public volatile int state = 0;
   }
   
   public static void waitForAllReady(ThreadM[] threads) {

@@ -25,14 +25,28 @@ import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class SystemExitHandler.
+ */
 public class SystemExitHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new system exit handler.
+   *
+   * @param frame the frame
+   */
   public SystemExitHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent event) {
     MainFrameClosing.handleClosingEvent(this.main);
     if (this.main != null) {

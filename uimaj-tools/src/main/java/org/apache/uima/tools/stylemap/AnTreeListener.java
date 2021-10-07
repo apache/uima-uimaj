@@ -22,21 +22,34 @@ package org.apache.uima.tools.stylemap;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+
 /**
- * Listens for tree selections and tells the mediator it is OK to enable the class selction button
- * 
+ * Listens for tree selections and tells the mediator it is OK to enable the class selction button.
+ *
+// * @see AnTreeEvent
  */
 public class AnTreeListener implements TreeSelectionListener {
+  
+  /** The med. */
   private TableGUIMediator med;
 
+  /**
+   * Instantiates a new an tree listener.
+   *
+   * @param med the med
+   */
   public AnTreeListener(TableGUIMediator med) {
     this.med = med;
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+   */
   /*
    * This tells the mediator to turn on the button
    * 
    */
+  @Override
   public void valueChanged(TreeSelectionEvent ev) {
     med.treeClicked();
   }

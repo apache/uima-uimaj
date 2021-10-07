@@ -23,19 +23,33 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class SettingsPage.
+ */
 public class SettingsPage extends HeaderPageWithSash {
 
+  /** The parameter settings section. */
   private ParameterSettingsSection parameterSettingsSection;
 
+  /** The value section. */
   private ValueSection valueSection;
 
+  /**
+   * Instantiates a new settings page.
+   *
+   * @param editor the editor
+   */
   public SettingsPage(MultiPageEditor editor) {
     super(editor, "Parameter Value Settings");
   }
 
   /**
-   * Called by the framework to fill in the contents
+   * Called by the framework to fill in the contents.
+   *
+   * @param managedForm the managed form
    */
+  @Override
   protected void createFormContent(IManagedForm managedForm) {
 
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
@@ -47,10 +61,20 @@ public class SettingsPage extends HeaderPageWithSash {
     createToolBarActions(managedForm);
   }
 
+  /**
+   * Gets the parameter settings section.
+   *
+   * @return the parameter settings section
+   */
   public ParameterSettingsSection getParameterSettingsSection() {
     return parameterSettingsSection;
   }
 
+  /**
+   * Gets the value section.
+   *
+   * @return the value section
+   */
   public ValueSection getValueSection() {
     return valueSection;
   }

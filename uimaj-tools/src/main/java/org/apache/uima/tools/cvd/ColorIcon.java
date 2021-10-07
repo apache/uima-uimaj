@@ -25,6 +25,7 @@ import java.awt.Graphics;
 
 import javax.swing.Icon;
 
+
 /**
  * TODO: add type comment for <code>ColorIcon</code>.
  * 
@@ -32,20 +33,35 @@ import javax.swing.Icon;
  */
 public class ColorIcon implements Icon {
 
+  /** The Constant size. */
   private static final int size = 20;
 
+  /** The color. */
   private Color color = Color.black;
 
   
+  /**
+   * Instantiates a new color icon.
+   */
   public ColorIcon() {
     super();
   }
 
+  /**
+   * Instantiates a new color icon.
+   *
+   * @param color the color
+   */
   public ColorIcon(Color color) {
     this();
     this.color = color;
   }
 
+  /**
+   * Sets the color.
+   *
+   * @param color the new color
+   */
   public void setColor(Color color) {
     this.color = color;
   }
@@ -55,6 +71,7 @@ public class ColorIcon implements Icon {
    * 
    * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
    */
+  @Override
   public void paintIcon(Component arg0, Graphics graphics, int x, int y) {
     graphics.setColor(this.color);
     graphics.fill3DRect(x, y, size, size, true);
@@ -65,6 +82,7 @@ public class ColorIcon implements Icon {
    * 
    * @see javax.swing.Icon#getIconWidth()
    */
+  @Override
   public int getIconWidth() {
     return size;
   }
@@ -74,6 +92,7 @@ public class ColorIcon implements Icon {
    * 
    * @see javax.swing.Icon#getIconHeight()
    */
+  @Override
   public int getIconHeight() {
     return size;
   }

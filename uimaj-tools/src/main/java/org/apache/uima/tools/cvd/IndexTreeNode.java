@@ -21,6 +21,7 @@ package org.apache.uima.tools.cvd;
 
 import org.apache.uima.cas.Type;
 
+
 /**
  * Class comment for IndexTreeNode.java goes here.
  * 
@@ -28,12 +29,22 @@ import org.apache.uima.cas.Type;
  */
 public class IndexTreeNode {
 
+  /** The name. */
   private final String name;
 
+  /** The type. */
   private final Type type;
 
+  /** The size. */
   private final int size;
 
+  /**
+   * Instantiates a new index tree node.
+   *
+   * @param name the name
+   * @param type the type
+   * @param size the size
+   */
   public IndexTreeNode(String name, Type type, int size) {
     super();
     this.name = name;
@@ -51,6 +62,10 @@ public class IndexTreeNode {
     this.size = 0;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
   public String toString() {
     return "<html><font color=green>" + this.name + "</font> [" + this.size + "]</html>";
   }
@@ -73,10 +88,18 @@ public class IndexTreeNode {
     return this.type;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
   public boolean equals(Object o) {
     return (this == o);
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
   public int hashCode() {
     return super.hashCode();
   }

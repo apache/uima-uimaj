@@ -42,6 +42,7 @@ import org.apache.uima.taeconfigurator.PreferencePage;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.xml.XMLEditor;
 
+
 // import org.eclipse.jdt.launching.IVMRunner;
 
 // import org.apache.uima.jcas.jcasgen.Prefs;
@@ -52,14 +53,20 @@ import org.apache.uima.taeconfigurator.editors.xml.XMLEditor;
  * contributors for the individual editors in the multi-page editor.
  */
 public class MultiPageEditorContributor extends MultiPageEditorActionBarContributor {
+  
+  /** The active editor part. */
   private IEditorPart activeEditorPart;
 
+  /** The auto J cas action. */
   Action autoJCasAction;
   
+  /** The limit J cas gen to project. */
   Action limitJCasGenToProject;
 
+  /** The qualified types action. */
   Action qualifiedTypesAction;
 
+  /** The run J cas gen action. */
   Action runJCasGenAction;
 
   /**
@@ -71,10 +78,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   }
 
   /**
-   * Returns the action registered with the given text editor.
-   * 
-   * @param editor the text editor.
-   * @param actionID the action ID.
+   * Returns the action registed with the given text editor.
+   *
+   * @param editor the editor
+   * @param actionID the action ID
    * @return IAction or null if editor is null.
    */
   protected IAction getAction(MultiPageEditorPart editor, String actionID) {
@@ -82,19 +89,24 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     return (txtEditor == null ? null : txtEditor.getAction(actionID));
   }
 
+  /**
+   * Gets the action 1.
+   *
+   * @param editor the editor
+   * @param actionID the action ID
+   * @return the action 1
+   */
   protected IAction getAction1(ITextEditor editor, String actionID) {
     return (editor == null ? null : editor.getAction(actionID));
   }
 
-  /*
-   * (non-JavaDoc) Method declared in AbstractMultiPageEditorActionBarContributor.
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart)
    */
-
   @Override
-public void setActiveEditor(IEditorPart part) {
-    if (activeEditorPart == part) {
-        return;
-    }
+  public void setActiveEditor(IEditorPart part) {
+    if (activeEditorPart == part)
+      return;
 
     if (null == part) {
         return;
@@ -134,7 +146,7 @@ public void setActiveEditor(IEditorPart part) {
    * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActivePage(org.eclipse.ui.IEditorPart)
    */
   @Override
-public void setActivePage(IEditorPart part) {
+  public void setActivePage(IEditorPart part) {
 
     IActionBars actionBars = getActionBars();
     if (actionBars != null) {
@@ -163,18 +175,21 @@ public void setActivePage(IEditorPart part) {
     }
   }
 
+  /**
+   * Creates the actions.
+   */
   private void createActions() {
 
     autoJCasAction = new Action() {
       // The run action is simply to toggle the setting in the prefs page, and
       //   to update the checked status to correspond to that
       @Override
-    public void run() {
+      public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
-        boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS); //$NON-NLS-1$
+        boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS); 
         autoJCasAction.setChecked(bAutoJCasGen);
-        prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen); //$NON-NLS-1$
+        prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen); 
       }
     };
     
@@ -182,18 +197,18 @@ public void setActivePage(IEditorPart part) {
       // The run action is simply to toggle the setting in the prefs page, and
       //   to update the checked status to correspond to that
       @Override
-    public void run() {
+      public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
-        boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE); //$NON-NLS-1$
+        boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE); 
         limitJCasGenToProject.setChecked(bJCasLimit);
-        prefs.setValue(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, bJCasLimit); //$NON-NLS-1$
+        prefs.setValue(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, bJCasLimit); 
       }
     };
 
     runJCasGenAction = new Action() {
       @Override
-    public void run() {
+      public void run() {
         ((MultiPageEditor) activeEditorPart).doJCasGenChkSrc(null); // don't know how to get
         // progress monitor
       }
@@ -201,13 +216,13 @@ public void setActivePage(IEditorPart part) {
 
     qualifiedTypesAction = new Action() {
       @Override
-    public void run() {
+      public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bFullyQualifiedTypeNames = !prefs
-                .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES); //$NON-NLS-1$
+                .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES); 
         qualifiedTypesAction.setChecked(bFullyQualifiedTypeNames);
-        prefs.setValue(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, bFullyQualifiedTypeNames); //$NON-NLS-1$
+        prefs.setValue(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, bFullyQualifiedTypeNames); 
 
         // mark all pages as stale for all editors, since this is a global setting
         IWorkbenchPage[] pages = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPages();
@@ -224,19 +239,22 @@ public void setActivePage(IEditorPart part) {
     };
 
     autoJCasAction.setText(Messages.getString("MultiPageEditorContributor.autoGenJCas")); //$NON-NLS-1$
-    autoJCasAction.setChecked(getAutoJCasGen()); //$NON-NLS-1$
+    autoJCasAction.setChecked(getAutoJCasGen()); 
     
     limitJCasGenToProject.setText(Messages.getString("MultiPageEditorContributor.limitJCasGenToProjectScope"));
     limitJCasGenToProject.setChecked(getLimitJCasGenToProjectScope());
 
     qualifiedTypesAction.setText(Messages.getString("MultiPageEditorContributor.showFullNames")); //$NON-NLS-1$
-    qualifiedTypesAction.setChecked(getUseQualifiedTypes()); //$NON-NLS-1$
+    qualifiedTypesAction.setChecked(getUseQualifiedTypes()); 
 
     runJCasGenAction.setText("Run JCasGen");
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToMenu(org.eclipse.jface.action.IMenuManager)
+   */
   @Override
-public void contributeToMenu(IMenuManager manager) {
+  public void contributeToMenu(IMenuManager manager) {
 
     IMenuManager menu = new MenuManager("&UIMA"); //$NON-NLS-1$
     manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
@@ -248,46 +266,99 @@ public void contributeToMenu(IMenuManager manager) {
     settingsMenu.add(limitJCasGenToProject);
   }
 
+  /**
+   * Gets the auto J cas gen.
+   *
+   * @return the auto J cas gen
+   */
   public static boolean getAutoJCasGen() {
     return getUimaPrefBoolean(PreferencePage.P_JCAS, false); // Jira UIMA-1177
   }
 
+  /**
+   * Gets the use qualified types.
+   *
+   * @return the use qualified types
+   */
   public static boolean getUseQualifiedTypes() {
     return getUimaPrefBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, true);
   }
   
+  /**
+   * Gets the limit J cas gen to project scope.
+   *
+   * @return the limit J cas gen to project scope
+   */
   public static boolean getLimitJCasGenToProjectScope() {
     return getUimaPrefBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, false);
   }
 
+  /**
+   * Gets the XM lindent.
+   *
+   * @return the XM lindent
+   */
   public static int getXMLindent() {
     return getUimaPrefInt(PreferencePage.P_XML_TAB_SPACES, 2);
   }
 
+  /**
+   * Gets the CDE vns host.
+   *
+   * @return the CDE vns host
+   */
   public static String getCDEVnsHost() {
     return getUimaPrefString(PreferencePage.P_VNS_HOST, "localhost");
   }
 
+  /**
+   * Gets the CDE vns port.
+   *
+   * @return the CDE vns port
+   */
   public static String getCDEVnsPort() {
     return getUimaPrefString(PreferencePage.P_VNS_PORT, "9000");
   }
 
+  /**
+   * Sets the vns host.
+   *
+   * @param v the new vns host
+   */
   public static void setVnsHost(String v) {
     System.setProperty("VNS_HOST", v);
   }
 
+  /**
+   * Sets the vns port.
+   *
+   * @param v the new vns port
+   */
   public static void setVnsPort(String v) {
     System.setProperty("VNS_PORT", v);
   }
 
+  /**
+   * Sets the vns host.
+   */
   public static void setVnsHost() {
     setVnsHost(getCDEVnsHost());
   }
 
+  /**
+   * Sets the vns port.
+   */
   public static void setVnsPort() {
     setVnsPort(getCDEVnsPort());
   }
 
+  /**
+   * Gets the uima pref string.
+   *
+   * @param key the key
+   * @param defaultValue the default value
+   * @return the uima pref string
+   */
   private static String getUimaPrefString(String key, String defaultValue) {
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
@@ -298,6 +369,13 @@ public void contributeToMenu(IMenuManager manager) {
     return prefs.getString(key);
   }
 
+  /**
+   * Gets the uima pref boolean.
+   *
+   * @param key the key
+   * @param defaultValue the default value
+   * @return the uima pref boolean
+   */
   private static boolean getUimaPrefBoolean(String key, boolean defaultValue) {
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
@@ -308,6 +386,13 @@ public void contributeToMenu(IMenuManager manager) {
     return prefs.getBoolean(key);
   }
 
+  /**
+   * Gets the uima pref int.
+   *
+   * @param key the key
+   * @param defaultValue the default value
+   * @return the uima pref int
+   */
   private static int getUimaPrefInt(String key, int defaultValue) {
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();

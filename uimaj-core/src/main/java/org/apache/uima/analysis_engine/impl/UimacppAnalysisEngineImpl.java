@@ -55,6 +55,7 @@ import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
+import org.slf4j.MDC;
 
 /**
  * Reference implementation of {@link AnalysisEngine}.
@@ -279,8 +280,19 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
         // process method
         Class<CAS> requiredInterface = mAnnotator.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
-        mAnnotator.process(casToPass);
-        getMBean().incrementCASesProcessed();
+        
+        callProcessMethod(mAnnotator, casToPass);
+//        
+//        MDC.put(MDC_ANNOTATOR_CONTEXT_NAME, ((UimaContext_ImplBase)getUimaContext()).getQualifiedContextName());
+//        MDC.put(MDC_ANNOTATOR_IMPL_NAME, mAnnotator.getClass().getName());
+//        try {       
+//          mAnnotator.process(casToPass);
+//        } finally {
+//          MDC.remove(MDC_ANNOTATOR_CONTEXT_NAME);
+//          MDC.remove(MDC_ANNOTATOR_IMPL_NAME);
+//        }
+
+//        getMBean().incrementCASesProcessed();
       } catch (Exception e) {
         if (e instanceof AnalysisEngineProcessException) {
           throw e;
@@ -325,7 +337,8 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
       getUimaContextAdmin().defineCasPool(mAnnotator.getCasInstancesRequired(),
               getPerformanceTuningSettings(), mSofaAware);
 
-      mAnnotator.initialize(uimaContext);
+      callInitializeMethod(mAnnotator, uimaContext);
+//      mAnnotator.initialize(uimaContext);
     }
   }
 

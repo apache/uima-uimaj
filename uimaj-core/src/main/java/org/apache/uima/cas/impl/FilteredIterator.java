@@ -20,20 +20,19 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Implements a filtered iterator.
  */
-class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T> {
+class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   // The base iterator.
-  private FSIterator<T> it;
+  private LowLevelIterator<T> it;
 
   // The filter constraint.
   private FSMatchConstraint cons;
@@ -48,7 +47,7 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
    */
   FilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
     this();
-    this.it = it;
+    this.it = (LowLevelIterator<T>) it;
     this.cons = cons;
     moveToFirst();
   }
@@ -76,52 +75,90 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
   }
   
 
-  public void moveToFirst() {
-    this.it.moveToFirst();
+  public void moveToFirstNoReinit() {
+    this.it.moveToFirstNoReinit();
     adjustForConstraintForward();
   }
 
-  public void moveToLast() {
+  public void moveToLastNoReinit() {
     this.it.moveToLast();
     adjustForConstraintBackward();
   }
 
-  public void moveToNext() {
-    this.it.moveToNext();
+  public void moveToNextNvc() {
+    this.it.moveToNextNvc();
     adjustForConstraintForward();
   }
 
-  public void moveToPrevious() {
-    this.it.moveToPrevious();
+  public void moveToPreviousNvc() {
+    this.it.moveToPreviousNvc();
     adjustForConstraintBackward();
   }
 
-  public T get() throws NoSuchElementException {
-    // This may throw an exception.
-    return this.it.get();
+  public T getNvc() {
+    return this.it.getNvc();
   }
-
+  
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
-  public FSIterator<T> copy() {
-    return new FilteredIterator<T>(this.it.copy(), this.cons);
+  public FilteredIterator<T> copy() {
+    return new FilteredIterator<>(this.it.copy(), this.cons);
   }
 
   /**
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
-  public void moveTo(FeatureStructure fs) {
-    this.it.moveTo(fs);
+  public void moveToNoReinit(FeatureStructure fs) {
+    this.it.moveToNoReinit(fs);
     adjustForConstraintForward();
+  }
+  
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    this.it.moveToExactNoReinit(fs);
+//    adjustForConstraintForward();
+//  }
+
+
+  @Override
+  public int ll_indexSizeMaybeNotCurrent() {
+    return it.ll_indexSizeMaybeNotCurrent();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
-   */
   @Override
-  <TT extends AnnotationFS> void moveTo(int begin, int end) {
-    ((FSIteratorImplBase<T>)(this.it)).moveTo(begin, end);
-    adjustForConstraintForward();
+  public LowLevelIndex<T> ll_getIndex() {
+    return it.ll_getIndex();
   }
+
+  @Override
+  public int ll_maxAnnotSpan() {
+    return it.ll_maxAnnotSpan();
+  }
+
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return it.isIndexesHaveBeenUpdated();
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return this.it.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return it.getComparator();
+  }
+
+
+
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+//   */
+//  @Override
+//  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+//    ((FSIterator_concurrentmod<T>)(this.it)).moveTo(begin, end);
+//    adjustForConstraintForward();
+//  }
 }

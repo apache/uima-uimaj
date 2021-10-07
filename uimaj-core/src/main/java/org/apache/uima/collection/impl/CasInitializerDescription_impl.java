@@ -87,15 +87,10 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
               new Object[] { getSourceUrlString() });
     }
     // try to load user class
-    // ust UIMA extension ClassLoader if available
+    // just UIMA extension ClassLoader if available
     Class<?> implClass;
     try {
       implClass = Class_TCCL.forName(getImplementationName(), aResourceManager);
-//      if (cl != null) {
-//        implClass = cl.loadClass(getImplementationName());
-//      } else {
-//        implClass = Class.forName(getImplementationName());
-//      }
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
               new Object[] { getImplementationName(), getSourceUrlString() }, e);
@@ -107,7 +102,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
                   getImplementationName(), CasInitializer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
-    List<ProcessingResourceMetaData> metadata = new ArrayList<ProcessingResourceMetaData>();
+    List<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCasInitializerMetaData());
     CasCreationUtils.createCas(metadata);
   }

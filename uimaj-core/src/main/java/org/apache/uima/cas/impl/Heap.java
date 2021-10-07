@@ -22,13 +22,10 @@ package org.apache.uima.cas.impl;
 import java.util.Arrays;
 
 import org.apache.uima.internal.util.IntArrayUtils;
+import org.apache.uima.internal.util.Misc;
 
 /**
- * A heap for CAS.
- * 
- * <p>
- * This class is agnostic about what you store on the heap. It only copies
- * values from integer arrays.
+ * the v2 CAS heap - used in modeling some binary (de)serialization
  */
 public final class Heap {
 
@@ -149,7 +146,7 @@ public final class Heap {
     }
     // Set position and max.
     this.pos = shortHeap.length;
-//    this.max = this.initialSize;  // TODO fix me  
+//    this.max = this.initialSize;    
     this.max = this.heap.length;   // heap could be repl by short heap
   }
 
@@ -169,7 +166,7 @@ public final class Heap {
   }
 
   /**
-   * Return the number of cells used.
+   * Return the number of cells used (including slot 0 reserved for null)
    */
   int getCellsUsed() {
     return this.pos;
@@ -202,6 +199,14 @@ public final class Heap {
     // MULTIPLICATION_LIMIT, and by MULTIPLICATION_LIMIT if it's larger.
     this.heap = IntArrayUtils.ensure_size(this.heap, start + this.initialSize, 2, MULTIPLICATION_LIMIT);
     this.max = this.heap.length;
+  }
+  
+  
+  static int getRoundedSize(int size) {
+    if (size < MULTIPLICATION_LIMIT) {
+      return Misc.nextHigherPowerOf2(size); 
+    }
+    return size + (MULTIPLICATION_LIMIT << 1);
   }
 
   /**
@@ -300,5 +305,11 @@ public final class Heap {
   // used by JCas to default the size the JCasHashMap
   public int getInitialSize() {
     return initialSize;
-  }	  
+  }	
+  
+  public int[] toArray() {
+    int[] r = new int[pos];
+    System.arraycopy(heap, 0, r, 0, pos);
+    return r;
+  }
 }

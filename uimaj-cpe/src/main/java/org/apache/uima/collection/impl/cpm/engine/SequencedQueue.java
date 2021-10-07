@@ -20,7 +20,6 @@
 package org.apache.uima.collection.impl.cpm.engine;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.uima.UIMAFramework;
@@ -33,6 +32,7 @@ import org.apache.uima.collection.impl.cpm.utils.ChunkMetadata;
 import org.apache.uima.collection.impl.cpm.utils.ExpirationTimer;
 import org.apache.uima.util.Level;
 
+
 /**
  * This component extends the Bound Queue by guaranteeing delivery of CASes in sequential order.
  * Large documents may be split into smaller chunks and and each is processed asynchronously. Since
@@ -44,17 +44,22 @@ import org.apache.uima.util.Level;
  * chunk. If the timer goes off, the entire document ( and all its CASes) are invalidated.
  */
 public class SequencedQueue extends BoundedWorkQueue {
+  
+  /** The chunk state. */
   private boolean chunkState = false; // if a CAS is part of a larger sequence
 
+  /** The next chunk metadata. */
   private ChunkMetadata nextChunkMetadata = new ChunkMetadata("", 0, false);
 
+  /** The timed out docs. */
   private HashMap timedOutDocs = new HashMap();
 
+  /** The status cb L. */
   protected ArrayList statusCbL = new ArrayList();
 
   /**
-   * Initialize this queue
-   * 
+   * Initialize this queue.
+   *
    * @param aQueueSize -
    *          the size of the queue
    * @param aQueueName -
@@ -68,8 +73,9 @@ public class SequencedQueue extends BoundedWorkQueue {
   }
 
   /**
-   * 
-   * @param achunkMetadata
+   * Sequence timed out.
+   *
+   * @param achunkMetadata the achunk metadata
    * @return true if it timed out
    */
   private boolean sequenceTimedOut(ChunkMetadata achunkMetadata) {
@@ -120,6 +126,7 @@ public class SequencedQueue extends BoundedWorkQueue {
    * 
    * @return object dequeued from the head of the queue
    */
+  @Override
   public synchronized Object dequeue() {
     // Check if there is anything in the queue
     if (numberElementsInQueue == 0) {
@@ -416,6 +423,7 @@ public class SequencedQueue extends BoundedWorkQueue {
    * 
    * @return - Object from the queue, or null if time out
    */
+  @Override
   public synchronized Object dequeue(long aTimeout) {
     Object resource = null;
     long startTime = System.currentTimeMillis();
@@ -487,6 +495,10 @@ public class SequencedQueue extends BoundedWorkQueue {
     return resource;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.engine.BoundedWorkQueue#invalidate(org.apache.uima.cas.CAS[])
+   */
+  @Override
   public synchronized void invalidate(CAS[] aCasObjectList) {
     for (int i = 0; aCasObjectList != null && i < aCasObjectList.length
             && aCasObjectList[i] != null; i++) {
@@ -504,6 +516,12 @@ public class SequencedQueue extends BoundedWorkQueue {
     }
   }
 
+  /**
+   * Adds the doc to timed out docs.
+   *
+   * @param aLifespan the a lifespan
+   * @param aDocId the a doc id
+   */
   private void addDocToTimedOutDocs(int aLifespan, String aDocId) {
     // The expected chunk sequence did not arrive within given window. Create a timer
     // object and associate it with the document that has timed out. Add the timer object

@@ -21,9 +21,19 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import org.eclipse.jface.text.*;
 
+
+/**
+ * The Class XMLDoubleClickStrategy.
+ */
 public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
+  
+  /** The text. */
   protected ITextViewer fText;
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.text.ITextDoubleClickStrategy#doubleClicked(org.eclipse.jface.text.ITextViewer)
+   */
+  @Override
   public void doubleClicked(ITextViewer part) {
     int pos = part.getSelectedRange().x;
 
@@ -37,6 +47,12 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
     }
   }
 
+  /**
+   * Select comment.
+   *
+   * @param caretPos the caret pos
+   * @return true, if successful
+   */
   protected boolean selectComment(int caretPos) {
     IDocument doc = fText.getDocument();
     int startPos, endPos;
@@ -86,6 +102,12 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
     return false;
   }
 
+  /**
+   * Select word.
+   *
+   * @param caretPos the caret pos
+   * @return true, if successful
+   */
   protected boolean selectWord(int caretPos) {
 
     IDocument doc = fText.getDocument();
@@ -125,6 +147,12 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
     return false;
   }
 
+  /**
+   * Select range.
+   *
+   * @param startPos the start pos
+   * @param stopPos the stop pos
+   */
   private void selectRange(int startPos, int stopPos) {
     int offset = startPos + 1;
     int length = stopPos - offset;

@@ -19,13 +19,13 @@
 
 package org.apache.uima.util.impl;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 /**
  * Logger implementation test
@@ -56,6 +56,9 @@ public class LoggingTest extends TestCase {
 
       // test base logging functions
       logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+
+      // https://issues.apache.org/jira/browse/UIMA-5719
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
@@ -81,17 +84,21 @@ public class LoggingTest extends TestCase {
 
       // test base logging functions
       logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+      
+      // https://issues.apache.org/jira/browse/UIMA-5719
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
   }
 
   public void testSetLevel() throws Exception {
+    Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
+    // org.apache.uima.*
     try {
+
       // get class logger
       Logger logger = UIMAFramework.getLogger(this.getClass());
-      Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
-      // org.apache.uima.*
 
       // set level to WARNING
       uimaLogger.setLevel(Level.WARNING);
@@ -114,9 +121,10 @@ public class LoggingTest extends TestCase {
       Assert.assertTrue(logger.isLoggable(Level.INFO));
       Assert.assertFalse(logger.isLoggable(Level.FINER));
       Assert.assertFalse(logger.isLoggable(Level.ALL));
-      uimaLogger.setLevel(Level.INFO);
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
+    } finally {
+      uimaLogger.setLevel(Level.INFO); // otherwise, is stuck at INFO, too much logging
     }
 
   }

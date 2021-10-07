@@ -29,26 +29,40 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
-  <description>The top project for the uimaj SDK</description>
+  <description>The top project for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the
+       same as those in super poms, it cannot be inherited because
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted.
+
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->
   <scm>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/</url>
-    <tag>HEAD</tag>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
   </scm>
-  
+
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>2.11.0SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->
+    <jiraVersion>3.2.0SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
@@ -146,8 +160,54 @@
       <artifactId>uimaj-json</artifactId>
       <version>${project.version}</version>
     </dependency>    
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-v3migration-jcas</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.32</version>
+    </dependency>  
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-compilertools</artifactId>
+      <version>0.5.32</version>
+    </dependency>  
+    <dependency>    <!-- apache v2 license  2016 checked -->
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>3.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency> 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+    </dependency>
+       
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>    
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>    
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>    
+ 
   </dependencies>
 
+  
   <modules>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
@@ -155,15 +215,13 @@
   
   <build>
     <plugins>
-
-      <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
-           posted on our website.  It is not a complete javadoc - it only has user-level API info.
+      <!-- This JavaDoc config is for building the ones distributed with the bin packaging, and also 
+           posted on our website.  It is not a complete JavaDoc - it only has user-level API info.
         
-           There is another javadoc config in the parent POM that builds all the java docs - intended
+           There is another JavaDoc config in the parent POM that builds all the java docs - intended
            for use by developers (currently not used) 
            
-           There is also a javadoc config for each individual maven Jar artifact -->
-      
+           There is also a JavaDoc config for each individual Maven Jar artifact -->
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
@@ -175,8 +233,6 @@
               <goal>javadoc</goal>
             </goals>
             <configuration>
-              <source>${maven.compiler.source}</source> 
-              <javadocVersion>${maven.compiler.target}</javadocVersion>
               <groups>
                 <group>
                   <title>Packages</title>
@@ -193,7 +249,7 @@
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
-                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/Serialization.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/Serialization.java                
                 ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
                 ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
               </additionalparam>
@@ -203,12 +259,7 @@
                 <additionalDependency>
                   <groupId>com.fasterxml.jackson.core</groupId>
                   <artifactId>jackson-core</artifactId>
-                  <version>2.4.2</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>log4j</groupId>
-                  <artifactId>log4j</artifactId>
-                  <version>1.2.8</version>
+                  <version>${jackson.version}</version>
                 </additionalDependency>
               </additionalDependencies>
             </configuration>
@@ -218,18 +269,18 @@
     
       <plugin> 
         <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>uima-distr</id>
-                <configuration>
-                  <descriptors>
-                    <descriptor>${assemblyBinDescriptor}</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-       </plugins>
+        <executions>
+          <execution>
+            <id>uima-distr</id>
+            <configuration>
+              <descriptors>
+                <descriptor>${assemblyBinDescriptor}</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+   </plugins>
   
     <pluginManagement>
       <plugins>
@@ -242,15 +293,15 @@
                 <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
-                  <exclude>src/main/resources/docbook-shared/titlepage/*.xsl</exclude>
-                  <exclude>src/main/readme/NOTICE-without-jackson</exclude>
-                  
+                  <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson</exclude>
+
                   <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->
                   <exclude>aggregate-uimaj*/**</exclude>
                   <exclude>jVinci/**</exclude>
                   <exclude>PearPackagingMavenPlugin/**</exclude>
                   <exclude>jcasgen-maven-plugin/**</exclude>
                   <exclude>uima-docbook-*/**</exclude>
+                  <exclude>uima-doc-*/**</exclude>
                   <exclude>uimaj-adapter-*/**</exclude>
                   <exclude>uimaj-component-test-util/**</exclude>
                   <exclude>uimaj-core/**</exclude>
@@ -265,7 +316,8 @@
                   <exclude>uimaj-bootstrap/**</exclude>
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
-               </excludes>
+                  <exclude>uimaj-v3migration-jcas/**</exclude>
+                </excludes>
               </configuration>
             </execution>
           </executions>
@@ -275,6 +327,24 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>dependency-checks</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+               <goals><goal>check</goal></goals>
+               </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
     <profile>
       <id>apache-release</id>
       
@@ -291,20 +361,20 @@
                   <fixVersionIds>${jiraVersion}</fixVersionIds>
                 </configuration>
               </execution>
-            </executions>
+            </executions>  
           </plugin>
-        </plugins>
+        </plugins>     
       </build>
     </profile>
     
     <profile>
       <id>json-support</id>
       <activation>
-        <!-- active by default, turn off via command line -P!json-support -->
+        <!-- active by default, turn off via command line -P!json-support  -->
         <file><exists>pom.xml</exists></file>
       </activation>
       <properties>
-        <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>
+        <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>  
       </properties>
       <modules>
         <module>uimaj-json</module>

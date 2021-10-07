@@ -19,8 +19,6 @@
 
 package org.apache.uima.tutorial.ex4;
 
-import java.util.Iterator;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -49,7 +47,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter value
-    mWindowSize = ((Integer) aContext.getConfigParameterValue("WindowSize")).intValue();
+    mWindowSize = (Integer) aContext.getConfigParameterValue("WindowSize");
   }
 
   /**
@@ -57,54 +55,40 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
    */
   public void process(JCas aJCas) {
     // get annotation indexes
-    FSIndex roomNumberIndex = aJCas.getAnnotationIndex(RoomNumber.type);
-    FSIndex dateIndex = aJCas.getAnnotationIndex(DateAnnot.type);
-    FSIndex timeIndex = aJCas.getAnnotationIndex(TimeAnnot.type);
+    FSIndex<RoomNumber> roomNumberIndex = aJCas.getAnnotationIndex(RoomNumber.class);
+    FSIndex<DateAnnot> dateIndex = aJCas.getAnnotationIndex(DateAnnot.class);
+    FSIndex<TimeAnnot> timeIndex = aJCas.getAnnotationIndex(TimeAnnot.class);
 
     // store end position of last meeting we identified, to prevent multiple
     // annotations over same span
     int lastMeetingEnd = -1;
 
-    // iterate over all combinations
-    Iterator roomNumberIter = roomNumberIndex.iterator();
-    while (roomNumberIter.hasNext()) {
-      RoomNumber room = (RoomNumber) roomNumberIter.next();
-
-      Iterator dateIter = dateIndex.iterator();
-      while (dateIter.hasNext()) {
-        DateAnnot date = (DateAnnot) dateIter.next();
-
-        Iterator time1Iter = timeIndex.iterator();
-        while (time1Iter.hasNext()) {
-          TimeAnnot time1 = (TimeAnnot) time1Iter.next();
-
-          Iterator time2Iter = timeIndex.iterator();
-          while (time2Iter.hasNext()) {
-            TimeAnnot time2 = (TimeAnnot) time2Iter.next();
+    for (RoomNumber room : roomNumberIndex.select()) {
+      for (DateAnnot date : dateIndex.select()) {
+        for(TimeAnnot time1 : timeIndex.select()) {
+          for (TimeAnnot time2 : timeIndex.select()) {
 
             // times must be different annotations
             if (time1 != time2) {
               // compute the begin and end of the span
-              int minBegin = Math.min(Math.min(time1.getBegin(), time2.getBegin()), Math.min(date
-                      .getBegin(), room.getBegin()));
-              int maxEnd = Math.max(Math.max(time1.getEnd(), time2.getEnd()), Math.max(date
-                      .getEnd(), room.getEnd()));
+              int minBegin = Math.min(Math.min(time1.getBegin(), time2.getBegin()), 
+                                      Math.min(date .getBegin(), room .getBegin()));
+              int maxEnd = Math.max(Math.max(time1.getEnd(), time2.getEnd()), 
+                                    Math.max(date .getEnd(), room .getEnd()));
 
               // span must be smaller than the window size?
-              if (maxEnd - minBegin < mWindowSize) {
+              if (maxEnd - minBegin < mWindowSize && 
                 // span must not overlap the last annotation we made
-                if (minBegin > lastMeetingEnd) {
-                  // annotate
-                  Meeting mtg = new Meeting(aJCas, minBegin, maxEnd, room, date, time1, time2);
-                  mtg.addToIndexes();
-                  lastMeetingEnd = maxEnd;
-                }
+                  minBegin > lastMeetingEnd) {
+                // annotate
+                Meeting mtg = new Meeting(aJCas, minBegin, maxEnd, room, date, time1, time2);
+                mtg.addToIndexes();
+                lastMeetingEnd = maxEnd;
               }
             }
           }
         }
-      }
+      }   
     }
   }
-
 }

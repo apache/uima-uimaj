@@ -259,9 +259,9 @@ public class ResourcePool {
     return mFreeInstances;
   }
 
-  private final Vector<Resource> mAllInstances = new Vector<Resource>();
+  private final Vector<Resource> mAllInstances = new Vector<>();
 
-  private final Vector<Resource> mFreeInstances = new Vector<Resource>();
+  private final Vector<Resource> mFreeInstances = new Vector<>();
 
   private final int mNumInstances;
 

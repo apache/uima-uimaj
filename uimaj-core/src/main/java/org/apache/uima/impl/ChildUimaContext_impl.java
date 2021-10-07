@@ -88,6 +88,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    *      org.apache.uima.util.Logger, org.apache.uima.resource.ResourceManager,
    *      ConfigurationManager)
    */
+  @Override
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigurationManager) {
     throw new UIMA_UnsupportedOperationException();
@@ -98,6 +99,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @return the InstrumentationFacility to be used within this AnalysisEngine
    */
+  @Override
   public InstrumentationFacility getInstrumentationFacility() {
     return getRootContext().getInstrumentationFacility();
   }
@@ -107,8 +109,9 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @see org.apache.uima.UimaContextAdmin#setLogger(org.apache.uima.util.Logger)
    */
+  @Override
   public void setLogger(Logger aLogger) {
-    mLogger = aLogger;
+    mLogger = maybeThrottleLogger(aLogger);
   }
 
   /**
@@ -116,6 +119,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @return the ResourceManager
    */
+  @Override
   public ResourceManager getResourceManager() {
     if (null == mPearResourceManager) {
       return parentContext.getResourceManager();
@@ -137,6 +141,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @see org.apache.uima.UimaContextAdmin#getConfigurationManager()
    */
+  @Override
   public ConfigurationManager getConfigurationManager() {
     return getRootContext().getConfigurationManager();
   }
@@ -148,6 +153,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * This method is to be called from the Analysis Engine, not the Annotator, so it is not part of
    * the AnnotatorContext interface.
    */
+  @Override
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     getRootContext().setProcessTrace(aProcessTrace);
   }
@@ -157,6 +163,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @return root context
    */
+  @Override
   public UimaContextAdmin getRootContext() {
     return mRootContext;
   }
@@ -164,6 +171,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getLogger()
    */
+  @Override
   public Logger getLogger() {
     return mLogger;
   }
@@ -173,6 +181,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @see org.apache.uima.UimaContext#getSession()
    */
+  @Override
   public Session getSession() {
     // must update root session first, in case it has been changed, for example by the deployment
     // wrapper
@@ -185,6 +194,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * 
    * @see org.apache.uima.UimaContextAdmin#setSession(org.apache.uima.resource.Session)
    */
+  @Override
   public void setSession(Session aSession) {
     throw new UIMA_UnsupportedOperationException();
 

@@ -21,6 +21,26 @@ package org.apache.uima.tools.docanalyzer;
 
 import javax.swing.JComponent;
 
+
+/**
+ * The listener interface for receiving fileSelector events.
+ * The class that is interested in processing a fileSelector
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addFileSelectorListener</code> method. When
+ * the fileSelector event occurs, that object's appropriate
+ * method is invoked.
+ * 
+// * @see FileSelectorEvent
+ */
 public interface FileSelectorListener {
+  
+  /**
+   * File selected.
+   *
+   * @param source the source
+   * @param fileString the file string
+   * @return true, if successful
+   */
   public boolean fileSelected(JComponent source, String fileString);
 }

@@ -17,22 +17,31 @@
  * under the License.
  */
 
-
-/* First created by JCasGen Wed Aug 02 07:47:29 EDT 2017 */
 package org.apache.uima.cas.test;
 
-import org.apache.uima.jcas.JCas; 
-import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Aug 02 07:47:29 EDT 2017
- * XML source: C:/au/svnCheckouts/trunk/uimaj-current/uimaj/uimaj-core/src/test/resources/CASTests/desc/levels.xml
+ * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Level_1 extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.cas.test.Level_1";
+  
   /** @generated
    * @ordered 
    */
@@ -49,17 +58,27 @@ public class Level_1 extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+  /* Feature Adjusted Offsets */
+//  public final static int _FI_id = TypeSystemImpl.getAdjustedFeatureOffset("id");
+
+  private final static CallSite _FC_id = TypeSystemImpl.createCallSite(Level_1.class, "id");
+  private final static MethodHandle _FH_id = _FC_id.dynamicInvoker();
+  
   /** Never called.  Disable default constructor
    * @generated */
   protected Level_1() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public Level_1(int addr, TOP_Type type) {
-    super(addr, type);
+  public Level_1(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -70,6 +89,7 @@ public class Level_1 extends Annotation {
     super(jcas);
     readObject();   
   } 
+
 
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs
@@ -91,29 +111,25 @@ public class Level_1 extends Annotation {
    * @generated modifiable 
    */
   private void readObject() {/*default - does nothing empty block */}
-     
- 
-    
+  
   //*--------------*
   //* Feature: id
 
-  /** getter for id - gets 
+  /** getter for id - gets id of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.)
    * @generated
    * @return value of the feature 
    */
-  public float getId() {
-    if (Level_1_Type.featOkTst && ((Level_1_Type)jcasType).casFeat_id == null)
-      jcasType.jcas.throwFeatMissing("id", "org.apache.uima.cas.test.Level_1");
-    return jcasType.ll_cas.ll_getFloatValue(addr, ((Level_1_Type)jcasType).casFeatCode_id);}
+  public float getId() { return _getFloatValueNc(wrapGetIntCatchException(_FH_id));}
     
-  /** setter for id - sets  
+  /** setter for id - sets id of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.) 
    * @generated
    * @param v value to set into the feature 
    */
   public void setId(float v) {
-    if (Level_1_Type.featOkTst && ((Level_1_Type)jcasType).casFeat_id == null)
-      jcasType.jcas.throwFeatMissing("id", "org.apache.uima.cas.test.Level_1");
-    jcasType.ll_cas.ll_setFloatValue(addr, ((Level_1_Type)jcasType).casFeatCode_id, v);}    
-  }
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_id), v);
+  }    
+
+  
+}
 
     

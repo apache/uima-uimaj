@@ -31,8 +31,6 @@ import java.io.StringWriter;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -40,6 +38,7 @@ import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
@@ -55,6 +54,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.Serialization;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -68,6 +68,8 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+import junit.framework.TestCase;
+
 
 public class NewPrimitiveTypesTest extends TestCase {
 
@@ -79,8 +81,6 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   private Type exampleType;
 
-  private Feature beginFeature;
-  
   private Feature floatFeature;
 
   private Feature stringFeature;
@@ -120,6 +120,7 @@ public class NewPrimitiveTypesTest extends TestCase {
    */
   protected void setUp() throws Exception {
     try {
+//      long startTime = System.nanoTime();
       super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
@@ -131,8 +132,6 @@ public class NewPrimitiveTypesTest extends TestCase {
 
       // new primitive types
       exampleType = tsa.addType("test.primitives.Example", annotationType);
-      
-      beginFeature = exampleType.getFeatureByBaseName("begin");
 
       floatFeature = tsa.addFeature("floatFeature", exampleType, tsa.getType(CAS.TYPE_NAME_FLOAT));
       stringFeature = tsa.addFeature("stringFeature", exampleType, tsa
@@ -164,6 +163,8 @@ public class NewPrimitiveTypesTest extends TestCase {
 
       // Commit the type system.
       ((CASImpl) casMgr).commitTypeSystem();
+      tsa = ((CASImpl) casMgr).getTypeSystemMgr();
+      reinitTypeSystem((TypeSystemImpl) tsa);
 
       // Create the Base indexes.
       casMgr.initCASIndexes();
@@ -191,11 +192,37 @@ public class NewPrimitiveTypesTest extends TestCase {
       irm.commit();
 
       cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
+//      System.out.format("Debug NewPrimitiveTypesTest time to setup CAS: %,d microsec%n",
+//          (System.nanoTime() - startTime)/1000L);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
 
+  }
+  
+  private void reinitTypeSystem(TypeSystemImpl tsa) {
+    annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+
+    // new primitive types
+    exampleType = tsa.refreshType(exampleType);
+
+    floatFeature = tsa.refreshFeature(floatFeature);
+    stringFeature = tsa.refreshFeature(stringFeature);
+    booleanFeature = tsa.refreshFeature(booleanFeature);
+    byteFeature = tsa.refreshFeature(byteFeature);
+    shortFeature = tsa.refreshFeature(shortFeature);
+    longFeature = tsa.refreshFeature(longFeature);
+    doubleFeature = tsa.refreshFeature(doubleFeature);
+
+    intArrayFeature = tsa.refreshFeature(intArrayFeature);
+    floatArrayFeature = tsa.refreshFeature(floatArrayFeature);
+    stringArrayFeature = tsa.refreshFeature(stringArrayFeature);
+    booleanArrayFeature = tsa.refreshFeature(booleanArrayFeature);
+    byteArrayFeature = tsa.refreshFeature(byteArrayFeature);
+    shortArrayFeature = tsa.refreshFeature(shortArrayFeature);
+    longArrayFeature = tsa.refreshFeature(longArrayFeature);
+    doubleArrayFeature = tsa.refreshFeature(doubleArrayFeature);
   }
 
   public void tearDown() {
@@ -223,7 +250,7 @@ public class NewPrimitiveTypesTest extends TestCase {
   public void testCreateFS() throws Exception {
 
     // create FS
-    createExampleFS(cas);
+    FeatureStructure fs = createExampleFS(cas);
     // check values
     validateFSData(cas);
   }
@@ -339,7 +366,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     // the exampleType fs
     fs = (AnnotationFS) iter.get();
     FeatureStructureImplC fsImpl = (FeatureStructureImplC) fs;
-    StringBuffer sb = new StringBuffer(1024);
+    StringBuilder sb = new StringBuilder(1024);
     fsImpl.prettyPrint(2, 1, sb, true);
     // System.out.println(sb.toString());
   }
@@ -357,15 +384,14 @@ public class NewPrimitiveTypesTest extends TestCase {
     // clone it
     AnnotationFS clone = (AnnotationFS) fs.clone();
 
-    // subsitute the clone for the original in the index,
+    // substitute the clone for the original in the index,
     // and validate that it was correctly copied
     englishView.removeFsFromIndexes(fs);
     englishView.addFsToIndexes(clone);
     validateFSData(cas);
 
     // editing the original FS should not change the clone
-    englishView.removeFsFromIndexes(fs);    // does nothing! because fs already removed 3 statements above
-                                            // and remove requires finding == item in index
+    englishView.removeFsFromIndexes(fs);  // does nothing, is not in the index, the clone is
     fs.setStringValue(stringFeature, "foo");
     fs.setFloatValue(floatFeature, -1f);
     fs.setByteValue(byteFeature, (byte) -1);
@@ -373,8 +399,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setShortValue(shortFeature, (short) -1);
     fs.setLongValue(longFeature, -1);
     fs.setDoubleValue(doubleFeature, -1);
-    fs.setIntValue(beginFeature, fs.getIntValue(beginFeature) + 1);  // otherwise, gets indexed in front 
-    englishView.addFsToIndexes(fs);
+    fs.setBegin(clone.getBegin() + 1);  // to be sure that fs is beyond the original
+    englishView.addFsToIndexes(fs);  // will add, is no longer "equal" to the clone
     validateFSData(cas);
   }
 
@@ -462,7 +488,7 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   }
 
-  private void createExampleFS(CAS parmCas) throws Exception {
+  private FeatureStructure createExampleFS(CAS parmCas) throws Exception {
     // Create a view
     CAS englishView = parmCas.createView("EnglishDocument");
     // Set the document text
@@ -548,6 +574,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setFeatureValue(doubleArrayFeature, doubleArrayFS);
     
     englishView.getIndexRepository().addFS(fs);
+    return fs;
   }
 
   public void testNewPrimitiveTypeKeys() throws Exception {

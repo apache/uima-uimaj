@@ -37,6 +37,5 @@ public interface AnnotationBaseFS extends FeatureStructure {
    * 
    * @return the CAS view associated with the Annotation's Sofa
    */
-  public CAS getView();
-
+  CAS getView(); 
 }

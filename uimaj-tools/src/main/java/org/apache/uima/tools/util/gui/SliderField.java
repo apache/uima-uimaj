@@ -28,13 +28,28 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+
+/**
+ * The Class SliderField.
+ */
 public class SliderField extends JPanel implements ChangeListener, PropertyChangeListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8200124988260091779L;
 
+  /** The slider. */
   private JSlider slider;
 
+  /** The text field. */
   private IntegerField textField;
 
+  /**
+   * Instantiates a new slider field.
+   *
+   * @param min the min
+   * @param max the max
+   * @param initialValue the initial value
+   */
   public SliderField(int min, int max, int initialValue) {
     setLayout(new FlowLayout(FlowLayout.LEFT, 4, 4));
 
@@ -56,17 +71,25 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
     add(textField);
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+   */
+  @Override
   public void stateChanged(ChangeEvent e) {
     int sliderValue = slider.getValue();
-    textField.setValue(new Integer(sliderValue));
+    textField.setValue(sliderValue);
 
     if (!slider.getValueIsAdjusting())
-      textField.setValue(new Integer(sliderValue));
+      textField.setValue(sliderValue);
     else
       // value is adjusting; just set the text
       textField.setText(String.valueOf(sliderValue));
   }
 
+  /* (non-Javadoc)
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  @Override
   public void propertyChange(PropertyChangeEvent e) {
     if (e.getPropertyName().equals("value")) {
       Number value = (Number) e.getNewValue();
@@ -75,16 +98,31 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.JComponent#setEnabled(boolean)
+   */
+  @Override
   public void setEnabled(boolean onOff) {
     slider.setEnabled(onOff);
     textField.setEnabled(onOff);
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   public int getValue() {
     Integer value = (Integer) textField.getValue();
-    return value.intValue();
+    return value;
   }
 
+  /**
+   * Determine major tick spacing.
+   *
+   * @param range the range
+   * @return the int
+   */
   private int determineMajorTickSpacing(int range) {
     if (range > 1000000)
       return 1000000;

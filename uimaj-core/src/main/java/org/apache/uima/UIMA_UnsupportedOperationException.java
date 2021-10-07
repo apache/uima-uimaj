@@ -108,7 +108,7 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    */
   public UIMA_UnsupportedOperationException(String aResourceBundleName, String aMessageKey,
           Object[] aArguments, Throwable aCause) {
-    super(aResourceBundleName, aMessageKey, aArguments, aCause);
+    super(aCause, aResourceBundleName, aMessageKey, aArguments);
   }
 
   /**

@@ -71,7 +71,13 @@ public class SlotKinds {
     Slot_ArrayLength(          ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     Slot_HeapRef(                CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     Slot_Int(                    CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    /**
+     * byte feature (not array) slot name
+     */
     Slot_Byte(                 ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    /**
+     * short feature (not array) slot name
+     */
     Slot_Short(                  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     Slot_TypeCode(             ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
   
@@ -99,12 +105,24 @@ public class SlotKinds {
     
     // the next slots are not serialized
     Slot_StrRef(                 CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    /**
+     * boolean array slot name
+     */
     Slot_BooleanRef(          !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    /**
+     * byte array slot name
+     */    
     Slot_ByteRef(                CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    /**
+     * short array slot name
+     */    
     Slot_ShortRef(               CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     Slot_LongRef(                CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     Slot_DoubleRef(              CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     Slot_Float(               !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
+    /**
+     * boolean feature slot name (not array)
+     */
     Slot_Boolean(             !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     // next used to capture original heap size
     Slot_MainHeap(               IGNORED,         4, !IN_MAIN_HEAP),

@@ -59,7 +59,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
   private ResultSpecification mDefaultResultSpecification;
 
-  private Map<String, ResultSpecification> mLanguageToResultSpecMap = new HashMap<String, ResultSpecification>();
+  private Map<String, ResultSpecification> mLanguageToResultSpecMap = new HashMap<>();
 
   /**
    * Create a new annotator adapter.
@@ -116,7 +116,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mDefaultResultSpecification = aResultSpec;
-    mLanguageToResultSpecMap = new HashMap<String, ResultSpecification>();
+    mLanguageToResultSpecMap = new HashMap<>();
   }
 
   /*

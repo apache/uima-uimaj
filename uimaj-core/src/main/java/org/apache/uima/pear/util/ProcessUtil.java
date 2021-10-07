@@ -78,7 +78,7 @@ public class ProcessUtil {
 
     private boolean _printToConsole = true;
 
-    private List<StdStreamListener> _listeners = new ArrayList<StdStreamListener>();
+    private List<StdStreamListener> _listeners = new ArrayList<>();
 
     /**
      * Constructor that takes a given <code>Process</code> object and assigns default process

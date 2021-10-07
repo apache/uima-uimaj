@@ -1,0 +1,67 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.pears]]
+= PEAR support
+
+PEARs continue to be supported in Version 3, with the same  capabilities as in version 2.
+Here's a brief review. 
+
+PEARs are both a packaging facility, and an isolation facility.
+The packaging facility allows putting together into one PEAR file all the parts needed for a particular (reusable) UIMA pipeline, including annotators and other data resources, and a classpath to use.
+PEARs are loaded using special class loaders that load first from whatever classpath is specified by the PEAR; this serves to isolate dependencies and insure that the PEAR makes use of whatever versions of classes it depends on (and specifies in its  classpath). 
+
+PEARs establish a boundary within a UIMA pipeline -- annotator code is running either inside a PEAR, or not.
+Note that PEARs cannot be nested.
+The CAS, flowing through a pipeline, is dynamically updated with the current PEAR context (if any). 
+
+[[_uv3.pears.jcas]]
+== JCas issues
+
+JCas classes defining Java implementations for UIMA Types may be defined within a PEAR.
+These are loaded using the isolating Classloader, just like all the other PEAR resources.
+As a result, this may cause some issues if the same JCas class is also defined outside  the PEAR boundary, and loaded with the normal UIMA classloader.
+The result of having the  same JCas class both on the PEAR classloader and outside that classloader will be that Java  will have both classes loaded, and code within the PEAR will be linked with one of them, and code outside the PEAR will be linked with the other. 
+
+Sometimes, this is exactly what you might want.
+For example, you might have in the pear, a special JCas definition of a UIMA type "Token" which the PEAR uses, while you might have another JCas  definition for that same UIMA type outside of the PEAR.
+Note that UIMA will always merge Type  definitions from inside and outside of PEARs, when it sets up a pipeline - it merges all type  definitions found for the whole pipeline. 
+
+A consequence of having two loaded class definitions in two contexts for the same UIMA type means that the classes have the same names, but are different (because of different loading classloaders),  and assigning one to the other in Java will produce a ClassCast exception. 
+
+Othertimes, you may not want different classes.
+For instance, the class definitions might be identical, and you want to create some "Token" annotations within the PEAR, and have them  used by JCas references outside of the PEAR. 
+
+In this case, the simplest thing to do is to install the PEAR, but then update its classpath so it no longer includes the JCas classes that came with the PEAR.
+When classes are not found with the special PEAR class loader, that loader delegates to its parent, which is the normal UIMA class loader.
+This action will cause the PEAR to use the identically same JCas class within the PEAR as is used outside of the PEAR, and no Class Cast Exception issues will arise.
+This is the most efficient way to run with PEARs that use JCas classes where you want to share results inside and outside of PEARs. 
+
+Version 3 has special support for the case where there are different definitions of JCas classes  for the same UIMA type, inside and outside the PEAR.
+It does this using what are called PEAR Trampolines.
+When there are multiple JCas definitions, the one defined outside of the PEAR is the one stored internally in UIMA's indexes and types that have references to Feature Structures.
+Accessing the Feature Structures checks (by asking the CAS) to see if its in a particular PEAR context (there may be several in one pipeline), and if so, a trampoline instance of the Feature Structure is created / used / accessed.
+The trampoline instance shares internally the CAS data with the base instance, but is a separate instance of the PEAR's JCas class definition.
+This allows seamless access both inside and outside of the PEAR context to the particular JCas class definition needed. 
+
+[[_uv3.pears.java_objects]]
+== Custom Java Objects
+
+Custom Java Objects may store references to Feature Structures.
+If it is desired to create  these inside a PEAR, and yet have the references work outside a PEAR, the implementor of these must insure that the actual stored JCas class for a Feature Structure is the base version, not the PEAR version, and also insure that any references are properly converted (while within a PEAR context). 
+
+Refer to the implementation of `FSHashSet` and `FSArrayList` to see what needs to be done to make these "Pear aware". 

@@ -51,7 +51,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * 
    * Can't (currently) be a concurrentHashMap because it stores nulls
    */
-  private Map<String, Object> mSharedParamMap = Collections.synchronizedMap(new HashMap<String, Object>());
+  private Map<String, Object> mSharedParamMap = Collections.synchronizedMap(new HashMap<>());
 
   /*
    * (non-Javadoc)

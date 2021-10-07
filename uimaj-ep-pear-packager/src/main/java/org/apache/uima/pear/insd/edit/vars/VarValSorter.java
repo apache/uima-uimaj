@@ -22,6 +22,7 @@ package org.apache.uima.pear.insd.edit.vars;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
+
 /**
  * This sorter supports three sort criteria:
  * <p>
@@ -29,14 +30,14 @@ import org.eclipse.jface.viewers.ViewerSorter;
  * </p>
  * <p>
  * <code>VAR_VALUE</code>: (String)
- * </p>
- * 
- * 
+ * </p>.
  */
 class VarValSorter extends ViewerSorter {
 
+  /** The Constant VAR_NAME. */
   public static final int VAR_NAME = 0;
 
+  /** The Constant VAR_VALUE. */
   public static final int VAR_VALUE = 1;
 
   /**
@@ -61,6 +62,7 @@ class VarValSorter extends ViewerSorter {
   /*
    * (non-Javadoc) Method declared on ViewerSorter.
    */
+  @Override
   public int compare(Viewer viewer, Object o1, Object o2) {
 
     VarVal tableRow1 = (VarVal) o1;

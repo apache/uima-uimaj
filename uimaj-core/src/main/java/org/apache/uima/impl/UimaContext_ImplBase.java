@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -56,8 +57,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UriUtils;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Instances of this class shared by multiple threads
@@ -68,8 +71,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-  
-  private static final String[] EMPTY_STRINGS = new String[0];
+    
+  private static AtomicInteger MDC_NEXT_ID = new AtomicInteger(0);
   
   /**
    * The ComponentInfoImpl class (an inner non-static class) has no fields and 
@@ -159,7 +162,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * The size check followed by an add is in one sync block within getEmptyCas(), 
    * locked on the set object itself (not shared with any other locks).
    */
-  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());
+  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   /**
    * Object that implements management interface to the AE.
@@ -168,6 +171,19 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
 
   final private String uniqueIdentifier;
   
+  final private String mdcUniqueId;
+  
+  /**
+   * A number to throttle logging from Annotators
+   * If not the max value, it wraps loggers obtained with getLogger() that are 
+   * for Annotator classes, with the ThrottlingLogger.
+   * 
+   * This value is set from an Additional Parameters key 
+   *   AnalysisEngine.PARAM_SUPPRESS_EXCESSIVE_ANNOTATOR_LOGGING
+   * passed in as part of the additional parameters 
+   */
+  protected int loggingThrottleLimit = Integer.MAX_VALUE;
+  
   /**
    * Default constructor. 
    * Only Called for creating a "Root" instance.
@@ -175,7 +191,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContext_ImplBase() { 
     mQualifiedContextName = "/";  // This constructor for root call only
     uniqueIdentifier = constructUniqueName();
-    mSofaMappings = new TreeMap<String, String>();
+    mdcUniqueId = String.valueOf(MDC_NEXT_ID.getAndIncrement());
+    mSofaMappings = new TreeMap<>();
 
   }
   
@@ -187,6 +204,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContext_ImplBase(String contextName, Map<String, String> sofaMappings) {
     mQualifiedContextName = contextName;
     uniqueIdentifier = constructUniqueName();
+    mdcUniqueId = "invalid";  // never referenced
     mSofaMappings = sofaMappings;
   }
   
@@ -209,6 +227,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* Returns a unique name of this component
    * 
    */
+  @Override
   public String getUniqueName() {
     // return a unique name of this component
     return getQualifiedContextName()+"_"+uniqueIdentifier;
@@ -219,6 +238,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContextAdmin#createChild(java.lang.String)
    */
+  @Override
   public UimaContextAdmin createChild(String aContextName, Map<String, String> aSofaMappings) {
 
     // create child context with the absolute mappings
@@ -237,13 +257,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @return the combined absolute sofamappings
    */
   public Map<String, String> combineSofaMappings(Map<String, String> aSofaMappings) {
- // The aSofaMappings parameter, if present, defines the mapping between the child
+    // The aSofaMappings parameter, if present, defines the mapping between the child
     // context's sofa names and this context's sofa names. This context's sofa names
     // may again be remapped (according to the mSofaMappings field). We need to
     // produce the absolute mapping and pass that into the child context's constructor.
 
     // child context's mappings are originally equivalent to this context's mappings
-    Map<String, String> childSofaMap = new TreeMap<String, String>();
+    Map<String, String> childSofaMap = new TreeMap<>();
     childSofaMap.putAll(mSofaMappings);
     if (aSofaMappings != null) {
       // iterate through remappings list (aSofaMappings) and apply them
@@ -264,6 +284,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aName) {
     return getConfigurationManager().getConfigParameterValue(makeQualifiedName(aName));
   }
@@ -272,6 +293,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return getConfigurationManager().getConfigParameterValue(makeQualifiedName(aParamName),
             aGroupName);
@@ -304,6 +326,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(java.lang.String)
    */
+  @Override
   public URL getResourceURL(String aKey) throws ResourceAccessException {
     URL result = getResourceManager().getResourceURL(makeQualifiedName(aKey));
     if (result != null) {
@@ -328,6 +351,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String)
    */
+  @Override
   public URI getResourceURI(String aKey) throws ResourceAccessException {
     return getResourceURIfromURL( getResourceURL(aKey));
   }
@@ -349,6 +373,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String)
    */
+  @Override
   public String getResourceFilePath(String aKey) throws ResourceAccessException {
     URI resourceUri = getResourceURI(aKey);
     if (resourceUri != null) {
@@ -370,6 +395,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(java.lang.String)
    */
+  @Override
   public InputStream getResourceAsStream(String aKey) throws ResourceAccessException {
     InputStream result = getResourceManager().getResourceAsStream(makeQualifiedName(aKey));
     if (result != null) {
@@ -401,6 +427,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(java.lang.String)
    */
+  @Override
   public Object getResourceObject(String aKey) throws ResourceAccessException {
     return getResourceManager().getResource(makeQualifiedName(aKey));
   }
@@ -409,6 +436,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws ResourceAccessException {
     InputStream result = getResourceManager().getResourceAsStream(makeQualifiedName(aKey), aParams);
@@ -440,6 +468,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public Object getResourceObject(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceManager().getResource(makeQualifiedName(aKey), aParams);
   }
@@ -448,6 +477,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
     URL result = getResourceManager().getResourceURL(makeQualifiedName(aKey), aParams);
     if (result != null) {
@@ -472,6 +502,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String, java.lang.String[])
    */
+  @Override
   public URI getResourceURI(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceURIfromURL(getResourceURL(aKey, aParams));
   } 
@@ -479,6 +510,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String, java.lang.String[])
    */
+  @Override
   public String getResourceFilePath(String aKey, String[] aParams) throws ResourceAccessException {
     URI resourceUri = getResourceURI(aKey, aParams);
     if (resourceUri != null) {
@@ -497,6 +529,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getDataPath()
    */
+  @Override
   public String getDataPath() {
     return getResourceManager().getDataPath();
   }
@@ -505,6 +538,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return mQualifiedContextName + name;
   }
 
+  @Override
   public String getQualifiedContextName() {
     return mQualifiedContextName;
   }
@@ -514,13 +548,14 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContext#getConfigurationGroupNames()
    */
+  @Override
   public String[] getConfigurationGroupNames() {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationGroups();
     if (groups == null) {
-      return EMPTY_STRINGS;
+      return Constants.EMPTY_STRING_ARRAY;
     } else {
-      Set<String> names = new TreeSet<String>();
+      Set<String> names = new TreeSet<>();
       for (int i = 0; i < groups.length; i++) {
         names.addAll(Arrays.asList(groups[i].getNames()));
       }
@@ -535,11 +570,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContext#getConfigurationParameterNames()
    */
+  @Override
   public String[] getConfigParameterNames() {
     ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationParameters();
     if (params == null) {
-      return EMPTY_STRINGS;
+      return Constants.EMPTY_STRING_ARRAY;
     } else {
       String[] names = new String[params.length];
       for (int i = 0; i < params.length; i++) {
@@ -554,13 +590,14 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContext#getConfigurationParameterNames(java.lang.String)
    */
+  @Override
   public String[] getConfigParameterNames(String aGroup) {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
-      return EMPTY_STRINGS;
+      return Constants.EMPTY_STRING_ARRAY;
     } else {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       ConfigurationParameter[] commonParams = getConfigurationManager()
               .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
       if (commonParams != null) {
@@ -585,6 +622,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContextAdmin#getExternalOverrides()
    */
+  @Override
   public Settings getExternalOverrides() {
     return getRootContext().getExternalOverrides();
   }
@@ -594,6 +632,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContextAdmin#setExternalOverrides(org.apache.uima.util.Settings)
    */
+  @Override
   public void setExternalOverrides(Settings externalOverrides) {
     getRootContext().setExternalOverrides(externalOverrides);
   }
@@ -603,6 +642,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContext#mapToSofaID(java.lang.String)
    */
+  @Override
   public SofaID mapToSofaID(String aSofaName) {
 
     int index = aSofaName.indexOf(".");
@@ -631,6 +671,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContext#mapSofaIDToComponentSofaName(java.lang.String)
    */
+  @Override
   public String mapSofaIDToComponentSofaName(String aSofaID) {
     String componentSofaName = aSofaID;
     SofaID[] sofaArr = getSofaMappings();
@@ -646,6 +687,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContext#getSofaMappings()
    */
+  @Override
   public SofaID[] getSofaMappings() {
     Set<Map.Entry<String, String>> sofamap = mSofaMappings.entrySet();
     Iterator<Map.Entry<String, String>> iter = sofamap.iterator();
@@ -665,10 +707,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContextAdmin#getSofaMap()
    */
+  @Override
   public Map<String, String> getSofaMap() {
     return Collections.unmodifiableMap(mSofaMappings);
   }
 
+  @Override
   public void defineCasPool(int aSize, Properties aPerformanceTuningSettings, boolean aSofaAware)
           throws ResourceInitializationException {
     mCasPoolSize = aSize;
@@ -681,6 +725,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * @see UimaContextAdmin#returnedCAS(AbstractCas)
    */
+  @Override
   public void returnedCAS(AbstractCas aCAS) {
     //remove Base CAS from outstanding CASes set
     CAS baseCas = null;
@@ -758,6 +803,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * @return the component info
    */
+  @Override
   public ComponentInfo getComponentInfo() {
     return mComponentInfo;
   }
@@ -767,8 +813,18 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContextAdmin#getManagementInterface()
    */
+  @Override
   public AnalysisEngineManagement getManagementInterface() {
     return mMBean;
+  }
+  
+  protected Logger maybeThrottleLogger(Logger logger) {
+    final int limit = ((UimaContext_ImplBase)getRootContext()).loggingThrottleLimit; 
+    if (limit == Integer.MAX_VALUE ||
+        !logger.isAnnotatorLogger()) {
+      return logger;
+    }
+    return logger.getLimitedLogger(limit);
   }
 
   /**
@@ -785,6 +841,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
      * @see org.apache.uima.cas.ComponentInfo#mapToSofaID(java.lang.String)
      * 
      */
+    @Override
     public String mapToSofaID(String aSofaName) {
       int index = aSofaName.indexOf(".");
       String nameToMap = aSofaName;
@@ -804,5 +861,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       return absoluteSofaName;
     }
 
+  }
+  
+  public void setLoggingThrottleLimit(Integer v) {
+    loggingThrottleLimit = v;
+  }
+
+  public String getMdcId() {
+    return mdcUniqueId;
   }
 }

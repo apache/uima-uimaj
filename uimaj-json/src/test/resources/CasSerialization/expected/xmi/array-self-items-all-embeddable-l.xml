@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:tcas="http:///uima/tcas.ecore" xmi:version="2.0">
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmi:version="2.0">
     <cas:NULL xmi:id="0"/>
-    <test:RefTypes xmi:id="1" sofa="8" begin="0" end="0" aListFs="15 22 29"/>
-    <cas:NonEmptyFSList xmi:id="41" head="15" tail="44"/>
-    <cas:Sofa xmi:id="8" sofaNum="1" sofaID="_InitialView"/>
-    <test:RefTypes xmi:id="15" sofa="8" begin="0" end="0"/>
-    <cas:NonEmptyFSList xmi:id="44" head="22" tail="47"/>
-    <test:RefTypes xmi:id="22" sofa="8" begin="0" end="0"/>
-    <cas:NonEmptyFSList xmi:id="47" head="29" tail="50"/>
-    <test:RefTypes xmi:id="29" sofa="8" begin="0" end="0"/>
-    <cas:EmptyFSList xmi:id="50"/>
-    <cas:View sofa="8" members="1 41"/>
+    <test:RefTypes xmi:id="1" sofa="2" begin="0" end="0" aListFs="3 4 5"/>
+    <cas:NonEmptyFSList xmi:id="7" tail="8" head="3"/>
+    <cas:Sofa xmi:id="2" sofaNum="1" sofaID="_InitialView"/>
+    <cas:NonEmptyFSList xmi:id="8" tail="9" head="4"/>
+    <cas:NonEmptyFSList xmi:id="9" tail="10" head="5"/>
+    <cas:EmptyFSList xmi:id="10"/>
+    <test:RefTypes xmi:id="5" sofa="2" begin="0" end="0"/>
+    <test:RefTypes xmi:id="4" sofa="2" begin="0" end="0"/>
+    <test:RefTypes xmi:id="3" sofa="2" begin="0" end="0"/>
+    <cas:View sofa="2" members="1 7"/>
 </xmi:XMI>

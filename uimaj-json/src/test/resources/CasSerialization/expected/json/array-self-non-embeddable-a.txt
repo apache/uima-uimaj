@@ -1,12 +1,12 @@
 {
   "_views" : {
     "_InitialView" : {
-      "FSArray" : [36 ], 
+      "FSArray" : [6 ], 
       "RefTypes" : [
-        {"sofa" : 8,  "aArrayFS" : 36 },  15,  22,  29 ] } }, 
+        {"sofa" : 2,  "aArrayFS" : 6 },  3,  4,  5 ] } }, 
   "_referenced_fss" : {
-    "8" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "36" : {"_type" : "FSArray",  "_collection" : [15,  22,  29 ] }, 
-    "15" : {"_type" : "RefTypes",  "sofa" : 8 }, 
-    "22" : {"_type" : "RefTypes",  "sofa" : 8 }, 
-    "29" : {"_type" : "RefTypes",  "sofa" : 8 } } }
+    "2" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "6" : {"_type" : "FSArray",  "_collection" : [3,  4,  5 ] }, 
+    "3" : {"_type" : "RefTypes",  "sofa" : 2 }, 
+    "4" : {"_type" : "RefTypes",  "sofa" : 2 }, 
+    "5" : {"_type" : "RefTypes",  "sofa" : 2 } } }

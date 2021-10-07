@@ -70,12 +70,20 @@ under the License.
     easy-to-use, native Java interface to the CAS called the <emphasis>JCas</emphasis>.
     The JCas represents each feature structure as a Java object; the example feature
     structure from the previous paragraph would be an instance of a Java class Person with
-    getFullName() and setFullName() methods. Though the examples in this guide all use the
-    JCas, it is also possible to directly access the underlying CAS system; for more
-    information see <olink targetdoc="&uima_docs_ref;"/>
-    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>
-    .</para>
+    getFullName() and setFullName() methods. 
+  </para>
   
+  <para>The CAS interface for accessing feature structures uses UIMA Type an Feature object instances,
+    which are computed at run time, depending on the type system being used.  This interface supports
+    writing general annotators which can work for all type systems.  It is used, for example, internally,
+    in the CasCopier implementation, to copy the content of one CAS to another.
+  </para>
+  
+  <para>The JCas interface can take advantage of knowing ahead of time the particular Types and Features
+    a pipeline is using.  The JCas Classes correspond to a particular UIMA type, and the class includes 
+    special setters and getters whose names match the features.
+  </para>
+    
   <para>The remainder of this chapter will refer to the analysis of text documents and the
     creation of annotations that are attached to spans of text in those documents. Keep in mind
     that the CAS can represent arbitrary types of feature structures, and feature structures
@@ -153,9 +161,8 @@ under the License.
       Also you may wish to refer to the UIMA SDK Javadocs located in the <ulink
         url="api/index.html">docs/api/index.html</ulink> directory.</para>
     
-        <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
-    Javadocs, you can conveniently have Eclipse open the corresponding Javadoc for that
-    class or method in a browser, by pressing Shift + F2.</para></note>
+        <note><para>If you hover over a UIMA class or method defined in the UIMA SDK
+    Javadocs, the Javadocs appear after a short delay. </para></note>
     <note><para>If you downloaded the source distribution for UIMA, you can attach that as
     well to the library Jar files; for information on how to do this, see
     <olink targetdoc="&uima_docs_ref;"/>
@@ -453,28 +460,25 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   // get document text
   String docText = aJCas.getDocumentText();
   // search for Yorktown room numbers
-  Matcher matcher = mYorktownPattern.matcher(docText);
+  Matcher m = mYorktownPattern.matcher(docText);
   int pos = 0;
-  while (matcher.find(pos)) {
-    // found one - create annotation
-    RoomNumber annotation = new RoomNumber(aJCas);
-    annotation.setBegin(matcher.start());
-    annotation.setEnd(matcher.end());
+  while (m.find(pos)) {
+    // found one - create annotation, with the begin/end positions
+    RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
     annotation.setBuilding("Yorktown");
     annotation.addToIndexes();
-    pos = matcher.end();
+    pos = m.end();
   }
+  
   // search for Hawthorne room numbers
-  matcher = mHawthornePattern.matcher(docText);
+  m = mHawthornePattern.matcher(docText);
   pos = 0;
-  while (matcher.find(pos)) {
-    // found one - create annotation
-    RoomNumber annotation = new RoomNumber(aJCas);
-    annotation.setBegin(matcher.start());
-    annotation.setEnd(matcher.end());
+  while (m.find(pos)) {
+    // found one - create annotation, with the begin/end positions
+    RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
     annotation.setBuilding("Hawthorne");
     annotation.addToIndexes();
-    pos = matcher.end();
+    pos = m.end();
   }
 }</programlisting>
       
@@ -483,9 +487,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         calling some set methods:</para>
       
       
-      <programlisting>RoomNumber annotation = new RoomNumber(aJCas);
-annotation.setBegin(matcher.start());
-annotation.setEnd(matcher.end());
+      <programlisting>RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
 annotation.setBuilding("Yorktown");</programlisting>
       
       <para>The <literal>RoomNumber</literal> class was generated from the type system description by the
@@ -929,40 +931,101 @@ public void initialize(UimaContext aContext)
       <title>Logging</title>
       
       <para>The UIMA SDK provides a logging facility, which is very similar to the
-        java.util.logging.Logger class that was introduced in Java 1.4.</para>
+        java.util.logging.Logger class that was introduced in Java 1.4.
+        In addition, it includes the SLF4j framework <ulink url="https://www.slf4j.org/"/>
+        and all the methods in that framework's <code>Logger</code> API, plus
+        the Java 8 specific API extensions that take <code>Supplier</code> parameters.</para>
       
-      <para>In the Java architecture, each logger instance is associated with a name. By
-        convention, this name is often the fully qualified class name of the component
-        issuing the logging call. The name can be referenced in a configuration file when
-        specifying which kinds of log messages to actually log, and where they should
-        go.</para>
+      <para>Each logger instance is associated with a name. By
+        convention, this name is usually a hierarchy of simple names connected with periods, 
+        often the fully qualified class name of the component
+        issuing the logging call. The name (or any of its parents - starting prefixes up to a period) 
+        can be referenced in a configuration file which can then configure for each logger
+        various things such as the logging level and where messages should go.</para>
       
       <para>The UIMA framework supports this convention using the
         <literal>UimaContext</literal> object. If you access a logger instance using
-        <literal>getContext().getLogger()</literal> within an Annotator, the logger
+        <literal>getContext().getLogger()</literal> or the shorter, but equivalent
+        <literal>getLogger()</literal>
+        within an Annotator, the logger
         name will be the fully qualified name of the Annotator implementation class.</para>
-      
+              
       <para>Here is an example from the process method of
         <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal>:
         
+        <programlisting>getLogger().trace("Found: {}", () -> annotation.toString());</programlisting>
+      </para>
+
+      <para>The <code>trace</code> call 
+        indicates that this is a tracing message. This is useful for tracing program flow, but it is a low level which
+        is not usually enabled. 
+      </para>
         
-        <programlisting>getContext().getLogger().log(Level.FINEST,"Found: " + annotation);</programlisting>
+      <para>
+        The first parameter is the message, with substitutable parts.  The convention for where those parts go is
+        written as either {} or {n}, where "n" is an integer, specifying the argument number.  
+        The modern logging APIs use the {} style, with API calls such as 
+        <code>logger.**level**( msg-using-{}-convention, substitutable-arguments)</code>, while the older
+        java.util.logger framework uses <code>logger.log(**level**, msg-using-{n} convention, substitutable-arguments)</code>.
+      </para>
+        
+      <para>
+        UIMA supports both styles.  
+        For new code, it is recommended to use the first style, together with the Java 8 lambda method for the arguments, which 
+        insures that the work of turning the <code>annotation</code>
+        argument into a printable string only will happen if tracing is enabled.
+      </para>
+         
+      <para>Log statements are "filtered" according to the logging configuration, by Level, and sometimes by
+        additional indicators, such as Markers.  Levels work in a hierarchy.  A given level of 
+        filtering passes that level and all higher levels.  Some levels have two names, due to the 
+        way the different logger back ends name things.  Most levels are also used as method names on 
+        the logger, to indicate logging for that level.  For example, you could say <code>aLogger.log(Level.INFO, message)</code>
+        but you can also say <code>aLogger.info(message)</code>). The level ordering, highest to lowest, 
+        and the associated method names are as follows:
+        <itemizedlist spacing="compact">
+          <listitem><para>SEVERE or ERROR; error(...)</para></listitem>
+          <listitem><para>WARN or WARNING; warn(...)</para></listitem>
+          <listitem><para>INFO; info(...)</para></listitem>
+          <listitem><para>CONFIG; info(UIMA_MARKER_CONFIG, ...)</para></listitem>
+          <listitem><para>FINE or DEBUG; debug(...)</para></listitem>
+          <listitem><para>FINER or TRACE; trace(...)</para></listitem>
+          <listitem><para>FINEST; trace(UIMA_MARKER_FINEST, ...)</para></listitem>
+        </itemizedlist>
         </para>
+        
+        <para>The CONFIG and FINEST levels are merged with other levels, but are distinguished by having 
+        <code>Markers</code>.  If the filtering is configured to pass CONFIG level, then it will pass also the
+        INFO/WARN/ERROR  (or their alternative names WARNING/SEVERE) levels as well.
+        </para>
+       
       
-      <para>The first argument to the log method is the level of the log output. Here, a value of
-        FINEST indicates that this is a highly-detailed tracing message. While useful for
-        debugging, it is likely that real applications will not output log messages at this
-        level, in order to improve their performance. Other defined levels, from lowest to
-        highest importance, are FINER, FINE, CONFIG, INFO, WARNING, and SEVERE.</para>
+      <para>Each logging backend has its own documentation for how 
+        to configure loggers at run time, via configuration files or APIs in some cases.
+        Some backends even allow dynamic reconfiguration
+        while running, just by updating the configuration file (it is re-loaded every so often, if changed).
+      </para>
       
-      <para>If no logging configuration file is provided (see next section), the Java
-        Virtual Machine defaults would be used, which typically set the level to INFO and
+      <para>For the built-in-to-Java logging back end, if no logging configuration file is provided (see next section), 
+        the Java Virtual Machine defaults would be used, which typically set the level to INFO and
         higher messages, and direct output to the console.</para>
-      
-      <para>If you specify the standard UIMA SDK <literal>Logger.properties,</literal>
+                
+      <para>The UIMA logger is by default implemented using an SLF4J implementation; this (in turn) connects to
+        a logging back end, determined via a search of the classpath for a connector.  If none can be found,
+        then a message to that effect will be printed to System.err, and no logging will be done.
+        The binary distribution for UIMA includes, in its <code>lib</code> directory, the 
+        Jar which connects SLF4j to the Java-built-in logger to use as
+        its back end, so if you use the standard launchers, you will get this logging back end. 
+        </para>
+        
+      <para>Assuming you are using the Java-built-in-logger as the back-end, 
+        if you specify the configuration using the standard UIMA SDK <literal>Logger.properties</literal>
+        (found in <code>UIMA_HOME/config/</code>),
         the output will be directed to a file named uima.log, in the current working directory
         (often the <quote>project</quote> directory when running from Eclipse, for
-        instance).</para> <note><para>When using Eclipse, the uima.log file, if written
+        instance).</para> 
+        
+        <note><para>When using Eclipse, the uima.log file, if written
       into the Eclipse workspace in the project uimaj-examples, for example, may not appear
       in the Eclipse package explorer view until you right-click the uimaj-examples project
       with the mouse, and select <quote>Refresh</quote>. This operation refreshes the
@@ -971,12 +1034,15 @@ public void initialize(UimaContext aContext)
       Preferences &rarr; General &rarr; Workspace, then click the <quote>refresh
       automatically</quote> checkbox.</para></note>
       
+      <para>The next several sections mainly describe how to configure the built-in
+        Java logger.  See the documentation for other logging back ends for 
+        details on how to configure those.</para>
+         
       <section id="ugr.tug.aae.logging.configuring">
-        <title>Specifying the Logging Configuration</title>
+        <title>Specifying the Logging Configuration when using Java's built-in logger</title>
         
-        <para>The standard UIMA logger uses the underlying Java 1.4 logging mechanism. You
-          can use the APIs that come with that to configure the logging. In addition, the
-          standard Java 1.4 logging initialization mechanisms will look for a Java System
+        <para>The
+          standard Java built-in logging initialization mechanisms will look for a Java System
           Property named <literal>java.util.logging.config.file</literal> and if
           found, will use the value of this property as the name of a standard
           <quote>properties</quote> file, for setting the logging level. Please refer to
@@ -991,7 +1057,7 @@ public void initialize(UimaContext aContext)
           to the console. You can edit these files, or create additional ones, as described
           below, to change the logging behavior.</para>
         
-        <para>When running your own Java application, you can specify the location of the
+        <para>When running your own Java application, you can specify the location of this
           logging configuration file on your Java command line by setting the Java system
           property <literal>java.util.logging.config.file</literal> to be the logging
           configuration filename. This file specification can be either absolute or
@@ -1018,7 +1084,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.setting_logging_levels">
-        <title>Setting Logging Levels</title>
+        <title>Setting Logging Levels when using Java's built-in logger</title>
         
         <para>Within the logging control file, the default global logging level specifies
           which kinds of events are logged across all loggers. For any given facility this
@@ -1045,7 +1111,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.output_format">
-        <title>Format of logging output</title>
+        <title>Configuring the format of logging output when using Java's built-in logger</title>
         
         <para>The logging output is formatted by handlers specified in the properties file
           for configuring logging, described above. The default formatter that comes with
@@ -1062,7 +1128,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.meaning_of_severity_levels">
-        <title>Meaning of the logging severity levels</title>
+        <title>Meaning of the logging severity levels used by the UIMA logger</title>
         
         <para>These levels are defined by the Java logging framework, which was
           incorporated into Java as of the 1.4 release level. The levels are defined in the
@@ -1104,42 +1170,70 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.using_outside_of_an_annotator">
-        <title>Using the logger outside of an annotator</title>
+        <title>Using loggers outside of an annotator</title>
         
         <para>An application using UIMA may want to log its messages using the same logging
-          framework. This can be done by getting a reference to the UIMA logger, as follows:
+          framework. This can be done by getting a reference to the UIMA logger, as follows:                  
+          <programlisting>Logger logger = UIMAFramework.getLogger(TestClass.class);</programlisting>.
+        </para>
           
-          
-          <programlisting>Logger logger = UIMAFramework.getLogger(TestClass.class);</programlisting>
-          </para>
+        <para>You can also simply get a direct reference to an Slf4j logger using the standard approach:
+          <programlisting>org.slf4j.Logger logger = org.slf4j.LogFactory.getLogger(TestClass.class);</programlisting>
+        </para>
         
-        <para>The optional class argument allows filtering by class (if the log handler
-          supports this). If not specified, the name of the returned logger instance is
+        <para>The class argument specifies the name of the logger, using the fully qualified class name. 
+          For UIMA loggers, if not specified, the name of the returned logger instance is
           <quote>org.apache.uima</quote>.</para>
       </section>
       
       <section id="ugr.tug.aae.logging.change_logger_implementation">
         <title>Changing the underlying UIMA logging implementation</title>
         
-        <para>By default the UIMA framework use, under the hood of the UIMA Logger interface, the Java logging framework 
-        to do logging. But it is possible to change the logging implementation that UIMA use from Java logging to 
-        an arbitrary logging system when specifying the system property  
-          <programlisting>-Dorg.apache.uima.logger.class=&lt;loggerClass></programlisting>
-        when the UIMA framework is started.
-        </para>
-        <para>
-          The specified logger class must be available in the classpath and have to implement the 
-          <code>org.apache.uima.util.Logger</code> interface. 
+        <para>By default the UIMA framework uses, under the hood of the UIMA Logger interface, the 
+        SLF4J logging framework to do logging. This allows UIMA, when running embedded inside other frameworks,
+        to defer the choice of back-end logging frameworks to those applications.
         </para>
         
-        <para>
-          UIMA also provides a logging implementation that use Apache Log4j instead of Java logging. To
-          use Log4j you have to provide the Log4j jars in the classpath and your application 
-          must specify the logging configuration as shown below. 
-          <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=org.apache.uima.util.impl.Log4jLogger_impl</programlisting>
+        <para>For backwards compatibility with Version 2, the older methods (prior to Slf4j) for switching the
+        logger implementation remains.     
+        You do this by specifying the system property  
+          <programlisting>-Dorg.apache.uima.logger.class=&lt;loggerClass></programlisting>
+        when the UIMA framework is started.  
         </para>
+        <para>
+          The specified logger class must be available in the classpath and has to subclass the 
+          <code>org.apache.uima.util.Logger_common_impl</code> class. 
+        </para>
+
+        <para>For backwards compatibility, V3 continues to provide the class
+           <code>org.apache.uima.util.impl.Log4jLogger_impl</code> as an alternative
+           which can be specified this way by this JVM argument:
+           <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=org.apache.uima.util.impl.Log4jLogger_impl</programlisting>
+           to switch to the log4j back end.  This has been updated in V3 to <code>log4j 2</code>
+           (see <ulink url="https://logging.apache.org/log4j"/>).
+           If you use this, you must provide the required <code>Log4j 2</code> jars in the classpath.
+         </para>        
+                 
       </section>
       
+      <section id="uv3.logging.suppress_annotator_logging">
+        <title>Throttling excessive logging from Annotators</title>
+        
+        <para>Sometimes, in production, you may find annotators are logging excessively, and you wish to throttle 
+          this. But you may not have access to logging settings to control this,
+          perhaps because UIMA is running as a library component within another framework. 
+          For this special case,
+          you can limit logging done by Annotators by passing an additional parameter to the UIMA Framework's 
+          produceAnalysisEngine API, using the key name 
+          <code>AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING</code>
+          and setting the value to an Integer object equal to the the limit.  Using 0 will suppress all logging.
+          Any positive number allows that many log records to be logged, per level.  A limit of 10 would allow 
+          10 Errors, 10 Warnings, etc.  The limit is enforced separately, per logger instance.</para>
+          
+          <note><para>This only works if the logger used by Annotators is obtained from the 
+          Annotator base implementation class via the <code>getLogger()</code> method.</para></note>
+            
+      </section>  
       
     </section>
   </section>  
@@ -1306,50 +1400,54 @@ public void initialize(UimaContext aContext)
       <para>So far, we have been looking at annotators that look directly at the document text. However, annotators
         can also use the results of other annotators. One useful thing we can do at this point is look for the
         co-occurrence of a Date, a RoomNumber, and two Times &ndash; and annotate that as a Meeting.</para>
+        
+      <para>The <code>select</code> API, available on the CAS, JCas, and individual UIMA indexes, 
+        is the preferred way to get 
+        feature structures from the CAS and work with them.</para>  
       
       <para>The CAS maintains <emphasis>indexes</emphasis> of annotations, and from an index you can obtain an
-        iterator that allows you to step through all annotations of a particular type. Here&apos;s some example code
-        that would iterate over all of the TimeAnnot annotations in the JCas:
+        iterator that allows you to step through all annotations of a particular type in that index.
+        Indexes are optional; they allow you to specify a sorting order or can specify set-inclusion
+        criteria.  One built-in index is the Annotation index; this contains sorted instances of type Annotation 
+        or its subtypes.
+      </para> 
+      
+      <para>
+        Here&apos;s some example code
+        that would iterate over all of the TimeAnnot annotations in the JCas, in some unspecified order:
         
-        
-        <programlisting>FSIndex timeIndex = aJCas.getAnnotationIndex(TimeAnnot.type);
-Iterator timeIter = timeIndex.iterator();   
-while (timeIter.hasNext()) {
-  TimeAnnot time = (TimeAnnot)timeIter.next();
-
+        <programlisting>for (TimeAnnot : aJCas.select(TimeAnnot.class)) {
   //do something
 }</programlisting></para>
       
-      <note>
-      <para>You can also use the method
-        <literal>JCAS.getJFSIndexRepository().getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
-        over instances of <literal>YourClass</literal> in no particular order. 
+      <para>
+        The same code, but using the Annotation index to specify an ordering (assuming that
+        TimeAnnot is a subtype of Annotation):
         
-        <!-- Fixed by UIMA-4111 But beware - if you've defined
-        a <literal>set</literal> index for this type, and haven't defined any non-set indexes for this type, then,
-        the method would return only those instances in the set.  So, in a pathological case, if you defined the
-        set so that the key was some particular field, and all instances of this type had the same key, then 
-        only one instance of this type would be found.</para>
-        <para>To guarantee the existance of an index that would have an entry for all unique indexed 
-        Feature Structures, define a bag or sorted index for the type.
-        </para>.
-        
-
-        <para>All types which are subtypes of the built-in Annotation type have a sorted index, and so all instances of those
-        types are guaranteed to be found (at least once) by this iterator.   -->
-        
-        </para>
+        <programlisting>for (TimeAnnot : aJCas.getAnnotationIndex().select(TimeAnnot.class)) {
+  //do something
+}
+  // or
+for (TimeAnnot : aJCas.getAnnotationIndex(TimeAnnot.class).select()) {
+  //do something
+}
+</programlisting></para>
         
       <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"/>
         <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
-        specific index by calling <literal>aJCas.getJFSIndexRepository().getIndex(label)</literal>.
-        The <literal>getIndex(...)</literal> method has also a 2 argument form; the second argument, 
-      if used, specialized the index to subtype of the type the index was declared to index.  For instance,
+        specific index by calling <literal>aJCas.getIndex(label, clazz)</literal>.
+        The <literal>getIndex(...)</literal> method's second argument 
+      specialized the index to subtype of the type the index was declared to index.  For instance,
       if you defined an index called "allEvents" over the type <literal>Event</literal>, and wanted 
       to get an index over just a particular subtype of event, say, <literal>TimeEvent</literal>,
       you can ask for that index using 
-        <literal>aJCas.getJFSIndexRepository().getIndex("allEvents", TimeEvent.type)</literal>.</para></note>
+        <literal>aJCas.getIndex("allEvents", TimeEvent.class)</literal>.</para>
+      
+      
+      <para>Whereever the type is specified by TimeEvent.class, the APIs also allow the non-JCas 
+        specification of the type by passing an instance of a UIMA Type class. This alternative enables
+        writing code that can be used for any type, discovered at run time.</para>
       
       <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
         <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
@@ -2329,10 +2427,11 @@ documentAnalyzer</programlisting>
     
     <para>Here are some things to avoid doing in your annotator code:</para>
     
-    <para><emphasis role="bold">Retaining references to JCas objects between calls to
-      process()</emphasis></para>
+    <para><emphasis role="bold">Do not retain references to JCas objects between calls to
+      process() for different CASes</emphasis></para>
     
-    <para>The JCas will be cleared between calls to your annotator&apos;s process() method.
+    <para>The JCas will be cleared between calls to your annotator&apos;s process() method
+      for each new CAS.
       All of the analysis results related to the previous document will be deleted to make way
       for analysis of a new document. Therefore, you should never save a reference to a JCas
       Feature Structure object (i.e. an instance of a class created using JCasGen) and
@@ -2359,7 +2458,7 @@ documentAnalyzer</programlisting>
     <title>Viewing UIMA objects in the Eclipse debugger</title>
     <titleabbrev>UIMA Objects in Eclipse Debugger</titleabbrev>
     
-    <para>Eclipse (as of version 3.1 or later) has a new feature for viewing Java Logical
+    <para>Eclipse has a feature for viewing Java Logical
       Structures. When enabled, it will permit you to see a view of UIMA objects (such as
       feature structure instances, CAS or JCas instances, etc.) which displays the logical
       subparts. For example, here is a view of a feature structure for the RoomNumber
@@ -2376,8 +2475,8 @@ documentAnalyzer</programlisting>
     </mediaobject>
   </screenshot></para>
     
-    <para>The <quote>annotation</quote> object in Java shows as a 2 element object, not very
-      convenient for seeing the features or the part of the input that is being annotatoed. But
+    <para>The <quote>annotation</quote> object in Java shows the internals of the JCas object, not very
+      convenient for seeing the features or the part of the input that is being annotated. But
       if you turn on the Java Logical Structure mode by pushing this button:
       
       

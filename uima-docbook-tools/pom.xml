@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -32,6 +32,27 @@
 	<name>Apache UIMA SDK Documentation - tools</name>	
   <url>${uimaWebsiteUrl}</url>
  
+   <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
+  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <!-- next property is the name of the top file under src/docbook without trailing .xml -->

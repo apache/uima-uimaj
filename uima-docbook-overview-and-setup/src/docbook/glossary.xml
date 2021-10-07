@@ -71,7 +71,10 @@ region of text <quote>John Doe</quote> constitutes an annotation. We say
 
 in a UIMA <glossterm linkend="ugr.glossary.type_system">type system</glossterm>.
            It is the type used to record
-the labeling of regions of a <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm></para>
+the labeling of regions of a <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.
+          Annotations are <glossterm linkend="ugr.glossary.feature_structure">Feature Structures</glossterm>
+          whose <glossterm linkend="ugr.glossary.type">Type</glossterm> is Annotation or a subtype
+          of that.</para>
       </glossdef>
     </glossentry>
   
@@ -266,7 +269,8 @@ from the document is complex, you may use an arbitrarily complex chain of
           create and initialize a new <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.</para>
       </glossdef>
     </glossentry>
-  
+
+<!--   
     <glossentry id="ugr.glossary.fact_search">
       <glossterm>Fact Search</glossterm>
       <glossdef>
@@ -275,7 +279,20 @@ extracted from a collection of documents by a set of &ae;s that
 match the fact pattern.</para>
       </glossdef>
     </glossentry>
-  
+   -->
+   
+    <glossentry id="ugr.glossary.feature_structure">
+      <glossterm>Feature Structure</glossterm>
+      <glossdef>
+        <para>An instance of a <glossterm linkend="ugr.glossary.type">Type</glossterm>.
+        Feature Structures are kept in the <glossterm linkend="ugr.glossary.cas">CAS, and may
+        (optionally) be added to the defined <glossterm linkend="ugr.glossary.index">indexes</glossterm>.
+        Feature Structures may contain references to other Feature Structures.
+        Feature Structures whose type is Annotation or a subtype of that, are referred to as 
+        <glossterm linkend="ugr.glossary.annotation">annotations</glossterm>.</glossterm></para>
+      </glossdef>
+    </glossentry>
+    
     <glossentry id="ugr.glossary.feature">
       <glossterm>Feature</glossterm>
       <glossdef>
@@ -332,13 +349,14 @@ as well.</para>
       <glossterm>JCas</glossterm>
       <glossdef>
         <para>A Java object interface to the contents of the CAS.  
-          This interface use additional generated Java classes, where each type in the CAS
+          This interface uses additional generated Java classes, where each type in the CAS
 is represented as a Java class with the same name, each feature is represented with
 a getter and setter method, and each instance of a type is represented as a
 Java object of the corresponding Java class.</para>
       </glossdef>
     </glossentry>
   
+<!-- 
     <glossentry id="ugr.glossary.keyword_search">
       <glossterm>Keyword Search</glossterm>
       <glossdef>
@@ -346,7 +364,8 @@ Java object of the corresponding Java class.</para>
 and candidate documents are returned.</para>
       </glossdef>
     </glossentry>
-  
+ -->
+ <!--   
     <glossentry id="ugr.glossary.knowledge_base">
       <glossterm>Knowledge Base</glossterm>
       <glossdef>
@@ -354,7 +373,8 @@ and candidate documents are returned.</para>
 set of facts and rules considered true in a possible world.</para>
       </glossdef>
     </glossentry>
-  
+   -->
+   
     <glossentry id="ugr.glossary.loosely_coupled_analysis_engine">
       <glossterm>Loosely-Coupled &ae;</glossterm>
       <glossdef>
@@ -370,6 +390,7 @@ greater impact on overall throughput than analysis speed.</para>
       </glossdef>
     </glossentry>
   
+<!--  -->
     <glossentry id="ugr.glossary.ontology">
       <glossterm></glossterm>
       <glossdef>
@@ -377,7 +398,8 @@ greater impact on overall throughput than analysis speed.</para>
 axiomatically.</para>
       </glossdef>
     </glossentry>
-  
+ -->
+   
     <glossentry id="ugr.glossary.pear">
       <glossterm>PEAR</glossterm>
       <glossdef>
@@ -399,7 +421,8 @@ contrast with
           <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>.</para>
       </glossdef>
     </glossentry>
-  
+ 
+ <!--  
     <glossentry id="ugr.glossary.semantic_search">
       <glossterm>Semantic Search</glossterm>
       <glossdef>
@@ -410,7 +433,8 @@ Such a query would then not return results about the kind of bushes that grow
 in your garden but rather just persons named Bush.</para>
       </glossdef>
     </glossentry>
-  
+ -->
+ 
     <glossentry id="ugr.glossary.structured_information">
       <glossterm>Structured Information</glossterm>
       <glossdef>

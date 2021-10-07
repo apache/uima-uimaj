@@ -80,6 +80,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
               new Object[] { getSourceUrlString() });
     }
     // try to load user class
+
     // use UIMA extension ClassLoader if available
     Class<?> implClass;
     try {
@@ -95,7 +96,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
                   getImplementationName(), CollectionReader.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
-    ArrayList<ProcessingResourceMetaData> metadata = new ArrayList<ProcessingResourceMetaData>();
+    ArrayList<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCollectionReaderMetaData());
     CasCreationUtils.createCas(metadata, 
         UIMAFramework.getDefaultPerformanceTuningProperties(),

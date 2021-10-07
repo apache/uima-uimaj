@@ -24,24 +24,38 @@ import java.util.Properties;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
+
 /**
+ * The Class AbstractModelPart.
  */
 public class AbstractModelPart {
 
+  /** The Constant casCreateProperties. */
   public static final Properties casCreateProperties = new Properties();
   static {
     casCreateProperties.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "200");
+    casCreateProperties.setProperty(UIMAFramework.SKIP_USER_JCAS_LOADING, "true");
   }
 
+  /** The model root. */
   protected MultiPageEditor modelRoot;
 
+  /** The dirty. */
   protected boolean dirty;
 
+  /**
+   * Instantiates a new abstract model part.
+   *
+   * @param pMPE the mpe
+   */
   public AbstractModelPart(MultiPageEditor pMPE) {
     modelRoot = pMPE;
     dirty = true;
   }
 
+  /**
+   * Mark dirty.
+   */
   public void markDirty() {
     dirty = true;
   }

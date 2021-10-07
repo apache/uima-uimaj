@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Arrays;
 
 /**
- * Encapsulate 64 bit storage for a CAS.
+ * the v2 CAS long aux heap - used in modeling some binary (de)serialization
  */
 final class LongHeap extends CommonAuxHeap {
 
@@ -77,6 +77,22 @@ final class LongHeap extends CommonAuxHeap {
     heap[pos] = val;
     return pos;
   }
+  
+  int addLongArray(long[] val) {
+    int pos = reserve(val.length);
+    System.arraycopy(val, 0, heap, pos, val.length);
+    return pos;
+  }
+  
+  int addDoubleArray(double[] val) {
+    int pos = reserve(val.length);
+    int i = pos;
+    for (double d : val) {
+      heap[i++] = CASImpl.double2long(d);
+    }
+    return pos;    
+  }
+
 
   protected void reinit(long[] longHeap) {
     int argLength = longHeap.length;
@@ -85,6 +101,12 @@ final class LongHeap extends CommonAuxHeap {
 
     System.arraycopy(longHeap, 0, heap, 0, argLength);
     this.heapPos = argLength;
+  }
+
+  public long[] toArray() {
+    long[] r = new long[heapPos];
+    System.arraycopy(heap, 0, r, 0, heapPos);
+    return r;
   }
 
 }

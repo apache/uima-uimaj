@@ -25,6 +25,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+
 /**
  * The main plugin class.
  * 
@@ -37,6 +38,7 @@ public class PearPlugin extends AbstractUIPlugin {
    */
   public static final String PLUGIN_ID = "org.apache.uima.pear";//$NON-NLS-1$
 
+  /** The plugin. */
   // The shared instance.
   private static PearPlugin plugin;
 
@@ -49,7 +51,9 @@ public class PearPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * @return the shared instance.
+   * Returns the shared instance.
+   *
+   * @return the default
    */
   public static PearPlugin getDefault() {
     return plugin;
@@ -61,21 +65,25 @@ public class PearPlugin extends AbstractUIPlugin {
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
    */
   @Override
-public void stop(final BundleContext context) throws Exception {
+  public void stop(final BundleContext context) throws Exception {
     plugin = null;
     super.stop(context);
   }
 
   /**
-   * @return the workspace instance.
+   * Returns the workspace instance.
+   *
+   * @return the workspace
    */
   public static IWorkspace getWorkspace() {
     return ResourcesPlugin.getWorkspace();
   }
 
   /**
-   * @param relativePath -
-   * @return the image descriptor with the given path relative to the icons/ directory
+   * Returns the image descriptor with the given path relative to the icons/ directory.
+   *
+   * @param relativePath the relative path
+   * @return the image descriptor
    */
   public static ImageDescriptor getImageDescriptor(final String relativePath) {
     return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/" + relativePath); //$NON-NLS-1$

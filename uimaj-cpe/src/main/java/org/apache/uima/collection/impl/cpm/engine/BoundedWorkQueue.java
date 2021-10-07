@@ -26,6 +26,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.util.Level;
 
+
 /**
  * Implementation of a Bounded Queue, a queue with a fixed number of slots. Used primarily to feed
  * data to Processing Units, it is filled by a producer like ArtifactProducer and consumed by
@@ -38,21 +39,28 @@ import org.apache.uima.util.Level;
  * 
  */
 public class BoundedWorkQueue {
+  
+  /** The queue max size. */
   protected final int queueMaxSize;
 
+  /** The queue. */
   protected LinkedList queue = new LinkedList();
 
+  /** The number elements in queue. */
   protected int numberElementsInQueue = 0;
 
+  /** The queue name. */
   protected String queueName = "";
 
+  /** The cpm. */
   protected CPMEngine cpm;
 
+  /** The Constant WAIT_TIMEOUT. */
   protected static final int WAIT_TIMEOUT = 50;
 
   /**
-   * Initialize the instance
-   * 
+   * Initialize the instance.
+   *
    * @param aQueueSize -
    *          fixed size for this queue (capacity)
    * @param aQueueName -
@@ -67,8 +75,8 @@ public class BoundedWorkQueue {
   }
 
   /**
-   * Returns Queue name
-   * 
+   * Returns Queue name.
+   *
    * @return - name of the queue
    */
   public String getName() {
@@ -94,8 +102,8 @@ public class BoundedWorkQueue {
   }
 
   /**
-   * Returns the queue capacity
-   * 
+   * Returns the queue capacity.
+   *
    * @return - queue max size
    */
   public int getCapacity() {
@@ -287,6 +295,11 @@ public class BoundedWorkQueue {
     return resource;
   }
 
+  /**
+   * Invalidate.
+   *
+   * @param aCasObjectList the a cas object list
+   */
   public void invalidate(CAS[] aCasObjectList) {
   }
 }

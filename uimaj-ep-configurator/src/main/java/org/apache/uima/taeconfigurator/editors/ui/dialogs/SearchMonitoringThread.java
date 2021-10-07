@@ -22,22 +22,40 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Display;
 
+
+/**
+ * The Class SearchMonitoringThread.
+ */
 public class SearchMonitoringThread extends Thread {
+  
+  /** The m search thread. */
   private SearchThread m_searchThread;
 
+  /** The m dialog. */
   FindComponentDialog m_dialog;
 
+  /**
+   * Instantiates a new search monitoring thread.
+   *
+   * @param dialog the dialog
+   * @param searchThread the search thread
+   */
   public SearchMonitoringThread(FindComponentDialog dialog, SearchThread searchThread) {
     m_dialog = dialog;
     m_searchThread = searchThread;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Thread#run()
+   */
+  @Override
   public void run() {
     while (true) {
       if (m_searchThread.isDone()) {
         if (!m_dialog.getStatusLabel1().isDisposed()) {
           Display display = m_dialog.getStatusLabel1().getDisplay();
           display.syncExec(new Runnable() {
+            @Override
             public void run() {
               m_dialog.buttonPressed(IDialogConstants.CANCEL_ID);
             }

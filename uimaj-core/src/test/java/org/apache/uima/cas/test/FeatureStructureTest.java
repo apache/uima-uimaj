@@ -19,21 +19,27 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for FeatureStructureTest.java goes here.
@@ -41,19 +47,19 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public class FeatureStructureTest extends TestCase {
 
-	private CAS cas;
+	private CASImpl cas;
 
-	private TypeSystem ts;
+	private TypeSystemImpl ts;
 
 	private Type topType;
 
 	private Type stringType;
 
-	private Type tokenType;
+	private TypeImpl tokenType;
 
 	private Type intType;
 
-	private Type tokenTypeType;
+	private TypeImpl tokenTypeType;
 
 	private Type wordType;
 
@@ -82,6 +88,8 @@ public class FeatureStructureTest extends TestCase {
 	private Feature sentLenFeat;
 
 	private Feature tokenFloatFeat;
+	private Feature tokenLongFeat;
+	private Feature tokenDoubleFeat;
 
 	private Feature startFeature;
 
@@ -100,9 +108,9 @@ public class FeatureStructureTest extends TestCase {
 
 	public void setUp() {
 		try {
-			this.cas = CASInitializer.initCas(new CASTestSetup());
+			this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
 			assertTrue(this.cas != null);
-			this.ts = this.cas.getTypeSystem();
+			this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
 			assertTrue(this.ts != null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -136,6 +144,10 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(this.sentLenFeat != null);
 		this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
 		assertTrue(this.tokenFloatFeat != null);
+    this.tokenDoubleFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_DOUBLE_FEAT_Q);
+    assertTrue(this.tokenDoubleFeat != null);
+    this.tokenLongFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_LONG_FEAT_Q);
+    assertTrue(this.tokenLongFeat != null);
 		this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
 		assertTrue(this.startFeature != null);
 		this.langPairType = this.ts.getType(CASTestSetup.LANG_PAIR);
@@ -180,7 +192,7 @@ public class FeatureStructureTest extends TestCase {
 	}
 
 	public void testErrorDerefDifferentCAS() {
-	  CAS cas2 = CASInitializer.initCas(new CASTestSetup());
+	  CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
 	  Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
 	  Feature tokenTypeFeature = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":" + CASTestSetup.TOKEN_TYPE_FEAT);
 	  FeatureStructure fs1 = cas2.createFS(tokenType1);
@@ -203,6 +215,96 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(word.getType().equals(wordType1));
 		assertTrue(token.getType().equals(tokenType1));
 	}
+	
+	/**
+	 * This test tests V2 backwards compatibility 
+	 * The goal is to match what V2 did for low level cas access
+	 * The area this is testing is the use of the LL int operations to change the type of an existing feature structure.
+	 */
+	public void testLLsetType() {
+	  LowLevelCAS llc = cas.getLowLevelCAS();
+    FSArray fsa = new FSArray(ts.getType(CAS.TYPE_NAME_FS_ARRAY), cas, 3);
+    fsa.addToIndexes();  // otherwise won't be replaced later
+    NonEmptyFSList  fsl = new NonEmptyFSList(ts.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST), cas);
+    fsl.addToIndexes(); // otherwise won't be replaced later
+    
+    Annotation token = this.cas.createFS(tokenType);
+    cas.setId2FSsMaybeUnconditionally(token);  
+    
+    // set up some refs; these must be updated if the type changes in a way to require a new FS
+    fsa.set(0, token);   // set the 0th  element of a FS Array to point to the "token"
+    fsl.setHead(token);  // set the head element of a FS List to point to the "token"
+    int tokId = token._id();
+    
+    // set some feature values; some of these are copied (if there's room, etc.)
+    TOP ttfv = cas.createFS(tokenTypeType);
+    token.setFeatureValue(tokenTypeFeat, ttfv);
+    token.setFloatValue(tokenFloatFeat, 1.1f);
+    assertEquals(1.1f, token.getFloatValue(tokenFloatFeat));
+    token.setDoubleValue(tokenDoubleFeat, 1.7d);
+    assertEquals(1.7d, token.getDoubleValue(tokenDoubleFeat));
+    token.setBegin(3);
+    token.setEnd(5);
+    
+    Sofa sofa = (Sofa) token.getSofa();
+    assertTrue(sofa != null);
+    assertTrue(fsa.get(0) == token);
+    assertTrue(fsl.getHead() == token);
+    
+    // change the type to just Annotation
+    // because this is a supertype, it should not create a new FS
+    
+    llc.ll_setIntValue(tokId, 0, TypeSystemConstants.annotTypeCode);
+    Annotation fs = cas.getFsFromId(tokId);
+    assertTrue(fs == token);
+    assertTrue(fs._id() == token._id());
+    assertEquals(ts.annotType, fs._getTypeImpl());
+    assertEquals(fs.getBegin(), 3);
+    assertEquals(fs.getEnd(), 5);
+    assertEquals(sofa, fs.getSofa());
+    assertTrue(fsa.get(0) == fs);
+    assertTrue(fsl.getHead() == fs);
+    
+    // Change Annotation back to Token type    
+    
+    llc.ll_setIntValue(tokId, 0, tokenType.getCode());
+    token = cas.getFsFromId(tokId);
+    assertTrue(fs == token);
+    assertTrue(fs._id() == token._id());
+    assertEquals(fs.getBegin(), 3);
+    assertEquals(fs.getEnd(), 5);
+    assertEquals(sofa, fs.getSofa());
+    assertEquals(1.1f, token.getFloatValue(tokenFloatFeat));
+    assertEquals(ttfv, token.getFeatureValue(tokenTypeFeat));
+    assertTrue(fsa.get(0) == token);
+    assertTrue(fsl.getHead() == token);
+    
+    // change type where the type forces a copy
+    // token -> token_type_type
+    //  These types are completely orthogonal, one doesn't subsume the other
+    
+    llc.ll_setIntValue(tokId,  0,  tokenTypeType.getCode());
+    TOP ttt = cas.getFsFromId(tokId);
+    assertTrue(ttt != token);
+    assertTrue(ttt._id() == tokId);
+    assertEquals(ttt._getTypeImpl(), tokenTypeType);
+    assertTrue(fsa.get(0) == ttt);
+    assertTrue(fsl.getHead() == ttt);
+    
+    
+    llc.ll_setIntValue(tokId,  0,  tokenType.getCode());
+    token = cas.getFsFromId(tokId);
+    assertTrue(ttt != token);
+    assertTrue(ttt._id() == token._id());
+    assertEquals(token.getBegin(), 0);
+    assertEquals(token.getEnd(), 0);
+    assertEquals(sofa, token.getSofa());
+    assertEquals(0.0f, token.getFloatValue(tokenFloatFeat));
+    assertEquals(null, token.getFeatureValue(tokenTypeFeat));
+    assertTrue(fsa.get(0) == token);
+    assertTrue(fsl.getHead() == token);
+
+	}
 
 	public void testSetArrayValuedFeature() {
 		FeatureStructure testFS = this.cas.createFS(this.arrayFsWithSubtypeType);
@@ -221,8 +323,12 @@ public class FeatureStructureTest extends TestCase {
 	}
 
 	public void testSetFeatureValue() {
-		FeatureStructure token = this.cas.createFS(this.tokenType);
-		assertTrue(token.getFeatureValue(this.tokenTypeFeat) == null);
+//		FeatureStructure token = this.cas.createFS(this.tokenType);
+    LowLevelCAS llcas = cas.getLowLevelCAS();
+    int i = llcas.ll_createFS(this.tokenType.getCode());
+    AnnotationFS token = llcas.ll_getFSForRef(i);
+
+    assertTrue(token.getFeatureValue(this.tokenTypeFeat) == null);
 		assertTrue(token.getStringValue(this.lemmaFeat) == null);
 		boolean caughtExc = false;
 		try {
@@ -253,10 +359,20 @@ public class FeatureStructureTest extends TestCase {
 		try {
 			token.setFeatureValue(this.startFeature, null);
 		} catch (CASRuntimeException e) {
-			assertTrue(e.getMessageKey().equals(CASRuntimeException.PRIMITIVE_VAL_FEAT));
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 			caughtExc = true;
 		}
 		assertTrue(caughtExc);
+		
+		// a "getter" test, not "setter" test, on purpose
+    caughtExc = false;
+    try {
+      token.getFeatureValue(this.startFeature);
+    } catch (CASRuntimeException e) {
+      assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE_NOT_FS));
+      caughtExc = true;
+    }
+    assertTrue(caughtExc);
 
 		assertTrue(token.getStringValue(this.lemmaFeat) == null);
 		String testString = "test";
@@ -266,19 +382,23 @@ public class FeatureStructureTest extends TestCase {
 		token.setStringValue(this.lemmaFeat, testString);
 		assertTrue(token.getStringValue(this.lemmaFeat).equals(testString));
 		
-    // test low level
-    LowLevelCAS llcas = cas.getLowLevelCAS();
-    token.setFeatureValue(tokenTypeFeat, word);
-    int fsRef = ((FeatureStructureImpl)token).getAddress();
-    int fc = ((FeatureImpl)tokenTypeFeat).getCode();
-    assertEquals(llcas.ll_getIntValue(fsRef, fc), word.hashCode());
-    FeatureStructureImpl word2 = cas.createFS(wordType);
-    llcas.ll_setIntValue(fsRef, fc, word2.hashCode());
-    assertEquals(token.getFeatureValue(tokenTypeFeat), word2);
+		// test low level
+		token.setFeatureValue(tokenTypeFeat, word);
+		int fsRef = token._id();
+		int fc = ((FeatureImpl)tokenTypeFeat).getCode();
+		assertEquals(llcas.ll_getIntValue(fsRef, fc), word._id());
+		int word2_id = llcas.ll_createFS(((TypeImpl)wordType).getCode());
+		TOP word2 = llcas.ll_getFSForRef(word2_id);
+//		TOP word2 = cas.createFS(wordType);
+		llcas.ll_setIntValue(fsRef, fc, word2._id());
+		assertEquals(token.getFeatureValue(tokenTypeFeat), word2);
 	}
 
 	public void testSetFloatValue() {
-		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+//		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+    LowLevelCAS llcas = cas.getLowLevelCAS();
+    int i = llcas.ll_createFS(this.tokenType.getCode());
+    Annotation token = llcas.ll_getFSForRef(i);
 		assertTrue(token.getFloatValue(this.tokenFloatFeat) == 0.0f);
 		float f = -3.2f;
 		token.setFloatValue(this.tokenFloatFeat, f);
@@ -300,14 +420,82 @@ public class FeatureStructureTest extends TestCase {
 			token.setFloatValue(this.sentLenFeat, 0.0f);
 		} catch (CASRuntimeException e) {
 			caughtExc = true;
-			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_FEAT));
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 		}
 		assertTrue(caughtExc);
 		assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
+		
+		// low level
+		int ffc = ((FeatureImpl)tokenFloatFeat).getCode();
+		llcas.ll_setIntValue(token._id(), ffc, CASImpl.float2int(123.456f));
+		assertEquals(token.getFloatValue(tokenFloatFeat), 123.456f);
+		assertEquals(llcas.ll_getIntValue(token._id(), ffc), CASImpl.float2int(123.456f));
 	}
+	
+  public void testSetLongValue() {
+//	  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+    LowLevelCAS llcas = cas.getLowLevelCAS();
+    int i = llcas.ll_createFS(this.tokenType.getCode());
+    AnnotationFS token = llcas.ll_getFSForRef(i);
+    assertTrue(token.getLongValue(this.tokenLongFeat) == 0.0f);
+    long f = -34L;
+    token.setLongValue(this.tokenLongFeat, f);
+    assertTrue(token.getLongValue(this.tokenLongFeat) == f);
+    f = 8_000_000_003L;
+    token.setLongValue(this.tokenLongFeat, f);
+    assertTrue(token.getLongValue(this.tokenLongFeat) == f);
+    f = -8_000_000_003L;
+    token.setLongValue(this.tokenLongFeat, f);
+    assertTrue(token.getLongValue(this.tokenLongFeat) == f);
+    
+    // low level
+    int ffc = ((FeatureImpl)tokenLongFeat).getCode();
+    int h = llcas.ll_getIntValue(token._id(), ffc);
+    assertEquals(1, h);
+    
+    long g = 23;
+    token.setLongValue(this.tokenLongFeat, g);
+    assertEquals(g, token.getLongValue(this.tokenLongFeat));
+    
+    llcas.ll_setIntValue(token._id(), ffc, h);
+    assertEquals(f, token.getLongValue(this.tokenLongFeat));
+  }
+
+  public void testSetDoubleValue() {
+//    AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+    LowLevelCAS llcas = cas.getLowLevelCAS();
+    int i = llcas.ll_createFS(this.tokenType.getCode());
+    AnnotationFS token = llcas.ll_getFSForRef(i);
+    assertTrue(token.getDoubleValue(this.tokenDoubleFeat) == 0.0f);
+    double f = -34.56D;
+    token.setDoubleValue(this.tokenDoubleFeat, f);
+    assertTrue(token.getDoubleValue(this.tokenDoubleFeat) == f);
+    f = 8_000_000_003.24852D;
+    token.setDoubleValue(this.tokenDoubleFeat, f);
+    assertTrue(token.getDoubleValue(this.tokenDoubleFeat) == f);
+    f = -8_000_000_003D;
+    token.setDoubleValue(this.tokenDoubleFeat, f);
+    assertTrue(token.getDoubleValue(this.tokenDoubleFeat) == f);
+    
+    // low level
+    int ffc = ((FeatureImpl)tokenDoubleFeat).getCode();
+    int h = llcas.ll_getIntValue(token._id(), ffc);
+    assertEquals(1, h);
+    
+    double g = 23;
+    token.setDoubleValue(this.tokenDoubleFeat, g);
+    assertEquals(g, token.getDoubleValue(this.tokenDoubleFeat));
+    
+    llcas.ll_setIntValue(token._id(), ffc, h);
+    assertEquals(f, token.getDoubleValue(this.tokenDoubleFeat));
+  }
 
 	public void testSetIntValue() {
-		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+//		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+//  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+    LowLevelCAS llcas = cas.getLowLevelCAS();
+    int j = llcas.ll_createFS(this.tokenType.getCode());
+    AnnotationFS token = llcas.ll_getFSForRef(j);
 		assertTrue(token.getIntValue(this.startFeature) == 0);
 		int i = 3;
 		token.setIntValue(this.startFeature, i);
@@ -403,6 +591,27 @@ public class FeatureStructureTest extends TestCase {
 		llc.ll_setStringValue(addr, lemmaFeatCode, "test", true);
 		assertTrue(llc.ll_getCharBufferValueSize(addr, lemmaFeatCode) == 4);
 
+		// try accessing low level strings using ll_setIntValue
+		
+		final int stringcode = llc.ll_getIntValue(addr,  lemmaFeatCode);
+		assertTrue(stringcode == 1);
+    llc.ll_setStringValue(addr, lemmaFeatCode, "test", true);
+    assertEquals(llc.ll_getIntValue(addr,  lemmaFeatCode), 1);  // should not change
+    llc.ll_setStringValue(addr, lemmaFeatCode, "test2", true);
+    assertEquals(llc.ll_getIntValue(addr,  lemmaFeatCode), 2);
+    llc.ll_setIntValue(addr,  lemmaFeatCode,  1);
+    assertEquals(llc.ll_getIntValue(addr,  lemmaFeatCode), 1);
+    assertEquals(llc.ll_getStringValue(addr, lemmaFeatCode), "test");
+    llc.ll_setIntValue(addr,  lemmaFeatCode,  0);
+    assertEquals(llc.ll_getIntValue(addr,  lemmaFeatCode), 0);
+    assertTrue(llc.ll_getStringValue(addr, lemmaFeatCode) == null);
+    llc.ll_setIntValue(addr,  lemmaFeatCode, 2);
+    assertEquals(llc.ll_getStringValue(addr,  lemmaFeatCode), "test2");
+    
+    // check that equal strings are shared
+    
+    llc.ll_setStringValue(addr, lemmaFeatCode, new String("test"));  
+    assertEquals(1, llc.ll_getIntValue(addr, lemmaFeatCode));
 	}
 
 	public void testEquals() {
@@ -412,14 +621,16 @@ public class FeatureStructureTest extends TestCase {
 	public void testToString() {
 		FeatureStructure listFS = this.cas.createFS(this.neListType);
 		listFS.setFeatureValue(this.tlFeature, listFS);
-		// System.out.println(listFS.toString());
+		System.out.println("toString for fslist, tail -> node, head is null");
+		System.out.println(listFS.toString());
 
 		FeatureStructure value = this.cas.createFS(this.tokenType);
 		FeatureStructure newList = this.cas.createFS(this.neListType);
 		newList.setFeatureValue(this.tlFeature, listFS);
 		newList.setFeatureValue(this.hdFeature, value);
 		listFS.setFeatureValue(this.hdFeature, value);
-		// System.out.println("\n" + newList.toString());
+		System.out.println("toString for fslist, tail is prev, prev's head: new token, head is same as rpev's head");
+		System.out.println(newList.toString());
 	}
 
 	public static void main(String[] args) {

@@ -21,7 +21,6 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
 import java.text.MessageFormat;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -38,99 +37,164 @@ import org.eclipse.swt.widgets.Text;
 import org.apache.uima.taeconfigurator.CDEpropertyPage;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class AddRemoteServiceDialog.
+ */
 public class AddRemoteServiceDialog extends AbstractDialog {
 
+  /** The m selected service type name. */
   private String m_selectedServiceTypeName = null;
 
+  /** The m selected uri. */
   private String m_selectedUri = null;
 
+  /** The m selected key. */
   private String m_selectedKey = null;
 
+  /** The m b auto add to flow. */
   private boolean m_bAutoAddToFlow;
 
+  /** The vns port. */
   public String vnsPort;
 
+  /** The vns host. */
   public String vnsHost;
 
+  /** The timeout. */
   public String timeout;
 
+  /** The ae or cc. */
   public String aeOrCc;
 
+  /** The service type combo. */
   private CCombo serviceTypeCombo;
 
+  /** The uri text. */
   private Text uriText;
   
+  /** The endpoint text. */
   private Text endpointText;
 
+  /** The key text. */
   private Text keyText;
 
+  /** The timeout text. */
   private Text timeoutText;
 
+  /** The auto add to flow button. */
   private Button autoAddToFlowButton;
 
+  /** The import by name UI. */
   private Button importByNameUI;
 
+  /** The import by location UI. */
   private Button importByLocationUI;
 
+  /** The is import by name. */
   public boolean isImportByName;
 
+  /** The root path. */
   private String rootPath;
 
+  /** The m dialog modify listener. */
   private DialogModifyListener m_dialogModifyListener = new DialogModifyListener();
 
+  /** The gen file path UI. */
   private Text genFilePathUI;
 
+  /** The gen file path. */
   public String genFilePath;
 
+  /** The key text prev. */
   private String keyTextPrev;
 
+  /** The vns host label. */
   private Label vnsHostLabel;
 
+  /** The vns host UI. */
   private Text vnsHostUI;
 
+  /** The vns port label. */
   private Label vnsPortLabel;
 
+  /** The vns port UI. */
   private Text vnsPortUI;
 
+  /** The port number was bad. */
   private boolean portNumberWasBad;
 
+  /** The port number is OK. */
   private boolean portNumberIsOK;
 
+  /** The ae or cc combo. */
   private CCombo aeOrCcCombo;
   
+  /** The endpoint label. */
   private Label endpointLabel;
   
+  /** The uri label. */
   private Label uriLabel;
 
+  /** The timeout process label. */
   private Label timeoutProcessLabel;
 
+  /** The timeout jms getmeta label. */
   private Label timeoutJmsGetmetaLabel;
 
+  /** The timeout getmeta text. */
   private Text timeoutGetmetaText;
 
+  /** The getmeta timeout. */
   public String getmetaTimeout;
 
+  /** The endpoint. */
   public String endpoint;
 
+  /** The timeout jms cpc text. */
   private Text timeoutJmsCpcText;
 
+  /** The timeout jms cpc label. */
   private Label timeoutJmsCpcLabel;
 
+  /** The binary serialization label. */
   private Label binarySerializationLabel;
 
+  /** The binary serialization combo. */
   private CCombo binarySerializationCombo;
 
+  /** The ignore process errors label. */
   private Label ignoreProcessErrorsLabel;
 
+  /** The ignore process errors combo. */
   private CCombo ignoreProcessErrorsCombo;
 
+  /** The cpc timeout. */
   public String cpcTimeout;
 
+  /** The binary serialization. */
   public String binary_serialization;
 
+  /** The ignore process errors. */
   public String ignore_process_errors;
 
+  /**
+   * The listener interface for receiving dialogModify events.
+   * The class that is interested in processing a dialogModify
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addDialogModifyListener</code> method. When
+   * the dialogModify event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see DialogModifyEvent
+   */
   private class DialogModifyListener implements ModifyListener {
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+     */
+    @Override
     public void modifyText(ModifyEvent e) {
       String text = genFilePathUI.getText();
       int pos = text.lastIndexOf(keyTextPrev);
@@ -143,7 +207,23 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     }
   }
 
+  /**
+   * The listener interface for receiving dialogVerify events.
+   * The class that is interested in processing a dialogVerify
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addDialogVerifyListener</code> method. When
+   * the dialogVerify event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see DialogVerifyEvent
+   */
   private class DialogVerifyListener implements VerifyListener {
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.events.VerifyListener#verifyText(org.eclipse.swt.events.VerifyEvent)
+     */
+    @Override
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
         setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
@@ -154,12 +234,22 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     }
   }
 
+  /**
+   * Instantiates a new adds the remote service dialog.
+   *
+   * @param aSection the a section
+   * @param aRootPath the a root path
+   */
   public AddRemoteServiceDialog(AbstractSection aSection, String aRootPath) {
     super(aSection, "Add Remote Service",
             "Fill in the information about the remote service and press OK");
     rootPath = aRootPath;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
 
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -261,6 +351,14 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     return composite;
   }
 
+  /**
+   * Wide C combo.
+   *
+   * @param tc the tc
+   * @param tip the tip
+   * @param entries the entries
+   * @return the c combo
+   */
   private CCombo wideCCombo(Composite tc, String tip, String ... entries) {
     CCombo cc = newCCombo(tc, tip);
     for (String e : entries) {
@@ -271,14 +369,36 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     return cc;
   }
   
+  /**
+   * Wide C combo TF.
+   *
+   * @param tc the tc
+   * @param tip the tip
+   * @return the c combo
+   */
   private CCombo wideCComboTF(Composite tc, String tip) {
     return wideCCombo(tc, tip, "false", "true");
   }
  
+  /**
+   * Wide text input.
+   *
+   * @param tc the tc
+   * @param tip the tip
+   * @return the text
+   */
   private Text wideTextInput(Composite tc, String tip) {
     return wideTextInput(tc, tip, null);
   }
   
+  /**
+   * Wide text input.
+   *
+   * @param tc the tc
+   * @param tip the tip
+   * @param listener the listener
+   * @return the text
+   */
   private Text wideTextInput(Composite tc, String tip, DialogModifyListener listener) {
     Text t = newText(tc, SWT.BORDER, tip);
     t.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -291,6 +411,10 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   }
   
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     boolean isVinci = serviceTypeCombo.getSelectionIndex() == 2;
     boolean isJms = serviceTypeCombo.getSelectionIndex() == 0;
@@ -348,18 +472,38 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     }
   }
 
+  /**
+   * Gets the selected service type name.
+   *
+   * @return the selected service type name
+   */
   public String getSelectedServiceTypeName() {
     return m_selectedServiceTypeName;
   }
 
+  /**
+   * Gets the selected uri.
+   *
+   * @return the selected uri
+   */
   public String getSelectedUri() {
     return m_selectedUri;
   }
 
+  /**
+   * Gets the selected key.
+   *
+   * @return the selected key
+   */
   public String getSelectedKey() {
     return m_selectedKey;
   }
 
+  /**
+   * Gets the auto add to flow.
+   *
+   * @return the auto add to flow
+   */
   public boolean getAutoAddToFlow() {
     return m_bAutoAddToFlow;
   }
@@ -369,6 +513,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     genFilePath = genFilePathUI.getText();
     isImportByName = importByNameUI.getSelection();
@@ -388,6 +533,10 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     ignore_process_errors = ignoreProcessErrorsCombo.getText();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     return true;
   }

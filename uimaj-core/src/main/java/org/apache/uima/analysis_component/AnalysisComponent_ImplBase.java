@@ -25,6 +25,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Logger;
 
 /**
  * Implementation base class for AnalysisComponents. Normally developers do not extend this class
@@ -117,7 +118,15 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
     }    
     return mContext;
   }
-
+  
+  /**
+   * 
+   * @return the Logger associated with this uima Analysis Engine component
+   */
+  protected Logger getLogger() {
+    return getContext().getLogger();
+  }
+  
   /**
    * Gets the ResultSpecification for this AnalysisComponent. The ResultSpecification is a set of
    * types and features that this AnalysisComponent is asked to produce. An Analysis Component may

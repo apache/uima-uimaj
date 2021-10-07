@@ -30,27 +30,55 @@ import java.util.SortedMap;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 
+
 /*
  * This class forwards to TypesWithNameSpaces
  * Purpose: provide content assist under Eclipse 3.2
  * (The other class is set up to provide browse assist under 3.1 or higher Eclipse)
  */
 
+/**
+ * The Class TypesWithNameSpaces32.
+ */
 public class TypesWithNameSpaces32 implements IContentProposalProvider {
 
+  /** The sorted names. */
   final private SortedMap sortedNames;
   
+  /**
+   * Instantiates a new types with name spaces 32.
+   *
+   * @param aBase the a base
+   */
   public TypesWithNameSpaces32(TypesWithNameSpaces aBase) {
     sortedNames = aBase.sortedNames;
   }
   
+  /** The proposal array. */
   private CasTypeProposal [] proposalArray = null;
   
+  /**
+   * The Class CasTypeProposal.
+   */
   public static class CasTypeProposal 
       implements IContentProposal, Comparable {
+    
+    /** The label form. */
     private final String labelForm;
+    
+    /** The full name. */
     private final String fullName;
+    
+    /** The compare key. */
     private final String compareKey;
+    
+    /**
+     * Instantiates a new cas type proposal.
+     *
+     * @param aCompareKey the a compare key
+     * @param shortName the short name
+     * @param nameSpace the name space
+     */
     /* (non-Javadoc)
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
@@ -60,24 +88,31 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
       compareKey = aCompareKey.toLowerCase();
     }
        
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
+     */
+    @Override
     public String getContent() {
       return fullName;
     }
     /* (non-Javadoc)
      * @see org.eclipse.jface.fieldassist.IContentProposal#getCursorPosition()
      */
+    @Override
     public int getCursorPosition() {
       return fullName.length();
     }
     /* (non-Javadoc)
      * @see org.eclipse.jface.fieldassist.IContentProposal#getDescription()
      */
+    @Override
     public String getDescription() {
       return null;
     }
     /* (non-Javadoc)
      * @see org.eclipse.jface.fieldassist.IContentProposal#getLabel()
      */
+    @Override
     public String getLabel() {
       if (labelForm.toLowerCase().startsWith(compareKey))
         return labelForm;
@@ -85,18 +120,27 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
         return fullName;
     }
     
+    /**
+     * Gets the compare key.
+     *
+     * @return the compare key
+     */
     public String getCompareKey() {
       return compareKey;
     }
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Override
     public int compareTo(Object arg0) throws ClassCastException {
         final CasTypeProposal c = (CasTypeProposal) arg0;
         return this.compareKey.compareTo(c.getCompareKey()); 
     }
   }
  
+  /**
+   * Creates the proposal array.
+   */
   public void createProposalArray() {
     List r = new ArrayList(sortedNames.size()*2);
     
@@ -120,6 +164,11 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
     Arrays.sort(proposalArray);
   }
   
+  /**
+   * Gets the proposal array.
+   *
+   * @return the proposal array
+   */
   public CasTypeProposal [] getProposalArray() {
     return proposalArray;
   }
@@ -127,6 +176,7 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
   /* (non-Javadoc)
    * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String, int)
    */
+  @Override
   public IContentProposal[] getProposals(String contents, int position) {
     if (null == proposalArray)
       createProposalArray();

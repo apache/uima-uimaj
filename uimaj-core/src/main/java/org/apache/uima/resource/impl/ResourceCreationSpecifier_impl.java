@@ -56,7 +56,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
 
   private ResourceMetaData mMetaData;
 
-  private List<ExternalResourceDependency> mExternalResourceDependencies = new ArrayList<ExternalResourceDependency>();
+  private List<ExternalResourceDependency> mExternalResourceDependencies = new ArrayList<>();
 
   private ResourceManagerConfiguration mResourceManagerConfiguration;
 
@@ -125,7 +125,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies) {
     // can't just clear the ArrayList since that breaks clone(). Create a new list.
-    mExternalResourceDependencies = new ArrayList<ExternalResourceDependency>();
+    mExternalResourceDependencies = new ArrayList<>();
     if (aDependencies != null) {
       for (int i = 0; i < aDependencies.length; i++) {
         mExternalResourceDependencies.add(aDependencies[i]);
@@ -182,7 +182,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     // try to instantiate dummy resource - this checks config params
     // and resources
     DummyResource dummy = new DummyResource();
-    Map<String, Object> params = new HashMap<String, Object>();
+    Map<String, Object> params = new HashMap<>();
     params.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     dummy.initialize(this, params);
 
@@ -241,7 +241,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     } else {
       ConfigurationParameter[] commonParams = cfgParamDecls.getCommonParameters();
       // check for duplicates in common params
-      Set<String> commonParamNames = new HashSet<String>();
+      Set<String> commonParamNames = new HashSet<>();
       if (commonParams != null) {
         for (int i = 0; i < commonParams.length; i++) {
           if (!commonParamNames.add(commonParams[i].getName())) {
@@ -255,7 +255,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
       // check for duplicates in groups
       ConfigurationGroup[] groups = cfgParamDecls.getConfigurationGroups();
       if (groups != null) {
-        Map<String, Set<String>> groupToParamSetMap = new HashMap<String, Set<String>>(); // map from group name to HashSet of param names
+        Map<String, Set<String>> groupToParamSetMap = new HashMap<>(); // map from group name to HashSet of param names
         // in that group
         for (int i = 0; i < groups.length; i++) {
           String[] names = groups[i].getNames();
@@ -263,7 +263,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
             Set<String> paramNamesInGroup = groupToParamSetMap.get(names[j]);
             if (paramNamesInGroup == null) {
               // first time we've seen this group. create an entry and add common params
-              paramNamesInGroup = new HashSet<String>(commonParamNames);
+              paramNamesInGroup = new HashSet<>(commonParamNames);
             }
 
             // check for duplicate parameter names
@@ -299,7 +299,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   protected void checkForDuplicateParameterNames(ConfigurationParameter[] aParams)
           throws ResourceInitializationException {
-    Set<String> paramNames = new HashSet<String>();
+    Set<String> paramNames = new HashSet<>();
     for (int i = 0; i < aParams.length; i++) {
       if (!paramNames.add(aParams[i].getName())) {
         throw new ResourceInitializationException(

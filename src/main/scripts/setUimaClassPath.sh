@@ -17,6 +17,8 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
+echo This script is not being updated, is obsolete. Please update caller to use java jar directory syntax.
+
 if [ "$UIMA_HOME" = "" ]
 then
   echo UIMA_HOME environment variable is not set

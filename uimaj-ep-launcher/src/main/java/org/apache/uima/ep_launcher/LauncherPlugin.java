@@ -25,19 +25,32 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LauncherPlugin.
+ */
 public class LauncherPlugin extends Plugin {
 
   
+  /** The Constant ID. */
   public static final String ID = "org.apache.uima.launcher";
   
+  /** The plugin. */
   private static LauncherPlugin plugin;
 
+  /** The bundle context. */
   private BundleContext bundleContext;
 
+  /**
+   * Instantiates a new launcher plugin.
+   */
   public LauncherPlugin() {
     plugin = this;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
+   */
   @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
@@ -45,12 +58,22 @@ public class LauncherPlugin extends Plugin {
     bundleContext = context;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+   */
   @Override
   public void stop(BundleContext context) throws Exception {
     super.stop(context);
     plugin = null;
   }
 
+  /**
+   * Gets the bundles.
+   *
+   * @param bundleName the bundle name
+   * @param version the version
+   * @return the bundles
+   */
   public Bundle[] getBundles(String bundleName, String version) {
     
     Bundle[] bundles = Platform.getBundles(bundleName, version);
@@ -69,6 +92,12 @@ public class LauncherPlugin extends Plugin {
     return null;
   }
 
+  /**
+   * Gets the bundle.
+   *
+   * @param bundleName the bundle name
+   * @return the bundle
+   */
   public Bundle getBundle(String bundleName) {
     Bundle[] bundles = getBundles(bundleName, null);
     if (bundles != null && bundles.length > 0) {
@@ -80,7 +109,9 @@ public class LauncherPlugin extends Plugin {
   }
 
   /**
-   * @return the shared instance.
+   * Returns the shared instance.
+   *
+   * @return the default
    */
   public static LauncherPlugin getDefault() {
     return plugin;

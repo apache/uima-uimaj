@@ -82,9 +82,9 @@ public class AnalysisEnginePool {
   public AnalysisEnginePool(String aName, int aNumInstances, ResourceSpecifier aResourceSpecifier,
           Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     if (aResourceInitParams == null) {
-      aResourceInitParams = new HashMap<String, Object>();
+      aResourceInitParams = new HashMap<>();
     } else {
-      aResourceInitParams = new HashMap<String, Object>(aResourceInitParams);
+      aResourceInitParams = new HashMap<>(aResourceInitParams);
     }
 
     // initialize ResourcePool
@@ -186,7 +186,7 @@ public class AnalysisEnginePool {
    */
   public synchronized void reconfigure() throws ResourceConfigurationException {
     // reconfigure each AnalysisEngine in the pool
-    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
+    List<AnalysisEngine> toRelease = new ArrayList<>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -212,7 +212,7 @@ public class AnalysisEnginePool {
    * @throws AnalysisEngineProcessException -
    */
   public synchronized void batchProcessComplete() throws AnalysisEngineProcessException {
-    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
+    List<AnalysisEngine> toRelease = new ArrayList<>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -237,7 +237,7 @@ public class AnalysisEnginePool {
    * @throws AnalysisEngineProcessException -
    */
   public synchronized void collectionProcessComplete() throws AnalysisEngineProcessException {
-    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
+    List<AnalysisEngine> toRelease = new ArrayList<>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -272,7 +272,7 @@ public class AnalysisEnginePool {
    * @param aLogger -
    */
   public synchronized void setLogger(Logger aLogger) {
-    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
+    List<AnalysisEngine> toRelease = new ArrayList<>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool

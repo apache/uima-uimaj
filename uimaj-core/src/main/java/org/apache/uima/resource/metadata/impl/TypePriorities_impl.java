@@ -62,7 +62,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   // not final or volatile because clone() copies a ref to shared value, and we need that value to be a new instance
   // Threading: all access synchronized except initial creation during cloning
-  private List<TypePriorityList> mPriorityLists = new ArrayList<TypePriorityList>();
+  private List<TypePriorityList> mPriorityLists = new ArrayList<>();
   
   /**
    * @see ResourceMetaData#getName()
@@ -202,12 +202,12 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
-      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
+      resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
 
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+    resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypePrioritiesURLs,
@@ -220,7 +220,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
         aAlreadyImportedTypePrioritiesURLs.add(getSourceUrl().toString());
       }
       
-      importedPriorityLists = new ArrayList<TypePriorityList>();
+      importedPriorityLists = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
         // make sure Import's relative path base is set, to allow for users who create
@@ -279,11 +279,11 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
-        TreeSet<String> previouslyImported = new TreeSet<String>(aAlreadyImportedTypePrioritiesURLs);
+        TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedTypePrioritiesURLs);
         desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
         importCache.put(urlString, desc);
         // Save the URLS parsed by this import 
-        TreeSet<String> locallyImported = new TreeSet<String>(aAlreadyImportedTypePrioritiesURLs);
+        TreeSet<String> locallyImported = new TreeSet<>(aAlreadyImportedTypePrioritiesURLs);
         locallyImported.removeAll(previouslyImported);
         importUrlsCache.put(urlString, locallyImported);
       }
@@ -315,7 +315,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   public Object clone() {
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
-    clone.mPriorityLists = new ArrayList<TypePriorityList>();
+    clone.mPriorityLists = new ArrayList<>();
     final List<TypePriorityList> origPriorityLists = mPriorityLists;
     synchronized (origPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
       for (TypePriorityList priList : origPriorityLists) {

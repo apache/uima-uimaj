@@ -91,6 +91,16 @@ public abstract class UIMAFramework {
    * disables the cache; any other value leaves the default setting of true.
    */
   public static final String JCAS_CACHE_ENABLED = "jcas_cache_enabled";
+  
+  /**
+   * Key to be used in the Properties object returned by
+   * {@link #getDefaultPerformanceTuningProperties()}. The value of this key indicates whether 
+   * user-defined JCas classes should be loaded or skipped, during type system commit.
+   * The default is false; set to "true" to skip.  
+   * This is used by the Component Descriptor Editor when manipulating type systems, to avoid any
+   * issues with loading and working with different type systems where any JCas classes might not match.
+   */
+  public static final String SKIP_USER_JCAS_LOADING = "SKIP_USER_JCAS_LOADING";
 
   /**
    * To be implemented by subclasses; this should return a Properties object representing the
@@ -321,9 +331,9 @@ public abstract class UIMAFramework {
     // add ResourceManager to aAdditionalParams map
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
-        aAdditionalParams = new HashMap<String, Object>();
+        aAdditionalParams = new HashMap<>();
       } else {  // copy to avoid modifying the original which might be immutable
-        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+        aAdditionalParams = new HashMap<>(aAdditionalParams);
       }
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     }
@@ -485,11 +495,10 @@ public abstract class UIMAFramework {
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
-    Map<String, Object> aAdditionalParams = new HashMap<String, Object>();
+    Map<String, Object> aAdditionalParams = new HashMap<>();
 
-    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
-            aMaxSimultaneousRequests));
-    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
+    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aMaxSimultaneousRequests);
+    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeoutPeriod);
 
     AnalysisEngine ae = null;
     //	Fetch current time to compute initialization time
@@ -638,11 +647,10 @@ public abstract class UIMAFramework {
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
-    Map<String, Object> aAdditionalParams = new HashMap<String, Object>();
+    Map<String, Object> aAdditionalParams = new HashMap<>();
 
-    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
-            aMaxSimultaneousRequests));
-    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
+    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aMaxSimultaneousRequests);
+    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeoutPeriod);
 
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
             aAdditionalParams);
@@ -977,10 +985,10 @@ public abstract class UIMAFramework {
           throws ResourceInitializationException {
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
-        aAdditionalParams = new HashMap<String, Object>();
+        aAdditionalParams = new HashMap<>();
       } else {
         // copy to avoid modifying original, which might be immutable, etc.
-        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+        aAdditionalParams = new HashMap<>(aAdditionalParams);
       }
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     }
@@ -1059,10 +1067,9 @@ public abstract class UIMAFramework {
 
   /**
    * Gets a new instance of the default {@link org.apache.uima.resource.ResourceManagerPearWrapper} used by this implementation. 
-   * No longer used 2018
+   * 
    * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
    */
-  @Deprecated
   public static ResourceManager newDefaultResourceManagerPearWrapper() {
     return getInstance()._newDefaultResourceManagerPearWrapper();
   }
@@ -1079,8 +1086,8 @@ public abstract class UIMAFramework {
   
   // ugly way to pass vars to 0-arg constructors
   //    for root uima context
-  public static final ThreadLocal<ResourceManager> newContextResourceManager = new ThreadLocal<ResourceManager>();
-  public static final ThreadLocal<ConfigurationManager> newContextConfigManager = new ThreadLocal<ConfigurationManager>();
+  public static final ThreadLocal<ResourceManager> newContextResourceManager = new ThreadLocal<>();
+  public static final ThreadLocal<ConfigurationManager> newContextConfigManager = new ThreadLocal<>();
   
   /**
    * Gets a new instance of a {@link UimaContext}. Applications do not generally need to call this
@@ -1265,11 +1272,8 @@ public abstract class UIMAFramework {
    * To be implemented by subclasses; this should return a new instance of the default
    * {@link org.apache.uima.resource.ResourceManagerPearWrapper} used by this implementation.
    * 
-   * No longer used 2018
-   * 
    * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
    */
-  @Deprecated
   protected abstract ResourceManager _newDefaultResourceManagerPearWrapper();
   
   
@@ -1334,6 +1338,8 @@ public abstract class UIMAFramework {
       mInstance._initialize();
     } catch (Exception e) {
       // could not load reference implementation
+      System.err.println("Could not create UIMA framework, using framework class name: " + frameworkClassName);
+      e.printStackTrace();
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.COULD_NOT_CREATE_FRAMEWORK,
               new Object[] { frameworkClassName }, e);
     }

@@ -22,19 +22,25 @@ package org.apache.uima.pear.insd.edit.vars;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 
+
 /**
  * This class implements an ICellModifier An ICellModifier is called when the user modifes a cell in
- * the tableViewer
- * 
- * 
+ * the tableViewer.
  */
 class VarValCellModifier implements ICellModifier {
+  
+  /** The table viewer example. */
   private VarValViewerHandler tableViewerExample;
 
+  /** The table row list. */
   VarValList tableRowList;
 
   /**
-   * Constructor
+   * Constructor.
+   *
+   * @param tableViewerExample the table viewer example
+   * @param columnNames the column names
+   * @param tableRowList the table row list
    */
   public VarValCellModifier(VarValViewerHandler tableViewerExample, String[] columnNames,
           VarValList tableRowList) {
@@ -44,15 +50,27 @@ class VarValCellModifier implements ICellModifier {
   }
 
   /**
+   * Can modify.
+   *
+   * @param element the element
+   * @param property the property
+   * @return true, if successful
    * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
    */
+  @Override
   public boolean canModify(Object element, String property) {
     return true;
   }
 
   /**
+   * Gets the value.
+   *
+   * @param element the element
+   * @param property the property
+   * @return the value
    * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
    */
+  @Override
   public Object getValue(Object element, String property) {
 
     // Find the index of the column
@@ -75,9 +93,15 @@ class VarValCellModifier implements ICellModifier {
   }
 
   /**
+   * Modify.
+   *
+   * @param element the element
+   * @param property the property
+   * @param value the value
    * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String,
    *      java.lang.Object)
    */
+  @Override
   public void modify(Object element, String property, Object value) {
 
     // Find the index of the column

@@ -21,30 +21,54 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+/**
+ * The Class HeaderPageWithSash.
+ */
 public class HeaderPageWithSash extends HeaderPage {
 
+  /** The haction. */
   protected Action haction;
 
+  /** The vaction. */
   protected Action vaction;
 
+  /**
+   * Instantiates a new header page with sash.
+   *
+   * @param formEditor the form editor
+   * @param id the id
+   * @param keyPageTitle the key page title
+   */
   public HeaderPageWithSash(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
   }
 
+  /**
+   * Instantiates a new header page with sash.
+   *
+   * @param formEditor the form editor
+   * @param pageTitle the page title
+   */
   public HeaderPageWithSash(MultiPageEditor formEditor, String pageTitle) {
     super(formEditor, pageTitle);
   }
 
+  /**
+   * Creates the tool bar actions.
+   *
+   * @param managedForm the managed form
+   */
   protected void createToolBarActions(IManagedForm managedForm) {
     final ScrolledForm form = managedForm.getForm();
 
-    haction = new Action("hor", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
+    haction = new Action("hor", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
       @Override
-    public void run() {
+      public void run() {
         sashForm.setOrientation(SWT.HORIZONTAL);
         form.reflow(true);
       }
@@ -57,9 +81,9 @@ public class HeaderPageWithSash extends HeaderPage {
     haction.setDisabledImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
 
-    vaction = new Action("ver", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
+    vaction = new Action("ver", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
       @Override
-    public void run() {
+      public void run() {
         sashForm.setOrientation(SWT.VERTICAL);
         form.reflow(true);
       }

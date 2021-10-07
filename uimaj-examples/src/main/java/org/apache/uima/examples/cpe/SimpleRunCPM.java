@@ -34,6 +34,7 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * Main Class that runs the Collection Processing Manager (CPM). This class reads descriptor files
  * and initiailizes the following components:
@@ -72,9 +73,10 @@ public class SimpleRunCPM extends Thread {
 
   /**
    * Constructor for the class.
-   * 
-   * @param args
-   *          command line arguments into the program - see class description
+   *
+   * @param args          command line arguments into the program - see class description
+   * @throws UIMAException the UIMA exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public SimpleRunCPM(String args[]) throws UIMAException, IOException {
     mStartTime = System.currentTimeMillis();
@@ -123,6 +125,9 @@ public class SimpleRunCPM extends Thread {
   }
 
   
+  /**
+   * Prints the usage message.
+   */
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
             + "args[0] : Collection Reader descriptor file \n "
@@ -132,9 +137,10 @@ public class SimpleRunCPM extends Thread {
 
   /**
    * main class.
-   * 
-   * @param args
-   *          Command line arguments - see class description
+   *
+   * @param args          Command line arguments - see class description
+   * @throws UIMAException the UIMA exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static void main(String[] args) throws UIMAException, IOException {
     new SimpleRunCPM(args);
@@ -146,8 +152,11 @@ public class SimpleRunCPM extends Thread {
    * 
    */
   class StatusCallbackListenerImpl implements StatusCallbackListener {
+    
+    /** The entity count. */
     int entityCount = 0;
 
+    /** The size. */
     long size = 0;
 
     /**

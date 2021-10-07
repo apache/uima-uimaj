@@ -25,8 +25,13 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EP_LogThrowErrorImpl.
+ */
 public class EP_LogThrowErrorImpl implements IError {
 
+  /** The log levels. */
   private static int logLevels[] = { IStatus.INFO, IStatus.WARNING, IStatus.ERROR };
 
   /*
@@ -34,6 +39,7 @@ public class EP_LogThrowErrorImpl implements IError {
    * 
    * @see org.apache.uima.jcas.jcasgen_gen.IError#newError(int, java.lang.String)
    */
+  @Override
   public void newError(int severity, String message, Exception exception) {
     String pluginId = JgPlugin.getUniqueIdentifier();        
     ILog log = JgPlugin.getDefault().getLog();

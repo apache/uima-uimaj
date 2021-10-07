@@ -149,14 +149,14 @@ under the License.
     <section id="ugr.ref.cas.creating_using_indexes">
       <title>Creating and using indexes</title>
       
-      <para>Each view of a CAS provides a set of indexes for that view. Instances of feature
-        structures can be added to a view&apos;s indexes. These indexes provide
-        the only way for other annotators to locate existing data in the CAS. The only way for an
-        annotator to use data that another annotator has created is by using an index (or the
+      <para>Each view of a CAS provides a set of indexes for that view. Instances of Types (that is, Feature
+        Structures) can be added to a view&apos;s indexes. These indexes provide
+        a way for annotators to locate existing data in the CAS, using a specific index (or the
         method <literal>getAllIndexedFS</literal> of the object <literal>FSIndexRepository</literal>) to
-        retrieve feature structures the first annotator created. If you want the data you
-        create to be visible to other annotators, you must explicitly call methods which
-        add it to the indexes &mdash; you must index it.</para>
+        retrieve the Feature Structures that were previously created. If you want the data you
+        Newly created Feature Structures are not automatically added to the indexes; you choose which
+        Feature Structures to add and use one of several APIs to add them. 
+        </para>
       
       <para>Indexes are named and are associated with a CAS Type; they are used to index
         instances of that CAS type (including instances of that type&apos;s subtypes). If
@@ -169,6 +169,34 @@ under the License.
         query for indexes for that view. Once you have a handle to an index, you can get
         information about the feature structures in the index, the size of the index, as well
         as an iterator over the feature structures.</para>
+        
+      <para>There are three kinds of indexes:
+        <itemizedlist spacing="compact">
+          <listitem>
+            <para>bag - no ordering</para>
+          </listitem>
+          <listitem>
+            <para>set - uses a user-specfied set of keys to define equality; holds one instance of the set of equal items.</para>
+          </listitem>
+          <listitem>
+            <para>sorted - uses a user-specified set of keys to define ordering.</para>
+          </listitem>          
+        </itemizedlist>
+      </para>
+      
+      <para>For set indexes, the comparator keys are augmented with an implicit additional field - the type of the
+        feature structure.  This means that an index over Annotations, having subtype Token, and a key of the "begin" value,
+        will behave as follows:
+        
+        <itemizedlist>
+          <listitem><para>If you make two Tokens (or two Annotations), both having a begin value of 17, and add both of them to the indexes,
+            only one of them will be in the index.</para>
+          </listitem>
+          <listitem><para>If you make 1 Token and 1 Annotation, both having a begin value of 17, and add both of them to the indexes,
+            both of them will be in the index (because the types are different).
+          </para></listitem>
+        </itemizedlist> 
+      </para>
       
       <para>Indexes are defined in the XML descriptor metadata for the application. Each CAS
         View has its own, separate instantiation of indexes based on these definitions, 
@@ -178,29 +206,40 @@ under the License.
         belongs, within just the view's repository. You can specify different repositories
         (associated with different CAS views) to use; a given Feature Structure instance 
         may be indexed in more than one CAS View (unless it is a subtype of AnnotationBase).</para>
-      
-      <para>Iterators allow you to enumerate the feature structures in an index.  FS iterators
-        provide two kinds of APIs: the regular Java iterator API, and a specific FS iterator API
+
+      <para>Indexes implement the Iterable interface, so you may use the Java enhanced for loop to iterate over them.</para>
+            
+      <para>You can also get iterators from indexes; 
+        iterators allow you to enumerate the feature structures in an index.  There are two kinds of iterators supported:
+        the regular Java iterator API, and a specific FS iterator API
         where the usual Java iterator APIs (<literal>hasNext()</literal> and <literal>next()</literal>)
-        are replaced by <literal>isValid()</literal>, <literal>moveToNext()</literal> (which does
-        not return an element) and <literal>get()</literal>.  Which API style you use is up to you,
+        are augmented by <literal>isValid()</literal>, <literal>moveToNext() / moveToPrevious()</literal> (which does
+        not return an element) and <literal>get()</literal>.  Finally, there is a <literal>moveTo(FeatureStructure)</literal>
+        API, which, for sorted indexes, moves the iteration point to the left-most (among otherwise "equal") item
+        in the index which compares "equal" to the given FeatureStructure, using the index's defined comparator.
+      </para>
+      
+      <para>  
+        Which API style you use is up to you,
         but we do not recommend mixing the styles as the results are sometimes unexpected.  If you
         just want to iterate over an index from start to finish, either style is equally appropriate.
         If you also use <literal>moveTo(FeatureStructure fs)</literal> and 
         <literal>moveToPrevious()</literal>, it is better to use the special FS iterator style.
       </para>
+      
       <note><para>The reason to not mix these styles is that you might be thinking that
         next() followed by moveToPrevious() would always work.  This is not true, because
         next() returns the "current" element, and advances to the next position, which might be
-        beyond the last element.  At that point, the interator becomes "invalid", and by the iterator
-        contracts, moveToNext and moveToPrevious are not allowed on "invalid" iterators; 
-        when an iterator is not valid, all bets are off.  But you can
+        beyond the last element.  At that point, the iterator becomes "invalid", and 
+        moveToNext and moveToPrevious no longer move the iterator.  But you can
         call these methods on the iterator &mdash; moveToFirst(), moveToLast(), or moveTo(FS) &mdash; to reset it.</para></note>
       
       <para>Indexes are created by specifying them in the annotator&apos;s or
         aggregate&apos;s resource descriptor. An index specification includes its name,
-        the CAS type being indexed, the kind of index it is, and an (optional) ordering
-        relation on the feature structures to be indexed. At startup time, all index
+        the CAS type being indexed, the kind (bag, set or sorted) of index it is, and an (optional) set of keys.
+        The keys are used for set and sorted indexes, and specify what values are used for 
+        ordering, or (for sets) what values are used to determine set equality. 
+        When a CAS pipeline is created, all index
         specifications are combined; duplicate definitions (having the same name) are
         allowed only if their definitions are the same. </para>
       
@@ -226,6 +265,10 @@ under the License.
         Type Priority. This ordering insures that
         longer annotations starting at the same spot come before shorter ones. For Subjects
         of Analysis other than Text, this may not be an appropriate index.</para>
+        
+      <para>In addition to normal iterators, there is a <literal>select</literal> API, documented
+       in the Version 3 Users guide, which provides additional capabilities for accessing
+       Feature Structures via the indexes.</para>  
       
     </section>
   </section>
@@ -284,9 +327,9 @@ under the License.
       
     <para>The JCas cover classes for the array types support the Iterable API, so you may
     write extended for loops over instances of these.  For example:
-    <programlisting>FSArray myArray = ...
-for (TOP fs : myArray) {
-  somemethod(fs);
+    <programlisting>FSArray&lt;MyType&gt; myArray = ...
+for (MyType fs : myArray) {
+  some_method(fs);
 }</programlisting>
     </para>
     
@@ -381,7 +424,7 @@ for (TOP fs : myArray) {
     The iterator stops when it gets to the end of the list, determined by either the tail being null or 
     the element being one of the EmptyXXXList elements.
     Here's a StringList example:
-    <programlisting>StringList sl = new EmptyStringList(jcas);
+    <programlisting>StringList sl = jcas.emptyStringList();
 sl = sl.push("2");
 sl = sl.push("1");
 
@@ -433,22 +476,15 @@ for (String s : sl) {
       <programlisting>// Get all type names from the type system
 // and print them to stdout.
 private void listTypes1(TypeSystem ts) {
-  // Get an iterator over types
-  Iterator typeIterator = ts.getTypeIterator();
-  Type t;
-  System.out.println("Types in the type system:");
-  while (typeIterator.hasNext()) {
-    // Retrieve a type...
-    t = (Type) typeIterator.next();
-    // ...and print its name.
+  for (Type t : ts) {
+    // print its name.
     System.out.println(t.getName());
   }
-  System.out.println();
 }</programlisting>
       
       <para>This method is passed the type system as a parameter.  From the type system, we can 
         get an iterator
-        over all known types. If you run this against a CAS created with no additional
+        over all the types. If you run this against a CAS created with no additional
         user-defined types, we should see something like this on the console:</para>
       
       <programlisting>Types in the type system: 
@@ -721,9 +757,9 @@ private Feature initFeature(String featName, Type type)
       sort ordering (or set membership), without removing and re-adding back to the index.
       </para></note>
       
-    <para>To completely remove an item from the indexes may entail removing it multiple times, if it was 
+    <!-- <para>To completely remove an item from the indexes may entail removing it multiple times, if it was 
     added multiple times and (as of version 2.7.0) the JVM global property 
-    <code>uima.allow_duplicate_add_to_indexes</code> is true.</para>
+    <code>uima.allow_duplicate_add_to_indexes</code> is true.</para> -->
     
     <para>The automatic protection checks for updates of
     features being used as keys, and if it finds an update like this for a feature structure that
@@ -747,8 +783,7 @@ try {
   ac.close();
 }
 
-// if Java 8 is in use, 
-// this can be written using the auto-close feature of try:
+// This can more compactly be written using the auto-close feature of try:
 
 try (AutoCloseable ac = my_cas.protectIndexes()) {
    ...  arbitrary user code which updates features 
@@ -841,7 +876,7 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
     <title>Indexes and Iterators</title>
     
     <para>Each CAS can have many indexes associated with it; each CAS View contains 
-      a complete set of instantions of the indexes.   Each index is represented by an
+      a complete set of instantiations of the indexes.   Each index is represented by an
       instance of the type org.apache.uima.cas.FSIndex. You use the object
       org.apache.uima.cas.FSIndexRepository, accessible via a method on a CAS object, to
       retrieve instances of indexes. There are methods that let you select the index
@@ -861,29 +896,30 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       the Component Descriptor, see <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor.aes.index"/>.</para>
        
-    <para>Feature structures should not be added to or removed from indexes while iterating
-      over them; a ConcurrentModificationException is thrown when this is detected (but see the following paragraph).
-      Certain operations are allowed with the iterators after modification, which can
-      <quote>reset</quote> this condition, such as moving to beginning, end, or moving to a
-      particular feature structure. So - if you have to modify the index, you can move it back to
-      the last FS you had retrieved from the iterator, and then continue, if that makes sense in
-      your application.</para>
+    <para>In UIMA V3, Feature structures may be added to or removed from indexes while iterating
+      over them.  If this happens, any iterators already created will continue to operate over the
+      before-modification version of the index, unless or until the iterator is re-synchronized with the current
+      value of the index via one of the following specific 3 iterator API calls: 
+      moveToFirst, moveToLast, or moveTo(FeatureStructure).
+      ConcurrentModificationException is no longer thrown in UIMA v3.
+    </para>
+    
+    <para>Feature structures being iterated over may have features which are used as the "keys" of an index, updated.
+    If this is done, UIMA will protect the indexes (to prevent index corruption) by automatically removing the 
+    Feature Structure from the indexes, 
+    updating the field, and adding the FS back to the index (possibly in a new position).  
+    This automatic remove / add-back operation no longer makes the iterator throw a ConcurrentModificationException
+    (as it did in UIMA Version 2) if the iterator is incremented or decremented;
+    existing iterators will continue to operate as if no index modification occurred.
+    </para>   
       
-    <para>Feature structures being iterated over should not have features which are used as the "keys" of an index, updated.
-    If this is done, UIMA, to prevent index corruption, will recover by automatically removing the FS from the indexes, 
-    updating the field, and adding the FS back to the index.  This recovery operation, because it updates the index, 
-    will make the iterator throw a ConcurrentModificationException if the iterator is incremented or decremented;
-    this exception will likely be unexpected because because it is hidden and automatic.  
-    If you must do this kind of operation, consider using Snapshot iterators (see next),
-    which don't throw ConcurrentModificationException.</para>   
-      
-    <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
+    <!-- <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
     allows creating a light-weight FSIndex based on the original FSIndex 
     that supports doing arbitrary index operations while iterating, and will not throw 
     <code>ConcurrentModificationException</code>.  Iterators obtained from this instance use a 
     <emphasis>snapshot</emphasis> technique - they create a snapshot of the original index when the 
     iterator is created, and then use that snapshot while operating, so the iteration is unaffected by any
-    modifications to the actual index.</para>
+    modifications to the actual index.</para>  -->
 
     <section id="ugr.ref.cas.index.built_in_indexes">
       <title>Built-in Indexes</title>
@@ -896,7 +932,8 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
         annotations in the order in which they appear in the document. Annotations are sorted first by increasing
         <literal>begin</literal> position. Ties are then broken by <emphasis>decreasing</emphasis>
         <literal>end</literal> position (so that longer annotations come first). Annotations that match in both
-        their <literal>begin</literal> and <literal>end</literal> features are sorted using the Type Priority
+        their <literal>begin</literal> and <literal>end</literal> features are sorted using the Type Priority,
+        if any are defined
         (see <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.type_priority"/> )</para>
     </section>
@@ -904,25 +941,50 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
     
     <section id="ugr.ref.cas.index.adding_to_indexes">
       <title>Adding Feature Structures to the Indexes</title>
-      
-      <para>Feature Structures are added to the indexes by calling the
-        <literal>FSIndexRepository.addFS(FeatureStructure)</literal> method or the equivalent convenience
-        method <literal>CAS.addFsToIndexes(FeatureStructure)</literal>. This adds the Feature Structure to
+
+      <para>Feature Structures are added to the indexes by various APIs. These add the Feature Structure to
         <emphasis>all</emphasis> indexes that are defined for the type of that FeatureStructure (or any of its
-        supertypes). Note that you should not add a Feature Structure to the indexes until you have set values for all
+        supertypes), in a particular view. 
+        Note that you should not add a Feature Structure to the indexes until you have set values for all
         of the features that may be used as sort keys in an index.</para>
+      
+      <para>There are multiple APIs for adding FSs to the index.
+        <itemizedlist>
+          <listitem><para>(preferred) myFeatureStructure.addToIndexes(). This adds the feature structure instance to the
+          view in which it was originally created.</para>
+          </listitem>
+          <listitem><para>(preferred) myFeatureStructure.addToIndexes(JCas or CAS). This adds the feature structure instance to the
+            view represented by the argument.</para>
+          </listitem>
+          <listitem><para>(older form) casView.addFsToIndexes(myFeatureStructure) or jcasView.addFsToIndexes(myFeatureStructure). 
+            This adds the feature structure instance to the
+            view represented by the cas (or jcas).</para>
+          </listitem>
+          <listitem><para>(older form) fsIndexRepositoryView.addFsToIndexes(myFeatureStructure). 
+            This adds the feature structure instance to the
+            view represented by the fsIndexRepository instance.</para>
+          </listitem>
+        </itemizedlist>
+      </para>
     </section>
         
     <section id="ugr.ref.cas.index.iterators">
-      <title>Iterators</title>
+      <title>Iterators over UIMA Indexes</title>
+
       
       <para>Iterators are objects of class <literal>org.apache.uima.cas.FSIterator.</literal> This class
         extends <literal>java.util.Iterator</literal> and implements the normal Java iterator methods, plus
-        additional ones that allow moving both forwards and backwards.</para>  
+        additional ones that allow moving both forwards and backwards.</para>
+        
+      <para>UIMA Indexes implement iterable, so you can use the index directly in a Java extended for loop.</para>
+        
     </section>
     
     <section id="ugr.ref.cas.index.annotation_index">
       <title>Special iterators for Annotation types</title>
+      
+      <para>Note: we recommend using the UIMA V3 select framework, instead of the following.
+        It implements all of the following capabilities, and more, in a uniform manner.</para>
       
       <para>The built-in index over the <literal>uima.tcas.Annotation</literal> type
         named <quote><literal>AnnotationIndex</literal></quote> has additional
@@ -959,6 +1021,9 @@ AnnotationIndex idx = aCAS.getAnnotationIndex(aType); </programlisting></para>
     <section id="ugr.ref.cas.index.constraints_and_filtered_iterators">
       <title>Constraints and Filtered iterators</title>
       
+      <para>Note: for new code, consider using the select framework plus Streams, instead of
+        the following.</para>
+        
       <para>There is a set of API calls that build constraint objects. These objects can be
         used directly to test if a particular feature structure matches (satisfies) the
         constraint, or they can be passed to the createFilteredIterator method to create an

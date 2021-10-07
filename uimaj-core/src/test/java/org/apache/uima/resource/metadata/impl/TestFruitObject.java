@@ -97,7 +97,7 @@ public class TestFruitObject extends MetaDataObject_impl {
    * {@link #listAttributes()}.
    */
   static public Set<NameClassPair> getAttributeSet() {
-    HashSet<NameClassPair> result = new HashSet<NameClassPair>();
+    HashSet<NameClassPair> result = new HashSet<>();
     result.add(new NameClassPair("name", String.class.getName()));
     result.add(new NameClassPair("color", String.class.getName()));
     result.add(new NameClassPair("avgWeightLbs", Float.class.getName()));
@@ -108,7 +108,7 @@ public class TestFruitObject extends MetaDataObject_impl {
   }
   
   static public Set<MetaDataAttr> getMetaDataAttrSet() {
-    HashSet<MetaDataAttr> result = new HashSet<MetaDataAttr>();
+    HashSet<MetaDataAttr> result = new HashSet<>();
     try {
     result.add(new MetaDataAttr(
         "name", 

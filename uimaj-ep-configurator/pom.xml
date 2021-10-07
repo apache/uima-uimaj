@@ -23,28 +23,59 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj-ep-configurator</artifactId>
-  <packaging>jar</packaging>
+  <packaging>jar</packaging>  
   <name>Apache UIMA Eclipse: ${project.artifactId}: Descriptor Editor</name>
   <description>A frame-based editor for most of the UIMA XML 
     descriptors</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that incorrectly computes the 
+       connection elements from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
+  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
-
+  
   <dependencies>
     <!-- UIMA dependencies -->
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -79,11 +110,10 @@
       <version>[3.13.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
-      <version>[3.12.0,4.0.0)</version>
+      <version>[3.12.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -95,7 +125,7 @@
   </dependencies>
 
   <build>
-    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
     <finalName>org.apache.uima.desceditor_${parsedVersion.osgiVersion}</finalName>
     <plugins>
       <plugin>
@@ -104,8 +134,6 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
             <Export-Package>
               org.apache.uima.taeconfigurator,
               org.apache.uima.taeconfigurator.editors,
@@ -120,47 +148,15 @@
             <Bundle-Activator>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
-
-            <!-- handle split packages in Eclipse.
-              We do this by using Require-Bundle, and excluding from the Import-Package those
-                split packages covered by those bundles - this is required by OSGi.
-                               
-               There are 4 packages in org.eclipse.jface.* that are "split" between bundles 
-                  org.eclipse.jface.text and org.eclipse.text.
-                 Packages:
-                  org.eclipse.jface.text
-                  org.eclipse.jface.text.link
-                  org.eclipse.jface.text.source
-                  org.eclipse.jface.text.templates 
-               org.eclipse.ui.texteditor is split between 
-                 org.eclipse.ui.editors and org.eclipse.ui.workbench.texteditor.
-                 Packages: 
-                  org.eclipse.ui.texteditor
-               There are 5 packages in org.eclipse.ui.*  that are split between 
-                 org.eclipse.ui.ide and org.eclipse.ui.workbench.  
-                 The Notes say not to require org.eclipse.ui.workbench, but instead just require
-                    org.eclipse.ui (which imports and reexports org.eclipse.ui.workbench packages).
-                 Packages:
-                  org.eclipse.ui
-                  org.eclipse.ui.actions
-                  org.eclipse.ui.dialogs
-                  org.eclipse.ui.model
-                  org.eclipse.ui.part
-               org.eclipse.core.runtime has combined apis (that were split in later 
-                 point releases of 3.x)
-            -->
-            <!-- note: cde manifest has too many blanks in it, fails when running, if these next lines are not 
-                 left justified 8/2010 -->
             <Require-Bundle>
-org.eclipse.jface.text,
-org.eclipse.text,
-org.eclipse.ui.editors,
-org.eclipse.ui.workbench.texteditor,
-org.eclipse.ui.ide,
-org.eclipse.ui,
-org.eclipse.core.runtime
+              org.eclipse.jface.text,
+              org.eclipse.text,
+              org.eclipse.ui.editors,
+              org.eclipse.ui.workbench.texteditor,
+              org.eclipse.ui.ide,
+              org.eclipse.ui,
+              org.eclipse.core.runtime
             </Require-Bundle>  
-              
             <Import-Package>
               !org.eclipse.jface.text,  <!-- the ! means to exclude this -->
               !org.eclipse.jface.text.source,
@@ -173,39 +169,11 @@ org.eclipse.core.runtime
               org.eclipse.jdt.ui,
               *
             </Import-Package>
-
-            
-            <!-- these determined to be needed empirically, due to a flaw in the bundle resolver -
-                 it works from the .class files, so references to things like org.eclipse.swt.SWT.ABORT
-                 are not visible - this is a static final constant that gets compiled into a number
-              
-                 Also, we stick a minimum version of 3.1.0 to insure we have that at least
-              
-                 First import specifies bundle, since package exists in more than 1 bundle
-              -->
-            <!--Import-Package>org.eclipse.jface.text.source;bundle-symbolic-name=org.eclipse.jface.text,
-              org.eclipse.jface.text;bundle-symbolic-name=org.eclipse.jface.text,
-              *,
-              org.eclipse.core.commands.common,
-              org.eclipse.core.runtime.jobs,
-              org.eclipse.core.runtime.content,
-              org.eclipse.swt,
-              org.eclipse.jface.window,
-              org.apache.uima.jcas.jcasgenp,
-              org.eclipse.jdt.launching,
-              org.eclipse.jdt.ui
-            </Import-Package-->
-
-            <!--Import-Package>
-              *,
-              org.eclipse.jdt.launching,
-              org.apache.uima.jcas.jcasgenp</Import-Package-->
-            
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Plugin-Class>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Plugin-Class>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
           </instructions>
-        </configuration>        
+        </configuration>
       </plugin>
     </plugins>
   </build>

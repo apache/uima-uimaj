@@ -117,12 +117,12 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   private FlowControllerDeclaration mFlowControllerDeclaration;
 
   // This holds delegates after imports have been resolved (merged from xmlComments 1187355)
-  private Map<String, ResourceSpecifier> mDelegateAnalysisEngineSpecifiers = new LinkedHashMap<String, ResourceSpecifier>();
+  private Map<String, ResourceSpecifier> mDelegateAnalysisEngineSpecifiers = new LinkedHashMap<>();
 
   // This holds delegates as they come from reading the descriptor, may have import elements (unresolved) (merged from xmlComments 1187355)
-  private Map<String, MetaDataObject> mDelegateAnalysisEngineSpecifiersWithImports = new LinkedHashMap<String, MetaDataObject>();
+  private Map<String, MetaDataObject> mDelegateAnalysisEngineSpecifiersWithImports = new LinkedHashMap<>();
 
-  private Map<String, Import> mProcessedImports = new HashMap<String, Import>();
+  private Map<String, Import> mProcessedImports = new HashMap<>();
 
   private SofaMapping[] mSofaMappings;
 
@@ -246,7 +246,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
     resolveImports(aResourceManager);
-    Map<String, ResourceSpecifier> map = new LinkedHashMap<String, ResourceSpecifier>(mDelegateAnalysisEngineSpecifiers);
+    Map<String, ResourceSpecifier> map = new LinkedHashMap<>(mDelegateAnalysisEngineSpecifiers);
     if (getFlowControllerDeclaration() != null) {
       map.put(getFlowControllerDeclaration().getKey(), getFlowControllerDeclaration()
               .getSpecifier());
@@ -290,7 +290,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   @Override
   public void doFullValidation() throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
-    Map<String, Object> m = new HashMap<String, Object>();
+    Map<String, Object> m = new HashMap<>();
     m.put(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE, Boolean.TRUE);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(this, m);
     validateSofaMappings();
@@ -306,7 +306,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
-    Map<String, Object> m = new HashMap<String, Object>();
+    Map<String, Object> m = new HashMap<>();
     m.put(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE, Boolean.TRUE);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(this, aResourceManager, m);
     validateSofaMappings();
@@ -486,7 +486,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     String aggName = this.getAnalysisEngineMetaData().getName();
     // build an actual Map (key: componentKey@/@componentSofa) from the sofa mappings
     // along the way check that all component keys and component sofa names exist
-    Map<String, String> sofamap = new TreeMap<String, String>();
+    Map<String, String> sofamap = new TreeMap<>();
     SofaMapping[] sofaMappings = this.getSofaMappings();
     if (sofaMappings != null) {
       for (int s = 0; s < sofaMappings.length; s++) {
@@ -542,8 +542,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     // component's input or output sofas, so rules (2) and (4) cannot be checked.
 
     boolean containsRemote = false;
-    Set<String> correctlyMappedAggregateOutputs = new HashSet<String>();
-    Set<String> correctlyMappedAggregateInputs = new HashSet<String>();
+    Set<String> correctlyMappedAggregateOutputs = new HashSet<>();
+    Set<String> correctlyMappedAggregateInputs = new HashSet<>();
 
     Iterator<Map.Entry<String, ResourceSpecifier>> iter;
     try {
@@ -761,7 +761,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   @Override
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new HashSet<String>(), aResourceManager);
+    resolveImports(new HashSet<>(), aResourceManager);
   }
 
   /*
@@ -808,7 +808,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager, boolean aRecursive) 
           throws InvalidXMLException {
     // add our own URL, if known, to the collection of enclosing aggregate URLs
-    Set<String> urls = new HashSet<String>();
+    Set<String> urls = new HashSet<>();
     if (getSourceUrl() != null) {
       urls.add(getSourceUrl().toString());
     }   
@@ -830,7 +830,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           ResourceManager aResourceManager, boolean aRecursive) throws InvalidXMLException {
     Set<String> keys = null;
     if (getDelegateAnalysisEngineSpecifiersWithImports().size() > 0) {
-      keys = new HashSet<String>(); // keep track of keys we've encountered
+      keys = new HashSet<>(); // keep track of keys we've encountered
       // so we can remove stale entries
       for (Map.Entry<String, MetaDataObject> entry : 
       	getDelegateAnalysisEngineSpecifiersWithImports().entrySet()) {
@@ -876,7 +876,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   
           // now resolve imports in ths delegate
           if (spec instanceof AnalysisEngineDescription) {
-            Set<String> alreadyImportedUrls = new HashSet<String>(aEnclosingAggregateAeUrls);
+            Set<String> alreadyImportedUrls = new HashSet<>(aEnclosingAggregateAeUrls);
             alreadyImportedUrls.add(url.toString());
             ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
           }
@@ -895,7 +895,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     
     if (mDelegateAnalysisEngineSpecifiers.size() > 0) {
       final Set<Map.Entry<String, ResourceSpecifier>> staleEntries = mDelegateAnalysisEngineSpecifiers.entrySet();
-      List<String> staleKeys = new ArrayList<String>();
+      List<String> staleKeys = new ArrayList<>();
       for (Map.Entry<String, ResourceSpecifier> entry : staleEntries) {
         String key = entry.getKey();
         if (null == keys || !keys.contains(key)) {

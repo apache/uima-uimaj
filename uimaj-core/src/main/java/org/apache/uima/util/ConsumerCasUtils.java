@@ -24,13 +24,14 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 
 public class ConsumerCasUtils {
   public static int getIntFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
     int result = 0;
     Type type = aCasView.getTypeSystem().getType(aTypeS);
     if (type != null) {
-      FSIterator<AnnotationFS> idIter = aCasView.getAnnotationIndex(type).iterator();
+      FSIterator<Annotation> idIter = aCasView.<Annotation>getAnnotationIndex(type).iterator();
       while (idIter.isValid()) {
         org.apache.uima.cas.FeatureStructure idFS = idIter.get();
         result = idFS

@@ -21,13 +21,13 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import junit.framework.TestCase;
 
 public class TypeSystemUtilTest extends TestCase {
   public void testTypeSystem2TypeSystemDescription() throws Exception {

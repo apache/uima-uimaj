@@ -18,10 +18,11 @@
  */
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 
-import org.apache.uima.internal.util.PositiveIntSet;
-import org.apache.uima.internal.util.PositiveIntSet_impl;
+import org.apache.uima.jcas.cas.TOP;
 
 
 
@@ -52,10 +53,10 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
    */
   
 @SuppressWarnings("serial")  
-class DeferredIndexUpdates extends IdentityHashMap<FSIndexRepositoryImpl, PositiveIntSet> {
+class DeferredIndexUpdates extends IdentityHashMap<FSIndexRepositoryImpl, List<TOP>> {
     
-  void addTodo(FSIndexRepositoryImpl ir, int fsAddr) {
-    getTodos(ir).add(fsAddr);
+  void addTodo(FSIndexRepositoryImpl ir, TOP fs) {
+    getTodos(ir).add(fs);
   }
   
   /**
@@ -63,10 +64,10 @@ class DeferredIndexUpdates extends IdentityHashMap<FSIndexRepositoryImpl, Positi
    * @param ir
    * @param fsAddr
    */
-  PositiveIntSet getTodos(FSIndexRepositoryImpl ir) {
-    PositiveIntSet s = get(ir);
+  List<TOP> getTodos(FSIndexRepositoryImpl ir) {
+    List<TOP> s = get(ir);
     if (null == s) {
-      put(ir, s = new PositiveIntSet_impl());
+      put(ir, s = new ArrayList<>());
     }
     return s;
   }

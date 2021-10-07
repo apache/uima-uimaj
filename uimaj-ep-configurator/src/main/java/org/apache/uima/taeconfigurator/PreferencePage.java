@@ -27,19 +27,33 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+
+/**
+ * The Class PreferencePage.
+ */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+  
+  /** The Constant P_JCAS. */
   public static final String P_JCAS = "org.apache.uima.cde.autojcasgen";
   
+  /** The Constant P_JCAS_LIMIT_TO_PROJECT_SCOPE. */
   public static final String P_JCAS_LIMIT_TO_PROJECT_SCOPE = "org.apache.uima.cde.jcasgen.limittoprojectscope";
 
+  /** The Constant P_SHOW_FULLY_QUALIFIED_NAMES. */
   public static final String P_SHOW_FULLY_QUALIFIED_NAMES = "org.apache.uima.cde.qualifiedtypes";
 
+  /** The Constant P_XML_TAB_SPACES. */
   public static final String P_XML_TAB_SPACES = "org.apache.uima.cde.xmlIndentAmount";
 
+  /** The Constant P_VNS_HOST. */
   public static final String P_VNS_HOST = "org.apache.uima.cde.vnsHost";
 
+  /** The Constant P_VNS_PORT. */
   public static final String P_VNS_PORT = "org.apache.uima.cde.vnsPort";
 
+  /**
+   * Instantiates a new preference page.
+   */
   public PreferencePage() {
     super(GRID);
     setPreferenceStore(TAEConfiguratorPlugin.getDefault().getPreferenceStore());
@@ -60,6 +74,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     // store.setDefault(P_DATA_PATH, "");
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+   */
+  @Override
   public void createFieldEditors() {
     addField(new BooleanFieldEditor(P_JCAS, "&Automatically run JCasGen when Types change",
             getFieldEditorParent()));
@@ -79,6 +97,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
             getFieldEditorParent()));
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+   */
+  @Override
   public void init(IWorkbench workbench) {
   }
 }

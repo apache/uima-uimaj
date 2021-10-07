@@ -30,15 +30,27 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CpeCheckpointImpl.
+ */
 public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpoint {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 9155094513948815121L;
 
+  /** The file. */
   private String file;
 
+  /** The time. */
   private String time;
 
+  /** The batch. */
   private int batch;
 
+  /**
+   * Instantiates a new cpe checkpoint impl.
+   */
   public CpeCheckpointImpl() {
   }
 
@@ -72,6 +84,12 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
     time = String.valueOf(aFrequency) + "ms";
   }
 
+  /**
+   * Convert 2 number.
+   *
+   * @param anObject the an object
+   * @return the int
+   */
   private int convert2Number(Object anObject) {
     int convertedTime = 1;
 
@@ -136,7 +154,11 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
 
   /**
    * Overridden to read Checkpoint attributes.
-   * 
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -154,7 +176,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
 
   /**
    * Overridden to handle Checkpoint attributes.
-   * 
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
   @Override
@@ -170,11 +193,15 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
     return attrs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
           new PropertyXmlInfo[0]);
 
@@ -188,6 +215,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   /**
+   * Gets the file.
+   *
    * @return a file
    */
   public String getFile() {
@@ -195,22 +224,38 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   /**
+   * Gets the time.
+   *
    * @return a time
    */
   public String getTime() {
     return time;
   }
 
+  /**
+   * Sets the batch.
+   *
+   * @param i the new batch
+   */
   public void setBatch(int i) {
     batch = i;
   }
 
+  /**
+   * Sets the file.
+   *
+   * @param string the new file
+   */
   public void setFile(String string) {
     file = string;
   }
 
+  /**
+   * Sets the time.
+   *
+   * @param i the new time
+   */
   public void setTime(String i) {
     time = i;
   }
-
 }

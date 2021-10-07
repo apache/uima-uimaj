@@ -1,0 +1,57 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.performance]]
+= Performance
+
+Version 3 has many changes that affect the performance profile of applications.
+Many of these are highly dependent on the kind of framework operations being done by a UIMA application.
+
+[[_uv3.performance.general]]
+== General performance improvements
+
+A focus of the implementation has been to try to achieve much more locality of reference, including the code itself.
+For example, many parts of the implementation were rewritten to eliminate duplicate  code.
+Many more objects were shared where feasible, with attention paid to multi-threading aspects.
+
+This improvement reduces the memory cache "load" that the framework imposes, potentially permitting more of the space to be used for other things, including user code.
+
+The framework's use of Java 8 facilities such as method handles and lambdas may also result in some performance gains.
+
+[[_uv3.performance.indexes]]
+== Index performance
+
+UIMA support for indexes has been improved in some cases.
+Two cases where there is substantial improvement: 
+
+* where inserts and deletions are performed other than at the end of the index.
+* where there are a large number of Feature Structures being indexed with identical index-ordering features. For example, some applications create many feature structures of type Annotation, perhaps because there's a built-in index for Annotations, but never set the `begin` or `end` values; these then default to 0. The ordering for these Feature Structures, then defaults to  putting all of these having the same type together in the index, with no way to distinguish between them. Version 3 uses a hidden value to allow distinguishing these, and can be much faster for certain operations which have to find the `left-most` matching Feature Structure. 
+
+
+[[_uv3.performance.low_level_api]]
+== Low Level API performance
+
+Low level APIs in v2 have a slight performance advantage; in v3, they have a performance penalty.
+Furthermore, low level Feature Structure creation and calling `my_feature_structure.getAddress()` both return an `int` "handle" which can be used to retrieve the corresponding Feature Structure.
+To make this work, these operations must update a map between `ints` and the Feature Structure object.
+This prevents  no-longer-used feature structures from being garbage collected (until the CAS is reset). 
+
+[[_uv3.performance.serialization]]
+== Serialization performance
+
+Binary Serialization protocol remains, for backward compatibility, and because it's used for the `C/C++` interoperability layer.
+That use  requires modeling the exact layout of how Version 2 stored CASs and converting between these two forms, so it is not particularly efficient. 

@@ -37,21 +37,37 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CpeSofaMappingsImpl.
+ */
 public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaMappings {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -4193487704594409253L;
 
+  /** The sofa name mappings. */
   private ArrayList sofaNameMappings = new ArrayList();
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * 
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     NodeList nodes = aElement.getChildNodes();
@@ -73,6 +89,10 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+   */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
@@ -100,20 +120,27 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
     aContentHandler.endElement(inf.namespace, inf.elementTagName, inf.elementTagName);
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaNameMappings",
           new PropertyXmlInfo[] { new PropertyXmlInfo("sofaNameMapping", null), });
 
   /**
+   * Gets the sofa name mappings.
+   *
    * @return sofa name mappings
    */
+  @Override
   public CpeSofaMapping[] getSofaNameMappings() {
     CpeSofaMapping[] sofaMappings = new CpeSofaMapping[sofaNameMappings.size()];
     return (CpeSofaMapping[]) sofaNameMappings.toArray(sofaMappings);
   }
 
   /**
-   * @param sofaMappings -
+   * Sets the sofa name mappings.
+   *
+   * @param sofaMappings the new sofa name mappings
    */
+  @Override
   public void setSofaNameMappings(CpeSofaMapping[] sofaMappings) {
     for (int i = 0; sofaMappings != null && i < sofaMappings.length; i++) {
       sofaNameMappings.add(sofaMappings[i]);

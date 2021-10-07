@@ -30,6 +30,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
 
+
 /**
  * TODO: add type comment for <code>MultiMarkup</code>.
  * 
@@ -37,14 +38,27 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public abstract class MultiMarkup {
 
+  /**
+   * The Class Extent.
+   */
   private static class Extent {
 
+    /** The start. */
     protected int start;
 
+    /** The end. */
     protected int end;
 
+    /** The depth. */
     protected int depth;
 
+    /**
+     * Instantiates a new extent.
+     *
+     * @param start the start
+     * @param end the end
+     * @param depth the depth
+     */
     private Extent(int start, int end, int depth) {
       this.start = start;
       this.end = end;
@@ -53,10 +67,22 @@ public abstract class MultiMarkup {
 
   }
 
+  /**
+   * The Class AnnotExtent.
+   */
   private static class AnnotExtent extends Extent {
 
+    /** The annot name. */
     private String annotName;
 
+    /**
+     * Instantiates a new annot extent.
+     *
+     * @param start the start
+     * @param end the end
+     * @param depth the depth
+     * @param annotName the annot name
+     */
     private AnnotExtent(int start, int end, int depth, String annotName) {
       super(start, end, depth);
       this.annotName = annotName;
@@ -64,9 +90,17 @@ public abstract class MultiMarkup {
 
   }
 
+  /**
+   * Creates the annotation markups.
+   *
+   * @param it the it
+   * @param textLen the text len
+   * @param styleMap the style map
+   * @return the annotation extent[]
+   */
   public static AnnotationExtent[] createAnnotationMarkups(FSIterator it, int textLen,
           Map<String, Style> styleMap) {
-    List<AnnotExtent> list = new ArrayList<AnnotExtent>();
+    List<AnnotExtent> list = new ArrayList<>();
     list.add(new AnnotExtent(0, textLen, 0, null));
     AnnotationFS fs;
     AnnotExtent ext;
@@ -162,9 +196,16 @@ public abstract class MultiMarkup {
     return extentArray;
   }
 
+  /**
+   * Creates the markup extents.
+   *
+   * @param it the it
+   * @param textLen the text len
+   * @return the markup extent[]
+   */
   public static MarkupExtent[] createMarkupExtents(FSIterator it, int textLen) {
 
-    List<Extent> list = new ArrayList<Extent>();
+    List<Extent> list = new ArrayList<>();
     list.add(new Extent(0, textLen, 0));
     AnnotationFS fs;
     Extent ext;

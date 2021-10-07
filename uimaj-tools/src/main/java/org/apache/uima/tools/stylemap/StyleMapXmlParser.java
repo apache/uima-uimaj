@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+
 /**
  * A simple SAX parser for Style Map XML documents. A GUI for editing style maps for the annotation
  * viewer.
@@ -43,18 +44,30 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public class StyleMapXmlParser extends DefaultHandler {
+  
+  /** The Constant FEATURE_VALUE_PREFIX. */
   private static final String FEATURE_VALUE_PREFIX = "[@";
 
+  /** The annot type. */
   public Vector annotType = new Vector();
 
+  /** The style label. */
   public Vector styleLabel = new Vector();
 
+  /** The style color. */
   public Vector styleColor = new Vector();
 
+  /** The feature value. */
   public Vector featureValue = new Vector();
 
+  /** The data. */
   private StringBuffer data = new StringBuffer();
 
+  /**
+   * Instantiates a new style map xml parser.
+   *
+   * @param xmlFile the xml file
+   */
   // constructor
   public StyleMapXmlParser(String xmlFile) {
     try {
@@ -82,10 +95,18 @@ public class StyleMapXmlParser extends DefaultHandler {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+   */
+  @Override
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
           throws SAXException {
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+   */
+  @Override
   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
     // System.out.println("End Element: " + localName);
     // System.out.println("Characters: " + data.toString().trim());
@@ -117,6 +138,10 @@ public class StyleMapXmlParser extends DefaultHandler {
     data.delete(0, data.length());
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+   */
+  @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
     data.append(ch, start, length);
   }

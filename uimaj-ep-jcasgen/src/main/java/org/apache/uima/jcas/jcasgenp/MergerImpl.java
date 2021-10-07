@@ -30,11 +30,22 @@ import org.eclipse.emf.codegen.jmerge.JControlModel;
 import org.eclipse.emf.codegen.jmerge.JMerger;
 import org.eclipse.jdt.core.jdom.IDOMCompilationUnit;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MergerImpl.
+ */
 public class MergerImpl implements org.apache.uima.tools.jcasgen.IMerge {
+  
+  /** The Constant jControlModel. */
   static final String jControlModel = "jMergeCtl.xml";
 
+  /** The j control model instance. */
   static JControlModel jControlModelInstance = null;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.jcasgen.IMerge#doMerge(org.apache.uima.tools.jcasgen.Jg, org.apache.uima.tools.jcasgen.IProgressMonitor, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.io.File)
+   */
+  @Override
   public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
           String targetContainer, String targetPath, String targetClassName, File targetFile)
           throws IOException {

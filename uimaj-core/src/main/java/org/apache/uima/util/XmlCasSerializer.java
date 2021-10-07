@@ -28,16 +28,12 @@ import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * This class is an older class with just two static methods which forward to methods in XmiCasSerializer.
- * 
- * Consider using XmiCasSerializer or CasIOUtils instead.
- * 
  * Serializes a CAS to inline XML format. The output format conforms to the XML Metadata Interchange
  * (XMI) format, an OMG standard.
  * <p>
  * For more options, see {@link XmiCasSerializer}.
  */
-public abstract class XmlCasSerializer {  // abstract only to prevent instantiation, only has static methods
+public abstract class XmlCasSerializer {
 
   /**
    * Serializes a CAS to XMI format and writes it to an output stream.

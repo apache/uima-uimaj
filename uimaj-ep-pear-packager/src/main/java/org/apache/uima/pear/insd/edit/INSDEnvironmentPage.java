@@ -54,43 +54,46 @@ import org.eclipse.swt.widgets.Label;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
+
 /**
- * 
- * This is wizard page to edit PEAR Installation Environment parameters
- * 
- * 
- * 
+ * This is wizard page to edit PEAR Installation Environment parameters.
  */
 
 public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
 
+  /** The os combo. */
   public Combo osCombo;
 
+  /** The jdk version combo. */
   public Combo jdkVersionCombo;
 
+  /** The viewer. */
   public VarValViewerHandler viewer;
 
+  /** The env var list. */
   public VarValList envVarList = new VarValList();
 
+  /** The insd. */
   InstallationDescriptor insd;
 
+  /** The current container. */
   IContainer currentContainer;
 
+  /** The gr. */
   Group gr;
 
+  /** The gr 1. */
   Group gr1;
 
+  /** The Missing libraries. */
   ArrayList MissingLibraries = new ArrayList();
 
   /**
-   * Constructor
-   * 
-   * @param currentContainer
-   *          An IProject with the UIMA Nature
-   * @param insd
-   *          The installation Descriptor object
-   * @param wizardData
-   *          a hash table with shared information between wizard pages
+   * Constructor.
+   *
+   * @param currentContainer          An IProject with the UIMA Nature
+   * @param insd          The installation Descriptor object
+   * @param wizardData          a hash table with shared information between wizard pages
    */
   public INSDEnvironmentPage(IContainer currentContainer, InstallationDescriptor insd,
           Hashtable wizardData) {
@@ -104,8 +107,11 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   }
 
   /**
-   * See IDialogPage#createControl(Composite)
+   * See IDialogPage#createControl(Composite).
+   *
+   * @param parent the parent
    */
+  @Override
   public void createControl(Composite parent) {
 
     try {
@@ -155,6 +161,12 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     }
   }
 
+  /**
+   * Gets the first item.
+   *
+   * @param tokens the tokens
+   * @return the first item
+   */
   private String getFirstItem(String tokens) {
     String firstItem = "";
     if (tokens != null && tokens.trim().length() > 0) {
@@ -170,6 +182,13 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return firstItem;
   }
 
+  /**
+   * Adds the combo.
+   *
+   * @param parent the parent
+   * @param strLabel the str label
+   * @return the combo
+   */
   private Combo addCombo(Composite parent, String strLabel) {
     Label label = new Label(parent, SWT.NULL);
     label.setText(strLabel);
@@ -181,6 +200,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     text.setLayoutData(gd);
 
     text.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         dialogChanged();
       }
@@ -188,6 +208,9 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return text;
   }
 
+  /**
+   * Initialize combos.
+   */
   private void initializeCombos() {
 
     String selectedOS = "";
@@ -215,6 +238,9 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
 
   }
 
+  /**
+   * Initialize.
+   */
   private void initialize() {
     try {
       envVarList = new VarValList();
@@ -253,6 +279,12 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     }
   }
 
+  /**
+   * Gets the initial class path.
+   *
+   * @param classPath the class path
+   * @return the initial class path
+   */
   private String getInitialClassPath(String classPath) {
     // do nothing if the container is not a project
     if (currentContainer.getType() != IResource.PROJECT) {
@@ -324,6 +356,12 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return classPath;
   }
 
+  /**
+   * Tokenize class path.
+   *
+   * @param classPath the class path
+   * @return the array list
+   */
   /*
    * Tokenized a class path string and returns an ArrayList of entries.
    * 
@@ -340,6 +378,13 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return resultStringEntries;
   }
 
+  /**
+   * Adds the to class path.
+   *
+   * @param classPathEntries the class path entries
+   * @param resultStringEntries the result string entries
+   * @return the array list
+   */
   /*
    * Adds class path entries to a class path if not already included.
    * 
@@ -352,6 +397,13 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return resultStringEntries;
   }
 
+  /**
+   * Convert to string.
+   *
+   * @param stringEntries the string entries
+   * @param delim the delim
+   * @return the string
+   */
   /*
    * converts an ArrayList of String to one String separated by a delimiter
    */
@@ -364,6 +416,13 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return sb.toString();
   }
 
+  /**
+   * Adds the to class path.
+   *
+   * @param classPathEntry the class path entry
+   * @param classPath the class path
+   * @return the array list
+   */
   /*
    * Adds an entry to a class path if not already included. Returns an ArrayList of String objects
    * representing the class path entries
@@ -417,6 +476,13 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     return classPath;
   }
 
+  /**
+   * Contain.
+   *
+   * @param classPath the class path
+   * @param classPathEntryString the class path entry string
+   * @return true, if successful
+   */
   /*
    * Returns true if the ArrayList of Strings contain the given string (not necessarly the same
    * object)
@@ -450,6 +516,11 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     updateStatus(null);
   }
 
+  /**
+   * Update status.
+   *
+   * @param message the message
+   */
   private void updateStatus(String message) {
     setErrorMessage(message);
     setPageComplete(message == null);

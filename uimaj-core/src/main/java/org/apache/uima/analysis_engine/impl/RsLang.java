@@ -31,7 +31,7 @@ public class RsLang {
  /**
    * global set for canonical language strings
    */
-  private static final ConcurrentMap<String, String> canonicalLanguageStrings = new ConcurrentHashMap<String, String>();
+  private static final ConcurrentMap<String, String> canonicalLanguageStrings = new ConcurrentHashMap<>();
  
   /**
    * 

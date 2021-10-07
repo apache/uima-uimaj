@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -245,13 +246,13 @@ public class XMLUtil {
       System.arraycopy(buffer, 0, buffer6, 0, 6);  
       if (utf8Signature) {
         // check for UTF-8
-        String test = new String(buffer, "UTF-8");
+        String test = new String(buffer, StandardCharsets.UTF_8);
         if (test.startsWith(FIRST_XML_CHARS)) {
             encoding = "UTF-8";
         }
       } else if (utf16Signature) {
         // check for UTF-16
-        String test = new String(buffer6, "UTF-16");
+        String test = new String(buffer6, StandardCharsets.UTF_16);
         if (test.startsWith(FIRST_XML_CHARS)) {
             encoding = "UTF-16";
         }
@@ -259,18 +260,18 @@ public class XMLUtil {
         // we don't support this
       } else {
         // no signature - check for UTF-8 in XML header characters
-        String test = new String(buffer, "UTF-8");
+        String test = new String(buffer, StandardCharsets.UTF_8);
         if (test.startsWith(FIRST_XML_CHARS)) {
             encoding = "UTF-8";
         }
         else {
           // next, check for UTF-16LE in XML header characters
-          test = new String(buffer6, "UTF-16LE");
+          test = new String(buffer6, StandardCharsets.UTF_16LE);
           if (test.startsWith(FIRST_XML_CHARS)) {
             encoding = "UTF-16LE";
           } else {
             // next, check for UTF-16BE in XML header characters
-            test = new String(buffer6, "UTF-16BE");
+            test = new String(buffer6, StandardCharsets.UTF_16BE);
             if (test.startsWith(FIRST_XML_CHARS)) {
               encoding = "UTF-16BE";
             }
@@ -281,7 +282,7 @@ public class XMLUtil {
       if (encoding == null) {
         // last resort: check 1st non-space XML character - '<'
         // check 1st non-space XML character for UTF-8
-        fReader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), "UTF-8"));
+        fReader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), StandardCharsets.UTF_8));
         String line = null;
         try {
           while ((line = fReader.readLine()) != null) {
@@ -299,7 +300,7 @@ public class XMLUtil {
         if (encoding == null) {
           // check 1st non-space XML character for UTF-16
           fReader = new BufferedReader(
-                  new InputStreamReader(new FileInputStream(xmlFile), "UTF-16"));
+                  new InputStreamReader(new FileInputStream(xmlFile), StandardCharsets.UTF_16));
           try {
             while ((line = fReader.readLine()) != null) {
               String xmlLine = line.trim();

@@ -37,6 +37,7 @@ import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.internal.util.SerializationUtils;
 
+
 /**
  * The CasTreeViewer as an Applet.
  * 
@@ -44,14 +45,16 @@ import org.apache.uima.internal.util.SerializationUtils;
  */
 public class CasTreeViewerApplet extends JApplet {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7539612752281789849L;
 
-  /** The CAS Tree Viewer panel */
+  /**  The CAS Tree Viewer panel. */
   private CasTreeViewer mTreeViewer;
 
   /**
    * Called when the applet is initialized.
    */
+  @Override
   public void init() {
     try {
       // get applet parameter - URL from which to get the CAS
@@ -119,8 +122,15 @@ public class CasTreeViewerApplet extends JApplet {
   /**
    * A listener for detecting resize events. Sets the size of the TreeViewer panel whenever the
    * applet's size changes.
+   *
+   * @see MyComponentEvent
    */
   class MyComponentListener extends ComponentAdapter {
+    
+    /* (non-Javadoc)
+     * @see java.awt.event.ComponentAdapter#componentResized(java.awt.event.ComponentEvent)
+     */
+    @Override
     public void componentResized(ComponentEvent e) {
       resizeTreeViewer();
     }

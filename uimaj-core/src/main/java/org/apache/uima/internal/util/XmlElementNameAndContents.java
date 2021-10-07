@@ -36,12 +36,12 @@ public class XmlElementNameAndContents {
     this.attributes = attributes;
   }
 
-  public XmlElementName name;
+  final public XmlElementName name;
   
   /**
    * List of XmlAttribute objects each holding name and value of an attribute.
    */
-  public List<XmlAttribute> attributes;
+  final public List<XmlAttribute> attributes;
 
-  public String contents;
+  final public String contents;
 }

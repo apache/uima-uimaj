@@ -26,10 +26,20 @@ import java.util.TreeSet;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class TypesWithNameSpaces.
+ */
 public class TypesWithNameSpaces {
 
+  /** The sorted names. */
   public SortedMap sortedNames = new TreeMap();
   
+  /**
+   * Adds the.
+   *
+   * @param fullname the fullname
+   */
   public void add(String fullname) {
     String key = AbstractSection.getShortName(fullname);
     String nameSpace = AbstractSection.getNameSpace(fullname);

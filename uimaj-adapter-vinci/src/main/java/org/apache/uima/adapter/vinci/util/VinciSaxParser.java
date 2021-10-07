@@ -31,6 +31,7 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.document.AFrame;
 import org.apache.vinci.transport.document.AFrameLeaf;
 
+// TODO: Auto-generated Javadoc
 /**
  * Takes a Vinci frame and generates SAX events that correspond to the data in the frame.
  * 
@@ -38,16 +39,35 @@ import org.apache.vinci.transport.document.AFrameLeaf;
  */
 public class VinciSaxParser {
 
+  /** The m handler. */
   private ContentHandler mHandler;
 
+  /**
+   * Sets the content handler.
+   *
+   * @param aHandler the new content handler
+   */
   public void setContentHandler(ContentHandler aHandler) {
     mHandler = aHandler;
   }
 
+  /**
+   * Parses the.
+   *
+   * @param aFrame the a frame
+   * @throws SAXException the SAX exception
+   */
   public void parse(VinciFrame aFrame) throws SAXException {
     parse(aFrame, true);
   }
 
+  /**
+   * Parses the.
+   *
+   * @param aFrame the a frame
+   * @param aSendStartAndEndDocEvents the a send start and end doc events
+   * @throws SAXException the SAX exception
+   */
   public void parse(VinciFrame aFrame, boolean aSendStartAndEndDocEvents) throws SAXException {
     if (aSendStartAndEndDocEvents) {
       mHandler.startDocument();
@@ -60,6 +80,12 @@ public class VinciSaxParser {
     }
   }
 
+  /**
+   * Parses the.
+   *
+   * @param aFrame the a frame
+   * @throws SAXException the SAX exception
+   */
   protected void _parse(VinciFrame aFrame) throws SAXException {
     int count = aFrame.getKeyValuePairCount();
 

@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.ListSelector;
 
+
 /**
  * Configuration Field class used for representation of resource parameters in dynamically created
  * MetaDataPanels.
@@ -35,27 +36,32 @@ import org.apache.uima.tools.util.gui.ListSelector;
  * @see org.apache.uima.tools.cpm.MetaDataPanel
  */
 public class ConfigField {
+  
+  /** The parameter name. */
   private String parameterName;
 
+  /** The class string. */
   private String classString;
 
+  /** The is multi valued. */
   private boolean isMultiValued;
 
+  /** The field component. */
   private JComponent fieldComponent;
 
+  /** The original value. */
   private Object originalValue;
 
+  /** The last saved value. */
   private Object lastSavedValue;
 
   /**
-   * @param pn
-   *          Resource parameter name e.g. outputDir
-   * @param cs
-   *          String value of Java type used for value e.g. Integer
-   * @param mv
-   *          true if the value is a multi-value array
-   * @param c
-   *          Component used to represent field - Could be JTextField, JCheckBox, FileSelector or
+   * Instantiates a new config field.
+   *
+   * @param pn          Resource parameter name e.g. outputDir
+   * @param cs          String value of Java type used for value e.g. Integer
+   * @param mv          true if the value is a multi-value array
+   * @param c          Component used to represent field - Could be JTextField, JCheckBox, FileSelector or
    *          ListSelector
    */
   public ConfigField(String pn, String cs, boolean mv, JComponent c) {
@@ -67,22 +73,47 @@ public class ConfigField {
     lastSavedValue = originalValue;
   }
 
+  /**
+   * Gets the parameter name.
+   *
+   * @return the parameter name
+   */
   public String getParameterName() {
     return parameterName;
   }
 
+  /**
+   * Gets the class string.
+   *
+   * @return the class string
+   */
   public String getClassString() {
     return classString;
   }
 
+  /**
+   * Gets the field component.
+   *
+   * @return the field component
+   */
   public JComponent getFieldComponent() {
     return fieldComponent;
   }
 
+  /**
+   * Checks if is multi valued.
+   *
+   * @return true, if is multi valued
+   */
   public boolean isMultiValued() {
     return isMultiValued;
   }
 
+  /**
+   * Gets the field value.
+   *
+   * @return the field value
+   */
   public Object getFieldValue() {
     if (fieldComponent instanceof JTextField) {
       String fieldString = ((JTextField) fieldComponent).getText();
@@ -101,7 +132,7 @@ public class ConfigField {
       } else
         return fieldString;
     } else if (fieldComponent instanceof JCheckBox)
-      return Boolean.valueOf(((JCheckBox) fieldComponent).isSelected());
+      return ((JCheckBox) fieldComponent).isSelected();
     else if (fieldComponent instanceof FileSelector)
       return ((FileSelector) fieldComponent).getSelected();
     else if (fieldComponent instanceof ListSelector) {
@@ -132,6 +163,11 @@ public class ConfigField {
       return null;
   }
 
+  /**
+   * Sets the field value.
+   *
+   * @param fieldValue the new field value
+   */
   public void setFieldValue(Object fieldValue) {
     if (fieldComponent instanceof JTextField) {
       ((JTextField) fieldComponent).setText(fieldValue.toString());

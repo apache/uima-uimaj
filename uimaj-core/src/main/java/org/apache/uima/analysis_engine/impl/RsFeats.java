@@ -41,7 +41,7 @@ public class RsFeats implements Iterable<RsFeat> {
       features = null;
       return;
     }      
-    features = new ArrayList<RsFeat>(other.features.size());
+    features = new ArrayList<>(other.features.size());
     for (RsFeat f : other.features){
       features.add(new RsFeat(f));    
     }
@@ -68,7 +68,7 @@ public class RsFeats implements Iterable<RsFeat> {
       feat = new RsFeat(shortFeatName, rsLangs);
     }
     if (null == features) {
-      features = new ArrayList<RsFeat>(1);
+      features = new ArrayList<>(1);
     }
     features.add(feat);
   }

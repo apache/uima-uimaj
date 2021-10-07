@@ -69,7 +69,7 @@ public class IntStack extends IntVector {
    */
   public int pop() {
     --this.pos;
-    return this.array[this.pos];
+    return get(this.pos); // this.array[this.pos];
   }
 
   /**
@@ -78,7 +78,7 @@ public class IntStack extends IntVector {
    * @return The top element.
    */
   public int peek() {
-    return this.array[this.pos - 1];
+    return get(this.pos - 1); // this.array[this.pos - 1];
   }
 
   /**

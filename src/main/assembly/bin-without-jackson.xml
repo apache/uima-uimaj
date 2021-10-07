@@ -140,6 +140,19 @@ under the License.
       <directoryMode>755</directoryMode>        
     </dependencySet>
     
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-v3migration-jcas</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uimaj-v3migration-jcas.jar</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+        
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
       <includes>
@@ -156,6 +169,29 @@ under the License.
       <scope>runtime</scope>
       <outputDirectory>eclipsePlugins</outputDirectory>
       <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+    
+    <!--  loggers and other lib 3rd party jars not renamed -->
+    <dependencySet>
+      <includes>
+        <include>org.bitbucket.mstrobel:procyon-compilertools</include>      
+        <include>org.bitbucket.mstrobel:procyon-core</include>
+        <include>com.github.javaparser:javaparser-core</include>
+        <include>org.slf4j:slf4j-api</include>
+                <!--  log4j not default included 
+        <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
+        <include>org.apache.logging.log4j:log4j-core</include>
+        <include>org.apache.logging.log4j:log4j-api</include>
+         -->
+        <!-- hook to built-in Java backend for slf4j included -->
+        <include>org.slf4j:slf4j-jdk14</include> 
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
@@ -238,6 +274,12 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
+    <fileSet>
+      <directory>uima-doc-v3-users-guide/target/site</directory>
+      <outputDirectory>docs</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
+    </fileSet>
     
     <!-- examples -->
     <fileSet>
@@ -252,6 +294,7 @@ under the License.
         <include>run_configuration/**</include>
       </includes>
     </fileSet>
+    
     <fileSet>
       <directory>uimaj-examples/src/main/java</directory>
       <outputDirectory>examples/src</outputDirectory>
@@ -277,13 +320,13 @@ under the License.
       <directory>uimaj-core/api-change-report</directory>
       <outputDirectory>uimaj-core/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>uimaj-cpe/api-change-report</directory>
       <outputDirectory>uimaj-cpe/api-change-report</outputDirectory>
-      <directoryMode>755</directoryMode>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
 
   </fileSets>
@@ -291,12 +334,12 @@ under the License.
   <files>
     <!-- copy bin distr license and notice -->
     <file>
-      <source>src/main/readme/LICENSE</source>
+      <source>src/main/bin_distr_license_notices/LICENSE</source>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
     </file>
     <file> 
-      <source>src/main/readme/NOTICE-without-jackson</source>
+      <source>src/main/bin_distr_license_notices/NOTICE-without-jackson</source>
       <outputDirectory></outputDirectory>
       <destName>NOTICE</destName>
       <fileMode>644</fileMode>    

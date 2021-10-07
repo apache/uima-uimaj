@@ -145,7 +145,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   /**
    * used for empty type subsumption lists in subtype iterator
    */
-  public static final List<Type> EMPTY_TYPE_LIST = new ArrayList<Type>(0);
+  public static final List<Type> EMPTY_TYPE_LIST = new ArrayList<>(0);
   
   /**
    * For this Result-specification, the collection of language-sets
@@ -164,7 +164,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
   public ResultSpecification_impl() {
     rsTypesMap = new RsTypesMap();
-    rsCompiled = new HashMap<String, RsLangs>();
+    rsCompiled = new HashMap<>();
   }
 
   /**
@@ -189,7 +189,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     mTypeSystem = original.mTypeSystem;    // not cloned
     rsTypesMap = new RsTypesMap(original.rsTypesMap);
     needsCompilation = original.needsCompilation;
-    rsCompiled = new HashMap<String, RsLangs>(original.rsCompiled);     
+    rsCompiled = new HashMap<>(original.rsCompiled);
     for (Map.Entry<String, RsLangs> e : rsCompiled.entrySet()) {
       e.getValue().setShared();
     }
@@ -212,7 +212,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   }
   
   private TypeOrFeature[] getResultTypesAndFeatures(boolean skipLanguageFilter, String language) {
-    List<TypeOrFeature> r = new ArrayList<TypeOrFeature>();
+    List<TypeOrFeature> r = new ArrayList<>();
     if (rsTypesMap.nbrOfTypes() == 0 && !needsCompilation) {
       // being called on results of intersection
       // probably by a test case, not a normal call
@@ -550,7 +550,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   @SuppressWarnings("unchecked")
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("org.apache.uima.analysis_engine.impl.ResultSpecification_impl:\n");
+    sb.append(this.getClass().getSimpleName() + ":\n");
     sb.append("  needsCompilation = ").append(needsCompilation).append('\n');
 //    sb.append("lang2int = ").append(lang2int).append("\n");
 //    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");

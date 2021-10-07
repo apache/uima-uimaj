@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.11.0 Release Notes</title>
+  <title>Apache UIMA v3.2.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.11.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.2.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -33,8 +33,8 @@
 <a href="#report.issues">How to Report Issues</a><br/>
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
-   
-<h2><a id="what.is.uima">1. What is UIMA?</a></h2>
+
+<h2><a id="what.is.uima">What is UIMA?</a></h2>
 
      <p>
   			Unstructured Information Management applications are
@@ -79,24 +79,98 @@
 				for Perl, Python and TCL.
 			</p>
 
-<h2><a id="major.changes">Major Changes in this Release</a></h2>
-<p>The major changes in this release include:</p>
+<h2><a id="major.changes">Notable changes in this release</a></h2>
 
 <ul>
+  <li>Added AnnotationPredicates utility class providing various predicates testing how annotations
+      relate to each other (e.g. covering, being covered by, following, preceding, etc.)</li>
+  <li>Added single-int arg version of select.startAt()</li>
+  <li>Added trim method to AnnotationFS</li>
   <li>Added ability to serialize as XMIs as XML 1.1</li>
+  <li>Added ability to serialize as XMIs pretty-printed using CasIOUtils</li>
   <li>Added typed parameter support to PEARs</li>
+  <li>Improve performance of setting up JCas classes by reducing sync lock contention</li>
   <li>Improved speed of constructing aggregate engines</li>
-  <li>Fixed deep cloning of AnalysisEngineDescription</li>
+  <li>Fixed de-serialization of array subtypes in form 6 binary CASes</li>
+  <li>Fixed parameter-fetching methods PearSpecifier_impl not returning null because they promise not to</li>
+  <li>Fixed logs being spammed with "Import by location/name..." messages</li>
+  <li>Fixed numerous bugs and inconsistencies in the SelectFS implementation</li>
+  <li>Fixed CAS-transportable Java objects not being properly deserialized</li>
+  <li>Fixed FSArray.spliterator() to work in PEAR scenarios</li>
+  <li>Fixed memory leak in FSClassRegistry in scenarios with large numbers of dynamically created classloaders</li>
+  <li>Fixed oddball "race" condition when initializing JCas classes</li>
+  <li>Fixed problem when reading mixed sets of binary CASes from UIMAv2 and UIMAv3</li>
+  <li>Fixed IndexOutOfBoundsException in CVD</li>
   <li>Fixed bug causing Annotation to be returned when asking JCas for a specific type</li>
   <li>Fixed ability to install PEARs into directories containing XML special characters in the name</li>
+  <li>Fixed not-indexed document annotation being wrongly added back to the index during de-serialization</li>
   <li>Fixed index protection for cases that no FSes were indexed</li>
+  <li>Fixed concurrent binary serialization producing corrupt output</li>
+  <li>Fixed deep cloning of AnalysisEngineDescription</li>
+  <li>Fixed race condition in type system consolidation</li>
+  <li>Fixed re-initialization of multi-view CAS with a different type system</li>
+  <li>Fixed logger silently discarding a parameter in some cases (placeholder filler or throwable)</li>
   <li>No longer ship Pack200-compressed versions of the Eclipse plugins</li>
+  <li>Converted UIMAv3 User's Guide from DocBook to Asciidoc</li>
 </ul>
-  
-<h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
+ 
+<h3>API changes</h3>
+
+<h4>SelectFS API with zero-width annotations</h4>
+
+<p>The behavior of the selectFS API changes in this release, in particular with respect to the 
+handling of zero-width annotations (those that have the same start and end position). The behavior
+has been made to align with the new annotation predicates, the details of which are described in the
+UIMAv3 User's Guide.
+</p>
+
+<h4>SelectFS API with negative shift on bounded selections</h4>
+
+<p>The <code>shifted</code> operation can no longer be used to expand a selection beyond its
+selection boundaries. Consider the following example:<p>
+
+<pre><code>
+t1 = new Token(0,1)
+t2 = new Token(2,3)
+t3 = new Token(4,5)
+t4 = new Token(6,7)
+t5 = new Token(8,9)
+</code></pre>
+
+<p>In previous versions, was also possible to use a negative shift with a bounding operator such as
+<code>following</code>, <code>coveredBy</code>, etc. and it would call <code>moveToPrevious</code>
+on the internal iterator of the selection operation, causing it to return annotations occurring
+before the bounds e.g.:
+
+<pre><code>
+select().shifted(-1).following(t3) => {t3, t4, t5}
+</code></pre>
+
+<p>This was found to be inconsistent behavior. The iterator used for the selection (which can also be 
+obtained by calling <code>fsIterator()</code>) should respect the bounds.</p>
+
+<p>As of this UIMA version, using <code>shifted</code> with a negative argument in conjunction with
+a bounding operator will trigger a warning in the logs and return an empty result.</p>
+
+<pre><code>
+select().shifted(-1).following(t3) => {}
+select().following(t3) => {t4, t5}
+</code></pre>
+
+<h4>SelectFS API with Backwards selection with startAt</h4>
+
+<p>In previous versions, the using the <code>moveTo</code> operation backwards iterators obtained
+through <code>SelectFSs</code> did never ignore type priorities - even though <code>SelectFSs</code>
+by default should ignore them.</p>
+ 
+<h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
-issues fixed in this release.  
-   
+issues affecting this release.    
+
+<p>Please use the mailing lists 
+( http://uima.apache.org/mail-lists.html ) 
+for feedback.</p> 
+ 
 <h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 
@@ -112,7 +186,5 @@ The Apache UIMA project uses JIRA for issue tracking.  Please report any
 issues you find at 
 <a href="http://issues.apache.org/jira/browse/uima">http://issues.apache.org/jira/browse/uima</a>
 </p>
-  
-    
 </body>
 </html>

@@ -21,15 +21,10 @@ package org.apache.uima.cas.impl;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.uima.cas.Type;
-import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * This class gets initialized with two type systems, and then provides 
@@ -56,12 +51,9 @@ import org.apache.uima.resource.ResourceInitializationException;
  *   kept in the (source) TypeSystemImpl, in a map indexed by
  *   the target type system (identity map)
  *   
- * 
  */
 
 public class CasTypeSystemMapper {
-  private final static int[] INT0 = new int[0];
-  private final static boolean[] BOOLEAN0 = new boolean[0];
   
   public final TypeSystemImpl tsSrc;  // source type system
   // weak ref to target type system, to allow that object to be gc'd
@@ -69,270 +61,199 @@ public class CasTypeSystemMapper {
   public final WeakReference<TypeSystemImpl> tsTgt;
   
   /** 
-   * Map from source type codes to target type codes.  
+   * Map from source types to target types.  
    * Source type code used as index, 
-   * value is target type code 
+   * value is target type or null if the type doesn't exist in the target
    */
-  final private int[] tSrc2Tgt;
-  
-  /**
-   * First index is src type code, 2nd index is src feature offset, 0 is 1st feature.
-   * Value is true if target has source feature
-   */
-  final private boolean[][] fSrcInTgt; 
+  final private List<TypeImpl> tSrc2Tgt = new ArrayList<>();
   
   /** 
-   * First index is src type code, 2nd index is tgt feature offset, 0 is 1st feature.
-   * Value is -1 if src doesn't have feature, else it is the feature offset in source.
+   * Map from target types to source types.  
+   * Source type code used as index, 
+   * value is target type or null if the type doesn't exist in the target
+   */
+  final private List<TypeImpl> tTgt2Src = new ArrayList<>();
+  /**
+   * Feature mapping from source to target
+   *   first key is the src type code, 2nd is the src feature offset (origin 0)
+   */
+  final private FeatureImpl[][] fSrc2Tgt;
+  
+  /**
+   * Feature mapping from target to source 
+   *   first key is the tgt type code, 2nd is the tgt feature offset 
    * Only used for type codes that are not arrays.
    * Use: When serializing a source type that exists in the target, have to output
    *   the slots in the target feature order
    *   Also, when comparing the slots in the target with a given source
    */
-  final private int[][] fTgt2Src;
-
-  /** 
-   * Same as tSrc2Tgt, but reversed 
-   * used when deserializing a target back into a source 
-   */
-  final private int[] tTgt2Src;
-  
+  final private FeatureImpl[][] fTgt2Src;
+ 
   final private boolean typeSystemsSame;
   
   public boolean isEqual() {
     return this.typeSystemsSame;
   }
   
-  public CasTypeSystemMapper(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) throws ResourceInitializationException {
+  public CasTypeSystemMapper(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
     if (!tsSrc.isCommitted() || !tsTgt.isCommitted()) {
-      throw new RuntimeException("Type Systems must be committed before calling this method");
+      /** Type Systems must be committed before calling this method */
+      throw new CASRuntimeException(CASRuntimeException.TYPESYSTEMS_NOT_COMMITTED);
     }
     this.tsSrc = tsSrc;
-    this.tsTgt = new WeakReference<TypeSystemImpl>(tsTgt);
+    this.tsTgt = new WeakReference<>(tsTgt);
+    boolean tss = true;
+
+    if (tsSrc != tsTgt) {
+
+      fSrc2Tgt = new FeatureImpl[tsSrc.getTypeArraySize()][];
+      fTgt2Src = new FeatureImpl[tsTgt.getTypeArraySize()][];    
     
-    int[] temptSrc2Tgt = null;
-    int[] temptTgt2Src = null;
-    boolean[][] localFSrcInTgt = null;
-    int[][] localFTgt2Src = null;
-    if (tsSrc == tsTgt) {
-      typeSystemsSame = true;
+      boolean b1 = addTypes(tSrc2Tgt, tsSrc, tsTgt);
+      boolean b2 = addTypes(tTgt2Src, tsTgt, tsSrc);  // both directions
+      boolean b3 = addFeatures(fSrc2Tgt, tsSrc, tsTgt);
+      boolean b4 = addFeatures(fTgt2Src, tsTgt, tsSrc);
+     
+      if (!b1 || !b2 || !b3 || !b4) {
+        tss = false;
+      }
     } else {
-      temptSrc2Tgt = addTypes(tsSrc, tsTgt);
-      temptTgt2Src = addTypes(tsTgt, tsSrc);
-    
-      localFSrcInTgt = new boolean[tsSrc.getTypeArraySize()] [];
-      localFTgt2Src = new int[tsSrc.getTypeArraySize()] [];
-      typeSystemsSame = addFeatures(tsSrc, tsTgt, localFSrcInTgt, localFTgt2Src, temptSrc2Tgt);
+      fSrc2Tgt = null;
+      fTgt2Src = null;
     }
-    
-    this.tSrc2Tgt = temptSrc2Tgt;
-    this.tTgt2Src = temptTgt2Src;
-    this.fSrcInTgt =localFSrcInTgt;
-    this.fTgt2Src = localFTgt2Src;
-    
-//    this.fTgt2Src = addFeatures(tsTgt, tsSrc);
+    this.typeSystemsSame = tss;    
   }
   
   /**
-   * @param c -
-   * @return 0 if type doesn't have corresponding code in other type system
+   * @param srcType -
+   * @return Type in other type system, or this one if map is empty
    */
-  public int mapTypeCodeSrc2Tgt(int c) {
-    return tSrc2Tgt[c];
+  public TypeImpl mapTypeSrc2Tgt(TypeImpl srcType) {
+    return (tSrc2Tgt.size() == 0) ? srcType : tSrc2Tgt.get(srcType.getCode());
   }
+  
+//  public TypeImpl mapTypeSrc2Tgt(int srcTypeCode) {
+//    return tSrc2Tgt.get(srcTypeCode);
+//  }
 
   /**
-   * @param c -
+   * @param tgtType -
    * @return 0 if type doesn't have corresponding code in other type system
    */
-  public int mapTypeCodeTgt2Src(int c) {
-    return tTgt2Src[c];
+  public TypeImpl mapTypeTgt2Src(TypeImpl tgtType) {
+    return (tTgt2Src.size() == 0) ? tgtType : tTgt2Src.get(tgtType.getCode());
   }
+  
+  public TypeImpl mapTypeCodeTgt2Src(int tgtTypeCode) {
+    return (tTgt2Src.size() == 0) ? tsSrc.getTypeForCode(tgtTypeCode) : tTgt2Src.get(tgtTypeCode);
+  }
+  
   /**
    * 
-   * @param c -
+   * @param type -
    * @param src2tgt -
    * @return 0 if type doesn't have corresponding code in other type system
    */
-  public int mapTypeCode2Other(int c, boolean src2tgt) {
-    if (src2tgt) {
-      return mapTypeCodeSrc2Tgt(c);
-    } 
-    return mapTypeCodeTgt2Src(c);
+  public TypeImpl mapTypeCode2Other(TypeImpl type, boolean src2tgt) {
+    return (src2tgt) ? mapTypeSrc2Tgt(type) : mapTypeTgt2Src(type);
   }
-
+  
   /**
-   * 
-   * @param tCode - source type code
-   * @return int vec of 0-based feat offsets in src of feats in tgt, in the order of the target
+   * Get target feature, given src type and feature
+   * @param srcType the source type
+   * @param srcFeat the source feature
+   * @return the target feature or null
    */
-  public int[] getTgtFeatOffsets2Src(int tCode) {
-    return fTgt2Src[tCode];
+  public FeatureImpl getTgtFeature(TypeImpl srcType, FeatureImpl srcFeat) {
+    return getToFeature(fSrc2Tgt, srcType, srcFeat);
   }
   
-  public boolean[] getFSrcInTgt(int tCode) {
-    return fSrcInTgt[tCode];
+  public FeatureImpl getSrcFeature(TypeImpl tgtType, FeatureImpl tgtFeat) {
+    return getToFeature(fTgt2Src, tgtType, tgtFeat);
   }
   
-//  /**
-//   * 
-//   * @param tCode source type code
-//   * @param offset feature slot offset, 0 = first feature after type code
-//   * @return offset to slot in target, 0 = first feature slot after type code, -1 if feature doesn't have corresponding code in other type system
-//   */
-//  public int mapFeatureOffsetSrc2Tgt(int tCode, int offset) {
-//    return fSrc2Tgt[tCode][offset];
-//  }
-
-  // returns 0 if feature doesn't have corresponding code in other type system
-//  public int mapFeatureCodeTgt2Src(int c) {
-//    return fTgt2Src[c];
-//  }
-
-  private static int[] addTypes(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
-    Map<TypeImpl, TypeImpl> mSrc2Tgt = new LinkedHashMap<TypeImpl, TypeImpl>();
-    for (Iterator<Type> it = tsSrc.getTypeIterator(); it.hasNext();) {
-      TypeImpl tSrc = (TypeImpl) it.next();
-      TypeImpl tTgt = (TypeImpl) tsTgt.getType(tSrc.getName());
-      if (tTgt != null) {
-        mSrc2Tgt.put(tSrc, tTgt);
-      }
+  /**
+   * Given a tgt type, return an array of source features in the order
+   * they would appear in the target.
+   * @param tgtType -
+   * @return array of corresponding source features, in target type order
+   */
+  public FeatureImpl[] getSrcFeatures(TypeImpl tgtType) {
+    return fTgt2Src[tgtType.getCode()];
+  }
+  
+  public FeatureImpl getToFeature(FeatureImpl[][] mapByTypeCode, TypeImpl fromType, FeatureImpl fromFeat) {
+    if (mapByTypeCode == null) { // is null if type systems ==
+      return fromFeat;
     }
-    int[] r = new int[tsSrc.getNumberOfTypes() + 1];  // type codes are numbered starting with 1
-    for (Entry<TypeImpl, TypeImpl> e : mSrc2Tgt.entrySet()) {
-      r[e.getKey().getCode()] = e.getValue().getCode();
+    FeatureImpl[] map = mapByTypeCode[fromType.getCode()];
+    if (map == null) {
+      return null;
     }
-    return r;  
+    final int offset = fromFeat.getOffset();
+    if (map.length <= offset) {
+      return null;
+    }
+    return map[offset];
   }
   
-  private boolean addFeatures(final TypeSystemImpl tsSrc, final TypeSystemImpl tsTgt, final boolean[][] localFSrcInTgt, final int[][] localFTgt2Src, final int[] temptSrc2Tgt) throws ResourceInitializationException {
-    boolean isEqual = tsSrc.getTypeArraySize() == tsTgt.getTypeArraySize();
-    for (int tCodeSrc = 0; tCodeSrc < tsSrc.getTypeArraySize(); tCodeSrc++) {
-      final int tCodeTgt = temptSrc2Tgt[tCodeSrc];
-      if (tCodeTgt != tCodeSrc) {
-        isEqual = false;
-      }
-      if (tCodeTgt == 0) {  // this type not in target
-        localFSrcInTgt[tCodeSrc] = BOOLEAN0;
-        localFTgt2Src[tCodeSrc] = null;  // should never be referenced
-        continue;
-      }
-      
-      // type is part of target ts
-      final int[] fcSrc = tsSrc.ll_getAppropriateFeatures(tCodeSrc);
-      final int[] fcTgt = tsTgt.ll_getAppropriateFeatures(tCodeTgt);
-      
-      if (fcSrc.length != fcTgt.length) {
-        isEqual = false;
-      }
-      
-      if (fcSrc.length == 0) {
-        // source has no features
-        localFSrcInTgt[tCodeSrc] = BOOLEAN0;
-        localFTgt2Src[tCodeSrc] = new int[fcTgt.length];
-        Arrays.fill(localFTgt2Src[tCodeSrc], -1);
-        continue;  // source type has no features        
-      }
-      
-      final boolean[] srcInTgt = new boolean[fcSrc.length];
-      localFSrcInTgt[tCodeSrc] = srcInTgt;
-      
-      if (fcTgt.length == 0) {
-        Arrays.fill(srcInTgt, false);
-        localFTgt2Src[tCodeSrc] = INT0;
-        continue;  // target type has no features        
-      }
-      
-      final int[] tgt2srcOffsets = new int[fcTgt.length];
-      localFTgt2Src[tCodeSrc] = tgt2srcOffsets;
-      
-//      // debug 
-//      if (tCodeTgt == 228) {
-//        String ss[] = new String[fcTgt.length];
-//        for (int i = 0; i < fcTgt.length; i++) {
-//          ss[i] = tsTgt.ll_getFeatureForCode(fcTgt[i]).getName();
-//        }
-//        System.out.print("");
-//      }
-//      // debug - verify features are in alpha order
-//      String ss[] = new String[fcSrc.length];
-//      String prev = " ";
-//      boolean fault = false;
-//      for (int i = 0; i < fcSrc.length; i++) {
-//        String s = tsSrc.ll_getFeatureForCode(fcSrc[i]).getName();
-//        ss[i] = s;
-//        if (prev.compareTo(s) >= 0) {
-//          fault = true;
-//          System.out.format("Source feature names not sorted, prev = %s, this = %s%n", prev, s);
-//        }
-//        prev = s;
-//      }
-//      if (fault) {
-//        System.out.print("");
-//      }
-//      prev = " ";
-//      if (tCodeTgt == 228) {
-//
-//      for (int i = 0; i < fcTgt.length; i++) {
-//        String s = tsTgt.ll_getFeatureForCode(fcTgt[i]).getName();
-//        if (prev.compareTo(s) >= 0) {
-//          fault = true;
-//          System.out.format("Target feature names not sorted, prev = %s, this = %s%n", prev, s);
-//        }
-//        prev = s;
-//      }
-//      }      
-      
-      // get List of names of appropriate features in the target for this type
-      List<String> namesTgt = new ArrayList<String>(fcTgt.length);
-      for (int i = 0; i < fcTgt.length; i++) {
-        namesTgt.add(tsTgt.ll_getFeatureForCode(fcTgt[i]).getName());
+  /**
+   * return true if no types are filtered
+   * @param map
+   * @param tsSrc
+   * @param tsTgt
+   * @return
+   */
+  private boolean addTypes(List<TypeImpl> map, TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
+    boolean r = true;
+    for (TypeImpl tSrc : tsSrc.getAllTypes()) {
+      TypeImpl ti = tsTgt.getType(tSrc.getName());
+      Misc.setWithExpand(map, tSrc.getCode(), ti);
+      r = r & (null != ti);  // make r true only if all types are found
+    }
+    return r;
+  }
+  
+  /**
+   * Create the map from tsFrom to tsTo for all the features, by type
+   *   -- map created using type and feature name equality
+   *   -- note: the features may have different definitions; map is by name only
+   *     --- e.g., one may have String range, the other float range.
+   *     --- in this case, the return is set to false.
+   * @param map the map to update
+   * @param tsFrom the From type system
+   * @param tsTo the to type system
+   * @return true if all the tsFrom features are found in tsTo and following fields are the same:
+   *   rangeType.name, featureOffset, isMultipleRefsAllowed 
+   */
+  private boolean addFeatures(FeatureImpl[][] map, TypeSystemImpl tsFrom, TypeSystemImpl tsTo) {
+    boolean r = true;
+    
+    for (TypeImpl ti : tsFrom.getAllTypes()) {
+      TypeImpl toTi = tsTo.getType(ti.getName());
+      if (toTi == null) {
+        r = false;
+        continue;  // no corresponding type in tsTo
       }
       
-      // get List of names of appropriate features in the source for this type
-      List<String> namesSrc = new ArrayList<String>(fcSrc.length);
-      for (int i = 0; i < fcSrc.length; i++) {
-        namesSrc.add(tsSrc.ll_getFeatureForCode(fcSrc[i]).getName());
-      }
+      final FeatureImpl[] map1 = map[ti.getCode()] = new FeatureImpl[ti.getFeatureImpls().length];
       
-            
-      // for each feature in the source, find the corresponding target feature by name match (if any)
-      for (int fciSrc = 0; fciSrc < fcSrc.length; fciSrc++) {
-        final String nameSrc = namesSrc.get(fciSrc);
-        // feature names are semi sorted, not completely sorted due to inheritence
-        final int iTgt = namesTgt.indexOf(nameSrc);
-        if (iTgt == -1) {
-          isEqual = false;          
-          srcInTgt[fciSrc] = false;
+      for (FeatureImpl fi : ti.getFeatureImpls()) {
+        FeatureImpl toFi = toTi.getFeatureByBaseName(fi.getShortName());
+        if (toFi == null) {
+          r = false;
         } else {
-          if (! tsSrc.ll_getFeatureForCode(fcSrc[fciSrc]).getRange().getName().equals(
-                tsTgt.ll_getFeatureForCode(fcTgt[iTgt]).getRange().getName())) {
-            throw new ResourceInitializationException(
-                ResourceInitializationException.INCOMPATIBLE_RANGE_TYPES, new Object[] {
-                    tsSrc.ll_getTypeForCode(tCodeSrc).getName() + ":" + nameSrc, 
-                    tsSrc.ll_getFeatureForCode(fcSrc[fciSrc]).getRange().getName(), 
-                    tsTgt.ll_getFeatureForCode(fcTgt[iTgt]).getRange().getName(),
-                    ""});
+          map1[fi.getOffset()] = toFi;
+            // return false if the same-named feature doesn't match
+          if (r && (!fi.getRange().getName().equals(toFi.getRange().getName()) ||
+                    fi.getOffset() != toFi.getOffset() ||
+                    fi.isMultipleReferencesAllowed() != toFi.isMultipleReferencesAllowed())) {
+            r = false;
           }
-          srcInTgt[fciSrc] = true;
-          
-          
-        } 
-      } // end of for loop over all source features of a type code
-      
-      // for each feature in the target, find the corresponding source feature by name match (if any)
-      for (int fciTgt = 0; fciTgt < fcTgt.length; fciTgt++) {
-        final String nameTgt = namesTgt.get(fciTgt);
-        // feature names are semi sorted, not completely sorted due to inheritence
-        final int iSrc = namesSrc.indexOf(nameTgt);
-        tgt2srcOffsets[fciTgt] = iSrc;  // -1 if not there
-        if (fciTgt != iSrc) {
-          isEqual = false;
         }
-      } // end of for loop over all target features of a type code      
-    }   // end of for loop over all typecodes
-    return isEqual;
+      }
+    }
+    return r;
   }
-
   
 }

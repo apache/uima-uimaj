@@ -57,24 +57,24 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
 
-  private ArrayList mSequence;
+  private ArrayList<Step> mSequence;
 
   private int mActionAfterCasMultiplier;
   
-  private Set mAEsAllowingContinueOnFailure = new HashSet();
+  private Set<String> mAEsAllowingContinueOnFailure = new HashSet<>();
 
   @Override
 public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
 
     String[] flow = (String[])aContext.getConfigParameterValue(PARAM_FLOW);
-    mSequence = new ArrayList();
+    mSequence = new ArrayList<>();
     for (int i = 0; i < flow.length; i++) {
       String[] aes = flow[i].split(",");
       if (aes.length == 1) {
         mSequence.add(new SimpleStep(aes[0]));
       } else {
-        Collection keys = new ArrayList();
+        Collection<String> keys = new ArrayList<>();
         keys.addAll(Arrays.asList(aes));
         mSequence.add(new ParallelStep(keys));
       }            
@@ -119,19 +119,17 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
-  @Override
-public synchronized void addAnalysisEngines(Collection aKeys) {
+  public synchronized void addAnalysisEngines(Collection<String> aKeys) {
     // Append new keys as a ParallelStep at end of Sequence
     // This is just an example of what could be done.
     // Note that in general, a "Collection" is unordered
-    mSequence.add(new ParallelStep(new ArrayList(aKeys)));
+    mSequence.add(new ParallelStep(new ArrayList<>(aKeys)));
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
-  @Override
-public synchronized void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+  public synchronized void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     // Remove keys from Sequence ... replace with null so step indices are still valid
     for (int i = 0; i < mSequence.size(); ++i) {
       Step step = (Step)mSequence.get(i);
@@ -139,7 +137,7 @@ public synchronized void removeAnalysisEngines(Collection aKeys) throws Analysis
         mSequence.set(i, null);
       }
       else if (step instanceof ParallelStep) {
-        Collection keys = new ArrayList(((ParallelStep)step).getAnalysisEngineKeys());
+        Collection<String> keys = new ArrayList<>(((ParallelStep) step).getAnalysisEngineKeys());
         keys.removeAll(aKeys);
         if (keys.isEmpty()) {
           mSequence.set(i, null);
@@ -241,7 +239,7 @@ public synchronized void removeAnalysisEngines(Collection aKeys) throws Analysis
                 md.getOperationalProperties().getOutputsNewCASes();
       }
       else if (nextStep instanceof ParallelStep) {
-        Iterator iter = ((ParallelStep)nextStep).getAnalysisEngineKeys().iterator();
+        Iterator<String> iter = ((ParallelStep)nextStep).getAnalysisEngineKeys().iterator();
         while (iter.hasNext()) {
           String key = (String)iter.next();
           AnalysisEngineMetaData md = (AnalysisEngineMetaData) getContext()
@@ -280,7 +278,7 @@ public synchronized void removeAnalysisEngines(Collection aKeys) throws Analysis
         return ((SimpleStep)step).getAnalysisEngineKey().equals(producedBy);
       }
       else if (step instanceof ParallelStep) {
-        Iterator iter = ((ParallelStep)step).getAnalysisEngineKeys().iterator();
+        Iterator<String> iter = ((ParallelStep)step).getAnalysisEngineKeys().iterator();
         while (iter.hasNext()) {
           String key = (String)iter.next();
           if (key.equals(producedBy)) {

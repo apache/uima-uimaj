@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,28 +19,38 @@
 
 package org.apache.uima.cas;
 
+import org.apache.uima.jcas.JCas;
+
 /**
  * Interface for feature structures.
- * 
- * <p>
- * Note that object identity is not meaningful for feature structures. You may ask the CAS for the
- * same feature structure two times in a row, and get different object references. Use
- * {@link #equals equals()} instead.
- * 
- * 
+ *
+ * This interface includes indirect getters and setters that use Feature object instances to specify the feature.
+ *   There are multiple versions of these, corresponding to the consolidated types of the feature range.
+ *
+ *   Here are the types:
+ *     FeatureStructure - reference to another Feature structure
+ *     String
+ *     float
+ *     int
+ *     byte
+ *     boolean
+ *     short
+ *     long
+ *     double
+ *
  */
-public interface FeatureStructure {
+public interface FeatureStructure extends Cloneable {
 
   /**
    * Get the type of this FS.
-   * 
+   *
    * @return The type.
    */
   Type getType();
 
   /**
    * Set a feature value to another FS.
-   * 
+   *
    * @param feat
    *          The feature whose value should be set.
    * @param fs
@@ -54,7 +64,7 @@ public interface FeatureStructure {
 
   /**
    * Get a feature value.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value; may be <code>null</code> if the value has not been set.
@@ -64,10 +74,10 @@ public interface FeatureStructure {
    *              String.
    */
   FeatureStructure getFeatureValue(Feature feat) throws CASRuntimeException;
-
+  
   /**
    * Set the string value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param s
@@ -81,7 +91,7 @@ public interface FeatureStructure {
 
   /**
    * Get the string value under a feature.
-   * 
+   *
    * @param f
    *          The feature for which we want the value.
    * @return The value of this feature; may be <code>null</code> if the value has not been set.
@@ -95,7 +105,7 @@ public interface FeatureStructure {
   /**
    * Get the float value of a feature. This method will throw an exception if the feature is not
    * float valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value float; <code>0.0</code> if the value has not been set.
@@ -107,7 +117,7 @@ public interface FeatureStructure {
 
   /**
    * Set the float value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param f
@@ -121,7 +131,7 @@ public interface FeatureStructure {
   /**
    * Get the int value of a feature. This method will throw an exception if the feature is not int
    * valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
@@ -133,7 +143,7 @@ public interface FeatureStructure {
 
   /**
    * Set the int value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param i
@@ -142,10 +152,10 @@ public interface FeatureStructure {
   void setIntValue(Feature feat, int i) throws CASRuntimeException;
 
   /**
-   * 
+   *
    * Get the byte value of a feature. This method will throw an exception if the feature is not byte
    * valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @return The value byte; <code>0</code> if the value has not been set.
@@ -155,7 +165,7 @@ public interface FeatureStructure {
 
   /**
    * Set the byte (8 bit) value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param i
@@ -167,7 +177,7 @@ public interface FeatureStructure {
   /**
    * Get the boolean value of a feature. This method will throw an exception if the feature is not
    * boolean valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
@@ -179,7 +189,7 @@ public interface FeatureStructure {
 
   /**
    * Set the boolean value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param i
@@ -190,7 +200,7 @@ public interface FeatureStructure {
   /**
    * Get the short value of a feature. This method will throw an exception if the feature is not
    * short valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
@@ -202,7 +212,7 @@ public interface FeatureStructure {
 
   /**
    * Set the short (16 bit) value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param i
@@ -213,7 +223,7 @@ public interface FeatureStructure {
   /**
    * Get the long value of a feature. This method will throw an exception if the feature is not long
    * valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
@@ -225,7 +235,7 @@ public interface FeatureStructure {
 
   /**
    * Set the long (64 bit) value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param i
@@ -236,7 +246,7 @@ public interface FeatureStructure {
   /**
    * Get the double value of a feature. This method will throw an exception if the feature is not
    * double valued.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to get.
    * @return The value int; <code>0</code> if the value has not been set.
@@ -248,20 +258,21 @@ public interface FeatureStructure {
 
   /**
    * Set the double value of a feature.
-   * 
+   *
    * @param feat
    *          The feature whose value we want to set.
    * @param i
    *          The double value we're setting the feature to.
+   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
    */
   void setDoubleValue(Feature feat, double i) throws CASRuntimeException;
 
   /**
    * Get the value of the feature as a string if the type of the feature is one of the primitive
    * type.
-   * 
+   *
    * @param feat
-   *          The feature whose value we want to get and whose type is one of the primitve types.
+   *          The feature whose value we want to get and whose type is one of the primitive types.
    * @return A string representation of the feature value.
    * @throws CASRuntimeException
    *           If <code>feat</code> is not defined for the type of this FS, or if the type is not
@@ -272,8 +283,8 @@ public interface FeatureStructure {
   /**
    * Sets the value of a feature from a string input if the feature type is one of the primitive
    * types.
-   * 
-   * @param feat 
+   *
+   * @param feat
    *          The feature whose value we want to set.
    * @param s
    *          The string value that the feature will be set to.
@@ -284,14 +295,29 @@ public interface FeatureStructure {
   void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException;
 
   /**
-   * A feature structure is equal to another feature structure iff it is identical in the underlying
-   * representation.
-   * 
-   * @exception ClassCastException
-   *              If <code>o</code> is not a FS.
+   * @return The CAS view where this Feature Structure was created
    */
-  boolean equals(Object o) throws ClassCastException;
+  CAS getCAS();
 
+  /**
+   * @return the JCas view where this Feature Structure was created
+   */
+  default JCas getJCas() {
+    return getCAS().getJCasImpl();  // getJCas defined (from v2) to throw exception, this one doesn't
+  };
+  
+  /**
+   * return the unique (to this CAS) id of this feature structure
+   * @return the id
+   */
+  int _id();
+
+  /**
+   * Internal use
+   * @return the type code of this feature structure
+   */
+  int _getTypeCode();
+  
   /**
    * Creates a copy of this feature structure. The returned feature structure is a new and separate
    * object but all features of the feature structure which are not of builtin types (integer,
@@ -301,6 +327,24 @@ public interface FeatureStructure {
    * @throws CASRuntimeException passthru
    */
   Object clone() throws CASRuntimeException;
+  
+  /**
+   * Compatibility for v2 code.
+   * As a side effect, this will enter this Feature Structure into the int-to-FS table so the low level
+   * API call ll_getFSForRef(int) works.  This has the effect of disabling garbage collection
+   * for this Feature Structure.
+   * @return the equivalent of the v2 address
+   */
+  int getAddress(); 
+  
+  /**
+   * A feature structure is equal to another feature structure iff it is identical in the underlying
+   * representation.
+   * 
+   * @exception ClassCastException
+   *              If <code>o</code> is not a FS.
+   */
+  boolean equals(Object o) throws ClassCastException;
 
   /**
    * Will return a hash code that's consistent with equality, i.e., if two FSs are equal, they will
@@ -310,11 +354,5 @@ public interface FeatureStructure {
    */
   int hashCode();
 
-  /**
-   * Return the CAS that this FS belongs to.
-   * 
-   * @return The CAS.
-   */
-  CAS getCAS();
-
 }
+

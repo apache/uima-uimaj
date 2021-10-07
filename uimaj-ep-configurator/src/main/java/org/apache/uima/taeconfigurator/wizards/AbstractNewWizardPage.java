@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -42,16 +43,33 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
+
+/**
+ * The Class AbstractNewWizardPage.
+ */
 public abstract class AbstractNewWizardPage extends WizardPage {
 
+  /** The selection. */
   protected ISelection selection;
 
+  /** The container text. */
   protected Text containerText;
 
+  /** The file text. */
   protected Text fileText;
 
+  /** The default new name. */
   private String defaultNewName;
 
+  /**
+   * Instantiates a new abstract new wizard page.
+   *
+   * @param pSelection the selection
+   * @param image the image
+   * @param title the title
+   * @param description the description
+   * @param defaultNewName the default new name
+   */
   public AbstractNewWizardPage(ISelection pSelection, String image, String title,
           String description, String defaultNewName) {
     super("wizardPage");
@@ -63,6 +81,10 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     this.defaultNewName = defaultNewName;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   public void createControl(Composite parent) {
     Composite container = new Composite(parent, SWT.NULL);
     GridLayout layout = new GridLayout();
@@ -76,6 +98,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     containerText.setLayoutData(gd);
     containerText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         dialogChanged();
       }
@@ -84,6 +107,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     Button button = new Button(container, SWT.PUSH);
     button.setText("Browse...");
     button.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         handleBrowse();
       }
@@ -95,6 +119,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     gd = new GridData(GridData.FILL_HORIZONTAL);
     fileText.setLayoutData(gd);
     fileText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         dialogChanged();
       }
@@ -104,6 +129,9 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     setControl(container);
   }
 
+  /**
+   * Initialize.
+   */
   private void initialize() {
 
     if (selection != null && selection.isEmpty() == false
@@ -129,10 +157,13 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     fileText.setText(defaultNewName);
   }
 
+  /**
+   * Handle browse.
+   */
   void handleBrowse() {
     ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin
             .getWorkspace().getRoot(), false, "Select a containing folder");
-    if (dialog.open() == ContainerSelectionDialog.OK) {
+    if (dialog.open() == Window.OK) {
       Object[] result = dialog.getResult();
       if (result.length == 1) {
         containerText.setText(((Path) result[0]).toOSString());
@@ -140,6 +171,9 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     }
   }
 
+  /**
+   * Dialog changed.
+   */
   void dialogChanged() {
     String container = getContainerName();
     String fileName = getFileName();
@@ -163,14 +197,29 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     updateStatus(null);
   }
 
+  /**
+   * Gets the container name.
+   *
+   * @return the container name
+   */
   public String getContainerName() {
     return containerText.getText();
   }
 
+  /**
+   * Gets the file name.
+   *
+   * @return the file name
+   */
   public String getFileName() {
     return fileText.getText();
   }
 
+  /**
+   * Update status.
+   *
+   * @param message the message
+   */
   private void updateStatus(String message) {
     setErrorMessage(message);
     setPageComplete(message == null);

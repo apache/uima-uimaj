@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -33,6 +33,27 @@
   <description>The aggregate for the base UIMA framework build and release</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
+  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
@@ -49,9 +70,15 @@
     <module>../jVinci</module>
     <module>../aggregate-uimaj-eclipse-plugins</module>
     <module>../aggregate-uimaj-docbooks</module>
+    <!--module>distr-superPom</module-->
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>
+    <module>../uimaj-v3migration-jcas</module>
+    <!-- the internal tools project is not part of any release 
+         and can't be built automatically - to build it,
+         cd to the project directory and do mvn install -->
+    <!--module>../uimaj-internal-tools</module-->
     <module>../uimaj-bootstrap</module>    
   </modules>  
 </project>

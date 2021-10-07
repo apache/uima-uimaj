@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -33,58 +33,86 @@
   <description>Examples and sample code</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
+  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
-  
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-cpe</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>		
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-document-annotation</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>	
- 		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-tools</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>		
- 		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>common</artifactId>
-			<version>2.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>ecore</artifactId>
-			<version>2.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>ecore-xmi</artifactId>
-			<version>2.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<finalName>uima-examples</finalName>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-cpe</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-document-annotation</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-tools</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>  <!-- needed for run config to find Migrate tool -->
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-v3migration-jcas</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>common</artifactId>
+      <version>2.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>ecore</artifactId>
+      <version>2.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>ecore-xmi</artifactId>
+      <version>2.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>uima-examples</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -95,6 +123,8 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
+                  <!-- Eclipse launch configurations -->
+                  <exclude>src/main/run_configuration/*.launch</exclude>
                   <!-- sample data -->
                   <exclude>src/main/data/*.txt</exclude> 
                   <exclude>src/main/resources/org/apache/uima/tutorial/ex6/*.txt</exclude>
@@ -104,8 +134,8 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>       
+        </plugin>
       </plugins>
     </pluginManagement>
-	</build>	
+  </build>	
 </project>

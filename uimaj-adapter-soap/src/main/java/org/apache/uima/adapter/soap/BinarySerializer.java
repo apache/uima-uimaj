@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
+
 /**
  * An Axis serializer for {@link Serializable} objects. The serialized bytes are Base-64 encoded for
  * transport via SOAP.
@@ -49,33 +50,38 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class BinarySerializer implements Serializer {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 939554603678974912L;
 
-  /**
-   * Whether attachments should be used to send binary-serialized data
-   */
+  /** Whether attachments should be used to send binary-serialized data. */
   private boolean mUseAttachments;
 
+  /**
+   * Instantiates a new binary serializer.
+   */
   public BinarySerializer() {
     this(true);
   }
 
+  /**
+   * Instantiates a new binary serializer.
+   *
+   * @param aUseAttachments the a use attachments
+   */
   public BinarySerializer(boolean aUseAttachments) {
     mUseAttachments = aUseAttachments;
   }
 
   /**
    * Serialize an element named name, with the indicated attributes and value.
-   * 
-   * @param name
-   *          is the element name
-   * @param attributes
-   *          are the attributes...serializer is free to add more.
-   * @param value
-   *          is the value
-   * @param context
-   *          is the SerializationContext
+   *
+   * @param name          is the element name
+   * @param attributes          are the attributes...serializer is free to add more.
+   * @param value          is the value
+   * @param context          is the SerializationContext
+   * @throws IOException Signals that an I/O exception has occurred.
    */
+  @Override
   public void serialize(QName name, Attributes attributes, Object value,
           SerializationContext context) throws IOException {
     if (value instanceof Serializable) {
@@ -129,14 +135,25 @@ public class BinarySerializer implements Serializer {
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.xml.rpc.encoding.Serializer#getMechanismType()
+   */
+  @Override
   public String getMechanismType() {
     return Constants.AXIS_SAX;
   }
 
   /**
+   * Write schema.
+   *
+   * @param javaType the java type
+   * @param types the types
+   * @return the element
+   * @throws Exception the exception
    * @see org.apache.axis.encoding.Serializer#writeSchema(java.lang.Class,
    *      org.apache.axis.wsdl.fromJava.Types)
    */
+  @Override
   public Element writeSchema(Class javaType, Types types) throws Exception {
     return null;
   }

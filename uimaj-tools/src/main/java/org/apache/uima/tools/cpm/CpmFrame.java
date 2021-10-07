@@ -46,21 +46,36 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
+
+/**
+ * The Class CpmFrame.
+ */
 public class CpmFrame extends JFrame implements ActionListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 756368351780483658L;
 
+  /** The cpm panel. */
   private CpmPanel cpmPanel;
 
+  /** The menu bar. */
   private JMenuBar menuBar;
 
+  /** The exit menu item. */
   private JMenuItem exitMenuItem;
 
+  /** The about menu item. */
   private JMenuItem aboutMenuItem;
 
+  /** The help menu item. */
   private JMenuItem helpMenuItem;
 
+  /** The about dialog. */
   private JDialog aboutDialog;
 
+  /**
+   * Instantiates a new cpm frame.
+   */
   public CpmFrame() {
     super("Collection Processing Engine Configurator");
 
@@ -102,6 +117,11 @@ public class CpmFrame extends JFrame implements ActionListener {
     this.pack();
   }
 
+  /**
+   * Creates the menu bar.
+   *
+   * @return the j menu bar
+   */
   private JMenuBar createMenuBar() {
     menuBar = new JMenuBar();
 
@@ -137,6 +157,10 @@ public class CpmFrame extends JFrame implements ActionListener {
     return menuBar;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent ev) {
     Object source = ev.getSource();
 
@@ -150,6 +174,10 @@ public class CpmFrame extends JFrame implements ActionListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.Container#getPreferredSize()
+   */
+  @Override
   public Dimension getPreferredSize() {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     return new Dimension(screenSize.width, (screenSize.height - 65));
@@ -166,6 +194,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     //because it's initialization can be quite complex (it loads the last known    
     //CPE descriptor).
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         initGUI();        
       }
@@ -181,11 +210,13 @@ public class CpmFrame extends JFrame implements ActionListener {
       frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
       frame.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e) {
           if (frame.cpmPanel.confirmExit())
             System.exit(0);
         }
 
+        @Override
         public void windowActivated(WindowEvent e) {
           frame.cpmPanel.checkForOutOfSyncFiles();
         }

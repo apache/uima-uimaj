@@ -39,6 +39,7 @@ abstract class PathConstraint implements FSMatchConstraint {
     this.featNames = featNames;
   }
 
+  @Override
   public String toString() {
     if (this.featNames == null) {
       return "";

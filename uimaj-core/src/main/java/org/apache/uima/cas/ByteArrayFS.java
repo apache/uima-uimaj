@@ -21,11 +21,10 @@ package org.apache.uima.cas;
 
 /**
  * Byte array interface. To create a byte array object, use
- * {@link org.apache.uima.cas.CAS#createByteArrayFS CAS.createByteArrayFS()}.
- * 
- * 
+ * {@link org.apache.uima.cas.CAS#createByteArrayFS CAS.createByteArrayFS(int)}
+ * or new ByteArray(aJCas, length)
  */
-public interface ByteArrayFS extends CommonArrayFS {
+public interface ByteArrayFS extends CommonArrayFS<Byte> {
 
   /**
    * Get the i-th string from the array.

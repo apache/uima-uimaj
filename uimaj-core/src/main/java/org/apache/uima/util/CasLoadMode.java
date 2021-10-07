@@ -81,7 +81,7 @@ public enum CasLoadMode {
   LENIENT,  
   
   /**
-   * Used for Compressed Form 6 and to .
+   * Used for Compressed Form 6 when needing to reset the CAS's type system.
    * 
    * Same as default, except that the internal and / or external TSI is used to 
    *   reinitialize the CAS's type system and its indexes definition, 

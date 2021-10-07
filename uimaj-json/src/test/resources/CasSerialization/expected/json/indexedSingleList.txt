@@ -12,4 +12,4 @@
   "_views" : {
     "_InitialView" : {
       "NonEmptyIntegerList" : [
-        {"head" : 11,  "tail" : [22,  33 ] } ] } } }
+        {"tail" : [22,  33 ],  "head" : 11 } ] } } }

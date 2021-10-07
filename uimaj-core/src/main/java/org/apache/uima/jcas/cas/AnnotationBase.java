@@ -19,9 +19,20 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.AnnotationBaseFS;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.impl.AnnotationBaseImpl;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemConstants;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -43,27 +54,63 @@ import org.apache.uima.jcas.JCasRegistry;
  * (which is view-specific),
  * it should be a subtype of this base type.
  */
-public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements AnnotationBaseFS {
+public class AnnotationBase extends TOP implements AnnotationBaseImpl {
+
+  /* public static strings for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_ANNOTATION_BASE;
+  public final static String _FeatName_sofa = "sofa";
 
   public final static int typeIndexID = JCasRegistry.register(AnnotationBase.class);
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
-
+  
+  // private final static int _FI_sofa = JCasRegistry.registerFeature();  // only for journal-able or corruptable feature slots
+  
+  /* local data */
+//  public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
+  private final static CallSite _FC_sofa = TypeSystemImpl.createCallSiteForBuiltIn(AnnotationBase.class, "sofa");
+  private final static MethodHandle _FH_sofa = _FC_sofa.dynamicInvoker();
+  
+//  private final Sofa _F_sofa;
+  
   // Never called. Disable default constructor
+  @Deprecated
   protected AnnotationBase() {
   }
 
- /* Internal - Constructor used by generator */
-  public AnnotationBase(int addr, TOP_Type type) {
-    super(addr, type);
-  }
+// /* Internal - Constructor used by generator */
+//  public AnnotationBase(int addr, TOP_Type type) {
+//    super(addr, type);
+//  }
 
   public AnnotationBase(JCas jcas) {
     super(jcas);
+    if (_casView.isBaseCas()) {
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
+    }
+    // no journaling, no index corruption checking
+    _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
+  }
+
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public AnnotationBase(TypeImpl t, CASImpl c) {
+    super(t, c);
+    if (_casView.isBaseCas()) {
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
+    }
+    // no journaling, no index corruption checking
+    _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
   }
 
   // *------------------*
@@ -71,18 +118,28 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
   // * Sofa reference of the annotation
   /*
    * getter for sofa - gets Sofaref for annotation
+   * Return type is SofaFS for binary backwards compatibility with UIMA v2 https://issues.apache.org/jira/browse/UIMA-5974
    */
-  public SofaFS getSofa() {
-    if (AnnotationBase_Type.featOkTst && ((AnnotationBase_Type) jcasType).casFeat_sofa == null) {
-      // https://issues.apache.org/jira/browse/UIMA-2384
-      this.jcasType.jcas.throwFeatMissing("sofa", this.getClass().getName());
-    }
-    return (SofaFS) jcasType.ll_cas.ll_getFSForRef(
-            jcasType.ll_cas.ll_getRefValue(addr, ((AnnotationBase_Type)jcasType).casFeatCode_sofa));
-  }
-
+  public SofaFS getSofa() { return (Sofa) _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa)); }
+  
+  // There is no setter for this
+  //   The value is set and is fixed when this is created
+    
+  @Override
   public CAS getView() {
-    return this.jcasType.casImpl.ll_getSofaCasView(addr);
+    return _casView;
   }
-
+  
+  @Override
+  public void setFeatureValue(Feature feat, FeatureStructure v) {
+    FeatureImpl fi = (FeatureImpl) feat;
+    if (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode) {
+      // trying to set the sofa - don't do this, but check if the value
+      // is OK (note: may break backwards compatibility)  
+      if (v != _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa))) {
+        throw new CASRuntimeException(CASRuntimeException.ILLEGAL_SOFAREF_MODIFICATION);
+      }
+    }
+    super.setFeatureValue(feat,  v);
+  }
 }

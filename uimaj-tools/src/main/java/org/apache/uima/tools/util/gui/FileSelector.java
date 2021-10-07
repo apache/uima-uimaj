@@ -38,16 +38,21 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
+
 /**
  * Composite component to allow file or directory input or selection. Comprises a JTextField, and a
  * browse button associated with a JFileChooser.
  */
 
 public class FileSelector extends JPanel implements FocusListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -1438950608628876422L;
 
+  /** The field. */
   private JTextField field;
 
+  /** The browse button. */
   private BrowseButton browseButton;
 
   /**
@@ -57,18 +62,25 @@ public class FileSelector extends JPanel implements FocusListener {
    */
   private JFileChooser fileChooser;
 
+  /** The source. */
   private JComponent source;
 
+  /** The file selector listener. */
   private FileSelectorListener fileSelectorListener = null;
 
+  /** The previous value. */
   private String previousValue;
   
+  /** The initial dir. */
   private File initialDir;
   
+  /** The file chooser title. */
   private String fileChooserTitle;
   
+  /** The selection mode. */
   private int selectionMode;
   
+  /** The filter. */
   private FileFilter filter;
 
   /**
@@ -128,6 +140,7 @@ public class FileSelector extends JPanel implements FocusListener {
     add(browseButton);
 
     browseButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = getFileChooser();
         int returnVal = chooser.showOpenDialog(browseButton);
@@ -155,6 +168,7 @@ public class FileSelector extends JPanel implements FocusListener {
     });
 
     field.addFocusListener(new FocusAdapter() {
+      @Override
       public void focusLost(FocusEvent e) {
         // did text change?
         String fileString = field.getText();
@@ -178,6 +192,7 @@ public class FileSelector extends JPanel implements FocusListener {
     });
 
     field.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
           String fileString = field.getText();
@@ -203,15 +218,31 @@ public class FileSelector extends JPanel implements FocusListener {
     });
   }
 
+  /**
+   * Adds the file selector listener.
+   *
+   * @param fileSelectorListener the file selector listener
+   * @param source the source
+   */
   public void addFileSelectorListener(FileSelectorListener fileSelectorListener, JComponent source) {
     this.fileSelectorListener = fileSelectorListener;
     this.source = source;
   }
 
+  /**
+   * Gets the selected.
+   *
+   * @return the selected
+   */
   public String getSelected() {
     return field.getText();
   }
 
+  /**
+   * Sets the selected.
+   *
+   * @param s the new selected
+   */
   public void setSelected(String s) {
     field.setText(s);
     previousValue = s;
@@ -230,22 +261,43 @@ public class FileSelector extends JPanel implements FocusListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.JComponent#setEnabled(boolean)
+   */
+  @Override
   public void setEnabled(boolean onOff) {
     field.setEnabled(onOff);
     browseButton.setEnabled(onOff);
   }
 
+  /**
+   * Clear.
+   */
   public void clear() {
     field.setText("");
   }
 
+  /**
+   * The Class BrowseButton.
+   */
   static class BrowseButton extends JButton {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1086776109494251334L;
 
+    /**
+     * Instantiates a new browse button.
+     *
+     * @param s the s
+     */
     public BrowseButton(String s) {
       super(s);
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getInsets()
+     */
+    @Override
     public Insets getInsets() {
       return new Insets(3, 6, 3, 6);
     }
@@ -256,6 +308,7 @@ public class FileSelector extends JPanel implements FocusListener {
    * 
    * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
    */
+  @Override
   public void focusGained(FocusEvent aEvent) {
   }
 
@@ -264,6 +317,7 @@ public class FileSelector extends JPanel implements FocusListener {
    * 
    * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
+  @Override
   public void focusLost(FocusEvent aEvent) {
     if (aEvent.getComponent() == this.field) {
       //only modify file chooser if it has already been created

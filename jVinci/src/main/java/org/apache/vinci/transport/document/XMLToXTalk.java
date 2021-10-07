@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -205,7 +206,7 @@ public class XMLToXTalk {
     Writer xml_os = null;
     if (xml_filename != null) {
       xml_os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xml_filename),
-              "UTF-8"));
+              StandardCharsets.UTF_8));
     }
     File file = new File(filename);
     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
@@ -252,16 +253,12 @@ public class XMLToXTalk {
         xml_os.close();
       }
     }
-    RandomAccessFile raf = new RandomAccessFile(filename, "rw");
-    try {
+    try (RandomAccessFile raf = new RandomAccessFile(filename, "rw")) {
       raf.skipBytes(7);
       // int return_val =
       updateElement(raf, handler.countList, 0);
       // Debug.p("Return val: " + return_val);
-    } finally {
-      raf.close();
     }
-
   }
 
   static private int updateElement(RandomAccessFile raf, ArrayList counts, int index)

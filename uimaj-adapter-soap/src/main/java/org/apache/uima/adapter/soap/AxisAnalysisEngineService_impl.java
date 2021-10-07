@@ -28,6 +28,7 @@ import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 
+
 /**
  * A class used to deploy a {@link AnalysisEngineService_impl} as an Axis (SOAP) service.
  */
@@ -39,7 +40,8 @@ public class AxisAnalysisEngineService_impl {
 
   /**
    * Constructor, responsible for initializing the service.
-   * @throws AxisFault -
+   *
+   * @throws AxisFault the axis fault
    */
   public AxisAnalysisEngineService_impl() throws AxisFault {
     mServiceImpl = (AnalysisEngineService_impl) AxisResourceServiceManager
@@ -48,9 +50,9 @@ public class AxisAnalysisEngineService_impl {
 
   /**
    * Gets metadata for this Resource service.
-   * 
+   *
    * @return metadata
-   * @throws ResourceServiceException  -
+   * @throws ResourceServiceException the resource service exception
    */
   public ResourceMetaData getMetaData() throws ResourceServiceException {
     try {
@@ -66,14 +68,11 @@ public class AxisAnalysisEngineService_impl {
 
   /**
    * Processes an entity.
-   * 
-   * @param aData
-   *          data to be processed
-   * @param aResultSpec
-   *          specifies which results the Analysis Engine should produce
-   * 
+   *
+   * @param aData          data to be processed
+   * @param aResultSpec          specifies which results the Analysis Engine should produce
    * @return the results of analysis
-   * @throws ResourceServiceException -
+   * @throws ResourceServiceException the resource service exception
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
           throws ResourceServiceException {

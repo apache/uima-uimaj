@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -155,7 +156,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       outStream = new FileOutputStream(outFile);
       if (hasDefaultView) {
         String xmlAnnotations = cas2xml.generateXML(aCAS);
-        outStream.write(xmlAnnotations.getBytes("UTF-8"));
+        outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
       } else {
         XMLSerializer xmlSer = new XMLSerializer(outStream, false);
         if (mXCAS.equalsIgnoreCase("xcas")) {

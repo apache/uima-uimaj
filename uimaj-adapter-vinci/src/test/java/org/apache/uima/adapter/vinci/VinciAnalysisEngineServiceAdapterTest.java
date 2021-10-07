@@ -29,17 +29,26 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.URISpecifier;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class VinciAnalysisEngineServiceAdapterTest.
+ */
 public class VinciAnalysisEngineServiceAdapterTest extends TestCase {
 
   /**
    * Constructor for VinciAnalysisEngineServiceAdapterTest.
-   * 
-   * @param arg0
+   *
+   * @param arg0 the arg 0
    */
   public VinciAnalysisEngineServiceAdapterTest(String arg0) {
     super(arg0);
   }
 
+  /**
+   * Test initialize.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public void testInitialize() throws ResourceInitializationException {
     // Don't want an actual network dependency so will test only with services that
     // don't exist. The tests just make sure that the AnalysisEngineServiceAdapter.initialize

@@ -22,11 +22,23 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 
+
+/**
+ * The Class FileAndShortName.
+ */
 public class FileAndShortName {
+  
+  /** The file name. */
   public String fileName;
 
+  /** The short name. */
   public String shortName;
 
+  /**
+   * Instantiates a new file and short name.
+   *
+   * @param o the o
+   */
   public FileAndShortName(Object o) {
 
     if (o instanceof IFile) {

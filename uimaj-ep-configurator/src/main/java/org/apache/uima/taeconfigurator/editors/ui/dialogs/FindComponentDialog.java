@@ -35,32 +35,56 @@ import org.eclipse.swt.widgets.Text;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class FindComponentDialog.
+ */
 public class FindComponentDialog extends AbstractDialog {
 
+  /** The output type text. */
   private Text searchByNameText, inputTypeText, outputTypeText;
 
+  /** The look in combo. */
   private CCombo lookInCombo;
 
+  /** The m matching delegate componet descriptors. */
   private List m_matchingDelegateComponetDescriptors;
 
+  /** The m matching delegate component descriptions. */
   private List m_matchingDelegateComponentDescriptions;
 
+  /** The cancel button. */
   private Button cancelButton;
 
+  /** The Constant ALL_PROJECTS. */
   public static final String ALL_PROJECTS = "All projects";
 
+  /** The status label 2. */
   private Label statusLabel1, statusLabel2;
 
+  /** The m search thread. */
   private SearchThread m_searchThread = null;
 
+  /** The component headers. */
   private String[] componentHeaders;
 
+  /**
+   * Instantiates a new find component dialog.
+   *
+   * @param aSection the a section
+   * @param title the title
+   * @param header the header
+   * @param componentHeaders the component headers
+   */
   public FindComponentDialog(AbstractSection aSection, String title, String header,
           String[] componentHeaders) {
     super(aSection, title, header);
     this.componentHeaders = componentHeaders;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -100,6 +124,9 @@ public class FindComponentDialog extends AbstractDialog {
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   protected void createButtonsForButtonBar(Composite parent) {
     // create OK and Cancel buttons by default
@@ -109,6 +136,11 @@ public class FindComponentDialog extends AbstractDialog {
     cancelButton.setEnabled(false);
   }
 
+  /**
+   * Gets the project names.
+   *
+   * @return the project names
+   */
   private String[] getProjectNames() {
     IProject[] projects = TAEConfiguratorPlugin.getWorkspace().getRoot().getProjects();
     String[] projectNames = new String[projects.length];
@@ -120,6 +152,9 @@ public class FindComponentDialog extends AbstractDialog {
   }
 
   // also called by Search Monitoring Thread when
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#buttonPressed(int)
+   */
   // it notices the search thread is finished
   @Override
   protected void buttonPressed(int buttonId) {
@@ -146,8 +181,16 @@ public class FindComponentDialog extends AbstractDialog {
     }
   }
 
+  /** The Constant needToEscapeTheseChars. */
   private static final String needToEscapeTheseChars = 
     ".+{}()\\";
+  
+  /**
+   * Convert to regex search pattern.
+   *
+   * @param searchPattern the search pattern
+   * @return the string
+   */
   private String convertToRegexSearchPattern(String searchPattern) {
     if (searchPattern == null || searchPattern.equals("")) {
       return null;
@@ -168,18 +211,38 @@ public class FindComponentDialog extends AbstractDialog {
     return new String(buffer);
   }
 
+  /**
+   * Gets the matching delegate component descriptors.
+   *
+   * @return the matching delegate component descriptors
+   */
   public List getMatchingDelegateComponentDescriptors() {
     return m_matchingDelegateComponetDescriptors;
   }
 
+  /**
+   * Gets the matching delegate component descriptions.
+   *
+   * @return the matching delegate component descriptions
+   */
   public List getMatchingDelegateComponentDescriptions() {
     return m_matchingDelegateComponentDescriptions;
   }
 
+  /**
+   * Gets the status label 1.
+   *
+   * @return the status label 1
+   */
   public Label getStatusLabel1() {
     return statusLabel1;
   }
 
+  /**
+   * Gets the status label 2.
+   *
+   * @return the status label 2
+   */
   public Label getStatusLabel2() {
     return statusLabel2;
   }

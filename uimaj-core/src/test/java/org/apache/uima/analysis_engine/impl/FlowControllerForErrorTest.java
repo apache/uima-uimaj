@@ -45,15 +45,15 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
   private String[] mSequence;
   private boolean mContinueOnFailure;
   
-  public static List<String> abortedDocuments = new ArrayList<String>();
-  public static List<String> failedAEs = new ArrayList<String>();
+  public static List<String> abortedDocuments = new ArrayList<>();
+  public static List<String> failedAEs = new ArrayList<>();
 
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
     Boolean paramVal = (Boolean)aContext.getConfigParameterValue(PARAM_CONTINUE_ON_FAILURE);
-    mContinueOnFailure = paramVal != null && paramVal.booleanValue(); 
+    mContinueOnFailure = paramVal != null && paramVal;
   }
 
   /*

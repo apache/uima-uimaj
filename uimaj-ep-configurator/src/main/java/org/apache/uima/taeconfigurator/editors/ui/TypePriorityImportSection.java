@@ -31,10 +31,18 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.eclipse.swt.widgets.Composite;
 
+
 /**
+ * The Class TypePriorityImportSection.
  */
 public class TypePriorityImportSection extends ImportSection {
 
+  /**
+   * Instantiates a new type priority import section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public TypePriorityImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Type Priority Imports",
             "The following type priority imports are included as part of the type priorities:");
@@ -42,33 +50,59 @@ public class TypePriorityImportSection extends ImportSection {
 
   // **************************************
   // * Code to support type import section
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isAppropriate()
+   */
   // **************************************
+  @Override
   protected boolean isAppropriate() {
     return true; // always show
   }
 
   /**
-   * used when hovering
+   * used when hovering.
+   *
+   * @param source the source
+   * @return the description from import
+   * @throws InvalidXMLException the invalid XML exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
+  @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     TypePriorities parsedImportItem = UIMAFramework.getXMLParser().parseTypePriorities(
             new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getModelImportArray()
+   */
+  @Override
   protected Import[] getModelImportArray() {
     return getTypePriorities().getImports();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.resource.metadata.Import[])
+   */
+  @Override
   protected void setModelImportArray(Import[] imports) {
     getTypePriorities().setImports(imports);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#clearModelBaseValue()
+   */
+  @Override
   protected void clearModelBaseValue() {
     getTypePriorities().setPriorityLists(typePriorityList0);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String, java.lang.String)
+   */
   // indexes are checked and merged when the CAS is built
+  @Override
   protected boolean isValidImport(String title, String message) {
     CAS savedCAS = editor.getCurrentView();
     TypePriorities savedTP = editor.getMergedTypePriorities();
@@ -86,6 +120,10 @@ public class TypePriorityImportSection extends ImportSection {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#finishImportChangeAction()
+   */
+  @Override
   protected void finishImportChangeAction() {
 
   }

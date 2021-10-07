@@ -24,27 +24,45 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 
+
 /**
- * 
- * Handles the display and management of an environment variables table
- * 
- * 
+ * Handles the display and management of an environment variables table.
  */
 public class VarValViewerHandler extends AbstractVarValViewerHandler {
 
+  /**
+   * Instantiates a new var val viewer handler.
+   *
+   * @param parent the parent
+   * @param columnNames the column names
+   * @param numParentColumns the num parent columns
+   * @param tableRowList the table row list
+   */
   public VarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
           VarValList tableRowList) {
     super(parent, columnNames, numParentColumns, tableRowList, new VarValLabelProvider());
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createCellModifiers()
+   */
+  @Override
   protected ICellModifier createCellModifiers() {
     return new VarValCellModifier(this, columnNames, tableRowList);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createSorter()
+   */
+  @Override
   protected ViewerSorter createSorter() {
     return new VarValSorter(VarValSorter.VAR_NAME);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createTableColumns()
+   */
+  @Override
   protected void createTableColumns() {
     // 1st column with image/checkboxes - NOTE: The SWT.CENTER has no effect!!
     TableColumn column = new TableColumn(table, SWT.LEFT, 0);
@@ -52,6 +70,7 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
     column.setWidth(200);
     // Add listener to column so tableRows are sorted by description when clicked
     column.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         tableViewer.setSorter(new VarValSorter(VarValSorter.VAR_NAME));
       }
@@ -63,6 +82,7 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
     column.setWidth(250);
     // Add listener to column so tableRows are sorted by description when clicked
     column.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         tableViewer.setSorter(new VarValSorter(VarValSorter.VAR_VALUE));
       }
@@ -70,6 +90,10 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createCellEditors()
+   */
+  @Override
   protected CellEditor[] createCellEditors() {
 
     CellEditor[] editors = new CellEditor[columnNames.length];

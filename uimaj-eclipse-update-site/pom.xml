@@ -23,17 +23,30 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.0</version>  <!-- change to non-snapshot version after release of uimaj-parent -->
+    <version>3.2.0</version>
     <relativePath />
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>2.11.0</version>
+  <version>3.2.0</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Java SDK Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
+
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-eclipse-update-site
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-eclipse-update-site
+    </url>
+    <tag>uimaj-eclipse-update-site-3.2.0</tag>
+  </scm>
 
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
@@ -41,7 +54,7 @@
 
     <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
 
-    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
+    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
     
     <dropPrevVersions>false</dropPrevVersions>
 
@@ -197,21 +210,16 @@
 	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
 	                        <exec executable="svn" failonerror="true">
 	                          <arg value="checkout" />
-	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
 	                          <arg value="${eclipseUpdateSubSite}" />
 	                        </exec> 
 	                        
-	                        <!-- abandon safety for now
-	                        <echo>switching this checkout to ...dev... for safety</echo>
-	                        <exec executable="svn">
-	                          <arg value="switch" />
-	                          <arg value="- -force" />  remove space between 2 dashes if uncommented
-	                          <arg value="- -accept" />  remove space between 2 dashes if uncommented
-	                          <arg value="mine-full" />
-	                          <arg value="${distsvnroot}repos/dist/dev/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
-	                          <arg value="${eclipseUpdateSubSite}" />
-	                        </exec> 
-	                         -->
+                        <echo>Saving original content and artifacts for the site</echo>
+                        <copy todir="${project.build.directory}/saved" failonerror="true">
+                          <fileset dir="${eclipseUpdateSubSite}"
+                            includes="content.jar,artifacts.jar" />
+                        </copy>
+        
 	                      </then>
 	                      <else>
 	                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
@@ -303,32 +311,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>ant-contrib</groupId>
-            <artifactId>ant-contrib</artifactId>
-            <version>1.0b3</version>
-            <scope>runtime</scope>
-            <exclusions>
-              <exclusion>
-                <artifactId>ant</artifactId>
-                <groupId>ant</groupId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-apache-regexp</artifactId>
-            <version>1.9.2</version>
-            <scope>compile</scope>
-          </dependency>
-          <dependency>
-            <groupId>jakarta-regexp</groupId>
-            <artifactId>jakarta-regexp</artifactId>
-            <version>1.4</version>
-            <scope>compile</scope>
-          </dependency>
-        </dependencies>
       </plugin>
 
    </plugins>

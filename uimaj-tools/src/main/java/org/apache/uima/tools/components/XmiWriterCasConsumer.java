@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -144,18 +143,12 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    * @throws ResourceProcessException -
    */
   private void writeXmi(CAS aCas, File name, String modelFileName) throws IOException, SAXException {
-    FileOutputStream out = null;
 
-    try {
+    try (FileOutputStream out = new FileOutputStream(name)) {
       // write XMI
-      out = new FileOutputStream(name);
       XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());
       XMLSerializer xmlSer = new XMLSerializer(out, false);
       ser.serialize(aCas, xmlSer.getContentHandler());
-    } finally {
-      if (out != null) {
-        out.close();
-      }
     }
   }
 

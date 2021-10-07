@@ -46,6 +46,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 
+
 /**
  * Implementation of the {@link CasObjectProcessor} interface used for both Local and Remote
  * CasObjectProcessors. This objects plugs in a transport object defined in the CPE Descriptor and
@@ -53,23 +54,29 @@ import org.apache.uima.util.ProcessTrace;
  * 
  */
 public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
+  
+  /** The transport. */
   private SocketTransport transport = null;
 
+  /** The name. */
   private String name = null;
 
+  /** The socket. */
   private Socket socket = null;
 
+  /** The timeout. */
   private long timeout = 0;
 
+  /** The metadata. */
   private ProcessingResourceMetaData metadata = null;
 
   /**
    * Using information from the CPE descriptor creates an instance of Transport class. The transport
    * class will delegate analysis of CAS to a remote object.
-   * 
+   *
    * @param aCasProcessor -
    *          Cas Process configuration from the CPE descriptor
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public CasObjectNetworkCasProcessorImpl(CpeCasProcessor aCasProcessor)
           throws ResourceConfigurationException {
@@ -113,8 +120,8 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Create Transport object from a given class and associate it with this CasProcessor
-   * 
+   * Create Transport object from a given class and associate it with this CasProcessor.
+   *
    * @param aTransportClass -
    *          name of the Transport class
    * @return - instance of SocketTransport
@@ -129,8 +136,8 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Creates URL object containing service endpoint info ( host and port)
-   * 
+   * Creates URL object containing service endpoint info ( host and port).
+   *
    * @return URL
    */
   public URL getEndpoint() {
@@ -145,11 +152,10 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Connects to a service endpoint defined in the given URL
-   * 
+   * Connects to a service endpoint defined in the given URL.
+   *
    * @param aURL -
    *          contains service endpoint info (hots and port)
-   * 
    * @throws ResourceInitializationException wraps SocketException
    */
   public void connect(URL aURL) throws ResourceInitializationException {
@@ -167,6 +173,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * @param aCAS CAS to be analyzed
    * @throws ResourceProcessException wraps Exception, SocketException
    */
+  @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // delegate analysis of the CAS to remote object
@@ -179,12 +186,12 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Uses configured transport to delegate given CASes to the remote service
-   * 
+   * Uses configured transport to delegate given CASes to the remote service.
+   *
    * @param aCASes - an array of CASes to be analyzed
-   * 
    * @throws ResourceProcessException wraps SocketException, SocketTimeoutException
    */
+  @Override
   public void processCas(CAS[] aCASes) throws ResourceProcessException {
     try {
       for (int i = 0; i < aCASes.length; i++) {
@@ -203,6 +210,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
     // noop
 
@@ -213,6 +221,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
+  @Override
   public boolean isStateless() {
     return true;
   }
@@ -222,14 +231,17 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
+  @Override
   public boolean isReadOnly() {
     return true;
   }
 
   /**
    * Returns {@link ProcessingResourceMetaData} object returned from the remote CasProcessor.
-   * 
+   *
+   * @return the processing resource meta data
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     if (socket == null) {
       return metadata;
@@ -254,6 +266,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
+  @Override
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     // noop
@@ -261,9 +274,13 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Closes the connection to the remote service
-   * 
+   * Closes the connection to the remote service.
+   *
+   * @param aTrace the a trace
+   * @throws ResourceProcessException the resource process exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
+  @Override
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {

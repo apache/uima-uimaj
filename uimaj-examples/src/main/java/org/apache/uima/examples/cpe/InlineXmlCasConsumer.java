@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -34,6 +35,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.CasToInlineXml;
+
 
 /**
  * A simple CAS consumer that generates inline XML and writes it to a file. UTF-8 encoding is used.
@@ -52,12 +54,18 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
    */
   public static final String PARAM_OUTPUTDIR = "OutputDirectory";
 
+  /** The m output dir. */
   private File mOutputDir;
 
+  /** The cas 2 xml. */
   private CasToInlineXml cas2xml;
 
+  /** The m doc num. */
   private int mDocNum;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
+   */
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File(((String) getConfigParameterValue(PARAM_OUTPUTDIR)).trim());
@@ -107,7 +115,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
     try {
       String xmlAnnotations = cas2xml.generateXML(aCAS);
       FileOutputStream outStream = new FileOutputStream(outFile);
-      outStream.write(xmlAnnotations.getBytes("UTF-8"));
+      outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
       outStream.close();
     } catch (CASException e) {
       throw new ResourceProcessException(e);

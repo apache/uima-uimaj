@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -33,6 +33,27 @@
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
+  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
@@ -40,13 +61,73 @@
   </properties>
   
 	<dependencies>
-	  <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
+    
+    <!-- Loggers -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>  <!-- core, not api, because need to set log level via api -->
+      <version>${log4j.version}</version>
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
+
+    <!-- dependency>  moved to surefire configuration
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId-->  <!-- core, not api, because need to set log level via api -->
+      <!-- version>${log4j.version}</version-->
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <!-- scope>test</scope>
+    </dependency-->
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <scope>provided</scope>  
+    </dependency>
+
+     <!-- dependency>  moved to surefire configuration
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope>  
+    </dependency-->
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    
+    <!-- needed to convert slf4j markers into log4j markers 
+         and for running the test --> 
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <!-- scope provided: put in compile classpath, excluded from test classpath, not passed along -->
+      <scope>provided</scope> 
+    </dependency>
+
+     <!-- dependency>  moved to surefire configuration  
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope> 
+    </dependency-->
+
+    <!--  causes build error: package org.apache.logging.slf4j does not exist
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+                     -->
+    
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
@@ -59,13 +140,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  <groupId>commons-io</groupId>
-		  <artifactId>commons-io</artifactId>
-		  <version>2.7</version>
-      <scope>test</scope>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.7</version>
+			<scope>test</scope>
 		</dependency>
 
-		<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests. 
+		<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests.
 		      1 fails due to different formatting and a dropped xmlns attribute, 
 		      5 work when run separately or by mvn, but fail when running all tests from Eclipse:
 		          Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
@@ -92,28 +173,52 @@
     	  <version>8.7</version>
     	  <scope>test</scope>
 		</dependency>
+  -->
+		
+    <!-- For decompiling recompiling jcas experiments -->
+    <!--
+    <dependency>
+      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <artifactId>ecj</artifactId>
+      <version>4.4.2</version>
+    </dependency>
+    -->
+    
+    <!-- needed for UimaDecompiler class-->
+    <dependency>  <!-- Apache v2 license  2016 checked -->
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-compilertools</artifactId>
+      <version>0.5.32</version>
+    </dependency>
+    
+    <!-- Apache v2 license  2016 checked. Also transitive include from above, 
+         listed here so that binary assembly for distribution includes the jar -->
+    <dependency>  
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.32</version>
+    </dependency>
+    
+    <!-- for reading / transforming / generating JCas cover classes -->
+<!--     <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>5.0.4</version>
+    </dependency>
 
-		<dependency>    jackson stuff moved to uimaj-json project
-			<groupId>com.fasterxml.jackson.core</groupId>
-	    <artifactId>jackson-core</artifactId>
-	    <version>2.4.2</version>
-		</dependency>
-      -->		
-		<!-- This next dependency is used to enable findbug rule suppression annotations
-		     Currently commented out - till more thought given to this. 
-		     For instance, we don't want to accidentally distribute this dependency in builds
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>annotations</artifactId>
-			<version>2.0.0</version>
-			<scope>compile</scope>
-		</dependency>
-		 -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>5.0.4</version>
+    </dependency>
+ -->
 	</dependencies>
+	
 	<build>
 		<finalName>uima-core</finalName>
     <pluginManagement>
       <plugins>
+      
         <!-- Uncomment the next to run with -Xlint:unchecked  -->
         <!--plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -122,6 +227,7 @@
             <compilerArgument>-Xlint:unchecked</compilerArgument>
           </configuration>
         </plugin-->
+                
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
@@ -130,6 +236,14 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
+                  <exclude>src/test/resources/uima-v2-serialized-cas/README</exclude>
+                  <exclude>src/test/resources/uima-v2-serialized-cas/*.xcas</exclude>
+                  <exclude>src/test/resources/uima-v2-serialized-cas/*.xmi</exclude>
+                  <exclude>src/test/resources/uima-v2-serialized-cas/*.bin*</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/README</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.xcas</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.xmi</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
                   <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/data/moby.txt</exclude>
                   <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
@@ -137,56 +251,20 @@
                   <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
                   <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude> <!-- test data -->
+                  <exclude>src/test/java/aa/*.java</exclude> <!-- jcas classes generated -->
+                  <exclude>src/test/java/org/apache/uima/cas/test/*.java</exclude> <!-- jcas classes generated -->
+                  <exclude>src/test/java/org/apache/lang/LanguagePair.java</exclude> <!-- jcas classes generated -->
+                  <exclude>src/test/java/sofa/test/CrossAnnotation.java</exclude> <!-- jcas classes generated -->
+                  <exclude>src/test/java/x/y/z/*.java</exclude> <!-- jcas classes generated -->
                 </excludes>              
               </configuration>
             </execution>
           </executions>
-        </plugin> 
-        <!-- https://issues.apache.org/jira/browse/UIMA-5307
-        <plugin>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>enforce-compatibility</id>
-              <phase>verify</phase>
-              <configuration>
-                <rules>
-                  <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
-                    <previousVersion>${compat.previous.version}</previousVersion>
-                    <dumpDetails>true</dumpDetails>
-                    <compatibilityType>${compat.level}</compatibilityType>
-                    <excludes combine.children="append">
-                      <exclude>org/apache/uima/jcas/cas/FSArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/FSList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/NonEmptyFSList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/StringArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/StringList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/NonEmptyStringList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/IntegerArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/IntegerList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/NonEmptyIntegerList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/FloatArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/FloatList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/NonEmptyFloatList</exclude>
-                      <exclude>org/apache/uima/jcas/cas/BooleanArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/ByteArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/ShortArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/LongArray</exclude>
-                      <exclude>org/apache/uima/jcas/cas/DoubleArray</exclude>
-                      <exclude>org/apache/uima/UimaContextHolder</exclude>
-                    </excludes>
-                  </requireBackwardCompatibility>
-                </rules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin> -->
-                
+        </plugin>         
       </plugins>
     </pluginManagement>
     
 		<plugins>
-		
 		  <!-- experiment with CLIRR
 		    gets fatal error: 
 		    
@@ -249,6 +327,27 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
-  </build>
+      
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+          <systemProperties>
+            <uima.enable_strict_type_source_check>true</uima.enable_strict_type_source_check>
+          </systemProperties>
+          <!--  include dependencies that are for logging but specified as "provided" -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-core/${log4j.version}/log4j-core-${log4j.version}.jar</additionalClasspathElement>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-api/${log4j.version}/log4j-api-${log4j.version}.jar</additionalClasspathElement>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-slf4j-impl/${log4j.version}/log4j-slf4j-impl-${log4j.version}.jar</additionalClasspathElement>
+          </additionalClasspathElements>
+          <!-- exclude log4j slf bridge for testing 
+          <classpathDependencyExcludes>
+            <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
+          </classpathDependencyExcludes>          -->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+  
 </project>

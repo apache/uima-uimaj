@@ -20,12 +20,12 @@ package org.apache.uima.impl;
 
 import java.util.Collections;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.Resource;
+
+import junit.framework.TestCase;
 
 
 public class CustomResourceSpecifierFactory_implTest extends TestCase {

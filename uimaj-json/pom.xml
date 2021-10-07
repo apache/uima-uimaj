@@ -22,12 +22,19 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   <artifactId>uimaj-json</artifactId>
   <name>Apache UIMA Base: ${project.artifactId}: JSON</name>
   <description>JSON support for UIMA SDK</description>
+  
+  <scm>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
   
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
@@ -43,19 +50,19 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.4.2</version>
+      <version>${jackson.version}</version>
     </dependency>
-    
-    <dependency>
-       <groupId>junit</groupId>
-       <artifactId>junit</artifactId>
-       <scope>test</scope>
-     </dependency>
     
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-test-util</artifactId>
       <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

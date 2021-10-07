@@ -47,52 +47,112 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+
 /**
- * Imports - used by aggregates types type priorities indexes external resource specifications
+ * Imports - used by aggregates types type priorities indexes external resource specifications.
  */
 public abstract class ImportSection extends AbstractSection {
 
+  /**
+   * Gets the model import array.
+   *
+   * @return the model import array
+   */
   protected abstract Import[] getModelImportArray();
 
+  /**
+   * Sets the model import array.
+   *
+   * @param newImports the new model import array
+   */
   protected abstract void setModelImportArray(Import[] newImports);
 
+  /**
+   * Checks if is valid import.
+   *
+   * @param title the title
+   * @param message the message
+   * @return true, if is valid import
+   */
   protected abstract boolean isValidImport(String title, String message);
 
+  /**
+   * Finish import change action.
+   */
   protected abstract void finishImportChangeAction();
 
+  /**
+   * Gets the description from import.
+   *
+   * @param source the source
+   * @return the description from import
+   * @throws InvalidXMLException the invalid XML exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   protected abstract String getDescriptionFromImport(String source) throws InvalidXMLException,
           IOException;
 
+  /**
+   * Checks if is appropriate.
+   *
+   * @return true, if is appropriate
+   */
   protected abstract boolean isAppropriate(); // if false, don't show section
 
+  /**
+   * Clear model base value.
+   */
   protected abstract void clearModelBaseValue(); // used to clear exported value
 
+  /** The Constant TABLE_HOVER_REQUERY_TIME. */
   protected static final long TABLE_HOVER_REQUERY_TIME = 15000;
 
+  /** The last table hover item. */
   protected TableItem lastTableHoverItem = null;
 
+  /** The l last table hover millis. */
   protected long lLastTableHoverMillis = -1;
 
+  /** The s last table hover help. */
   protected String sLastTableHoverHelp = "";
 
+  /** The b disable tool tip help. */
   protected boolean bDisableToolTipHelp = false;
 
+  /** The Constant TABLE_INDICATOR_BY_NAME. */
   private static final String TABLE_INDICATOR_BY_NAME = "By Name";
 
+  /** The Constant TABLE_INDICATOR_BY_LOCATION. */
   private static final String TABLE_INDICATOR_BY_LOCATION = "By Location";
 
+  /** The add button. */
   protected Button addButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The set data path button. */
   private Button setDataPathButton;
 
+  /** The import table. */
   Table importTable;
 
+  /**
+   * Instantiates a new import section.
+   *
+   * @param aEditor the a editor
+   * @param parent the parent
+   * @param title the title
+   * @param description the description
+   */
   public ImportSection(MultiPageEditor aEditor, Composite parent, String title, String description) {
     super(aEditor, parent, title, description);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -125,6 +185,10 @@ public abstract class ImportSection extends AbstractSection {
     toolkit.paintBordersFor(sectionClient);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+   */
+  @Override
   public void refresh() {
     super.refresh();
     importTable.removeAll();
@@ -157,6 +221,7 @@ public abstract class ImportSection extends AbstractSection {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
 
     if (event.widget == addButton) {
@@ -178,6 +243,9 @@ public abstract class ImportSection extends AbstractSection {
     }
   }
 
+  /**
+   * Handle remove.
+   */
   public void handleRemove() {
     int nSelectedIndex = importTable.getSelectionIndex();
 
@@ -199,6 +267,9 @@ public abstract class ImportSection extends AbstractSection {
     setFileDirty();
   }
 
+  /**
+   * Handle set data path.
+   */
   private void handleSetDataPath() {
     CommonInputDialog dialog = new CommonInputDialog(
             this,
@@ -210,6 +281,9 @@ public abstract class ImportSection extends AbstractSection {
     CDEpropertyPage.setDataPath(editor.getProject(), dialog.getValue());
   }
 
+  /**
+   * Handle add.
+   */
   private void handleAdd() {
     Shell shell = getSection().getShell();
     MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(shell, editor.getFile()
@@ -236,10 +310,9 @@ public abstract class ImportSection extends AbstractSection {
 
   /**
    * Called with either byLocation non-null or byName non-null Adds multiple (by location) or one
-   * (by name)
-   * 
-   * @param locations
-   *          objects returned from dialog
+   * (by name).
+   *
+   * @param locations          objects returned from dialog
    * @param isByName true
    *          if imports should be done by name
    * @return false if any import caused an error, true of all OK
@@ -274,6 +347,12 @@ public abstract class ImportSection extends AbstractSection {
     return true;
   }
 
+  /**
+   * Already imported.
+   *
+   * @param imp the imp
+   * @return true, if successful
+   */
   private boolean alreadyImported(Import imp) {
     String currentFileBeingEdited = editor.getFile().getLocation().toString();
     currentFileBeingEdited = editor.getDescriptorRelativePath(currentFileBeingEdited);
@@ -302,6 +381,10 @@ public abstract class ImportSection extends AbstractSection {
     return false;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
     int nSelectionIndex = importTable.getSelectionIndex();
     boolean addEnable = (this instanceof TypeImportSection) ? (!isAggregate()) : true;
@@ -310,6 +393,11 @@ public abstract class ImportSection extends AbstractSection {
     removeButton.setEnabled(nSelectionIndex > -1);
   }
 
+  /**
+   * Handle table context menu request.
+   *
+   * @param event the event
+   */
   private void handleTableContextMenuRequest(Event event) {
     TableItem item = importTable.getItem(new Point(event.x, event.y));
     int nSelectedIndex = getIndex(item);
@@ -318,6 +406,11 @@ public abstract class ImportSection extends AbstractSection {
     bDisableToolTipHelp = false;
   }
 
+  /**
+   * Handle table hover help.
+   *
+   * @param event the event
+   */
   private void handleTableHoverHelp(Event event) {
     TableItem item = importTable.getItem(new Point(event.x, event.y));
     if (null != item) {
@@ -369,9 +462,10 @@ public abstract class ImportSection extends AbstractSection {
   }
 
   /**
-   * @param xmlStartElement
-   *          first element exported
-   * @param partTemplate -
+   * Export importable part.
+   *
+   * @param xmlStartElement          first element exported
+   * @param partTemplate the part template
    */
   protected void exportImportablePart(String xmlStartElement, String partTemplate) {
     String xmlEndElement = xmlStartElement.replaceFirst("<", "</");

@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+
 /**
  * Workarounds for JFileChooser bugs on Windows Look and Feel.
  * 
@@ -90,6 +91,7 @@ public class FileChooserBugWorkarounds {
    */
   public static void setCurrentDirectory(final JFileChooser aFileChooser, final File aDir) {
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         aFileChooser.setCurrentDirectory(aDir);
       }

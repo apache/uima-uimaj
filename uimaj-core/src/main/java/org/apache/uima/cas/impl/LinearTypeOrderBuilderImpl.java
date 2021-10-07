@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +28,10 @@ import java.util.Map;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.internal.util.GraphNode;
@@ -40,26 +43,32 @@ import org.apache.uima.internal.util.GraphNode;
  */
 
 public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
-
-  /**
+ 
+        /**
          * An implementation of the {@link LinearTypeOrder LinearTypeOrder}
          * interface.
          * 
          * 
          */
-  private static class TotalTypeOrder implements LinearTypeOrder {
+  public static class TotalTypeOrder implements LinearTypeOrder {
 
     // The explicit order. We keep this since we need to return it. It would
     // be awkward and inefficient to compute it from lt.
     // index = orderNumber, value = type-code
     // used by serialization routines
-    private int[] order;
+    final private int[] order;
 
     // index= typeCode, value = order number
-    private int[] typeCodeToOrder;
+    final private short[] typeCodeToOrder;
 
-    private TotalTypeOrder(String[] typeList, TypeSystem ts) throws CASException {
-      this(encodeTypeList(typeList, ts), ts);
+    private boolean hashCodeComputed = false;
+
+    private int computedHashCode;
+    
+    private final boolean isEmptyTypeOrder;
+
+    private TotalTypeOrder(String[] typeList, TypeSystem ts, boolean isEmpty) throws CASException {
+      this(encodeTypeList(typeList, ts), ts, isEmpty);
     }
 
     private static int[] encodeTypeList(String[] typeList, TypeSystem ts) throws CASException {
@@ -68,45 +77,107 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       for (int i = 0; i < a.length; i++) {
         int t = llts.ll_getCodeForTypeName(typeList[i]);
         if (t == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
-          CASException e = new CASException(CASException.TYPEORDER_UNKNOWN_TYPE,
-              new String[] { typeList[i] });
-          throw e;
+          throw new CASException(CASException.TYPEORDER_UNKNOWN_TYPE, typeList[i]);
         }
         a[i] = t;
       }
       return a;
     }
 
-    // Create the order from an array of type codes in ascending order.
-    private TotalTypeOrder(int[] typeList, TypeSystem ts) {
+    /**
+     * The constructor for the total type order, called by the other constructor and also when doing a 
+     *   cas complete deserialization, or just deserializing the type system/index defs
+     *   Create the order from an array of type codes in ascending order.
+     * @param typeList the list of ordered types
+     * @param ts the type system
+     */
+    private TotalTypeOrder(int[] typeList, TypeSystem ts, boolean isEmpty) {
       super();
       TypeSystemImpl tsi = (TypeSystemImpl) ts;
       this.order = typeList;
-      this.typeCodeToOrder = new int[this.order.length + tsi.getSmallestType()];
-      for (int i = 0; i < this.order.length; i++) {
-        this.typeCodeToOrder[this.order[i]] = i;
+      final int sz = this.order.length + tsi.getSmallestType();
+      if (sz > 32767) {
+        /** Total number of UIMA types, {0}, exceeds the maximum of 32766. **/
+        throw new CASAdminException(CASAdminException.TOO_MANY_TYPES, sz - 1);
       }
+      this.typeCodeToOrder = new short[this.order.length + tsi.getSmallestType()];
+      for (int i = 0; i < this.order.length; i++) {
+        this.typeCodeToOrder[this.order[i]] = (short)i;
+      }
+      this.isEmptyTypeOrder = isEmpty;
+    }
+
+    
+   
+    /* (non-Javadoc)
+     * @see org.apache.uima.cas.admin.LinearTypeOrder#compare(org.apache.uima.cas.impl.FeatureStructureImplC, org.apache.uima.cas.impl.FeatureStructureImplC)
+     */
+    @Override
+    public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+      TypeImpl t1 = ((FeatureStructureImplC)fs1)._getTypeImpl();
+      TypeImpl t2 = ((FeatureStructureImplC)fs2)._getTypeImpl();
+      if (t1 == t2) return 0;
+      return Short.compare(this.typeCodeToOrder[t1.getCode()], 
+                           this.typeCodeToOrder[t2.getCode()]);
     }
 
     // Look-up.
+    @Override
     public boolean lessThan(Type t1, Type t2) {
-      return lessThan(((TypeImpl) t1).getCode(), ((TypeImpl) t2).getCode());
+      return lessThan(((TypeImpl) t1).getCode(), ((TypeImpl) t2).getCode());       
       // return this.lt[((TypeImpl) t1).getCode()].get(((TypeImpl) t2)
       // .getCode());
     }
 
+    @Override
     public boolean lessThan(int t1, int t2) {
       return this.typeCodeToOrder[t1] < this.typeCodeToOrder[t2];
-
       // return this.lt[t1].get(t2);
     }
 
+    @Override
     public int[] getOrder() {
       return this.order;
     }
 
+    @Override
+    public int hashCode() {
+      if (!hashCodeComputed) {
+        computedHashCode = Arrays.hashCode(order);
+        hashCodeComputed = true;  
+      }
+      return computedHashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      TotalTypeOrder other = (TotalTypeOrder) obj;
+      if (hashCode() != other.hashCode()) {
+        return false;
+      }      
+      if (!Arrays.equals(order, other.order)) {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public boolean isEmptyTypeOrder() {
+      return isEmptyTypeOrder;
+    }
+
   }
 
+    
   private class Node extends GraphNode {
 
     private Node(Object o) {
@@ -164,21 +235,12 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
         // }
       }
     }
-
-    public boolean equals(Object o) {
-      return (this == o);
-    }
-
-    public int hashCode() {
-      return super.hashCode();
-    }
-
   }
 
   private class Graph {
 
     // Map type names to graph nodes.
-    private final HashMap<String, Node> nodeMap = new HashMap<String, Node>();
+    private final Map<String, Node> nodeMap = new HashMap<>();
 
     private int size() {
       return this.nodeMap.size();
@@ -235,7 +297,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       // an
       // in-degree of 0, we don't need to worry about in-arcs.
       // Node node = (Node) this.nodeMap.get(name);
-      ArrayList<Node> rank0s = new ArrayList<Node>();
+      ArrayList<Node> rank0s = new ArrayList<>();
       // if (node == null) {
       // return ;
       // }
@@ -252,7 +314,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private boolean pathFromTo(Node n1, Node n2) {
-      final HashMap<Node, Node> map = new HashMap<Node, Node>();
+      final HashMap<Node, Node> map = new HashMap<>();
       return pathFromTo(n1, n2, map);
     }
 
@@ -285,19 +347,25 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     this.ts = ts;
   }
 
+  /**
+   * The constructor for the total type order, called by the other constructor and also when doing a 
+   *   cas complete deserialization, or just deserializing the type system/index defs
+   * @param typeList -
+   * @param ts -
+   * @return -
+   */
   public static LinearTypeOrder createTypeOrder(int[] typeList, TypeSystem ts) {
-    return new TotalTypeOrder(typeList, ts);
+    return new TotalTypeOrder(typeList, ts, false);
   }
 
+  @Override
   public void add(String[] types) throws CASException {
     final int max = types.length - 1;
     boolean rc;
     for (int i = 0; i < max; i++) {
       rc = add(types[i], types[i + 1]);
       if (!rc) {
-	CASException e = new CASException(CASException.CYCLE_IN_TYPE_ORDER, new String[] {
-	    types[i], types[i + 1] });
-	throw e;
+	      throw new CASException(CASException.CYCLE_IN_TYPE_ORDER, types[i], types[i + 1]);
       }
     }
   }
@@ -316,7 +384,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   }
 
   private void addInheritanceTypes() {
-    List<Type> typesToModify = new ArrayList<Type>();
+    List<Type> typesToModify = new ArrayList<>();
 
     for (Iterator<Type> tsi = this.ts.getTypeIterator(); tsi.hasNext();) {
       Type bottomType = tsi.next();
@@ -327,49 +395,51 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       typesToModify.clear();
 
       while (true) {
-	String typeName = type.getName();
-	final Node n = this.order.getNode(typeName);
-	if ((nIn == null) && (n.inRank() != 0)) {
-	  nIn = n;
-	}
-	if ((nOut == null) && (n.outRank() != 0)) {
-	  nOut = n;
-	}
-	if ((nIn != null) && (nOut != null)) {
-	  break;
-	}
-	if (typeName.equals(CAS.TYPE_NAME_TOP)) {
-	  break;
-	}
-	typesToModify.add(type);
-	type = this.ts.getParent(type);
+      	String typeName = type.getName();
+      	final Node n = this.order.getNode(typeName);
+      	if ((nIn == null) && (n.inRank() != 0)) {
+      	  nIn = n;
+      	}
+      	if ((nOut == null) && (n.outRank() != 0)) {
+      	  nOut = n;
+      	}
+      	if ((nIn != null) && (nOut != null)) {
+      	  break;
+      	}
+      	if (typeName.equals(CAS.TYPE_NAME_TOP)) {
+      	  break;
+      	}
+      	typesToModify.add(type);
+      	type = this.ts.getParent(type);
       }
       boolean doIn = true;
       boolean doOut = true;
       for (Iterator<Type> ni = typesToModify.iterator(); ni.hasNext();) {
-	type = ni.next();
-	String typeName = type.getName();
-	final Node n = this.order.getNode(typeName);
-	if (doIn && (nIn != null)) {
-	  if (n.inRank() == 0) {
-	    n.addAllPredecessors(nIn.getAllPredecessors());
-	  } else {
-	    doIn = false; // when going up the tree, when you find one
-                                // filled in, stop
-	  }
-	}
-	if (doOut && (nOut != null)) {
-	  if (n.outRank() == 0) {
-	    n.addAllSuccessors(nOut.getAllSuccessors());
-	  } else {
-	    doOut = false;
-	  }
-	}
+      	type = ni.next();
+      	String typeName = type.getName();
+      	final Node n = this.order.getNode(typeName);
+      	if (doIn && (nIn != null)) {
+      	  if (n.inRank() == 0) {
+      	    n.addAllPredecessors(nIn.getAllPredecessors());
+      	  } else {
+      	    doIn = false; // when going up the tree, when you find one
+                                      // filled in, stop
+      	  }
+      	}
+      	if (doOut && (nOut != null)) {
+      	  if (n.outRank() == 0) {
+      	    n.addAllSuccessors(nOut.getAllSuccessors());
+      	  } else {
+      	    doOut = false;
+      	  }
+      	}
       }
     } // for all types
   }
 
+  @Override
   public LinearTypeOrder getOrder() throws CASException {
+    int origOrderSize = order.size();
     addInheritanceTypes();
     Node inRank0Nodes = new Node("");
     Graph g = this.order.copy(inRank0Nodes);
@@ -382,7 +452,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       inRank0Nodes.removeSuccessor(0);
       ArrayList<Node> newRank0Nodes = g.removeNode(n);
       for (Iterator<Node> it = newRank0Nodes.iterator(); it.hasNext();) {
-	inRank0Nodes.addSuccessor(it.next());
+	      inRank0Nodes.addSuccessor(it.next());
       }
     }
 
@@ -390,7 +460,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // for (int i = 0; i < totalOrder.length; i++) {
     // System.out.println(" " + totalOrder[i]);
     // }
-    return new TotalTypeOrder(totalOrder, this.ts);
+    return new TotalTypeOrder(totalOrder, this.ts, origOrderSize == 0);
   }
 
 }

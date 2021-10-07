@@ -21,7 +21,6 @@ package org.apache.uima.analysis_engine.impl;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -50,7 +49,7 @@ public class AnalysisEngineManagementImpl
    * This static set is needed to keep track of what names we've already used for "root" MBeans
    * (those representing top-level AEs and CPEs).
    */
-  private final static ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<String, AtomicInteger>();
+  private final static ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<>();
 
   private String name;
 
@@ -72,7 +71,7 @@ public class AnalysisEngineManagementImpl
 
   private final AtomicLong serviceCallTime = new AtomicLong(0);
 
-  private final Map<String, AnalysisEngineManagement> components = Collections.synchronizedMap(new LinkedHashMap<String, AnalysisEngineManagement>());
+  private final Map<String, AnalysisEngineManagement> components = Collections.synchronizedMap(new LinkedHashMap<>());
 
   private String uniqueMBeanName;
 

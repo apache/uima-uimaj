@@ -131,7 +131,7 @@ public class CasDataUtils {
           String featureName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
-    Vector<String> v = new Vector<String>();
+    Vector<String> v = new Vector<>();
     while (it.hasNext()) {
         FeatureStructure fs = it.next();
         if (featureStructureName.equals(fs.getType())) {

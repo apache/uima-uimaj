@@ -38,29 +38,35 @@ import org.apache.uima.cas.FeaturePath;
  */
 public class ConstraintFactoryImpl extends ConstraintFactory {
 
-	public FSTypeConstraint createTypeConstraint() {
+	@Override
+  public FSTypeConstraint createTypeConstraint() {
 		return new FSTypeConstraintImpl();
 	}
 
-	public FSIntConstraint createIntConstraint() {
+	@Override
+  public FSIntConstraint createIntConstraint() {
 		return new FSIntConstraintImpl();
 	}
 
-	public FSFloatConstraint createFloatConstraint() {
+	@Override
+  public FSFloatConstraint createFloatConstraint() {
 		return new FSFloatConstraintImpl();
 	}
 
-	public FSStringConstraint createStringConstraint() {
+	@Override
+  public FSStringConstraint createStringConstraint() {
 		return new FSStringConstraintImpl();
 	}
 
-	public FSBooleanConstraint createBooleanConstraint() {
+	@Override
+  public FSBooleanConstraint createBooleanConstraint() {
 		return new FSBooleanConstraintImpl();
 	}
 
-	public FSMatchConstraint embedConstraint(FeaturePath featPath,
+	@Override
+  public FSMatchConstraint embedConstraint(FeaturePath featPath,
 			FSConstraint constraint) {
-		ArrayList<String> path = new ArrayList<String>();
+		ArrayList<String> path = new ArrayList<>();
 		for (int i = 0; i < featPath.size(); i++) {
 			path.add(featPath.getFeature(i).getShortName());
 		}
@@ -79,7 +85,8 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 		}
 	}
 
-	public FSMatchConstraint embedConstraint(ArrayList<String> path,
+	@Override
+  public FSMatchConstraint embedConstraint(ArrayList<String> path,
 			FSConstraint constraint) {
 		if (constraint instanceof FSMatchConstraint) {
 			return new EmbeddedConstraint(path, constraint);
@@ -96,11 +103,13 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 		}
 	}
 
-	public FSMatchConstraint and(FSMatchConstraint c1, FSMatchConstraint c2) {
+	@Override
+  public FSMatchConstraint and(FSMatchConstraint c1, FSMatchConstraint c2) {
 		return new ConjunctiveConstraint(c1, c2);
 	}
 
-	public FSMatchConstraint or(FSMatchConstraint c1, FSMatchConstraint c2) {
+	@Override
+  public FSMatchConstraint or(FSMatchConstraint c1, FSMatchConstraint c2) {
 		return new DisjunctiveConstraint(c1, c2);
 	}
 

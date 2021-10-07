@@ -40,6 +40,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_component.AnalysisComponent_ImplBase;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.metadata.CpeDescription;
@@ -53,6 +54,8 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.SimpleResourceFactory;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.impl.Constants;
+import org.apache.uima.util.impl.Logger_common_impl;
 import org.apache.uima.util.impl.XMLParser_impl;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -159,7 +162,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * HashMap includes all log wrapper classes
    */
   private ConcurrentHashMap<String, Logger> mLoggers;
-
+  
   /**
    * Creates a new UIMAFramework_impl.
    */
@@ -172,7 +175,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   @Override
   protected void _initialize() throws Exception {
     // attempt to improve initialization performance
-    Introspector.setBeanInfoSearchPath(new String[0]);
+    Introspector.setBeanInfoSearchPath(Constants.EMPTY_STRING_ARRAY);
 
     // create and configure the factories and XML Parser
     mResourceFactory = new CompositeResourceFactory_impl();
@@ -284,31 +287,45 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   @Override
   protected Logger _getLogger(Class component) {
+    
+    
     // search for the source class logger in the HashMap
     Logger o = mLoggers.get(component.getName());
 
     if (o == null) // source class logger not available
     {
-      // create new Logger for the source class
-      // set method argument type
-      Class[] argumentTypes = { Class.class };
-      // set argument value
-      Object[] arguments = { component };
-      try {
-        // get static method getInstance(Class component)
-        Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
-        // invoke getInstance(Class component) method and retrieve logger object
-        o = (Logger) instanceMethod.invoke(null, arguments);
-      } catch (NoSuchMethodException e) {
-        throw new UIMARuntimeException(e);
-      } catch (InvocationTargetException e) {
-        throw new UIMARuntimeException(e);
-      } catch (IllegalAccessException e) {
-        throw new UIMARuntimeException(e);
-      }
+      synchronized (this) {
+        o = mLoggers.get(component.getName());
 
-      // put created logger to the HashMap
-      mLoggers.put(component.getName(), o);
+        if (o == null) { // source class logger not available
+      
+          // create new Logger for the source class
+          // set method argument type
+          Class[] argumentTypes = { Class.class };
+          // set argument value
+          Object[] arguments = { component };
+          try {
+            // get static method getInstance(Class component)
+            Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
+            // invoke getInstance(Class component) method and retrieve logger object
+            o = (Logger) instanceMethod.invoke(null, arguments);
+            if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
+                // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
+                org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class.isAssignableFrom(component)) {  
+              ((Logger_common_impl)o).setAnnotatorLogger(true); 
+            } 
+          } catch (NoSuchMethodException e) {
+            throw new UIMARuntimeException(e);
+          } catch (InvocationTargetException e) {
+            throw new UIMARuntimeException(e);
+          } catch (IllegalAccessException e) {
+            throw new UIMARuntimeException(e);
+          }
+    
+          // put created logger to the HashMap
+          mLoggers.put(component.getName(), o);
+        }
+      }
     }
 
     return o;
@@ -321,9 +338,9 @@ public class UIMAFramework_impl extends UIMAFramework {
   protected Logger _newLogger() {
     try {
       // get static method getInstance()
-      Method instanceMethod = mLoggerClass.getMethod("getInstance", new Class[0]);
+      Method instanceMethod = mLoggerClass.getMethod("getInstance", Constants.EMPTY_CLASS_ARRAY);
       // invoke getInstance() method and retrieve default logger object
-      return (Logger) instanceMethod.invoke(null, new Class[0]);
+      return (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
     } catch (NoSuchMethodException e) {
       throw new UIMARuntimeException(e);
     } catch (InvocationTargetException e) {
@@ -540,9 +557,9 @@ public class UIMAFramework_impl extends UIMAFramework {
           }
           mLoggerClass = Class.forName(loggerClass);
           // get static method getInstance()
-          Method instanceMethod = mLoggerClass.getMethod("getInstance", new Class[0]);
+          Method instanceMethod = mLoggerClass.getMethod("getInstance", Constants.EMPTY_CLASS_ARRAY);
           // invoke getInstance() method and retrieve default logger object
-          mDefaultLogger = (Logger) instanceMethod.invoke(null, new Class[0]);
+          mDefaultLogger = (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
         } catch (Exception e) {
           throw new SAXException(e);
         }

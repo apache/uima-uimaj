@@ -28,15 +28,31 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
+
+/**
+ * The Class ConsumerPanel.
+ */
 public class ConsumerPanel extends MetaDataPanel {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6822046781435538398L;
 
+  /** The cas consumer specifier. */
   ResourceSpecifier casConsumerSpecifier;
 
+  /** The specifier file. */
   File specifierFile;
 
+  /** The last file sync timestamp. */
   long lastFileSyncTimestamp;
 
+  /**
+   * Instantiates a new consumer panel.
+   *
+   * @param casConsumerSpecifier the cas consumer specifier
+   * @param specifierFile the specifier file
+   * @param fileModStamp the file mod stamp
+   */
   public ConsumerPanel(ResourceSpecifier casConsumerSpecifier, File specifierFile, long fileModStamp) {
     super(4); // 4 columns
     this.casConsumerSpecifier = casConsumerSpecifier;
@@ -45,23 +61,50 @@ public class ConsumerPanel extends MetaDataPanel {
     this.lastFileSyncTimestamp = fileModStamp;
   }
 
+  /**
+   * Gets the cas consumer specifier.
+   *
+   * @return the cas consumer specifier
+   */
   public ResourceSpecifier getCasConsumerSpecifier() {
     return this.casConsumerSpecifier;
   }
 
+  /**
+   * Gets the last file sync timestamp.
+   *
+   * @return the last file sync timestamp
+   */
   public long getLastFileSyncTimestamp() {
     return this.lastFileSyncTimestamp;
   }
 
+  /**
+   * Sets the last file sync timestamp.
+   *
+   * @param timestamp the new last file sync timestamp
+   */
   public void setLastFileSyncTimestamp(long timestamp) {
     this.lastFileSyncTimestamp = timestamp;
   }
 
+  /**
+   * Checks for file changed.
+   *
+   * @param lastCheck the last check
+   * @return true, if successful
+   */
   public boolean hasFileChanged(long lastCheck) {
     return specifierFile.lastModified() > this.lastFileSyncTimestamp
             && specifierFile.lastModified() > lastCheck;
   }
 
+  /**
+   * Refresh from file.
+   *
+   * @throws InvalidXMLException the invalid XML exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public void refreshFromFile() throws InvalidXMLException, IOException {
     clearAll();
     this.casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(

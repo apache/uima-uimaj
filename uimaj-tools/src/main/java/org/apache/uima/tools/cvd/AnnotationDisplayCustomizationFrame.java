@@ -50,6 +50,7 @@ import javax.swing.tree.TreeModel;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 
+
 /**
  * TODO: add type comment for <code>AnnotationDisplayCustomizationFrame</code>.
  * 
@@ -57,12 +58,29 @@ import org.apache.uima.cas.TypeSystem;
  */
 public class AnnotationDisplayCustomizationFrame extends JFrame {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6695661439132793537L;
 
+  /**
+   * The listener interface for receiving typeTreeSelection events.
+   * The class that is interested in processing a typeTreeSelection
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addTypeTreeSelectionListener</code> method. When
+   * the typeTreeSelection event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see TypeTreeSelectionEvent
+   */
   private class TypeTreeSelectionListener implements TreeSelectionListener {
+    
     /**
+     * Value changed.
+     *
+     * @param event the event
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
+    @Override
     public void valueChanged(TreeSelectionEvent event) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) AnnotationDisplayCustomizationFrame.this.tree
           .getLastSelectedPathComponent();
@@ -75,8 +93,15 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   }
 
+  /**
+   * The Class CustomizeBgButtonHandler.
+   */
   private class CustomizeBgButtonHandler implements ActionListener {
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
           "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
@@ -92,8 +117,15 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   }
 
+  /**
+   * The Class CustomizeFgButtonHandler.
+   */
   private class CustomizeFgButtonHandler implements ActionListener {
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
           "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
@@ -109,8 +141,15 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   }
 
+  /**
+   * The Class AcceptButtonHandler.
+   */
   private class AcceptButtonHandler implements ActionListener {
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void actionPerformed(ActionEvent event) {
       Style style = AnnotationDisplayCustomizationFrame.this.styleMap
           .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
@@ -131,8 +170,15 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   }
 
+  /**
+   * The Class CancelButtonHandler.
+   */
   private class CancelButtonHandler implements ActionListener {
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void actionPerformed(ActionEvent event) {
       Style style = AnnotationDisplayCustomizationFrame.this.styleMap
           .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
@@ -154,36 +200,52 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   }
 
+  /** The Constant FG. */
   private static final int FG = 0;
 
+  /** The Constant BG. */
   private static final int BG = 1;
 
+  /** The split pane. */
   private JSplitPane splitPane;
 
+  /** The fg color. */
   private Color fgColor;
 
+  /** The bg color. */
   private Color bgColor;
 
+  /** The fg icon. */
   private ColorIcon fgIcon;
 
+  /** The bg icon. */
   private ColorIcon bgIcon;
 
+  /** The text pane. */
   private JTextPane textPane;
 
+  /** The Constant defaultStyleName. */
   private static final String defaultStyleName = "defaultUnannotStyle";
 
+  /** The Constant currentStyleName. */
   private static final String currentStyleName = "currentStyle";
 
+  /** The current style. */
   private Style currentStyle;
 
+  /** The current type name. */
   private String currentTypeName;
 
+  /** The accept button. */
   private JButton acceptButton;
 
+  /** The cancel button. */
   private JButton cancelButton;
 
+  /** The style map. */
   private Map<String, Style> styleMap;
 
+  /** The tree. */
   private JTree tree;
 
   /**
@@ -224,6 +286,11 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     super(arg0, arg1);
   }
 
+  /**
+   * Sets the current style.
+   *
+   * @param style the new current style
+   */
   private void setCurrentStyle(Style style) {
     // Copy style.
     this.currentStyle = this.textPane.addStyle(currentStyleName, style);
@@ -231,11 +298,22 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     StyleConstants.setBackground(this.currentStyle, StyleConstants.getBackground(style));
   }
 
+  /**
+   * Enable buttons.
+   *
+   * @param flag the flag
+   */
   private void enableButtons(boolean flag) {
     this.acceptButton.setEnabled(flag);
     this.cancelButton.setEnabled(flag);
   }
 
+  /**
+   * Inits the.
+   *
+   * @param styleMap1 the style map 1
+   * @param cas the cas
+   */
   public void init(Map<String, Style> styleMap1, CAS cas) {
     this.styleMap = styleMap1;
     this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -247,6 +325,12 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     this.splitPane.setRightComponent(createCustomizationPanel(CAS.TYPE_NAME_ANNOTATION));
   }
 
+  /**
+   * Creates the customization panel.
+   *
+   * @param typeName the type name
+   * @return the j panel
+   */
   private JPanel createCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
     String defaultAnnotStyleName = CAS.TYPE_NAME_ANNOTATION;
@@ -275,6 +359,11 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     return topPanel;
   }
 
+  /**
+   * Sets the customization panel.
+   *
+   * @param typeName the new customization panel
+   */
   private void setCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
     Style defaultAnnotStyle = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
@@ -294,6 +383,11 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     this.repaint();
   }
 
+  /**
+   * Creates the button panel.
+   *
+   * @param buttonPanel the button panel
+   */
   private void createButtonPanel(JPanel buttonPanel) {
     this.acceptButton = new JButton("OK");
     this.acceptButton.addActionListener(new AcceptButtonHandler());
@@ -304,6 +398,9 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     enableButtons(false);
   }
 
+  /**
+   * Sets the text pane.
+   */
   private void setTextPane() {
     Style defaultStyle = this.textPane.getStyle(defaultStyleName);
     // Style style = textPane.getStyle(typeName);
@@ -324,6 +421,14 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     this.textPane.repaint();
   }
 
+  /**
+   * Creates the color panel.
+   *
+   * @param text the text
+   * @param icon the icon
+   * @param buttonType the button type
+   * @return the j panel
+   */
   private JPanel createColorPanel(String text, ColorIcon icon, int buttonType) {
     JPanel colorPanel = new JPanel();
     JLabel label = new JLabel(text);
@@ -340,6 +445,12 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     return colorPanel;
   }
 
+  /**
+   * Creates the tree model.
+   *
+   * @param ts the ts
+   * @return the tree model
+   */
   private TreeModel createTreeModel(TypeSystem ts) {
     String typeName = CAS.TYPE_NAME_ANNOTATION;
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
@@ -350,6 +461,13 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     return treeModel;
   }
 
+  /**
+   * Adds the children.
+   *
+   * @param node the node
+   * @param type the type
+   * @param ts the ts
+   */
   private static void addChildren(DefaultMutableTreeNode node, org.apache.uima.cas.Type type,
           TypeSystem ts) {
     // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7

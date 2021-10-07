@@ -43,9 +43,9 @@ public class IntBitSetTest extends TestCase {
     
     IntListIterator it = ibs.iterator();    
     assertTrue(it.hasNext());
-    assertEquals(15, it.next());
+    assertEquals(15, it.nextNvc());
     assertTrue(it.hasNext());
-    assertEquals(188, it.next());
+    assertEquals(188, it.nextNvc());
     assertFalse(it.hasNext());
     assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
     assertEquals(6, ibs.getSpaceUsed_in_words_no_overhead());
@@ -56,9 +56,9 @@ public class IntBitSetTest extends TestCase {
     ibs.add(1188);
     it = ibs.iterator();    
     assertTrue(it.hasNext());
-    assertEquals(1015, it.next());
+    assertEquals(1015, it.nextNvc());
     assertTrue(it.hasNext());
-    assertEquals(1188, it.next());
+    assertEquals(1188, it.nextNvc());
     assertFalse(it.hasNext());
     assertEquals(2,ibs.size());
     
@@ -90,17 +90,17 @@ public class IntBitSetTest extends TestCase {
     ibs = new IntBitSet(64,1000);
     ibs.add(1064);
     IntListIterator it = ibs.iterator();
-    List<Integer> ints = new ArrayList<Integer>();
+    List<Integer> ints = new ArrayList<>();
     while (it.hasNext()) {
-      ints.add(it.next());
+      ints.add(it.nextNvc());
     }
-    assertTrue(Arrays.equals(ints.toArray(), new Object[]{Integer.valueOf(1064)}));
+    assertTrue(Arrays.equals(ints.toArray(), new Object[]{1064}));
     
     ibs.add(1063);
     it = ibs.iterator();
     ints.clear();
     while (it.hasNext()) {
-      ints.add(it.next());
+      ints.add(it.nextNvc());
     }
     assertTrue(Arrays.equals(ints.toArray(), new Object[]{1063, 1064}));
     
@@ -111,7 +111,7 @@ public class IntBitSetTest extends TestCase {
     it.moveToStart();
     ints.clear();
     while (it.hasNext()) {
-      ints.add(it.next());
+      ints.add(it.nextNvc());
     }
     assertTrue(Arrays.equals(ints.toArray(), new Object[]{1, 10}));
   }
@@ -125,9 +125,9 @@ public class IntBitSetTest extends TestCase {
     assertEquals(2,ibs.size());
     IntListIterator it = ibs.iterator();    
     assertTrue(it.hasNext());
-    assertEquals(15, it.next());
+    assertEquals(15, it.nextNvc());
     assertTrue(it.hasNext());
-    assertEquals(101, it.next());
+    assertEquals(101, it.nextNvc());
     assertFalse(it.hasNext());
     assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
     
@@ -157,7 +157,7 @@ public class IntBitSetTest extends TestCase {
     IntListIterator it = ibs.iterator();
     for (int i = 0; i < 10; i += 4) {
       assertTrue(it.hasNext());
-      assertEquals(1000 + i, it.next());        
+      assertEquals(1000 + i, it.nextNvc());        
     }
     assertFalse(it.hasNext());
   }

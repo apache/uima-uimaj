@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.ui.INewWizard;
 
+
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target
@@ -32,6 +33,7 @@ import org.eclipse.ui.INewWizard;
 
 public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard implements INewWizard {
 
+  /** The Constant RESOURCEMANGERCONFIGURATION_TEMPLATE. */
   public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = 
     MessageFormat.format(COMMON_PARTIAL_DESCRIPTOR,
         "{0}",       // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
@@ -47,15 +49,26 @@ public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard imp
 //          + "{1}"
 //          + "</resourceManagerConfiguration>\n";
 
-  public ResourceManagerConfigurationNewWizard() {
+  /**
+ * Instantiates a new resource manager configuration new wizard.
+ */
+public ResourceManagerConfigurationNewWizard() {
     super("External Resource and Bindings (Resource Manager Configuration) Descriptor File");
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.wizard.Wizard#addPages()
+   */
+  @Override
   public void addPages() {
     page = new ResourceManagerConfigurationNewWizardPage(selection);
     addPage(page);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.wizards.AbstractNewWizard#getPrototypeDescriptor(java.lang.String)
+   */
+  @Override
   public String getPrototypeDescriptor(String name) {
     return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE,
         name,

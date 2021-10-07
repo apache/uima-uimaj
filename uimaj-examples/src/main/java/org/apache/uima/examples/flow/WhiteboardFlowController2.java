@@ -182,8 +182,8 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
      */
     private boolean casContainsTypes(CAS aCAS, Type[] aTypes) {
       for (int i = 0; i < aTypes.length; i++) {
-        Iterator iter = aCAS.getIndexRepository().getAllIndexedFS(aTypes[i]);
-        if (!iter.hasNext())
+        Collection c = aCAS.getIndexRepository().getIndexedFSs(aTypes[i]);
+        if (c.isEmpty())
           return false;
       }
       return true;

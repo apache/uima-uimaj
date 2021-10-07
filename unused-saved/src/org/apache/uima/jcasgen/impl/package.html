@@ -1,0 +1,36 @@
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+     *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+   <!-- edit using tinymce -->
+<html>
+
+<head>
+<title>Interfaces for classes supporting the dynamic handling of JCasGen'd classes</title>
+</head>
+
+<body lang=EN-US>
+<h1>Generating JCas bytecode</h1>
+<h2>General approaches - using visitor approach</h2>
+<p>Global visitor instances: one for fields (fv), one for methods (mv).</p>
+<p>Items coming from source that need no modification are passed by default to the output, 
+by not having a visitor method for that item. &nbsp;Example: AnnotationVisitor for "deprecated" annotations.</p>
+</body>
+
+</html>

@@ -77,10 +77,12 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    */
   protected volatile Settings mExternalOverrides;
   
+  @Override
   public Settings getExternalOverrides() {
     return mExternalOverrides;
   }
   
+  @Override
   public void setExternalOverrides(Settings externalOverrides) {
     mExternalOverrides = externalOverrides;
   }
@@ -101,6 +103,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    *      org.apache.uima.util.Logger, org.apache.uima.resource.ResourceManager,
    *      ConfigurationManager)
    */
+  @Override
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigurationManager) {
     mLogger = aLogger;
@@ -112,6 +115,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getLogger()
    */
+  @Override
   public Logger getLogger() {
     return mLogger;
   }
@@ -121,8 +125,9 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @see org.apache.uima.UimaContextAdmin#setLogger(org.apache.uima.util.Logger)
    */
+  @Override
   public void setLogger(Logger aLogger) {
-    mLogger = aLogger;
+    mLogger = maybeThrottleLogger(aLogger);
   }
 
   /**
@@ -130,6 +135,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @return the ResourceManager
    */
+  @Override
   public ResourceManager getResourceManager() {
     return mResourceManager;
   }
@@ -139,6 +145,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @see org.apache.uima.UimaContextAdmin#getConfigurationManager()
    */
+  @Override
   public ConfigurationManager getConfigurationManager() {
     return mConfigurationManager;
   }
@@ -148,6 +155,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @return the InstrumentationFacility to be used within this AnalysisEngine
    */
+  @Override
   public InstrumentationFacility getInstrumentationFacility() {
     return mInstrumentationFacility;
   }
@@ -159,6 +167,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * This method is to be called from the Analysis Engine, not the Annotator, so it is not part of
    * the AnnotatorContext interface.
    */
+  @Override
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mInstrumentationFacility.setProcessTrace(aProcessTrace);
   }
@@ -168,6 +177,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @see org.apache.uima.UimaContextAdmin#setSession(org.apache.uima.resource.Session)
    */
+  @Override
   public void setSession(Session aSession) {
     mSession = aSession;
     mConfigurationManager.setSession(mSession);
@@ -179,6 +189,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @see org.apache.uima.UimaContext#getSession()
    */
+  @Override
   public Session getSession() {
     return mSession;
   }
@@ -188,6 +199,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * 
    * @return root context
    */
+  @Override
   public UimaContextAdmin getRootContext() {
     return this;
   }

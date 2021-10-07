@@ -24,6 +24,7 @@ import java.util.Collection;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Logger;
 
 /**
  * Implementation base class for FlowControllers. Normally developers do not extend this class
@@ -116,5 +117,13 @@ public abstract class FlowController_ImplBase implements FlowController {
    */
   protected FlowControllerContext getContext() {
     return mContext;
+  }
+  
+  /**
+   * Gets the logger for this FlowController
+   * @return the logger for this FlowController
+   */
+  protected Logger getLogger() {  // https://issues.apache.org/jira/projects/UIMA/issues/UIMA-5565
+    return getContext().getLogger();
   }
 }

@@ -26,7 +26,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.AutoCloseableNoException;
 
 
 /**
@@ -40,7 +41,7 @@ import org.apache.uima.internal.util.IntVector;
  *      a) without count
  *      b) with count   
  */
-abstract class FSsTobeAddedback implements AutoCloseable {
+abstract class FSsTobeAddedback implements AutoCloseableNoException {
   
   final static boolean SHOW = false;
   final static AtomicInteger removes = new AtomicInteger(0);
@@ -48,6 +49,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   /**
    * does an add back if needed 
    */
+  @Override
   public void close() { 
   	addback();
   	((FSsTobeAddedbackMultiple) this).cas.dropProtectIndexesLevel();
@@ -64,14 +66,14 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
   }
   
-  private void logPart(int fsAddr, FSIndexRepositoryImpl view) {
+  private void logPart(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
     log(view);
-    System.out.format(",  fsAddr = %,d", fsAddr);
+    System.out.format(",  fs_id = %,d", fs._id);
   }
   
-  protected void log(int fsAddr, FSIndexRepositoryImpl view, int count) {
+  protected void log(FeatureStructureImplC fs, FSIndexRepositoryImpl view, int count) {
     if (SHOW) {
-      log(fsAddr, view);
+      log(fs, view);
       System.out.format(",  count = %d%n", count);
     }
   }
@@ -83,14 +85,14 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
   }
   
-  protected void log(int fsAddr, FSIndexRepositoryImpl view) {
+  protected void log(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
     if (SHOW) {
-      logPart(fsAddr, view);
+      logPart(fs, view);
       System.out.println();
     }
   }
   
-  void recordRemove(FSIndexRepositoryImpl view)                        {throw new UnsupportedOperationException();}
+  void recordRemove(FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
   void recordRemove(FSIndexRepositoryImpl view, int count)             {
     if (count == 1) {
       recordRemove(view);
@@ -98,21 +100,40 @@ abstract class FSsTobeAddedback implements AutoCloseable {
       throw new UnsupportedOperationException();
     }
   }
-  void recordRemove(int fsAddr, FSIndexRepositoryImpl view)            {throw new UnsupportedOperationException();}
-  void recordRemove(int fsAddr, FSIndexRepositoryImpl view, int count) {
+  void recordRemove(TOP fs, FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
+  void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
     if (count == 1) {
-      recordRemove(fsAddr, view);
+      recordRemove(fs, view);
     } else { 
       throw new UnsupportedOperationException();
     }
   }
   
-  void addback()                                                       {throw new UnsupportedOperationException();}
-  void addback(int fsAddr)                                             {throw new UnsupportedOperationException();}
+  /**
+   * add back all the FSs that were removed in a protect block
+   *   -- for "Multiple" subclass
+   */
+  void addback()       {throw new UnsupportedOperationException();}  // is overridden in one subclass, throws in other
+  
+  /**
+   * add back the single FS that was removed due to 
+   *   -  automatic protection or 
+   *   -  delta deserialization or 
+   *   -  updating document annotation
+   *   -- for "Single" subclass
+   */
+  void addback(TOP fs) {throw new UnsupportedOperationException();}  // is overridden in one subclass, throws in other
   abstract void clear();
 
+  /**
+   * Version of this class for recording 1 FS
+   *
+   */
   static class FSsTobeAddedbackSingle extends FSsTobeAddedback {
-    final List<FSIndexRepositoryImpl> views = new ArrayList<FSIndexRepositoryImpl>();
+    /**
+     * list of views where the FS was removed; used when adding the fs back
+     */
+    final List<FSIndexRepositoryImpl> views = new ArrayList<>();
     
     @Override
     void recordRemove(FSIndexRepositoryImpl view) {
@@ -120,25 +141,32 @@ abstract class FSsTobeAddedback implements AutoCloseable {
       views.add(view);
     }
     
+    /**
+     * in single, the fs is ignored
+     */
     @Override
-    void recordRemove(int fsAddr, FSIndexRepositoryImpl view) {
+    void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       recordRemove(view);
     }
     
     @Override
-    void recordRemove(int fsAddr, FSIndexRepositoryImpl view, int count) {
+    void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
       if (count != 1) {
         throw new RuntimeException("internal error");
       }
       recordRemove(view);
     }
           
+    
     @Override
-    void addback(int fsAddr) {
+    void addback(TOP fs) {
+      /**
+       * add this back only to those views where it was removed
+       */
       for (FSIndexRepositoryImpl ir : views) {
-        ir.ll_addback(fsAddr, 1);
+        ir.addback(fs);
       }
-      clear();
+      clear();  // clear the viewlist
     }
     
     @Override
@@ -148,41 +176,21 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
   }
   
-  static class FSsTobeAddedbackSingleCounts extends FSsTobeAddedbackSingle {
-    final IntVector counts = new IntVector(4);
-    
-    @Override
-    void recordRemove(FSIndexRepositoryImpl view, int count) {
-      log(view, count);
-      views.add(view);
-      counts.add(count);
-    }
-          
-    @Override
-    void addback(int fsAddr) {
-      int i = 0;
-      for (FSIndexRepositoryImpl ir : views) {
-        ir.ll_addback(fsAddr, counts.get(i++));
-      }
-      clear();
-    }
-    
-    @Override
-    void clear() {
-      views.clear();
-      counts.removeAllElementsAdjustSizeDown();
-//      if (SHOW) removes.set(0);
-    }
-
-  }
-
+  /**
+   * Version of this class used for protect blocks - where multiple FSs may be removed.
+   *   - records the fs along with the list of views where it was removed.
+   *
+   */
   static class FSsTobeAddedbackMultiple extends FSsTobeAddedback {
   
-    // impl note: for support of allow_multiple_add_to_indexes, each entry is two List elements:
-    //   the count
-    //   the ref to the view
-    final Map<Integer, List<?>> fss2views = new HashMap<Integer, List<?>>();
+    /**
+     * For each FS, the list of views where it was removed. 
+     */
+    final Map<TOP, List<?>> fss2views = new HashMap<>();
     
+    /**
+     * An arbitrary cas view or base cas
+     */
     final CASImpl cas;
     
     FSsTobeAddedbackMultiple(CASImpl cas) {
@@ -190,24 +198,24 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
     
     @Override
-    void recordRemove(int fsAddr, FSIndexRepositoryImpl view) {
-      log(fsAddr, view);
+    void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
+      log(fs, view);
       @SuppressWarnings("unchecked")
-      List<FSIndexRepositoryImpl> irList = (List<FSIndexRepositoryImpl>) fss2views.get(fsAddr);
+      List<FSIndexRepositoryImpl> irList = (List<FSIndexRepositoryImpl>) fss2views.get(fs);
       if (null == irList) {
-        fss2views.put(fsAddr,  irList = new ArrayList<FSIndexRepositoryImpl>());
+        fss2views.put(fs,  irList = new ArrayList<>());
       }
       irList.add(view);
     }
           
     @Override
     void addback() {
-      for (Entry<Integer, List<?>> e : fss2views.entrySet()) {
-        final int fsAddr = e.getKey();
+      for (Entry<TOP, List<?>> e : fss2views.entrySet()) {
+        final TOP fs = e.getKey();
         @SuppressWarnings("unchecked")
         final List<FSIndexRepositoryImpl> views = (List<FSIndexRepositoryImpl>) e.getValue();
         for (FSIndexRepositoryImpl ir : views) {
-          ir.ll_addback(fsAddr, 1);
+          ir.addback(fs);
         }
       }
       clear();
@@ -216,64 +224,25 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     
     @Override
     void clear() {
-      fss2views.clear();
+      fss2views.clear(); // clears all the list of views for all feature structures
 //      if (SHOW) removes.set(0);
     }
   }
-  
-  static class FSsTobeAddedbackMultipleCounts extends FSsTobeAddedbackMultiple {
-     
-    public FSsTobeAddedbackMultipleCounts(CASImpl cas) {
-      super(cas);
-    }
     
-    @Override
-    void recordRemove(int fsAddr, FSIndexRepositoryImpl view, int count) {
-      log(fsAddr, view, count);
-      @SuppressWarnings("unchecked")
-      List<Object> countsAndViews = (List<Object>) fss2views.get(fsAddr);
-      if (null == countsAndViews) {
-        fss2views.put(fsAddr,  countsAndViews = new ArrayList<Object>());
-      }
-      countsAndViews.add(count);
-      countsAndViews.add(view);
-    }
-    
-    @Override
-    void addback() {
-      for (Entry<Integer, List<?>> e : fss2views.entrySet()) {
-        final int fsAddr = e.getKey();
-        final List<?> countsAndViews = e.getValue();
-      
-        for (int i = 0; i < countsAndViews.size(); ) {
-          final int count = (Integer) countsAndViews.get(i++);
-          final FSIndexRepositoryImpl view = (FSIndexRepositoryImpl) countsAndViews.get(i++);
-          view.ll_addback(fsAddr, count);
-        }  
-      }
-      clear();
-    }
-    
-    @Override
-    void clear() {
-      fss2views.clear();
-//      if (SHOW) removes.set(0);
-    }
-  }
-  
   /**
    * @return an impl of this class
    */
   public static FSsTobeAddedback createSingle() {
-    return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) ?
-        new FSsTobeAddedbackSingleCounts() :
-        new FSsTobeAddedbackSingle();
+    return new FSsTobeAddedbackSingle();
   }
   
+  /**
+   * 
+   * @param cas the view where the protect block was set up
+   * @return an instance for recording removes of multiple FSs
+   */
   public static FSsTobeAddedback createMultiple(CASImpl cas) {
-    return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) ?
-       new FSsTobeAddedbackMultipleCounts(cas) :
-       new FSsTobeAddedbackMultiple(cas);
+    return new FSsTobeAddedbackMultiple(cas);
   }
 }
 

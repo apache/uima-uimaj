@@ -21,12 +21,25 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import org.eclipse.jface.text.rules.*;
 
+
+/**
+ * The Class TagRule.
+ */
 public class TagRule extends MultiLineRule {
 
+  /**
+   * Instantiates a new tag rule.
+   *
+   * @param token the token
+   */
   public TagRule(IToken token) {
     super("<", ">", token);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.text.rules.PatternRule#sequenceDetected(org.eclipse.jface.text.rules.ICharacterScanner, char[], boolean)
+   */
+  @Override
   protected boolean sequenceDetected(ICharacterScanner scanner, char[] sequence, boolean eofAllowed) {
     int c = scanner.read();
     if (sequence[0] == '<') {

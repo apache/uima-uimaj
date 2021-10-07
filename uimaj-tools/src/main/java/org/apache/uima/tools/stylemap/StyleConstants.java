@@ -19,23 +19,36 @@
 
 package org.apache.uima.tools.stylemap;
 
+
+/**
+ * The Class StyleConstants.
+ */
 public class StyleConstants {
+  
+  /** The Constant NR_TABLE_COLUMNS. */
   public static final int NR_TABLE_COLUMNS = 7;
 
+  /** The Constant LABEL_COLUMN. */
   // Column zero is for visual indication of selection
   public static final int LABEL_COLUMN = 1;
 
+  /** The Constant TYPE_NAME_COLUMN. */
   public static final int TYPE_NAME_COLUMN = 2;
 
+  /** The Constant BG_COLUMN. */
   // public static final int FEATURE_VALUE_COLUMN = 3;
   public static final int BG_COLUMN = 3;
 
+  /** The Constant FG_COLUMN. */
   public static final int FG_COLUMN = 4;
 
+  /** The Constant CHECK_COLUMN. */
   public static final int CHECK_COLUMN = 5; // check box column
 
+  /** The Constant HIDDEN_COLUMN. */
   public static final int HIDDEN_COLUMN = 6; // hide these
 
+  /** The Constant columnNames. */
   static final String[] columnNames = { "|", "Annotation Label", "Annotation Type / Feature",
       "Background", "Foreground", "Checked", "Hidden" };
 

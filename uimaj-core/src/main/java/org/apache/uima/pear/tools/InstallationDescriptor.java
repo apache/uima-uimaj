@@ -105,7 +105,7 @@ public class InstallationDescriptor implements Serializable {
   public static class ServiceInfo {
     // private attributes
     
-    private ArrayList<ArgInfo> _args = new ArrayList<ArgInfo>();
+    private ArrayList<ArgInfo> _args = new ArrayList<>();
 
     // public attributes
     public String command;
@@ -161,7 +161,7 @@ public class InstallationDescriptor implements Serializable {
 
     public String deploymentType = InstallationDescriptorHandler.STANDARD_TAG;
 
-    public ServiceInfo serviceInfo = null;
+    public transient ServiceInfo serviceInfo = null;  // ServiceInfo is not serializable
 
     public Hashtable<String, Properties> networkParams = null;
 
@@ -196,9 +196,9 @@ public class InstallationDescriptor implements Serializable {
 
   private ComponentInfo _mainComponent = null;
 
-  private Hashtable<String, ComponentInfo> _delegateComponents = new Hashtable<String, ComponentInfo>();
+  private Hashtable<String, ComponentInfo> _delegateComponents = new Hashtable<>();
 
-  private ArrayList<ActionInfo> _installationActions = new ArrayList<ActionInfo>();
+  private ArrayList<ActionInfo> _installationActions = new ArrayList<>();
 
   /**
    * Adds a property specified by given name and value to a given <code>Properties</code> object.
@@ -559,7 +559,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The list of the <code>ActionInfo</code> objects that have the given action name.
    */
   public Collection<ActionInfo> getInstallationActions(String actionName) {
-    ArrayList<ActionInfo> selActions = new ArrayList<ActionInfo>();
+    ArrayList<ActionInfo> selActions = new ArrayList<>();
     Iterator<ActionInfo> allActions = getInstallationActions().iterator();
     while (allActions.hasNext()) {
       ActionInfo actInfo = allActions.next();
@@ -1024,7 +1024,7 @@ public class InstallationDescriptor implements Serializable {
   public synchronized void setMainComponentNetworkParam(String paramName, Properties paramSpecs) {
     if (_mainComponent != null) {
       if (_mainComponent.networkParams == null)
-        _mainComponent.networkParams = new Hashtable<String, Properties>();
+        _mainComponent.networkParams = new Hashtable<>();
       _mainComponent.networkParams.put(paramName, paramSpecs);
     }
   }
@@ -1106,19 +1106,10 @@ public class InstallationDescriptor implements Serializable {
    */
   public String toString() {
     StringWriter sWriter = new StringWriter();
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(sWriter);
+    try (PrintWriter oWriter = new PrintWriter(sWriter)) {
       InstallationDescriptorHandler.printInstallationDescriptor(this, oWriter);
       oWriter.flush();
     } catch (Exception exc) {
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return sWriter.toString();
   }

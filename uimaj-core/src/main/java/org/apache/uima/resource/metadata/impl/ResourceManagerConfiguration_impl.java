@@ -56,9 +56,9 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
 
   private Import[] mImports = Import.EMPTY_IMPORTS;
 
-  private ExternalResourceBinding[] mBindings = new ExternalResourceBinding[0];
+  private ExternalResourceBinding[] mBindings = ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS;
 
-  private ExternalResourceDescription[] mExternalResources = new ExternalResourceDescription[0];
+  private ExternalResourceDescription[] mExternalResources = ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS;
 
   /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getName()
@@ -154,7 +154,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    */
   public void setExternalResources(ExternalResourceDescription[] aDescriptions) {
     mExternalResources = (aDescriptions != null) ? aDescriptions
-            : new ExternalResourceDescription[0];
+            : ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS;
   }
 
   /*
@@ -172,7 +172,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setExternalResourceBindings(org.apache.uima.resource.metadata.ExternalResourceBinding[])
    */
   public void setExternalResourceBindings(ExternalResourceBinding[] aBindings) {
-    mBindings = (aBindings != null) ? aBindings : new ExternalResourceBinding[0];
+    mBindings = (aBindings != null) ? aBindings : ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS;
   }
 
   /*
@@ -267,12 +267,12 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
-      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
+      resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
 
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+    resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
@@ -284,8 +284,8 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
       if (getSourceUrl() != null) {
         aAlreadyImportedURLs.add(getSourceUrl().toString());
       }
-      importedResources = new ArrayList<ExternalResourceDescription>();
-      importedBindings = new ArrayList<ExternalResourceBinding>();
+      importedResources = new ArrayList<>();
+      importedBindings = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
         // make sure Import's relative path base is set, to allow for users who create

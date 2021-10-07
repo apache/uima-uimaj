@@ -60,6 +60,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -132,12 +133,6 @@ public class JCasClassLoaderTest {
     FileUtils.copyFile(
             new File("target/test-classes/org/apache/uima/cas/test/Token.class"), 
             new File(cpPackageBase, "Token.class"));
-    FileUtils.copyFile(
-            new File("target/test-classes/org/apache/uima/cas/test/Token_Type.class"), 
-            new File(cpPackageBase, "Token_Type.class"));
-    FileUtils.copyFile(
-            new File("target/test-classes/org/apache/uima/cas/test/Token_Type$1.class"), 
-            new File(cpPackageBase, "Token_Type$1.class"));
     FileUtils.copyFile(
             new File("target/test-classes/org/apache/uima/cas/test/JCasClassLoaderTest$AddATokenAnnotator.class"), 
             new File(cpPackageBase, "JCasClassLoaderTest$AddATokenAnnotator.class"));
@@ -523,7 +518,7 @@ public class JCasClassLoaderTest {
   private AnalysisEngine makeAnalysisEngine(Class<? extends Annotator_ImplBase> aeClass,
           ClassLoader cl) throws ResourceInitializationException, MalformedURLException {
     ResourceManager resMgr = newDefaultResourceManager();
-    resMgr.setExtensionClassPath(cl, "", false);
+    resMgr.setExtensionClassLoader(cl, false);
     printTokenClassLoaderInfo("AE creation: " + aeClass.getSimpleName(), resMgr.getExtensionClassLoader());
     AnalysisEngineDescription desc = getResourceSpecifierFactory()
             .createAnalysisEngineDescription();
@@ -574,19 +569,14 @@ public class JCasClassLoaderTest {
         printTokenClassLoaderInfo("JCas creation", cl);
         casTokenClassViaClassloader = loadTokenClass(cl);
         ResourceManager resMgr = newDefaultResourceManager();
-        resMgr.setExtensionClassPath(cl, "", false);
+        resMgr.setExtensionClassLoader(cl, false);
         CASImpl cas = (CASImpl) createCas(tsd, null, null, null, resMgr);
         cas.setJCasClassLoader(cl);
 
-        // Unless we call getJCas here, the following createAnnotation() call may actually not
-        // create the expected JCas wrappers because the CAS FS generators are still set up for
-        // CAS mode only (i.e. creating AnnotationImpl for all annoations).
-        JCas jcas = cas.getJCas();
-        
         casTokenClassViaCas = cas
                 .createAnnotation(cas.getTypeSystem().getType(TYPE_NAME_TOKEN), 0, 0).getClass();
         
-        return jcas;
+        return cas.getJCas();
       }
       catch (Exception e) {
         throw new RuntimeException(e);
@@ -613,14 +603,14 @@ public class JCasClassLoaderTest {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
 
-      AnnotationFS token = aJCas
-              .getAnnotationIndex(aJCas.getTypeSystem().getType(TYPE_NAME_TOKEN))
-              .iterator().next();
+      AnnotationFS token = (AnnotationFS) aJCas
+              .select(aJCas.getTypeSystem().getType(TYPE_NAME_TOKEN))
+              .single();
       tokenClassAddedToArray = token.getClass();
       
       AnnotationFS arrayHost = aJCas.getCas()
               .createAnnotation(aJCas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOST), 0, 0);
-      FSArray array = new FSArray(aJCas, 1);
+      FSArray array = new FSArray<>(aJCas, 1);
       array.set(0, token);
       arrayHost.setFeatureValue(
               arrayHost.getType().getFeatureByBaseName(FEAT_NAME_ARRAY_HOST_VALUES), array);
@@ -631,9 +621,8 @@ public class JCasClassLoaderTest {
   public static class FetchTokenFromArrayViaSpliteratorAnnotator extends JCasAnnotator_ImplBase {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-      FeatureStructure arrayHost = aJCas
-              .getAnnotationIndex(aJCas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOST)).iterator()
-              .next();
+      FeatureStructure arrayHost = aJCas.select(aJCas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOST))
+              .single();
       
       FSArray array = (FSArray) arrayHost.getFeatureValue(
               arrayHost.getType().getFeatureByBaseName(FEAT_NAME_ARRAY_HOST_VALUES));
@@ -647,15 +636,14 @@ public class JCasClassLoaderTest {
   public static class FetchTokenFromArrayViaToArrayAnnotator extends JCasAnnotator_ImplBase {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-      FeatureStructure arrayHost = aJCas
-              .getAnnotationIndex(aJCas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOST)).iterator()
-              .next();
+      FeatureStructure arrayHost = aJCas.select(aJCas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOST))
+              .single();
       
       FSArray array = (FSArray) arrayHost.getFeatureValue(
               arrayHost.getType().getFeatureByBaseName(FEAT_NAME_ARRAY_HOST_VALUES));
       
-      Class withEmptyTemplate = array.toArray()[0].getClass();
-      tokenClassFetchedFromArray = array.toArray()[0].getClass();
+      Class withEmptyTemplate = array.toArray(new TOP[0])[0].getClass();
+      tokenClassFetchedFromArray = array.toArray(new TOP[1])[0].getClass();
       assertThat(tokenClassFetchedFromArray).isSameAs(withEmptyTemplate);
     }
   }

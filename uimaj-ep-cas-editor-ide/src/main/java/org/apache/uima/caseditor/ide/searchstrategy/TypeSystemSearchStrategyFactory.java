@@ -33,7 +33,7 @@ public class TypeSystemSearchStrategyFactory {
 
   private static TypeSystemSearchStrategyFactory instance;
 
-  private Map<Integer, ITypeSystemSearchStrategy> searchStrategies = new TreeMap<Integer, ITypeSystemSearchStrategy>();
+  private Map<Integer, ITypeSystemSearchStrategy> searchStrategies = new TreeMap<>();
 
   private TypeSystemSearchStrategyFactory() {
 

@@ -44,31 +44,41 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+
 /**
+ * The Class AbstractSectionParm.
  */
 public abstract class AbstractSectionParm extends AbstractSection {
 
+  /** The Constant NOT_IN_ANY_GROUP. */
   public final static String NOT_IN_ANY_GROUP = Messages
           .getString("AbstractSectionParm.notInAnyGroup"); //$NON-NLS-1$
 
+  /** The Constant COMMON_GROUP. */
   public final static String COMMON_GROUP = Messages.getString("AbstractSectionParm.common"); //$NON-NLS-1$
 
   // maintainers note: names below have extra trailing blanks to get them to approximately line up
+  /** The Constant DELEGATE_HEADER. */
   // where possible
   protected final static String DELEGATE_HEADER = Messages
           .getString("AbstractSectionParm.delegateKeyName"); //$NON-NLS-1$
 
+  /** The Constant FLOWCTLR_HEADER. */
   protected final static String FLOWCTLR_HEADER = "Flow Controller Key Name: ";
 
+  /** The Constant GROUP_HEADER. */
   protected final static String GROUP_HEADER = Messages
           .getString("AbstractSectionParm.headerGroupNames"); //$NON-NLS-1$
 
+  /** The Constant COMMON_GROUP_HEADER. */
   protected final static String COMMON_GROUP_HEADER = Messages
           .getString("AbstractSectionParm.headerCommon"); //$NON-NLS-1$
 
+  /** The Constant NOT_IN_ANY_GROUP_HEADER. */
   protected final static String NOT_IN_ANY_GROUP_HEADER = Messages
           .getString("AbstractSectionParm.headerNotInAnyGroup"); //$NON-NLS-1$
 
+  /** The override header. */
   protected final String OVERRIDE_HEADER = Messages.getString("AbstractSectionParm.overrides"); // nonstatic
 
   // for
@@ -78,53 +88,83 @@ public abstract class AbstractSectionParm extends AbstractSection {
   // subclass
   // //$NON-NLS-1$
 
+  /** The Constant MULTI_VALUE_INDICATOR. */
   protected final static String MULTI_VALUE_INDICATOR  = "Multi  "; //$NON-NLS-1$
 
+  /** The Constant SINGLE_VALUE_INDICATOR. */
   protected final static String SINGLE_VALUE_INDICATOR = "Single "; //$NON-NLS-1$
 
+  /** The Constant OPTIONAL_INDICATOR. */
   protected final static String OPTIONAL_INDICATOR = "Opt "; //$NON-NLS-1$
 
+  /** The Constant REQUIRED_INDICATOR. */
   protected final static String REQUIRED_INDICATOR = "Req "; //$NON-NLS-1$
   
+  /** The Constant EXTERNAL_OVERRIDE_INDICATOR. */
   protected final static String EXTERNAL_OVERRIDE_INDICATOR    = "XO "; //$NON-NLS-1$
   
+  /** The Constant NO_EXTERNAL_OVERRIDE_INDICATOR. */
   protected final static String NO_EXTERNAL_OVERRIDE_INDICATOR = "      ";
   
+  /** The name header. */
   protected final String nameHeader = "  Name: "; //$NON-NLS-1$
 
-  protected final static Map<String,String> typeNamesW = new HashMap<String,String>(4);
+  /** The Constant typeNamesW. */
+  protected final static Map<String,String> typeNamesW = new HashMap<>(4);
   static { // map extra spaces to get these to take the same
     typeNamesW.put("Boolean", "Boolean "); //$NON-NLS-1$ //$NON-NLS-2$
     typeNamesW.put("Float",   "Float      "); //$NON-NLS-1$ //$NON-NLS-2$
     typeNamesW.put(Messages.getString("AbstractSectionParm.16"), 
-                              "Integer   "); //$NON-NLS-1$ //$NON-NLS-2$
+                              "Integer   "); //$NON-NLS-1$ 
     typeNamesW.put("String",  "String     "); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  /** The tree. */
   protected Tree tree;
 
+  /** The parameter section tree. */
   protected Tree parameterSectionTree = null;
 
+  /** The show overrides. */
   protected boolean showOverrides;
 
+  /** The split group names. */
   protected boolean splitGroupNames;
 
+  /** The common parms. */
   protected ConfigurationParameter[] commonParms;
 
+  /** The group parms. */
   protected Map groupParms;
 
+  /** The cpd. */
   protected ConfigurationParameterDeclarations cpd;
 
+  /** The settings. */
   // settings set by other page when it is created
   protected ParameterSettingsSection settings = null;
 
+  /** The settings tree. */
   protected Tree settingsTree = null;
 
+  /**
+   * Sets the settings.
+   *
+   * @param v the new settings
+   */
   public void setSettings(ParameterSettingsSection v) {
     settings = v;
     settingsTree = v.getTree();
   }
 
+  /**
+   * Instantiates a new abstract section parm.
+   *
+   * @param aEditor the a editor
+   * @param parent the parent
+   * @param header the header
+   * @param description the description
+   */
   public AbstractSectionParm(MultiPageEditor aEditor, Composite parent, String header,
           String description) {
     super(aEditor, parent, header, description);
@@ -136,7 +176,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
-public void enable() {
+
+  public void enable() {
   }
 
   /*
@@ -145,17 +186,16 @@ public void enable() {
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
   @Override
-public abstract void handleEvent(Event event);
+  public abstract void handleEvent(Event event);
 
-  // *********************************************************************************
-  // methods shared with multiple param pages
-  // *********************************************************************************
-
+   /* ***********************************************************************************************
+   * methods shared with multiple param pages 
+   *************************************************************************************************/
+  
   /**
    * Two modes: settingsDisplayMode - if true, shows groups one name at a time, and puts all
-   * &lt;common&gt; parameters in other groups
-   * 
-   * @param usingGroups -
+   * &lt;common&gt; parms in other groups
+   * @param usingGroups the using groups
    */
   protected void clearAndRefillTree(boolean usingGroups) {
     cpd = getConfigurationParameterDeclarations();
@@ -211,6 +251,11 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Expand all items.
+   *
+   * @param items the items
+   */
   private void expandAllItems(TreeItem[] items) {
     TreeItem[] containedItems;
     for (int i = 0; i < items.length; i++) {
@@ -223,7 +268,11 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * Called by refresh; add a normal named group and a set of parmaters
+   * Called by refresh; add a normal named group and a set of parmaters.
+   *
+   * @param parms the parms
+   * @param names the names
+   * @param modelCG the model CG
    */
   private void fillGroup(ConfigurationParameter[] parms, String[] names, ConfigurationGroup modelCG) {
     fillGroup(parms, groupNameArrayToString(names), modelCG);
@@ -232,9 +281,10 @@ public abstract void handleEvent(Event event);
   /**
    * called by refresh() for <Common> and refresh() for named, via another path with names as array
    * first converted to concatenated string.
-   * 
-   * @param parms -
-   * @param names -
+   *
+   * @param parms the parms
+   * @param names the names
+   * @param modelCG the model CG
    */
   private void fillGroup(ConfigurationParameter[] parms, String names, ConfigurationGroup modelCG) {
     if (splitGroupNames) {
@@ -266,6 +316,9 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Fill groups from group parms.
+   */
   private void fillGroupsFromGroupParms() {
     for (Iterator grpInfo = groupParms.entrySet().iterator(); grpInfo.hasNext();) {
       Map.Entry entry = (Map.Entry) grpInfo.next();
@@ -282,11 +335,10 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * called by refresh() when no groups, just plain parm sets, also for group case
-   * 
-   * @param parms -
-   * @param group
-   *          &lt;Not in any group&gt; if not in a group, otherwise the group tree item
+   * called by refresh() when no groups, just plain parm sets, also for group case.
+   *
+   * @param parms the parms
+   * @param group          &lt;Not in any group&gt; if not in a group, otherwise the group tree item
    */
   protected void fill(ConfigurationParameter[] parms, TreeItem group) {
     if (parms == null) {
@@ -297,6 +349,12 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Group name array to string.
+   *
+   * @param strings the strings
+   * @return the string
+   */
   public static String groupNameArrayToString(String[] strings) {
     StringBuffer b = new StringBuffer();
     for (int i = 0; i < strings.length; i++) {
@@ -309,6 +367,12 @@ public abstract void handleEvent(Event event);
     return b.toString();
   }
 
+  /**
+   * Group names to array.
+   *
+   * @param names the names
+   * @return the string[]
+   */
   protected String[] groupNamesToArray(String names) {
     if (names.equals(NOT_IN_ANY_GROUP)) {
         return new String[] { names };
@@ -341,9 +405,9 @@ public abstract void handleEvent(Event event);
    * Takes an existing model parm and fills a pre-allocated treeItem. 3 callers:
    * addNewConfigurationParameter, alterExistingConfigurationParamater (editing), fill (bulk update
    * from refresh)
-   * 
-   * @param item -
-   * @param parm -
+   *
+   * @param item the item
+   * @param parm the parm
    */
   protected void fillParmItem(TreeItem item, ConfigurationParameter parm) {
     item.setText(parmGuiString(parm));
@@ -354,14 +418,26 @@ public abstract void handleEvent(Event event);
     item.setData(parm);
   }
 
+  /**
+   * Parm gui string.
+   *
+   * @param parm the parm
+   * @return the string
+   */
   protected String parmGuiString(ConfigurationParameter parm) {
     return ((parm.isMultiValued()) ? MULTI_VALUE_INDICATOR : SINGLE_VALUE_INDICATOR)
             + ((parm.isMandatory()) ? REQUIRED_INDICATOR : OPTIONAL_INDICATOR)
             + typeNamesW.get(parm.getType())
             + ((parm.getExternalOverrideName()==null) ? NO_EXTERNAL_OVERRIDE_INDICATOR : EXTERNAL_OVERRIDE_INDICATOR)
-            + nameHeader + parm.getName();    //$NON-NLS-1$
+            + nameHeader + parm.getName();    
   }
 
+  /**
+   * Sets the group text.
+   *
+   * @param groupItem the group item
+   * @param names the names
+   */
   protected void setGroupText(TreeItem groupItem, String names) {
     if (names.equals(COMMON_GROUP)) {
         groupItem.setText(COMMON_GROUP_HEADER);
@@ -376,6 +452,13 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Adds the group to GUI.
+   *
+   * @param names the names
+   * @param cg the cg
+   * @return the tree item
+   */
   protected TreeItem addGroupToGUI(String names, ConfigurationGroup cg) {
     TreeItem groupItem = new TreeItem(tree, SWT.NONE);
     setGroupText(groupItem, names);
@@ -405,6 +488,13 @@ public abstract void handleEvent(Event event);
     return groupItem;
   }
 
+  /**
+   * Contains group.
+   *
+   * @param groupName the group name
+   * @param settingsItems the settings items
+   * @return true, if successful
+   */
   private boolean containsGroup(String groupName, final TreeItem[] settingsItems) {
     for (int i = 0; i < settingsItems.length; i++) {
       if (groupName.equals(getName(settingsItems[i]))) {
@@ -415,10 +505,11 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * This is called sometimes with Settings group
-   * 
-   * @param newCP -
-   * @param group is never null. May be &lt;Not in any group&gt;, indicate no groups; may be the 
+   * This is called sometimes with Settings group.
+   *
+   * @param newCP the new CP
+   * @param group -
+   *          is never null. May be &lt;Not in any group&gt;, indicate no groups; may be the 
    *          "&lt;Common&gt;" group; or may be a regular group with a set of group names
    */
   protected void addNewConfigurationParameterToGUI(ConfigurationParameter newCP, TreeItem group) {
@@ -454,20 +545,44 @@ public abstract void handleEvent(Event event);
   }
 
   // this is overriden where needed
+  /**
+   * Fill overrides.
+   *
+   * @param parent the parent
+   * @param modelCP the model CP
+   */
   // here just make above fn compile OK
   protected void fillOverrides(TreeItem parent, ConfigurationParameter modelCP) {
   }
 
+  /**
+   * Checks if is override.
+   *
+   * @param item the item
+   * @return true, if is override
+   */
   protected boolean isOverride(TreeItem item) {
     return (item.getText().startsWith(OVERRIDE_HEADER));
   }
 
+  /**
+   * Checks if is parameter.
+   *
+   * @param item the item
+   * @return true, if is parameter
+   */
   protected boolean isParameter(TreeItem item) {
     String s = item.getText();
     return (!isGroup(item) && !s.startsWith(DELEGATE_HEADER) && !s.startsWith(FLOWCTLR_HEADER) && !item
             .getText().startsWith(OVERRIDE_HEADER));
   }
 
+  /**
+   * Checks if is group.
+   *
+   * @param item the item
+   * @return true, if is group
+   */
   // Note: rest of code considers NOT_IN_ANY_GROUP to be a kind of group
   protected boolean isGroup(TreeItem item) {
     String s = item.getText();
@@ -475,38 +590,88 @@ public abstract void handleEvent(Event event);
             || s.startsWith(NOT_IN_ANY_GROUP_HEADER);
   }
 
+  /**
+   * Checks if is not in any group.
+   *
+   * @param item the item
+   * @return true, if is not in any group
+   */
   protected boolean isNOT_IN_ANY_GROUP(TreeItem item) {
     return item.getText().startsWith(NOT_IN_ANY_GROUP_HEADER);
   }
 
+  /**
+   * Checks if is common group.
+   *
+   * @param item the item
+   * @return true, if is common group
+   */
   protected boolean isCommonGroup(TreeItem item) {
     return item.getText().startsWith(COMMON_GROUP_HEADER);
   }
 
+  /**
+   * Checks if is delegate.
+   *
+   * @param item the item
+   * @return true, if is delegate
+   */
   protected boolean isDelegate(TreeItem item) {
     return item.getText().startsWith(DELEGATE_HEADER) || item.getText().startsWith(FLOWCTLR_HEADER);
   }
 
+  /**
+   * Checks if is group selection.
+   *
+   * @return true, if is group selection
+   */
   protected boolean isGroupSelection() {
     return isGroup(tree.getSelection()[0]);
   }
 
+  /**
+   * Checks if is common group selection.
+   *
+   * @return true, if is common group selection
+   */
   protected boolean isCommonGroupSelection() {
     return isCommonGroup(tree.getSelection()[0]);
   }
 
+  /**
+   * Checks if is override selection.
+   *
+   * @return true, if is override selection
+   */
   protected boolean isOverrideSelection() {
     return isOverride(tree.getSelection()[0]);
   }
 
+  /**
+   * Checks if is parm selection.
+   *
+   * @return true, if is parm selection
+   */
   protected boolean isParmSelection() {
     return isParameter(tree.getSelection()[0]);
   }
 
+  /**
+   * Gets the name.
+   *
+   * @param item the item
+   * @return the name
+   */
   protected String getName(TreeItem item) {
     return getName(item.getText());
   }
 
+  /**
+   * Gets the name.
+   *
+   * @param s the s
+   * @return the name
+   */
   protected String getName(String s) {
 
     if (s.startsWith(NOT_IN_ANY_GROUP_HEADER)) {
@@ -526,10 +691,24 @@ public abstract void handleEvent(Event event);
     return s.substring(s.indexOf(nameHeader) + nameHeader.length());
   }
 
+  /**
+   * Gets the item index.
+   *
+   * @param parent the parent
+   * @param child the child
+   * @return the item index
+   */
   protected int getItemIndex(TreeItem parent, TreeItem child) {
     return getItemIndex(parent.getItems(), child);
   }
 
+  /**
+   * Gets the item index.
+   *
+   * @param parent the parent
+   * @param child the child
+   * @return the item index
+   */
   protected int getItemIndex(Tree parent, TreeItem child) {
     return getItemIndex(parent.getItems(), child);
   }
@@ -537,12 +716,10 @@ public abstract void handleEvent(Event event);
   /**
    * Works between parameter tree and settings tree. We don't use any relative index offsets.
    * Instead, we search for the item with the same parameter name.
-   * 
-   * @param containingGroup
-   *            in parm section; if null = means all groups (common parms)
-   * @param sourceItemName
-   *            -
-   * @return -
+   *
+   * @param containingGroup          in parm section; if null = means all groups (common parms)
+   * @param sourceItemName the source item name
+   * @return the settings parameter
    */
   protected TreeItem[] getSettingsParameter(TreeItem containingGroup, String sourceItemName) {
     if (null == settingsTree) {
@@ -572,6 +749,13 @@ public abstract void handleEvent(Event event);
     return results;
   }
 
+  /**
+   * Find matching parm.
+   *
+   * @param group the group
+   * @param name the name
+   * @return the tree item
+   */
   private TreeItem findMatchingParm(TreeItem group, String name) {
     final TreeItem[] items = group.getItems();
     for (int i = 0; i < items.length; i++) {
@@ -583,9 +767,9 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * get set of settings group from settingsTree that correspond to parmsection group
-   * 
-   * @param group -
+   * get set of settings group from settingsTree that correspond to parmsection group.
+   *
+   * @param group the group
    * @return set of settings group from settingsTree that correspond to parm-section group
    */
   protected TreeItem[] getSettingsGroups(TreeItem group) {
@@ -621,9 +805,9 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * find settings tree item for group name
-   * 
-   * @param name -
+   * find settings tree item for group name.
+   *
+   * @param name the name
    * @return settings tree item for group name
    */
   protected TreeItem getSettingsGroupTreeItemByName(String name) {
@@ -636,6 +820,12 @@ public abstract void handleEvent(Event event);
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
 
+  /**
+   * Gets the corresponding model parm.
+   *
+   * @param item the item
+   * @return the corresponding model parm
+   */
   protected ConfigurationParameter getCorrespondingModelParm(TreeItem item) {
     if (!isParameter(item))
      {
@@ -644,6 +834,12 @@ public abstract void handleEvent(Event event);
     return (ConfigurationParameter) item.getData();
   }
 
+  /**
+   * Gets the corresponding model group.
+   *
+   * @param item the item
+   * @return the corresponding model group
+   */
   protected ConfigGroup getCorrespondingModelGroup(TreeItem item) {
     if (!isGroup(item))
      {
@@ -652,6 +848,11 @@ public abstract void handleEvent(Event event);
     return (ConfigGroup) item.getData();
   }
 
+  /**
+   * Gets the configuration parameter settings.
+   *
+   * @return the configuration parameter settings
+   */
   public ConfigurationParameterSettings getConfigurationParameterSettings() {
     return editor.getAeDescription().getMetaData().getConfigurationParameterSettings();
   }
@@ -669,10 +870,9 @@ public abstract void handleEvent(Event event);
   /**
    * Remove a parameter from all groups it lives in the Settings. If settings page is shown, also
    * update the GUI.
-   * 
-   * @param parmItem
-   *          in ParameterSection of parameter belonging to (multiple) groups
-   * @param removeFromGUI -
+   *
+   * @param parmItem          in ParameterSection of parameter belonging to (multiple) groups
+   * @param removeFromGUI the remove from GUI
    */
   public void removeParmSettingFromMultipleGroups(TreeItem parmItem, boolean removeFromGUI) {
     if (!isParameter(parmItem))
@@ -707,6 +907,13 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Update parm in settings GUI.
+   *
+   * @param existingCP the existing CP
+   * @param existingTreeItem the existing tree item
+   * @param prevName the prev name
+   */
   public void updateParmInSettingsGUI(ConfigurationParameter existingCP, TreeItem existingTreeItem,
           String prevName) {
     if (null != settings) {
@@ -718,13 +925,19 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Gets the all group names.
+   *
+   * @return the all group names
+   */
   protected String[] getAllGroupNames() {
     return getAllGroupNames(cpd);
   }
 
   /**
-   * 
-   * @param aCpd -
+   * Gets the all group names.
+   *
+   * @param aCpd the a cpd
    * @return all named groups, excludes &lt;Common&gt; and &lt;Not in any group&gt;
    */
   protected String[] getAllGroupNames(ConfigurationParameterDeclarations aCpd) {
@@ -739,6 +952,9 @@ public abstract void handleEvent(Event event);
     return (String[]) results.toArray(stringArray0);
   }
 
+  /**
+   * Removes the common parm settings from multiple groups.
+   */
   public void removeCommonParmSettingsFromMultipleGroups() {
     ConfigurationParameterSettings modelSettings = getModelSettings();
     String[] allGroupNames = getAllGroupNames();
@@ -776,9 +992,9 @@ public abstract void handleEvent(Event event);
    * Method: for the group-set, get the parms. Remove just those parms from all groups. Remove the
    * group on the settings page (together with common parms for it) if no other group-set has this
    * group name Remove the group-set.
-   * 
-   * @param groupNames -
-   * @param cps -
+   *
+   * @param groupNames the group names
+   * @param cps the cps
    */
   public void removeIncludedParmSettingsFromMultipleGroups(String[] groupNames,
           ConfigurationParameter[] cps) {
@@ -788,10 +1004,10 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * 
-   * @param groupName -
-   * @param cps
-   *          in ParameterSection of items an array of tree items to remove Can be all items under a
+   * Removes the included parm settings from single group.
+   *
+   * @param groupName the group name
+   * @param cps          in ParameterSection of items an array of tree items to remove Can be all items under a
    *          particular group, or a set of items from different groups
    */
   public void removeIncludedParmSettingsFromSingleGroup(String groupName,
@@ -829,6 +1045,11 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Dispose all child items.
+   *
+   * @param parent the parent
+   */
   public void disposeAllChildItems(TreeItem parent) {
     TreeItem[] items = parent.getItems();
     for (int j = 0; j < items.length; j++) {
@@ -836,6 +1057,11 @@ public abstract void handleEvent(Event event);
     }
   }
 
+  /**
+   * Show description as tool tip.
+   *
+   * @param event the event
+   */
   protected void showDescriptionAsToolTip(Event event) {
     TreeItem item = tree.getItem(new Point(event.x, event.y));
     String text = null;

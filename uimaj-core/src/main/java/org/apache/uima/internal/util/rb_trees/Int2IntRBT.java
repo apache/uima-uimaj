@@ -125,42 +125,31 @@ public class Int2IntRBT extends IntArrayRBTcommon {
 
     private KeyIterator() {
       super();
-      this.currentNode = NIL;
+      this.currentNode = getFirstNode();
     }
 
     public final boolean hasNext() {
-      return (this.currentNode != Int2IntRBT.this.greatestNode);
+      return this.currentNode != NIL;
     }
 
-    public final int next() {
-      if (!hasNext()) {
-        throw new NoSuchElementException();
-      }
-      this.currentNode = (this.currentNode == NIL) ? getFirstNode() : nextNode(this.currentNode);
-      return Int2IntRBT.this.getKeyForNode(this.currentNode);
+    @Override
+    public final int nextNvc() {
+      int v = Int2IntRBT.this.getKeyForNode(this.currentNode);
+      this.currentNode = nextNode(this.currentNode);
+      return v;      
     }
-
+    
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
     public boolean hasPrevious() {
-      return (this.currentNode != NIL);
+      return this.currentNode != NIL && this.currentNode != getFirstNode();
     }
-
-    /**
-     * @see org.apache.uima.internal.util.IntListIterator#previous()
-     */
-    public int previous() {
-      if (!hasPrevious()) {
-        throw new NoSuchElementException();
-      }
-      final int currentKey = Int2IntRBT.this.getKeyForNode(this.currentNode);
-      if (this.currentNode == getFirstNode()) {
-        this.currentNode = NIL;
-      } else {
-        this.currentNode = previousNode(this.currentNode);
-      }
-      return currentKey;
+    
+    @Override
+    public int previousNvc() {
+      this.currentNode = previousNode(this.currentNode);
+      return Int2IntRBT.this.getKeyForNode(this.currentNode);
     }
 
     /**

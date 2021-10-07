@@ -21,12 +21,12 @@ package org.apache.uima.resource.impl;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 
 public class ResourceCreationSpecifier_implTest extends TestCase {

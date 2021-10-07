@@ -34,6 +34,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -46,19 +47,37 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
+
+/**
+ * The Class XMLEditor.
+ */
 public class XMLEditor extends TextEditor {
 
+  /** The editor. */
   MultiPageEditor editor;
 
+  /** The color manager. */
   private ColorManager colorManager;
 
+  /** The m text listener. */
   private EditorsTextListener m_textListener = new EditorsTextListener();
 
   // next set to true when we are setting the text of the
   // editor so that just switching to source page doesn't
+  /** The m b ignore text event. */
   // cause editor to think source file is dirty
   boolean m_bIgnoreTextEvent = false;
 
+  /**
+   * The listener interface for receiving editorsText events.
+   * The class that is interested in processing a editorsText
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addEditorsTextListener</code> method. When
+   * the editorsText event occurs, that object's appropriate
+   * method is invoked.
+   *
+   */
   public class EditorsTextListener implements ITextListener {
 
     /*
@@ -66,6 +85,7 @@ public class XMLEditor extends TextEditor {
      * 
      * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
      */
+    @Override
     public void textChanged(TextEvent event) {
       if (!m_bIgnoreTextEvent) {
         editor.sourceChanged = true;
@@ -74,6 +94,11 @@ public class XMLEditor extends TextEditor {
     }
   }
 
+  /**
+   * Instantiates a new XML editor.
+   *
+   * @param editor the editor
+   */
   public XMLEditor(MultiPageEditor editor) {
     super();
     colorManager = new ColorManager();
@@ -82,16 +107,28 @@ public class XMLEditor extends TextEditor {
     this.editor = editor;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   public void createPartControl(Composite parent) {
     super.createPartControl(parent);
     getSourceViewer().addTextListener(m_textListener);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.editors.text.TextEditor#dispose()
+   */
+  @Override
   public void dispose() {
     colorManager.dispose();
     super.dispose();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.AbstractTextEditor#doSaveAs()
+   */
+  @Override
   public void doSaveAs() {
     IProgressMonitor progressMonitor = getProgressMonitor();
     Shell shell = getSite().getShell();
@@ -118,7 +155,7 @@ public class XMLEditor extends TextEditor {
       dialog.setMessage(message, IMessageProvider.WARNING);
     }
 
-    if (dialog.open() == Dialog.CANCEL) {
+    if (dialog.open() == Window.CANCEL) {
       if (progressMonitor != null)
         progressMonitor.setCanceled(true);
       editor.setSaveAsStatus(MultiPageEditor.SAVE_AS_CANCELLED);
@@ -138,6 +175,7 @@ public class XMLEditor extends TextEditor {
     final IEditorInput newInput = new FileEditorInput(file);
 
     WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+      @Override
       public void execute(final IProgressMonitor monitor) throws CoreException {
         getDocumentProvider().saveDocument(monitor, newInput,
                 getDocumentProvider().getDocument(getEditorInput()), true);
@@ -196,6 +234,11 @@ public class XMLEditor extends TextEditor {
       progressMonitor.setCanceled(!success);
   }
 
+  /**
+   * Sets the ignore text event.
+   *
+   * @param bIgnoreTextEvent the new ignore text event
+   */
   public void setIgnoreTextEvent(boolean bIgnoreTextEvent) {
     m_bIgnoreTextEvent = bIgnoreTextEvent;
   }

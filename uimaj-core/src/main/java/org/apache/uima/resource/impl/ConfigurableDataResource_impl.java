@@ -85,7 +85,13 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
 
     // now attempt to create a URL, which can actually be used to access the data
     // Get Relative Path Resolver
-    RelativePathResolver relPathResolver = getRelativePathResolver(aAdditionalParams);
+    RelativePathResolver relPathResolver = null;
+    if (aAdditionalParams != null) {
+      relPathResolver = (RelativePathResolver) aAdditionalParams.get(PARAM_RELATIVE_PATH_RESOLVER);
+    }
+    if (relPathResolver == null) {
+      relPathResolver = new RelativePathResolver_impl();
+    }
 
     // Get the file URL, resolving relative path as necessary
     try {
@@ -94,12 +100,13 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
       // this is OK. The URI may not be a valid URL (e.g. it may use a non-standard protocol).
       // in this case getUrl returns null but getUri can still be used to access the URI
     }
-    
-    // call super initialize to set uima context from additional params if available
-    // this context is to allow getting access to the Resource Manager.
-    // https://issues.apache.org/jira/browse/UIMA-5153
-    super.initialize(aSpecifier, aAdditionalParams);
     return true;
+  }
+
+  /**
+   * @see org.apache.uima.resource.Resource#destroy()
+   */
+  public void destroy() {
   }
 
   /**

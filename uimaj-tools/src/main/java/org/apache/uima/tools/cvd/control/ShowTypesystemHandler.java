@@ -28,16 +28,29 @@ import javax.swing.WindowConstants;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class ShowTypesystemHandler.
+ */
 public class ShowTypesystemHandler implements ActionListener {
 
   
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new show typesystem handler.
+   *
+   * @param frame the frame
+   */
   public ShowTypesystemHandler(MainFrame frame) {
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override

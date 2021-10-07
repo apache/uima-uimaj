@@ -28,21 +28,36 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
+
+/**
+ * The Class CpeConfigurationImpl.
+ */
 public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConfiguration {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1153815602567127240L;
 
+  /** The start at. */
   private String startAt;
 
+  /** The num 2 process. */
   private long num2Process;
 
+  /** The checkpoint. */
   private CpeCheckpoint checkpoint;
 
+  /** The timer impl. */
   private String timerImpl;
 
+  /** The deploy as. */
   private String deployAs;
 
+  /** The output queue. */
   private OutputQueue outputQueue;
 
+  /**
+   * Instantiates a new cpe configuration impl.
+   */
   public CpeConfigurationImpl() {
   }
 
@@ -51,6 +66,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#setDeployment(java.lang.String)
    */
+  @Override
   public void setDeployment(String aDeploy) throws CpeDescriptorException {
     deployAs = aDeploy;
   }
@@ -60,6 +76,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getDeployment()
    */
+  @Override
   public String getDeployment() {
     return deployAs;
   }
@@ -69,6 +86,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#setNumToProcess(int)
    */
+  @Override
   public void setNumToProcess(int aNumToProcess) throws CpeDescriptorException {
     num2Process = aNumToProcess;
   }
@@ -78,10 +96,15 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getNumToProcess()
    */
+  @Override
   public int getNumToProcess() {
     return (int) num2Process;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#setStartingEntityId(java.lang.String)
+   */
+  @Override
   public void setStartingEntityId(String aStartAt) {
     startAt = aStartAt;
   }
@@ -91,6 +114,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getStartingEntityId()
    */
+  @Override
   public String getStartingEntityId() {
     return startAt;
   }
@@ -100,6 +124,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#setCheckpoint(org.apache.uima.collection.metadata.CpeCheckpoint)
    */
+  @Override
   public void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException {
     checkpoint = aCheckpoint;
   }
@@ -109,6 +134,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getCheckpoint()
    */
+  @Override
   public CpeCheckpoint getCheckpoint() {
     return checkpoint;
   }
@@ -118,6 +144,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#removeCheckpoint()
    */
+  @Override
   public void removeCheckpoint() {
     checkpoint = null;
   }
@@ -127,6 +154,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#setCpeTimer(org.apache.uima.collection.metadata.CpeTimer)
    */
+  @Override
   public void setCpeTimer(CpeTimer aTimer) {
     timerImpl = aTimer.get();
   }
@@ -136,6 +164,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getCpeTimer()
    */
+  @Override
   public CpeTimer getCpeTimer() {
     return new CpeTimerImpl(timerImpl);
   }
@@ -145,22 +174,42 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#removeCpeTimer()
    */
+  @Override
   public void removeCpeTimer() {
     timerImpl = "";
   }
 
+  /**
+   * Gets the deploy as.
+   *
+   * @return the deploy as
+   */
   public String getDeployAs() {
     return deployAs;
   }
 
+  /**
+   * Gets the num 2 process.
+   *
+   * @return the num 2 process
+   */
   public long getNum2Process() {
     return num2Process;
   }
 
+  /**
+   * Gets the start at.
+   *
+   * @return the start at
+   */
   public String getStartAt() {
     return startAt;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getTimerImpl()
+   */
+  @Override
   public String getTimerImpl() {
     return timerImpl;
   }
@@ -202,10 +251,18 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     timerImpl = string;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getOutputQueue()
+   */
+  @Override
   public OutputQueue getOutputQueue() {
     return outputQueue;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getMaxTimeToWait()
+   */
+  @Override
   public int getMaxTimeToWait() {
     if (getOutputQueue() == null) {
       return 0;
@@ -222,10 +279,15 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     outputQueue = queue;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeConfig",
           new PropertyXmlInfo[] { new PropertyXmlInfo("numToProcess"),
               new PropertyXmlInfo("deployAs"), new PropertyXmlInfo("checkpoint", null),

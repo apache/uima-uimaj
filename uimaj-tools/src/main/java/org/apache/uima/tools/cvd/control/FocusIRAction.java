@@ -27,19 +27,31 @@ import javax.swing.Action;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Action handler for focus in index repository frame.
  */
 public class FocusIRAction extends AbstractAction implements Action {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new focus IR action.
+   *
+   * @param frame the frame
+   */
   public FocusIRAction(MainFrame frame) {
     this.main = frame;
   }
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8128067676842119411L;
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     this.main.getIndexTree().requestFocusInWindow();
   }

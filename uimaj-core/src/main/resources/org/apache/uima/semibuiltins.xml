@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   ***************************************************************
+   * Licensed to the Apache Software Foundation (ASF) under one
+   * or more contributor license agreements.  See the NOTICE file
+   * distributed with this work for additional information
+   * regarding copyright ownership.  The ASF licenses this file
+   * to you under the Apache License, Version 2.0 (the
+   * "License"); you may not use this file except in compliance
+   * with the License.  You may obtain a copy of the License at
+         *
+   *   http://www.apache.org/licenses/LICENSE-2.0
+   * 
+   * Unless required by applicable law or agreed to in writing,
+   * software distributed under the License is distributed on an
+   * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   * KIND, either express or implied.  See the License for the
+   * specific language governing permissions and limitations
+   * under the License.
+   ***************************************************************
+   -->
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>semibuiltins</name>
+    <description>Semi-built-in types that can can be optionally imported by name.</description>
+    <version>1.0</version>
+    <vendor/>
+  <types>
+    <typeDescription>
+      <name>org.apache.uima.jcas.cas.FSArrayList</name>
+      <description>An array of Feature Structures that automatically expands, like an ArrayList.  Implements the ArrayList APIs.</description>
+      <supertypeName>uima.cas.TOP</supertypeName>
+      <features>
+        <featureDescription>
+          <name>fsArray</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.cas.TOP</elementType>
+        <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>org.apache.uima.jcas.cas.FSHashSet</name>
+      <description>A hash set of Feature Structures</description>
+      <supertypeName>uima.cas.TOP</supertypeName>
+      <features>
+        <featureDescription>
+          <name>fsArray</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.cas.TOP</elementType>
+        <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>org.apache.uima.jcas.cas.IntegerArrayList</name>
+      <description>an array of ints that automatically expands, like ArrayList.  Implements List_of_ints - like ArrayList, but for ints, not Integers.</description>
+      <supertypeName>uima.cas.TOP</supertypeName>
+      <features>
+        <featureDescription>
+          <name>intArray</name>
+          <description/>
+          <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>org.apache.uima.jcas.cas.FSLinkedHashSet</name>
+      <description/>
+      <supertypeName>org.apache.uima.jcas.cas.FSHashSet</supertypeName>
+      <features>
+        <featureDescription>
+          <name>fsArray</name>
+          <description>Internal use only</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.cas.TOP</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>org.apache.uima.jcas.cas.Int2FS</name>
+      <description>map from ints to Feature Structures</description>
+      <supertypeName>uima.cas.TOP</supertypeName>
+      <features>
+        <featureDescription>
+          <name>fsArray</name>
+          <description>internal use</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>intArray</name>
+          <description>internal use</description>
+          <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

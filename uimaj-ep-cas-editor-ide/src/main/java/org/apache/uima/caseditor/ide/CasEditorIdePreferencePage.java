@@ -30,27 +30,20 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class CasEditorIdePreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
-  private BooleanFieldEditor mEditorRememberTypesystem;
-  
   public CasEditorIdePreferencePage() {
     setPreferenceStore(CasEditorIdePlugin.getDefault().getPreferenceStore());
     setDescription("Cas Editor Ide Preferences.");
   }
-  
 
   @Override
   protected void createFieldEditors() {
    
     // should the editor use the last selected type system to open the cas?
-    mEditorRememberTypesystem = new BooleanFieldEditor(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM,
-            "Use the previously selected type system to open a CAS", getFieldEditorParent());
+    BooleanFieldEditor mEditorRememberTypesystem = new BooleanFieldEditor(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM,
+        "Use the previously selected type system to open a CAS", getFieldEditorParent());
     addField(mEditorRememberTypesystem);
-    
-    
   }
 
   public void init(IWorkbench workbench) {
   }
-  
- 
 }

@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
+// not used in v3, kept for backwards compatibility
 public class MessageReport {
 
   /**

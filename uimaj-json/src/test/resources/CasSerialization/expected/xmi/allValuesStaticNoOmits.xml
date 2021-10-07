@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:tcas="http:///uima/tcas.ecore" xmi:version="2.0">
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmi:version="2.0">
     <cas:NULL xmi:id="0"/>
-    <test:AllTypes xmi:id="1" sofa="29" begin="0" end="0" aBoolean="true" aByte="-117" aShort="-112" aInteger="0" aLong="1234" aFloat="1.3" aDouble="2.6" aString="some &quot;String&quot;" aFS="36" aArrayBoolean="false" aArrayMrBoolean="165" aArrayMrByte="168" aArrayByte="0FEE" aArrayShort="" aArrayMrShort="171" aArrayMrString="174" aListInteger="" aListFs="0">
+    <test:AllTypes xmi:id="2" sofa="1" begin="0" end="0" aBoolean="true" aByte="-117" aShort="-112" aInteger="0" aLong="1234" aFloat="1.3" aDouble="2.6" aString="some &quot;String&quot;" aFS="3" aArrayBoolean="false" aArrayMrBoolean="12" aArrayMrByte="13" aArrayByte="0FEE" aArrayShort="" aArrayMrShort="14" aArrayMrString="15" aListInteger="" aListFs="0">
         <aArrayString/>
         <aListString>testStr</aListString>
     </test:AllTypes>
-    <cas:Sofa xmi:id="29" sofaNum="1" sofaID="_InitialView"/>
-    <test:AllTypes xmi:id="36" sofa="29" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
-    <cas:BooleanArray xmi:id="165" elements="false"/>
-    <cas:ByteArray xmi:id="168" elements="0000"/>
-    <cas:ShortArray xmi:id="171" elements=""/>
-    <cas:StringArray xmi:id="174">
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView"/>
+    <test:AllTypes xmi:id="3" sofa="1" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
+    <cas:BooleanArray xmi:id="12" elements="false"/>
+    <cas:ByteArray xmi:id="13" elements="0000"/>
+    <cas:ShortArray xmi:id="14" elements=""/>
+    <cas:StringArray xmi:id="15">
         <elements/>
     </cas:StringArray>
-    <cas:View sofa="29" members="1"/>
+    <cas:View sofa="1" members="2"/>
 </xmi:XMI>

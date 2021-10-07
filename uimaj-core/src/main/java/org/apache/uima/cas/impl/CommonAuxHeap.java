@@ -24,7 +24,7 @@ package org.apache.uima.cas.impl;
  */
 abstract class CommonAuxHeap {
   
-  private static final boolean debugLogShrink = false;
+  private static final boolean DEBUG_LOG_SHRINK = false;
 //  static {
 //    debugLogShrink = System.getProperty("uima.debug.ihs") != null;
 //  }
@@ -92,7 +92,7 @@ abstract class CommonAuxHeap {
    */
   void reset(boolean doFullReset) {
     if (doFullReset) {
-      if (debugLogShrink) System.out.format("Debug shrink CommonAux full reset from %,d to %,d for %s%n",
+      if (DEBUG_LOG_SHRINK) System.out.format("Debug shrink CommonAux full reset from %,d to %,d for %s%n",
           getCapacity(), heapBaseSize, this.getClass().getSimpleName());
       this.initMemory();
     } else {
@@ -103,7 +103,7 @@ abstract class CommonAuxHeap {
       if (newSize == getCapacity()) { // means didn't shrink
         resetToZeros();
       } else {
-        if (debugLogShrink) System.out.format("Debug shrink CommonAux from %,d to %,d for %s%n",
+        if (DEBUG_LOG_SHRINK) System.out.format("Debug shrink CommonAux from %,d to %,d for %s%n",
             curCapacity, newSize, this.getClass().getSimpleName());
         initMemory(newSize);
       }

@@ -2,67 +2,21 @@
       Apache UIMA (Unstructured Information Management Architecture) 
       --------------------------------------------------------------
       
-This file applies to UIMA-SDK version 2.9.0 and subsequent versions.
-
+This file applies to UIMA-SDK version 3.0.0 and subsequent versions.
+Java 8 or later is required.
 
 Backwards Compatibility
 -----------------------
 
-New releases strive to maintain backwards compatibility; in general you should
-expect that upgrading will not break existing UIMA pipelines.  
+Version 3 is a major new release, and many APIs have been augmented.
+Existing version 2 UIMA Pipelines are expected to run with Version 3,
+after any non-built-in JCas classes have been migrated.  
 
-From time to time, non-backward compatible changes are made, such as increased
-checking for error situations.  This may cause existing pipelines to fail. In 
-most cases, there are JVM -D properties that can be used to disable these changes
-until the underlying issues are corrected or accommodated.
+The documentation contains a new book, "UIMA Version 3 User's Guide",
+which explains the new features, the migration process and tool,
+and more details about backwards compatibility.
 
-Out of the box, it will do additional checking and fixups for some hard-to-find
-user errors; see the first section above coping with backwards compatibility issues.
-  
-The JVM -D property names for these, and their meaning, are:
         
-    -Duima.allow_duplicate_add_to_indexes
- 
-      Adding the same exact FS instance to the indexes multiple times no longer
-      results in duplicate entries in the indexes.  You may restore the previous
-      behavior using this flag.    
-    
-    -Duima.disable_auto_protect_indexes
- 
-      UIMA now checks and automatically protects indexes if users (after adding
-      a feature structure to the indexes) updates a feature which is being used
-      as a key.  For production runs, after insuring there are no such updates
-      going on, or explicitly protecting those that are being done using the 
-      protectIndexes() method,  you can disable this protection and checking, 
-      which may make things run slightly faster.
-      
-    -Duima.report_fs_update_corrupts_index
- 
-      See https://issues.apache.org/jira/browse/UIMA-4135. 
-      Updating Features which are used in Set and Sorted indexes 
-      as "keys" may corrupt the indexes, if the Feature Structure (FS) has been 
-      added to the indexes. To update these, you must first completely remove
-      the FS from the indexes in all views, then do the updates, and then add 
-      it back. UIMA now checks for this (unless specifically disabled), 
-      and if this property is set, will log WARN messages for each occurrence 
-      unless the user wraps these updates inside explicit protectIndexes
-      blocks.
- 
-      To scan the logs for these reports, search for instances of lines having 
-      the string "While FS was in the index, the feature"
-
-    -Duima.disable_enhanced_check_wrong_add_to_index
- 
-      See https://issues.apache.org/jira/browse/UIMA-4099. 
-      Feature Structures which are subtypes of AnnotationBase may only be 
-      added to the View corresponding to their Sofa reference. From version 
-      2.7.0, there is additional checking of this which can be disabled 
-      if needed for backward compatibility.
-
-See the UIMA References http://uima.apache.org/d/uimaj-current/references.html#ugr.ref.config
-for a table of these and other settings.
-
-
 Building from the Source Distribution
 -------------------------------------
 
@@ -70,7 +24,6 @@ We use Maven 3.0 or later for building; download this if needed,
 and set the environment variable MAVEN_OPTS to -Xmx800m -XX:MaxPerSize=256m.
 
 Then do the build by going into the .../uimaj directory, and issuing the command
-
    mvn clean install
    
 This builds everything except the ...source-release.zip file. If you want that,
@@ -84,45 +37,47 @@ Look for the result here:
 For more details, please see http://uima.apache.org/building-uima.html   
 
 
+
 What's New 
 ----------
-Please refer to the RELEASE_NOTES.html 
-
-
+  Please refer to the RELEASE_NOTES.html 
+      
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java version 8 or later; it has been tested with OpenJDK 8.
+Apache UIMA v3.0.0 and later requires Java version 8; it has been tested with Java 11 and Java 8.
 
 Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later.
 
-The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (8+) 
+Running the migration tool on class files requires running with a Java JDK, not a Java JRE.
+
+The supported platforms are: Windows, Linux, and Mac OS X. Other platform 
 implementations should work, but have not been significantly tested.
 
-Many of the scripts in the /bin directory invoke Java. They use the value of the environment 
-variable, JAVA_HOME, to locate the Java to use; if it is not set, they invoke "java" expecting to
-find an appropriate Java in your PATH. 
+Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
+to locate the Java to use; if it is not set, they invoke "java" expecting to find an appropriate Java in your PATH. 
 
 
 Environment Variables
 ----------------------
 
-After you have unpacked the Apache UIMA distribution from the package of your choice (e.g. .zip or
-.gz), perform the steps below to set up UIMA so that it will function properly.
+After you have unpacked the Apache UIMA distribution from the package of your choice (e.g. .zip or .gz), 
+perform the steps below to set up UIMA so that it will function properly.
 
     * Set JAVA_HOME to the directory of your JRE installation you would like to use for UIMA.  
     * Set UIMA_HOME to the apache-uima directory of your unpacked Apache UIMA distribution
     * Append UIMA_HOME/bin to your PATH
+    
     * Please run the script UIMA_HOME/bin/adjustExamplePaths.bat (or .sh), to update 
       paths in the examples based on the actual UIMA_HOME directory path. 
       This script runs a Java program; 
       you must either have java in your PATH or set the environment variable JAVA_HOME to a 
       suitable JRE.
 
-NOTE: The Mac OS X operating system procedures for setting up global environment
-      variables are described here: see http://developer.apple.com/qa/qa2001/qa1067.html.
-
-
+    Note: The Mac OS X operating system procedures for setting up global environment
+    variables are described here: see http://developer.apple.com/qa/qa2001/qa1067.html.
+      
+      
 Verifying Your Installation
 ----------------------------
 
@@ -131,8 +86,7 @@ This should pop up a "Document Analyzer" window. Set the values displayed in thi
 
     * Input Directory: UIMA_HOME/examples/data
     * Output Directory: UIMA_HOME/examples/data/processed
-    * Location of Analysis Engine XML Descriptor: 
-      UIMA_HOME/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml
+    * Location of Analysis Engine XML Descriptor: UIMA_HOME/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml
 
 Replace UIMA_HOME above with the path of your Apache UIMA installation.
 
@@ -143,6 +97,6 @@ Double-click on one of the documents to display the analysis results for that do
 Getting Started
 ----------------
 
-For an introduction to Apache UIMA and how to use it, please read the documentation 
-located in the docs subdirectory.  A good place to start is the overview_and_setup 
-book's first chapter, which has a brief guide to the documentation.
+For existing Version 2 deployments that use non-built-in JCas classes, Version 3 requires migration 
+or regeneration of these classes.  For instructions on how to do this migration, please
+read the documentation for Version 3 located in the docs subdirectory.  

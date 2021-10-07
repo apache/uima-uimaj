@@ -20,6 +20,7 @@ package org.apache.uima.tools.viewer;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
+
 /**
  * Pluggable interface that supports Entity View mode in the CasAnnotationViewer. Users implement
  * this interface with logic that for their particular type system can determine which Entity an

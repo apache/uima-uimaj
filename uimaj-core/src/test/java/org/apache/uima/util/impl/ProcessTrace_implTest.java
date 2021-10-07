@@ -21,11 +21,11 @@ package org.apache.uima.util.impl;
 
 import java.util.List;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class ProcessTrace_implTest extends TestCase {

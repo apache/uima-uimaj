@@ -24,13 +24,13 @@ import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_imp
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class URISpecifier_implTest extends TestCase {
   URISpecifier_impl uriSpec;

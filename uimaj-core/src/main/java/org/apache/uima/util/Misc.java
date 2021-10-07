@@ -19,7 +19,7 @@
 
 package org.apache.uima.util;
 
-
+// not used in v3, kept for backwards compatibility
 public class Misc {
 
   /**

@@ -32,7 +32,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.jar.JarFile;
 import java.util.prefs.Preferences;
@@ -69,6 +68,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
+
 /**
  * This GUI is used to install a pear file locally in a directory chosen by the user and then run
  * the installed AE in CVD. <br>
@@ -78,6 +78,8 @@ import org.apache.uima.tools.util.gui.AboutDialog;
  * 
  */
 public class InstallPear extends JFrame {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -450696952085640703L;
 
   /**
@@ -85,8 +87,11 @@ public class InstallPear extends JFrame {
    * installation.
    */
   protected static class RunInstallation implements Runnable {
+    
+    /** The pear file. */
     private File pearFile;
 
+    /** The installation dir. */
     private File installationDir = null;
 
     /**
@@ -105,6 +110,7 @@ public class InstallPear extends JFrame {
     /**
      * Runs the PEAR installation process. Notifies waiting threads upon completion.
      */
+    @Override
     public void run() {
       installPear(pearFile, installationDir);
       synchronized (this) {
@@ -119,17 +125,22 @@ public class InstallPear extends JFrame {
    * '.pear' files.
    */
   protected static class PEARFilter extends FileFilter {
+    
+    /** The Constant TEAR_EXT. */
     static final String TEAR_EXT = "tear";
 
+    /** The Constant PEAR_EXT. */
     static final String PEAR_EXT = "pear";
 
     /**
      * Returns <code>true</code>, if the given input file is directory or has 'tear' or 'pear'
      * extension, <code>false</code> otherwise.
-     * 
+     *
+     * @param file the file
      * @return <code>true</code>, if the given input file is directory or has 'tear' or 'pear'
      *         extension, <code>false</code> otherwise.
      */
+    @Override
     public boolean accept(File file) {
       if (file.isDirectory())
         return true;
@@ -159,6 +170,7 @@ public class InstallPear extends JFrame {
      * 
      * @return The filter description.
      */
+    @Override
     public String getDescription() {
       return "PEAR files";
     }
@@ -166,60 +178,87 @@ public class InstallPear extends JFrame {
 
   // private JPanel aboutMenuItemPanel = null;
 
+  /** The pear file text field. */
   private JTextField pearFileTextField = null;
 
+  /** The browse button. */
   private JButton browseButton = null;
 
+  /** The install dir text field. */
   private static JTextField installDirTextField = null;
 
+  /** The browse dir button. */
   private JButton browseDirButton = null;
 
+  /** The install button. */
   private JButton installButton = null;
 
+  /** The menu bar. */
   private JMenuBar menuBar = null;
 
+  /** The file menu item. */
   private JMenuItem fileMenuItem = null;
 
+  /** The help menu item. */
   private JMenuItem helpMenuItem = null;
 
+  /** The about menu item. */
   private JMenuItem aboutMenuItem = null;
 
+  /** The file menu. */
   private JMenu fileMenu = null;
 
+  /** The help menu. */
   private JMenu helpMenu = null;
 
   // private JLabel bannerLabel = null;
 
+  /** The run button. */
   private static JButton runButton = null;
 
+  /** The help button. */
   private JButton helpButton = null;
 
+  /** The pear console. */
   private static JTextArea pearConsole = null;
 
+  /** The j scroll pane. */
   private static JScrollPane jScrollPane = null;
 
+  /** The local tear file. */
   private static File localTearFile = null;
 
+  /** The installation dir. */
   private static File installationDir = null;
 
+  /** The main component id. */
   private static String mainComponentId;
 
+  /** The insd object. */
   private static InstallationDescriptor insdObject;
 
+  /** The main component root path. */
   private static String mainComponentRootPath;
 
+  /** The help exists. */
   private static boolean helpExists = true;
 
+  /** The message. */
   private static String message = null;
 
+  /** The error flag. */
   private static boolean errorFlag = false;
 
+  /** The user prefs. */
   private static Preferences userPrefs;
 
+  /** The Constant LAST_FILE_NAME_CHOOSEN_KEY. */
   private static final String LAST_FILE_NAME_CHOOSEN_KEY = "LAST_FILE_NAME_CHOOSEN";
 
+  /** The Constant LAST_DIRECTORY_CHOOSEN_KEY. */
   private static final String LAST_DIRECTORY_CHOOSEN_KEY = "LAST_DIRECTORY_CHOOSEN";
 
+  /** The Constant SET_ENV_FILE. */
   private static final String SET_ENV_FILE = "metadata/setenv.txt";
 
   // protected static final String UIMA_HOME_ENV = "UIMA_HOME";
@@ -356,10 +395,12 @@ public class InstallPear extends JFrame {
             localPearFile, installationDir);
     // adding installation controller message listener
     installationController.addMsgListener(new MessageRouter.StdChannelListener() {
+      @Override
       public void errMsgPosted(String errMsg) {
         printInConsole(true, errMsg);
       }
 
+      @Override
       public void outMsgPosted(String outMsg) {
         printInConsole(false, outMsg);
       }
@@ -418,15 +459,13 @@ public class InstallPear extends JFrame {
 
   /**
    * This method runs the installed AE in CVD (Gladis).
-   * 
-   * @throws IOException
-   *           If any I/O exception occurred.
    */
   private void runCVD() {
 
     
     Runnable runCVD = new Runnable() {
 
+      @Override
       public void run() {
         try {
           // create PackageBrowser object
@@ -476,6 +515,7 @@ public class InstallPear extends JFrame {
       // hazel's change
       pearFileTextField.setLayout(new BorderLayout());
       pearFileTextField.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getSource() instanceof JTextField) {
             pearFileTextField = (JTextField) e.getSource();
@@ -492,10 +532,12 @@ public class InstallPear extends JFrame {
       });
 
       this.pearFileTextField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
         public void changedUpdate(DocumentEvent e) {
           // do nothing
         }
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
           InstallPear.runButton.setEnabled(false);
           String inputPear = InstallPear.this.pearFileTextField.getText();
@@ -504,6 +546,7 @@ public class InstallPear extends JFrame {
           }
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
           InstallPear.runButton.setEnabled(false);
           String inputPear = InstallPear.this.pearFileTextField.getText();
@@ -529,6 +572,7 @@ public class InstallPear extends JFrame {
       browseButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       browseButton.setMnemonic('b');
       browseButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           String pear = null;
           if ((e.getActionCommand().equals("Browse..."))) {
@@ -555,6 +599,7 @@ public class InstallPear extends JFrame {
       installDirTextField.isEditable();
       // handling text input
       installDirTextField.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getSource() instanceof JTextField) {
             runButton.setEnabled(false);
@@ -567,14 +612,17 @@ public class InstallPear extends JFrame {
       });
 
       installDirTextField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
         public void changedUpdate(DocumentEvent e) {
           // do nothing
         }
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
           runButton.setEnabled(false);
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
           runButton.setEnabled(false);
         }
@@ -599,6 +647,7 @@ public class InstallPear extends JFrame {
       browseDirButton.setMnemonic('d');
       browseDirButton.setEnabled(true);
       browseDirButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           String dir = null;
           File installationDir = null;
@@ -634,6 +683,7 @@ public class InstallPear extends JFrame {
       installButton.setRolloverEnabled(true);
       // Handling mouse click event
       installButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getActionCommand().equals("Install")) {
             localTearFile = new File(pearFileTextField.getText());
@@ -675,6 +725,7 @@ public class InstallPear extends JFrame {
       runButton.setMnemonic('r');
       runButton.setRolloverEnabled(true);
       runButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getActionCommand().equals("Run your AE in the CAS Visual Debugger")) {
             installButton.setEnabled(false);
@@ -752,6 +803,7 @@ public class InstallPear extends JFrame {
       helpButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       helpButton.setMnemonic('h');
       helpButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getActionCommand() == "Help") {
             try {
@@ -811,6 +863,7 @@ public class InstallPear extends JFrame {
     // System.exit(0);
     // }
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         createAndShowGUI();
       }
@@ -841,6 +894,7 @@ public class InstallPear extends JFrame {
     fileMenuItem.setMnemonic('e');
     menuBar.add(fileMenu);
     fileMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         System.exit(0);
       }
@@ -856,6 +910,7 @@ public class InstallPear extends JFrame {
     helpMenuItem.setMnemonic('h');
     menuBar.add(helpMenu);
     helpMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "Help") {
           try {
@@ -884,6 +939,7 @@ public class InstallPear extends JFrame {
     });
 
     aboutMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "About") {
           AboutDialog dialog = new AboutDialog(InstallPear.this, "About PEAR Installer");

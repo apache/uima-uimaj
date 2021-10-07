@@ -30,18 +30,23 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
+
 /**
  * Implements object pooling mechanism to limit number of CAS instances. Cas'es are checked out,
  * used and checked back in when done. 
  */
 public class CPECasPool {
 
+  /** The m all instances. */
   private Vector mAllInstances = new Vector();
 
+  /** The m free instances. */
   private Vector mFreeInstances = new Vector();
 
+  /** The checked out instances. */
   private LinkedList checkedOutInstances = new LinkedList();
 
+  /** The m num instances. */
   private final int mNumInstances;
 
   /**
@@ -60,13 +65,13 @@ public class CPECasPool {
   }
 
   /**
-   * Initialize the pool
-   * 
+   * Initialize the pool.
+   *
    * @param aNumInstances -
    *          max size of the pool
    * @param aCasManager -
    *          CAS Manager to use to create the CASes
-   * @param aPerformanceTuningSettings -
+   * @param aPerformanceTuningSettings the a performance tuning settings
    * @throws ResourceInitializationException -
    */
   public CPECasPool(int aNumInstances, CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
@@ -76,10 +81,10 @@ public class CPECasPool {
 
   /**
    * Fills the pool with initialized instances of CAS.
-   * 
+   *
    * @param aCasManager -
    *          definition (type system, indexes, etc.) of CASes to create
-   * @param aPerformanceTuningSettings -
+   * @param aPerformanceTuningSettings the a performance tuning settings
    * @throws ResourceInitializationException -
    */
   protected void fillPool(CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
@@ -198,8 +203,8 @@ public class CPECasPool {
   }
 
   /**
-   * Returns number of CAS'es that have been checked out from pool
-   * 
+   * Returns number of CAS'es that have been checked out from pool.
+   *
    * @return - number of CAS'es being processed
    */
   public synchronized int getCheckedOutCasCount() {

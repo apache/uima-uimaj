@@ -21,6 +21,14 @@
 <html>
 <head><title>org.apache.uima.tools.jcasgen</title></head>
 <body>
-Classes for the JCasGen tool
+Describes the format of the generated JCas cover classes for UIMA Version 3.
+
+<p>In UIMA version 3</p>
+<ul>
+<li>There are no xxx_Type classes.</li>
+<li>As in v2, multiple type systems may be sequentially loaded into a (reset) CAS, under one class loader.</li>
+<li>Change: one consistent JCas gen'd set of classes is loaded per class loader.
+</li>
+</ul>
 </body>
 </html>

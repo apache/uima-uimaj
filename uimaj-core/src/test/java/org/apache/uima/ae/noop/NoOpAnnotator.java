@@ -52,24 +52,23 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
     }
 
     if (getContext().getConfigParameterValue("ErrorFrequency") != null) {
-      errorFrequency = ((Integer) getContext().getConfigParameterValue("ErrorFrequency"))
-              .intValue();
+      errorFrequency = (Integer) getContext().getConfigParameterValue("ErrorFrequency");
       countDown = errorFrequency;
     }
 
     if (getContext().getConfigParameterValue("CpCDelay") != null) {
-      cpcDelay = ((Integer) getContext().getConfigParameterValue("CpCDelay")).intValue();
+      cpcDelay = (Integer) getContext().getConfigParameterValue("CpCDelay");
       System.out.println("NoOpAnnotator.initialize() Initializing With CpC Delay of " + cpcDelay
               + " millis");
     }
     if (getContext().getConfigParameterValue("ProcessDelay") != null) {
-      processDelay = ((Integer) getContext().getConfigParameterValue("ProcessDelay")).intValue();
+      processDelay = (Integer) getContext().getConfigParameterValue("ProcessDelay");
       System.out.println("NoOpAnnotator.initialize() Initializing With Process Delay of "
               + processDelay + " millis");
 
     }
     if (getContext().getConfigParameterValue("FinalCount") != null) {
-      finalCount = ((Integer) getContext().getConfigParameterValue("FinalCount")).intValue();
+      finalCount = (Integer) getContext().getConfigParameterValue("FinalCount");
     }
 
     // write log messages

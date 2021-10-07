@@ -1,0 +1,180 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.migration.aids]]
+= Migration aids
+
+To aid migration, some features of UIMA V3 which might cause migration difficulties  can be disabled.
+Users may initially want to disable these, and get their pipelines working, and then over time, re-enable these while fixing any issues that may come up, one feature at a time. 
+
+Global JVM properties for UIMA V3 that control these are described in the table below. 
+
+[[_uv3.migration.aids.property_table]]
+== Properties Table
+
+This table describes the various JVM defined properties; specify these on the Java command line using ``-Dxxxxxx``, where the `xxxxxx` is one of the properties starting with `uima.` from the table below.
+
+[cols="1,1", frame="all"]
+|===
+
+|**Title**
+|**Property Name & Description**
+
+|
+
+Use UIMA V2 format for toString() for Feature Structures
+|
+
+`uima.v2_pretty_print_format`
+
+The native v3 format for pretty printing feature structures includes an id number with each FS, and some other minor improvements.
+If you have code which depends on the exact format that v2 UIMA produced for the toString() operation on Feature Structures, then include this flag to revert to that format.
+
+|
+
+Disable Type System consolidation
+|
+
+`uima.disable_typesystem_consolidation`
+
+Default: equal Type Systems are consolidated.
+
+When type systems are committed, the resulting Type System (Java object)  is considered read-only, and is compared to already existing Type Systems.
+Existing type systems, if found, are reused.
+Besides saving storage, this can sometimes improve locality of reference, and therefore, performance.
+Setting this property disables this consolidation.
+
+| 
+
+Enable strict type source checking
+|
+
+`uima.enable_strict_type_source_check`
+
+Default: checking whether the type actually belongs to the index/CAS is performed but only logs a warning, no exception.
+
+When creating a new feature structure or when adding or removing a feature structure to/from an index, it is checked that the
+type system the type belongs to is exactly the same instance as the type system of the CAS it is created in or the index it
+is added to. Due to the type system consolidation feature, this should always be the case. Setting this property causes an
+exception to be thrown - otherwise a warning is logged.
+
+|
+
+Disable subtype of FSArray creation
+|
+
+`uima.disable_subtype_fsarray_creation`
+
+Default: Subtypes of FSArrays can be created and are created when deserializing CASes.
+
+UIMA has some limited support for typed arrays.
+These are declared in type system descriptors by including an  elementType specification for a feature whose range is FSArray.
+See &uima_docs_ref;
+// <olink targetdoc="" targetptr="ugr.ref.xml.component_descriptor.type_system.features"/>
+$$.$$ 
+
+The XCAS and the Xmi serialization forms serialize these as FSArray, with no element type specification included in the serialized form.
+The deserialization code, when deserializing these,  looks at the type system's feature declaration to see if it has an elementType, and if so,  changes the type of the Feature Structure to that type. 
+
+UIMA Version 2's CAS API did not have the ability to create typed FSArrays.
+This was added in V3, but will be disabled if this flag is set.
+
+Setting this flag will cause all FSArray creations to be untyped. 
+
+|
+
+Default CASs to support V2 ID references
+|
+
+`uima.default_v2_id_references`
+
+In version 3, Feature Structures are managed somewhat differently from V2.
+
+* Feature Structure creation doesn't remember a map from the id to the FS, so the LowLevelCas method getFSForRef(int) isn't supported. (Exception: Feature Structures created with the low level API calls are findable using this).
+* Creation of Feature Structures assign "ids" as incrementing integers. In V2, the  "id" is the address of the Feature Structure in the v2 Heap; these ids increment by  the size of the Feature Structure on the heap.
+* Serialization only serializes "reachable" Feature Structures.
+
+When this mode is set, the behavior is modified to emulate V2's.
+
+* Feature Structures are added to an id-to-featureStructure map.
+* IDs are assign incrementing by the size of what the Feature Structure would have been in V2. 
+* Serialization includes unreachable Feature Structures (except for Xmi and XCAS - because this is how V2 operates))
+
+This property sets the default value, per CAS, for that CAS's `ll_enableV2IdRefs` mode to true.
+This mode is is also programmatically settable, which overrides this default.
+
+For more details on how this setting operates and interacts with the associated APIs, <<_uv3.backwards_compatibility.preserve_v2_ids>>
+|===
+
+
+== Trading off runtime checks for speed
+
+[cols="1,1", frame="all"]
+|===
+
+|**Title**
+|**Property Name & Description**
+
+|
+
+Disabling runtime feature validation
+|
+
+`uima.disable_runtime_feature_validation`
+
+Once code is running correctly, you may remove this check for performance reasons by setting this property.
+
+|
+
+Disabling runtime feature _value_ validation
+|
+
+`uima.disable_runtime_feature_value_validation`
+
+Default: features being set into FS features which are FSs are checked for proper type subsumption.
+
+Once code is running correctly, you may remove this check for performance reasons by setting this property.
+|===
+
+
+== Reporting
+
+[cols="1,1", frame="all"]
+|===
+
+|**Title**
+|**Property Name & Description**
+
+|
+
+Report feature structure pinning
+|
+
+`uima.report.fs.pinning="nnn"`
+
+Default: not enabled; nnn is the maximum number of reports to produce.
+If nnn is  omitted, it defaults to 10.
+
+When enabled, this flag will cause reports to System.out with call traces for the first nnn instances of actions which lead to pinning Feature Structures in memory.
+
+Typically, this should not happen, and no-longer-reachable Feature Structures are  garbage collected.
+
+But some operations (such as using the CAS low level APIs, which return integer handles representing Feature Structures) pin the Feature Structures, in case  code in the future uses those integer handles to access the Feature Structure.
+
+It is recommended that code be improved over time to use JCas access methods, instead of low-level CAS APIs, to avoid pinning unreachable Feature Structures.
+This report enables finding those parts of the code that are pinning Feature Structures.
+|===

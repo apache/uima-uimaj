@@ -89,7 +89,7 @@ under the License.
       often domain specific. 
       Many different component analytics may solve different parts of the overall analysis task. 
       These component analytics must interoperate and must be easily combined to facilitate 
-      the developed of UIM applications.</para>
+      the development of UIM applications.</para>
     
     <para>The result of analysis are used to populate structured forms so that conventional 
       data processing and search technologies 
@@ -743,15 +743,6 @@ under the License.
         relational database or serialize and store analysis results to disk for subsequent
         and further analysis. </para>
       
-      <para>A Semantic Search engine that works with UIMA is available from <ulink
-          url="http://www.alphaworks.ibm.com/tech/uima">IBM&apos;s alphaWorks
-        site</ulink> which will allow the developer to experiment with indexing analysis
-        results and querying for documents based on all the annotations in the CAS. See the
-        section on integrating text analysis and search in <olink
-          targetdoc="&uima_docs_tutorial_guides;"/> <olink
-          targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.application"/>.</para>
-      
       <para>A UIMA <emphasis role="bold">Collection Processing Engine</emphasis> (CPE)
         is an aggregate component that specifies a <quote>source to sink</quote> flow from a
         Collection Reader though a set of analysis engines and then to a set of CAS Consumers.
@@ -851,15 +842,14 @@ under the License.
         the CASs by the name-entity detector. It then feeds these into the semantic search
         engine&apos;s index.</para>
       
-      <para>The semantic search engine that comes with the UIMA SDK, for example, can exploit
+      <para>A semantic search engine can exploit
         this addition information from the CAS to support more powerful queries. For
         example, imagine a user is looking for documents that mention an organization with
         <quote>center</quote> it is name but is not sure of the full or precise name of the
         organization. A key-word search on <quote>center</quote> would likely produce way
         too many documents because <quote>center</quote> is a common and ambiguous term.
-        The semantic search engine that is available from <ulink
-          url="http://www.alphaworks.ibm.com/tech/uima"/> supports a query language
-        called <emphasis role="bold">XML Fragments</emphasis>. This query language is
+        A semantic search engine might support a query language called
+        <emphasis role="bold">XML Fragments</emphasis>. This query language is
         designed to exploit the CAS annotations entered in its index. The XML Fragment query,
         for example,
         
@@ -954,7 +944,7 @@ under the License.
       of the same audio segment). A Sofa may
       be associated with CAS Views. A particular CAS will have one or more views, each view
       corresponding to a particular subject of analysis, together with a set of the defined
-      indexes that index the metadata created in that view.</para>
+      indexes that index the metadata (that is, Feature Structures) created in that view.</para>
     
     <para>Analysis results can be indexed in, or <quote>belong</quote> to, a specific view.
       UIMA components may be written in <quote>Multi-View</quote> mode - able to create and

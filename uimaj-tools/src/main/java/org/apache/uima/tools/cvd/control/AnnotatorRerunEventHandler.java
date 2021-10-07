@@ -25,17 +25,31 @@ import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class AnnotatorRerunEventHandler.
+ */
 public class AnnotatorRerunEventHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new annotator rerun event handler.
+   *
+   * @param frame the frame
+   */
   public AnnotatorRerunEventHandler(MainFrame frame) {
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     this.main.runAE(true);
   }

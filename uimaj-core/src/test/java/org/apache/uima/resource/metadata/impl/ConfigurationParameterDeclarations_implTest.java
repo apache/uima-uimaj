@@ -25,12 +25,12 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.w3c.dom.Document;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class ConfigurationParameterDeclarations_implTest extends TestCase {

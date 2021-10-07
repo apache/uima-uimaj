@@ -63,19 +63,13 @@ public class FileCompare {
    * @throws IOException -
    */
   public static boolean compare(String filename1, String filename2) throws IOException {
-    InputStream file1 = null;
-    InputStream file2 = null;
 
-    try {
+    try (InputStream file1 = new FileInputStream(filename1);
+         InputStream file2 = new FileInputStream(filename2)) {
       // create file input stream of the two bytes
-      file1 = new FileInputStream(filename1);
-      file2 = new FileInputStream(filename2);
 
       return compare(file1, file2);
 
-    } finally {
-      file1.close();
-      file2.close();
     }
   }
 
@@ -91,19 +85,11 @@ public class FileCompare {
    * @throws IOException -
    */
   public static boolean compare(File file1, File file2) throws IOException {
-    InputStream inputStream1 = null;
-    InputStream inputStream2 = null;
 
-    try {
+    try (InputStream inputStream1 = new FileInputStream(file1);
+         InputStream inputStream2 = new FileInputStream(file2)) {
       // create file input stream of the two bytes
-      inputStream1 = new FileInputStream(file1);
-      inputStream2 = new FileInputStream(file2);
-
       return compare(inputStream1, inputStream2);
-
-    } finally {
-      inputStream1.close();
-      inputStream2.close();
     }
   }
 
@@ -121,16 +107,9 @@ public class FileCompare {
    * @throws IOException -
    */
   public static boolean compare(String filename1, InputStream in) throws IOException {
-    InputStream file1 = null;
-
-    try {
+    try (InputStream file1 = new FileInputStream(filename1)) {
       // create file input stream of the two bytes
-      file1 = new FileInputStream(filename1);
-
       return compare(file1, in);
-
-    } finally {
-      file1.close();
     }
   }
 

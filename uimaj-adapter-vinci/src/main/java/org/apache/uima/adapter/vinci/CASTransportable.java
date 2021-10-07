@@ -77,11 +77,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /**
    * This constructor is used on the service side - a CAS Pool reference is provided. We don't check
    * a CAS out of the pool until we get a request.
-   * 
-   * @param casPool -
-   * @param outOfTypeSystemData -
-   * @param uimaContext -
-   * @param includeDocText -
+   *
+   * @param casPool the cas pool
+   * @param outOfTypeSystemData the out of type system data
+   * @param uimaContext the uima context
+   * @param includeDocText the include doc text
    */
   public CASTransportable(CasPool casPool, OutOfTypeSystemData outOfTypeSystemData,
           UimaContext uimaContext, boolean includeDocText) {
@@ -97,11 +97,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /**
    * This constructor is used on the client side, where we have a dedicated CAS instance for the
    * request.
-   * 
-   * @param cas -
-   * @param outOfTypeSystemData -
-   * @param uimaContext -
-   * @param includeDocText -
+   *
+   * @param cas the cas
+   * @param outOfTypeSystemData the out of type system data
+   * @param uimaContext the uima context
+   * @param includeDocText the include doc text
    */
   public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData,
           UimaContext uimaContext, boolean includeDocText) {
@@ -114,22 +114,47 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     this.includeDocText = includeDocText;
   }
 
+  /**
+   * Gets the extra data frame.
+   *
+   * @return the extra data frame
+   */
   public VinciFrame getExtraDataFrame() {
     return extraDataFrame;
   }
 
+  /**
+   * Gets the out of type system data.
+   *
+   * @return the out of type system data
+   */
   public OutOfTypeSystemData getOutOfTypeSystemData() {
     return this.outOfTypeSystemData;
   }
 
+  /**
+   * Gets the command.
+   *
+   * @return the command
+   */
   public String getCommand() {
     return command;
   }
 
+  /**
+   * Sets the command.
+   *
+   * @param command the new command
+   */
   public void setCommand(String command) {
     this.command = command;
   }
 
+  /**
+   * Gets the cas.
+   *
+   * @return the cas
+   */
   public CAS getCas() {
     return myCas;
   }
@@ -139,17 +164,28 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * XCASSerializer.
    */
   class XTalkSerializer extends DefaultHandler {
+    
+    /** The os. */
     OutputStream os;
 
     XCASSerializer serializer;
 
     boolean started;
 
+    /**
+     * Instantiates a new x talk serializer.
+     *
+     * @param os the os
+     * @param s the s
+     */
     XTalkSerializer(OutputStream os, XCASSerializer s) {
       this.os = os;
       this.serializer = s;
     }
 
+    /* (non-Javadoc)
+     * @see org.xml.sax.helpers.DefaultHandler#startDocument()
+     */
     public void startDocument() throws SAXException {
       try {
         os.write(XTalkTransporter.HEADER);
@@ -189,6 +225,12 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
     }
 
+    /**
+     * Attributes to X talk.
+     *
+     * @param attributes the attributes
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     void attributesToXTalk(org.xml.sax.Attributes attributes) throws IOException {
       int size = attributes.getLength();
       XTalkTransporter.writeInt(size, os);
@@ -199,11 +241,17 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+     */
     public void endElement(String uri, String name, String qName) throws SAXException {
       // Debug only
       // Debug.p("Ending element: " + qName);
     }
 
+    /* (non-Javadoc)
+     * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+     */
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
             throws SAXException {
       try {
@@ -226,6 +274,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+     */
     public void characters(char[] ch, int start, int length) throws SAXException {
       // Debug.p("Chars: " + new String(ch, start, length));
       try {
@@ -237,6 +288,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.vinci.transport.Transportable#fromStream(java.io.InputStream)
+   */
   public KeyValuePair fromStream(InputStream is) throws IOException {
     // Debug.p("CASTransportable.fromStream");
     boolean done = false;
@@ -266,6 +320,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /**
    * Serialize the CAS to the stream in XTalk format. After serialization is complete the cas is
    * returned to the pool (if it was allocated from a pool.)
+   *
+   * @param os the os
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public void toStream(OutputStream os) throws IOException {
     try {
@@ -306,6 +363,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#finalize()
+   */
   protected void finalize() {
     // Though unlikely, there could be unusual cases where
     // toStream is not ever invoked, so in these cases this
@@ -317,6 +377,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+   */
   public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
           throws SAXException {
     // Debug.p("Start element: " + qName);
@@ -354,6 +417,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+   */
   public void endElement(String uri, String name, String qName) throws SAXException {
     // Debug.p("End element: " + qName);
     if (Constants.KEYS.equals(qName)) {
@@ -368,6 +434,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+   */
   public void characters(char[] ch, int start, int length) throws SAXException {
     // Debug.p("characters: " + new String(ch, start, length) + " : " + incomingCommand);
     if (ready > 0) {

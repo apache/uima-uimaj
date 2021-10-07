@@ -46,6 +46,9 @@ public class IntSet implements PositiveIntSet {
    */
   public IntSet(int capacity) {
     this.iVec = new IntVector(capacity);
+    if (IS_TRACE_MODE_SWITCH) {
+      System.out.println("TRACE_MODE new IntSet with capacity: " + capacity);
+    }
   }
 
   /**
@@ -189,12 +192,9 @@ public class IntSet implements PositiveIntSet {
     public final boolean hasNext() {
       return (pos >= 0 && pos < size());
     }
-
+   
     @Override
-    public final int next() {
-      if (!hasNext()) {
-        throw new NoSuchElementException();
-      }
+    public final int nextNvc() {
       return iVec.get(pos++);
     }
 
@@ -206,16 +206,10 @@ public class IntSet implements PositiveIntSet {
       final int posm1 = pos - 1;
       return (posm1 >= 0 && posm1 < size());
     }
-
-    /**
-     * @see org.apache.uima.internal.util.IntListIterator#previous()
-     */
+    
     @Override
-    public int previous() {
-      if (!hasPrevious()) {
-        throw new NoSuchElementException();
-      }
-      return iVec.get(pos--);      
+    public int previousNvc() {
+      return iVec.get(--pos);
     }
 
     /**

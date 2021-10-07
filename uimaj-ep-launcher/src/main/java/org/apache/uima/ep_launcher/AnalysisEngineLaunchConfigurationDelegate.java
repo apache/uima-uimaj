@@ -147,7 +147,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     
     // The class path already contains the jars which are specified in the Classpath tab
     
-    List<String> extendedClasspath = new ArrayList<String>();
+    List<String> extendedClasspath = new ArrayList<>();
     Collections.addAll(extendedClasspath, super.getClasspath(configuration));
     
     // Normal mode, add the launcher plugin and uima runtime jar to the classpath

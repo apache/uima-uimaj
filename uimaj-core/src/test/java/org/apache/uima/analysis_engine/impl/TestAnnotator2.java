@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,6 @@ import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UimaContextHolderTest;
 import org.apache.uima.util.XMLInputSource;
@@ -79,6 +79,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
       // Test getting a (0-length) array of strings
+      String expected = "Context Holder Test";
       String[] actuals = null;
       try {
         actuals = UimaContextHolder.getContext().getSharedSettingArray("test.externalFloatArray");
@@ -88,7 +89,17 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       Assert.assertEquals(0, actuals.length);
       
       // Test assigning an array to a string and vice-versa
+      // prefix-suffix     Prefix-${suffix}
+      // suffix = should be ignored
       String actual = null;
+      try {
+        actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
+      } catch (ResourceConfigurationException e) {
+        Assert.fail(e.getMessage());
+      }
+      Assert.assertEquals(expected, actual);
+      
+      // Test assigning an array to a string and vice-versa
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("test.externalFloatArray");
         Assert.fail("\"bad\" should create an error");
@@ -112,7 +123,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
                 "loop3 = three ${loop1} \n" ;
       InputStream is;
       try {
-        is = new ByteArrayInputStream(lines.getBytes("UTF-8"));
+        is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
         testSettings.load(is);
         is.close();
         String val = testSettings.lookUp("foo");
@@ -134,7 +145,6 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       }
       
       // Test POFO access via UimaContextHolder
-      String expected = "Context Holder Test";
       long threadId = Thread.currentThread().getId();
       UimaContextHolderTest testPojoAccess = new UimaContextHolderTest();
       try {
@@ -186,7 +196,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         //XMLInputSource in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
         XMLInputSource in = new XMLInputSource(new File(resDir, "AnnotatorWithExternalOverrides.xml"));
         AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-        Map<String, Object> additionalParams = new HashMap<String, Object>();
+        Map<String, Object> additionalParams = new HashMap<>();
         Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
         FileInputStream fis = new FileInputStream(new File(resDir, "testExternalOverride2.settings"));
         extSettings.load(fis);

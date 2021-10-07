@@ -28,6 +28,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.vinci.transport.document.AFrame;
 
+// TODO: Auto-generated Javadoc
 /**
  * A SAX content handler that builds a VinciFrame corresponding to the SAX events received.
  * 
@@ -35,12 +36,16 @@ import org.apache.vinci.transport.document.AFrame;
  */
 public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandler {
 
+  /** The m open frames. */
   private Stack mOpenFrames;
 
+  /** The m current frame name. */
   private String mCurrentFrameName;
 
+  /** The m current frame attrs. */
   private Attributes mCurrentFrameAttrs;
 
+  /** The m char content buffer. */
   private StringBuffer mCharContentBuffer;
 
   /**
@@ -56,6 +61,9 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   }
 
   /**
+   * Start document.
+   *
+   * @throws SAXException the SAX exception
    * @see org.xml.sax.ContentHandler#startDocument()
    */
   public void startDocument() throws SAXException {
@@ -66,17 +74,14 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
 
   /**
    * Called for each start tag encountered.
-   * 
-   * @param namespaceURI
-   *          Required if the namespaces property is true.
-   * @param attributes
-   *          The specified or defaulted attributes.
-   * @param localName
-   *          The local name (without prefix), or the empty string if Namespace processing is not
+   *
+   * @param namespaceURI          Required if the namespaces property is true.
+   * @param localName          The local name (without prefix), or the empty string if Namespace processing is not
    *          being performed.
-   * @param qualifiedName
-   *          The qualified name (with prefix), or the empty string if qualified names are not
+   * @param qualifiedName          The qualified name (with prefix), or the empty string if qualified names are not
    *          available.
+   * @param attributes          The specified or defaulted attributes.
+   * @throws SAXException the SAX exception
    */
   public void startElement(String namespaceURI, String localName, String qualifiedName,
           org.xml.sax.Attributes attributes) throws SAXException {
@@ -117,6 +122,11 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   }
 
   /**
+   * Characters.
+   *
+   * @param ch the ch
+   * @param start the start
+   * @param length the length
    * @see org.xml.sax.ContentHandler#characters(char[],int,int)
    */
   public void characters(char[] ch, int start, int length) {
@@ -124,6 +134,11 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   }
 
   /**
+   * End element.
+   *
+   * @param namespaceURI the namespace URI
+   * @param localName the local name
+   * @param qualifiedName the qualified name
    * @see org.xml.sax.ContentHandler#endElement(String,String,String)
    */
   public void endElement(String namespaceURI, String localName, String qualifiedName) {

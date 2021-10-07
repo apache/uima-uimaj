@@ -20,12 +20,12 @@ package org.apache.uima.impl;
 
 import java.util.Collections;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.impl.CollectionReaderDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
+
+import junit.framework.TestCase;
 
 
 public class CollectionReaderFactory_implTest extends TestCase {

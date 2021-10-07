@@ -41,22 +41,18 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     // get document text
     String docText = aJCas.getDocumentText();
     // search for Yorktown room numbers
-    Matcher matcher = mYorktownPattern.matcher(docText);
-    while (matcher.find()) {
+    Matcher m = mYorktownPattern.matcher(docText);
+    while (m.find()) {
       // found one - create annotation
-      RoomNumber annotation = new RoomNumber(aJCas);
-      annotation.setBegin(matcher.start());
-      annotation.setEnd(matcher.end());
+      RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
       annotation.setBuilding("Yorktown");
       annotation.addToIndexes();
     }
     // search for Hawthorne room numbers
-    matcher = mHawthornePattern.matcher(docText);
-    while (matcher.find()) {
+    m = mHawthornePattern.matcher(docText);
+    while (m.find()) {
       // found one - create annotation
-      RoomNumber annotation = new RoomNumber(aJCas);
-      annotation.setBegin(matcher.start());
-      annotation.setEnd(matcher.end());
+      RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
       annotation.setBuilding("Hawthorne");
       annotation.addToIndexes();
     }

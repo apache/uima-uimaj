@@ -49,9 +49,7 @@ public class SystemEnvReader {
       // our last hope, we assume Unix
       p = r.exec("env");
     }
-    BufferedReader br = null;
-    try {
-      br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
       String line;
       while ((line = br.readLine()) != null) {
         int idx = line.indexOf('=');
@@ -61,15 +59,8 @@ public class SystemEnvReader {
         String value = (idx < line.length() - 1) ? line.substring(idx + 1) : "";
         envVars.setProperty(key, value);
       }
-    } finally {
-      if (br != null) {
-        try {
-          br.close();
-        } catch (Exception e) {
-          // do nothing
-        }
-      }
     }
+    // do nothing
     return envVars;
   }
 

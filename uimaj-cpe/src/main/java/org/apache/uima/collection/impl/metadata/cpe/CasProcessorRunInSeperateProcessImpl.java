@@ -25,13 +25,22 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
+
+/**
+ * The Class CasProcessorRunInSeperateProcessImpl.
+ */
 public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl implements
         CasProcessorRunInSeperateProcess {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1074137401279020375L;
 
+  /** The exec. */
   private CasProcessorExecutable exec;
 
+  /**
+   * Instantiates a new cas processor run in seperate process impl.
+   */
   public CasProcessorRunInSeperateProcessImpl() {
   }
 
@@ -40,6 +49,7 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorRunInSeperateProcess#setExecutable(org.apache.uima.collection.metadata.CasProcessorExecutable)
    */
+  @Override
   public void setExecutable(CasProcessorExecutable aExec) {
     exec = aExec;
   }
@@ -49,18 +59,26 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorRunInSeperateProcess#getExecutable()
    */
+  @Override
   public CasProcessorExecutable getExecutable() {
     return exec;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("runInSeparateProcess",
           new PropertyXmlInfo[] { new PropertyXmlInfo("exec", null), });
 
   /**
+   * Gets the exec.
+   *
    * @return the executable
    */
   public CasProcessorExecutable getExec() {
@@ -68,7 +86,9 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
   }
 
   /**
-   * @param executable -
+   * Sets the exec.
+   *
+   * @param executable the new exec
    */
   public void setExec(CasProcessorExecutable executable) {
     exec = executable;

@@ -50,6 +50,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
 
   static final long serialVersionUID = 3476535733588304983L;
 
+  static final NameValuePair[] EMPTY_NAME_VALUE_PAIR_ARRAY = new NameValuePair[0];
+  
   private static final Method methodGetSettingsForGroups;
   static {
     try {
@@ -61,13 +63,13 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * Settings for parameters that are not in any group.
    */
-  private NameValuePair[] mParameterSettings = new NameValuePair[0];
+  private NameValuePair[] mParameterSettings = EMPTY_NAME_VALUE_PAIR_ARRAY;
 
   /**
    * Settings for parameters in groups. This HashMap has <code>String</code> keys (the group name)
    * and <code>NameValuePair[]</code> values (the parameter names and their values).
    */
-  private Map<String, NameValuePair[]> mSettingsForGroups = new HashMap<String, NameValuePair[]>();
+  private Map<String, NameValuePair[]> mSettingsForGroups = new HashMap<>();
 
   /**
    * @see ConfigurationParameterSettings#getParameterSettings()
@@ -260,7 +262,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
-    List<XMLizable> nvps = new ArrayList<XMLizable>();
+    List<XMLizable> nvps = new ArrayList<>();
     // get all child nodes
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
@@ -273,7 +275,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
         } else if ("settingsForGroup".equals(elem.getTagName())) {
           String key = elem.getAttribute("name");
 
-          List<XMLizable> vals = new ArrayList<XMLizable>();
+          List<XMLizable> vals = new ArrayList<>();
           NodeList arrayNodes = elem.getChildNodes();
           for (int j = 0; j < arrayNodes.getLength(); j++) {
             Node curArrayNode = arrayNodes.item(j);

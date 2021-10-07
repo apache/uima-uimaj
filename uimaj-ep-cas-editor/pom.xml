@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -32,6 +32,27 @@
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>Allows editing the contents of a saved CAS</description>
   <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+    even though the <scm> element that follows is exactly the
+    same as those in super poms, it cannot be inherited because
+    there is some special code that computes the connection elements
+    from the chain of parent poms, if this is omitted.
+
+    Keeping this a bit factored allows cutting/pasting the <scm>
+    element, and just changing the following two properties -->
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
@@ -54,6 +75,16 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -67,7 +98,6 @@
           <artifactId>uimaj-cpe</artifactId>
         </exclusion>
       </exclusions>
-
     </dependency>
 
     <!-- Eclipse dependencies -->
@@ -77,36 +107,30 @@
       <version>[3.12.0,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.core.filesystem</artifactId>
       <version>[1.6.1,2.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.core.resources</artifactId>
       <version>[3.11.1,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.ui.views</artifactId>
       <version>[3.9.0,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
       <version>[3.10.0,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jface.text</artifactId>
@@ -125,7 +149,6 @@
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -177,7 +200,7 @@
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Export-Package>
                   org.apache.uima.caseditor.*
-                      </Export-Package>
+                </Export-Package>
                 <Require-Bundle>
                   org.eclipse.jface.text,
                   org.eclipse.text,
@@ -200,7 +223,7 @@
                   !org.eclipse.ui.actions,
                   !org.eclipse.ui.dialogs,
                   !org.eclipse.ui.model,
-                  !org.eclipse.ui.part, 
+                  !org.eclipse.ui.part,
                   !org.eclipse.core.runtime,
                   !org.osgi.framework,
                   *
@@ -209,8 +232,7 @@
             </configuration>
           </execution>
         </executions>
-			</plugin>
-            
-		</plugins>
-	</build>
+      </plugin>
+    </plugins>
+  </build>
 </project>

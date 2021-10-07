@@ -1,0 +1,196 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.custom_java_objects]]
+= CAS-transported custom Java objects
+
+One of the goals of v3 is to support more of the Java collection framework within the CAS, to enable users to conveniently build more complex models that could be transported by the CAS.
+For example, a user might want to store a Java "Set" object, representing a set of Feature Structures.
+Or a user might want to use an adjustable array, like Java's ArrayList. 
+
+With the current version 2 implementation of JCas, users already may add arbitrary Java objects to their JCas class definitions as fields, but these do not get transported with the CAS (for instance, during  serialization).  Furthermore, in version 2, the actual JCas instance you get when accessing a Feature Structure in some edge cases may be a fresh instance, losing any previously computed value held as a Java field.
+In contrast, each Feature Structure in a CAS is represented as the same unique Java Object  (because that's the only way a Feature Structure is stored). 
+
+Version 3 has a new a capability that enables converting arbitrary Java objects  that might be part of a  JCas class definition, into "ordinary" CAS values that can be transported with the CAS.
+This is done using a set of conventions which the framework follows, and which developers writing these classes make use of; they include two kinds of marker Java interfaces, and 2 methods that are called when serializing and deserializing. 
+
+The marker interfaces identify those JCas classes which need these extra methods called.
+The extra methods are  methods implemented by the creator of these JCas classes, which marshal/unmarshal CAS feature data to/from the  Java Object this class is supporting. 
+
+Storing the Java Object data as the value of a normal CAS Feature means that they get "transported" in a portable way with the CAS - they can be saved to external storage and read back in later, or sent to remote services, etc. 
+
+[[_uv3.custom_java_objects.tutorial]]
+== Tutorial example
+
+Here's a tutorial example on how to design and implement your own special Java object.
+For this example, we'll imagine we need to implement a map from FeatureStructures to FeatureStructures.
+
+.Creating a custom Java CAS-stored Object
+image::images/version_3_users_guide/custom_java_objects/5_steps.png[5 steps to creating a custom CAS transportable Java Object]
+
+Step 1 is deciding on the Java Object implementation to use.
+We can define a special class, but in this case, we'll just use the ordinary Java HashMap<TOP, TOP> for this.
+
+Step 2 is deciding on the CAS Feature Structure representation of this.
+For this example, let's design this to represent the serialized form of the hashmap as 2 FSArrays, one for the keys, and one for the values.
+We could also use just one array and intermingle the keys and values.
+It's up to the designer of this new JCas class to decide how to do this.
+
+Step 3 is defining the UIMA Type for this.
+Let's call it FS2FSmap.
+It will have 2 Features: an FSArray for the keys, and another FSArray for the values.
+Let's name those features "keys" and "values". Notice that there's no mention of the Java object in the UIMA Type definition. 
+
+Step 4 is to run JCasGen on this class to get an initial version of the class.
+Of course, it will be missing the Java HashMap, but we'll add that in the next step.
+
+Step 5: modify 3 aspects of the generated JCas class.:
++
+1. Mark the class with one of two interfaces::
++
+* `UimaSerializable`
+* `UimaSerializableFSs` These identify this JCas class a needing the calls to marshal/unmarshal the data to/from the Java Object and the normal CAS data features.
+Use the second form if the data includes any Feature Structure references.
+In our example, the data does include Feature Structure references,  so we add `implements UimaSerializableFSs` to our JCas class.
++
+2. Add the Java Object as a field to the class::
+We'll define a new field: 
++
+[source]
+----
+final private Map<TOP, TOP> fs2fsMap = new HashMap<>();
+----
++
+3. Implement two methods to marshal/unmarshal the Java Object data to the CAS Data Features::
+::Now, we need to add the code that translates between the two UIMA Features  "keys" and "values" and the map, and vice-versa.
+We put this code into two methods,  called `\_init_from_cas_data` and `\_save_to_cas_data`.
+These are special methods that are part of this new framework extension;  they are called by the framework at critical times during deserialization and serialization.
+Their purpose is to encapsulate all that is needed to convert from transportable  normal CAS data, and the Java Object(s).
++
+In this example, the `\_init_from_cas_data` method would iterate over the two Features, together, and add each key value pair to the Java Object.
+Likewise, the `\_save_to_cas_data` would first create two FSArray objects for the keys and values,  and then iterate over the hash map and extract these and set them into the key and value arrays. 
++
+[source]
+----
+public void _init_from_cas_data() {
+  FSArray keys = getKeys();
+  FSArray values = getValues();
+  fs2fsMap.clear();
+  for (int i = keys.size() - 1; i >=0; i--) {
+    fs2fsMap.put(keys.get(i), values.get(i)); 
+  }
+}
+
+public void _save_to_cas_data() {
+  int i = 0;
+  FSArray keys = new FSArray(this, fs2fsMap.size());
+  FSArray values = new FSArray(this, fs2fsMap.size());
+  for (Entry<TOP, TOP> entry : fs2fsMap.entrySet()) {
+    keys.set(i, entry.getKey());
+    values.set(i, entry.getValues());
+    i++;
+  }
+  setKeys(keys); 
+  setValues(values);
+}
+----
++
+Beyond this simple implementation, various optimization can be done.
+One typical one is to treat the use case where no updates were done as a special case (but one which might occur frequently), and in that case having the _save_to_cas_data operation do nothing, since the original CAS data is still valid.
++
+One additional "boilerplate" method is required for all of these classes:
++
+[source]
+----
+public FeatureStructureImplC _superClone() {return clone();}`
+----
++
+For custom types which hold collections of Feature Structures, you can have those participate in the `Select` framework, by implementing the optional Interface `SelectViaCopyToArray`.
+
+For more examples, please see the implementations of the semi-built-in classes described in the following section.
+
+[[_uv3.custom_java_objects.new_semibuiltins]]
+== Additional semi-built-in UIMA Types for some common Java Objects
+// <titleabbrev>semi-built-in UIMA Types</titleabbrev>
+
+Some additional semi-built-in UIMA types are defined in Version 3 using this new mechanism.
+They work fully in Java, and are serialized or transported to non-Java frameworks as ordinary CAS objects.
+
+Semi-built-in means that the JCas cover classes for these are defined as part of the core Java classes, but the types themselves are not "built-in".  They may be added to any tyupe system by importing them by name using the import statement: 
+[source]
+----
+<import name="org.apache.uima.semibuiltins"/>
+----
+If you have a Java project whose classpath includes uimaj-core, and you run the Component Descriptor Editor Eclipse plugin tool on a descriptor which includes a type system, you can configure this import by selecting the Add on the Import type system subpanel, and import by name, and selecting org.apache.uima.semibuiltins.
+(Note: this will not show up if your project doesn't include uimaj-core on its build path.) 
+
+[[_uv3.custom_java_objects.semibuiltin_fsarraylist]]
+=== FSArrayList
+// <titleabbrev>FSArrayList</titleabbrev>
+
+`org.apache.uima.jcas.cas.FSArrayList` is like the current FSArray, except that it implements the List API and supports  adding to the array, with automatic resizing, like an ArrayList in Java.
+It is implemented internally using a Java ArrayList.
+
+The CAS data form is held in a plain FSArray feature.
+
+The `equals()` method is true if both FSArrayList objects have the same size, and contents are `equal` item by item.
+The list of supported operations includes all of the operations of  the Java `List` interface.
+This object also includes the `select` methods, so it can be used as a source for the `select` framework.
+
+[[_uv3.custom_java_objects.semibuiltin_integerarraylists]]
+=== IntegerArrayList
+// <titleabbrev>IntegerArrayList</titleabbrev>
+
+`org.apache.uima.jcas.cas.IntegerArrayList` is like the current IntegerArray, except that it implements the List API and supports  adding to the array, with automatic resizing, like an ArrayList in Java.
+
+The CAS data form is held in a plain IntegerArray feature.
+
+The `equals()` method is true if both IntegerArrayList objects have  the same size, and contents are `equal` item by item.
+The list of supported operations includes a subset of the operations of  the Java `List` interface, where certain values are changed to Java primitive ``ints``.
+To support the `Iterable` interface, there is  a version of `iterator()` where the result is "boxed" into an Integer.
+For efficiency, there's also a method intListIterator, which returns an instance of IntListIterator, which permits iterating forwards and backwards, without boxing.
+
+[[_uv3.custom_java_objects.semibuiltin_fshashset]]
+=== FSHashSet and FSLinkedHashSet
+
+`org.apache.uima.jcas.cas.FSHashSet` and `org.apache.uima.jcas.cas.FSLinkedHashSet` store Feature Structures in a (Linked) HashSet, using whatever is defined as the Feature Structure's `equals` and ``hashcode``. 
+
+[quote]
+You may customize the particular equals and hashcode by creating a wrapper class that is a subclass of the type of interest which forwards to the underlying Feature Structure, but has its own definition of `equals` and ``hashcode``. 
+
+The CAS data form is held in an FSArray consisting of the members of the set.
+
+If you want a predictable iteration order, use FSLinkedHashSet instead of FSHashSet. 
+
+[[_uv3.custom_java_objects.semibuiltin_int2fs]]
+=== Int2FS Int to Feature Structure map
+
+Some applications find it convenient to have a map from ints to Feature Structures.
+In UIMA V2, they made use of the low level CAS APIs that allowed getting an Feature Structure from an int id using ``ll_getFSForRef(int)``. 
+
+In v3, use of the low level APIs in this manner  can be enabled, but is discouraged, because it prevents garbage collection of non-reachable Feature Structures. 
+
+`org.apache.uima.jcas.cas.Int2FS<T>` maps from ``int``s to ``Feature Structure``s of type T.
+This provides an alternative way to have int -> FS maps,  under user control of what exactly gets added to them,  supporting removes and clearing, under application control 
+
+The `iterator()` method returns an Iterator over `IntEntry<T>` objects - these are like java `Entry<K, V>` objects except the key is an int.
+
+[[_uv3.custom_java_objects.design]]
+== Design for reuse
+
+While it is possible to have a single custom JCas class implement multiple Java Objects, this is  typically not a good design practice, as it reduces reusability.
+It is usually better to  implement one custom Java object per JCas class, with an associated UIMA type, and have that as the reusable entity. 

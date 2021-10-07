@@ -24,31 +24,28 @@ import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 
-import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.UIMALogFormatter;
 import org.apache.uima.internal.util.UIMAStreamHandler;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
- * UIMA Logging interface implementation for Java Logging Toolkit JSR-47 (JDK 1.4)
+ * UIMA Logging interface implementation for Java Logging Toolkit JSR-47 (JDK 1.4) JUL
+ * Ignores Markers and MDC (not supported in the JUL
  * 
  */
-public class JSR47Logger_impl implements Logger {
-  private static final String EXCEPTION_MESSAGE = "Exception occurred";
+public class JSR47Logger_impl extends Logger_common_impl {
+  
+  final static private Object[] zeroLengthArray = new Object[0];
 
   /**
    * logger object from the underlying JSR-47 logging framework
    */
-  private java.util.logging.Logger logger = null;
-
-  /**
-   * ResourceManager whose extension ClassLoader will be used to locate the message digests. Null
-   * will cause the ClassLoader to default to this.class.getClassLoader().
-   */
-  private ResourceManager mResourceManager = null;
+  final private java.util.logging.Logger logger;
 
   /**
    * create a new LogWrapper class for the specified source class
@@ -57,22 +54,17 @@ public class JSR47Logger_impl implements Logger {
    *          specified source class
    */
   private JSR47Logger_impl(Class<?> component) {
-    super();
-
-    if (component != null) {
-      // create new JSR47 logger for this LogWrapper object
-      logger = java.util.logging.Logger.getLogger(component.getName());
-    } else // if class not set, return "org.apache.uima" logger
-    {
-      logger = java.util.logging.Logger.getLogger("org.apache.uima");
-    }
+    super(component);
+    
+    logger = java.util.logging.Logger.getLogger(
+        (component != null)
+          ? component.getName()
+          : "org.apache.uima");
   }
-
-  /**
-   * create a new LogWrapper object with the default logger from the JSR-47 logging framework
-   */
-  private JSR47Logger_impl() {
-    this(null);
+  
+  private JSR47Logger_impl(JSR47Logger_impl l, int limit) {
+    super(l, limit);
+    this.logger = l.logger;
   }
 
   /**
@@ -86,77 +78,29 @@ public class JSR47Logger_impl implements Logger {
   public static synchronized Logger getInstance(Class<?> component) {
     return new JSR47Logger_impl(component);
   }
+  
+  public static synchronized Logger getInstance(JSR47Logger_impl l, int limit) {
+    if (limit == Integer.MAX_VALUE) {
+      return l;
+    }
+    return new JSR47Logger_impl(l, limit);
+  }
 
   /**
    * Creates a new JSR47Logger instance with the default JSR-47 framework logger
    * 
    * @return Logger returns the JSR47Logger object with the default JSR-47 framework logger
    */
-  public static synchronized Logger getInstance() {
-    return new JSR47Logger_impl();
+  public static synchronized JSR47Logger_impl getInstance() {
+    return new JSR47Logger_impl(null);
   }
-
-  /**
-   * Logs a message with level INFO.
-   * 
-   * @deprecated use new function with log level
-   * 
-   * @param aMessage
-   *          the message to be logged
-   */
-  @Deprecated
-  public void log(String aMessage) {
-    if (isLoggable(Level.INFO)) {
-      if (aMessage == null || aMessage.equals(""))
-        return;
-
-      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-      logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], aMessage);
+  
+  @Override
+  public JSR47Logger_impl getLimitedLogger(int limit) {
+    if (limit == Integer.MAX_VALUE || limit == this.limit_common) {
+      return this;
     }
-  }
-
-  /**
-   * Logs a message with a message key and the level INFO
-   * 
-   * @deprecated use new function with log level
-   * 
-   * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String, java.lang.Object[])
-   */
-  @Deprecated
-  public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
-    if (isLoggable(Level.INFO)) {
-      if (aMessageKey == null || aMessageKey.equals(""))
-        return;
-
-      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-      logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], I18nUtil
-              .localizeMessage(aResourceBundleName, aMessageKey, aArguments,
-                      getExtensionClassLoader()));
-    }
-  }
-
-  /**
-   * Logs an exception with level INFO
-   * 
-   * @deprecated use new function with log level
-   * 
-   * @param aException
-   *          the exception to be logged
-   */
-  @Deprecated
-  public void logException(Exception aException) {
-    if (isLoggable(Level.INFO)) {
-      if (aException == null)
-        return;
-
-      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-      // log exception
-      logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], EXCEPTION_MESSAGE,
-              aException);
-    }
+    return new JSR47Logger_impl(this, limit);
   }
 
   /**
@@ -164,6 +108,7 @@ public class JSR47Logger_impl implements Logger {
    * 
    * @deprecated use external configuration possibility
    */
+  @Override
   @Deprecated
   public void setOutputStream(OutputStream out) {
     // if OutputStream is null set root logger level to OFF
@@ -191,6 +136,7 @@ public class JSR47Logger_impl implements Logger {
    * 
    * @deprecated use external configuration possibility
    */
+  @Override
   @Deprecated
   public void setOutputStream(PrintStream out) {
     // if PrintStream is null set root logger level to OFF
@@ -213,248 +159,28 @@ public class JSR47Logger_impl implements Logger {
     LogManager.getLogManager().getLogger("").addHandler(streamHandler);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
-   */
-  public boolean isLoggable(Level level) {
-    // get corresponding JSR-47 level
-    java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-    return logger.isLoggable(jsr47Level);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
-   */
-  public void setLevel(Level level) {
-    // get corresponding JSR-47 level
-    java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-    logger.setLevel(jsr47Level);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String)
-   */
-  public void log(Level level, String aMessage) {
-    if (isLoggable(level)) {
-      if (aMessage == null || aMessage.equals(""))
-        return;
-
-      // get corresponding JSR-47 level
-      java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-      logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], aMessage);
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.Object)
-   */
-  public void log(Level level, String aMessage, Object param1) {
-    if (isLoggable(level)) {
-      if (aMessage == null || aMessage.equals(""))
-        return;
-
-      // get corresponding JSR-47 level
-      java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-      logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], MessageFormat.format(aMessage,
-              new Object[] { param1 }));
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.Object[])
-   */
-  public void log(Level level, String aMessage, Object[] params) {
-    if (isLoggable(level)) {
-      if (aMessage == null || aMessage.equals(""))
-        return;
-
-      // get corresponding JSR-47 level
-      java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-      logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], MessageFormat.format(aMessage, params));
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.Throwable)
-   */
-  public void log(Level level, String aMessage, Throwable thrown) {
-    if (isLoggable(level)) {
-      if (aMessage != null && !aMessage.equals("")) {
-        // get corresponding JSR-47 level
-        java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-        String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-        logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], aMessage, thrown);
-      }
-
-      if (thrown != null && (aMessage == null || aMessage.equals(""))) {
-        // get corresponding JSR-47 level
-        java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-        String[] sourceInfo = getStackTraceInfo(null, new Throwable());
-
-        // log exception
-        logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], EXCEPTION_MESSAGE, thrown);
-      }
-    }
-
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object)
-   */
-  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-          String msgKey, Object param1) {
-    if (isLoggable(level)) {
-      if (msgKey == null || msgKey.equals(""))
-        return;
-
-      // get corresponding JSR-47 level
-      java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-      logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-              msgKey, new Object[] { param1 }, getExtensionClassLoader()));
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object[])
-   */
-  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-          String msgKey, Object[] params) {
-    if (isLoggable(level)) {
-      if (msgKey == null || msgKey.equals(""))
-        return;
-
-      // get corresponding JSR-47 level
-      java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-      logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-              msgKey, params, getExtensionClassLoader()));
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Throwable)
-   */
-  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-          String msgKey, Throwable thrown) {
-    if (isLoggable(level)) {
-      if (msgKey != null && !msgKey.equals("")) {
-        // get corresponding JSR-47 level
-        java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-        logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-                msgKey, null, getExtensionClassLoader()), thrown);
-      }
-
-      if (thrown != null && (msgKey == null || msgKey.equals(""))) {
-        // get corresponding JSR-47 level
-        java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-        // log exception
-        logger.logp(jsr47Level, sourceClass, sourceMethod, EXCEPTION_MESSAGE, thrown);
-      }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
-   *      java.lang.String, java.lang.String, java.lang.String)
-   */
-  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-          String msgKey) {
-    if (isLoggable(level)) {
-      if (msgKey == null || msgKey.equals(""))
-        return;
-
-      // get corresponding JSR-47 level
-      java.util.logging.Level jsr47Level = getJSR47Level(level);
-
-      logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-              msgKey, null, getExtensionClassLoader()));
-    }
-  }
-
-  public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
-    // get corresponding JSR-47 level
-    java.util.logging.Level jsr47Level = getJSR47Level(level);
-    String[] sourceInfo = getStackTraceInfo(wrapperFQCN, new Throwable());
-
-    // log exception
-    logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], message, thrown);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#setResourceManager(org.apache.uima.resource.ResourceManager)
-   */
-  public void setResourceManager(ResourceManager resourceManager) {
-    mResourceManager = resourceManager;
-  }
-
-  /**
-   * Gets the extension ClassLoader to used to locate the message digests. If this returns null,
-   * then message digests will be searched for using this.class.getClassLoader().
-   */
-  private ClassLoader getExtensionClassLoader() {
-    if (mResourceManager == null)
-      return null;
-    else
-      return mResourceManager.getExtensionClassLoader();
-  }
-
   /**
    * JSR-47 level mapping to UIMA level mapping.
    * 
-   * SEVERE (highest value) -%gt; SEVERE WARNING -%gt; WARNING INFO -%gt; INFO CONFIG -%gt; CONFIG FINE -%gt; FINE
-   * FINER -%gt; FINER FINEST (lowest value) -%gt; FINEST OFF -%gt; OFF ALL -%gt; ALL
+   * Maps via marker values for UIMA_MARKER_CONFIG and UIMA_MARKER_FINEST
+   * 
+   * SEVERE (highest value) -%gt; SEVERE<br> 
+   * WARNING -%gt; WARNING<br> 
+   * INFO -%gt; INFO <br>
+   * CONFIG -%gt; CONFIG <br>
+   * FINE -%gt; FINE<br>
+   * FINER -%gt; FINER <br>
+   * FINEST (lowest value) -%gt; FINEST<br> 
+   * OFF -%gt; OFF <br>
+   * ALL -%gt; ALL<br>
    * 
    * @param level
    *          uima level
+   * @param m the marker
    * 
    * @return Level - corresponding JSR47 level
    */
-  private java.util.logging.Level getJSR47Level(Level level) {
+  public static java.util.logging.Level getJSR47Level(Level level, Marker m) {
     if (null == level) {
       return null;
     }
@@ -466,69 +192,181 @@ public class JSR47Logger_impl implements Logger {
       case org.apache.uima.util.Level.WARNING_INT:
         return java.util.logging.Level.WARNING;
       case org.apache.uima.util.Level.INFO_INT:
-        return java.util.logging.Level.INFO;
+        return (m == UIMA_MARKER_CONFIG) 
+                 ? java.util.logging.Level.CONFIG
+                 : java.util.logging.Level.INFO;
       case org.apache.uima.util.Level.CONFIG_INT:
         return java.util.logging.Level.CONFIG;
       case org.apache.uima.util.Level.FINE_INT:
         return java.util.logging.Level.FINE;
       case org.apache.uima.util.Level.FINER_INT:
-        return java.util.logging.Level.FINER;
+        // could be DEBUG with marker FINEST, DEBUG_INT == FINER_INT
+        return (m == UIMA_MARKER_FINEST)
+                 ? java.util.logging.Level.FINEST
+                 : java.util.logging.Level.FINER;
       case org.apache.uima.util.Level.FINEST_INT:
         return java.util.logging.Level.FINEST;
+          
       default: // for all other cases return Level.ALL
         return java.util.logging.Level.ALL;
     }
   }
 
-  /**
-   * returns the method name and the line number if available
+  /*
+   * (non-Javadoc)
    * 
-   * @param thrown
-   *          the thrown
-   * 
-   * @return String[] - fist element is the source class, second element is the method name with
-   *         linenumber if available
+   * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
    */
-  private String[] getStackTraceInfo(String wrapperFQCN, Throwable thrown) {
-    StackTraceElement[] stackTraceElement = thrown.getStackTrace();
+  @Override
+  public boolean isLoggable(Level level) {
+    return logger.isLoggable(getJSR47Level(level, null));
+  }
+  
+  @Override
+  public boolean isLoggable(Level level, Marker m) {
+    return logger.isLoggable(getJSR47Level(level, m));
+  }
 
-    String sourceMethod = "";
-    String sourceClass = "";
-    int lineNumber = 0;
-    
-    try {
-      int index = 0;
-      if (wrapperFQCN != null) {
-        boolean found = false;
-        while (index < stackTraceElement.length) {
-          if (wrapperFQCN.equals(stackTraceElement[index].getClassName())) {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
+   */
+  @Override
+  public void setLevel(Level level) {
+    logger.setLevel(getJSR47Level(level, null));
+  }
+
+//  /**
+//   * Log the message at the specified level with the specified throwable if any.
+//   * This method creates a LogRecord and fills in caller date before calling
+//   * this instance's JDK14 logger.
+//   * 
+//   * See bug report #13 for more details.
+//   * 
+//   * @param level
+//   * @param msg
+//   * @param t
+//   */
+//  private void log(String callerFQCN, Level level, String msg, Throwable t) {
+//      // millis and thread are filled by the constructor
+//      LogRecord record = new LogRecord(level, msg);
+//      record.setLoggerName(getName());
+//      record.setThrown(t);
+//      // Note: parameters in record are not set because SLF4J only
+//      // supports a single formatting style
+//      fillCallerData(callerFQCN, record);
+//      logger.log(record);
+//  }
+  
+
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {    
+    if (isLoggable(level, m)) {
+      log(m, aFqcn, level, MessageFormat.format(msg, args), throwable);
+    }
+  }
+  
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String msg, Throwable throwable) {
+    if (isLoggable(level, m)) {    
+      LogRecord record = new LogRecord(getJSR47Level(level, m), msg);
+      record.setLoggerName(getName());
+      record.setThrown(throwable);
+      
+      StackTraceElement[] elements = new Throwable().getStackTrace();
+      StackTraceElement top = null;
+      
+      boolean found = false;
+      
+      for (int i = 0; i < elements.length; i++) {
+        final String className = elements[i].getClassName();
+        if (className.equals(aFqcn)) {
+          if (found) {
+            continue;   // keep going until not found
+          } else {
             found = true;
+            continue;
+          }
+        } else {
+          if (found) {
+            top = elements[i];  
             break;
           }
-          index++;
-        }
-        if (!found) {
-          index = 0;
-        }
+        } 
       }
-      index++;
-      
-      lineNumber = stackTraceElement[index].getLineNumber();
-      sourceMethod = stackTraceElement[index].getMethodName();
-      sourceClass = stackTraceElement[index].getClassName();
-    } catch (Exception ex) {
-      // do nothing, use the initialized string members
+  
+      if (top != null) {
+        record.setSourceClassName(top.getClassName());
+        record.setSourceMethodName(top.getMethodName() + "(" + top.getLineNumber() + ")");
+      }
+      logger.log(record);
     }
-
-    if (lineNumber > 0) {
-      StringBuffer buffer = new StringBuffer(25);
-      buffer.append(sourceMethod);
-      buffer.append('(');
-      buffer.append(lineNumber);
-      buffer.append(')');
-      sourceMethod = buffer.toString();
-    }
-
-    return new String[] { sourceClass, sourceMethod };
   }
+
+  
+  @Override
+  public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
+    // this version of MessageFormatter does the {} style
+    log(m, aFqcn, level, MessageFormatter.format(msg, args).getMessage(), zeroLengthArray, throwable);
+  }
+  
+  @Override
+  public String getName() {
+    return logger.getName();
+  }
+
+  @Override
+  public boolean isDebugEnabled() {
+    return logger.isLoggable(java.util.logging.Level.FINE);
+  }
+
+  @Override
+  public boolean isDebugEnabled(Marker arg0) {
+    return isDebugEnabled();
+  }
+
+  @Override
+  public boolean isErrorEnabled() {
+    return logger.isLoggable(java.util.logging.Level.SEVERE);
+  }
+
+  @Override
+  public boolean isErrorEnabled(Marker arg0) {
+    return isErrorEnabled();
+  }
+
+  @Override
+  public boolean isInfoEnabled() {
+    return logger.isLoggable(java.util.logging.Level.INFO) ||
+           logger.isLoggable(java.util.logging.Level.CONFIG);
+  }
+
+  @Override
+  public boolean isInfoEnabled(Marker arg0) {
+    return isInfoEnabled();
+  }
+
+  @Override
+  public boolean isTraceEnabled() {
+    return logger.isLoggable(java.util.logging.Level.FINER) ||
+        logger.isLoggable(java.util.logging.Level.FINEST);
+  }
+
+  @Override
+  public boolean isTraceEnabled(Marker arg0) {
+    return isTraceEnabled();
+  }
+
+  @Override
+  public boolean isWarnEnabled() {
+    return logger.isLoggable(java.util.logging.Level.WARNING);
+  }
+
+  @Override
+  public boolean isWarnEnabled(Marker arg0) {
+    return isWarnEnabled();
+  }
+
 }
+

@@ -70,17 +70,10 @@ public class TransportableConverter {
   static public void convert(Transportable convert_me, Transportable into_me) {
     try {
       ByteArrayOutputStream byte_out = new ByteArrayOutputStream();
-      try {
-        convert_me.toStream(byte_out);
-      } finally {
-        byte_out.close();
-      }
-      ByteArrayInputStream byte_in = new ByteArrayInputStream(byte_out.toByteArray());
-      try {
-        byte_out = null; // allow GC
+      convert_me.toStream(byte_out);
+
+      try (ByteArrayInputStream byte_in = new ByteArrayInputStream(byte_out.toByteArray())) {
         into_me.fromStream(byte_in);
-      } finally {
-        byte_in.close();
       }
     } catch (IOException e) {
       throw new FatalException(e); // this should not arise.

@@ -47,12 +47,19 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class VinciBinaryAnalysisEngineServiceStub.
+ */
 public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServiceStub {
 
+  /** The Constant debug. */
   private static final boolean debug = false;
 
+  /** The m vinci client. */
   private VinciClient mVinciClient;
 
+  /** The m owner. */
   private AnalysisEngineServiceAdapter mOwner;
 
   /**
@@ -65,11 +72,27 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    */
   private int mGetMetaDataTimeout;  
   
+  /**
+   * Instantiates a new vinci binary analysis engine service stub.
+   *
+   * @param endpointURI the endpoint URI
+   * @param owner the owner
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
 
+  /**
+   * Instantiates a new vinci binary analysis engine service stub.
+   *
+   * @param endpointURI the endpoint URI
+   * @param timeout the timeout
+   * @param owner the owner
+   * @param parameters the parameters
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, Integer timeout,
           AnalysisEngineServiceAdapter owner, Parameter[] parameters)
           throws ResourceInitializationException {
@@ -115,7 +138,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       
       //store timeout for use in later RPC calls
       if (timeout != null) {
-        mTimeout = timeout.intValue();
+        mTimeout = timeout;
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
@@ -133,6 +156,13 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
     }
   }
 
+  /**
+   * Gets the parameter value for.
+   *
+   * @param aKey the a key
+   * @param parameters the parameters
+   * @return the parameter value for
+   */
   public static String getParameterValueFor(String aKey, Parameter[] parameters) {
     if (aKey != null) {
       for (int i = 0; parameters != null && i < parameters.length; i++) {
@@ -145,6 +175,10 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
+   * Call get meta data.
+   *
+   * @return the resource meta data
+   * @throws ResourceServiceException the resource service exception
    * @see ResourceServiceStub#callGetMetaData()
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
@@ -196,6 +230,10 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
+   * Call process.
+   *
+   * @param aCAS the a CAS
+   * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
@@ -214,7 +252,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
       CASSerializer responseSerializer = (CASSerializer) SerializationUtils
               .deserialize(responseCasBytes);
-      ((CASImpl) cas).reinit(responseSerializer);
+      ((CASImpl) cas).getBinaryCasSerDes().reinit(responseSerializer);
 
       // also read annotation time and enter into AnalysisEngineManagementMBean
       int annotationTime = responseFrame.fgetInt(Constants.ANNOTATION_TIME);
@@ -229,6 +267,9 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
+   * Call batch process complete.
+   *
+   * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callBatchProcessComplete()
    */
   public void callBatchProcessComplete() throws ResourceServiceException {
@@ -245,6 +286,9 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
+   * Call collection process complete.
+   *
+   * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
   public void callCollectionProcessComplete() throws ResourceServiceException {
@@ -262,6 +306,8 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
+   * Destroy.
+   *
    * @see ResourceServiceStub#destroy()
    */
   public void destroy() {

@@ -121,6 +121,7 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   }
 
   /**
+   * only used for uima framework things, setting up the mappings between intfc and impl for the framework parts
    * @see org.apache.uima.ResourceSpecifierFactory#addMapping(String, String)
    */
   public void addMapping(String aInterfaceName, String aClassName) throws ClassNotFoundException {

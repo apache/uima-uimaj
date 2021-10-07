@@ -19,27 +19,41 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.PositiveIntSet;
-import org.apache.uima.internal.util.PositiveIntSet_impl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlElementName;
+import org.apache.uima.jcas.cas.CommonList;
+import org.apache.uima.jcas.cas.CommonPrimitiveArray;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.NonEmptyList;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.MessageReport;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -60,7 +74,7 @@ import org.xml.sax.SAXParseException;
  * an inner class - one per serialize call.
  * 
  * These classes are the common parts of serialization between XMI and JSON, mainly having to do with
- *   1) enquuing the FS to be serialized
+ *   1) enqueueing the FS to be serialized
  *   2) serializing according to their types and features
  *     
  * 
@@ -239,30 +253,30 @@ public class CasSerializerSupport {
     
     abstract protected void writeViews() throws Exception;
     
-    abstract protected void writeView(int sofaAddr, int[] members) throws Exception;
+    abstract protected void writeView(Sofa sofa, Collection<TOP> members) throws Exception;
     
-    abstract protected void writeView(int sofaAddr, int[] added, int[] deleted, int[] reindexed) throws Exception;  
+    abstract protected void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted, Collection<TOP> reindexed) throws Exception;  
     
     /**
      * 
-     * @param addr -
+     * @param fs -
      * @param typeCode -
      * @return true if writing out referenced items (JSON)
      * @throws Exception -
      */
-    abstract protected boolean writeFsStart(int addr, int typeCode) throws Exception;
+    abstract protected boolean writeFsStart(TOP fs, int typeCode) throws Exception;
     
-    abstract protected void writeFs(int addr, int typeCode) throws Exception;
+    abstract protected void writeFs(TOP fs, int typeCode) throws Exception;
     
-    abstract protected void writeListsAsIndividualFSs(int addr, int typeCode) throws Exception;
+    abstract protected void writeListsAsIndividualFSs(TOP fs, int typeCode) throws Exception;
     
-    abstract protected void writeArrays(int addr, int typeCode, int typeClass) throws Exception;
+    abstract protected void writeArrays(TOP fsarray, int typeCode, int typeClass) throws Exception;
     
     abstract protected void writeEndOfIndividualFs() throws Exception;  
     
     abstract protected void writeEndOfSerialization() throws Exception;
     
-    abstract protected void writeFsRef(int addr) throws Exception;
+    abstract protected void writeFsRef(TOP fs) throws Exception;
   }
   
   /**
@@ -294,8 +308,8 @@ public class CasSerializerSupport {
      *  
      *  Public for use by JsonCasSerializer
      */    
-    public final PositiveIntSet_impl visited_not_yet_written; 
-    
+    public final Set<TOP> visited_not_yet_written = Collections.newSetFromMap(new IdentityHashMap<>()); 
+     
     /**
      * Set of array or list FSs referenced from features marked as multipleReferencesAllowed,
      *   - which have previously been serialized "inline"
@@ -310,8 +324,8 @@ public class CasSerializerSupport {
      * 
      * Use: limit the put-onto-queue list to one time
      */
-    private final PositiveIntSet_impl enqueued_multiRef_arrays_or_lists = new PositiveIntSet_impl();
-
+    private final Set<TOP> enqueued_multiRef_arrays_or_lists = Collections.newSetFromMap(new IdentityHashMap<>());
+    
     /**
      * Set of FSs that have multiple references
      * Has an entry for each FS (not just array or list FSs) which is (from some point on) being serialized as a multi-ref,
@@ -325,12 +339,13 @@ public class CasSerializerSupport {
      *   - skip encoding of items on "queue" if not in this Set (maybe not needed? 8/2017 mis)
      *   - serialize if not in indexed set, dynamic ref == true, and in this set (otherwise serialize only from ref)
      */
-    public final PositiveIntSet multiRefFSs;
+    public final Set<TOP> multiRefFSs; 
     
     /**
      * Set to true for JSON configuration of using dynamic multi-ref detection for arrays and lists
      */
     public final boolean isDynamicMultiRef;
+
     /* *********************************************
      * FSs that need to be serialized because they're 
      *   a) in an index
@@ -340,19 +355,23 @@ public class CasSerializerSupport {
      *   d) the set of FSs that are reachable via FSrefs from the above 3 sets
      */
     
-    public IntVector previouslySerializedFSs = null;
+    public List<TOP> previouslySerializedFSs = null;
     
-    public IntVector modifiedEmbeddedValueFSs = null;
+    public List<TOP> modifiedEmbeddedValueFSs = null;
     
-    // All FSs that are in an index somewhere.
-    public final IntVector[] indexedFSs;
+    /**
+     * Array of Lists of all FS that are indexed in some view (other than sofas).  Array indexed by view.
+     */
+    public final List<TOP>[] indexedFSs;
 
-    // only referenced FSs.
-    private final IntVector queue;
+    /**
+     * FSs not in an index, but only being serialized becaused they're referenced.  Exception: the sofa's are here.
+     */
+    private final Deque<TOP> queue;
 
     
     // utilities for dealing with CAS list types
-    public final ListUtils listUtils;
+//    public final ListUtils listUtils;
         
     public XmlElementName[] typeCode2namespaceNames; // array, indexed by type code, giving XMI names for each type
     
@@ -364,13 +383,13 @@ public class CasSerializerSupport {
      * map from a namespace expanded form to the namespace prefix, to identify potential collisions when
      *   generating a namespace string
      */
-    public final Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
+    public final Map<String, String> nsUriToPrefixMap = new HashMap<>();
            
     /**
      * the set of all namespace prefixes used, to disallow some if they are 
      *   in use already in set-aside data (xmi serialization) being merged back in
      */
-    public final Set<String> nsPrefixesUsed = new HashSet<String>();
+    public final Set<String> nsPrefixesUsed = new HashSet<>();
     
     /**
      * Used to tell if a FS was created before or after mark.
@@ -399,14 +418,14 @@ public class CasSerializerSupport {
 
     private TypeImpl[] sortedUsedTypes;
     
-    private final ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler2;
     
-    public TypeSystemImpl filterTypeSystem;
+    public TypeSystemImpl filterTypeSystem_inner;
     
     // map to reduce string usage by reusing equal string representations; lives just for one serialize call
-    private final Map<String, String> uniqueStrings = new HashMap<String, String>();
+    private final Map<String, String> uniqueStrings = new HashMap<>();
 
-    public final boolean isFormattedOutput;
+    public final boolean isFormattedOutput_inner;
     
     private final CasSerializerSupportSerialize csss;
 
@@ -431,37 +450,34 @@ public class CasSerializerSupport {
       this.sharedData = sharedData;
 
       // copy outer class values into final inner ones, to keep the outer thread-safe
-      filterTypeSystem = CasSerializerSupport.this.filterTypeSystem; 
-      isFormattedOutput = CasSerializerSupport.this.isFormattedOutput; 
+      filterTypeSystem_inner = CasSerializerSupport.this.filterTypeSystem; 
+      isFormattedOutput_inner = CasSerializerSupport.this.isFormattedOutput; 
       this.marker = marker;
-      errorHandler = CasSerializerSupport.this.errorHandler;
+      errorHandler2 = CasSerializerSupport.this.errorHandler;
 
       tsi = cas.getTypeSystemImpl();
-      visited_not_yet_written = new PositiveIntSet_impl();
-      queue = new IntVector();
-      indexedFSs = new IntVector[cas.getBaseSofaCount()];  // number of views
-      listUtils = new ListUtils(cas, logger, errorHandler);
+      queue = new ArrayDeque<>();
+      indexedFSs = (List<TOP>[]) new List<?>[cas.getViewCount()];  // number of views
+//      listUtils = new ListUtils(cas, logger, errorHandler);
       typeUsed = new BitSet();
 
-      isFiltering = filterTypeSystem != null && filterTypeSystem != tsi;
+      isFiltering = filterTypeSystem_inner != null && filterTypeSystem_inner != tsi;
       if (marker != null && !marker.isValid()) {
-  	    CASRuntimeException exception = new CASRuntimeException(
-  	        CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
-    	  throw exception;
+  	    throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
       }
       isDelta = marker != null;
-      multiRefFSs = new PositiveIntSet_impl();
+      multiRefFSs = Collections.newSetFromMap(new IdentityHashMap<>());
       isDynamicMultiRef = trackMultiRefs;
     }
         
     // TODO: internationalize
-    private void reportMultiRefWarning(int featCode) throws SAXException {
+    private void reportMultiRefWarning(FeatureImpl fi) throws SAXException {
       String message = String.format("Feature %s is marked multipleReferencesAllowed=false, but it has"
           + " multiple references.  These will be serialized in duplicate.", 
-          tsi.ll_getFeatureForCode(featCode).getName());
-      MessageReport.decreasingWithTrace(errorCount, message, logger);
-      if (this.errorHandler != null) {
-        this.errorHandler.warning(new SAXParseException(message, null));
+          fi.getName());
+      Misc.decreasingWithTrace(errorCount, message, logger);
+      if (this.errorHandler2 != null) {
+        this.errorHandler2.warning(new SAXParseException(message, null));
       }
     }
 
@@ -476,7 +492,7 @@ public class CasSerializerSupport {
       sortedUsedTypes = null;
       typeUsed.clear();
       Arrays.fill(indexedFSs, null);
-      queue.removeAllElements();
+      queue.clear();
            
       csss.initializeNamespaces();
               
@@ -488,19 +504,20 @@ public class CasSerializerSupport {
                          // needed to support Out Of Typesystem data
       enqueueNonsharedMultivaluedFS();  // needed for delta serialization of modified embedded lists/arrays
       enqueueFeaturesOfIndexed(); // and incoming and modified embedded refs
+      
       iElementCount += (previouslySerializedFSs == null) ? 0 : previouslySerializedFSs.size();
       iElementCount += (modifiedEmbeddedValueFSs == null) ? 0 : modifiedEmbeddedValueFSs.size();
-      for (IntVector fss : indexedFSs) {
+      for (List<TOP> fss : indexedFSs) {  
         iElementCount += (fss == null) ? 0 : fss.size();
       }
       iElementCount += queue.size();
 
-      FSIndex<FeatureStructure> sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
+      FSIndex<TOP> sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
       if (!isDelta) {
       	iElementCount += (sofaIndex.size()); // one View element per sofa
       	iElementCount += getElementCountForSharedData();
       } else {
-        int numViews = cas.getBaseSofaCount();
+        int numViews = cas.getViewCount();
         for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
           FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
           if (loopIR != null && loopIR.isModified()) {
@@ -519,35 +536,36 @@ public class CasSerializerSupport {
     /**
      * 
      * @param sofaNum - starts at 1
-     * @return the addr of the sofa FS, or 0
+     * @return the sofa FS, or null
      */
-    public int getSofaAddr(int sofaNum) {  
+    public Sofa getSofa(int sofaNum) {  
       if (sofaNum != 1 || cas.isInitialSofaCreated()) { //skip if initial view && no Sofa yet
                                                         // all non-initial-views must have a sofa
         return ((CASImpl)cas.getView(sofaNum)).getSofaRef();
       }
-      return 0;
+      return null;
     }
 
     public void writeViewsCommons() throws Exception {
       // Get indexes for each SofaFS in the CAS
-      int numViews = cas.getBaseSofaCount();
+      int numViews = cas.getViewCount();
+    
       
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
-        final int sofaAddr = getSofaAddr(sofaNum);
+        final Sofa sofa = getSofa(sofaNum);
         if (loopIR != null) {
           if (!isDelta) {
-            int[] fsarray = loopIR.getIndexedFSs();
-            csss.writeView(sofaAddr, fsarray);
+            Collection<TOP> fss = loopIR.getIndexedFSs();
+            csss.writeView(sofa, fss);
           } else { // is Delta Cas
-        	  if (sofaNum != 1 && this.marker.isNew(sofaAddr)) {
+        	  if (sofaNum != 1 && this.marker.isNew(sofa)) {
         	    // for views created after mark (initial view never is - it is always created with the CAS)
         	    // write out the view as new
-        	    int[] fsarray = loopIR.getIndexedFSs();
-              csss.writeView(sofaAddr, fsarray);
+        	    Collection<TOP> fss = loopIR.getIndexedFSs();
+              csss.writeView(sofa, fss);
         	  } else if (loopIR.isModified()) {
-        	    csss.writeView(sofaAddr, loopIR.getAddedFSs(), loopIR.getDeletedFSs(), loopIR.getReindexedFSs());
+        	    csss.writeView(sofa, loopIR.getAddedFSs(), loopIR.getDeletedFSs(), loopIR.getReindexedFSs());
           	}
           } 
         }
@@ -615,25 +633,23 @@ public class CasSerializerSupport {
     private void enqueueIncoming() {
       if (sharedData == null)
         return;
-      int[] fsAddrs = this.sharedData.getAllFsAddressesInIdMap();
-      previouslySerializedFSs = new IntVector();
-      for (int addr : fsAddrs) {
-        // don't enqueue id 0 - this is the "null" fs, which is automatically serialized by xmi
-        if (addr == 0 || 
-            (isDelta && !marker.isModified(addr))) {
+      TOP[] fss = this.sharedData.getAndSortByIdAllFSsInIdMap();
+      previouslySerializedFSs = new ArrayList<>();
+      
+      for (TOP fs : fss) {
+        // skip enque for null and for unmodified fss if delta
+        if (fs == null || 
+            (isDelta && !marker.isModified(fs))) {
           continue;
         }
-        
+                
         // is the first instance, but skip if delta and not modified or above the line or filtered
         // skip enqueuing incoming FS if already enqueued 
-//        if (visited_not_yet_written.contains(addr) && isOnlyEmbedded(addr)) {
-//          continue;
-//        }
-        int typeCode = enqueueCommon(addr);
+        int typeCode = enqueueCommon(fs);
         if (typeCode == -1) {
           continue;
         }
-        previouslySerializedFSs.add(addr);
+        previouslySerializedFSs.add(fs);
       }
     }
 
@@ -644,10 +660,10 @@ public class CasSerializerSupport {
      */
     private void enqueueIndexed()  {
       FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getBaseCAS().getBaseIndexRepository();
-      int[] fsarray = ir.getIndexedFSs();
+      Collection<TOP> fss = ir.getIndexedFSs();  // only sofas
       try {
-        for (int fs : fsarray) {
-          enqueueFsAndMaybeFeatures(fs);  // put on by-ref queue
+        for (TOP fs : fss) {
+          enqueueFsAndMaybeFeatures(fs);  // put Sofa on by-ref queue
         }
       } catch (SAXException e) {
         throw new RuntimeException("Internal error - should never happen", e);
@@ -657,7 +673,7 @@ public class CasSerializerSupport {
       // FSIterator iterator = sofaIndex.iterator();
       // // Get indexes for each SofaFS in the CAS
       // while (iterator.isValid())
-      int numViews = cas.getBaseSofaCount();
+      int numViews = cas.getViewCount();
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
         // SofaFS sofa = (SofaFS) iterator.get();
         // int sofaNum = sofa.getSofaRef();
@@ -665,9 +681,9 @@ public class CasSerializerSupport {
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
                 .getSofaIndexRepository(sofaNum);
         if (loopIR != null) {
-          fsarray = loopIR.getIndexedFSs();
-          for (int fs : fsarray) {
-            enqueueIndexedFs_only_not_features(sofaNum, fs);
+          Collection<TOP> items = loopIR.getIndexedFSs();
+          for (TOP item : items) {
+            enqueueIndexedFs_only_not_features(sofaNum, item);
           }
         }
       }
@@ -681,16 +697,18 @@ public class CasSerializerSupport {
     private void enqueueNonsharedMultivaluedFS() {
       if (sharedData == null || !isDelta)
           return;
-      int[] fsAddrs = sharedData.getNonsharedMulitValuedFSs();
-      modifiedEmbeddedValueFSs = new IntVector();
-      for (int addr : fsAddrs) {
-        if (marker.isModified(addr)) {
-          int encompassingFs = sharedData.getEncompassingFS(addr);
+      TOP[] fss = sharedData.getNonsharedMulitValuedFSs();
+      modifiedEmbeddedValueFSs = new ArrayList<>();
+      
+      for (TOP fs : fss) {
+        if (marker.isModified(fs)) {
+          TOP encompassingFs = sharedData.getEncompassingFS(fs);
+          assert null != encompassingFs;
           if (-1 != enqueueCommonWithoutDeltaAndFilteringCheck(encompassingFs)) {  // only to set type used info and check if already enqueued
             modifiedEmbeddedValueFSs.add(encompassingFs);
           }
-        }   
-      }
+        }    
+      }      
     }
 
     /**
@@ -703,50 +721,43 @@ public class CasSerializerSupport {
       if (null != modifiedEmbeddedValueFSs) {
         enqueueFeaturesOfFSs(modifiedEmbeddedValueFSs);
       }
-      for (IntVector fss : indexedFSs) {
+      for (List<TOP> fss : indexedFSs) {
         if (fss != null) {
           enqueueFeaturesOfFSs(fss);
         }
       }
     }
     
-    private void enqueueFeaturesOfFSs(final IntVector fss) throws SAXException {      
-      final int max = fss.size();
-      for (int i = 0; i < max; i++) {
-        int addr = fss.get(i);
-        int heapVal = cas.getHeapValue(addr);
-        enqueueFeatures(addr, heapVal);
+    private void enqueueFeaturesOfFSs(final List<TOP> fss) throws SAXException {
+      for (TOP fs : fss) {
+        enqueueFeatures(fs);
       }
     }
 
-    int enqueueCommon(int addr) {
-      return enqueueCommon(addr, true);
+    int enqueueCommon(TOP fs) {
+      return enqueueCommon(fs, true);
     }
     
-    int enqueueCommonWithoutDeltaAndFilteringCheck(int addr) {
-      return enqueueCommon(addr, false);
+    int enqueueCommonWithoutDeltaAndFilteringCheck(TOP fs) {
+      return enqueueCommon(fs, false);
     }
     
     /**
-     * 
-     * @param addr
-     * @param doDeltaAndFilteringCheck
+     * @param fs -
+     * @param doDeltaAndFilteringCheck -
      * @return true to have enqueue put onto "queue" and enqueue features
      */
-    private int enqueueCommon(int addr, boolean doDeltaAndFilteringCheck) {
-
-      final int typeCode = cas.getHeapValue(addr);
-      assert(typeCode != 0);
+    private int enqueueCommon(TOP fs, boolean doDeltaAndFilteringCheck) {
       if (doDeltaAndFilteringCheck) {
         if (isDelta) {
-          if (!marker.isNew(addr) && !marker.isModified(addr)) {
+          if (!marker.isNew(fs) && !marker.isModified(fs)) {
             return -1;
           }
         }
       
         if (isFiltering) {
-          String typeName = tsi.ll_getTypeForCode(typeCode).getName();
-          if (filterTypeSystem.getType(typeName) == null) {
+          String typeName = fs._getTypeImpl().getName();
+          if (filterTypeSystem_inner.getType(typeName) == null) {
             return -1; // this type is not in the target type system
           }
         }
@@ -758,25 +769,25 @@ public class CasSerializerSupport {
       //   delta cas; element is not modified, but at some later point, we determine
       //   an embedded feature value (array or list) is modified, which requires we serialize out this
       //   fs as if it was modified.
-     
-      if (!visited_not_yet_written.add(addr)) {
+
+      if (!visited_not_yet_written.add(fs)) {
         // was already visited; means this FS has multiple references, either from FS feature(s) or indexes or both
         // https://issues.apache.org/jira/browse/UIMA-5532
-        if (isDynamicMultiRef || 
-            isArrayOrList(typeCode)) {
-          boolean wasAdded = multiRefFSs.add(addr);
+        if (isDynamicMultiRef || isArrayOrList(fs)) {
+          boolean wasAdded = multiRefFSs.add(fs);
           if (wasAdded) {
-            queue.add(addr);  // if was in indexed set before, isn't in the queue set, but needs to be
+            queue.add(fs);  // if was in indexed set before, isn't in the queue set, but needs to be
           }
         }
         return -1;
       }
       
+      final int typeCode = fs._getTypeCode();
       boolean alreadySet = typeUsed.get(typeCode);
       if (!alreadySet) {
         typeUsed.set(typeCode);
 
-        String typeName = tsi.ll_getTypeForCode(typeCode).getName();
+        String typeName = fs._getTypeImpl().getName();
         XmlElementName newXel = csss.uimaTypeName2XmiElementName(typeName);
 
         if (!needNameSpaces) {   // means if name spaces are not not always needed, then we have to check for collision
@@ -785,72 +796,50 @@ public class CasSerializerSupport {
         typeCode2namespaceNames[typeCode] = newXel;
       }  
       return typeCode;
-    }    
+    }   
+        
     /*
      * Enqueues an indexed FS. Does NOT enqueue features at this point.
      * Doesn't enqueue non-modified FS when delta
      */
-    private void enqueueIndexedFs_only_not_features(int viewNumber, int addr) {
-      if (enqueueCommon(addr) != -1) {
-        IntVector fss = indexedFSs[viewNumber - 1];
+    void enqueueIndexedFs_only_not_features(int viewNumber, TOP fs) {
+      if (enqueueCommon(fs) != -1) {
+        List<TOP> fss = indexedFSs[viewNumber - 1];
         if (null == fss) {
-          indexedFSs[viewNumber - 1] = fss = new IntVector();
+          indexedFSs[viewNumber - 1] = fss = new ArrayList<>();
         }
-        fss.add(addr);
+        fss.add(fs);
       }
     }
 
     /**
      * Enqueue an FS, and everything reachable from it.
      * 
-     * This call is recursive with enqueueFeatures, 
+     * This call is recursive with enqueueFeatures, \
      * and an arbitrary long chain can get stack overflow error.
      * Probably should fix this someday. See https://issues.apache.org/jira/browse/UIMA-106
      * 
      * @param addr
      *          The FS address.
+     * @throws SAXException 
      */
-    private void enqueueFsAndMaybeFeatures(int addr) throws SAXException {    
-      int typeCode = enqueueCommon(addr);
+    private void enqueueFsAndMaybeFeatures(TOP fs) throws SAXException {  
+      if (null == fs) {
+        return;
+      }
+ 
+      int typeCode = enqueueCommon(fs);
       if (typeCode == -1) {
         return;  
       }
-      queue.add(addr);
-      enqueueFeatures(addr, typeCode);
+      queue.add(fs);
+      enqueueFeatures(fs);
       // Also, for FSArrays enqueue the elements  -- not here, done by enqueueFeatures, 1 line above
-//      if (cas.isFSArrayType(typeCode)) { //TODO: won't get parameterized arrays??
-//        enqueueFSArrayElements(addr);
+//      if (fs instanceof FSArray) { //TODO: won't get parameterized arrays? no, there are no parameterized arrays in the impl
+//        enqueueFSArrayElements((FSArray) fs);
 //      }
     }
-    
-    
-    boolean isArrayOrList(int typeCode) {
-      return
-          isArrayType(typeCode) ||
-          isListType(typeCode);
-    }
-    
-    private boolean isArrayType(int typeCode) {
-      return
-          (typeCode == TypeSystemImpl.intArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.floatArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.stringArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.fsArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.booleanArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.byteArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.shortArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.longArrayTypeCode) ||
-          (typeCode == TypeSystemImpl.doubleArrayTypeCode);
-    }
-    
-    private boolean isListType(int typeCode) {
-      return
-          listUtils.isIntListType(typeCode) ||
-          listUtils.isFloatListType(typeCode) ||
-          listUtils.isStringListType(typeCode) ||
-          listUtils.isFsListType(typeCode);
-    }
-    
+            
     /**
      * For lists, 
      *   see if this is a plain list
@@ -868,19 +857,15 @@ public class CasSerializerSupport {
      *         true if there is a loop or another ref from outside the list, for 
      *         one or more list element nodes
      */
-    private boolean isListElementsMultiplyReferenced(int listNode, int featCode) {
-      int typeCode = cas.getHeapValue(listNode);  // could be end
-      int neListType = listUtils.getNeListType(typeCode);
-      int tailFeat = listUtils.getTailFeatCode(typeCode);
+    private boolean isListElementsMultiplyReferenced(TOP listNode) {
       boolean foundCycle = false;
-      int curNode = listNode;
-      while (typeCode == neListType) {  // stop on end or 0
-        if (!visited_not_yet_written.add(curNode)) {
+      CommonList curNode = (CommonList) listNode;
+      while (curNode instanceof NonEmptyList) {  // stop on end or 0
+        if (!visited_not_yet_written.add((TOP) curNode)) {
           foundCycle = true;
           break;
         }
-        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
-        typeCode = cas.getHeapValue(curNode);
+        curNode = curNode.getCommonTail();
       }
       return foundCycle;
     }
@@ -899,27 +884,33 @@ public class CasSerializerSupport {
      *     the item onto the ref "queue".
      *     
      *   (not handled here: ordinary FSs are serialized in-line in JSON with isDynamicMultiRef)
-     *     
-     * @param featCode - the feature, to look up the mulitRefAllowed flag
-     * @param featVal - the List or Array element
-     * @param alreadyVisited true if visited_not_yet_written contains featVal
-     * @param isListNode - 
-     * @param isListFeat - 
+     * 
+     * @param fi - the feature, to look up the multiRefAllowed flag
+     * @param featVal - the List or array element
+     * @param alreadyVisited true if visited_not_yet_written contains the featVal
+     * @param isListNode -
+     * @param isListFeat -
      * @return false if should skip enqueue because this array or list is being serialized inline
-     * @throws SAXException
+     * @throws SAXException -
      */
-    private boolean isMultiRef_enqueue(int featCode, int featVal, boolean alreadyVisited, boolean isListNode, boolean isListFeat) throws SAXException {
+    private boolean isMultiRef_enqueue(FeatureImpl fi, TOP featVal, boolean alreadyVisited, boolean isListNode, boolean isListFeat) throws SAXException {
       if (!isDynamicMultiRef) {
         
         // not JSON dynamic embedding, or dynamic embedding is turned off - compute static embedding just for lists and arrays
-        boolean multiRefAllowed = isStaticMultiRef(featCode) || isListNode;
+        boolean multiRefAllowed = fi.isMultipleReferencesAllowed() || isListNode;
         if (!multiRefAllowed) {
+          // Arrays cannot be resized, so it is ok if an empty array has multiple references to it
+          // even if multiRefAllowed is false because it is effectively immutable.
+          if ((featVal instanceof CommonArrayFS && ((CommonArrayFS<?>) featVal).isEmpty())) {
+            return false; // immutable empty array, no need to enqueue
+          }
+          
           // two cases: a list or non-list
-          // if a list, all the nodes in the list for any being multiply referenced
-          if ((isListFeat && isListElementsMultiplyReferenced(featVal, featCode)) ||
+          // if a list, check/mark all the nodes in the list for any being multiply referenced
+          if ((isListFeat && isListElementsMultiplyReferenced(featVal)) ||
+              // say: multi-ref not allowed, but discovered a multi-ref, will be serialized as separate item
               (!isListFeat && alreadyVisited)) {
-            // say: multi-ref not allowed, but discovered a multi-ref, will be serialized as separate item
-            reportMultiRefWarning(featCode);              
+              reportMultiRefWarning(fi);              
           } else {
             // multi-ref not allowed, and this item is not multiply referenced (so far) 
             // expecting to serialize as embedded (if array or list, or JSON)
@@ -951,52 +942,48 @@ public class CasSerializerSupport {
      * @param insideListNode
      *          true iff the enclosing FS (addr) is a list type
      */
-    private void enqueueFeatures(int addr, int typeCode) throws SAXException {
-      
+    private void enqueueFeatures(TOP fs) throws SAXException {
+
       /**
        * Handle FSArrays
        */
-      if (typeCode == TypeSystemImpl.fsArrayTypeCode) {
-        final int array_size = cas.ll_getArraySize(addr);
-        int position = cas.getArrayStartAddress(addr);
+      if (fs instanceof FSArray) {
         
-        for (int j = 0; j < array_size; j++) {
-          final int fsRef = cas.getHeapValue(position++);
-          if (isFiltering) {
-            String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(fsRef)).getName();
-            if (filterTypeSystem.getType(typeName) == null) {
-              continue;  // don't enqueue this type because it's filtered out
-            }
+        TOP[] theArray = ((FSArray)fs)._getTheArray();
+
+        for (TOP elem : theArray) {
+          if (isFiltering &&
+              (null == filterTypeSystem_inner.getType(elem._getTypeImpl().getName()))) {
+            continue;  // skip because not in filter type system
           }
-          if (fsRef != CASImpl.NULL) {      // null feature values do not refer to any other FS
-            enqueueFsAndMaybeFeatures(fsRef);
+          if (elem != null) {
+            enqueueFsAndMaybeFeatures(elem);
           }
-        }
+        }        
         return;
+      }      
+      
+      boolean insideListNode = fs instanceof CommonList;
+
+      if (fs instanceof UimaSerializable) {
+        ((UimaSerializable)fs)._save_to_cas_data();
       }
-      
-      
-      boolean insideListNode = listUtils.isListType(typeCode);
-      int[] feats = tsi.ll_getAppropriateFeatures(typeCode);
-      for (int feat : feats) {
-        if (isFiltering) {
+      for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
+        if (isFiltering && filterTypeSystem_inner.getFeatureByFullName(fi.getName()) == null) { 
           // skip features that aren't in the target type system
-          String fullFeatName = tsi.ll_getFeatureForCode(feat).getName();
-          if (filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
             continue;
-          }
         }
-        final int featAddr = addr + cas.getFeatureOffset(feat);
-        final int featVal = cas.getHeapValue(featAddr);
-        if (featVal == CASImpl.NULL) {      // null feature values do not refer to any other FS
-          continue;
-        }
+//        final int featAddr = addr + cas.getFeatureOffset(feat);
+//        final int featVal = cas.getHeapValue(featAddr);
+//        if (featVal == CASImpl.NULL) {      // null feature values do not refer to any other FS
+//          continue;
+//        }
 
         // enqueue behavior depends on range type of feature
-        final int fsClass = classifyType(tsi.range(feat));
+        final int fsClass = fi.rangeTypeClass;
         switch (fsClass) {
           case LowLevelCAS.TYPE_CLASS_FS: {
-            enqueueFsAndMaybeFeatures(featVal);
+            enqueueFsAndMaybeFeatures(fs.getFeatureValue(fi));
             break;
           }
           case LowLevelCAS.TYPE_CLASS_INTARRAY:
@@ -1008,6 +995,10 @@ public class CasSerializerSupport {
           case LowLevelCAS.TYPE_CLASS_LONGARRAY:
           case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
+            TOP array = fs.getFeatureValue(fi);  // can be null
+            if (null == array) {
+              continue;
+            }
             // we enqueue arrays if:
             //   when statically using multipleReferencesAllowed flag:
             //     when that says it's multiply referenced; 
@@ -1015,11 +1006,11 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
-            final boolean alreadyVisited = visited_not_yet_written.contains(featVal);
-            if (isMultiRef_enqueue(feat, featVal, alreadyVisited, false, false)) {
-              if (enqueued_multiRef_arrays_or_lists.add(featVal)) {  // only do this once per item
-                enqueueFsAndMaybeFeatures(featVal);  // will add to queue list 1st time multi-ref detected
-                                                // or JSON isDynamicEmbedding is on (whether or not multi-ref)
+            final boolean alreadyVisited = visited_not_yet_written.contains(array);
+            if (isMultiRef_enqueue(fi, array, alreadyVisited, false, false)) {
+              if (enqueued_multiRef_arrays_or_lists.add(array)) {  // only do this once per item
+                enqueueFsAndMaybeFeatures(array);  // will add to queue list 1st time multi-ref detected
+                // or JSON isDynamicEmbedding is on (whether or not multi-ref)
               } else {
                 // for isDynamicMultiRef, this is the first time we detect multiple refs
                 // do this here, because the enqueued_multiRef_arrays_or_lists.add above makes
@@ -1027,15 +1018,14 @@ public class CasSerializerSupport {
                 //   - only needed for isDynamicMultiRef, because only that returns true for isMultiRef_enqueue
                 //     for the "first" instance, when it isn't yet known.
                 if (isDynamicMultiRef) {
-                  multiRefFSs.add(featVal);  
+                  multiRefFSs.add(array);  
                 }
               }
-
             // otherwise, it is singly referenced (so far) and will be embedded
             //   (or has already been enqueued, in dynamic embedding mode), so don't enqueue
-            } else if (fsClass == LowLevelCAS.TYPE_CLASS_FSARRAY && !alreadyVisited) {
+            } else if (array instanceof FSArray && !alreadyVisited) {
               // enqueue any FSs reachable from an FSArray
-              enqueueFSArrayElements(featVal);
+              enqueueFSArrayElements((FSArray) array);
             }
             break;
           }
@@ -1051,10 +1041,15 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
-            final boolean alreadyVisited = visited_not_yet_written.contains(featVal);
-            if (isMultiRef_enqueue(feat, featVal, alreadyVisited, insideListNode, true)) {
-              if (enqueued_multiRef_arrays_or_lists.add(featVal)) {  // only do this once per item
-                enqueueFsAndMaybeFeatures(featVal);
+            TOP startOfList_node = fs.getFeatureValue(fi);
+            if (null == startOfList_node) {
+              // the feature, whose type is one of the lists, has a null value, so there's nothing to enqueue
+              continue;
+            }
+            final boolean alreadyVisited = visited_not_yet_written.contains(startOfList_node);
+            if (isMultiRef_enqueue(fi, startOfList_node, alreadyVisited, insideListNode, true)) {
+              if (enqueued_multiRef_arrays_or_lists.add(startOfList_node)) {  // only do this once per item
+                enqueueFsAndMaybeFeatures(startOfList_node);
               } else {
                 // for isDynamicMultiRef, this is the first time we detect multiple refs
                 // do this here, because the enqueued_multiRef_arrays_or_lists.add above makes
@@ -1062,12 +1057,12 @@ public class CasSerializerSupport {
                 //   - only needed for isDynamicMultiRef, because only that returns true for isMultiRef_enqueue
                 //     for the "first" instance, when it isn't yet known.
                 if (isDynamicMultiRef) {
-                  multiRefFSs.add(featVal);  
+                  multiRefFSs.add(startOfList_node);  
                 }
-              }
-            } else if (fsClass == TYPE_CLASS_FSLIST && !alreadyVisited) {
+              }              
+            } else if (startOfList_node instanceof FSList && !alreadyVisited) {
               // also, we need to enqueue any FSs reachable from an FSList
-              enqueueFSListElements(featVal);
+              enqueueFSListElements((FSList) startOfList_node);
             }
             break;
           }
@@ -1081,32 +1076,23 @@ public class CasSerializerSupport {
      * @param addr
      *          Address of an FSArray
      */
-    private void enqueueFSArrayElements(int addr) throws SAXException {
-      final int size = cas.ll_getArraySize(addr);
-      int pos = cas.getArrayStartAddress(addr);
-      int val;
-      for (int i = 0; i < size; i++) {
-        val = cas.getHeapValue(pos);
-        if (val != CASImpl.NULL) {
-          enqueueFsAndMaybeFeatures(val);
+    private void enqueueFSArrayElements(FSArray fsArray) throws SAXException {
+       for (TOP elem : fsArray._getTheArray()) {
+        if (elem != null) {
+          enqueueFsAndMaybeFeatures(elem);
         }
-        ++pos;
       }
     }
 
     /**
-     * Enqueues all FS reachable from an FSList. This does NOT include the list nodes themselves.
+     * Enqueues all Head values of FSList reachable from an FSList. 
+     * This does NOT include the list nodes themselves.
      * 
      * @param addr
      *          Address of an FSList
      */
-    private void enqueueFSListElements(int addr) throws SAXException {
-      int[] addrArray = listUtils.fsListToAddressArray(addr);
-      for (int j = 0; j < addrArray.length; j++) {
-        if (addrArray[j] != CASImpl.NULL) {
-          enqueueFsAndMaybeFeatures(addrArray[j]);
-        }
-      }
+    private void enqueueFSListElements(FSList<TOP> node) throws SAXException {
+      node.walkList_saxException(n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList<TOP>)n).getHead()), null);
     }
 
     /*
@@ -1119,17 +1105,16 @@ public class CasSerializerSupport {
       if (null != modifiedEmbeddedValueFSs) {
         encodeFSs(modifiedEmbeddedValueFSs);
       }
-      for (IntVector fss : indexedFSs) {
+      for (List<TOP> fss : indexedFSs) {
         if (fss != null) {
           encodeFSs(fss);
         }
       }
     }
     
-    private void encodeFSs(final IntVector fss) throws Exception {
-      final int max = fss.size();
-      for (int i = 0; i < max; i++) {
-        encodeFS(fss.get(i));
+    private void encodeFSs(final List<TOP> fss) throws Exception {
+      for (TOP fs : fss) {
+        encodeFS(fs);
       }
     }
 
@@ -1144,19 +1129,18 @@ public class CasSerializerSupport {
      *   later).  The isWritten test prevents dupl writes
      */
     public void encodeQueued() throws Exception {
-      int[] queueArray = queue.toArray();
-      for (int addr : queueArray) {
+   
+      for (TOP fs :  queue) {
         // for some serializers, things could be enqueued multiple times in the ref queue
         // so check if already written, and if so, skip
         //    Case where this happens: JSON serialization with dynamically determined single ref embedding
         //    - have to enqueue to check if multiple refs, even if embedding eventually
-        if (visited_not_yet_written.contains(addr)) {
-          
+        if (visited_not_yet_written.contains(fs)) {        
           // skip if JSON dynamically computing whether or not to embed things and there's only one item - it will be embedded instead
-          if (isDynamicMultiRef && !multiRefFSs.contains(addr)) {
+          if (isDynamicMultiRef && !multiRefFSs.contains(fs)) {
             continue;  // skip writing embeddable item (for JSON dynamic embedding) from Q; will be written from reference
           }
-          encodeFS(addr);
+          encodeFS(fs);
         }
       }
     }
@@ -1176,29 +1160,16 @@ public class CasSerializerSupport {
 //      }
 //      return r;
 //    }
-  
-    private int compareInts(int i1, int i2) {
-      return (i1 == i2) ? 0 :
-             (i1 >  i2) ? 1 : -1;
-    }
-    
-    
-    private int compareFeat(int o1, int o2, int featCode) {
-      final int f1 = cas.ll_getIntValue(o1, featCode);
-      final int f2 = cas.ll_getIntValue(o2, featCode);
-      return compareInts(f1, f2);
-    }
-    
+          
     /** 
-     * sort a view, by type and then by begin/end asc/des for subtypes of Annotation,
+     * Called for JSon Serialization
+     * Sort a view, by type and then by begin/end asc/des for subtypes of Annotation,
      *  then by id
      */
-    public final Comparator<Integer> sortFssByType = 
-        new Comparator<Integer>() {
-          public int compare(Integer o1, Integer o2) {
-            final int typeCode1 = cas.getHeapValue(o1);
-            final int typeCode2 = cas.getHeapValue(o2);
-            int c = compareInts(typeCode1, typeCode2);
+    public final Comparator<TOP> sortFssByType = 
+        new Comparator<TOP>() {
+          public int compare(TOP fs1, TOP fs2) {
+            int c = Integer.compare(fs1._getTypeImpl().getCode(), fs2._getTypeImpl().getCode());
             if (c != 0) {
               return c;
             }
@@ -1208,13 +1179,21 @@ public class CasSerializerSupport {
 //              if (c != 0) {
 //                return c;
 //              }
-            final boolean isAnnot = tsi.subsumes(TypeSystemImpl.annotTypeCode, typeCode1);
-            if (isAnnot) {
-              c = compareFeat(o1, o2, TypeSystemImpl.startFeatCode);
-              return (c != 0) ? c : compareFeat(o2, o1, TypeSystemImpl.endFeatCode);  // reverse order
+
+            if (fs1 instanceof Annotation) {
+              Annotation fs1a = (Annotation) fs1;
+              Annotation fs2a = (Annotation) fs2;
+              
+              c = Integer.compare(fs1a.getBegin(), fs2a.getBegin());
+              if (c != 0) return c;
+              
+              c = Integer.compare(fs2a.getEnd(), fs1a.getEnd()); // reverse order
+              if (c != 0) return c;
+              
+              // fall thru to do id compare
             }
-            // not sofa nor annotation
-            return compareInts(o1, o2);  // return in @id order
+            // not annotation, or equal begin/end/type
+            return Integer.compare(fs1._id, fs2._id);  // return in @id order
           }
       };
       
@@ -1236,30 +1215,29 @@ public class CasSerializerSupport {
      *  a generated feature name, "@collection" whose value is 
      *  the list or array of values associated with that type.
      *   
-     * @param addr
-     *          The address to be encoded.
+     * @param fs the FS to be encoded.
      * @throws SAXException passthru
      */
-    public void encodeFS(int addr) throws Exception {
-      final int typeCode = cas.getHeapValue(addr);
+    public void encodeFS(TOP fs) throws Exception {
+      final int typeCode = fs._getTypeImpl().getCode();
 
-      final int typeClass = classifyType(typeCode);
+      final int typeClass = classifyType(fs._getTypeImpl());
       // for JSON, the items reachable via indexes are written first,
       //   and isIndexId = false
       //   The items reachable via refs are written next, and 
       //   isIndexId = true;
-      boolean isIndexId = csss.writeFsStart(addr, typeCode);
+      boolean isIndexId = csss.writeFsStart(fs, typeCode);
       
       // write the id if needed for reference
       //   - if it is not ref'd via index, and JSON is computing dynamic refs, and it is multiply ref'd
       //   - skip if not JSON dynamic ref, or in index, or not multiply ref'd
-      if (!isIndexId && isDynamicMultiRef && multiRefFSs.contains(addr)) {
-        csss.writeFsRef(addr);        
+      if (!isIndexId && isDynamicMultiRef && multiRefFSs.contains(fs)) {
+        csss.writeFsRef(fs);        
       } else {
-        visited_not_yet_written.remove(addr);  // mark as written
+        visited_not_yet_written.remove(fs);  // mark as written
         switch (typeClass) {
           case LowLevelCAS.TYPE_CLASS_FS: 
-            csss.writeFs(addr, typeCode);
+            csss.writeFs(fs, typeCode);
             break;
           
             
@@ -1267,7 +1245,7 @@ public class CasSerializerSupport {
           case TYPE_CLASS_FLOATLIST:
           case TYPE_CLASS_STRINGLIST:
           case TYPE_CLASS_FSLIST: 
-            csss.writeListsAsIndividualFSs(addr, typeCode);
+            csss.writeListsAsIndividualFSs(fs, typeCode);
             break;
                   
           case LowLevelCAS.TYPE_CLASS_FSARRAY:
@@ -1279,7 +1257,7 @@ public class CasSerializerSupport {
           case LowLevelCAS.TYPE_CLASS_LONGARRAY:
           case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
           case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
-            csss.writeArrays(addr, typeCode, typeClass);
+            csss.writeArrays(fs, typeCode, typeClass);
             break;
           
           default: 
@@ -1289,48 +1267,6 @@ public class CasSerializerSupport {
         csss.writeEndOfIndividualFs();
       }
     }
-    
-    int filterType(int addr) {
-      if (isFiltering) {
-        String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
-        if (filterTypeSystem.getType(typeName) == null) {
-          return 0;
-        }
-      }
-      return addr;
-    }
-    
-        
-    /**
-     * Classifies a type. This returns an integer code identifying the type as one of the primitive
-     * types, one of the array types, one of the list types, or a generic FS type (anything else).
-     * <p>
-     * The {@link LowLevelCAS#ll_getTypeClass(int)} method classifies primitives and array types,
-     * but does not have a special classification for list types, which we need for XMI
-     * serialization. Therefore, in addition to the type codes defined on {@link LowLevelCAS}, this
-     * method can return one of the type codes TYPE_CLASS_INTLIST, TYPE_CLASS_FLOATLIST,
-     * TYPE_CLASS_STRINGLIST, or TYPE_CLASS_FSLIST.
-     * 
-     * @param type
-     *          the type to classify
-     * @return one of the TYPE_CLASS codes defined on {@link LowLevelCAS} or on this interface.
-     */
-    public final int classifyType(int type) {
-      // For most most types
-      if (listUtils.isIntListType(type)) {
-        return TYPE_CLASS_INTLIST;
-      }
-      if (listUtils.isFloatListType(type)) {
-        return TYPE_CLASS_FLOATLIST;
-      }
-      if (listUtils.isStringListType(type)) {
-        return TYPE_CLASS_STRINGLIST;
-      }
-      if (listUtils.isFsListType(type)) {
-        return TYPE_CLASS_FSLIST;
-      }
-      return cas.ll_getTypeClass(type);
-    }
 
     int getElementCountForSharedData() {
       return (sharedData == null) ? 0 : sharedData.getOutOfTypeSystemElements().size();
@@ -1339,31 +1275,27 @@ public class CasSerializerSupport {
     /**
      * Get the XMI ID to use for an FS.
      * 
-     * @param addr
-     *          address of FS
-     * @return XMI ID. If addr == CASImpl.NULL, returns null
+     * @param fs the FS
+     * @return XMI ID or null
      */
-    public String getXmiId(int addr) {
-      int v = getXmiIdAsInt(addr);
+    public String getXmiId(TOP fs) {
+      int v = getXmiIdAsInt(fs);
       return (v == 0) ? null : Integer.toString(v);
     }
     
-    public int getXmiIdAsInt(int addr) {
-      if (addr == CASImpl.NULL) {
+    public int getXmiIdAsInt(TOP fs) {
+      if (fs == null) {
         return 0;
       }
-      if (isFiltering) { // return as null any references to types not in target TS
-        String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
-        if (filterTypeSystem.getType(typeName) == null) {
+      if (isFiltering && null == filterTypeSystem_inner.getType(fs._getTypeImpl().getName())) { // return as null any references to types not in target TS
           return 0;
-        }
       }
       
       if (sharedData == null) {
         // in the absence of outside information, just use the FS address
-        return addr;
+        return fs._id;
       } else {
-        return sharedData.getXmiIdAsInt(addr);
+        return sharedData.getXmiIdAsInt(fs);
       }
       
     }
@@ -1422,10 +1354,40 @@ public class CasSerializerSupport {
       return r + xe.localName;
     }
     
-    public boolean isStaticMultiRef(int featCode) {
-      return tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed();
+    public boolean isStaticMultiRef(FeatureImpl fi) {
+      return fi.isMultipleReferencesAllowed();
     }
 
 
   }  
+  
+  /**
+   * Classifies a type. This returns an integer code identifying the type as one of the primitive
+   * types, one of the array types, one of the list types, or a generic FS type (anything else).
+   * <p>
+   * The {@link LowLevelCAS#ll_getTypeClass(int)} method classifies primitives and array types,
+   * but does not have a special classification for list types, which we need for XMI
+   * serialization. Therefore, in addition to the type codes defined on {@link LowLevelCAS}, this
+   * method can return one of the type codes TYPE_CLASS_INTLIST, TYPE_CLASS_FLOATLIST,
+   * TYPE_CLASS_STRINGLIST, or TYPE_CLASS_FSLIST.
+   * 
+   * @param ti the type to classify
+   * @return one of the TYPE_CLASS codes defined on {@link LowLevelCAS} or on this interface.
+   */
+  public static final int classifyType(TypeImpl ti) {
+    switch (ti.getCode()) {
+    case TypeSystemConstants.intListTypeCode: return TYPE_CLASS_INTLIST;
+    case TypeSystemConstants.floatListTypeCode: return TYPE_CLASS_FLOATLIST;
+    case TypeSystemConstants.stringListTypeCode: return TYPE_CLASS_STRINGLIST;
+    case TypeSystemConstants.fsListTypeCode: return TYPE_CLASS_FSLIST;
+    default : return TypeSystemImpl.getTypeClass(ti);
+    }
+  }
+  
+  private static boolean isArrayOrList(TOP fs) {
+    return fs instanceof CommonPrimitiveArray ||
+           fs instanceof FSArray ||
+           fs instanceof CommonList;
+  }
+
 }

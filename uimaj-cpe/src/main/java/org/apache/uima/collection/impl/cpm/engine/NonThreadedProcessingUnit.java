@@ -57,51 +57,76 @@ import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
 
+
+/**
+ * The Class NonThreadedProcessingUnit.
+ */
 public class NonThreadedProcessingUnit {
+  
+  /** The thread state. */
   public int threadState = 0;
 
+  /** The cas pool. */
   protected CPECasPool casPool;
 
+  /** The relase CAS. */
   protected boolean relaseCAS = false;
 
+  /** The cpm. */
   protected CPMEngine cpm = null;
 
+  /** The work queue. */
   protected BoundedWorkQueue workQueue = null;
 
+  /** The output queue. */
   protected BoundedWorkQueue outputQueue = null;
 
+  /** The m converter. */
   protected CasConverter mConverter;
 
+  /** The processing unit process trace. */
   protected ProcessTrace processingUnitProcessTrace;
 
+  /** The process containers. */
   protected LinkedList processContainers = new LinkedList();
 
+  /** The num to process. */
   protected long numToProcess = 0;
 
+  /** The cas list. */
   protected CAS[] casList;
 
+  /** The status cb L. */
   protected ArrayList statusCbL = new ArrayList();
 
+  /** The notify listeners. */
   protected boolean notifyListeners = false;
 
+  /** The conversion cas. */
   protected CAS conversionCas = null;
 
+  /** The artifact. */
   protected Object[] artifact = null;
 
+  /** The conversion cas array. */
   protected CAS[] conversionCasArray;
 
+  /** The timer. */
   protected UimaTimer timer;
 
+  /** The thread id. */
   protected String threadId = null;
 
+  /** The cpe configuration. */
   protected CpeConfiguration cpeConfiguration = null;
 
+  /** The cas cache. */
   private CAS[] casCache = null;
 
   
   /**
-   * Initialize the PU
-   * 
+   * Initialize the PU.
+   *
    * @param acpm -
    *          component managing life cycle of the CPE
    * @param aInputQueue -
@@ -134,6 +159,11 @@ public class NonThreadedProcessingUnit {
     }
   }
 
+  /**
+   * Instantiates a new non threaded processing unit.
+   *
+   * @param acpm the acpm
+   */
   public NonThreadedProcessingUnit(CPMEngine acpm) {
     cpm = acpm;
     try {
@@ -146,8 +176,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Alternative method of providing a queue from which this PU will read bundle of Cas
-   * 
+   * Alternative method of providing a queue from which this PU will read bundle of Cas.
+   *
    * @param aInputQueue -
    *          read queue
    */
@@ -156,8 +186,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Alternative method of providing a queue where this PU will deposit results of analysis
-   * 
+   * Alternative method of providing a queue where this PU will deposit results of analysis.
+   *
    * @param aOutputQueue -
    *          queue to write to
    */
@@ -167,8 +197,8 @@ public class NonThreadedProcessingUnit {
 
   /**
    * Alternative method of providing the reference to the component managing the lifecycle of the
-   * CPE
-   * 
+   * CPE.
+   *
    * @param acpm -
    *          reference to the contrlling engine
    */
@@ -196,8 +226,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Set a flag indicating if notifications should be made via configured Listeners
-   * 
+   * Set a flag indicating if notifications should be made via configured Listeners.
+   *
    * @param aDoNotify -
    *          true if notification is required, false otherwise
    */
@@ -226,8 +256,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Removes given listener from the list of listeners
-   * 
+   * Removes given listener from the list of listeners.
+   *
    * @param aListener -
    *          object to remove from the list
    */
@@ -236,8 +266,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Plugs in ProcessTrace object used to collect statistics
-   * 
+   * Plugs in ProcessTrace object used to collect statistics.
+   *
    * @param aProcessingUnitProcessTrace -
    *          object to compile stats
    */
@@ -247,8 +277,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Plugs in custom timer used by the PU for getting time
-   * 
+   * Plugs in custom timer used by the PU for getting time.
+   *
    * @param aTimer -
    *          custom timer to use
    */
@@ -340,6 +370,14 @@ public class NonThreadedProcessingUnit {
     }
   }
 
+  /**
+   * Analyze.
+   *
+   * @param aCasObjectList the a cas object list
+   * @param pTrTemp the tr temp
+   * @return true, if successful
+   * @throws Exception the exception
+   */
   protected boolean analyze(Object[] aCasObjectList, ProcessTrace pTrTemp) throws Exception // throws
   // ResourceProcessException,
   // IOException,
@@ -574,27 +612,31 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * 
-   * @param aFlag -
+   * Sets the release CAS flag.
+   *
+   * @param aFlag the new release CAS flag
    */
   public void setReleaseCASFlag(boolean aFlag) {
     relaseCAS = aFlag;
   }
 
   /**
-   * @param aPool -
+   * Sets the cas pool.
+   *
+   * @param aPool the new cas pool
    */
   public void setCasPool(CPECasPool aPool) {
     casPool = aPool;
   }
 
   /**
-   * 
-   * @param aCasObjectList
-   * @param isCasObject
-   * @param casObjects
-   * @param aProcessTr
-   * @param doneAlready
+   * Post analysis.
+   *
+   * @param aCasObjectList the a cas object list
+   * @param isCasObject the is cas object
+   * @param casObjects the cas objects
+   * @param aProcessTr the a process tr
+   * @param doneAlready the done already
    * @throws Exception -
    */
   private void postAnalysis(Object[] aCasObjectList, boolean isCasObject, Object[] casObjects,
@@ -710,12 +752,26 @@ public class NonThreadedProcessingUnit {
     }
   }
 
+  /**
+   * Do release cas processor.
+   *
+   * @param aContainer the a container
+   * @param aCasProcessor the a cas processor
+   */
   private void doReleaseCasProcessor(ProcessingContainer aContainer, CasProcessor aCasProcessor) {
     if (aCasProcessor != null && aContainer != null) {
       aContainer.releaseCasProcessor(aCasProcessor);
     }
   }
 
+  /**
+   * Do end of batch.
+   *
+   * @param aContainer the a container
+   * @param aProcessor the a processor
+   * @param aProcessTr the a process tr
+   * @param howManyCases the how many cases
+   */
   private void doEndOfBatch(ProcessingContainer aContainer, CasProcessor aProcessor,
           ProcessTrace aProcessTr, int howManyCases) {
     String containerName = aContainer.getName();
@@ -911,12 +967,13 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * 
-   * @param container
-   * @param processor
-   * @param aCasObjectList
-   * @param pTrTemp
-   * @param isCasObject
+   * Invoke cas object cas processor.
+   *
+   * @param container the container
+   * @param processor the processor
+   * @param aCasObjectList the a cas object list
+   * @param pTrTemp the tr temp
+   * @param isCasObject the is cas object
    * @throws Exception -
    */
   private void invokeCasObjectCasProcessor(ProcessingContainer container, CasProcessor processor,
@@ -1024,10 +1081,11 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * 
-   * @param casIndex
-   * @param aContainerName
-   * @param aCasObjectList
+   * Convert cas data to cas object.
+   *
+   * @param casIndex the cas index
+   * @param aContainerName the a container name
+   * @param aCasObjectList the a cas object list
    * @throws Exception -
    */
   private void convertCasDataToCasObject(int casIndex, String aContainerName,
@@ -1074,13 +1132,14 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * 
-   * @param container
-   * @param processor
-   * @param aCasObjectList
-   * @param pTrTemp
-   * @param isCasObject
-   * @param retry
+   * Invoke cas data cas processor.
+   *
+   * @param container the container
+   * @param processor the processor
+   * @param aCasObjectList the a cas object list
+   * @param pTrTemp the tr temp
+   * @param isCasObject the is cas object
+   * @param retry the retry
    * @throws Exception -
    */
   private void invokeCasDataCasProcessor(ProcessingContainer container, CasProcessor processor,
@@ -1184,6 +1243,12 @@ public class NonThreadedProcessingUnit {
 
   }
 
+  /**
+   * Container disabled.
+   *
+   * @param aContainer the a container
+   * @return true, if successful
+   */
   private boolean containerDisabled(ProcessingContainer aContainer) {
     synchronized (aContainer) {
       // Check to see if the CasProcessor is available for processing
@@ -1203,9 +1268,10 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Check if the CASProcessor status is available for processing
-   * @param aStatus -
-   * @return -
+   * Check if the CASProcessor status is available for processing.
+   *
+   * @param aStatus the a status
+   * @return true, if is processor ready
    */
   protected boolean isProcessorReady(int aStatus) {
     if (aStatus == Constants.CAS_PROCESSOR_READY || aStatus == Constants.CAS_PROCESSOR_RUNNING) {
@@ -1215,6 +1281,14 @@ public class NonThreadedProcessingUnit {
     return false;
   }
 
+  /**
+   * Filter out the CAS.
+   *
+   * @param aContainer the a container
+   * @param isCasObject the is cas object
+   * @param aCasObjectList the a cas object list
+   * @return true, if successful
+   */
   private boolean filterOutTheCAS(ProcessingContainer aContainer, boolean isCasObject,
           Object[] aCasObjectList) {
     // Check if any of the Cas'es in the set has a required feature structure.
@@ -1235,8 +1309,8 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * Notifies Listeners of the fact that the pipeline has finished processing the current set Cas'es
-   * 
+   * Notifies Listeners of the fact that the pipeline has finished processing the current set Cas'es.
+   *
    * @param aCas -
    *          object containing an array of OR a single instance of Cas
    * @param isCasObject -
@@ -1327,6 +1401,9 @@ public class NonThreadedProcessingUnit {
 
   }
 
+  /**
+   * Clear cas cache.
+   */
   private void clearCasCache() {
     if (casCache != null) {
       for (int index = 0; index < casCache.length; index++) {
@@ -1361,16 +1438,13 @@ public class NonThreadedProcessingUnit {
    * pipelines shareing a common service. If this service dies (Socket Down), only one thread should
    * initiate service restart. While the service is being restarted no invocations on the service
    * should be done. Containers will be resumed on successfull service restart.
-   * 
+   *
    * @param aContainer -
    *          a container that manages the current Cas Processor.
-   * @param aProcessor -
-   *          a Cas Processor to be disabled
+   * @param aException the a exception
    * @param aThreadId -
    *          id of the current thread
-   * 
-   * @throws Exception -
-   *           exception
+   * @return true, if successful
    */
   private boolean pauseContainer(ProcessingContainer aContainer, Exception aException,
           String aThreadId) {
@@ -1383,11 +1457,12 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * 
-   * @param aContainer
-   * @param aProcessor
-   * @param aProcessTr
-   * @param ex
+   * Handle service exception.
+   *
+   * @param aContainer the a container
+   * @param aProcessor the a processor
+   * @param aProcessTr the a process tr
+   * @param ex the ex
    * @throws Exception -
    */
   private void handleServiceException(ProcessingContainer aContainer, CasProcessor aProcessor,
@@ -1487,10 +1562,11 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * 
-   * @param aContainer
-   * @param aCasObjectList
-   * @param isLastCP
+   * Handle skip cas processor.
+   *
+   * @param aContainer the a container
+   * @param aCasObjectList the a cas object list
+   * @param isLastCP the is last CP
    * @throws Exception -
    */
   private void handleSkipCasProcessor(ProcessingContainer aContainer, Object[] aCasObjectList,
@@ -1558,13 +1634,12 @@ public class NonThreadedProcessingUnit {
   /**
    * Conditionally, releases CASes back to the CAS pool. The release only occurs if the Cas
    * Processor is the last in the processing chain.
-   * 
+   *
    * @param aCasList -
    *          list of CASes to release
    * @param lastProcessor -
    *          determines if the release takes place
-   * @param aContainer -
-   *          current container
+   * @param aName the a name
    */
   private void releaseCases(Object aCasList, boolean lastProcessor, String aName) // ProcessingContainer
   // aContainer)

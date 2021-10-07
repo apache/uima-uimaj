@@ -26,30 +26,49 @@ import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm;
 
+
 /**
  * Instances of this class model the 3 varients of configuration parameter sets.
  * 
  */
 public class ConfigGroup {
 
+  /** The cpd. */
   private ConfigurationParameterDeclarations cpd;
 
+  /** The kind. */
   private int kind;
 
+  /** The named cg. */
   private ConfigurationGroup namedCg = null;
 
+  /** The Constant NOT_IN_ANY_GROUP. */
   public final static int NOT_IN_ANY_GROUP = 1;
 
+  /** The Constant COMMON. */
   public final static int COMMON = 2;
 
+  /** The Constant NAMED_GROUP. */
   public final static int NAMED_GROUP = 4;
 
+  /**
+   * Instantiates a new config group.
+   *
+   * @param aCpd the a cpd
+   * @param aKind the a kind
+   */
   public ConfigGroup(ConfigurationParameterDeclarations aCpd, int aKind) {
     cpd = aCpd;
     kind = aKind;
     fixupCpd();
   }
 
+  /**
+   * Instantiates a new config group.
+   *
+   * @param aCpd the a cpd
+   * @param aNamedCg the a named cg
+   */
   public ConfigGroup(ConfigurationParameterDeclarations aCpd, ConfigurationGroup aNamedCg) {
     cpd = aCpd;
     kind = NAMED_GROUP;
@@ -57,6 +76,9 @@ public class ConfigGroup {
     fixupCpd();
   }
 
+  /**
+   * Fixup cpd.
+   */
   private void fixupCpd() {
     if (null == cpd.getConfigurationParameters())
       cpd.setConfigurationParameters(AbstractSection.configurationParameterArray0);
@@ -71,6 +93,11 @@ public class ConfigGroup {
     }
   }
 
+  /**
+   * Gets the config parms.
+   *
+   * @return the config parms
+   */
   public ConfigurationParameter[] getConfigParms() {
     switch (kind) {
       case NOT_IN_ANY_GROUP:
@@ -84,6 +111,11 @@ public class ConfigGroup {
     }
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   public String getName() {
     switch (kind) {
       case NOT_IN_ANY_GROUP:
@@ -97,6 +129,11 @@ public class ConfigGroup {
     }
   }
 
+  /**
+   * Gets the name array.
+   *
+   * @return the name array
+   */
   public String[] getNameArray() {
     switch (kind) {
       case NOT_IN_ANY_GROUP:
@@ -110,16 +147,31 @@ public class ConfigGroup {
     }
   }
 
+  /**
+   * Sets the name array.
+   *
+   * @param names the new name array
+   */
   public void setNameArray(String[] names) {
     if (kind != NAMED_GROUP)
       throw new InternalErrorCDE("invalid call");
     namedCg.setNames(names);
   }
 
+  /**
+   * Gets the kind.
+   *
+   * @return the kind
+   */
   public int getKind() {
     return kind;
   }
 
+  /**
+   * Gets the cpd.
+   *
+   * @return the cpd
+   */
   public ConfigurationParameterDeclarations getCPD() {
     return cpd;
   }

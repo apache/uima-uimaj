@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -33,6 +33,27 @@
   <!-- continuation lines need to start in col 1 else manifest has extra blanks -->
   <description>Adds launch support for Analysis Engines </description>
   <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+    even though the <scm> element that follows is exactly the
+    same as those in super poms, it cannot be inherited because
+    there is some special code that incorrectly computes the
+    connection elements from the chain of parent poms, if this is omitted.
+
+    Keeping this a bit factored allows cutting/pasting the <scm>
+    element, and just changing the following two properties -->
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
@@ -54,14 +75,12 @@
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jdt.debug.ui</artifactId>
       <version>[3.8.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jface</artifactId>
@@ -89,60 +108,48 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.3.0</version>  <!-- override 2.3.7 - getting unresolved refs to some dependencies, fixed by 3.0.1 -->
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
             <Export-Package>
               org.apache.uima.ep_launcher
             </Export-Package>
-             
-            <!-- handle split packages in Eclipse.
-               We do this by using Require-Bundle, and excluding from the Import-Package those
-                 split packages covered by those bundles - this is required by OSGi.
-                                
-                org.eclipse.core.runtime has combined apis (that were split in later 
-                  point releases of 3.x)
-            -->
             <Bundle-Activator>org.apache.uima.ep_launcher.LauncherPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.launcher;singleton:=true</Bundle-SymbolicName>
-            <!-- Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment invalid value : JavaSE-1.8 --> 
-            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
-            <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
+            <Require-Bundle>
+              org.eclipse.core.runtime
+            </Require-Bundle>
             <Import-Package>
-              !org.eclipse.core.runtime,                 
-			  org.eclipse.core.resources,
-			  org.eclipse.core.variables,
-			  org.eclipse.core.commands.common,
-			  org.eclipse.debug.core,
-			  org.eclipse.debug.ui,
-			  org.eclipse.debug.ui.sourcelookup,
-			  org.eclipse.debug.core.model,
-			  org.eclipse.jdt.debug.ui.launchConfigurations,
-			  org.eclipse.jdt.launching,
-			  org.eclipse.jface.layout,
-			  org.eclipse.jface.preference,
-			  org.eclipse.jface.viewers,
-			  org.eclipse.jface.window,
-			  org.eclipse.jface.dialogs,
-			  org.eclipse.swt,
-			  org.eclipse.swt.events,
-			  org.eclipse.swt.layout,
-			  org.eclipse.swt.widgets,
-			  org.eclipse.ui,
-			  org.eclipse.ui.dialogs,
-			  org.eclipse.ui.model,
-			  org.eclipse.ui.plugin,
-			  org.osgi.framework;version="1.3"
+              !org.eclipse.core.runtime,
+              org.eclipse.core.resources,
+              org.eclipse.core.variables,
+              org.eclipse.core.commands.common,
+              org.eclipse.debug.core,
+              org.eclipse.debug.ui,
+              org.eclipse.debug.ui.sourcelookup,
+              org.eclipse.debug.core.model,
+              org.eclipse.jdt.debug.ui.launchConfigurations,
+              org.eclipse.jdt.launching,
+              org.eclipse.jface.layout,
+              org.eclipse.jface.preference,
+              org.eclipse.jface.viewers,
+              org.eclipse.jface.window,
+              org.eclipse.jface.dialogs,
+              org.eclipse.swt,
+              org.eclipse.swt.events,
+              org.eclipse.swt.layout,
+              org.eclipse.swt.widgets,
+              org.eclipse.ui,
+              org.eclipse.ui.dialogs,
+              org.eclipse.ui.model,
+              org.eclipse.ui.plugin,
+              org.osgi.framework;version="1.3"
             </Import-Package>
-			
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Plugin-Class>org.apache.uima.ep_launcher.LauncherPlugin</Plugin-Class>
           </instructions>
         </configuration>
-      </plugin>      		
-		</plugins>
-	</build>
+      </plugin>
+    </plugins>
+  </build>
 </project>

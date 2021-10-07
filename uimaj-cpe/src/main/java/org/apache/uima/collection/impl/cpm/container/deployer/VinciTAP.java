@@ -61,6 +61,7 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
+
 /**
  * Vinci Proxy to remote Cas Processor vinci service. This component is used for both local(
  * managed) and remote ( unmanaged) Cas Processors. Its main purpose is to invoke remote APIs on Cas
@@ -69,53 +70,75 @@ import org.apache.vinci.transport.document.AFrame;
  */
 
 public class VinciTAP {
+  
+  /** The service host. */
   private String serviceHost;
 
+  /** The service port. */
   private String servicePort;
 
+  /** The fenced process PID. */
   private String fencedProcessPID = null;
 
+  /** The vns host. */
   private String vnsHost;
 
+  /** The vns port. */
   private String vnsPort;
 
+  /** The service name. */
   private String serviceName;
 
+  /** The conn. */
   private BaseClient conn = null;
 
+  /** The timeout. */
   private int timeout = 300; // 300 second timeout
 
+  /** The total cas to frame time. */
   private long totalCasToFrameTime = 0;
 
+  /** The total annotation time. */
   private long totalAnnotationTime = 0;
 
+  /** The total frame to cas time. */
   private long totalFrameToCasTime = 0;
 
+  /** The total serialize time. */
   private long totalSerializeTime = 0;
 
+  /** The total de serialize time. */
   private long totalDeSerializeTime = 0;
 
+  /** The total round trip time. */
   private long totalRoundTripTime = 0;
 
+  /** The uima timer. */
   private UimaTimer uimaTimer = null;
 
+  /** The content tag. */
   // Default Content Tag
   private String contentTag = "Detag:DetagContent";
 
+  /** The keys 2 drop. */
   private String[] keys2Drop = { "" };
 
+  /** The vinci cas data converter. */
   private VinciCasDataConverter vinciCasDataConverter = new VinciCasDataConverter(
           org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
           org.apache.uima.collection.impl.cpm.Constants.DOC_ID,
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG,
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE, contentTag, true);
 
+  /**
+   * Instantiates a new vinci TAP.
+   */
   public VinciTAP() {
   }
 
   /**
-   * Defines subject of analysis
-   * 
+   * Defines subject of analysis.
+   *
    * @param aContentTag -
    *          subject of analysis
    */
@@ -124,8 +147,8 @@ public class VinciTAP {
   }
 
   /**
-   * Defines a custom timer to use for stats
-   * 
+   * Defines a custom timer to use for stats.
+   *
    * @param aTimer -
    *          custom timer
    */
@@ -134,8 +157,8 @@ public class VinciTAP {
   }
 
   /**
-   * Defines types as array that will not be sent to the Cas Processor service
-   * 
+   * Defines types as array that will not be sent to the Cas Processor service.
+   *
    * @param aKeys2Drop -
    *          array of types excluded from the request
    */
@@ -276,8 +299,8 @@ public class VinciTAP {
   }
 
   /**
-   * Define the max time in millis the proxy will wait for response from remote service
-   * 
+   * Define the max time in millis the proxy will wait for response from remote service.
+   *
    * @param aTimeout -
    *          number of millis to wait
    */
@@ -287,10 +310,10 @@ public class VinciTAP {
 
   /**
    * Connects to external service using service name as a way to locate it.
-   * 
+   *
    * @param aServiceName -
    *          name of the service
-   * @throws ServiceConnectionException -
+   * @throws ServiceConnectionException the service connection exception
    */
   public void connect(String aServiceName) throws ServiceConnectionException {
     // To locate the service by name the VNS is critical. Make sure we know where it is
@@ -371,6 +394,12 @@ public class VinciTAP {
             new Object[] { Thread.currentThread().getName(), aServiceName }));
   }
 
+  /**
+   * Test and reconnect.
+   *
+   * @throws ServiceException the service exception
+   * @throws ServiceConnectionException the service connection exception
+   */
   private void testAndReconnect() throws ServiceException, ServiceConnectionException {
     // Make sure there is valid connection to the service and if there isnt one establish it
     if (conn == null || !conn.isOpen()) {
@@ -410,14 +439,13 @@ public class VinciTAP {
   }
 
   /**
-   * Send a given Vinci Frame to the remote vinci service and return result
-   * 
+   * Send a given Vinci Frame to the remote vinci service and return result.
+   *
    * @param aFrame -
    *          Vinci Frame containing request
-   * 
    * @return AFrame - Frame containing result
-   * @throws ServiceConnectionException -
-   * @throws ServiceException -
+   * @throws ServiceException the service exception
+   * @throws ServiceConnectionException the service connection exception
    */
   public AFrame sendAndReceive(AFrame aFrame) throws ServiceException, ServiceConnectionException {
     int currentTimeout = 0;
@@ -606,7 +634,9 @@ public class VinciTAP {
   }
 
   /**
-   * Prints to stdout contents of a given CasData instance
+   * Prints to stdout contents of a given CasData instance.
+   *
+   * @param aCAS the a CAS
    */
   private static void dumpFeatures(CasData aCAS) {
 
@@ -725,8 +755,8 @@ public class VinciTAP {
   }
 
   /**
-   * Performs Analysis of the CAS by the remote vinci service Cas Processor
-   * 
+   * Performs Analysis of the CAS by the remote vinci service Cas Processor.
+   *
    * @param aCas -
    *          Cas to analayze
    * @param aPT -
@@ -734,7 +764,6 @@ public class VinciTAP {
    * @param aResourceName -
    *          name of the Cas Processor
    * @return - CAS containing results of analysis
-   * 
    * @throws ServiceException - passthru, wraps Exception
    * @throws ServiceConnectionException passthru
    */
@@ -816,6 +845,12 @@ public class VinciTAP {
     }
   }
 
+  /**
+   * Drop named types.
+   *
+   * @param aKeyFrame the a key frame
+   * @param aDropKeyList the a drop key list
+   */
   private void dropNamedTypes(AFrame aKeyFrame, String[] aDropKeyList) {
     // Now drop keys this annotator does not want to see
     if (aDropKeyList != null && aKeyFrame != null) {
@@ -1054,8 +1089,9 @@ public class VinciTAP {
   /**
    * Returns Cas Processor metadata as it is returned from the remote Cas Processor running as vinci
    * service.
-   * @return -
-   * @throws ResourceServiceException -
+   *
+   * @return the analysis engine meta data
+   * @throws ResourceServiceException the resource service exception
    */
   public ProcessingResourceMetaData getAnalysisEngineMetaData() throws ResourceServiceException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1146,7 +1182,8 @@ public class VinciTAP {
   /**
    * Let the remote service now that end of batch marker has been reached, the notification is
    * one-way meaning the CPE does not expect anything back from the service.
-   * @throws ResourceServiceException -
+   *
+   * @throws ResourceServiceException the resource service exception
    */
   public void batchProcessComplete() throws ResourceServiceException {
     // For some installations, like WF, dont bother sending end-of-batch marker.
@@ -1368,8 +1405,8 @@ public class VinciTAP {
   }
 
   /**
-   * Returns status of the vinci connection
-   * 
+   * Returns status of the vinci connection.
+   *
    * @return - true if connection is valid, false otherwise
    */
   public boolean isConnected() {
@@ -1380,8 +1417,8 @@ public class VinciTAP {
   }
 
   /**
-   * Sets the VNS port this proxy will use to locate service
-   * 
+   * Sets the VNS port this proxy will use to locate service.
+   *
    * @param aVNSPort -
    *          vns port to use
    */
@@ -1391,8 +1428,8 @@ public class VinciTAP {
   }
 
   /**
-   * Sets the VNS host this proxy will use to locate service
-   * 
+   * Sets the VNS host this proxy will use to locate service.
+   *
    * @param aVNSHost -
    *          name of the VNS host
    */
@@ -1402,17 +1439,17 @@ public class VinciTAP {
   }
 
   /**
-   * Returns port of the service this proxy is connected to
-   * 
+   * Returns port of the service this proxy is connected to.
+   *
    * @return - service port
    */
   public int getServicePort() {
-    return Integer.valueOf(servicePort).intValue();
+    return Integer.valueOf(servicePort);
   }
 
   /**
-   * Returns host where the service is running
-   * 
+   * Returns host where the service is running.
+   *
    * @return host name of the machine where the service is running
    */
   public String getServiceHost() {
@@ -1420,8 +1457,8 @@ public class VinciTAP {
   }
 
   /**
-   * Returns VNS Port
-   * 
+   * Returns VNS Port.
+   *
    * @return VNS port
    */
   public String getVNSPort() {
@@ -1429,8 +1466,8 @@ public class VinciTAP {
   }
 
   /**
-   * Returns VNS Host
-   * 
+   * Returns VNS Host.
+   *
    * @return VNS Host
    */
   public String getVNSHost() {

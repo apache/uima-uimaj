@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -30,6 +31,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumer_ImplBase;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
@@ -64,7 +66,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     this.outFile = new File(testBaseDir, "CpmOutput.txt");
 
     try {
-      this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false), "UTF-8");
+      this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
+              StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }
@@ -94,7 +97,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // iterate and print annotations
-      FSIterator<AnnotationFS> typeIterator = aCAS.getCurrentView().getAnnotationIndex().iterator();
+      FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation>getAnnotationIndex().iterator();
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = typeIterator.get();

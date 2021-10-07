@@ -19,15 +19,16 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for StringArrayTest.java goes here.
@@ -50,7 +51,7 @@ public class StringArrayTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);
@@ -187,6 +188,7 @@ public class StringArrayTest extends TestCase {
      final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
      assertTrue(lemmaList != null);
      StringArrayFS casArray = this.cas.createStringArrayFS(3);
+     ((CASImpl)(casArray.getCAS())).setId2FSsMaybeUnconditionally(casArray);
      casArray.set(0, "1");
      casArray.set(1, null);
      casArray.set(2, "3");
@@ -197,7 +199,7 @@ public class StringArrayTest extends TestCase {
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
      LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
-     assertTrue(llc.ll_getIntArrayValue(llc.ll_getFSRef(casArray), 1) == LowLevelCAS.NULL_FS_REF);
+     assertTrue(llc.ll_getStringArrayValue(llc.ll_getFSRef(casArray), 1) == null);
   }
 
 }

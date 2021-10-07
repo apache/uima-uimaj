@@ -25,17 +25,18 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UimaTimer;
 
+
 /**
- * Creates an instance of UimaTimer
- * 
- * 
+ * Creates an instance of UimaTimer.
  */
 public class TimerFactory {
+  
+  /** The timer. */
   private static UimaTimer timer = null;
 
   /**
-   * Instantiate UimaTimer object from a given class
-   * 
+   * Instantiate UimaTimer object from a given class.
+   *
    * @param aClassName -
    *          UimaTimer implemetation class
    */
@@ -53,8 +54,8 @@ public class TimerFactory {
   }
 
   /**
-   * Returns instance of {@link UimaTimer}
-   * 
+   * Returns instance of {@link UimaTimer}.
+   *
    * @return UimaTimer instance
    */
   public static UimaTimer getTimer() {
@@ -72,11 +73,10 @@ public class TimerFactory {
   }
 
   /**
-   * Instantiates dynamically a UimaTimer object
-   * 
+   * Instantiates dynamically a UimaTimer object.
+   *
    * @param aClassName -
    *          class implementing UimaTimer
-   * 
    * @throws ResourceInitializationException -
    */
   private void initialize(String aClassName) throws ResourceInitializationException {

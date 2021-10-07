@@ -19,6 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
+
 /**
  * Component providing conversion service. It replaces all occurances of provided String patterns
  * with provided replacement String.
@@ -57,6 +58,11 @@ public class TypeComplianceConverterImpl {
     return convertedString.toString();
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     System.out.println(TypeComplianceConverterImpl.replace("Detag_colon_DetagContent", "_colon_",
             ":"));

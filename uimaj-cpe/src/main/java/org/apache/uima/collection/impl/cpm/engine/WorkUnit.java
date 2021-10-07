@@ -22,35 +22,71 @@ package org.apache.uima.collection.impl.cpm.engine;
 import org.apache.uima.cas.CAS;
 
 
+
+/**
+ * The Class WorkUnit.
+ */
 public class WorkUnit {
+  
+  /** The payload. */
   private Object payload = null;
 
+  /** The cas. */
   private CAS[] cas = null;
 
+  /** The timedout. */
   private boolean timedout = false;
 
   
+  /**
+   * Instantiates a new work unit.
+   *
+   * @param aPayload the a payload
+   */
   public WorkUnit(Object aPayload) {
     super();
     payload = aPayload;
   }
 
+  /**
+   * Gets the.
+   *
+   * @return the object
+   */
   public Object get() {
     return payload;
   }
 
+  /**
+   * Sets the cas.
+   *
+   * @param aCas the new cas
+   */
   public void setCas(CAS[] aCas) {
     cas = aCas;
   }
 
+  /**
+   * Gets the cas.
+   *
+   * @return the cas
+   */
   public CAS[] getCas() {
     return cas;
   }
 
+  /**
+   * Sets the timed out.
+   */
   public void setTimedOut() {
     timedout = true;
   }
 
+  /**
+   * Checks if is timed out.
+   *
+   * @return true, if is timed out
+   */
   public boolean isTimedOut() {
     return timedout;
   }

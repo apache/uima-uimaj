@@ -22,9 +22,6 @@ package org.apache.uima.pear.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -34,6 +31,9 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 /**
  * The PearInstallerTest tests the PEAR installation and checks some

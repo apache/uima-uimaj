@@ -27,19 +27,31 @@ import javax.swing.Action;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Focus in text frame action handler.
  */
 public class FocusTextAction extends AbstractAction implements Action {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new focus text action.
+   *
+   * @param frame the frame
+   */
   public FocusTextAction(MainFrame frame) {
     this.main = frame;
   }
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -4867535661038776033L;
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     this.main.getTextArea().requestFocusInWindow();
   }

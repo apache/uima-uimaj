@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -40,6 +38,8 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class ArrayIndexTest extends TestCase implements TextAnnotator {
 

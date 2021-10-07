@@ -35,17 +35,31 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
+
+/**
+ * The Class XCASSaveHandler.
+ */
 public class XCASSaveHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new XCAS save handler.
+   *
+   * @param frame the frame
+   */
   public XCASSaveHandler(MainFrame frame) {
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Save XCAS file");

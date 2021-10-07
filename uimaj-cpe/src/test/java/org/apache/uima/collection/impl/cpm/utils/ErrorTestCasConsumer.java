@@ -73,7 +73,7 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
       int errorCountName = 0;
       String errorExceptionName = "RuntimeException";
       if (errorCount != null) {
-        errorCountName = errorCount.intValue();
+        errorCountName = errorCount;
       }
       if (errorException != null) {
         errorExceptionName = errorException;

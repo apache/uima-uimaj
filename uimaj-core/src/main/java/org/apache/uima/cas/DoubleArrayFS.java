@@ -25,7 +25,7 @@ package org.apache.uima.cas;
  * 
  * 
  */
-public interface DoubleArrayFS extends CommonArrayFS {
+public interface DoubleArrayFS extends CommonArrayFS<Double> {
 
   /**
    * Get the i-th element from the array.

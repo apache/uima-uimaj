@@ -21,8 +21,6 @@ package org.apache.uima.cas.test;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.ConstraintFactory;
@@ -36,9 +34,9 @@ import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.FSIndexFlat;
-import org.apache.uima.cas.impl.FSIteratorWrapper;
 import org.apache.uima.cas.text.AnnotationFS;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
@@ -89,7 +87,7 @@ public class FilteredIteratorTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(cas != null);
       this.ts = this.cas.getTypeSystem();
       assertTrue(ts != null);
@@ -169,10 +167,10 @@ public class FilteredIteratorTest extends TestCase {
 
     iterAndCount1(false);
     
-    if (FSIndexFlat.enabled) {
-      expandBeyondFlatThreshold(6);  // enables flat iterator
-      iterAndCount1(true);
-    }
+//    if (FSIndexFlat.enabled) {
+//      expandBeyondFlatThreshold(6);  // enables flat iterator
+//      iterAndCount1(true);
+//    }
     
   }
   
@@ -196,7 +194,8 @@ public class FilteredIteratorTest extends TestCase {
 
     // Count number of annotations.
     it = cas.getAnnotationIndex().iterator();  
-    assertTrue( (isFlat) ? (it instanceof FSIndexFlat.FSIteratorFlat) : it instanceof FSIteratorWrapper);
+//    assertTrue( (isFlat) ? (it instanceof FSIndexFlat.FSIteratorFlat) : it instanceof FSIteratorWrapper);
+
     int countAll = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++countAll;
@@ -244,7 +243,7 @@ public class FilteredIteratorTest extends TestCase {
 
     iterAndCount1a();
     
-    expandBeyondFlatThreshold(6);  // enables flat iterator
+//    expandBeyondFlatThreshold(6);  // enables flat iterator
     iterAndCount1a();
   }
   
@@ -330,7 +329,7 @@ public class FilteredIteratorTest extends TestCase {
 
       iterAndCount2();
       
-      expandBeyondFlatThreshold(6);  // enables flat iterator
+//      expandBeyondFlatThreshold(6);  // enables flat iterator
       iterAndCount2();
           
     } catch (Exception e) {
@@ -409,7 +408,7 @@ public class FilteredIteratorTest extends TestCase {
 
       iterAndCount2a();
       
-      expandBeyondFlatThreshold(6);  // enables flat iterator
+//      expandBeyondFlatThreshold(6);  // enables flat iterator
       iterAndCount2a();
       
     } catch (Exception e) {
@@ -423,7 +422,7 @@ public class FilteredIteratorTest extends TestCase {
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
     FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
     type1Constraint.equals(lemma);
-    ArrayList<String> path = new ArrayList<String>();
+    ArrayList<String> path = new ArrayList<>();
     path.add(lemmaFeat.getShortName());
     FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
     it = cas.createFilteredIterator(it, cons);
@@ -498,7 +497,7 @@ public class FilteredIteratorTest extends TestCase {
 
       iterAndCount2b();
       
-      expandBeyondFlatThreshold(6);  // enables flat iterator
+//      expandBeyondFlatThreshold(6);  // enables flat iterator
       iterAndCount2b();
       
     } catch (Exception e) {
@@ -514,7 +513,7 @@ public class FilteredIteratorTest extends TestCase {
     FSTypeConstraint tc = cf.createTypeConstraint();
     tc.add(sepType);
     tc.add(eosType.getName());
-    ArrayList<String> path = new ArrayList<String>();
+    ArrayList<String> path = new ArrayList<>();
     path.add(tokenTypeFeat.getShortName());
     FSMatchConstraint cons = cf.embedConstraint(path, tc);
     it = this.cas.createFilteredIterator(it, cons);
@@ -564,14 +563,14 @@ public class FilteredIteratorTest extends TestCase {
   
   // add enough tokens to make the total be > THRESHOLD_FOR_FLATTENING, ii is the current number...
   // this is so that the flattening can happen 
-  private void expandBeyondFlatThreshold(int ii) {
-    int t = FSIndexFlat.THRESHOLD_FOR_FLATTENING;
-    FeatureStructure wordFS = this.cas.createFS(wordType);
-    for (int i = 0; i < t - ii; i++) {
-      AnnotationFS token = cas.createAnnotation(tokenType, 99, 99);
-      token.setStringValue(lemmaFeat, "dummytype");  // stuff to make the filter not throw null pointer exceptions
-      token.setFeatureValue(tokenTypeFeat, wordFS);
-      cas.getIndexRepository().addFS(token);
-    }
-  }
+//  private void expandBeyondFlatThreshold(int ii) {
+//    int t = FSIndexFlat.THRESHOLD_FOR_FLATTENING;
+//    FeatureStructure wordFS = this.cas.createFS(wordType);
+//    for (int i = 0; i < t - ii; i++) {
+//      AnnotationFS token = cas.createAnnotation(tokenType, 99, 99);
+//      token.setStringValue(lemmaFeat, "dummytype");  // stuff to make the filter not throw null pointer exceptions
+//      token.setFeatureValue(tokenTypeFeat, wordFS);
+//      cas.getIndexRepository().addFS(token);
+//    }
+//  }
 }

@@ -19,15 +19,27 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfDouble;
+import java.util.Spliterator;
+import java.util.function.DoubleConsumer;
+import java.util.stream.DoubleStream;
 
-import org.apache.uima.cas.DoubleArrayFS;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.DoubleArrayFSImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for DoubleArray */
-public final class DoubleArray extends TOP implements DoubleArrayFS, Iterable<Double> {
+public final class DoubleArray extends TOP implements CommonPrimitiveArray<Double>, DoubleArrayFSImpl, Iterable<Double> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_DOUBLE_ARRAY;
+  
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -42,17 +54,17 @@ public final class DoubleArray extends TOP implements DoubleArrayFS, Iterable<Do
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
 
+  private final double[] theArray;
+  
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private DoubleArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public DoubleArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -61,92 +73,133 @@ public final class DoubleArray extends TOP implements DoubleArrayFS, Iterable<Do
    * @param length the length of the array 
    */
   public DoubleArray(JCas jcas, int length) {
-    this(jcas.getLowLevelCas().ll_createDoubleArray(length), jcas.getType(typeIndexID));
+    super(jcas);
+    theArray = new double[length];
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
+    }     
+  }
+  
+  /**
+   * used by generator
+   * Make a new DoubleArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array in bytes
+   */
+  public DoubleArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new double[length];
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
+    }     
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#get(int)
    */
+  @Override
   public double get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getDoubleArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#set(int , double)
    */
+  @Override
   public void set(int i, double v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setDoubleArrayValue(addr, i, v);
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyFromArray(double[], int, int, int)
    */
-  public void copyFromArray(double[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setDoubleArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  @Override
+  public void copyFromArray(double[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyToArray(int, double[], int, int)
    */
-  public void copyToArray(int srcOffset, double[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getDoubleArrayValue(addr, i + srcOffset);
-    }
+  @Override
+  public void copyToArray(int srcPos, double[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#toArray()
    */
+  @Override
   public double[] toArray() {
-    final int size = size();
-    double[] outArray = new double[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyToArray(int, String[], int, int)
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
+  @Override
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = Double.toString(jcasType.ll_cas.ll_getDoubleArrayValue(addr, i
-              + srcOffset));
+      dest[i + destPos] = Double.toString(theArray[i + srcPos]);
     }
   }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyFromArray(String[], int, int, int)
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
+  @Override
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setDoubleArrayValue(addr, i + destOffset, Double.parseDouble(src[i
-              + srcOffset]));
+      theArray[i + destPos] = Double.parseDouble(src[i + srcPos]);
     }
   }
+  
+  // internal use
+  public double[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArrayFS v) {
+    DoubleArray bv = (DoubleArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+  }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+    set(i, Double.parseDouble(v));    
   }
   
   @Override
-  public Iterator<Double> iterator() {
-    return new Iterator<Double>() {
+  public Spliterator.OfDouble spliterator() {
+    return Arrays.spliterator(theArray);
+  }
+  
+  @Override
+  public OfDouble iterator() {
+    return new OfDouble() {
       int i = 0;
       
       @Override
@@ -162,10 +215,54 @@ public final class DoubleArray extends TOP implements DoubleArrayFS, Iterable<Do
       }
 
       @Override
-      public void remove() {
-        throw new UnsupportedOperationException();
+      public double nextDouble() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
       }
-      
     };
   }
+  
+  /**
+   * @return an DoubleStream over the elements of the array
+   */
+  public DoubleStream stream() {
+    return Arrays.stream(theArray);
+  }
+  
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static DoubleArray create(JCas jcas, double[] a) {
+    DoubleArray doubleArray = new DoubleArray(jcas, a.length);
+    doubleArray.copyFromArray(a, 0, 0, a.length);
+    return doubleArray;
+  }
+
+  /**
+   * non boxing version 
+   * @param action -
+   */
+  public void forEach(DoubleConsumer action) {
+    for (double d : theArray) {
+      action.accept(d);
+    }
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(double item) {
+    for (double b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

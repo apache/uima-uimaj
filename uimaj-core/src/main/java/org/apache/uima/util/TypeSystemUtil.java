@@ -21,6 +21,7 @@ package org.apache.uima.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
@@ -47,7 +48,7 @@ public class TypeSystemUtil {
     ResourceSpecifierFactory fact = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = fact.createTypeSystemDescription();
     Iterator<Type> typeIter = aTypeSystem.getTypeIterator();
-    ArrayList<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
+    List<TypeDescription> typeDescs = new ArrayList<>();
     while (typeIter.hasNext()) {
       Type type = typeIter.next();
       if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation") &&
@@ -88,7 +89,7 @@ public class TypeSystemUtil {
       }
       typeDesc.setAllowedValues(avObjs);
     } else {
-      ArrayList<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
+      List<FeatureDescription> featDescs = new ArrayList<>();
       for (Feature feat : aType.getFeatures()){ 
         if (!superType.getFeatures().contains(feat)) {
           featDescs.add(feature2FeatureDescription(feat));

@@ -46,10 +46,16 @@ import org.xml.sax.SAXException;
  */
 public class BinaryDeserializer_Axis11 extends DeserializerImpl {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -591743087907058514L;
 
+  /** The buf. */
   private StringBuffer buf = new StringBuffer();
 
+  /* (non-Javadoc)
+   * @see org.apache.axis.encoding.DeserializerImpl#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
+   */
+  @Override
   public void startElement(String namespace, String localName, String prefix,
           Attributes attributes, DeserializationContext context) throws SAXException {
 
@@ -92,11 +98,8 @@ public class BinaryDeserializer_Axis11 extends DeserializerImpl {
                   .getActivationDataHandler((org.apache.axis.Part) ref);
           Object content = dataHandler.getContent();
           // System.out.println(content.getClass().getName());
-          ObjectInputStream objStream = new ObjectInputStream((InputStream) content);
-          try {
+          try (ObjectInputStream objStream = new ObjectInputStream((InputStream) content)) {
             setValue(objStream.readObject());
-          } finally {
-            objStream.close();
           }
         } catch (org.apache.axis.AxisFault e) {
           throw new SAXException(e.getMessage());
@@ -116,17 +119,33 @@ public class BinaryDeserializer_Axis11 extends DeserializerImpl {
   }
 
   /**
+   * On start element.
+   *
+   * @param namespace the namespace
+   * @param localName the local name
+   * @param prefix the prefix
+   * @param attributes the attributes
+   * @param context the context
+   * @throws SAXException the SAX exception
    * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes, DeserializationContext)
    */
+  @Override
   public void onStartElement(String namespace, String localName, String prefix,
           Attributes attributes, DeserializationContext context) throws SAXException {
     buf.setLength(0);
   }
 
   /**
+   * On end element.
+   *
+   * @param arg0 the arg 0
+   * @param arg1 the arg 1
+   * @param arg2 the arg 2
+   * @throws SAXException the SAX exception
    * @see org.apache.axis.encoding.Deserializer#onEndElement(java.lang.String, java.lang.String,
    *      org.apache.axis.encoding.DeserializationContext)
    */
+  @Override
   public void onEndElement(String arg0, String arg1, DeserializationContext arg2)
           throws SAXException {
     try {
@@ -149,8 +168,15 @@ public class BinaryDeserializer_Axis11 extends DeserializerImpl {
   }
 
   /**
+   * Characters.
+   *
+   * @param ch the ch
+   * @param start the start
+   * @param length the length
+   * @throws SAXException the SAX exception
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
+  @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
     // System.out.println("characters(" + new String(ch,start,length) + ")");
     buf.append(ch, start, length);

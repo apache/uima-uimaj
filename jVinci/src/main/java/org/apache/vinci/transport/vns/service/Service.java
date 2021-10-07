@@ -107,7 +107,7 @@ public class Service implements ServiceInterface {
       return (qhost = getHostByAddr(host));
 
     if (name.equals("instance"))
-      return new Integer(instance);
+      return instance;
 
     if (name.equals("level")) {
       if (level == null || level.equals(""))
@@ -162,10 +162,10 @@ public class Service implements ServiceInterface {
       dict.put("LEVEL", level);
     if (realhost != null)
       dict.put("IP", realhost);
-    dict.put("INSTANCE", new Integer(instance));
-    dict.put("MINPORT", new Integer(minport));
-    dict.put("MAXPORT", new Integer(maxport));
-    dict.put("PORT", new Integer(port));
+    dict.put("INSTANCE", instance);
+    dict.put("MINPORT", minport);
+    dict.put("MAXPORT", maxport);
+    dict.put("PORT", port);
     dict.put("IP", getHostByName(host));
   }
 

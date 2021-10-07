@@ -29,6 +29,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -53,7 +58,7 @@ public class FileUtils {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
-    ArrayList<File> fileList = new ArrayList<File>();
+    ArrayList<File> fileList = new ArrayList<>();
     for (File file : directory.listFiles()) {
       if (file.isDirectory()) {
         if (getRecursive) {
@@ -90,7 +95,7 @@ public class FileUtils {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
-    ArrayList<File> dirList = new ArrayList<File>();
+    ArrayList<File> dirList = new ArrayList<>();
 
     for (File file : directory.listFiles()) {
        if (file.isDirectory()) {
@@ -110,17 +115,17 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String reader2String(Reader reader) throws IOException {
-    StringBuffer strBuffer = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     char[] buf = new char[10000];
     int charsRead;
     try {
       while ((charsRead = reader.read(buf)) >= 0) {
-        strBuffer.append(buf, 0, charsRead);
+        sb.append(buf, 0, charsRead);
       }
     } finally {
       reader.close();
     }
-    return strBuffer.toString();
+    return sb.toString();
   }
 
   /**
@@ -182,18 +187,27 @@ public class FileUtils {
    *           If for any reason the file can't be written.
    */
   public static void saveString2File(String s, File file, String encoding) throws IOException {
-    BufferedWriter writer = null;
-    try {
-      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding));
+    try (BufferedWriter writer = new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(file), encoding))) {
       writer.write(s);
-      writer.close();
-    } finally {
-      if (writer != null) {
-        writer.close();
-      }
     }
   }
 
+  /**
+   * Efficiently Writes string data as UTF-8 characters to path
+   *   added for backwards compatibility with v2
+   * @param path where to write to, creating a new file if it doesn't already exist
+   * @param data the data to write
+   */
+  public static void writeToFile(Path path, String data) {   
+    // try with resources, closes bw at end
+    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {  
+      bw.write(data);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   /**
    * Delete all files in a directory (not recursive).
    * 
@@ -264,7 +278,10 @@ public class FileUtils {
    *          Prefix of the directory names to be created.
    * @return A file object corresponding to the newly created dir, or <code>null</code> if none
    *         could be created for some reason (e.g., if the parent is not writable).
+   * @deprecated use Java 7 methods for this see
+   *             {@link java.nio.file.Files#createTempDirectory(Path, String, FileAttribute...)}
    */
+  @Deprecated
   public static final File createTempDir(File parent, String prefix) {
     Random rand = new Random();
     File tempDir;
@@ -280,6 +297,16 @@ public class FileUtils {
     }
   }
 
+  /**
+   * @deprecated use Java 7 methods for this see
+   *             {@link java.io.File#createTempFile(String, String, File)}
+   * @param prefix -
+   * @param suffix -
+   * @param tempDir -
+   * @return the file
+   * @throws IOException -
+   */
+  @Deprecated
   public static final File createTempFile(String prefix, String suffix, File tempDir)
       throws IOException {
     File file = File.createTempFile(prefix, suffix, tempDir);
@@ -305,7 +332,9 @@ public class FileUtils {
    *           For various reason: if <code>file</code> does not exist or is not readable, if the
    *           destination directory does not exist or isn't a directory, or if the file can't be
    *           copied for any reason.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(Path, Path, CopyOption...)}
    */
+  @Deprecated
   public static final void copyFile(File file, File dir) throws IOException {
     if (!file.exists() || !file.canRead()) {
       throw new IOException("File does not exist or is not readable: " + file.getAbsolutePath());
@@ -319,11 +348,8 @@ public class FileUtils {
       throw new IOException("Can't write output file: " + outFile);
     }
     byte[] bytes = new byte[(int) file.length()];
-    FileInputStream is = null;
-    FileOutputStream os = null;
-    try {
-      is = new FileInputStream(file);
-      os = new FileOutputStream(outFile);
+    try (FileInputStream is = new FileInputStream(file);
+         FileOutputStream os = new FileOutputStream(outFile)) {
 
       while (true) {
         int count = is.read(bytes);
@@ -331,13 +357,6 @@ public class FileUtils {
           break;
         }
         os.write(bytes, 0, count);
-      }
-    } finally {
-      if (null != is) {
-        is.close();
-      }
-      if (null != os) {
-        os.close();
       }
     }
   }
@@ -362,15 +381,15 @@ public class FileUtils {
         && filePathComponents[i].equals(relToPathComponents[i])) {
       i++;
     }
-    StringBuffer buf = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int j = i; j < relToPathComponents.length; j++) {
-      buf.append("../");
+      sb.append("../");
     }
     for (int j = i; j < filePathComponents.length - 1; j++) {
-      buf.append(filePathComponents[j]).append('/');
+      sb.append(filePathComponents[j]).append('/');
     }
-    buf.append(filePathComponents[filePathComponents.length - 1]);
-    return buf.toString();
+    sb.append(filePathComponents[filePathComponents.length - 1]);
+    return sb.toString();
   }
 
   /**

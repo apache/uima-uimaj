@@ -19,20 +19,36 @@
 
 package org.apache.uima.tools.jcasgen;
 
+
+/**
+ * The Class TypeInfo.
+ */
 public class TypeInfo {
 
+  /** The xml name. */
   String xmlName;
 
+  /** The java name with pkg. */
   String javaNameWithPkg;
 
+  /** The java name. */
   String javaName; // name without package prefix if in this package
 
+  /** The is array. */
   boolean isArray = false;
 
+  /** The array el name with pkg. */
   String arrayElNameWithPkg;
 
+  /** The used. */
   boolean used = false;
 
+  /**
+   * Instantiates a new type info.
+   *
+   * @param xmlName the xml name
+   * @param javaName the java name
+   */
   TypeInfo(String xmlName, String javaName) {
     this.xmlName = xmlName;
     this.javaNameWithPkg = javaName;
@@ -41,6 +57,13 @@ public class TypeInfo {
     this.arrayElNameWithPkg = "";
   }
 
+  /**
+   * Instantiates a new type info.
+   *
+   * @param xmlName the xml name
+   * @param javaName the java name
+   * @param arrayElNameWithPkg the array el name with pkg
+   */
   TypeInfo(String xmlName, String javaName, String arrayElNameWithPkg) {
     this(xmlName, javaName);
     if (null != arrayElNameWithPkg) {

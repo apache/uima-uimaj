@@ -46,28 +46,23 @@ under the License.
   <para>The data in the CAS are typed objects having fields. JCas uses a set of generated Java
     classes (each corresponding to a particular CAS type) with <quote>getter</quote> and
     <quote>setter</quote> methods for the features, plus a constructor so new instances can
-    be made. The Java classes don&apos;t actually store the data in the class instance;
-    instead, the getters and setters forward to the underlying CAS data representation.
-    Because of this, applications which use the JCas interface can share data with annotators
-    using plain CAS (i.e., not using the JCas approach). </para>
+    be made. The Java classes stores the data in the class instance.</para>
   
     <para>Users can modify the JCas generated
     Java classes by adding fields to them; this allows arbitrary non-CAS data to also be
     represented within the JCas objects, as well; however, the non-CAS data stored in the JCas
-    object instances cannot be shared with annotators using the plain CAS.</para>
-  
-  <para>Data in the CAS initially has no corresponding JCas type instances; these are created
-    as needed at the first reference. This means, if your annotator is passed a large CAS having
-    millions of CAS feature structures, but you only reference a few of them, and no previously
-    created Java JCas object instances were created by upstream annotators, the only Java
-    objects that will be created will be those that correspond to the CAS feature structures
-    that you reference.</para>
+    object instances cannot be shared with annotators using the plain CAS, unless special
+    provision is made - see the chapter in the v3 user's guide on storing arbitrary
+    Java objects in the CAS.</para>
   
   <para>The JCas class Java source files are generated from XML type system descriptions. The
     JCasGen utility does the work of generating the corresponding Java Class Model for the CAS
     types. There are a variety of ways JCasGen can be run; these are described later. You
     include the generated classes with your UIMA component, and you can publish these classes
     for others who might want to use your type system.</para>
+    
+  <para>JCas classes are not required for all UIMA types.  Those types which don&apos;t have 
+    corresponding JCas classes use the nearest JCas class corresponding to a type in their superchain.</para>
   
   <para>The specification of the type system in XML can be written using a conventional text
     editor, an XML editor, or using the Eclipse plug-in that supports editing UIMA
@@ -81,8 +76,7 @@ under the License.
   
   <para>A separate Java class is generated for each type; this type implements the CAS
     FeatureStructure interface, as well as having the special getters and setters for the
-    included features. In the current implementation, an additional helper class per type is
-    also generated. The generated Java classes have methods (getters and setters) for the
+    included features. The generated Java classes have methods (getters and setters) for the
     fields as defined in the XML type specification. Descriptor comments are reflected in the
     generated Java code as Java-doc style comments.</para>
   
@@ -171,6 +165,7 @@ uima.cas.String  &rarr; String</programlisting>
     + ", size right mods: " + getrMods().size();
 }</programlisting>
  
+   <!-- does not apply for v3
     <section id="ugr.ref.jcas.data_persistence">
       <title>Persistence of additional data</title>
       <para>If you add custom instance fields to JCas cover classes, these exist in the JCas cover object instance,
@@ -188,6 +183,8 @@ uima.cas.String  &rarr; String</programlisting>
         prevents them from being garbage collected, it is normally recommended running with the
         JCAS_CACHE_ENABLE set to "false".</para>
     </section>   
+     -->
+     
     <section id="ugr.ref.jcas.keeping_augmentations_when_regenerating">
       <title>Keeping hand-coded augmentations when regenerating</title>
       
@@ -485,7 +482,9 @@ ir.getIndex(name-of-index) // get the index by its name, a string
 ir.getIndex(name-of-index, Foo.type) // filtered by specific type
 
 ir.getAnnotationIndex()      // get AnnotationIndex
+jcas.getAnnotationIndex()    // get directly from jcas
 ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlisting>
+jcas.getAnnotationIndex(Foo.class)   // better
       
       <para>For convenience, the getAnnotationIndex method is available directly on the JCas object
       instance; the implementation merely forwards to the associated index repository.</para>
@@ -494,7 +493,7 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
         index specification. They can be written as either Foo.type or if you have an instance
         of Foo, you can write</para>
       
-      <programlisting>fooInstance.jcasType.casType.  </programlisting>
+      <programlisting>fooInstance.getClass()</programlisting>
       
       <para>Foo is (of course) an example of the name of the type.</para>
       
@@ -510,10 +509,10 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
       <programlisting>myInstance.addToIndexes();</programlisting>
       
       <para>Do this after setting all features in the instance <emphasis role="bold-italic">which could be used in indexing</emphasis>, 
-        for example, in determining the sorting order.  Changing the value of a feature used in a key,
-        after the feature structure has been added to the indexes, is inefficient, and must be done carefully,
-        in order to protect the indexes from corruption.  See <xref linkend="ugr.ref.cas.updating_indexed_feature_structures"/>;
-        the <code>protectIndexes</code> method is available on the JCas as well as the CAS.</para>
+        for example, in determining the sorting order.   
+        See <xref linkend="ugr.ref.cas.updating_indexed_feature_structures"/> for details
+        on updating indexed feature structures.
+      </para>
         
       <para>When writing a Multi-View component, you may need to index instances in multiple
         CAS views. The methods above use the indexes associated with the current JCas object.
@@ -567,6 +566,9 @@ jcas.getFsIndexRepository().
     <section id="ugr.ref.jcas.using_iterators">
       <title>Using Iterators</title>
       
+      <para>This chapter describes obtaining and using iterators.  However, it is recommended that instead 
+        you use the select framework, described in a chapter in the version 3 user's guide.</para>
+        
       <para>Once you have an index obtained from the JCas, you can get an iterator from the
         index; here is an example:</para>
       

@@ -27,6 +27,7 @@ import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.impl.Constants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -64,7 +65,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * The parameters that this Configuration Parameter overrides. Elements of this array are of the
    * form componentName/parameterName.
    */
-  private String[] mOverrides = new String[0];
+  private String[] mOverrides = Constants.EMPTY_STRING_ARRAY;
 
   /**
    * @see ConfigurationParameter#getName()
@@ -185,7 +186,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    */
   public void setOverrides(String[] aOverrides) {
     if (aOverrides == null)
-      mOverrides = new String[0];
+      mOverrides = Constants.EMPTY_STRING_ARRAY;
     else
       mOverrides = aOverrides.clone();
   }
@@ -302,7 +303,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
       // iterate through children, and for each element construct a value,
       // adding it to a list
-      List<String> valueList = new ArrayList<String>();
+      List<String> valueList = new ArrayList<>();
       for (int i = 0; i < numChildren; i++) {
         Node curNode = elems.item(i);
         if (curNode instanceof Element) {

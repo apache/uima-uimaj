@@ -51,9 +51,9 @@ import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_i
 import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.SerializationUtils;
-import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -312,13 +312,12 @@ public class AnalysisEngineDescription_implTest {
     logger.setResourceManager(resourceManager);
 
     UimaContext uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
-
-    final Map<String, Object> p = new HashMap<String, Object>();
-    p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);
+    final Map<String, Object> p = new HashMap<>();
+    p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER, newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
-    int numberOfThreads = Math.min(50, Utilities.numberOfCores * 5);
+    int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n", numberOfThreads);
 

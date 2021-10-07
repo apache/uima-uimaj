@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * A MarkerImpl holds a high-water "mark" in the CAS,
@@ -37,83 +38,44 @@ import org.apache.uima.cas.Marker;
  */
 public class MarkerImpl implements Marker {
 	
-  protected int nextFSId;    //next FS addr
-  protected int nextStringHeapAddr; 
-  protected int nextByteHeapAddr;
-  protected int nextShortHeapAddr;
-  protected int nextLongHeapAddr;
+  protected int nextFSId;    //next FS id
   protected boolean isValid;
   
   CASImpl cas;
 
-  MarkerImpl(int nextFSAddr, int nextStringHeapAddr, 
-		     int nextByteHeapAddr, int nextShortHeapAddr, int nextLongHeapAddr, 
-		     CASImpl cas) {
-    this.nextFSId = nextFSAddr;
-    this.nextStringHeapAddr = nextStringHeapAddr;
-    this.nextByteHeapAddr = nextByteHeapAddr;
-    this.nextShortHeapAddr = nextShortHeapAddr;
-    this.nextLongHeapAddr = nextLongHeapAddr;
+  MarkerImpl(int nextFSId, CASImpl cas) {
+    this.nextFSId = nextFSId;
     this.cas = cas;
     this.isValid = true;
   }
 
+  
+  
   public boolean isNew(FeatureStructure fs) {
   	//check if same CAS instance
-  	//TODO: define a CASRuntimeException
-  	if (!isValid || ((FeatureStructureImpl) fs).getCASImpl() != this.cas) {
-  		CASRuntimeException e = new CASRuntimeException(
-  		          CASRuntimeException.CAS_MISMATCH,
-  		          new String[] { "FS and Marker are not from the same CAS." });
-  		      throw e;
+  	if (!isValid || !cas.isInCAS(fs)) {
+  		throw new CASRuntimeException(CASRuntimeException.CAS_MISMATCH, "FS and Marker are not from the same CAS.");
   	}
-  	return isNew( ((FeatureStructureImpl) fs).getAddress());
+  	return isNew(fs._id());
   }
 
   public boolean isModified(FeatureStructure fs) {
-	if (!isValid || ((FeatureStructureImpl) fs).getCASImpl() != this.cas) {
-		CASRuntimeException e = new CASRuntimeException(
-		          CASRuntimeException.CAS_MISMATCH,
-		          new String[] { "FS and Marker are not from the same CAS." });
-		      throw e;
-	}
-	int addr = ((FeatureStructureImpl) fs).getAddress();
-	  return isModified(addr);
+	  if (isNew(fs)) {
+	    return false;  // new fs's are not modified ones
+	  }
+    return this.cas.isInModifiedPreexisting((TOP)fs);
   }
-  
-  boolean isNew(int addr) {
-	  return (addr >= nextFSId);
+    
+  boolean isNew(int id) {
+	  return (id >= nextFSId);
   }
-  
-  boolean isModified(int addr) {
-  	if (isNew(addr)) {
-  		return false;
-      }
-  	return this.cas.getModifiedFSList().contains(addr);
-  }
-  
+    
   public boolean isValid() {
     return isValid;
   }
 
   public int getNextFSId() {
     return nextFSId;
-  }
-
-  public int getNextStringHeapAddr() {
-    return nextStringHeapAddr;
-  }
-
-  public int getNextByteHeapAddr() {
-    return nextByteHeapAddr;
-  }
-
-  public int getNextShortHeapAddr() {
-    return nextShortHeapAddr;
-  }
-
-  public int getNextLongHeapAddr() {
-    return nextLongHeapAddr;
   }
   
 }

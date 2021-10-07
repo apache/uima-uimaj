@@ -18,12 +18,12 @@
  */
 package org.apache.uima.resource.impl;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.CasManager;
+
+import junit.framework.TestCase;
 
 
 public class CasManager_implTest extends TestCase {

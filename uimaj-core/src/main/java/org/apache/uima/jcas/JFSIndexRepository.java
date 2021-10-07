@@ -24,7 +24,6 @@ import java.util.Iterator;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.TOP;
@@ -133,7 +132,7 @@ public interface JFSIndexRepository {
    * Generics:  The returned Java cover class may not be a JCas one.
    * 
    * @param aType
-   *          The type obtained by doing MyJCasClass.type
+   *          The JCas unique type id obtained by doing MyJCasClass.type
    * @param <T> the Java Class corresponding to aType
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.

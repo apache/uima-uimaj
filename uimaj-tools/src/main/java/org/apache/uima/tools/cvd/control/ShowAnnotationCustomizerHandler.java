@@ -26,14 +26,28 @@ import java.awt.event.ActionListener;
 import org.apache.uima.tools.cvd.AnnotationDisplayCustomizationFrame;
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class ShowAnnotationCustomizerHandler.
+ */
 public class ShowAnnotationCustomizerHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new show annotation customizer handler.
+   *
+   * @param frame the frame
+   */
   public ShowAnnotationCustomizerHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent event) {
     AnnotationDisplayCustomizationFrame acd = new AnnotationDisplayCustomizationFrame(
         "Customize Annotation Display");

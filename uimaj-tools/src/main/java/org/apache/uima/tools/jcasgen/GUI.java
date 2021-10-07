@@ -39,70 +39,113 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
+
+/**
+ * The Class GUI.
+ */
 public class GUI extends JFrame {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /** The about dialog. */
   private AboutDialog aboutDialog;
 
+  /** The Constant NL. */
   final static String NL = System.getProperties().getProperty("line.separator");
 
+  /** The GUI. */
   static GUI theGUI;
 
+  /** The jg. */
   final Jg jg;
 
+  /**
+   * The Class G.
+   */
   class G extends JPanel implements ActionListener {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The gui. */
     final GUI gui;
 
+    /** The lb label 6. */
     JLabel lbLabel6;
 
+    /** The lb label 1. */
     JLabel lbLabel1;
 
+    /** The bt input file browse. */
     JButton btInputFileBrowse;
 
+    /** The bt out dir browse. */
     JButton btOutDirBrowse;
 
+    /** The bt gen xml browse. */
     JButton btGenXmlBrowse;
 
+    /** The lb label 0. */
     JLabel lbLabel0;
 
+    /** The lb label 9. */
     JLabel lbLabel9;
 
+    /** The tf input file name. */
     JTextArea tfInputFileName;
 
+    /** The tf out dir name. */
     JTextArea tfOutDirName;
 
+    /** The tf gen XM lname. */
     JTextArea tfGenXMLname;
 
+    /** The lb label 11. */
     JLabel lbLabel11;
 
+    /** The lb label 12. */
     JLabel lbLabel12;
 
+    /** The lb label 13. */
     JLabel lbLabel13;
 
+    /** The bt go. */
     JButton btGo;
 
+    /** The ta status. */
     JTextArea taStatus;
 
+    /** The area scroll pane. */
     JScrollPane areaScrollPane;
 
+    /** The lb label 15. */
     JLabel lbLabel15;
 
+    /** The lb label 16. */
     JLabel lbLabel16;
 
+    /** The lb label 17. */
     JLabel lbLabel17;
 
+    /** The lb label 10. */
     JLabel lbLabel10;
 
+    /** The lb result. */
     JLabel lbResult;
 
+    /**
+     * Instantiates a new g.
+     *
+     * @param gui the gui
+     */
     public G(GUI gui) {
       super();
       this.gui = gui;
@@ -195,7 +238,7 @@ public class GUI extends JFrame {
       gbcG.fill = GridBagConstraints.BOTH;
       gbcG.anchor = GridBagConstraints.NORTHWEST;
       areaScrollPane = new JScrollPane(taStatus);
-      areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+      areaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
       gbG.setConstraints(areaScrollPane, gbcG);
       add(areaScrollPane);
 
@@ -219,6 +262,10 @@ public class GUI extends JFrame {
       add(lbResult);
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void actionPerformed(ActionEvent e) {
       if (e.getSource() == btInputFileBrowse) {
         browseFile(tfInputFileName); // Action for btInputFileBrowse
@@ -235,6 +282,11 @@ public class GUI extends JFrame {
       }
     }
 
+    /**
+     * Browse file.
+     *
+     * @param f the f
+     */
     void browseFile(JTextArea f) {
       String startingDir = f.getText();
       if (startingDir.length() == 0) {
@@ -252,6 +304,11 @@ public class GUI extends JFrame {
       }
     }
 
+    /**
+     * Browse dir.
+     *
+     * @param f the f
+     */
     void browseDir(JTextArea f) {
       String startingDir = f.getText();
       if (startingDir.length() == 0) {
@@ -270,10 +327,14 @@ public class GUI extends JFrame {
       }
     }
 
+    /**
+     * Go.
+     */
     void go() {
       final String outDirName = tfOutDirName.getText();
       final String inFileName = tfInputFileName.getText();
       Runnable r = new Runnable() {
+        @Override
         public void run() {
           jg.main0(new String[] { "-jcasgeninput", inFileName, "-jcasgenoutput", outDirName },
                   jg.merger, new GuiProgressMonitor(), new GuiErrorImpl());
@@ -282,6 +343,12 @@ public class GUI extends JFrame {
       new Thread(r).start();
     }
 
+    /**
+     * Show in status.
+     *
+     * @param message the message
+     * @return the string
+     */
     String showInStatus(String message) {
       taStatus.setText(taStatus.getText() + message + NL);
       areaScrollPane.getVerticalScrollBar().setValue(
@@ -291,8 +358,14 @@ public class GUI extends JFrame {
     }
   }
 
+  /** The pn G. */
   G pnG;
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   // for testing only
   public static void main(String args[]) {
     try {
@@ -305,6 +378,11 @@ public class GUI extends JFrame {
     theGUI = new GUI(null);
   }
 
+  /**
+   * Instantiates a new gui.
+   *
+   * @param jg the jg
+   */
   public GUI(Jg jg) {
     super("JCasGen");
     theGUI = this;
@@ -345,6 +423,11 @@ public class GUI extends JFrame {
     // show();
   }
 
+  /**
+   * Creates the menu bar.
+   *
+   * @return the j menu bar
+   */
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
 
@@ -352,6 +435,7 @@ public class GUI extends JFrame {
 
     JMenuItem exitMenuItem = new JMenuItem("Exit");
     exitMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUI.this.processWindowEvent(new WindowEvent(GUI.this, WindowEvent.WINDOW_CLOSING));
       }
@@ -362,6 +446,7 @@ public class GUI extends JFrame {
     JMenu helpMenu = new JMenu("Help");
     JMenuItem aboutMenuItem = new JMenuItem("About");
     aboutMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         aboutDialog.setVisible(true);
       }

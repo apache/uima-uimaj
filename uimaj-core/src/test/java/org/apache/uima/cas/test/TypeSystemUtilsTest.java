@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -39,6 +37,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for IteratorTest.java goes here.
@@ -79,34 +79,34 @@ public class TypeSystemUtilsTest extends TestCase {
   public void testPathValidation() {
     Type type1 = this.cas.getTypeSystem().getType("Type1");
     // Type1, f0/begin, always
-    List<String> path = new ArrayList<String>();
+    List<String> path = new ArrayList<>();
     path.add("f0");
     path.add("begin");
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS);
     // Type1, f1, possible
-    path = new ArrayList<String>();
+    path = new ArrayList<>();
     path.add("f1");
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE);
     // Type1, f1/tail/tail, possible
-    path = new ArrayList<String>();
+    path = new ArrayList<>();
     path.add("f1");
     path.add("tail");
     path.add("tail");
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE);
     // Type1, f2, possible
-    path = new ArrayList<String>();
+    path = new ArrayList<>();
     path.add("f2");
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE);
     // Type1, nosuchfeature, never
-    path = new ArrayList<String>();
+    path = new ArrayList<>();
     path.add("nosuchfeature");
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.NEVER);
     // Type1, <empty path>, always
-    path = new ArrayList<String>();
+    path = new ArrayList<>();
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS);
     // t1, f1/f2/f3, always
     Type t1 = this.cas.getTypeSystem().getType("t1");
-    path = new ArrayList<String>();
+    path = new ArrayList<>();
     path.add("f1");
     path.add("f2");
     path.add("f3");

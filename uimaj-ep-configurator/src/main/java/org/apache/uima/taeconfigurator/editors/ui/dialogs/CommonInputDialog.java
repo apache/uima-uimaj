@@ -27,48 +27,84 @@ import org.eclipse.swt.widgets.Control;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
 /**
+ * The Class CommonInputDialog.
  */
 public class CommonInputDialog extends AbstractDialogKeyVerify {
 
+  /** The Constant PLAIN_NAME. */
   public static final int PLAIN_NAME = 1;
 
+  /** The Constant DOTTED_NAME. */
   public static final int DOTTED_NAME = 1 << 1;
 
+  /** The Constant SPACED_NAMES. */
   public static final int SPACED_NAMES = 1 << 2;
 
+  /** The Constant LANGUAGE. */
   public static final int LANGUAGE = 1 << 3;
 
+  /** The Constant ALLOK. */
   public static final int ALLOK = 1 << 4;
 
+  /** The Constant TRUE_FALSE. */
   public static final int TRUE_FALSE = 1 << 5;
 
+  /** The Constant INTEGER. */
   public static final int INTEGER = 1 << 6;
 
+  /** The Constant FLOAT. */
   public static final int FLOAT = 1 << 7;
 
+  /** The Constant GROUP_NAMES. */
   public static final int GROUP_NAMES = DOTTED_NAME | SPACED_NAMES | LANGUAGE;
 
+  /** The validation. */
   private int validation;
 
+  /** The existing. */
   private String existing;
 
+  /** The text. */
   private StyledText text;
 
+  /** The result. */
   private String result;
 
+  /**
+   * Instantiates a new common input dialog.
+   *
+   * @param aSection the a section
+   * @param title the title
+   * @param dialogDescription the dialog description
+   * @param aKind the a kind
+   */
   public CommonInputDialog(AbstractSection aSection, String title, String dialogDescription,
           int aKind) {
     super(aSection, title, dialogDescription);
     validation = aKind;
   }
 
+  /**
+   * Instantiates a new common input dialog.
+   *
+   * @param aSection the a section
+   * @param title the title
+   * @param dialogDescription the dialog description
+   * @param aKind the a kind
+   * @param aExisting the a existing
+   */
   public CommonInputDialog(AbstractSection aSection, String title, String dialogDescription,
           int aKind, String aExisting) {
     this(aSection, title, dialogDescription, aKind);
     existing = aExisting;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existing);
 
@@ -84,6 +120,10 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.eclipse.swt.events.VerifyEvent)
+   */
+  @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
     char ch = event.character;
 
@@ -129,19 +169,36 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     return false;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   public String getValue() {
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled("".equals(errorMessageUI.getText()) && (text.getText().length() > 0));
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     result = text.getText();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     return true;
   }

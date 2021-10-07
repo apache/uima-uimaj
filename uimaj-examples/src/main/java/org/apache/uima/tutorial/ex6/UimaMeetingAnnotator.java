@@ -51,6 +51,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see AnalysisComponent#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     try {
@@ -64,6 +65,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
    */
+  @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     // get document text
     String text = aJCas.getDocumentText();
@@ -74,12 +76,12 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
     // later go back and add these to the CAS indexes. We need to do this
     // because it's not allowed to add to an index that you're currently
     // iterating over.
-    List uimaMeetings = new ArrayList();
+    List<UimaMeeting> uimaMeetings = new ArrayList<>();
 
-    FSIndex meetingIndex = aJCas.getAnnotationIndex(Meeting.type);
-    FSIterator iter = meetingIndex.iterator();
+    FSIndex<Meeting> meetingIndex = aJCas.getAnnotationIndex(Meeting.type);
+    FSIterator<Meeting> iter = meetingIndex.iterator();
     while (iter.isValid()) {
-      Meeting meeting = (Meeting) iter.get();
+      Meeting meeting = iter.get();
       // get span of text within 50 chars on either side of meeting
       // (window size should probably be a config. param)
       int begin = meeting.getBegin() - 50;
@@ -112,9 +114,9 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
       iter.moveToNext();
     }
 
-    Iterator uimaMeetingIter = uimaMeetings.iterator();
+    Iterator<UimaMeeting> uimaMeetingIter = uimaMeetings.iterator();
     while (uimaMeetingIter.hasNext()) {
-      UimaMeeting annot = (UimaMeeting) uimaMeetingIter.next();
+      UimaMeeting annot = uimaMeetingIter.next();
       annot.addToIndexes();
     }
   }

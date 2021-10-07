@@ -35,39 +35,67 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ExtnlResBindSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
+
+/**
+ * The Class AddExternalResourceDialog.
+ */
 public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
 
+  /** The existing XRD. */
   private ExternalResourceDescription existingXRD = null;
 
+  /** The xr name UI. */
   private StyledText xrNameUI;
 
+  /** The original xr name. */
   private String originalXrName;
 
+  /** The xr description UI. */
   private Text xrDescriptionUI;
 
+  /** The xr url UI. */
   private StyledText xrUrlUI;
 
+  /** The xr url suffix UI. */
   private StyledText xrUrlSuffixUI;
 
+  /** The xr implementation UI. */
   private StyledText xrImplementationUI;
 
+  /** The extnl res bind section. */
   private ExtnlResBindSection extnlResBindSection;
 
+  /** The xr name. */
   public String xrName;
 
+  /** The xr description. */
   public String xrDescription;
 
+  /** The xr url. */
   public String xrUrl;
 
+  /** The xr url suffix. */
   public String xrUrlSuffix;
 
+  /** The xr implementation. */
   public String xrImplementation;
 
+  /**
+   * Instantiates a new adds the external resource dialog.
+   *
+   * @param aSection the a section
+   */
   public AddExternalResourceDialog(AbstractSection aSection) {
     super(aSection, "Add an External Resource Definition", "Define and name an external resource");
     extnlResBindSection = (ExtnlResBindSection) aSection;
   }
 
+  /**
+   * Instantiates a new adds the external resource dialog.
+   *
+   * @param aSection the a section
+   * @param aExistingXRD the a existing XRD
+   */
   public AddExternalResourceDialog(AbstractSection aSection,
           ExternalResourceDescription aExistingXRD) {
     this(aSection);
@@ -75,6 +103,10 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     originalXrName = existingXRD.getName();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent, existingXRD);
 
@@ -131,6 +163,10 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     xrName = xrNameUI.getText();
     xrDescription = nullIf0lengthString(xrDescriptionUI.getText());
@@ -140,8 +176,12 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
   }
 
   /**
-   * Called for many widgets
+   * Called for many widgets.
+   *
+   * @param event the event
+   * @return true, if successful
    */
+  @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
       return true;
@@ -155,6 +195,10 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     return false;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     if (xrName.length() == 0)
       return false;
@@ -165,6 +209,10 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(xrName.length() > 0 && xrUrl.length() > 0);

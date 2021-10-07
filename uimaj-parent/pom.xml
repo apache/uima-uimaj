@@ -35,13 +35,33 @@
     <version>14</version>
   </parent>
 
-  <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.11.1-SNAPSHOT</version>
+  <version>3.2.1-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the
+       same as those in super poms, it cannot be inherited because
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted.
+
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
 
   <!-- The repositories and pluginRepositories section is duplicated from
        the parent pom one, and adds the Apache Snapshot Nexus repository
@@ -52,7 +72,6 @@
        This allows maven to find the snapshots when looking for the parent of
        this pom -->
   <repositories>
-
     <!-- modify central repository access:
          Turn on checksum checking-->
     <repository>
@@ -126,19 +145,23 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <api_check_oldVersion>2.10.4</api_check_oldVersion>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
      properties already, they should be injected manually into the plugins. 
-    -->    
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    --> 
+    <slf4j.version>1.7.25</slf4j.version>
+    <log4j.version>2.10.0</log4j.version>
+    <jackson.version>2.9.2</jackson.version>
+    
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
     <eclipseP2RepoUrl>https://download.eclipse.org/releases/2018-12/</eclipseP2RepoUrl>
+
+    <api_check_oldVersion>3.1.1</api_check_oldVersion>
   </properties>
   
   <dependencyManagement>
@@ -153,6 +176,18 @@
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>3.14.0</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- set dependency versions for logger parts -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
@@ -183,6 +218,17 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <!-- Used to enable findbug rule suppression annotations -->
+    <!-- This is the Apache v2 license version -->      
+    <dependency>
+      <groupId>com.github.stephenc.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <version>1.3.9-1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -190,6 +236,13 @@
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
         <version>0.15.3</version>
+        <configuration>
+          <parameter>
+            <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
+            </ignoreMissingClassesByRegularExpressions>
+          </parameter>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -228,11 +281,72 @@
       </plugin>
     </plugins>
   </build>
-
-  <scm>
-    <tag>HEAD</tag>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/</url>
-  </scm>
+  
+  <profiles>
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- Duplicates on classpath cause an exception in JaCoCo report -->
+                <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <!-- ************** m2e  profile ************* -->
+    <profile>
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <!-- This plugin's configuration is used to store Eclipse m2e settings 
+                only. It has no influence on the Maven build itself. -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                  
+                    <!-- ***************************** -->
+                    <!-- IGNORE maven-bundle-plugin    -->
+                    <!-- ***************************** -->
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <versionRange>[3,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                          <goal>bundle</goal>
+                          <goal>manifest</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 </project>

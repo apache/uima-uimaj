@@ -126,7 +126,7 @@ public class AnnotationTreeNode implements IAdaptable {
 
   @Override
   public int hashCode() {
-    return mAnnotation.hashCode();
+    return mAnnotation._id();
   }
 
   @Override

@@ -24,6 +24,9 @@
  <description>Type system description for CAS test cases.</description>
  <version>1.0</version>
  <vendor>Apache Software Foundation</vendor>
+ <imports>
+   <import name="org.apache.uima.semibuiltins"/>
+ </imports>
  <types>
   <typeDescription>
    <name>Token</name>

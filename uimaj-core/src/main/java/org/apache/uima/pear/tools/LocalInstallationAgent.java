@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -285,21 +287,13 @@ public class LocalInstallationAgent {
     System.out.println("[LocalInstallationAgent]: " + "loaded installation descriptor");
     // load PEAR configuration
     File packageConfigFile = new File(_mainRootDir, InstallationController.PACKAGE_CONFIG_FILE);
-    InputStream iStream = null;
-    try {
-      iStream = new FileInputStream(packageConfigFile);
+    try (InputStream iStream = new FileInputStream(packageConfigFile)) {
       _packageConfig.load(iStream);
-      iStream.close();
-      System.out.println("[LocalInstallationAgent]: " + "loaded PEAR configuration");
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-          //ignore close exception
-        }
-      }
     }
+
+    System.out.println("[LocalInstallationAgent]: " + "loaded PEAR configuration");
+
+    //ignore close exception
     // check that package configuration has required properties
     if (checkPackageConfig(_packageConfig, _insdObject)) {
       // localize files in conf and desc dirs
@@ -336,12 +330,11 @@ public class LocalInstallationAgent {
       File orgFile = dirList.next();
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
-      if (FileUtil.copyFile(orgFile, bakFile)) {
-        // localize original file
-        localizeComponentFile(orgFile, _insdObject, _packageConfig);
-        // add to localized file list
-        fileList[fileCounter++] = orgFile;
-      }
+      Files.copy(orgFile.toPath(), bakFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      // localize original file
+      localizeComponentFile(orgFile, _insdObject, _packageConfig);
+      // add to localized file list
+      fileList[fileCounter++] = orgFile;
     }
     // backup and localize files in desc dir
     dirList = descDirFiles.iterator();
@@ -349,12 +342,11 @@ public class LocalInstallationAgent {
       File orgFile = dirList.next();
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
-      if (FileUtil.copyFile(orgFile, bakFile)) {
-        // localize original file
-        localizeComponentFile(orgFile, _insdObject, _packageConfig);
-        // add to localized file list
-        fileList[fileCounter++] = orgFile;
-      }
+      Files.copy(orgFile.toPath(), bakFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      // localize original file
+      localizeComponentFile(orgFile, _insdObject, _packageConfig);
+      // add to localized file list
+      fileList[fileCounter++] = orgFile;
     }
     return fileList;
   }
@@ -369,19 +361,15 @@ public class LocalInstallationAgent {
    *           if any I/O exception occurred.
    */
   public synchronized boolean undoComponentLocalization() throws IOException {
-    boolean completed = false;
+    boolean completed;
     int counter = 0;
     for (int i = 0; i < _localizedFiles.length; i++) {
       File orgFile = _localizedFiles[i];
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
-      if (FileUtil.copyFile(bakFile, orgFile)) {
-        bakFile.delete();
-        counter++;
-      } else {
-        System.err.println("[LocalInstallationAgent]: " + "failed to undo changes for the file "
-                + orgFile.getAbsolutePath());
-      }
+      Files.copy(bakFile.toPath(), orgFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      bakFile.delete();
+      counter++;
     }
     completed = (counter == _localizedFiles.length);
     return completed;

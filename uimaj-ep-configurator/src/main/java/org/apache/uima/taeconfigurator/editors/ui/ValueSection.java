@@ -42,40 +42,66 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class ValueSection.
+ */
 public class ValueSection extends AbstractSectionParm {
 
+  /** The value text stack. */
   private Composite valueTextStack;
 
+  /** The value text stack layout. */
   private StackLayout valueTextStackLayout;
 
+  /** The value text. */
   private Text valueText;
 
+  /** The value text combo. */
   private CCombo valueTextCombo;
 
+  /** The vtc 1. */
   private Composite vtc1;
 
+  /** The vtc 2. */
   private Composite vtc2;
 
+  /** The value table. */
   private Table valueTable;
 
+  /** The master. */
   private ParameterSettingsSection master;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The button container. */
   private Composite buttonContainer;
 
+  /** The selected CP. */
   private ConfigurationParameter selectedCP;
 
+  /** The model settings. */
   private ConfigurationParameterSettings modelSettings;
 
+  /**
+   * Instantiates a new value section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public ValueSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Values", "Specify the value of the selected configuration parameter.");
   }
@@ -86,6 +112,7 @@ public class ValueSection extends AbstractSectionParm {
    * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -138,6 +165,7 @@ public class ValueSection extends AbstractSectionParm {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     super.refresh();
     master = editor.getSettingsPage().getParameterSettingsSection();
@@ -184,6 +212,10 @@ public class ValueSection extends AbstractSectionParm {
     enable();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm#enable()
+   */
+  @Override
   public void enable() {
 
     boolean mvValue = (null != selectedCP) && (selectedCP.isMultiValued());
@@ -205,6 +237,7 @@ public class ValueSection extends AbstractSectionParm {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
 
     if (event.widget == valueText) {
@@ -275,6 +308,11 @@ public class ValueSection extends AbstractSectionParm {
     enable();
   }
 
+  /**
+   * Sets the parm value.
+   *
+   * @param value the new parm value
+   */
   private void setParmValue(String value) {
     if (null != value) {
       if ("".equals(value))
@@ -283,24 +321,49 @@ public class ValueSection extends AbstractSectionParm {
     }
   }
 
+  /**
+   * Handle remove.
+   *
+   * @param event the event
+   */
   public void handleRemove(Event event) {
     valueTable.remove(valueTable.getSelectionIndices());
     // update model
     setCurrentParameterValue(valueTable.getItems());
   }
 
+  /**
+   * Gets the adds the button.
+   *
+   * @return the adds the button
+   */
   public Button getAddButton() {
     return addButton;
   }
 
+  /**
+   * Gets the removes the button.
+   *
+   * @return the removes the button
+   */
   public Button getRemoveButton() {
     return removeButton;
   }
 
+  /**
+   * Gets the value table.
+   *
+   * @return the value table
+   */
   public Table getValueTable() {
     return valueTable;
   }
 
+  /**
+   * Gets the value text.
+   *
+   * @return the value text
+   */
   public Text getValueText() {
     return valueText;
   }
@@ -308,8 +371,8 @@ public class ValueSection extends AbstractSectionParm {
   /**
    * Sets the currently selected parameter to the specified value. The string value will be
    * converted to the appropriate data type. This method works only for single-valued parameters.
-   * 
-   * @param aValueString
+   *
+   * @param aValueString the new current parameter value
    */
   private void setCurrentParameterValue(String aValueString) {
 
@@ -384,6 +447,11 @@ public class ValueSection extends AbstractSectionParm {
     setModelValue(valueArr);
   }
 
+  /**
+   * Sets the model value.
+   *
+   * @param value the new model value
+   */
   private void setModelValue(Object value) {
     String groupName = master.getSelectedParamGroupName();
     boolean changed = false;
@@ -415,6 +483,13 @@ public class ValueSection extends AbstractSectionParm {
       editor.setFileDirty();
   }
 
+  /**
+   * Checks if is same value.
+   *
+   * @param v1 the v 1
+   * @param v2 the v 2
+   * @return true, if is same value
+   */
   private boolean isSameValue(Object v1, Object v2) {
     if (v1 instanceof Object[]) {
       return (Arrays.equals((Object[]) v1, (Object[]) v2));

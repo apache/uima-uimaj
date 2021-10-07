@@ -20,14 +20,14 @@
 package org.apache.uima.cas_data.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
-
-import org.junit.Assert;
+import java.util.function.IntUnaryOperator;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -46,7 +46,25 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
+
+import org.junit.Assert;
 
 /**
  * A CAS equality checker for JUnit.
@@ -61,21 +79,29 @@ public class CasComparer {
   enum ARRAY_TYPE {
     FS, STRING, BOOLEAN, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE,
   }
+  
+  final private Set<TOP> sortCompareSeen = Collections.newSetFromMap(new IdentityHashMap<>());
+  final private Set<TOP> alreadyCompared = Collections.newSetFromMap(new IdentityHashMap<>());
 
   public static void assertEquals(CAS c1, CAS c2) {
+     new CasComparer().assertEqualsInner(c1, c2);
+  }
+  
+  public void assertEqualsInner(CAS c1, CAS c2) {
+    alreadyCompared.clear();
     
     // this code handles initial views with no SofaFS
     CAS initialView1 = c1.getView(CAS.NAME_DEFAULT_SOFA);
     CAS initialView2 = c2.getView(CAS.NAME_DEFAULT_SOFA);
-    assertEqualViews(initialView1, initialView2);
+    assertEqualViewsInner(initialView1, initialView2);
     // this code skips the initial view, if it doesn't have a sofa FS
-    FSIterator<SofaFS> sofaIter = c1.getSofaIterator();
+    FSIterator<Sofa> sofaIter = c1.getSofaIterator();
     int c1Sofas = 0;
     while (sofaIter.hasNext()) {
       SofaFS sofa = sofaIter.next();
       CAS tcas1 = c1.getView(sofa);
       CAS tcas2 = c2.getView(tcas1.getViewName());
-      assertEqualViews(tcas1, tcas2);
+      assertEqualViewsInner(tcas1, tcas2);
       c1Sofas++;
     }
     sofaIter = c2.getSofaIterator();
@@ -89,33 +115,33 @@ public class CasComparer {
 
   public static void assertEqualViews(CAS c1, CAS c2) {
     CasComparer instance = new CasComparer();
-    instance.assertEqualViews(c1,  c2,  new HashSet<FeatureStructure>());
+    instance.assertEqualViewsInner(c1,  c2);
   }
   
   public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2) {
     CasComparer instance = new CasComparer();
-    Assert.assertTrue(0 == instance.compare1(fs1,  fs2));
+   instance.assertEqualsInner((TOP)fs1,  (TOP)fs2);
   }
   
   
-  private void assertEqualViews(CAS c1, CAS c2, Set<FeatureStructure> visited) {
+  private void assertEqualViewsInner(CAS c1, CAS c2) {
     
     // allow for different ordering in the getAllIndexedFSs
     
-    List<FeatureStructure> list1 = populate(c1.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType()), visited);
-    List<FeatureStructure> list2 = populate(c2.getIndexRepository().getAllIndexedFS(c2.getTypeSystem().getTopType()), visited);
+    List<TOP> list1 = populate(c1.getIndexRepository().getIndexedFSs(), alreadyCompared);
+    List<TOP> list2 = populate(c2.getIndexRepository().getIndexedFSs(), alreadyCompared);
     
     Assert.assertEquals(list1.size(),  list2.size());
     
-    isSortUse = true;  // while sorting
-    Collections.sort(list1, fsComparator);
-    Collections.sort(list2, fsComparator);
+    isSortUse = true;  // while sorting; i.e., for next two calls. Affects how visited is used
+    list1.sort(fsComparator);
+    list2.sort(fsComparator);
 
     isSortUse = false;  // makes the compare1 throw exception if not equal
     int i = 0;
     try {
       for (; i < list1.size(); i++) {
-        compare1(list1.get(i), list2.get(i), visited);
+        compare1(list1.get(i), list2.get(i), alreadyCompared);
       }
     } catch (ConcurrentModificationException e) {
       Assert.fail();
@@ -127,14 +153,9 @@ public class CasComparer {
    */
   private boolean isSortUse = true;
   private TypeSystem ts;
-  private Type casStringType;
+//  private Type casStringType;
   
-  private Comparator<FeatureStructure> fsComparator = new Comparator<FeatureStructure>() {
-    @Override
-    public int compare(FeatureStructure o1, FeatureStructure o2) {
-      return compare1(o1, o2);
-    }   
-  };
+  private Comparator<TOP> fsComparator = (o1, o2) -> compare1(o1, o2);
    
   /**
    * Comparator that establishes an ordering among all FSs in a view.
@@ -144,46 +165,119 @@ public class CasComparer {
    * @param fs2
    */
 
-  public int compare1(FeatureStructure fs1, FeatureStructure fs2) {
-    return compare1(fs1, fs2, new HashSet<FeatureStructure>());
+  public int compare1(TOP fs1, TOP fs2) {
+    sortCompareSeen.clear();
+    return compare1(fs1, fs2, sortCompareSeen);
   }
   
-  private int compare1(FeatureStructure fs1, FeatureStructure fs2, Set<FeatureStructure> visited) {
-    if (fs1 == null && fs2 == null) {
-      return 0;
+  private void assertEqualsInner(TOP fs1, TOP fs2) {
+    alreadyCompared.clear();
+    chkEqual(compare1(fs1, fs2, alreadyCompared), "Feature Structures not equal: %n%s%n%s", fs1, fs2);
+  }
+  
+  /**
+   * 
+   * @param fs1
+   * @param fs2
+   * @param visited when called for sorting FSs, is sortCompareSeen(cleared); 
+   *                when called for comparing for equality, holds FSs already compared in other views
+   * @return
+   */
+  private int compare1(TOP fs1, TOP fs2, Set<TOP> visited) {
+    if (!isSortUse) {  // only do null check for non- sort use
+      if (fs1 == null && fs2 == null) {
+        return 0;
+      }
+      if (fs1 == null) return chkEqual(-1, "fs1 was null and fs2 was not");
+      if (fs2 == null) return chkEqual(1,  "fs2 was null and fs1 was not");
     }
-    if (fs1 == null) return chkEqual(-1, "fs1 was null and fs2 was not");
-    if (fs2 == null) return chkEqual(1,  "fs2 was null and fs1 was not");
     
-    if (!visited.add(fs1)) {
+    boolean wasPresent1 = !visited.add(fs1);
+    boolean wasPresent2 = !visited.add(fs2);
+    
+    if (wasPresent1 && wasPresent2) {
       return 0;  // already checked and found equal
     }
-        
-    int r;
-    Type t1, t2;
-    if (0 != (r = compStr((t1 = fs1.getType()).getName(), (t2 = fs2.getType()).getName()))) {
-      return chkEqual(r, "Types of FSs are different: Type1 = %s, Type2 = %s", t1, t2);
-    }
-    // types are the same
     
-    if (CAS.TYPE_NAME_SOFA.equals(t1.getName())) {
-      return 0;  // skip comparing sofa so this routine can be used for cas copier testing
-    }
+    if (!wasPresent1 && !wasPresent2) {
+      int r;
+      TypeImpl t1, t2;
+      if (0 != (r = compStr((t1 = (TypeImpl) fs1.getType()).getName(), (t2 = (TypeImpl) fs2.getType()).getName()))) {
+        return chkEqual(r, "Types of FSs are different: Type1 = %s, Type2 = %s", t1, t2);
+      }
+      // types are the same
+      
+      if (CAS.TYPE_NAME_SOFA.equals(t1.getName())) {
+        if (isSortUse) {
+          return Integer.compare(((Sofa)fs1).getSofaNum(), ((Sofa)fs2).getSofaNum());
+        }
+        return 0;  // skip comparing sofa so this routine can be used for cas copier testing
+      }
 
-    ts = fs1.getCAS().getTypeSystem();
-    casStringType = ts.getType(CAS.TYPE_NAME_STRING);
-    return compareFeatures(fs1, fs2, t1.getFeatures(), t2.getFeatures(), visited);     
+      if (t1.isArray()) {
+        final int len1 = ((CommonArrayFS)fs1).size();
+        if (0 != (r = Integer.compare(len1, ((CommonArrayFS)fs2).size()))) {
+          return r;
+        }
+        
+        SlotKind kind = t1.getComponentSlotKind();
+        
+        switch(kind) {
+        case Slot_BooleanRef: return compareAllArrayElements(len1, i -> Boolean.compare(((BooleanArray  )fs1).get(i), ((BooleanArray)fs2).get(i)), "Miscompare Boolean Arrays %n%s%n%s", fs1, fs2);
+        case Slot_ByteRef:    return compareAllArrayElements(len1, i -> Byte   .compare(((ByteArray     )fs1).get(i), ((ByteArray   )fs2).get(i)), "Miscompare Byte Arrays %n%s%n%s"   , fs1, fs2);
+        case Slot_ShortRef:   return compareAllArrayElements(len1, i -> Short  .compare(((ShortArray    )fs1).get(i), ((ShortArray  )fs2).get(i)), "Miscompare Short Arrays %n%s%n%s"  , fs1, fs2);
+        case Slot_Int:     return compareAllArrayElements   (len1, i -> Integer.compare(((IntegerArray  )fs1).get(i), ((IntegerArray)fs2).get(i)), "Miscompare Integer Arrays %n%s%n%s", fs1, fs2);
+        case Slot_LongRef:    return compareAllArrayElements(len1, i -> Long   .compare(((LongArray     )fs1).get(i), ((LongArray   )fs2).get(i)), "Miscompare Long Arrays %n%s%n%s", fs1, fs2);
+        case Slot_Float:   return compareAllArrayElements   (len1, i -> Integer.compare(Float.floatToRawIntBits   (((FloatArray )fs1).get(i)), 
+                                                                                        Float.floatToRawIntBits   (((FloatArray )fs2).get(i))),    "Miscompare Float Arrays %n%s%n%s", fs1, fs2);
+        case Slot_DoubleRef:  return compareAllArrayElements(len1, i -> Long   .compare(Double.doubleToRawLongBits(((DoubleArray)fs1).get(i)), 
+                                                                                        Double.doubleToRawLongBits(((DoubleArray)fs2).get(i))),    "Miscompare Double Arrays %n%s%n%s", fs1, fs2);
+        case Slot_HeapRef: return    compareAllArrayElements(len1, i ->        compare1((TOP)((FSArray<?>       )fs1).get(i), (TOP)((FSArray<?> )fs2).get(i), visited), "Miscompare FS Arrays %n%s%n%s", fs1, fs2);
+        case Slot_StrRef:  return    compareAllArrayElements(len1, i -> Misc.compareStrings(((StringArray   )fs1).get(i), ((StringArray )fs2).get(i)), "Miscompare String Arrays %n%s%n%s", fs1, fs2);
+        default: 
+          Misc.internalError(); return 0;  // only to avoid a compile error
+        }        
+      }
+      
+      ts = fs1.getCAS().getTypeSystem();
+      return compareFeatures(fs1, fs2, t1.getFeatureImpls(), t2.getFeatureImpls(), visited);           
+    }
+    
+    // getting here: one was already traversed, the other not.  Possible use case:
+    //   fs1 is a list with a loop; fs2 is a list without a loop
+    //   arbitrarily return the one with a loop first
+    
+    if (fs1 instanceof EmptyList) { 
+      return 0;  // allow different or shared EmptyList instances to compare equal
+      // because some deserializers or user code can create them as shared or not
+    }
+    if (wasPresent1) {
+      return chkEqual(-1, "First element had a ref loop %s%n, second didn't so far %s", fs1, fs2);
+    }
+    return chkEqual(-1, "Second element had a ref loop %s%n, first didn't so far %s", fs2, fs1);
+    
   }
+  
+  private int compareAllArrayElements(final int len, IntUnaryOperator c, String msg, TOP fs1, TOP fs2) {
+    for (int i = 0; i < len; i++) {
+      int r = chkEqual(c.applyAsInt(i), String.format(msg, fs1, fs2));
+      if (0 != r) {
+        return r;
+      }
+    }
+    return 0;
+  }
+
     
   private int compareFeatures(
-      FeatureStructure fs1, FeatureStructure fs2, 
-      List<Feature> feats1, List<Feature> feats2,
-      Set<FeatureStructure> visited) {
+      TOP fs1, TOP fs2, 
+      FeatureImpl[] feats1, FeatureImpl[] feats2,
+      Set<TOP> visited) {
     
     IntVector fsCompares = new IntVector(2);
-    for (int i = 0; i < feats1.size(); i++) {
-      Feature feat1 = feats1.get(i);
-      Feature feat2 = feats2.get(i);
+    for (int i = 0; i < feats1.length; i++) {
+      Feature feat1 = feats1[i];
+      Feature feat2 = feats2[i];
       Type rangeType;
       String rangeTypeName;
       int r;
@@ -193,7 +287,7 @@ public class CasComparer {
       // range types are the same
       
       //String or subtypes of it
-      if (ts.subsumes(casStringType, rangeType)) {  
+      if (rangeType.isStringOrStringSubtype()) {  
         if (0 != (r = compStr(fs1.getStringValue(feat1), fs2.getStringValue(feat2)))) {
           return chkEqual(r, "String features miscompare, s1 = %s, s2 = %s", fs1.getStringValue(feat1), fs2.getStringValue(feat2));
         }
@@ -228,7 +322,7 @@ public class CasComparer {
       int r = 0;
       for (int j = 0; j < fsCompares.size(); j++) {
         int i = fsCompares.get(j);
-        if (0 != ( r = compare1(fs1.getFeatureValue(feats1.get(i)), fs2.getFeatureValue(feats2.get(i)), visited))) return r; 
+        if (0 != ( r = compare1(fs1.getFeatureValue(feats1[i]), fs2.getFeatureValue(feats2[i]), visited))) return r; 
       }      
     }
     return 0;
@@ -257,7 +351,7 @@ public class CasComparer {
   }
       
   private int compLong(long v1, long v2) {
-    return chkEqual(Long.compare(v1, v2), "Intregal format number miscompare,  v1 = %,d v2 = %,d", v1, v2);
+    return chkEqual(Long.compare(v1, v2), "Integral format number miscompare,  v1 = %,d v2 = %,d", v1, v2);
   }
 
   private int compDouble(double v1, double v2) {
@@ -275,13 +369,12 @@ public class CasComparer {
   }
   
   /* 
-   * When populating, skip items already visted and compared in other views
+   * When populating, skip items already visted and compared in other views (but always include sofas)
    */
-  private static List<FeatureStructure> populate(FSIterator<FeatureStructure> it, Set<FeatureStructure> visited) {
-    List<FeatureStructure> s = new ArrayList<FeatureStructure>();
-    while (it.hasNext()) {
-      FeatureStructure fs = it.next();
-      if (!(fs instanceof SofaFS) && !visited.contains(fs)) {
+  private static List<TOP> populate(Collection<TOP> items, Set<TOP> visited) {
+    List<TOP> s = new ArrayList<>();
+    for (TOP fs : items) {
+      if (!(fs instanceof Sofa) && !visited.contains(fs)) {
         s.add(fs);
       }
     }
@@ -289,7 +382,7 @@ public class CasComparer {
   }
   
   // returns true if the items were arrays
-  private int compareArrayFSs(FeatureStructure arrayFS1fs, Feature feat1, FeatureStructure arrayFS2fs, Feature feat2, Set<FeatureStructure> visited) {
+  private int compareArrayFSs(TOP arrayFS1fs, Feature feat1, TOP arrayFS2fs, Feature feat2, Set<TOP> visited) {
   
     CommonArrayFS arrayFS1 = (CommonArrayFS)arrayFS1fs.getFeatureValue(feat1);
     CommonArrayFS arrayFS2 = (CommonArrayFS)arrayFS2fs.getFeatureValue(feat2);
@@ -299,7 +392,7 @@ public class CasComparer {
     if (null == arrayFS2) return chkEqual(-1,  "Array FS2 is null, but Array FS1 is not");
 
     int r, len;
-    if (0 != (r = compLong(len = arrayFS1.size(), arrayFS2.size()))) {
+    if (0 != (r = Integer.compare(len = arrayFS1.size(), arrayFS2.size()))) {
       return chkEqual(r, "ArrayFSs are different sizes, fs1 size is %d, fs2 size is %d", arrayFS1.size(), arrayFS2.size());
     }
     // are same size
@@ -309,7 +402,7 @@ public class CasComparer {
     switch(getArrayType(arrayFS1)) {
     case FS:
       for (int j = 0; j < len; j++) {
-        if (0 != (r = compare1(((ArrayFS)arrayFS1).get(j), ((ArrayFS)arrayFS2).get(j), visited))) return r;
+        if (0 != (r = compare1((TOP)((FSArray)arrayFS1).get(j), (TOP)((FSArray)arrayFS2).get(j), visited))) return r;
       }
       break;
     case BOOLEAN:

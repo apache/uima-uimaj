@@ -18,6 +18,8 @@
  */
 package org.apache.uima.jcas.tcas;
 
+import junit.framework.TestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,9 +29,8 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.impl.BinaryCasSerDes4.CasCompare;
-import org.apache.uima.cas.impl.BinaryCasSerDes6;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.CasCompare;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -44,8 +45,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-
-import junit.framework.TestCase;
 
 
 public class DocumentAnnotationTest extends TestCase {
@@ -78,7 +77,7 @@ public class DocumentAnnotationTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-  }  
+  }
   
   public void testDocMeta() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
@@ -91,13 +90,13 @@ public class DocumentAnnotationTest extends TestCase {
     jcas = source.getJCas();
     
     tstSerdesB4Sofa(SerialFormat.XMI);
-//    tstSerdesB4Sofa(SerialFormat.XCAS); // is ok (manual check) but compare cas util doesn't handle shift in ordering of FSs
+    tstSerdesB4Sofa(SerialFormat.XCAS);
     tstSerdesB4Sofa(SerialFormat.BINARY);
     tstSerdesB4Sofa(SerialFormat.COMPRESSED);
     tstSerdesB4Sofa(SerialFormat.COMPRESSED_FILTERED);    
   }
   
-  private void tstSerdesB4Sofa(SerialFormat format) throws IOException, ResourceInitializationException {
+  private void tstSerdesB4Sofa(SerialFormat format) throws IOException {
     source.reset();
     target.reset();
     
@@ -112,10 +111,10 @@ public class DocumentAnnotationTest extends TestCase {
     bos.close();
     
     CasIOUtils.load(new ByteArrayInputStream(bos.toByteArray()), target);
-//    AnnotationFS c = target.getDocumentAnnotation();
-//    System.out.println(c);
-//    System.out.println(target.getDocumentAnnotation());
-    assertTrue(new BinaryCasSerDes6(source).compareCASes((CASImpl)source, (CASImpl)target));
+    AnnotationFS c = target.getDocumentAnnotation();
+    System.out.println(c);
+    System.out.println(target.<DocMeta>getDocumentAnnotation());
+    assertTrue(CasCompare.compareCASes((CASImpl)source, (CASImpl)target));
   }
   
   public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
@@ -148,4 +147,5 @@ public class DocumentAnnotationTest extends TestCase {
     
     System.out.println(d.toString());
   }
+
 }

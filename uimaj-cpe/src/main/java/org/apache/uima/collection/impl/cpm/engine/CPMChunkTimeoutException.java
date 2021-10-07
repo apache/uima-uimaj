@@ -22,17 +22,27 @@ package org.apache.uima.collection.impl.cpm.engine;
 import org.apache.uima.resource.ResourceProcessException;
 
 
+
+/**
+ * The Class CPMChunkTimeoutException.
+ */
 public class CPMChunkTimeoutException extends ResourceProcessException {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 358067081843640078L;
 
+  /** The document URL. */
   private String documentURL = null;
 
+  /** The throttle ID. */
   private String throttleID = null;
 
+  /** The doc ID. */
   private long docID = 0L;
 
   /**
-   * 
+   * Instantiates a new CPM chunk timeout exception.
+   *
    * @param aDocumentId the document ID
    * @param aThrottleID tbd
    * @param aDocumentURL document URL
@@ -44,11 +54,18 @@ public class CPMChunkTimeoutException extends ResourceProcessException {
     documentURL = aDocumentURL;
   }
 
+  /**
+   * Gets the document URL.
+   *
+   * @return the document URL
+   */
   public String getDocumentURL() {
     return documentURL;
   }
 
   /**
+   * Gets the doc ID.
+   *
    * @return the docID
    */
   public long getDocID() {
@@ -56,6 +73,8 @@ public class CPMChunkTimeoutException extends ResourceProcessException {
   }
 
   /**
+   * Gets the throttle ID.
+   *
    * @return the ThrottleID
    */
   public String getThrottleID() {

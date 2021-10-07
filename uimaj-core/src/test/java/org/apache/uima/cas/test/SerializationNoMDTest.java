@@ -21,15 +21,14 @@ package org.apache.uima.cas.test;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -374,26 +373,7 @@ public class SerializationNoMDTest extends TestCase {
    *           Various I/O errors.
    */
   public static String file2String(File file) throws IOException {
-    // Read the file into a string using a char buffer.
-    FileReader reader = null;
-    int bufSize = (int) file.length(); // length in bytes >= length in chars due to encoding
-    char[] buf = new char[bufSize];
-    int read_so_far = 0;
-    try {
-      reader = new FileReader(file);  
-      while (read_so_far < bufSize) {
-        int count = reader.read(buf, read_so_far, bufSize - read_so_far);
-        if (count < 0) {
-          break;
-        }
-        read_so_far += count;
-      }
-
-    } finally {
-      if (null != reader)
-        reader.close();
-    }
-    return new String(buf, 0, read_so_far);    
+    return new String(Files.readAllBytes(file.toPath()));
   }
 
   /**
@@ -409,7 +389,7 @@ public class SerializationNoMDTest extends TestCase {
     String line;
     BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer();
-    List<String> docs = new ArrayList<String>();
+    List<String> docs = new ArrayList<>();
     while ((line = br.readLine()) != null) {
       if (line.startsWith(".. <p")) {
         docs.add(buf.toString());

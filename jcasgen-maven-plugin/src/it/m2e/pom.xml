@@ -46,7 +46,7 @@
 		<main.localRepositoryUrl>@localRepositoryUrl@</main.localRepositoryUrl>
 	</properties>
 	<build>
-	  <!-- https://issues.apache.org/jira/browse/UIMA-5368 -->
+    <!-- https://issues.apache.org/jira/browse/UIMA-5368 -->
     <pluginManagement>
       <plugins>
         <plugin>
@@ -57,6 +57,7 @@
             <target>1.7</target>
           </configuration>
         </plugin>
+        
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>
@@ -72,8 +73,9 @@
             <forkedProcessTimeoutInSeconds>7200</forkedProcessTimeoutInSeconds>
           </configuration>
         </plugin>
+        
       </plugins>
-    </pluginManagement>
+    </pluginManagement>    
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>

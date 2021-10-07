@@ -19,9 +19,15 @@
 
 package org.apache.uima.jcas.tcas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 
 /**
  * The JCas class definition for the CAS <code>DocumentAnnotation</code> type. When text CASs are
@@ -32,6 +38,10 @@ import org.apache.uima.jcas.cas.TOP_Type;
  */
 public class DocumentAnnotation extends Annotation {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
+  public final static String _FeatName_language = "language";
+  
   public final static int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
 
   public final static int type = typeIndexID;
@@ -40,17 +50,26 @@ public class DocumentAnnotation extends Annotation {
     return typeIndexID;
   }
 
+  private final static CallSite _FC_language = TypeSystemImpl.createCallSite(DocumentAnnotation.class, "language");
+  private final static MethodHandle _FH_language = _FC_language.dynamicInvoker();
+        
   // Never called. Disable default constructor
   protected DocumentAnnotation() {
   }
 
- /* Internal - Constructor used by generator */
-  public DocumentAnnotation(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
   public DocumentAnnotation(JCas jcas) {
     super(jcas);
+  }
+
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public DocumentAnnotation(TypeImpl t, CASImpl c) {
+    super(t, c);
   }
 
   // *------------------*
@@ -59,23 +78,13 @@ public class DocumentAnnotation extends Annotation {
    * getter for language
    * @return the language
    */
-  public String getLanguage() {
-    if (DocumentAnnotation_Type.featOkTst
-            && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      this.jcasType.jcas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
-    return jcasType.ll_cas.ll_getStringValue(addr,
-            ((DocumentAnnotation_Type) jcasType).casFeatCode_language);
-  }
+  public String getLanguage() { return _getStringValueNc(wrapGetIntCatchException(_FH_language)); }
 
   /**
    * setter for language
    * @param v the language
    */
   public void setLanguage(String v) {
-    if (DocumentAnnotation_Type.featOkTst
-            && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      this.jcasType.jcas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
-    jcasType.ll_cas.ll_setStringValue(addr,
-            ((DocumentAnnotation_Type) jcasType).casFeatCode_language, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_language), v);
   }
 }

@@ -46,19 +46,24 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 
+
 /**
  * Implements {@link CasProcessorDeployer}. Used to instantiate integrated Cas Processor.
  */
 public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
+  
+  /** The cas processor pool. */
   private ServiceProxyPool casProcessorPool = null;
 
+  /** The cpe factory. */
   private CPEFactory cpeFactory = null;
 
+  /** The engine. */
   private CPMEngine engine;
 
   /**
-   * Initializes this instance with a reference to the CPE configuration
-   * 
+   * Initializes this instance with a reference to the CPE configuration.
+   *
    * @param aCpeFactory -
    *          reference to CPE configuration
    */
@@ -71,13 +76,12 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * number of processing threads defined in the CPE descriptor. There is one instance per
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
-   * 
+   *
    * @param aCasProcessorList - list containing instantiated Cas Processors
    * @param aEngine the CPM engine
    * @param redeploy - true when redeploying failed Cas Processor
-   * 
    * @return - ProcessingContainer containing pool of CasProcessors
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {
@@ -90,11 +94,11 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * number of processing threads defined in the CPE descriptor. There is one instance per
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
-   * 
+   *
    * @param aCasProcessorList - list containing instantiated Cas Processors
    * @param redeploy - true when redeploying failed Cas Processor
-   * 
    * @return - ProcessingContainer containing pool of CasProcessors
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException {
@@ -206,9 +210,10 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
   /**
    * Deploys integrated Cas Processor using configuration available in a given Container. This
    * routine is called when the CasProcessor fails and needs to be restarted.
-   * 
+   *
    * @param aProcessingContainer -
    *          container managing Cas Processor
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException {
@@ -235,12 +240,11 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
   }
 
   /**
-   * Creates an instance of integrated Cas Processor from a given descriptor
-   * 
+   * Creates an instance of integrated Cas Processor from a given descriptor.
+   *
    * @param aDescriptor -
    *          Cas Processor descriptor
    * @return - instantiated CasProcessor
-   * 
    * @throws ResourceConfigurationException wraps Exception
    */
   private CasProcessor produceIntegratedCasProcessor(URL aDescriptor)
@@ -301,6 +305,9 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
   }
 
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
+   */
   public void undeploy() throws CasProcessorDeploymentException {
 
   }

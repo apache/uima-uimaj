@@ -23,7 +23,7 @@
 	<artifactId>classpath</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<build>
-	  <!-- https://issues.apache.org/jira/browse/UIMA-5368 -->
+    <!-- https://issues.apache.org/jira/browse/UIMA-5368 -->
     <pluginManagement>
       <plugins>
         <plugin>
@@ -35,7 +35,7 @@
           </configuration>
         </plugin>
       </plugins>
-    </pluginManagement>
+    </pluginManagement>    
 		<plugins>
 			<plugin>
 				<groupId>org.apache.uima</groupId>

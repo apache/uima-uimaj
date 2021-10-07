@@ -28,23 +28,42 @@ import org.eclipse.swt.widgets.Composite;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class AbstractDialogKeyVerifyJavaNames.
+ */
 public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKeyVerify implements
         VerifyKeyListener, VerifyListener {
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#newSingleLineStyledText(org.eclipse.swt.widgets.Composite, java.lang.String)
+   */
+  @Override
   protected StyledText newSingleLineStyledText(Composite parent, String tip) {
     StyledText w = super.newSingleLineStyledText(parent, tip);
     w.addVerifyListener(this);
     return w;
   }
 
+  /**
+   * Instantiates a new abstract dialog key verify java names.
+   *
+   * @param aSection the a section
+   * @param title the title
+   * @param description the description
+   */
   protected AbstractDialogKeyVerifyJavaNames(AbstractSection aSection, String title,
           String description) {
     super(aSection, title, description);
   }
 
   /**
-   * Java name space names verify key checks for java identifier and periods
+   * Java name space names verify key checks for java identifier and periods.
+   *
+   * @param event the event
+   * @return true, if successful
    */
+  @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
       return true;
@@ -62,6 +81,8 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   }
 
   /**
+   * Verify text.
+   *
    * <ul>
    * <li>event.start - the replace start offset</li>
    * <li>event.end - the replace end offset</li>
@@ -71,6 +92,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
    * @param event
    *          the text change event.
    */
+  @Override
   public void verifyText(VerifyEvent event) {
     event.doit = true;
     String oldStr = ((StyledText) event.widget).getText();
@@ -87,6 +109,12 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
     }
   }
 
+  /**
+   * Name part starts with digit.
+   *
+   * @param s the s
+   * @return true, if successful
+   */
   private boolean namePartStartsWithDigit(final String s) {
     if (null == s || s.length() == 0)
       return false;

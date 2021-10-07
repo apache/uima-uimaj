@@ -75,6 +75,11 @@ public interface CASMgr {
    */
   void enableReset(boolean flag);
 
+  /**
+   * Does nothing, kept only for backwards compatibility
+   * @param cas -
+   */
+  @Deprecated
   void setCAS(CAS cas);
 
   /**

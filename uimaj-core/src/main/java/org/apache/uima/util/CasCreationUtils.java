@@ -53,6 +53,7 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.PrimitiveValue;
@@ -86,6 +87,22 @@ import org.apache.uima.resource.metadata.impl.ProcessingResourceMetaData_impl;
  */
 public class CasCreationUtils {
 
+  private final static AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
+  
+  private final static FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
+  
+  /**
+   * Creates a new CAS instance.
+   * 
+   * @return a new CAS instance
+   * 
+   * @throws ResourceInitializationException
+   *                 if CAS creation fails
+   */
+  public static CAS createCas() throws ResourceInitializationException {
+    return createCas((TypeSystemDescription) null, null, null);
+  }
+  
   /**
    * Creates a new CAS instance. Note this method does not work for Aggregate Analysis Engine
    * descriptors -- use {@link #createCas(AnalysisEngineDescription)} instead.
@@ -101,7 +118,7 @@ public class CasCreationUtils {
    */
   public static CAS createCas(AnalysisEngineMetaData aMetaData)
       throws ResourceInitializationException {
-    List<AnalysisEngineMetaData> list = new ArrayList<AnalysisEngineMetaData>();
+    List<AnalysisEngineMetaData> list = new ArrayList<>();
     list.add(aMetaData);
     return createCas(list);
   }
@@ -120,7 +137,7 @@ public class CasCreationUtils {
    */
   public static CAS createCas(ProcessingResourceMetaData aMetaData)
       throws ResourceInitializationException {
-    List<ProcessingResourceMetaData> list = new ArrayList<ProcessingResourceMetaData>();
+    List<ProcessingResourceMetaData> list = new ArrayList<>();
     list.add(aMetaData);
     return createCas(list);
   }
@@ -161,7 +178,7 @@ public class CasCreationUtils {
    */
   public static CAS createCas(AnalysisEngineDescription aDescription,
       Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    List<AnalysisEngineDescription> list = new ArrayList<AnalysisEngineDescription>();
+    List<AnalysisEngineDescription> list = new ArrayList<>();
     list.add(aDescription);
     return createCas(list, aPerformanceTuningSettings);
   }
@@ -265,9 +282,9 @@ public class CasCreationUtils {
     List<ProcessingResourceMetaData> mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
-    List<TypePriorities> typePriorities = new ArrayList<TypePriorities>();
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
+    List<TypePriorities> typePriorities = new ArrayList<>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -434,9 +451,9 @@ public class CasCreationUtils {
     List<ProcessingResourceMetaData> mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
-    List<TypePriorities> typePriorities = new ArrayList<TypePriorities>();
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
+    List<TypePriorities> typePriorities = new ArrayList<>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -551,7 +568,7 @@ public class CasCreationUtils {
         aTypeSystemDesc.resolveImports(aResourceManager);
         //even though there's only one Type System, we still need to do a merge, to handle the
         //case where this TypeSystem defines the same type more than once (or has imports that do)
-        List<TypeSystemDescription> tsList = new ArrayList<TypeSystemDescription>();
+        List<TypeSystemDescription> tsList = new ArrayList<>();
         tsList.add(aTypeSystemDesc);
         aTypeSystemDesc = mergeTypeSystems(tsList, aResourceManager, null);        
       }
@@ -561,15 +578,21 @@ public class CasCreationUtils {
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
-
-    // get initial heap size
+    
+ // get initial heap size
     String initialHeapSizeStr = null;
     if (aPerformanceTuningSettings != null) {
       initialHeapSizeStr = aPerformanceTuningSettings
           .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
     }
     
+    int initialHeapSize = (null == initialHeapSizeStr) 
+                            ? CASImpl.DEFAULT_INITIAL_HEAP_SIZE
+                            : Integer.parseInt(initialHeapSizeStr);
+    
+    
     // Check Jcas cache performance setting.  Defaults to true.
+    // in v3, JCasCache is ignored
     boolean useJcasCache = true;
     if (aPerformanceTuningSettings != null) {
       String useJcasCacheString = aPerformanceTuningSettings.getProperty(
@@ -578,26 +601,35 @@ public class CasCreationUtils {
         useJcasCache = false;
       }
     }
-
+    
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
-      if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), aTypeSystem, useJcasCache);
-      } else {
-        casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
+      casMgr = CASFactory.createCAS(initialHeapSize, aTypeSystem, useJcasCache);
+      
+      // Set JCas ClassLoader - before setupTypeSystem
+      if (aResourceManager.getExtensionClassLoader() != null) {
+        casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
       }
+
     } else // no TypeSystem to reuse - create a new one
     {
-      if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), useJcasCache);
-      } else {
-        casMgr = CASFactory.createCAS(CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
+      boolean skip_loading_user_jcas = false;
+      if (aPerformanceTuningSettings != null) {
+        String v = aPerformanceTuningSettings.getProperty(UIMAFramework.SKIP_USER_JCAS_LOADING, "false");
+        skip_loading_user_jcas = "true".equalsIgnoreCase(v);
       }
+
+      casMgr = CASFactory.createCAS();
+ 
+      if (aResourceManager.getExtensionClassLoader() != null) {
+        casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
+      }
+
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
       // Commit the type system
-      ((CASImpl) casMgr).commitTypeSystem();
+      ((CASImpl) casMgr).commitTypeSystem(skip_loading_user_jcas);
     }
 
     try {
@@ -616,16 +648,15 @@ public class CasCreationUtils {
     // Commit the index repository
     casMgr.getIndexRepositoryMgr().commit();
 
-    // Set JCas ClassLoader
-    if (aResourceManager.getExtensionClassLoader() != null) {
-      casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
-    }
 
     return casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
   }
 
   /**
    * Create a CAS from a CAS Definition.
+   * 
+   * In V3, creating the type system is expensive (due to loading and setting up of JCas classes), so
+   * we do the type system creation once per CasDefinition and store it with the CAS definition
    * 
    * @param casDef
    *                completely describes the CAS to be created
@@ -640,8 +671,21 @@ public class CasCreationUtils {
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings)
       throws ResourceInitializationException {
-    return createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), casDef
-        .getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
+    TypeSystemImpl tsi = casDef.getTypeSystemImpl();
+    CAS cas;
+    if (null == tsi) {
+      synchronized (casDef) {
+        if (null == tsi) { // retest under sync lock
+          cas = createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), 
+              casDef.getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
+          casDef.setTypeSystemImpl((TypeSystemImpl) cas.getTypeSystem());
+          return cas;
+        }  
+      }
+    } 
+    
+    return doCreateCas(tsi, casDef.getTypeSystemDescription(), casDef.getTypePriorities(), 
+            casDef.getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
   }
 
   /**
@@ -690,11 +734,11 @@ public class CasCreationUtils {
         // over this, adding types to the CAS and removing them from the linked
         // list. We continue until the list is empty or we cannot make any
         // progress.
-        LinkedList<TypeDescription> typeList = new LinkedList<TypeDescription>();
+        LinkedList<TypeDescription> typeList = new LinkedList<>();
         typeList.addAll(Arrays.asList(types));
         int numTypes = typeList.size();
         int lastNumTypes;
-        List<TypeDescription> typesInOrderOfCreation = new LinkedList<TypeDescription>();
+        List<TypeDescription> typesInOrderOfCreation = new LinkedList<>();
         do {
           lastNumTypes = numTypes;
           Iterator<TypeDescription> it = typeList.iterator();
@@ -835,7 +879,7 @@ public class CasCreationUtils {
               if (multiRefAllowed == null) {
                 multiRefAllowed = Boolean.FALSE; // default to false if unspecified
               }
-              typeSystemMgr.addFeature(featName, type, rangeType, multiRefAllowed.booleanValue());
+              typeSystemMgr.addFeature(featName, type, rangeType, multiRefAllowed);
             }
           }
         }
@@ -959,7 +1003,7 @@ public class CasCreationUtils {
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
         .createTypeSystemDescription();
     Iterator<FeatureStructure> iter = aCasData.getFeatureStructures();
-    List<TypeDescription> typesArr = new ArrayList<TypeDescription>();
+    List<TypeDescription> typesArr = new ArrayList<>();
     while (iter.hasNext()) {
       FeatureStructure casFS = iter.next();
       TypeDescription newType = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
@@ -1060,7 +1104,7 @@ public class CasCreationUtils {
       ResourceManager aResourceManager, Map<String, Set<String>> aOutputMergedTypes)
       throws ResourceInitializationException {
     // also build a Map from Type names to Types.  Use a TreeMap so we get a consistent ordering of types.
-    Map<String, TypeDescription> typeNameMap = new TreeMap<String,TypeDescription>();
+    Map<String, TypeDescription> typeNameMap = new TreeMap<>();
 
     // Iterate through all type systems and add types to the merged TypeSystem.
     // If a type is defined more than once, we need to check if the superType
@@ -1073,7 +1117,7 @@ public class CasCreationUtils {
     // over this, adding types to the merged type system when their supertypes
     // become defined.  We continue until the list is empty or we cannot make any
     // progress.
-    LinkedList<TypeDescription> typeList = new LinkedList<TypeDescription>();
+    LinkedList<TypeDescription> typeList = new LinkedList<>();
     Iterator<? extends TypeSystemDescription> it = aTypeSystems.iterator();
     while (it.hasNext()) {
       TypeSystemDescription ts = it.next();
@@ -1191,8 +1235,8 @@ public class CasCreationUtils {
       return false;
     }
     
-    Set<String> s1 = new HashSet<String>(av1.length);
-    Set<String> s2 = new HashSet<String>(av1.length);
+    Set<String> s1 = new HashSet<>(av1.length);
+    Set<String> s2 = new HashSet<>(av1.length);
     
     for (AllowedValue av : av1) {
       s1.add(av.getString());
@@ -1222,7 +1266,7 @@ public class CasCreationUtils {
   private static AllowedValue[] getAllowedValues(TypeDescription type) {
     AllowedValue[] r = type.getAllowedValues();
     if (r == null) {
-      return new AllowedValue[0];
+      return EMPTY_ALLOWED_VALUE_ARRAY;
     }
     return r;
   }
@@ -1243,7 +1287,7 @@ public class CasCreationUtils {
       String typeName = currentType.getName();
       Set<String> descriptorUrls = aOutputMergedTypes.get(typeName);
       if (descriptorUrls == null) {
-        descriptorUrls = new TreeSet<String>();
+        descriptorUrls = new TreeSet<>();
         descriptorUrls.add(existingType.getSourceUrlString());
         descriptorUrls.add(currentType.getSourceUrlString());
         aOutputMergedTypes.put(typeName, descriptorUrls);
@@ -1329,12 +1373,12 @@ public class CasCreationUtils {
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
       Map<String, Set<String>> aOutputMergedTypes) throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
-    List<AnalysisEngineDescription> l = new ArrayList<AnalysisEngineDescription>();
+    List<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager);
 
     // extract type systems and merge
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -1358,7 +1402,7 @@ public class CasCreationUtils {
    */
   public static FsIndexCollection mergeFsIndexes(List<? extends FsIndexCollection> aFsIndexCollections,
       ResourceManager aResourceManager) throws ResourceInitializationException {
-    Map<String, FsIndexDescription> aggIndexes = new HashMap<String, FsIndexDescription>();
+    Map<String, FsIndexDescription> aggIndexes = new HashMap<>();
     Iterator<? extends FsIndexCollection> it = aFsIndexCollections.iterator();
     while (it.hasNext()) {
       FsIndexCollection indexColl = it.next();
@@ -1436,12 +1480,12 @@ public class CasCreationUtils {
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
       throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
-    List<AnalysisEngineDescription> l = new ArrayList<AnalysisEngineDescription>();
+    List<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager);
 
     // extract FsIndexCollections and merge
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -1523,12 +1567,12 @@ public class CasCreationUtils {
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
       throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
-    ArrayList<AnalysisEngineDescription> l = new ArrayList<AnalysisEngineDescription>();
+    ArrayList<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager);
 
     // extract TypePriorities and merge
-    List<TypePriorities> typePriorities = new ArrayList<TypePriorities>();
+    List<TypePriorities> typePriorities = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -1576,7 +1620,7 @@ public class CasCreationUtils {
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
       Map<String, Set<String>> aOutputMergedTypes, Map<String, ? super Exception> aOutputFailedRemotes) throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
-    ArrayList<AnalysisEngineDescription> l = new ArrayList<AnalysisEngineDescription>();
+    ArrayList<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager, aOutputFailedRemotes);
 
@@ -1584,7 +1628,7 @@ public class CasCreationUtils {
         .createProcessingResourceMetaData();
 
     // extract type systems and merge
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -1594,7 +1638,7 @@ public class CasCreationUtils {
     result.setTypeSystem(mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypes));
 
     // extract TypePriorities and merge
-    List<TypePriorities> typePriorities = new ArrayList<TypePriorities>();
+    List<TypePriorities> typePriorities = new ArrayList<>();
     it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -1604,7 +1648,7 @@ public class CasCreationUtils {
     result.setTypePriorities(mergeTypePriorities(typePriorities, aResourceManager));
 
     // extract FsIndexCollections and merge
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     it = mdList.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
@@ -1664,7 +1708,7 @@ public class CasCreationUtils {
       throws ResourceInitializationException {
     FeatureDescription[] existingFeatures = aType.getFeatures();
     if (existingFeatures == null) {
-      existingFeatures = new FeatureDescription[0];
+      existingFeatures = EMPTY_FEAT_DESC_ARRAY;
     }
 
     for (int i = 0; i < aFeatures.length; i++) {
@@ -1705,7 +1749,7 @@ public class CasCreationUtils {
         // not ok otherwise
 
         if (!(((mra1 == null) && (mra2 == null)) || ((mra1 != null) && mra1.equals(mra2))
-            || ((mra1 == null) && !mra2.booleanValue()) || ((mra2 == null) && !mra1.booleanValue()))) {
+            || ((mra1 == null) && !mra2) || ((mra2 == null) && !mra1))) {
           throw new ResourceInitializationException(
               ResourceInitializationException.INCOMPATIBLE_MULTI_REFS, new Object[] {
                   aType.getName() + ":" + feat.getName(), aType.getSourceUrlString() });
@@ -1784,7 +1828,7 @@ public class CasCreationUtils {
 
     @Override
     public String toString() {
-      return "MetaDataCacheKey [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
+      return this.getClass().getSimpleName() + " [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
           + rmClassLoader + ", rmDataPath=" + rmDataPath + "]";
     }
   }
@@ -1796,7 +1840,7 @@ public class CasCreationUtils {
    * This is the cache.
    * All references to it are synchronized, using it as the object.
    */
-  private static final transient Map<MetaDataCacheKey, MetaDataCacheEntry> metaDataCache = new HashMap<MetaDataCacheKey, MetaDataCacheEntry>();
+  private static final transient Map<MetaDataCacheKey, MetaDataCacheEntry> metaDataCache = new HashMap<>();
 
   /** This holds an instance of a Timer object
    * This object is nulled out and gets gc'd when it's timertask finishes, when the
@@ -1916,7 +1960,7 @@ public class CasCreationUtils {
       ResourceManager aResourceManager, Map<String, ? super Exception> aOutputFailedRemotes, String aContextName)
       throws ResourceInitializationException {
 
-    List<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
+    List<ProcessingResourceMetaData> mdList = new ArrayList<>();
     if (null == aComponentDescriptionOrMetaData) {
       return mdList;
     }
@@ -1939,7 +1983,7 @@ public class CasCreationUtils {
           Iterator<Map.Entry<String, ResourceSpecifier>> delIter = delegateMap.entrySet().iterator();
           while (delIter.hasNext()) {
             Map.Entry<String, ResourceSpecifier> delEntry = delIter.next();
-            List<ResourceSpecifier> tempList = new ArrayList<ResourceSpecifier>();
+            List<ResourceSpecifier> tempList = new ArrayList<>();
             tempList.add(delEntry.getValue());
             mdList.addAll(getMetaDataList(tempList, aResourceManager, aOutputFailedRemotes,
                 aContextName + "/" + delEntry.getKey()));
@@ -1985,7 +2029,7 @@ public class CasCreationUtils {
         // try to instantiate the resource
         
         Resource resource = null;
-        Map<String, Object> prParams = new HashMap<String, Object>();
+        Map<String, Object> prParams = new HashMap<>();
         if (aResourceManager != null) {
           prParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
         }

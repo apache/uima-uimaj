@@ -67,8 +67,8 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
     mFileUrlSuffix = spec.getFileUrlSuffix();
 
     // store initialization parameters to be passed on to DataReources
-    mResourceInitParams = (aAdditionalParams == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(
-            aAdditionalParams);
+    mResourceInitParams = (aAdditionalParams == null) ? new HashMap<>() : new HashMap<>(
+        aAdditionalParams);
 
     // call super initialize to set uima context from additional params if available
     // this context is to allow getting access to the Resource Manager.

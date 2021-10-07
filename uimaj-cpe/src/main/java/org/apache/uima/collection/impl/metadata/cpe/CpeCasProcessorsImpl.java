@@ -40,23 +40,39 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CpeCasProcessorsImpl.
+ */
 public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasProcessors {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5532660061637797550L;
 
+  /** The Constant DEFAULT_POOL_SIZE. */
   private static final int DEFAULT_POOL_SIZE = 1;
 
+  /** The cas processors. */
   private ArrayList casProcessors = new ArrayList();
 
+  /** The drop cas on exception. */
   private boolean dropCasOnException;
 
+  /** The cas pool size. */
   private int casPoolSize = DEFAULT_POOL_SIZE;
 
+  /** The processing unit thread count. */
   private int processingUnitThreadCount = 1;
 
+  /** The input queue size. */
   private int inputQueueSize;
 
+  /** The output queue size. */
   private int outputQueueSize;
 
+  /**
+   * Instantiates a new cpe cas processors impl.
+   */
   public CpeCasProcessorsImpl() {
     super();
   }
@@ -172,6 +188,12 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     return processors;
   }
 
+  /**
+   * Sets the all cpe cas processors.
+   *
+   * @param aCpeProcessors the new all cpe cas processors
+   * @throws CpeDescriptorException the cpe descriptor exception
+   */
   /*
    * (non-Javadoc)
    * 
@@ -203,11 +225,12 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   }
 
   /**
-   * New API 01/06/2006
-   * @param aPosition -
-   * @param flag -
-   * @return -
-   * @throws CpeDescriptorException -
+   * New API 01/06/2006.
+   *
+   * @param aPosition the a position
+   * @param flag the flag
+   * @return the cpe cas processor[]
+   * @throws CpeDescriptorException the cpe descriptor exception
    */
   public CpeCasProcessor[] removeCpeCasProcessor(int aPosition, boolean flag)
           throws CpeDescriptorException {
@@ -242,6 +265,12 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     casPoolSize = aPoolSize;
   }
 
+  /**
+   * Gets the pool size.
+   *
+   * @return the pool size
+   * @throws CpeDescriptorException the cpe descriptor exception
+   */
   /*
    * (non-Javadoc)
    * 
@@ -251,6 +280,12 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     return casPoolSize;
   }
 
+  /**
+   * Sets the drop cas on exception.
+   *
+   * @param aDropCasOnException the new drop cas on exception
+   * @throws CpeDescriptorException the cpe descriptor exception
+   */
   /*
    * (non-Javadoc)
    * 
@@ -272,7 +307,11 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
 
   /**
    * Overridden to read Cas Processor attributes.
-   * 
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -280,8 +319,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     try {
-      setDropCasOnException(Boolean.valueOf(aElement.getAttribute("dropCasOnException"))
-              .booleanValue());
+      setDropCasOnException(Boolean.valueOf(aElement.getAttribute("dropCasOnException")));
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
@@ -378,6 +416,9 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+   */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
@@ -408,7 +449,8 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
 
   /**
    * Overridden to handle Cas Processor attributes.
-   * 
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
   @Override
@@ -433,14 +475,21 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     return attrs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessors",
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCpeCasProcessors", null), });
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeCasProcessors#getCasPoolSize()
+   */
   @Override
   public int getCasPoolSize() {
     // Indirection needed to handle the exception. xsdbeans based implementation of this API
@@ -454,6 +503,11 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     return 1;
   }
 
+  /**
+   * Checks if is drop cas on exception.
+   *
+   * @return true, if is drop cas on exception
+   */
   public boolean isDropCasOnException() {
 
     // Indirection needed to handle the exception. xsdbeans based implementation of this API

@@ -36,6 +36,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
+
 /**
  * A simple collection reader that reads documents from a directory in the filesystem. It can be
  * configured with the following parameters:
@@ -72,17 +73,25 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    */
   public static final String PARAM_SUBDIR = "BrowseSubdirectories";
   
+  /** The m files. */
   private ArrayList<File> mFiles;
 
+  /** The m encoding. */
   private String mEncoding;
 
+  /** The m language. */
   private String mLanguage;
   
+  /** The m recursive. */
   private Boolean mRecursive;
 
+  /** The m current index. */
   private int mCurrentIndex;
 
   /**
+   * Initialize.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
   public void initialize() throws ResourceInitializationException {
@@ -103,7 +112,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // get list of files in the specified directory, and subdirectories if the
     // parameter PARAM_SUBDIR is set to True
-    mFiles = new ArrayList<File>();
+    mFiles = new ArrayList<>();
     addFilesFromDir(directory);
   }
   
@@ -111,8 +120,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * This method adds files in the directory passed in as a parameter to mFiles.
    * If mRecursive is true, it will include all files in all
    * subdirectories (recursively), as well. 
-   * 
-   * @param dir
+   *
+   * @param dir the dir
    */
   private void addFilesFromDir(File dir) {
     File[] files = dir.listFiles();
@@ -126,6 +135,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   }
 
   /**
+   * Checks for next.
+   *
+   * @return true, if successful
    * @see org.apache.uima.collection.CollectionReader#hasNext()
    */
   public boolean hasNext() {
@@ -133,6 +145,11 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   }
 
   /**
+   * Gets the next.
+   *
+   * @param aCAS the a CAS
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws CollectionException the collection exception
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
@@ -168,12 +185,18 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   }
 
   /**
+   * Close.
+   *
+   * @throws IOException Signals that an I/O exception has occurred.
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
   public void close() throws IOException {
   }
 
   /**
+   * Gets the progress.
+   *
+   * @return the progress
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
   public Progress[] getProgress() {

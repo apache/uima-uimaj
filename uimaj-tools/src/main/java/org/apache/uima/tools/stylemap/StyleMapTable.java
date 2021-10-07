@@ -26,14 +26,26 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 
+
 /**
  * Data structure used by the editor, which represents an entry in the style map.
  */
 public class StyleMapTable extends JTable {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 3556134276343308170L;
 
+  /** The med. */
   private TableGUIMediator med;
 
+  /**
+   * Instantiates a new style map table.
+   *
+   * @param model the model
+   * @param av the av
+   * @param edit the edit
+   * @param tmed the tmed
+   */
   public StyleMapTable(TableModel model, AnnotationFeaturesViewer av, StyleMapEditor edit,
           TableGUIMediator tmed) {
     super(model);
@@ -47,6 +59,10 @@ public class StyleMapTable extends JTable {
     lsm.addListSelectionListener(new TableSelectionListener(med));
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.JTable#getPreferredScrollableViewportSize()
+   */
+  @Override
   public Dimension getPreferredScrollableViewportSize() {
     return this.getPreferredSize();
   }

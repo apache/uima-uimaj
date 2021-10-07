@@ -38,9 +38,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
 import org.apache.uima.tools.images.Images;
+
 
 /**
  * 
@@ -48,22 +50,36 @@ import org.apache.uima.tools.images.Images;
  * elements and to control their ordering.
  */
 public class ListSelector extends JPanel implements ActionListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6426556774940666223L;
 
+  /** The list model. */
   private DefaultListModel listModel = new DefaultListModel();
 
+  /** The list. */
   private JList list;
 
+  /** The add field. */
   private JTextField addField;
 
+  /** The add button. */
   private SmallButton addButton;
 
+  /** The remove button. */
   private SmallButton removeButton;
 
+  /** The move up button. */
   private ImageButton moveUpButton;
 
+  /** The move down button. */
   private ImageButton moveDownButton;
 
+  /**
+   * Instantiates a new list selector.
+   *
+   * @param listData the list data
+   */
   public ListSelector(Object[] listData) {
     for (int i = 0; i < listData.length; i++)
       listModel.addElement(listData[i]);
@@ -76,8 +92,8 @@ public class ListSelector extends JPanel implements ActionListener {
     Border etchedBorder = BorderFactory.createEtchedBorder();
     list.setBorder(etchedBorder);
 
-    JScrollPane scrollPane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
     add(scrollPane, BorderLayout.CENTER);
 
     JPanel controlPanel = new JPanel();
@@ -129,6 +145,11 @@ public class ListSelector extends JPanel implements ActionListener {
     add(controlPanel, BorderLayout.EAST);
   }
 
+  /**
+   * Populate.
+   *
+   * @param listData the list data
+   */
   public void populate(Object[] listData) {
     listModel.clear();
 
@@ -138,6 +159,11 @@ public class ListSelector extends JPanel implements ActionListener {
     validate();
   }
 
+  /**
+   * Gets the values.
+   *
+   * @return the values
+   */
   public String[] getValues() {
     Object[] valuesArray = listModel.toArray();
     if (valuesArray.length == 0) {
@@ -150,6 +176,10 @@ public class ListSelector extends JPanel implements ActionListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == addField || source == addButton) {
@@ -204,13 +234,27 @@ public class ListSelector extends JPanel implements ActionListener {
     }
   }
 
+  /**
+   * The Class SmallButton.
+   */
   static class SmallButton extends JButton {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -4311761385714783114L;
 
+    /**
+     * Instantiates a new small button.
+     *
+     * @param s the s
+     */
     public SmallButton(String s) {
       super(s);
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getInsets()
+     */
+    @Override
     public Insets getInsets() {
       return new Insets(3, 6, 3, 6);
     }

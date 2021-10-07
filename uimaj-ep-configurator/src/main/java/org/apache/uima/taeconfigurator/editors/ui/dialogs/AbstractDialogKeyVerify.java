@@ -29,17 +29,43 @@ import org.eclipse.swt.widgets.Label;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class AbstractDialogKeyVerify.
+ */
 public abstract class AbstractDialogKeyVerify extends AbstractDialog implements VerifyKeyListener {
 
+  /**
+   * Instantiates a new abstract dialog key verify.
+   *
+   * @param aSection the a section
+   * @param title the title
+   * @param description the description
+   */
   protected AbstractDialogKeyVerify(AbstractSection aSection, String title, String description) {
     super(aSection, title, description);
   }
 
+  /**
+   * New labeled single line styled text.
+   *
+   * @param twoCol the two col
+   * @param label the label
+   * @param tip the tip
+   * @return the styled text
+   */
   protected StyledText newLabeledSingleLineStyledText(Composite twoCol, String label, String tip) {
     setTextAndTip(new Label(twoCol, SWT.NONE), label, tip);
     return newSingleLineStyledText(twoCol, tip);
   }
 
+  /**
+   * New single line styled text.
+   *
+   * @param parent the parent
+   * @param tip the tip
+   * @return the styled text
+   */
   protected StyledText newSingleLineStyledText(Composite parent, String tip) {
     StyledText w = new StyledText(parent, SWT.SINGLE | SWT.BORDER);
     w.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -50,6 +76,10 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
     return w;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
+   */
+  @Override
   public void verifyKey(VerifyEvent event) {
     event.doit = true;
     errorMessageUI.setText("");
@@ -62,10 +92,10 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
 
   // overridden in methods needing other key checks
   /**
-   * Default verify key checks
-   * 
-   * @param event -
-   * @return -
+   * Default verify key checks.
+   *
+   * @param event the event
+   * @return true, if successful
    */
   public boolean verifyKeyChecks(VerifyEvent event) {
     return true;

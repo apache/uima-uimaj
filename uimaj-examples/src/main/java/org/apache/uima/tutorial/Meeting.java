@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,209 +16,239 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.tutorial;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 
-/**
- * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
- * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * 
- * @generated
- */
-@SuppressWarnings("javadoc")
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * @generated */
 public class Meeting extends Annotation {
-  /**
-   * @generated
-   * @ordered
+
+  /** @generated
+   * @ordered 
    */
-  public final static int typeIndexID = JCasRegistry.register(Meeting.class);
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.tutorial.Meeting";
+  
+    /**
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
+    public static final int typeIndexID = JCasRegistry.register(Meeting.class);
 
-  /**
-   * @generated
-   * @ordered
-   */
-  public final static int type = typeIndexID;
+    /**
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
+    public static final int type = typeIndexID;
 
-  /** @generated */
-  @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
+    public int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_room = "room";
+  public final static String _FeatName_date = "date";
+  public final static String _FeatName_startTime = "startTime";
+  public final static String _FeatName_endTime = "endTime";
 
-  /**
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_room = TypeSystemImpl.createCallSite(Meeting.class, "room");
+  private final static MethodHandle _FH_room = _FC_room.dynamicInvoker();
+  private final static CallSite _FC_date = TypeSystemImpl.createCallSite(Meeting.class, "date");
+  private final static MethodHandle _FH_date = _FC_date.dynamicInvoker();
+  private final static CallSite _FC_startTime = TypeSystemImpl.createCallSite(Meeting.class, "startTime");
+  private final static MethodHandle _FH_startTime = _FC_startTime.dynamicInvoker();
+  private final static CallSite _FC_endTime = TypeSystemImpl.createCallSite(Meeting.class, "endTime");
+  private final static MethodHandle _FH_endTime = _FC_endTime.dynamicInvoker();
+
+   
+
+    /**
    * Never called. Disable default constructor
-   * 
+   *
    * @generated
    */
-  protected Meeting() {
-  }
-
-  /**
-   * Internal - constructor used by generator
-   * 
-   * @generated
-   */
-  public Meeting(int addr, TOP_Type type) {
-    super(addr, type);
+    protected  Meeting() {/* intentionally empty block */}
+    
+    /**
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
+    public  Meeting(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
-
-  /** @generated */
-  public Meeting(JCas jcas) {
+  
+    /**
+     * Instantiates a new meeting.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
+    public  Meeting(JCas jcas) {
     super(jcas);
-    readObject();
-  }
+    readObject();   
+  } 
 
-  public Meeting(JCas jcas, int begin, int end) {
-    super(jcas);
-    setBegin(begin);
-    setEnd(end);
-    readObject();
-  }
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
-   */
-  private void readObject() {
-  }
-
-  // *--------------*
-  // * Feature: room
-
-  /**
-   * getter for room - gets
-   * 
-   * @generated
-   */
-  public RoomNumber getRoom() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_room == null) {
-        this.jcasType.jcas.throwFeatMissing("room", "org.apache.uima.tutorial.Meeting");
+    /**
+     * Instantiates a new meeting.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
+    public  Meeting(JCas jcas, int begin, int end) {
+        super(jcas);
+        setBegin(begin);
+        setEnd(end);
+        readObject();
     }
-    return (RoomNumber) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Meeting_Type) jcasType).casFeatCode_room)));
-  }
 
-  /**
-   * setter for room - sets
-   * 
-   * @generated
+  /** 
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * @generated modifiable 
    */
-  public void setRoom(RoomNumber v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_room == null) {
-        this.jcasType.jcas.throwFeatMissing("room", "org.apache.uima.tutorial.Meeting");
+    private void readObject() {
     }
-    jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_room,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
 
-  // *--------------*
-  // * Feature: date
-
-  /**
-   * getter for date - gets
-   * 
-   * @generated
-   */
-  public DateAnnot getDate() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_date == null) {
-        this.jcasType.jcas.throwFeatMissing("date", "org.apache.uima.tutorial.Meeting");
+    // *--------------*
+    // * Feature: room
+    /**
+     * getter for room - gets.
+     *
+     * @return the room
+     * @generated 
+     */
+    public RoomNumber getRoom() { return (RoomNumber)(_getFeatureValueNc(wrapGetIntCatchException(_FH_room)));}
+    
+    /**
+     * setter for room - sets.
+     *
+     * @param v the new room
+     * @generated 
+     */
+    public void setRoom(RoomNumber v) {
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_room), v);
+  }    
+    
+   
+    
+    // *--------------*
+    // * Feature: date
+    /**
+     * getter for date - gets.
+     *
+     * @return the date
+     * @generated 
+     */
+    public DateAnnot getDate() { return (DateAnnot)(_getFeatureValueNc(wrapGetIntCatchException(_FH_date)));}
+    
+    /**
+     * setter for date - sets.
+     *
+     * @param v the new date
+     * @generated 
+     */
+    public void setDate(DateAnnot v) {
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_date), v);
+  }    
+    
+   
+    
+    // *--------------*
+    // * Feature: startTime
+    /**
+     * getter for startTime - gets.
+     *
+     * @return the start time
+     * @generated 
+     */
+    public TimeAnnot getStartTime() { return (TimeAnnot)(_getFeatureValueNc(wrapGetIntCatchException(_FH_startTime)));}
+    
+    /**
+     * setter for startTime - sets.
+     *
+     * @param v the new start time
+     * @generated 
+     */
+    public void setStartTime(TimeAnnot v) {
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_startTime), v);
+  }    
+    
+   
+    
+    // *--------------*
+    // * Feature: endTime
+    /**
+     * getter for endTime - gets.
+     *
+     * @return the end time
+     * @generated 
+     */
+    public TimeAnnot getEndTime() { return (TimeAnnot)(_getFeatureValueNc(wrapGetIntCatchException(_FH_endTime)));}
+    
+    /**
+     * setter for endTime - sets.
+     *
+     * @param v the new end time
+     * @generated 
+     */
+    public void setEndTime(TimeAnnot v) {
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_endTime), v);
+  }    
+    
+        /**
+     *  Custom constructor taking all parameters.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     * @param room the room
+     * @param date the date
+     * @param startTime the start time
+     * @param endTime the end time
+     */
+    public  Meeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date, TimeAnnot startTime, TimeAnnot endTime) {
+        this(jcas, start, end);
+        setRoom(room);
+        setDate(date);
+        setStartTime(startTime);
+        setEndTime(endTime);
     }
-    return (DateAnnot) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Meeting_Type) jcasType).casFeatCode_date)));
-  }
 
-  /**
-   * setter for date - sets
-   * 
-   * @generated
-   */
-  public void setDate(DateAnnot v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_date == null) {
-        this.jcasType.jcas.throwFeatMissing("date", "org.apache.uima.tutorial.Meeting");
+    /* (non-Javadoc)
+     * @see org.apache.uima.cas.impl.FeatureStructureImplC#toString()
+     */
+    public String toString() {
+        return "Meeting in " + getRoom().getCoveredText() + " on " + getDate().getCoveredText() + ", " + getStartTime().getCoveredText() + " - " + getEndTime().getCoveredText();
     }
-    jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_date,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  // *--------------*
-  // * Feature: startTime
-
-  /**
-   * getter for startTime - gets
-   * 
-   * @generated
-   */
-  public TimeAnnot getStartTime() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_startTime == null) {
-        this.jcasType.jcas.throwFeatMissing("startTime", "org.apache.uima.tutorial.Meeting");
-    }
-    return (TimeAnnot) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Meeting_Type) jcasType).casFeatCode_startTime)));
-  }
-
-  /**
-   * setter for startTime - sets
-   * 
-   * @generated
-   */
-  public void setStartTime(TimeAnnot v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_startTime == null) {
-        this.jcasType.jcas.throwFeatMissing("startTime", "org.apache.uima.tutorial.Meeting");
-    }
-    jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_startTime,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  // *--------------*
-  // * Feature: endTime
-
-  /**
-   * getter for endTime - gets
-   * 
-   * @generated
-   */
-  public TimeAnnot getEndTime() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_endTime == null) {
-        this.jcasType.jcas.throwFeatMissing("endTime", "org.apache.uima.tutorial.Meeting");
-    }
-    return (TimeAnnot) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Meeting_Type) jcasType).casFeatCode_endTime)));
-  }
-
-  /**
-   * setter for endTime - sets
-   * 
-   * @generated
-   */
-  public void setEndTime(TimeAnnot v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_endTime == null) {
-        this.jcasType.jcas.throwFeatMissing("endTime", "org.apache.uima.tutorial.Meeting");
-    }
-    jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_endTime,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  /** Custom constructor taking all parameters */
-  public Meeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date,
-          TimeAnnot startTime, TimeAnnot endTime) {
-    this(jcas, start, end);
-    setRoom(room);
-    setDate(date);
-    setStartTime(startTime);
-    setEndTime(endTime);
-  }
-
-  @Override
-public String toString() {
-    return "Meeting in " + getRoom().getCoveredText() + " on " + getDate().getCoveredText() + ", "
-            + getStartTime().getCoveredText() + " - " + getEndTime().getCoveredText();
-  }
-
 }

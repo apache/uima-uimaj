@@ -28,30 +28,49 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
+
 /**
  * An example annotator that annotates Tokens and Sentences.
  */
 public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
 
+  /**
+   * The Class Maker.
+   */
   static abstract class Maker {
+    
+    /**
+     * New annotation.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     * @return the annotation
+     */
     abstract Annotation newAnnotation(JCas jcas, int start, int end);
   }
 
+  /** The jcas. */
   JCas jcas;
 
+  /** The input. */
   String input;
 
+  /** The pp. */
   ParsePosition pp = new ParsePosition(0);
 
   // ****************************************
   // * Static vars holding break iterators
+  /** The Constant sentenceBreak. */
   // ****************************************
   static final BreakIterator sentenceBreak = BreakIterator.getSentenceInstance(Locale.US);
 
+  /** The Constant wordBreak. */
   static final BreakIterator wordBreak = BreakIterator.getWordInstance(Locale.US);
 
   // *********************************************
   // * function pointers for new instances *
+  /** The Constant sentenceAnnotationMaker. */
   // *********************************************
   static final Maker sentenceAnnotationMaker = new Maker() {
     Annotation newAnnotation(JCas jcas, int start, int end) {
@@ -59,6 +78,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
     }
   };
 
+  /** The Constant tokenAnnotationMaker. */
   static final Maker tokenAnnotationMaker = new Maker() {
     Annotation newAnnotation(JCas jcas, int start, int end) {
       return new Token(jcas, start, end);
@@ -67,6 +87,9 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
 
   // *************************************************************
   // * process *
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_component.JCasAnnotator_ImplBase#process(org.apache.uima.jcas.JCas)
+   */
   // *************************************************************
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     jcas = aJCas;
@@ -79,6 +102,12 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
 
   // *************************************************************
   // * Helper Methods *
+  /**
+   * Make annotations.
+   *
+   * @param m the m
+   * @param b the b
+   */
   // *************************************************************
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);

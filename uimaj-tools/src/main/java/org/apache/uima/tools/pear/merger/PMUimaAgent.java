@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -334,19 +335,10 @@ public class PMUimaAgent {
    */
   static void saveAggregateDescription(AnalysisEngineDescription aggDescription, File aggDescFile)
           throws IOException {
-    FileWriter fWriter = null;
-    try {
-      fWriter = new FileWriter(aggDescFile);
+    try (Writer fWriter = new FileWriter(aggDescFile)) {
       aggDescription.toXML(fWriter);
     } catch (SAXException exc) {
       throw new IOException(exc.toString());
-    } finally {
-      if (fWriter != null) {
-        try {
-          fWriter.close();
-        } catch (Exception e) {
-        }
-      }
     }
   }
 
@@ -360,19 +352,10 @@ public class PMUimaAgent {
    */
   static String toXmlString(XMLizable content) {
     StringWriter sWriter = new StringWriter();
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(sWriter);
+    try (PrintWriter oWriter = new PrintWriter(sWriter)) {
       content.toXML(oWriter);
       oWriter.flush();
     } catch (Exception exc) {
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return sWriter.toString();
   }

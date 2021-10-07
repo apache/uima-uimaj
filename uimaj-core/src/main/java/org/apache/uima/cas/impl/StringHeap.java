@@ -42,7 +42,7 @@ final class StringHeap {
   // Initialize internal datastructures.  This used to be a lot more complicated when we had the
   // character heap option.  
   private final void initMemory() {
-    this.stringList = new ArrayList<String>();
+    this.stringList = new ArrayList<>();
     this.stringList.add(null);
   }
 
@@ -59,19 +59,16 @@ final class StringHeap {
     int stringOffset;
     int stringLength;
     String charHeapInString = new String(shdh.charHeap); // UIMA-2460
-    Map<String, String> reuseStrings = new HashMap<String, String>(
-        Math.min(8, 
-                 (shdh.refHeap.length / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) 
-                 / 2));
+    Map<String, String> reuseStrings = new HashMap<>(
+        Math.min(8,
+            (shdh.refHeap.length / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE)
+                / 2));
     for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) {
       stringOffset = shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET];
       stringLength = shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET];
       String s = charHeapInString.substring(stringOffset, stringOffset + stringLength);
-      String reuse = reuseStrings.get(s);
-      if (reuse == null) {
-        reuseStrings.put(s, s);
-      }
-      this.stringList.add(reuse != null ? reuse : s);  
+      String reuse = reuseStrings.putIfAbsent(s, s);
+      this.stringList.add(reuse != null ? reuse : s);
     }
   }
 
@@ -161,7 +158,7 @@ final class StringHeap {
     this.stringList.add(s);
     return addr;
   }
-
+  
   // Not sure what this is supposed to do.  Passes unit tests like this.
   int cloneStringReference(int stringCode) {
     return stringCode;
@@ -190,4 +187,9 @@ final class StringHeap {
 	  return this.stringList.size();
   }
   
+  public String[] toArray() {
+    String[] r = new String[stringList.size()];
+    return stringList.toArray(r);
+  }
+
 }

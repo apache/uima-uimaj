@@ -58,18 +58,40 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+
+/**
+ * The Class MultiResourceSelectionDialog.
+ */
 public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   
+  /** The Constant PATH_SEPARATOR. */
   private final static String PATH_SEPARATOR = System.getProperty("path.separator");
+  
+  /**
+   * The Class CandidateAndSource.
+   */
   private static class CandidateAndSource implements Comparable<CandidateAndSource> {
+    
+    /** The candidate. */
     String candidate;
+    
+    /** The source. */
     String source;
     
+    /**
+     * Instantiates a new candidate and source.
+     *
+     * @param aCandidate the a candidate
+     * @param aSource the a source
+     */
     CandidateAndSource(String aCandidate, String aSource) {
       candidate = aCandidate;
       source = aSource;
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
       final int prime = 31;
@@ -79,6 +101,9 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
       return result;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
       if (this == obj)
@@ -101,6 +126,10 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
       return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
     public int compareTo(CandidateAndSource o) {
       int r = o.candidate.compareTo(this.candidate);
       if (r == 0) {
@@ -110,16 +139,30 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     }
   }
 
+  /** The browse button. */
   private Button browseButton; // for browsing the file system
 
+  /** The import by name UI. */
   private Button importByNameUI;
 
+  /** The import by location UI. */
   private Button importByLocationUI;
 
+  /** The is import by name. */
   public boolean isImportByName;
 
+  /** The editor. */
   protected MultiPageEditor editor;
 
+  /**
+   * Instantiates a new multi resource selection dialog.
+   *
+   * @param parentShell the parent shell
+   * @param rootElement the root element
+   * @param message the message
+   * @param aExcludeDescriptor the a exclude descriptor
+   * @param aEditor the a editor
+   */
   public MultiResourceSelectionDialog(Shell parentShell, IAdaptable rootElement, String message,
           IPath aExcludeDescriptor, MultiPageEditor aEditor) {
     super(parentShell);
@@ -140,6 +183,10 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
  */
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.ResourcePickerDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     // page group
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -153,6 +200,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     browseButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
     browseButton.pack(false);
     browseButton.addListener(SWT.MouseUp, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         FileDialog dialog = new FileDialog(getShell(), /* SWT.OPEN | */
         SWT.MULTI);
@@ -199,6 +247,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
       setupResourcesByName();
     }
     importByLocationUI.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         if (importByLocationUI.getSelection()) {
           isImportByName = false;
@@ -211,6 +260,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     });
     
     importByNameUI.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         if (importByNameUI.getSelection()) {
           isImportByName = true;
@@ -225,6 +275,9 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
 
  
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.ResourcePickerDialog#setupResourcesByLocation()
+   */
   @Override
   protected void setupResourcesByLocation() {
     if (! isImportByName) {
@@ -232,6 +285,9 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     }
   }
 
+  /**
+   * Setup resources by name.
+   */
   private void setupResourcesByName() {
     resourcesUI.removeAll();
     resourcesUI.removeListener(SWT.Expand, this); // remove to prevent
@@ -256,6 +312,10 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     browseButton.setEnabled(false);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.ResourcePickerDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     if (resourcesUI.getSelectionCount() > 0) {
       if (importByLocationUI.getSelection()) {
@@ -266,6 +326,11 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     }
   }
   
+  /**
+   * Compute by name candidates.
+   *
+   * @return the candidate and source[]
+   */
   // some caching - for jars with timestamps
   private CandidateAndSource [] computeByNameCandidates() {
     String cp;
@@ -275,7 +340,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
       throw new InternalErrorCDE("unhandled CoreException while getting classpaths to populate by-location list", e);
     }
     String [] cps = cp.split(PATH_SEPARATOR);
-    List<CandidateAndSource> candidates = new ArrayList<CandidateAndSource>(100);
+    List<CandidateAndSource> candidates = new ArrayList<>(100);
     
     for (String jarOrDir : cps) {
       if (jarOrDir.toLowerCase().endsWith(".jar")) {
@@ -301,18 +366,30 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     return result;   
   }
   
+  /** The only xml. */
   private FilenameFilter onlyXml = new FilenameFilter() {
+    @Override
     public boolean accept(File dir, String name) {
       return name.endsWith(".xml");
     }
   };
   
+  /** The only dir. */
   private FileFilter onlyDir = new FileFilter() {
+    @Override
     public boolean accept(File pathname) {
       return pathname.isDirectory();
     }
   };
   
+  /**
+   * Adds the class candidates.
+   *
+   * @param dir the dir
+   * @param candidates the candidates
+   * @param prefix the prefix
+   * @param source the source
+   */
   private void addClassCandidates(File dir, List<CandidateAndSource> candidates, String prefix, String source) {
     if (null == dir) {
       return;
@@ -335,9 +412,19 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     }
   }
   
-  private static Map<String, Long> sawJar = new TreeMap<String, Long>();
-  private static Map<String, List<CandidateAndSource>> cachedCs = new TreeMap<String, List<CandidateAndSource>>();
+  /** The saw jar. */
+  private static Map<String, Long> sawJar = new TreeMap<>();
   
+  /** The cached cs. */
+  private static Map<String, List<CandidateAndSource>> cachedCs = new TreeMap<>();
+  
+  /**
+   * Adds the jar candidates.
+   *
+   * @param jarPath the jar path
+   * @param candidates the candidates
+   * @param source the source
+   */
   private void addJarCandidates(String jarPath, List<CandidateAndSource> candidates, String source) {
     Long fileLastModified = (new File(jarPath)).lastModified();
     Long lastModified = sawJar.get(jarPath);   
@@ -347,7 +434,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
         lastModified.longValue() != fileLastModified ||
         null == css) {
       JarInputStream jarIn;
-      css = new ArrayList<CandidateAndSource>();
+      css = new ArrayList<>();
       try {
         jarIn = new JarInputStream(new BufferedInputStream(new FileInputStream(jarPath)));
       } catch (FileNotFoundException e) {
@@ -377,6 +464,11 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     candidates.addAll(css);
   }
 
+  /**
+   * Local set result.
+   *
+   * @param list the list
+   */
   // This is to avoid synthetic access method warning
   protected void localSetResult(ArrayList list) {
     setResult(list);
@@ -385,6 +477,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     okButton.setEnabled(false);  // preset
     if (0 < resourcesUI.getSelectionCount()) {

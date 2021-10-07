@@ -28,17 +28,28 @@ import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Window closing handler for annotation viewer.  Remember window position on close.
  */
 public class CloseAnnotationViewHandler extends WindowAdapter implements WindowListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new close annotation view handler.
+   *
+   * @param frame the frame
+   */
   CloseAnnotationViewHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
+   */
+  @Override
   public void windowClosing(WindowEvent event) {
     JComponent tsContentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
     final int x = tsContentPane.getWidth();

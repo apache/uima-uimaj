@@ -161,6 +161,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+
 /**
  * Main class implementing the multi page editor. In Eclipse 3, we extend FormEditor, which extends
  * in turn MultiPageEditorPart.
@@ -205,11 +206,14 @@ import org.xml.sax.SAXException;
 public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor {
 
   // ******************************
+  /** The initial size type collections. */
   // * Tuning Parameters
   public final int INITIAL_SIZE_TYPE_COLLECTIONS = 20;
 
+  /** The initial size feature collections. */
   public final int INITIAL_SIZE_FEATURE_COLLECTIONS = 40;
   
+  /** The preserve comments. */
   public final boolean PRESERVE_COMMENTS = true;
 
   // ******************************
@@ -217,17 +221,23 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   // ***********************************************************
   // M O D E L
   // the following are only populated based on what type
+  /** The ae description. */
   // of descriptor is being edited
   private AnalysisEngineDescription aeDescription = null;
 
+  /** The type system description. */
   private TypeSystemDescription typeSystemDescription = null;
 
+  /** The merged type system description. */
   private TypeSystemDescription mergedTypeSystemDescription = null;
   
-  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<String, Set<String>>();
+  /** The merged types adding features. */
+  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<>();
 
+  /** The imported type system description. */
   private TypeSystemDescription importedTypeSystemDescription = null;
 
+  /** The xml infoset. */
   private Node xmlInfoset = null;  // captures comments and ignorableWhitespace
   /**
    * Key = unique ID of included AE in aggregate Value = AnalysisEngineSpecification or URISpecifier
@@ -239,52 +249,67 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   // fully resolved (imports) and merged index collection
   // resolve with mergeDelegateAnalysisEngineFsIndexCollections
+  /** The merged fs index collection. */
   // (This works also for primitives)
   private FsIndexCollection mergedFsIndexCollection;
 
+  /** The imported fs index collection. */
   private FsIndexCollection importedFsIndexCollection;
 
   // fully resolved (imports) and merged type priorities
   // resolve with mergeDelegateAnalysisEngineTypePriorities
   // (This works also for primitives)
   // This collects all the type priority lists into one list, after
+  /** The merged type priorities. */
   // resolving imports.
   private TypePriorities mergedTypePriorities;
 
+  /** The imported type priorities. */
   private TypePriorities importedTypePriorities;
 
   // fully resolved (imports) ResourceManagerConfiguration
   // This collects all the External Resources and bindings into 2 list,
   // resolving imports. The resulting list may have
   // overridden bindings
+  /** The resolved external resources and bindings. */
   // unused external resources (not bound)
   private ResourceManagerConfiguration resolvedExternalResourcesAndBindings;
 
   // private ResourceManagerConfiguration importedExternalResourcesAndBindings;
 
+  /** The resolved flow controller declaration. */
   private FlowControllerDeclaration resolvedFlowControllerDeclaration;
 
+  /** The collection reader description. */
   private CollectionReaderDescription collectionReaderDescription;
 
+  /** The cas initializer description. */
   private CasInitializerDescription casInitializerDescription;
 
+  /** The cas consumer description. */
   private CasConsumerDescription casConsumerDescription;
 
+  /** The flow controller description. */
   private FlowControllerDescription flowControllerDescription;
 
   // values computed when first needed
+  /** The descriptor CAS. */
   // all use common markStale()
   public DescriptorTCAS descriptorCAS;
 
+  /** The all types. */
   public AllTypes allTypes;
 
+  /** The defined types with supers. */
   public DefinedTypesWithSupers definedTypesWithSupers;
 
   // ****************************************
   // * Model parts not part of the descriptor
+  /** The file. */
   // ****************************************
   private IFile file; // file being edited
 
+  /** The file needing context. */
   private IFile fileNeedingContext;
 
   // ***********************************************************
@@ -296,111 +321,175 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * instance of the editor opens.
    */
 
+  /** The source index. */
   protected int sourceIndex = -1;
 
+  /** The overview index. */
   protected int overviewIndex = -1;
 
+  /** The aggregate index. */
   private int aggregateIndex = -1;
 
+  /** The parameter index. */
   private int parameterIndex = -1;
 
+  /** The settings index. */
   private int settingsIndex = -1;
 
+  /** The type index. */
   protected int typeIndex = -1;
 
+  /** The capability index. */
   protected int capabilityIndex = -1;
 
+  /** The indexes index. */
   protected int indexesIndex = -1;
 
+  /** The resources index. */
   protected int resourcesIndex = -1;
 
+  /** The overview page. */
   protected OverviewPage overviewPage = null;
 
+  /** The aggregate page. */
   private AggregatePage aggregatePage = null;
 
+  /** The parameter page. */
   private ParameterPage parameterPage = null;
 
+  /** The settings page. */
   private SettingsPage settingsPage = null;
 
+  /** The type page. */
   protected TypePage typePage = null;
 
+  /** The capability page. */
   protected CapabilityPage capabilityPage = null;
 
+  /** The indexes page. */
   protected IndexesPage indexesPage = null;
 
+  /** The resources page. */
   protected ResourcesPage resourcesPage = null;
 
+  /** The source text editor. */
   protected XMLEditor sourceTextEditor;
 
+  /** The m b is inited. */
   private boolean m_bIsInited = false;
 
+  /** The is bad XML. */
   protected boolean isBadXML = true;
 
+  /** The source changed. */
   public boolean sourceChanged = true;
 
+  /** The file dirty. */
   private boolean fileDirty; // can only be set dirty once inited
 
+  /** The dirty type name hash. */
   private HashSet dirtyTypeNameHash; // for generating .java
 
   // type files upon saving (this has a problem if user edited xml
   // directly...)
 
+  /** The m n save as status. */
   public int m_nSaveAsStatus = SAVE_AS_NOT_IN_PROGRESS;
 
+  /** The Constant SAVE_AS_NOT_IN_PROGRESS. */
   public static final int SAVE_AS_NOT_IN_PROGRESS = -1;
 
+  /** The Constant SAVE_AS_STARTED. */
   public static final int SAVE_AS_STARTED = -2;
 
+  /** The Constant SAVE_AS_CANCELLED. */
   public static final int SAVE_AS_CANCELLED = -3;
 
+  /** The Constant SAVE_AS_CONFIRMED. */
   public static final int SAVE_AS_CONFIRMED = -4;
 
+  /** The opening context. */
   private boolean openingContext = false;
 
+  /** The is context loaded. */
   private boolean isContextLoaded = false;
 
+  /**
+   * Gets the checks if is context loaded.
+   *
+   * @return the checks if is context loaded
+   */
   public boolean getIsContextLoaded() {
     return isContextLoaded;
   }
 
+  /** The limit J cas gen to project scope. */
   private boolean limitJCasGenToProjectScope = MultiPageEditorContributor.getLimitJCasGenToProjectScope();
   
+  /**
+   * Gets the limit J cas gen to project scope.
+   *
+   * @return the limit J cas gen to project scope
+   */
   public boolean getLimitJCasGenToProjectScope() {
     return limitJCasGenToProjectScope;
   }
   
+  /**
+   * Sets the limit J cas gen to project scope.
+   *
+   * @param v the new limit J cas gen to project scope
+   */
   public void setLimitJCasGenToProjectScope(boolean v) {
     limitJCasGenToProjectScope = v;
   }
 
-  /**
-   * Descriptor Types
-   */
+  /** Descriptor Types. */
 
   private int descriptorType = 0;
 
+  /**
+   * Gets the descriptor type.
+   *
+   * @return the descriptor type
+   */
   public int getDescriptorType() {
     return descriptorType;
   }
 
+  /** The Constant DESCRIPTOR_AE. */
   public static final int DESCRIPTOR_AE = 1;
 
+  /** The Constant DESCRIPTOR_TYPESYSTEM. */
   public static final int DESCRIPTOR_TYPESYSTEM = 1 << 1;
 
+  /** The Constant DESCRIPTOR_INDEX. */
   public static final int DESCRIPTOR_INDEX = 1 << 2;
 
+  /** The Constant DESCRIPTOR_TYPEPRIORITY. */
   public static final int DESCRIPTOR_TYPEPRIORITY = 1 << 3;
 
+  /** The Constant DESCRIPTOR_EXTRESANDBINDINGS. */
   public static final int DESCRIPTOR_EXTRESANDBINDINGS = 1 << 4;
 
+  /** The Constant DESCRIPTOR_COLLECTIONREADER. */
   public static final int DESCRIPTOR_COLLECTIONREADER = 1 << 5;
 
+  /** The Constant DESCRIPTOR_CASINITIALIZER. */
   public static final int DESCRIPTOR_CASINITIALIZER = 1 << 6;
 
+  /** The Constant DESCRIPTOR_CASCONSUMER. */
   public static final int DESCRIPTOR_CASCONSUMER = 1 << 7;
 
+  /** The Constant DESCRIPTOR_FLOWCONTROLLER. */
   public static final int DESCRIPTOR_FLOWCONTROLLER = 1 << 8;
 
+  /**
+   * Descriptor type string.
+   *
+   * @param pDescriptorType the descriptor type
+   * @return the string
+   */
   public String descriptorTypeString(int pDescriptorType) {
     String r;
     switch (pDescriptorType) {
@@ -429,82 +518,163 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     return r + Messages.getString("MultiPageEditor.9"); //$NON-NLS-1$
   }
 
+  /**
+   * Descriptor type string.
+   *
+   * @return the string
+   */
   public String descriptorTypeString() {
     return descriptorTypeString(descriptorType);
   }
 
+  /**
+   * Checks if is ae descriptor.
+   *
+   * @return true, if is ae descriptor
+   */
   public boolean isAeDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_AE);
   }
 
+  /**
+   * Checks if is type system descriptor.
+   *
+   * @return true, if is type system descriptor
+   */
   public boolean isTypeSystemDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_TYPESYSTEM);
   }
 
+  /**
+   * Checks if is fs index collection.
+   *
+   * @return true, if is fs index collection
+   */
   public boolean isFsIndexCollection() {
     return 0 != (descriptorType & DESCRIPTOR_INDEX);
   }
 
+  /**
+   * Checks if is type priority descriptor.
+   *
+   * @return true, if is type priority descriptor
+   */
   public boolean isTypePriorityDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_TYPEPRIORITY);
   }
 
+  /**
+   * Checks if is ext res and bindings descriptor.
+   *
+   * @return true, if is ext res and bindings descriptor
+   */
   public boolean isExtResAndBindingsDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_EXTRESANDBINDINGS);
   }
 
+  /**
+   * Checks if is collection reader descriptor.
+   *
+   * @return true, if is collection reader descriptor
+   */
   public boolean isCollectionReaderDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_COLLECTIONREADER);
   }
 
+  /**
+   * Checks if is cas initializer descriptor.
+   *
+   * @return true, if is cas initializer descriptor
+   */
   public boolean isCasInitializerDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_CASINITIALIZER);
   }
 
+  /**
+   * Checks if is cas consumer descriptor.
+   *
+   * @return true, if is cas consumer descriptor
+   */
   public boolean isCasConsumerDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_CASCONSUMER);
   }
 
+  /**
+   * Checks if is flow controller descriptor.
+   *
+   * @return true, if is flow controller descriptor
+   */
   public boolean isFlowControllerDescriptor() {
     return 0 != (descriptorType & DESCRIPTOR_FLOWCONTROLLER);
   }
 
+  /**
+   * Checks if is local processing descriptor.
+   *
+   * @return true, if is local processing descriptor
+   */
   public boolean isLocalProcessingDescriptor() {
     return 0 != (descriptorType & (DESCRIPTOR_AE | DESCRIPTOR_COLLECTIONREADER
             | DESCRIPTOR_CASINITIALIZER | DESCRIPTOR_CASCONSUMER | DESCRIPTOR_FLOWCONTROLLER));
   }
 
+  /**
+   * Checks if is primitive.
+   *
+   * @return true, if is primitive
+   */
   public boolean isPrimitive() {
     return isLocalProcessingDescriptor() && aeDescription.isPrimitive();
   }
 
+  /**
+   * Checks if is aggregate.
+   *
+   * @return true, if is aggregate
+   */
   public boolean isAggregate() {
     return isAeDescriptor() && (!aeDescription.isPrimitive());
   }
 
+  /** The m type priorities backup. */
   private TypePriorities m_typePrioritiesBackup;
 
+  /** The fade color. */
   private Color fadeColor;
 
+  /** The is reverting index. */
   private boolean isRevertingIndex;
 
+  /** The is page change recursion. */
   protected boolean isPageChangeRecursion = false;
 
+  /** The Constant typeDescriptionArray0. */
   public static final TypeDescription[] typeDescriptionArray0 = new TypeDescription[0];
   
+  /** The type systems to merge. */
   private List typeSystemsToMerge;
   
+  /** The type priorities to merge. */
   private List typePrioritiesToMerge;
   
+  /** The fs indexes to merge. */
   private List fsIndexesToMerge;
   
+  /** The failed remotes. */
   private Map failedRemotes = new TreeMap();
+  
+  /** The failed remotes already known. */
   private Set failedRemotesAlreadyKnown = new TreeSet();
 
+  /** The external editor configurations. */
   private static List<IConfigurationElement> externalEditorConfigurations = null;
   
+  /** The current editor. */
   private IUimaMultiPageEditor currentEditor; // can be CDE or another editor
   
+  /**
+   * Instantiates a new multi page editor.
+   */
   public MultiPageEditor() {
     super();
     currentEditor = this; // default
@@ -535,18 +705,38 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     mergedTypePriorities = aeDescription.getAnalysisEngineMetaData().getTypePriorities();
   }
 
+  /** The Constant EXTENSION_TAG_CLASS_ATTRIB. */
   private static final String EXTENSION_TAG_CLASS_ATTRIB  = "class";
 
   
+  /**
+   * Gets the required editor.
+   *
+   * @param parsedResult the parsed result
+   * @return the required editor
+   */
   private IUimaEditorExtension getRequiredEditor(XMLizable parsedResult) {
     return getRequiredEditor(null, parsedResult.getClass().getName());
   }
  
+  /**
+   * Gets the required editor.
+   *
+   * @param topElementName the top element name
+   * @return the required editor
+   */
   private IUimaEditorExtension getRequiredEditor(String topElementName) {
     return getRequiredEditor(topElementName, null);
   }
 
   // returns null if no matching editor found
+  /**
+   * Gets the required editor.
+   *
+   * @param topElementName the top element name
+   * @param parsedResultClassName the parsed result class name
+   * @return the required editor
+   */
   // otherwise instantiates a new editor
   private  IUimaEditorExtension getRequiredEditor(String topElementName, String parsedResultClassName) {
     IUimaEditorExtension editor;
@@ -565,7 +755,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
             editor = (IUimaEditorExtension) xeditor.createExecutableExtension(EXTENSION_TAG_CLASS_ATTRIB); 
           } catch (CoreException e) {
             Utility.popMessage("Unexpected Exception", "While trying to load an editor extension"
-                + getMessagesToRootCause(e), Utility.ERROR);
+                + getMessagesToRootCause(e), MessageDialog.ERROR);
             return null;
           }
           editor.init();
@@ -576,16 +766,22 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     return null;
   }
     
+  /** The Constant EXTENSION_POINT_ID. */
   private static final String EXTENSION_POINT_ID         = "externalEditor";
  
   // load all of the external editor xml data
+  /**
+   * Gets the external editor configurations.
+   *
+   * @return the external editor configurations
+   */
   //   (but don't load the actual editors, yet)
   private void getExternalEditorConfigurations () {
     // Get extension point from Registry
     IExtensionPoint point = Platform.getExtensionRegistry()
                 .getExtensionPoint(TAEConfiguratorPlugin.pluginId, EXTENSION_POINT_ID);
     
-    externalEditorConfigurations = new ArrayList<IConfigurationElement>();
+    externalEditorConfigurations = new ArrayList<>();
     
     // check: Any <extension> tags for our extension-point?
     if (point != null) {
@@ -595,7 +791,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
           Utility.popMessage(
               "Problem with Editor Extension",
               "Editor '" + extension.getContributor().getName() + "' is present, but can't be loaded, probably because of unsatisfied dependencies\n",
-              Utility.ERROR);
+              MessageDialog.ERROR);
           continue;
         }
         for (IConfigurationElement ces : extension.getConfigurationElements()) {
@@ -607,7 +803,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       Utility.popMessage(
           "Internal Error",
           "CDE's extension point is missing",
-          Utility.ERROR);
+          MessageDialog.ERROR);
     }
   }
 
@@ -615,45 +811,96 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   //            Expose "protected" methods and methods from Super             
   // *************************************************************************  
   
+  /**
+   * @param site the site
+   * @param editorInput the editor input
+   * @throws PartInitException the part init exception
+   */
   public void initSuper(IEditorSite site, IEditorInput editorInput) throws PartInitException {
     super.init(site, editorInput);
   }
   
+  /**
+   * Gets the current page super.
+   *
+   * @return the current page super
+   */
   public int getCurrentPageSuper () {
     return getCurrentPage();
   }
   
+  /**
+   * Sets the part name super.
+   *
+   * @param partName the new part name super
+   */
   public void setPartNameSuper(String partName) {
     super.setPartName(partName);
   }
 
+  /**
+   * Sets the page text super.
+   *
+   * @param pageIndex the page index
+   * @param text the text
+   */
   public void setPageTextSuper(int pageIndex, String text) {
     super.setPageText(pageIndex, text);
   }
   
+  /**
+   * Page change super.
+   *
+   * @param newPageIndex the new page index
+   */
   public void pageChangeSuper(int newPageIndex) {
     super.pageChange(newPageIndex);
   }
 
+  /**
+   * Sets the active page super.
+   *
+   * @param pageIndex the new active page super
+   */
   public void setActivePageSuper (int pageIndex) {
     super.setActivePage(pageIndex);
   }
   
+  /**
+   * Fire property change super.
+   *
+   * @param propertyId the property id
+   */
   public void firePropertyChangeSuper(final int propertyId) {
     super.firePropertyChange(propertyId);
   }
   
+  /**
+   * Sets the input super.
+   *
+   * @param input the new input super
+   */
   public void setInputSuper(IEditorInput input) {
     super.setInput(input);
   }
   
   // XML source editor is opened by CDE when the source is "initially" invalid.
+  /**
+   * Gets the source editor.
+   *
+   * @return the source editor
+   */
   // Called by DDE when the source becomes valid and it is DD.
   public XMLEditor getSourceEditor () {
     return sourceTextEditor;
   }
   
-  /***************************************************************************/
+  /**
+   * ************************************************************************.
+   *
+   * @param display the display
+   * @return the form toolkit
+   */
   
   /**
    * override the createToolkit method in FormEditor - to use a shared colors resource.
@@ -665,10 +912,18 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
 
   @Override
-protected FormToolkit createToolkit(Display display) {
+  protected FormToolkit createToolkit(Display display) {
     return new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(display));
   }
 
+  /**
+   * Adds the page and set tab title.
+   *
+   * @param page the page
+   * @param keyTabTitle the key tab title
+   * @return the int
+   * @throws PartInitException the part init exception
+   */
   /*
    * Two forms of addPage - one for non-source-editors, and one for source-editor
    */
@@ -679,6 +934,15 @@ protected FormToolkit createToolkit(Display display) {
     return pageIndex;
   }
 
+  /**
+   * Adds the page and set tab title.
+   *
+   * @param page the page
+   * @param input the input
+   * @param keyTabTitle the key tab title
+   * @return the int
+   * @throws PartInitException the part init exception
+   */
   protected int addPageAndSetTabTitle(IEditorPart page, IEditorInput input, String keyTabTitle)
           throws PartInitException {
     int pageIndex = addPage(page, input);
@@ -697,12 +961,15 @@ protected FormToolkit createToolkit(Display display) {
    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
    */
   @Override
-protected void addPages() {
+  protected void addPages() {
     currentEditor.addPagesForCurrentEditor();
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#addPagesForCurrentEditor()
+   */
   @Override
-public void addPagesForCurrentEditor() {
+  public void addPagesForCurrentEditor() {
     boolean allPages = isLocalProcessingDescriptor();
     try {
         overviewIndex = addPageAndSetTabTitle(overviewPage = new OverviewPage(this), Messages
@@ -751,18 +1018,33 @@ public void addPagesForCurrentEditor() {
     }
   }
 
+  /**
+   * Jcas gen.
+   *
+   * @param monitor the monitor
+   */
   public void jcasGen(IProgressMonitor monitor) {
     if (MultiPageEditorContributor.getAutoJCasGen()) {
       doJCasGenChkSrc(monitor);
     }
   }
 
+  /**
+   * Do J cas gen chk src.
+   *
+   * @param monitor the monitor
+   */
   public void doJCasGenChkSrc(IProgressMonitor monitor) {
     if (isSourceFolderValid()) {
         doJCasGen(monitor);
     }
   }
 
+  /**
+   * Checks if is source folder valid.
+   *
+   * @return true, if is source folder valid
+   */
   public boolean isSourceFolderValid() {
     IResource folder = getPrimarySourceFolder();
     if (folder == null) {
@@ -773,6 +1055,11 @@ public void addPagesForCurrentEditor() {
     return true;
   }
 
+  /**
+   * Sync source before saving to file.
+   *
+   * @return true, if successful
+   */
   private boolean syncSourceBeforeSavingToFile() {
     boolean modelOK = true;
     if (getCurrentPage() != sourceIndex) {
@@ -787,6 +1074,12 @@ public void addPagesForCurrentEditor() {
     return modelOK;
   }
 
+  /**
+   * Checks if is valid AE.
+   *
+   * @param aAe the a ae
+   * @return true, if is valid AE
+   */
   public boolean isValidAE(AnalysisEngineDescription aAe) {
     AbstractSection.setVnsHostAndPort(aAe);
     // copy Ae into real descriptors if needed
@@ -872,19 +1165,30 @@ public void addPagesForCurrentEditor() {
 
   /**
    * Saves the multi-page editor's document.
+   *
+   * @param monitor the monitor
    */
   @Override
-public void doSave(IProgressMonitor monitor) {
+  public void doSave(IProgressMonitor monitor) {
     currentEditor.doSaveForCurrentEditor(monitor);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#doSaveForCurrentEditor(org.eclipse.core.runtime.IProgressMonitor)
+   */
   @Override
-public void doSaveForCurrentEditor(IProgressMonitor monitor) {
+  public void doSaveForCurrentEditor(IProgressMonitor monitor) {
     boolean modelOK = syncSourceBeforeSavingToFile();
     sourceTextEditor.doSave(monitor);
     finishSave(monitor, modelOK);
   }
 
+  /**
+   * Finish save.
+   *
+   * @param monitor the monitor
+   * @param modelOK the model OK
+   */
   private void finishSave(IProgressMonitor monitor, boolean modelOK) {
     if (modelOK) {
       if (dirtyTypeNameHash.size() > 0) {
@@ -904,12 +1208,15 @@ public void doSaveForCurrentEditor(IProgressMonitor monitor) {
    * This is not implemented correctly: filename isn't switched to new filename, etc.
    */
   @Override
-public void doSaveAs() {
+  public void doSaveAs() {
     currentEditor.doSaveAsForCurrentEditor();
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#doSaveAsForCurrentEditor()
+   */
   @Override
-public void doSaveAsForCurrentEditor() {
+  public void doSaveAsForCurrentEditor() {
     boolean modelOK = syncSourceBeforeSavingToFile();
     setSaveAsStatus(SAVE_AS_STARTED);
     sourceTextEditor.doSaveAs();
@@ -932,16 +1239,25 @@ public void doSaveAsForCurrentEditor() {
     finishSave(null, modelOK);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
+   */
   @Override
-public boolean isDirty() {
+  public boolean isDirty() {
     return fileDirty;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.EditorPart#isSaveOnCloseNeeded()
+   */
   @Override
-public boolean isSaveOnCloseNeeded() {
+  public boolean isSaveOnCloseNeeded() {
     return fileDirty;
   }
 
+  /**
+   * Sets the file dirty.
+   */
   public void setFileDirty() {
     if (m_bIsInited) {
       fileDirty = true;
@@ -950,6 +1266,11 @@ public boolean isSaveOnCloseNeeded() {
     }
   }
   
+  /**
+   * Sets the file dirty flag.
+   *
+   * @param value the new file dirty flag
+   */
   // Called by External Editor extensions when doSave or doSaveAs is called
   public void setFileDirtyFlag(boolean value) {
     fileDirty = value;
@@ -961,7 +1282,7 @@ public boolean isSaveOnCloseNeeded() {
    * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
    */
   @Override
-public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+  public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
     XMLInputSource input;
 
     if (!(editorInput instanceof IFileEditorInput))
@@ -1002,13 +1323,30 @@ public void init(IEditorSite site, IEditorInput editorInput) throws PartInitExce
     m_bIsInited = true;
   }
 
+  /** The extension editor. */
   private IUimaEditorExtension extensionEditor;
   
+  /**
+   * Parses the source.
+   *
+   * @param input the input
+   * @param filePathName the file path name
+   * @param preserveComments the preserve comments
+   * @throws PartInitException the part init exception
+   */
   private void parseSource(XMLInputSource input, String filePathName, boolean preserveComments) throws PartInitException {
     extensionEditor = null;
     parseSourceInner(input, filePathName, preserveComments);
   }
   
+  /**
+   * Parses the source inner.
+   *
+   * @param input the input
+   * @param filePathName the file path name
+   * @param preserveComments the preserve comments
+   * @throws PartInitException the part init exception
+   */
   private void parseSourceInner(XMLInputSource input, String filePathName, boolean preserveComments) throws PartInitException {
     XMLizable inputDescription = null;
     try {
@@ -1074,7 +1412,7 @@ public void init(IEditorSite site, IEditorInput editorInput) throws PartInitExce
               Utility.popMessage(
                   "Internal Error",
                   "While parsing input for extension editor: " + getMessagesToRootCause(e1),
-                  Utility.ERROR);
+                  MessageDialog.ERROR);
               throw new InternalErrorCDE(e1);
             }
             return;
@@ -1095,6 +1433,12 @@ public void init(IEditorSite site, IEditorInput editorInput) throws PartInitExce
     }
   }
 
+  /**
+   * Validate descriptor type.
+   *
+   * @param newDescriptorType the new descriptor type
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void validateDescriptorType(int newDescriptorType) throws ResourceInitializationException {
     if (0 != descriptorType && !openingContext && ((descriptorType & newDescriptorType) == 0)) {
         throw new ResourceInitializationException(Messages.getString("MultiPageEditor.12"), //$NON-NLS-1$
@@ -1123,9 +1467,18 @@ public void init(IEditorSite site, IEditorInput editorInput) throws PartInitExce
     return rm;
   }
 
+  /** The cached R mclass path. */
   private String cachedRMclassPath = null; 
-  private SoftReference<UIMAClassLoader> cachedRMcl = new SoftReference<UIMAClassLoader>(null);
+  
+  /** The cached R mcl. */
+  private SoftReference<UIMAClassLoader> cachedRMcl = new SoftReference<>(null);
 
+  /**
+   * Creates the resource manager.
+   *
+   * @param classPath the class path
+   * @return the resource manager
+   */
   public ResourceManager createResourceManager(String classPath) {
     ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
 
@@ -1156,7 +1509,7 @@ public void init(IEditorSite site, IEditorInput editorInput) throws PartInitExce
             classPath, 
             true);
         cachedRMclassPath = classPath;
-        cachedRMcl = new SoftReference<UIMAClassLoader>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
+        cachedRMcl = new SoftReference<>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
       }
       
       // in any case, set the data path
@@ -1173,20 +1526,25 @@ public void init(IEditorSite site, IEditorInput editorInput) throws PartInitExce
    * (non-Javadoc) Method declared on IEditorPart.
    */
   @Override
-public boolean isSaveAsAllowed() {
+  public boolean isSaveAsAllowed() {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.forms.editor.FormEditor#pageChange(int)
+   */
   @Override
-protected void pageChange(int newPageIndex) {
+  protected void pageChange(int newPageIndex) {
     currentEditor.pageChangeForCurrentEditor(newPageIndex);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#pageChangeForCurrentEditor(int)
+   */
   @Override
-public void pageChangeForCurrentEditor(int newPageIndex) {
-    if (isPageChangeRecursion) {
-        return;
-    }
+  public void pageChangeForCurrentEditor(int newPageIndex) {
+    if (isPageChangeRecursion)
+      return;
     isRevertingIndex = false;
     int oldPageIndex = getCurrentPage();
 
@@ -1231,6 +1589,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /**
+   * Sets the active page while blocking recursion.
+   *
+   * @param sourceIndex the new active page while blocking recursion
+   */
   protected void setActivePageWhileBlockingRecursion(int sourceIndex) {
     try {
       isPageChangeRecursion = true;
@@ -1245,11 +1608,21 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /**
+   * Save good version of type priorities.
+   */
   private void saveGoodVersionOfTypePriorities() {
     TypePriorities tp = getAeDescription().getAnalysisEngineMetaData().getTypePriorities();
     m_typePrioritiesBackup = (null == tp) ? null : (TypePriorities) tp.clone();
   }
 
+  /**
+   * Revert to last valid.
+   *
+   * @param msg the msg
+   * @param msgDetails the msg details
+   * @return true, if successful
+   */
   private boolean revertToLastValid(String msg, String msgDetails) {
     String[] buttonLabels = new String[2];
     buttonLabels[0] = Messages.getString("MultiPageEditor.revertToLastValid"); //$NON-NLS-1$
@@ -1298,6 +1671,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return true;
   }
 
+  /**
+   * Gets the char set.
+   *
+   * @param text the text
+   * @return the char set
+   */
   public String getCharSet(String text) {
     final String key = Messages.getString("MultiPageEditor.16"); //$NON-NLS-1$
     int i = text.indexOf(key);
@@ -1310,10 +1689,15 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return text.substring(i, end);
   }
 
+  /**
+   * Validate source.
+   *
+   * @return true, if successful
+   */
   private boolean validateSource() {
-    if (!sourceChanged) {
-        return true;
-    }
+    if (!sourceChanged)
+      return true;
+    
     isBadXML = true; // preset
     IDocument doc = sourceTextEditor.getDocumentProvider().getDocument(
             sourceTextEditor.getEditorInput());
@@ -1356,10 +1740,19 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return true;
   }
 
+  /**
+   * Mark all pages stale.
+   */
   public void markAllPagesStale() {
     checkForNewlyStaleSections(null, null);
   }
 
+  /**
+   * Check for newly stale sections.
+   *
+   * @param previous the previous
+   * @param current the current
+   */
   private void checkForNewlyStaleSections(MetaDataObject previous, MetaDataObject current) {
 
     // AnalysisEngineMetaData previous,
@@ -1394,6 +1787,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /**
+   * Check for newly dirty types.
+   *
+   * @param oldTsd the old tsd
+   */
   private void checkForNewlyDirtyTypes(TypeSystemDescription oldTsd) {
 
     // an array of TypeDescription objects (not CAS), including imported ones
@@ -1429,6 +1827,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
 
   }
 
+  /**
+   * Gets the true descriptor.
+   *
+   * @return the true descriptor
+   */
   /*
    * This returns the true descriptor, accounting for the "trick" when we put CPM descriptors in the
    * AE descriptor. As a side effect, it updates the CPM descriptors
@@ -1469,6 +1872,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return thing;
   }
 
+  /**
+   * Pretty print model.
+   *
+   * @return the string
+   */
   public String prettyPrintModel() {
     StringWriter writer = new StringWriter();
     String parsedText = null;
@@ -1500,6 +1908,9 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return parsedText;
   }
 
+  /**
+   * Update source from model.
+   */
   public void updateSourceFromModel() {
     sourceTextEditor.setIgnoreTextEvent(true);
     IDocument doc = sourceTextEditor.getDocumentProvider().getDocument(
@@ -1508,10 +1919,21 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     sourceTextEditor.setIgnoreTextEvent(false);
   }
 
+  /**
+   * Gets the ae description.
+   *
+   * @return the ae description
+   */
   public AnalysisEngineDescription getAeDescription() {
     return aeDescription;
   }
 
+  /**
+   * Sets the ae description.
+   *
+   * @param aAnalysisEngineDescription the new ae description
+   * @throws ResourceInitializationException -
+   */
   public void setAeDescription(AnalysisEngineDescription aAnalysisEngineDescription)
           throws ResourceInitializationException {
     if (null == aAnalysisEngineDescription)
@@ -1564,6 +1986,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
   }
 
   // note that this also updates merged type system
+  /**
+   * Sets the type system description.
+   *
+   * @param typeSystemDescription the new type system description
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   // Also called for aggregate TAEs
   public void setTypeSystemDescription(TypeSystemDescription typeSystemDescription)
           throws ResourceInitializationException {
@@ -1597,6 +2025,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
 
   // **************************************************************
   // * From taeDescriptor back into the Collection part descriptors
+  /**
+   * Link local processing descriptors from ae.
+   *
+   * @param d the d
+   */
   // **************************************************************
   private void linkLocalProcessingDescriptorsFromAe(CollectionReaderDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
@@ -1604,24 +2037,44 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     linkCommonCollectionDescriptorsFromAe(d);
   }
 
+  /**
+   * Link local processing descriptors from ae.
+   *
+   * @param d the d
+   */
   private void linkLocalProcessingDescriptorsFromAe(CasInitializerDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
     d.setFrameworkImplementation(aeDescription.getFrameworkImplementation());
     linkCommonCollectionDescriptorsFromAe(d);
   }
 
+  /**
+   * Link local processing descriptors from ae.
+   *
+   * @param d the d
+   */
   private void linkLocalProcessingDescriptorsFromAe(CasConsumerDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
     d.setFrameworkImplementation(aeDescription.getFrameworkImplementation());
     linkCommonCollectionDescriptorsFromAe(d);
   }
 
+  /**
+   * Link local processing descriptors from ae.
+   *
+   * @param d the d
+   */
   private void linkLocalProcessingDescriptorsFromAe(FlowControllerDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
     d.setFrameworkImplementation(aeDescription.getFrameworkImplementation());
     linkCommonCollectionDescriptorsFromAe(d);
   }
 
+  /**
+   * Link common collection descriptors from ae.
+   *
+   * @param r the r
+   */
   private void linkCommonCollectionDescriptorsFromAe(ResourceCreationSpecifier r) {
     r.setExternalResourceDependencies(aeDescription.getExternalResourceDependencies());
     r.setMetaData(convertFromAeMetaData((AnalysisEngineMetaData) aeDescription.getMetaData()));
@@ -1632,6 +2085,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
   // * From Collection Part Descriptors into the taeDescriptor
   // *********************************************************
 
+  /**
+   * Creates the and link local processing descriptors to ae.
+   *
+   * @param d the d
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void createAndLinkLocalProcessingDescriptorsToAe(CollectionReaderDescription d)
           throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
@@ -1640,6 +2099,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     linkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Creates the and link local processing descriptors to ae.
+   *
+   * @param d the d
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void createAndLinkLocalProcessingDescriptorsToAe(CasInitializerDescription d)
           throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
@@ -1648,6 +2113,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     linkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Creates the and link local processing descriptors to ae.
+   *
+   * @param d the d
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void createAndLinkLocalProcessingDescriptorsToAe(CasConsumerDescription d)
           throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
@@ -1656,6 +2127,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     linkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Creates the and link local processing descriptors to ae.
+   *
+   * @param d the d
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void createAndLinkLocalProcessingDescriptorsToAe(FlowControllerDescription d)
           throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
@@ -1664,6 +2141,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     linkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Link local processing descriptors to ae.
+   *
+   * @param r the r
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void linkLocalProcessingDescriptorsToAe(ResourceCreationSpecifier r)
           throws ResourceInitializationException {
     aeDescription.setExternalResourceDependencies(r.getExternalResourceDependencies());
@@ -1673,6 +2156,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     setAeDescription(aeDescription);
   }
 
+  /**
+   * Convert to ae meta data.
+   *
+   * @param r the r
+   * @return the analysis engine meta data
+   */
   private AnalysisEngineMetaData convertToAeMetaData(ResourceMetaData r) {
     ProcessingResourceMetaData p = (ProcessingResourceMetaData) r;
     AnalysisEngineMetaData d = UIMAFramework.getResourceSpecifierFactory()
@@ -1693,6 +2182,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return d;
   }
 
+  /**
+   * Convert from ae meta data.
+   *
+   * @param p the p
+   * @return the processing resource meta data
+   */
   private ProcessingResourceMetaData convertFromAeMetaData(AnalysisEngineMetaData p) {
     ProcessingResourceMetaData d = UIMAFramework.getResourceSpecifierFactory()
             .createProcessingResourceMetaData();
@@ -1712,30 +2207,60 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return d;
   }
 
+  /**
+   * Sets the collection reader description.
+   *
+   * @param d the new collection reader description
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setCollectionReaderDescription(CollectionReaderDescription d)
           throws ResourceInitializationException {
     collectionReaderDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Sets the cas initializer description.
+   *
+   * @param d the new cas initializer description
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setCasInitializerDescription(CasInitializerDescription d)
           throws ResourceInitializationException {
     casInitializerDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Sets the cas consumer description.
+   *
+   * @param d the new cas consumer description
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setCasConsumerDescription(CasConsumerDescription d)
           throws ResourceInitializationException {
     casConsumerDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Sets the flow controller description.
+   *
+   * @param d the new flow controller description
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setFlowControllerDescription(FlowControllerDescription d)
           throws ResourceInitializationException {
     flowControllerDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
+  /**
+   * Sets the type priorities.
+   *
+   * @param typePriorities the new type priorities
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setTypePriorities(TypePriorities typePriorities)
           throws ResourceInitializationException {
     loadContext(typePriorities);
@@ -1745,10 +2270,20 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     descriptorCAS.validate();
   }
 
+  /**
+   * The Class MultilevelCancel.
+   */
   private static class MultilevelCancel extends RuntimeException {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
   }
 
+  /**
+   * Load context.
+   *
+   * @param thing the thing
+   */
   private void loadContext(XMLizable thing) {
     // try to load a context that has the types
     if (isContextLoaded) {
@@ -1780,7 +2315,7 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
                 .popMessage(
                         "Context Info",
                         "A context is required to edit this part.  However no context was supplied.  Editing will be cancelled",
-                        Utility.INFORMATION);
+                        MessageDialog.INFORMATION);
         throw new MultilevelCancel();
       } else {
         try {
@@ -1809,12 +2344,18 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
                 AbstractSection.IMPORTABLE_PART_CONTEXT), contextFile);
       } catch (CoreException e) {
         Utility.popMessage("Unexpected Exception", "While loading Context"
-                + getMessagesToRootCause(e), Utility.ERROR);
+                + getMessagesToRootCause(e), MessageDialog.ERROR);
         throw new InternalErrorCDE("Unexpected Exception:" + getMessagesToRootCause(e), e);
       }
     }
   }
 
+  /**
+   * Sets the fs index collection.
+   *
+   * @param indexCollection the new fs index collection
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setFsIndexCollection(FsIndexCollection indexCollection)
           throws ResourceInitializationException {
     loadContext(indexCollection);
@@ -1824,19 +2365,25 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     descriptorCAS.validate();
   }
 
+  /**
+   * Show context load failure message.
+   *
+   * @param e the e
+   * @param contextFile the context file
+   */
   private void showContextLoadFailureMessage(Exception e, String contextFile) {
     String m = Messages.getFormattedString("MultiPageEditor.IOError", //$NON-NLS-1$
             new String[] { AbstractSection.maybeShortenFileName(contextFile) })
             + Messages.getString("MultiPageEditor.10") + getMessagesToRootCause(e); //$NON-NLS-1$
     Utility.popMessage("Cannot load context", m
             + "\nCannot load the context file for this importable part due to an I/O exception"
-            + " - proceeding without context", Utility.WARNING);
+            + " - proceeding without context", MessageDialog.WARNING);
   }
 
   /**
-   * Only called when editing a resources/bindings descriptor
-   * 
-   * @param rb
+   * Only called when editing a resources/bindings descriptor.
+   *
+   * @param rb the new ext res and bindings
    * @throws ResourceInitializationException -
    */
   private void setExtResAndBindings(ResourceManagerConfiguration rb)
@@ -1852,11 +2399,23 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     descriptorCAS.validate();
   }
 
+  /**
+   * Gets the absolute path from import.
+   *
+   * @param importItem the import item
+   * @return the absolute path from import
+   */
   public String getAbsolutePathFromImport(Import importItem) {
     // getAbsoluteURLfromImport may return a bundleresource style url
     return new File(getAbsoluteURLfromImport(importItem).getPath()).getPath();
   }
 
+  /**
+   * Gets the absolute UR lfrom import.
+   *
+   * @param importItem the import item
+   * @return the absolute UR lfrom import
+   */
   private URL getAbsoluteURLfromImport(Import importItem) {
     try {
       // if by location, it's relative to the descriptor.
@@ -1868,58 +2427,110 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return null;
   }
 
+  /**
+   * Gets the aggregate page.
+   *
+   * @return the aggregate page
+   */
   public AggregatePage getAggregatePage() {
     return aggregatePage;
   }
 
+  /**
+   * Gets the overview page.
+   *
+   * @return the overview page
+   */
   public OverviewPage getOverviewPage() {
     return overviewPage;
   }
 
+  /**
+   * Gets the parameter page.
+   *
+   * @return the parameter page
+   */
   public ParameterPage getParameterPage() {
     return parameterPage;
   }
 
+  /**
+   * Gets the type page.
+   *
+   * @return the type page
+   */
   public TypePage getTypePage() {
     return typePage;
   }
 
+  /**
+   * Gets the capability page.
+   *
+   * @return the capability page
+   */
   public CapabilityPage getCapabilityPage() {
     return capabilityPage;
   }
 
+  /**
+   * Gets the indexes page.
+   *
+   * @return the indexes page
+   */
   public IndexesPage getIndexesPage() {
     return indexesPage;
   }
 
+  /**
+   * Gets the resources page.
+   *
+   * @return the resources page
+   */
   public ResourcesPage getResourcesPage() {
     return resourcesPage;
   }
 
+  /**
+   * Gets the XML editor page.
+   *
+   * @return the XML editor page
+   */
   public XMLEditor getXMLEditorPage() {
     return sourceTextEditor;
   }
 
+  /**
+   * Gets the settings page.
+   *
+   * @return the settings page
+   */
   public SettingsPage getSettingsPage() {
     return settingsPage;
   }
 
   /**
+   * Gets the file.
+   *
    * @return current file being edited
    */
   public IFile getFile() {
     return file;
   }
 
+  /**
+   * Gets the resolved delegates.
+   *
+   * @return the resolved delegates
+   */
   public Map getResolvedDelegates() {
     return resolvedDelegates;
   }
 
   /**
    * gets the Hash Map of resolved AE delegates Clones the description first because the getting
-   * updates it in some cases
-   * 
-   * @param aed analysis engine description
+   * updates it in some cases.
+   *
+   * @param aed the aed
    * @return the Map of resolved AE delegates
    */
   public Map getDelegateAEdescriptions(AnalysisEngineDescription aed) {
@@ -1934,16 +2545,29 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return result;
   }
 
+  /**
+   * Mark T cas dirty.
+   */
   public void markTCasDirty() {
     descriptorCAS.markDirty();
     allTypes.markDirty();
     definedTypesWithSupers.markDirty();
   }
 
+  /**
+   * Gets the current view.
+   *
+   * @return the current view
+   */
   public CAS getCurrentView() {
     return descriptorCAS.get();
   }
 
+  /**
+   * Gets the project.
+   *
+   * @return the project
+   */
   public IProject getProject() {
     IFile iFile = getFile();
     if (null == iFile) {
@@ -1953,6 +2577,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return getFile().getProject();
   }
 
+  /**
+   * Gets the descriptor directory.
+   *
+   * @return the descriptor directory
+   */
   public String getDescriptorDirectory() {
     String sDir = file.getParent().getLocation().toString();
     if (sDir.charAt(sDir.length() - 1) != '/') {
@@ -1961,6 +2590,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return sDir;
   }
 
+  /**
+   * Gets the descriptor relative path.
+   *
+   * @param aFullOrRelativePath the a full or relative path
+   * @return the descriptor relative path
+   */
   public String getDescriptorRelativePath(String aFullOrRelativePath) {
     String sEditorFileFullPath = getFile().getLocation().toString();
     String sFullOrRelativePath = aFullOrRelativePath.replace('\\', '/');
@@ -1991,6 +2626,13 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return sRelativePath;
   }
 
+  /**
+   * Gets the common parent folder.
+   *
+   * @param sFile1 the s file 1
+   * @param sFile2 the s file 2
+   * @return the common parent folder
+   */
   private static String getCommonParentFolder(String sFile1, String sFile2) {
     if (sFile1 == null || sFile2 == null) {
       return ""; //$NON-NLS-1$
@@ -2014,11 +2656,23 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return sFile1.substring(0, commonPrefixLength);
   }
 
+  /**
+   * Checks if is file in workspace.
+   *
+   * @param aFileRelPath the a file rel path
+   * @return true, if is file in workspace
+   */
   public boolean isFileInWorkspace(String aFileRelPath) {
     Object fileOrIFile = getIFileOrFile(aFileRelPath);
     return (fileOrIFile instanceof IFile && ((IFile) fileOrIFile).exists());
   }
 
+  /**
+   * Gets the full path from descriptor relative path.
+   *
+   * @param aDescRelPath the a desc rel path
+   * @return the full path from descriptor relative path
+   */
   public String getFullPathFromDescriptorRelativePath(String aDescRelPath) {
 
     if (aDescRelPath.indexOf(':') > 0) { // indicates already an absolute path on Windows, at least
@@ -2074,12 +2728,17 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
             + sFinalFragment;
   }
 
+  /**
+   * Open.
+   *
+   * @param fileToOpen the file to open
+   */
   public void open(IFile fileToOpen) {
     final IFile ffile = fileToOpen;
     Shell shell = new Shell();
     shell.getDisplay().asyncExec(new Runnable() {
       @Override
-    public void run() {
+      public void run() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         try {
           page.openEditor(new FileEditorInput(ffile), "taeconfigurator.editors.MultiPageEditor"); //$NON-NLS-1$
@@ -2090,12 +2749,17 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     });
   }
 
+  /**
+   * Open text editor.
+   *
+   * @param fileToOpen the file to open
+   */
   public void openTextEditor(IFile fileToOpen) {
     final IFile ffile = fileToOpen;
     Shell shell = new Shell();
     shell.getDisplay().asyncExec(new Runnable() {
       @Override
-    public void run() {
+      public void run() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         try {
           page.openEditor(new FileEditorInput(ffile), "org.eclipse.ui.DefaultTextEditor"); //$NON-NLS-1$
@@ -2106,6 +2770,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     });
   }
 
+  /**
+   * Gets the i file or file.
+   *
+   * @param relOrAbsPath the rel or abs path
+   * @return the i file or file
+   */
   public Object getIFileOrFile(String relOrAbsPath) {
     String sFileFullPath = getFullPathFromDescriptorRelativePath(relOrAbsPath);
     String sWorkspacePath = TAEConfiguratorPlugin.getWorkspace().getRoot().getLocation().toString();
@@ -2118,34 +2788,62 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return new File(sFileFullPath);
   }
 
+  /**
+   * Open.
+   *
+   * @param fullPath the full path
+   */
   public void open(String fullPath) {
     Path path = new Path(fullPath);
     IFile fileToOpen = TAEConfiguratorPlugin.getWorkspace().getRoot().getFileForLocation(path);
     open(fileToOpen);
   }
 
+  /**
+   * Open text editor.
+   *
+   * @param fullPath the full path
+   */
   public void openTextEditor(String fullPath) {
     Path path = new Path(fullPath);
     IFile fileToOpen = TAEConfiguratorPlugin.getWorkspace().getRoot().getFileForLocation(path);
     openTextEditor(fileToOpen);
   }
 
+  /**
+   * Adds the dirty type name.
+   *
+   * @param typeName the type name
+   */
   public void addDirtyTypeName(String typeName) {
     dirtyTypeNameHash.add(typeName);
     markTypeModelDirty();
   }
 
+  /**
+   * Mark type model dirty.
+   */
   private void markTypeModelDirty() {
     allTypes.markDirty();
     descriptorCAS.markDirty();
     definedTypesWithSupers.markDirty();
   }
 
+  /**
+   * Removes the dirty type name.
+   *
+   * @param typeName the type name
+   */
   public void removeDirtyTypeName(String typeName) {
     dirtyTypeNameHash.remove(typeName);
     markTypeModelDirty();
   }
 
+  /**
+   * Do J cas gen.
+   *
+   * @param monitor the monitor
+   */
   public void doJCasGen(IProgressMonitor monitor) {
     if (0 < mergedTypesAddingFeatures.size()) {
       if (Window.CANCEL == 
@@ -2205,6 +2903,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /**
+   * Make merge message.
+   *
+   * @param m the m
+   * @return the string
+   */
   // message: TypeName = ".....", URLs defining this type = "xxxx", "xxxx", ....
   private String makeMergeMessage(Map m) {
     StringBuffer sb = new StringBuffer();  
@@ -2230,16 +2934,32 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return sb.toString();
   }
 
+  /** The Constant PATH_SEPARATOR. */
   final public static String PATH_SEPARATOR = System.getProperty("path.separator"); //$NON-NLS-1$
 
+  /** The cached stamp. */
   private long cachedStamp = -1;
 
+  /** The cached class path. */
   private String cachedClassPath = null;
 
+  /**
+   * Gets the project class path.
+   *
+   * @return the project class path
+   * @throws CoreException the core exception
+   */
   public String getProjectClassPath() throws CoreException {
     return getFilteredProjectClassPath(true);
   }
   
+  /**
+   * Gets the filtered project class path.
+   *
+   * @param filterCoreResources the filter core resources
+   * @return the filtered project class path
+   * @throws CoreException the core exception
+   */
   public String getFilteredProjectClassPath(boolean filterCoreResources) throws CoreException {
     IProject project = getProject();
 
@@ -2292,6 +3012,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     
   }
 
+  /**
+   * Gets the primary source folder.
+   *
+   * @return the primary source folder
+   */
   public IResource getPrimarySourceFolder() {
     IProject project = getProject();
     try {
@@ -2315,38 +3040,83 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return null;
   }
 
+  /**
+   * Sets the save as status.
+   *
+   * @param nStatus the new save as status
+   */
   public void setSaveAsStatus(int nStatus) {
     m_nSaveAsStatus = nStatus;
   }
 
+  /**
+   * Gets the type system description.
+   *
+   * @return the type system description
+   */
   public TypeSystemDescription getTypeSystemDescription() {
     return aeDescription.getAnalysisEngineMetaData().getTypeSystem();
   }
 
+  /**
+   * Gets the type priorities.
+   *
+   * @return the type priorities
+   */
   public TypePriorities getTypePriorities() {
     return aeDescription.getAnalysisEngineMetaData().getTypePriorities();
   }
 
+  /**
+   * Gets the fs index collection.
+   *
+   * @return the fs index collection
+   */
   public FsIndexCollection getFsIndexCollection() {
     return aeDescription.getAnalysisEngineMetaData().getFsIndexCollection();
   }
 
+  /**
+   * Gets the ext res and bindings.
+   *
+   * @return the ext res and bindings
+   */
   public ResourceManagerConfiguration getExtResAndBindings() {
     return aeDescription.getResourceManagerConfiguration();
   }
 
+  /** The Constant VALIDATE_INPUTS. */
   private static final boolean VALIDATE_INPUTS = true;
 
+  /**
+   * Validate inputs.
+   *
+   * @param typeNameHash the type name hash
+   * @return true, if successful
+   */
   // returns true if no inputs were removed, false otherwise
   public boolean validateInputs(Map typeNameHash) {
     return validateIOs(VALIDATE_INPUTS, typeNameHash);
   }
 
+  /**
+   * Validate outputs.
+   *
+   * @param typeNameHash the type name hash
+   * @return true, if successful
+   */
   // returns true if no outputs were removed, false otherwise
   public boolean validateOutputs(Map typeNameHash) {
     return validateIOs(!VALIDATE_INPUTS, typeNameHash);
   }
 
+  /**
+   * Validate I os.
+   *
+   * @param isValidateInputs the is validate inputs
+   * @param typeNameHash the type name hash
+   * @return true, if successful
+   */
   public boolean validateIOs(boolean isValidateInputs, Map typeNameHash) {
     boolean bRes = true;
 
@@ -2392,6 +3162,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return bRes;
   }
 
+  /**
+   * Validate type priorities.
+   *
+   * @param typeNameHash the type name hash
+   * @return true, if successful
+   */
   // returns true if no type priorities were modified, false otherwise
   public boolean validateTypePriorities(Map typeNameHash) {
     boolean bRes = true;
@@ -2427,14 +3203,15 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return bRes;
   }
 
+  /** The Constant previewSize. */
   private static final int previewSize = 1024 * 16;
   
   /**
    * Used by code to get lists of delegate components by input/output type specs.
-   * 
-   * @param iFile -
-   * @param componentHeaders -
-   * @return -
+   *
+   * @param iFile the i file
+   * @param componentHeaders the component headers
+   * @return the delegate resource specifier
    */
   public static ResourceSpecifier getDelegateResourceSpecifier(IFile iFile,
           String[] componentHeaders) {
@@ -2507,6 +3284,12 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
 
   // **************************************************
   // * Getting exception messages down to root
+  /**
+   * Gets the messages to root cause.
+   *
+   * @param e the e
+   * @return the messages to root cause
+   */
   // **************************************************
   public String getMessagesToRootCause(Throwable e) {
     boolean wantStackTrace = false;
@@ -2553,6 +3336,13 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return b.toString();
   }
 
+  /**
+   * Format message with class.
+   *
+   * @param e the e
+   * @param b the b
+   * @param messagePart the message part
+   */
   private void formatMessageWithClass(Throwable e, StringBuffer b, String messagePart) {
     String name = e.getClass().getName();
     //because this is a message for ordinary users, and
@@ -2568,10 +3358,20 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
   
+  /**
+   * The Class JCasGenProgressMonitor.
+   */
   public static class JCasGenProgressMonitor implements
           org.apache.uima.tools.jcasgen.IProgressMonitor {
+    
+    /** The m progress monitor. */
     IProgressMonitor m_progressMonitor;
 
+    /**
+     * Instantiates a new j cas gen progress monitor.
+     *
+     * @param progressMonitor the progress monitor
+     */
     public JCasGenProgressMonitor(IProgressMonitor progressMonitor) {
       m_progressMonitor = progressMonitor;
     }
@@ -2618,10 +3418,15 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
 
   }
 
+  /**
+   * The Class JCasGenThrower.
+   */
   public static class JCasGenThrower implements IError {
 
+    /** The log levels. */
     private Level logLevels[] = { Level.INFO, Level.WARNING, Level.SEVERE };
 
+    /** The m message. */
     private String m_message = null;
 
     /*
@@ -2644,11 +3449,21 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
       }
     }
 
+    /**
+     * Gets the message.
+     *
+     * @return the message
+     */
     public String getMessage() {
       return m_message;
     }
   }
 
+  /**
+   * Gets the fade color.
+   *
+   * @return the fade color
+   */
   public Color getFadeColor() {
     if (null == fadeColor) {
         // COLOR_WIDGET_DARK_SHADOW is the same as black on SUSE KDE
@@ -2659,15 +3474,30 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
 
   // **********************
   // * Merged type system
+  /**
+   * Sets the merged type system description.
+   *
+   * @param saved the new merged type system description
+   */
   // **********************
   public void setMergedTypeSystemDescription(TypeSystemDescription saved) {
     mergedTypeSystemDescription = saved;
   }
 
+  /**
+   * Sets the imported type system description.
+   *
+   * @param saved the new imported type system description
+   */
   public void setImportedTypeSystemDescription(TypeSystemDescription saved) {
     importedTypeSystemDescription = saved;
   }
 
+  /**
+   * Sets the imported type system description.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setImportedTypeSystemDescription() throws ResourceInitializationException {
     Collection tsdc = new ArrayList(1);
     TypeSystemDescription tsd = typeSystemDescription;
@@ -2681,6 +3511,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
             .mergeTypeSystems(tsdc, createResourceManager());
   }
 
+  /**
+   * Sets the merged type system description.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public void setMergedTypeSystemDescription() throws ResourceInitializationException {
     mergedTypesAddingFeatures.clear();
     if (isAggregate()) {
@@ -2706,27 +3541,57 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /**
+   * Gets the merged type system description.
+   *
+   * @return the merged type system description
+   */
   public TypeSystemDescription getMergedTypeSystemDescription() {
     return mergedTypeSystemDescription;
   }
 
+  /**
+   * Gets the imported type system desription.
+   *
+   * @return the imported type system desription
+   */
   public TypeSystemDescription getImportedTypeSystemDesription() {
     return importedTypeSystemDescription;
   }
 
+  /**
+   * Sets the merged fs index collection.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public void setMergedFsIndexCollection() throws ResourceInitializationException {
     mergedFsIndexCollection = mergeDelegateAnalysisEngineFsIndexCollections(
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
+  /**
+   * Sets the merged fs index collection.
+   *
+   * @param saved the new merged fs index collection
+   */
   public void setMergedFsIndexCollection(FsIndexCollection saved) {
     mergedFsIndexCollection = saved;
   }
 
+  /**
+   * Gets the merged fs index collection.
+   *
+   * @return the merged fs index collection
+   */
   public FsIndexCollection getMergedFsIndexCollection() {
     return mergedFsIndexCollection;
   }
 
+  /**
+   * Sets the merged type priorities.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   // full merge - including locally defined and imported ones
   public void setMergedTypePriorities() throws ResourceInitializationException {
     
@@ -2734,14 +3599,29 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
+  /**
+   * Sets the merged type priorities.
+   *
+   * @param saved the new merged type priorities
+   */
   public void setMergedTypePriorities(TypePriorities saved) {
     mergedTypePriorities = saved;
   }
 
+  /**
+   * Gets the merged type priorities.
+   *
+   * @return the merged type priorities
+   */
   public TypePriorities getMergedTypePriorities() {
     return mergedTypePriorities;
   }
 
+  /**
+   * Sets the resolved flow controller declaration.
+   *
+   * @throws InvalidXMLException the invalid XML exception
+   */
   public void setResolvedFlowControllerDeclaration() throws InvalidXMLException {
     FlowControllerDeclaration fcDecl = aeDescription.getFlowControllerDeclaration();
     if (null != fcDecl) {
@@ -2753,6 +3633,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /**
+   * Gets the resolved flow controller declaration.
+   *
+   * @return the resolved flow controller declaration
+   */
   public FlowControllerDeclaration getResolvedFlowControllerDeclaration() {
     return resolvedFlowControllerDeclaration;
   }
@@ -2774,14 +3659,29 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     resolvedExternalResourcesAndBindings = rmc;
   }
 
+  /**
+   * Sets the resolved external resources and bindings.
+   *
+   * @param saved the new resolved external resources and bindings
+   */
   public void setResolvedExternalResourcesAndBindings(ResourceManagerConfiguration saved) {
     resolvedExternalResourcesAndBindings = saved;
   }
 
+  /**
+   * Gets the resolved external resources and bindings.
+   *
+   * @return the resolved external resources and bindings
+   */
   public ResourceManagerConfiguration getResolvedExternalResourcesAndBindings() {
     return resolvedExternalResourcesAndBindings;
   }
 
+  /**
+   * Sets the imported fs index collection.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void setImportedFsIndexCollection() throws ResourceInitializationException {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setFsIndexCollection(null);
@@ -2789,12 +3689,22 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
             localAe, createResourceManager());
   }
 
+  /**
+   * Gets the imported fs index collection.
+   *
+   * @return the imported fs index collection
+   */
   public FsIndexCollection getImportedFsIndexCollection() {
     return importedFsIndexCollection;
   }
 
   // this is all the type priorities, except those locally defined
   // used to distinguish between locally defined and imported ones
+  /**
+   * Sets the imported type priorities.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   // (only locally defined ones can be edited)
   private void setImportedTypePriorities() throws ResourceInitializationException {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
@@ -2803,6 +3713,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
             createResourceManager());
   }
 
+  /**
+   * Gets the imported type priorities.
+   *
+   * @return the imported type priorities
+   */
   public TypePriorities getImportedTypePriorities() {
     return importedTypePriorities;
   }
@@ -2827,6 +3742,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
   // return importedExternalResourcesAndBindings;
   // }
 
+  /**
+   * Gets the source page editor.
+   *
+   * @return the source page editor
+   */
   public ITextEditor getSourcePageEditor() {
     if (getCurrentPage() == sourceIndex) {
       return sourceTextEditor;
@@ -2836,8 +3756,14 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
 
+  /** The java project. */
   private IJavaProject javaProject = null;
 
+  /**
+   * Gets the java project.
+   *
+   * @return the java project
+   */
   public IJavaProject getJavaProject() {
     if (null == javaProject && null != file) {
       javaProject = JavaCore.create(file.getProject());
@@ -2845,33 +3771,49 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return javaProject;
   }
 
+  /**
+   * Gets the type from project.
+   *
+   * @param typename the typename
+   * @return the type from project
+   */
   public IType getTypeFromProject(String typename) {
     IJavaProject jp = getJavaProject();
-    if (null != jp) {
-        try {
-            return jp.findType(typename);
-          } catch (JavaModelException e) {
-            Utility.popMessage("Unexpected Exception", MessageFormat.format(
-                    "Unexpected exception while getting type information for type ''{0}''. {1}",
-                    new Object[] { typename, getMessagesToRootCause(e) }), Utility.ERROR);
-            throw new InternalErrorCDE("unexpected exception", e);
-          }
-    }
+    if (null != jp)
+      try {
+        return jp.findType(typename);
+      } catch (JavaModelException e) {
+        Utility.popMessage("Unexpected Exception", MessageFormat.format(
+                "Unexpected exception while getting type information for type ''{0}''. {1}",
+                new Object[] { typename, getMessagesToRootCause(e) }), MessageDialog.ERROR);
+        throw new InternalErrorCDE("unexpected exception", e);
+      }
     return null;
   }
 
+  /** The analysis component I type. */
   private IType analysisComponentIType = null;
 
+  /** The base annotator I type. */
   private IType baseAnnotatorIType = null;
 
+  /** The collection reader I type. */
   private IType collectionReaderIType = null;
 
+  /** The cas initializer I type. */
   private IType casInitializerIType = null;
 
+  /** The cas consumer I type. */
   private IType casConsumerIType = null;
 
+  /** The flow controller I type. */
   private IType flowControllerIType = null;
 
+  /**
+   * Gets the analysis component I type.
+   *
+   * @return the analysis component I type
+   */
   public IType getAnalysisComponentIType() {
     if (null == analysisComponentIType) {
         analysisComponentIType = getTypeFromProject("org.apache.uima.analysis_component.AnalysisComponent");
@@ -2879,6 +3821,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return analysisComponentIType;
   }
 
+  /**
+   * Gets the base annotator I type.
+   *
+   * @return the base annotator I type
+   */
   public IType getBaseAnnotatorIType() {
     if (null == baseAnnotatorIType) {
         baseAnnotatorIType = getTypeFromProject("org.apache.uima.analysis_engine.annotator.BaseAnnotator");
@@ -2886,6 +3833,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return baseAnnotatorIType;
   }
 
+  /**
+   * Gets the collection reader I type.
+   *
+   * @return the collection reader I type
+   */
   public IType getCollectionReaderIType() {
     if (null == collectionReaderIType) {
         collectionReaderIType = getTypeFromProject("org.apache.uima.collection.CollectionReader");
@@ -2893,6 +3845,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return collectionReaderIType;
   }
 
+  /**
+   * Gets the cas initializer I type.
+   *
+   * @return the cas initializer I type
+   */
   public IType getCasInitializerIType() {
     if (null == casInitializerIType) {
         casInitializerIType = getTypeFromProject("org.apache.uima.collection.CasInitializer");
@@ -2900,6 +3857,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return casInitializerIType;
   }
 
+  /**
+   * Gets the cas consumer I type.
+   *
+   * @return the cas consumer I type
+   */
   public IType getCasConsumerIType() {
     if (null == casConsumerIType) {
         casConsumerIType = getTypeFromProject("org.apache.uima.collection.CasConsumer");
@@ -2907,6 +3869,11 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return casConsumerIType;
   }
 
+  /**
+   * Gets the flow controller I type.
+   *
+   * @return the flow controller I type
+   */
   public IType getFlowControllerIType() {
     if (null == flowControllerIType) {
         flowControllerIType = getTypeFromProject("org.apache.uima.flow.FlowController");
@@ -2914,20 +3881,38 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return flowControllerIType;
   }
 
+  /**
+   * The Class CombinedHierarchyScope.
+   */
   private static class CombinedHierarchyScope implements IJavaSearchScope {
 
+    /** The sub scopes. */
     private IJavaSearchScope[] subScopes = new IJavaSearchScope[5];
 
+    /** The nbr scopes. */
     private int nbrScopes = 0;
 
+    /**
+     * Gets the scopes.
+     *
+     * @return the scopes
+     */
     public IJavaSearchScope[] getScopes() {
       return subScopes;
     }
 
+    /**
+     * Adds the scope.
+     *
+     * @param newScope the new scope
+     */
     public void addScope(IJavaSearchScope newScope) {
       subScopes[nbrScopes++] = newScope;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#encloses(java.lang.String)
+     */
     @Override
     public boolean encloses(String resourcePath) {
       for (int i = 0; i < nbrScopes; i++) {
@@ -2942,6 +3927,9 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
       return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#encloses(org.eclipse.jdt.core.IJavaElement)
+     */
     @Override
     public boolean encloses(IJavaElement element) {
 
@@ -2953,6 +3941,9 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
       return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#enclosingProjectsAndJars()
+     */
     @Override
     public IPath[] enclosingProjectsAndJars() {
       ArrayList result = new ArrayList(10);
@@ -2969,29 +3960,46 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
       return (IPath[]) result.toArray(new IPath[result.size()]);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#includesBinaries()
+     */
     @Override
     public boolean includesBinaries() {
       // TODO Auto-generated method stub
       return true;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#includesClasspaths()
+     */
     @Override
     public boolean includesClasspaths() {
       // TODO Auto-generated method stub
       return true;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#setIncludesBinaries(boolean)
+     */
     @Override
     public void setIncludesBinaries(boolean includesBinaries) {
       // implements interface method
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.search.IJavaSearchScope#setIncludesClasspaths(boolean)
+     */
     @Override
     public void setIncludesClasspaths(boolean includesClasspaths) {
       // implements interface method
     }
   }
 
+  /**
+   * Gets the search scope for descriptor type.
+   *
+   * @return the search scope for descriptor type
+   */
   public IJavaSearchScope getSearchScopeForDescriptorType() {
     try {
       switch (descriptorType) {
@@ -3017,6 +4025,15 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return null;
   }
   
+  /**
+   * Merge delegate analysis engine type systems.
+   *
+   * @param aAeDescription the a ae description
+   * @param aResourceManager the a resource manager
+   * @param aOutputMergedTypes the a output merged types
+   * @return the type system description
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
           AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager,
           Map aOutputMergedTypes) throws ResourceInitializationException {
@@ -3025,6 +4042,14 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return CasCreationUtils.mergeTypeSystems(typeSystemsToMerge, aResourceManager, aOutputMergedTypes);
   }
   
+  /**
+   * Merge delegate analysis engine type priorities.
+   *
+   * @param aAeDescription the a ae description
+   * @param aResourceManager the a resource manager
+   * @return the type priorities
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private TypePriorities mergeDelegateAnalysisEngineTypePriorities(
           AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager) 
         throws ResourceInitializationException {
@@ -3033,6 +4058,14 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return CasCreationUtils.mergeTypePriorities(typePrioritiesToMerge, aResourceManager);
   }
 
+  /**
+   * Merge delegate analysis engine fs index collections.
+   *
+   * @param aAeDescription the a ae description
+   * @param aResourceManager the a resource manager
+   * @return the fs index collection
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private FsIndexCollection mergeDelegateAnalysisEngineFsIndexCollections(
           AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager) 
             throws ResourceInitializationException {
@@ -3041,6 +4074,15 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return CasCreationUtils.mergeFsIndexes(fsIndexesToMerge, aResourceManager);
   }
 
+  /**
+   * Creates the cas.
+   *
+   * @param aAeDescription the a ae description
+   * @param aPerformanceTuningSettings the a performance tuning settings
+   * @param aResourceManager the a resource manager
+   * @return the cas
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public CAS createCas(AnalysisEngineDescription aAeDescription,
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
@@ -3056,6 +4098,14 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
             aPerformanceTuningSettings, aResourceManager);
   }
   
+  /**
+   * Gets the merge input.
+   *
+   * @param aAggregateDescription the a aggregate description
+   * @param aResourceManager the a resource manager
+   * @return the merge input
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   private void getMergeInput (
           AnalysisEngineDescription aAggregateDescription, 
           ResourceManager aResourceManager) 
@@ -3087,6 +4137,9 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     }
   }
   
+  /**
+   * Maybe show remote failure.
+   */
   private void maybeShowRemoteFailure() {
     if (failedRemotes.size() == 0) {
       return;

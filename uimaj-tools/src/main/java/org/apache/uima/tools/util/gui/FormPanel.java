@@ -36,33 +36,56 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+
+/**
+ * The Class FormPanel.
+ */
 public class FormPanel extends JPanel {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6935744171267722900L;
 
+  /** The Constant weights. */
   private static final double weights[] = { 0.0, 0.0, 0.0, 0.0 };
 
+  /** The Constant anchors. */
   private static final int anchors[] = { GridBagConstraints.NORTHEAST,
       GridBagConstraints.NORTHWEST, GridBagConstraints.NORTHEAST, GridBagConstraints.NORTHWEST };
 
+  /** The gbl. */
   private GridBagLayout gbl;
 
+  /** The gbc. */
   private GridBagConstraints gbc;
 
+  /** The regular insets. */
   private Insets regularInsets = new Insets(1, 4, 1, 4);
 
+  /** The check box insets. */
   private Insets checkBoxInsets = new Insets(1, 0, 1, 0);
 
+  /** The nr columns. */
   private int nrColumns = 2; // Default
 
+  /** The grid bag panel. */
   protected JPanel gridBagPanel; // Inner panel
 
+  /** The component index. */
   protected int componentIndex = 0;
 
+  /**
+   * Instantiates a new form panel.
+   *
+   * @param nrColumns the nr columns
+   */
   public FormPanel(int nrColumns) {
     this();
     this.nrColumns = nrColumns;
   }
 
+  /**
+   * Instantiates a new form panel.
+   */
   public FormPanel() {
     setLayout(new BorderLayout());
     gridBagPanel = new JPanel();
@@ -74,6 +97,11 @@ public class FormPanel extends JPanel {
     add(gridBagPanel, BorderLayout.NORTH);
   }
 
+  /**
+   * Adds the.
+   *
+   * @param c the c
+   */
   public void add(JComponent c) {
     if (c instanceof JCheckBox)
       gbc.insets = checkBoxInsets;
@@ -89,11 +117,15 @@ public class FormPanel extends JPanel {
     componentIndex++;
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.JComponent#setEnabled(boolean)
+   */
   /*
    * Enables or disables the panel and all its components.
    * 
    * @see java.awt.Component#setEnabled(boolean)
    */
+  @Override
   public void setEnabled(boolean onOff) {
     super.setEnabled(onOff);
     Component components[] = gridBagPanel.getComponents();
@@ -101,6 +133,11 @@ public class FormPanel extends JPanel {
       components[i].setEnabled(onOff);
   }
 
+  /**
+   * Gets the nr components.
+   *
+   * @return the nr components
+   */
   public int getNrComponents() {
     return componentIndex;
   }

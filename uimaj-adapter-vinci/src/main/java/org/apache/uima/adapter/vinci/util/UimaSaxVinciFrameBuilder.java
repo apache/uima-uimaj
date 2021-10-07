@@ -21,6 +21,7 @@ package org.apache.uima.adapter.vinci.util;
 
 import org.xml.sax.Attributes;
 
+// TODO: Auto-generated Javadoc
 /**
  * A specialization of the general <code>SaxVinciFrameBuilder</code> utility for UIMA analysis
  * engine services. Adds two options:
@@ -32,6 +33,14 @@ import org.xml.sax.Attributes;
  * 
  */
 public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
+  
+  /**
+   * Instantiates a new uima sax vinci frame builder.
+   *
+   * @param aSupressDocumentText the a supress document text
+   * @param aIncludeSpannedTextInAnnotations the a include spanned text in annotations
+   * @param aDocText the a doc text
+   */
   public UimaSaxVinciFrameBuilder(boolean aSupressDocumentText,
           boolean aIncludeSpannedTextInAnnotations, String aDocText) {
     mSupressDocumentText = aSupressDocumentText;
@@ -39,15 +48,22 @@ public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
     mDocText = aDocText;
   }
 
+  /** The m supress document text. */
   private boolean mSupressDocumentText;
 
+  /** The m include spanned text in annotations. */
   private boolean mIncludeSpannedTextInAnnotations;
 
+  /** The m doc text. */
   private String mDocText;
 
   /**
    * Overridden to supress document content and include annotation spans.
-   * 
+   *
+   * @param aFrameName the a frame name
+   * @param aAttributes the a attributes
+   * @param aContentBuf the a content buf
+   * @return the leaf content
    * @see SaxVinciFrameBuilder#getLeafContent(String, Attributes, StringBuffer)
    */
   protected String getLeafContent(String aFrameName, Attributes aAttributes,

@@ -21,8 +21,6 @@ package org.apache.uima.cas.test;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -35,6 +33,8 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+
+import junit.framework.TestCase;
 
 /**
  * tests of type priorities
@@ -168,10 +168,16 @@ public class TypePriorityTest extends TestCase {
    *     aaaa        aaab        aaba        aabb       abaa        abab        abba        abbb      baaa ...
    * aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
    */
+  
+//  public void testLearnLto() throws CASException {
+//    LinearTypeOrderBuilder order = irm.createTypeSortOrder();
+//    LinearTypeOrder lo = order.getOrder();
+//    System.out.println("debug linearTypeOrder " + lo);
+//  }
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+  public void testMain() throws Exception {    
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;

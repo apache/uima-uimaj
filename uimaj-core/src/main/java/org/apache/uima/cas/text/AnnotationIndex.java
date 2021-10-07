@@ -40,8 +40,10 @@ import org.apache.uima.cas.FSIterator;
  * annotations with smaller spans, which produces an iteration order similar to a preorder tree
  * traversal.</li>
  * <li>Annotations whose start offsets are equal and whose end offsets are equal are sorted based
- * on {@link org.apache.uima.resource.metadata.TypePriorities} (which is an element of the component
- * descriptor). That is, if <code>a.start = b.start</code>, <code>a.end = b.end</code>, and
+ * on {@link org.apache.uima.resource.metadata.TypePriorities} if type priorities are specified.
+ * Type Priorities specification is an optional element of the component
+ * descriptor). When type priorities are in use, if <code>a.start = b.start</code>, 
+ * <code>a.end = b.end</code>, and
  * the type of <code>a</code> is defined before the type of <code>b</code> in the type
  * priorities, then <code>a &lt; b</code>.
  * <li>
@@ -76,7 +78,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * @return A annotation iterator.
    */
   FSIterator<T> iterator(boolean ambiguous);
-
+                              
   /**
    * Return a subiterator whose bounds are defined by the input annotation.
    * 
@@ -174,7 +176,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * start is beyond the <code>annot's</code> end position, or</li>
    * <li>while moving backwards, it reaches a position in front of its original starting position</li>
    * </ul>
-   *   
+   * 
    * <p>Ignoring <code>strict</code> and <code>ambiguous</code> for a moment, 
    * this is equivalent  to returning annotations <code>b</code> such that</p> 
    * <ul><li><code>annot &lt; b</code> using the standard annotation comparator, and</li>
@@ -185,7 +187,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * <code>annot.getEnd() &lt; b.getEnd()</code>.
    * </p>
    * <p>
-   * A <code>ambiguous = false</code> specification produces an unambiguous iterator, which 
+   * A <code>ambiguous = false</code> specification produces an unambigouse iterator, which 
    * computes a subset of the annotations, going forward, such that annotations whose <code>begin</code>
    * is contained within the previous returned annotation's span, are skipped.
    * </p>

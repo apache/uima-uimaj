@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Arrays;
 
 /**
- * Encapsulate 8 bit storage for the CAS.
+ * the v2 CAS byte aux heap - used in modeling some binary (de)serialization
  */
 final class ByteHeap extends CommonAuxHeap {
 
@@ -77,6 +77,26 @@ final class ByteHeap extends CommonAuxHeap {
     heap[pos] = val;
     return pos;
   }
+  
+  int addByteArray(byte[] val) {
+    int pos = reserve(val.length);
+    System.arraycopy(val, 0, heap, pos, val.length);
+    return pos;
+  }
+  
+  int addBooleanArray(boolean[] val) {
+    int pos = reserve(val.length);
+    int i = pos;
+    for (boolean v : val) {
+      heap[i++] = v ? (byte)1 : (byte)0;
+    }
+    return pos;   
+  }
+
+  int addBooleanArrayNoStore(boolean[] val) {  // for compress4 
+    int pos = reserve(val.length);
+    return pos;   
+  }
 
   protected void reinit(byte[] byteHeap) {
     int argLength = byteHeap.length;
@@ -86,4 +106,11 @@ final class ByteHeap extends CommonAuxHeap {
     System.arraycopy(byteHeap, 0, heap, 0, argLength);
     this.heapPos = argLength;
   }
+  
+  public byte[] toArray() {
+    byte[] r = new byte[heapPos];
+    System.arraycopy(heap, 0, r, 0, heapPos);
+    return r;
+  }
+
 }

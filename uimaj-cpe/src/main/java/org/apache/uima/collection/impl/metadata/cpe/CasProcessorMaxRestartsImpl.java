@@ -29,16 +29,28 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CasProcessorMaxRestartsImpl.
+ */
 public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
         CasProcessorMaxRestarts {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 2863741219504239020L;
 
+  /** The value. */
   private String value = "1";
 
+  /** The action. */
   private String action;
 
+  /** The wait time between retries. */
   private int waitTimeBetweenRetries;
 
+  /**
+   * Instantiates a new cas processor max restarts impl.
+   */
   public CasProcessorMaxRestartsImpl() {
   }
 
@@ -47,6 +59,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorMaxRestarts#setRestartCount(int)
    */
+  @Override
   public void setRestartCount(int aRestartCount) {
     value = String.valueOf(aRestartCount);
   }
@@ -56,6 +69,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorMaxRestarts#getRestartCount()
    */
+  @Override
   public int getRestartCount() {
     return Integer.parseInt(value);
   }
@@ -65,6 +79,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorMaxRestarts#setAction(java.lang.String)
    */
+  @Override
   public void setAction(String aAction) {
     action = aAction;
   }
@@ -74,11 +89,14 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorMaxRestarts#getAction()
    */
+  @Override
   public String getAction() {
     return action;
   }
 
   /**
+   * Gets the value.
+   *
    * @return the value
    */
   public String getValue() {
@@ -86,7 +104,9 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @param string -
+   * Sets the value.
+   *
+   * @param string the new value
    */
   public void setValue(String string) {
     value = string;
@@ -94,13 +114,15 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * @param aElement -
-   * @param aParser -
-   * @param aOptions -
-   * @throws InvalidXMLException -
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setAction(aElement.getAttribute("action"));
@@ -118,9 +140,11 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
 
   /**
    * Overridden to handle "name" and "value" attributes.
-   * @return -
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "action", "action", "CDATA", String.valueOf(getAction()));
@@ -132,23 +156,34 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
     return attrs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "maxConsecutiveRestarts", new PropertyXmlInfo[0]);
 
   /**
+   * Gets the wait time between retries.
+   *
    * @return the wait time between retries
    */
+  @Override
   public int getWaitTimeBetweenRetries() {
     return waitTimeBetweenRetries;
   }
 
   /**
-   * @param i -
+   * Sets the wait time between retries.
+   *
+   * @param i the new wait time between retries
    */
+  @Override
   public void setWaitTimeBetweenRetries(int i) {
     waitTimeBetweenRetries = i;
   }

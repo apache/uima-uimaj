@@ -19,11 +19,21 @@
 
 package org.apache.uima.tools.jcasgen;
 
+
+/**
+ * The Class Waiter.
+ */
 public class Waiter {
+  
+  /** The woke up intentionally. */
   private boolean wokeUpIntentionally = false;
 
+  /** The wait object. */
   private final Object waitObject = new Object();
 
+  /**
+   * Waitfor GUI.
+   */
   void waitforGUI() {
     synchronized (waitObject) {
       wokeUpIntentionally = false;
@@ -38,6 +48,9 @@ public class Waiter {
     }
   }
 
+  /**
+   * Finished.
+   */
   void finished() {
     synchronized (waitObject) {
       wokeUpIntentionally = true;

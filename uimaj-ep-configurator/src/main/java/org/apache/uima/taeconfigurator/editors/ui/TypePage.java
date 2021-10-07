@@ -23,19 +23,33 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class TypePage.
+ */
 public class TypePage extends HeaderPageWithSash {
 
+  /** The type section. */
   private TypeSection typeSection;
 
+  /** The type import section. */
   private TypeImportSection typeImportSection;
 
+  /**
+   * Instantiates a new type page.
+   *
+   * @param editor the editor
+   */
   public TypePage(MultiPageEditor editor) {
     super(editor, "Type Definitions");
   }
 
   /**
-   * Called by the framework to fill in the contents
+   * Called by the framework to fill in the contents.
+   *
+   * @param managedForm the managed form
    */
+  @Override
   protected void createFormContent(IManagedForm managedForm) {
     // always show same screen layout - user could dynamically switch
     managedForm.getForm().setText("Type System Definition");
@@ -45,10 +59,20 @@ public class TypePage extends HeaderPageWithSash {
     createToolBarActions(managedForm);
   }
 
+  /**
+   * Gets the type section.
+   *
+   * @return the type section
+   */
   public TypeSection getTypeSection() {
     return typeSection;
   }
 
+  /**
+   * Gets the type import section.
+   *
+   * @return the type import section
+   */
   public TypeImportSection getTypeImportSection() {
     return typeImportSection;
   }

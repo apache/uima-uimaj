@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.11.1-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -34,6 +34,27 @@
   <description>Adds structure knowledge for common
 UIMA data structures to the Eclipse Debug displays</description>
   <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+    even though the <scm> element that follows is exactly the
+    same as those in super poms, it cannot be inherited because
+    there is some special code that incorrectly computes the
+    connection elements from the chain of parent poms, if this is omitted.
+
+    Keeping this a bit factored allows cutting/pasting the <scm>
+    element, and just changing the following two properties -->
+  <scm>
+    <connection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/apache/uima-uimaj/
+    </developerConnection>
+    <url>
+      https://github.com/apache/uima-uimaj/
+    </url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
@@ -73,34 +94,23 @@ UIMA data structures to the Eclipse Debug displays</description>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
             <Export-Package>
               org.apache.uima.ep_debug
             </Export-Package>
-            
             <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
-             
-            <!-- handle split packages in Eclipse.
-               We do this by using Require-Bundle, and excluding from the Import-Package those
-                 split packages covered by those bundles - this is required by OSGi.
-                                
-                org.eclipse.core.runtime has combined apis (that were split in later 
-                  point releases of 3.x)
-            -->
-            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
-            <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
+            <Require-Bundle>
+              org.eclipse.core.runtime
+            </Require-Bundle>
             <Import-Package>
-              !org.eclipse.core.runtime,                 
+              !org.eclipse.core.runtime,
               *,
               org.eclipse.ui.plugin
-            </Import-Package>  
-
+            </Import-Package>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
           </instructions>
         </configuration>
-      </plugin>      		
-		</plugins>
-	</build>
+      </plugin>
+    </plugins>
+  </build>
 </project>

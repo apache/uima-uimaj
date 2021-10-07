@@ -20,7 +20,7 @@
 package org.apache.uima.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +37,7 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -103,7 +104,7 @@ public class TCasToInlineXml implements TCasFormatter {
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator<AnnotationFS> iterator = aCAS.getAnnotationIndex().iterator();
+    FSIterator<Annotation> iterator = aCAS.<Annotation>getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -115,7 +116,7 @@ public class TCasToInlineXml implements TCasFormatter {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
-    ArrayList<AnnotationFS> stack = new ArrayList<AnnotationFS>();
+    ArrayList<AnnotationFS> stack = new ArrayList<>();
     int pos = 0;
 
     try {
@@ -208,10 +209,8 @@ public class TCasToInlineXml implements TCasFormatter {
       handler.endDocument();
 
       // return XML string
-      return new String(byteArrayOutputStream.toByteArray(),"UTF-8");
+      return new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
     } catch (SAXException e) {
-      throw new UIMARuntimeException(e);
-    } catch (UnsupportedEncodingException e) {
       throw new UIMARuntimeException(e);
     }
   }

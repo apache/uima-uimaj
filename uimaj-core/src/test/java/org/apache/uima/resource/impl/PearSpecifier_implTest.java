@@ -24,9 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
@@ -34,6 +31,9 @@ import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 /**
  * PearSpecifier creation and Xmlization test

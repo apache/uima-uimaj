@@ -58,12 +58,23 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize) {
-    return createCAS(initialHeapSize, USE_JCAS_CACHE_DEFAULT);
+    return new CASImpl(null, initialHeapSize);
   }
-  
+
+  /**
+   * @param initialHeapSize
+   *          The initial size of the internal CAS heap. If you choose this number too small, it can
+   *          have a major performance impact. As a very rough guideline, this number should not be
+   *          smaller than the number of characters in documents you are processing.
+   * @param useJcasCache - ignored in v3
+   * @return A new CASMgr object.
+   * @deprecated use createCas(int initialHeapSize)
+   */
+  @Deprecated
   public static CASMgr createCAS(int initialHeapSize, boolean useJcasCache) {
-    return new CASImpl(initialHeapSize, useJcasCache);
+    return createCAS(initialHeapSize);
   }
+
 
   /**
    * Create a new CASMgr object from a give type system.
@@ -84,7 +95,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts, initialHeapSize, useJcasCache);
+    return new CASImpl((TypeSystemImpl) ts, initialHeapSize);
   }
 
   /**
@@ -103,7 +114,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
+    return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE);
   }
 
   /**
@@ -112,8 +123,7 @@ public abstract class CASFactory {
    * @return A type system manager object that can be used to add more types.
    */
   public static TypeSystemMgr createTypeSystem() {
-    TypeSystemImpl ts = new TypeSystemImpl();
-    return ts;
+    return new TypeSystemImpl();
   }
 
 }

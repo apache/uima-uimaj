@@ -33,12 +33,21 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CasProcessorExecArgImpl.
+ */
 public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasProcessorExecArg {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6289178406400775873L;
 
+  /** The value. */
   private String value;
 
+  /**
+   * Instantiates a new cas processor exec arg impl.
+   */
   public CasProcessorExecArgImpl() {
   }
 
@@ -47,6 +56,7 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
    * 
    * @see org.apache.uima.collection.metadata.CASProcessorExecArg#setArgValue(java.lang.String)
    */
+  @Override
   public void setArgValue(String aArgValue) throws CpeDescriptorException {
     value = aArgValue;
   }
@@ -56,31 +66,43 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
    * 
    * @see org.apache.uima.collection.metadata.CASProcessorExecArg#getArgValue()
    */
+  @Override
   public String getArgValue() throws CpeDescriptorException {
     return value;
   }
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * @param aElement -
-   * @param aParser -
-   * @param aOptions -
-   * @throws InvalidXMLException -
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     value = XMLUtils.getText(aElement);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("arg",
           new PropertyXmlInfo[0]);
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+   */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
@@ -104,7 +126,11 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
     aContentHandler.endElement(inf.namespace, inf.elementTagName, inf.elementTagName);
   }
 
-  /** PROTECTED METHODS USED BY THE PARSER * */
+  /**
+   *  PROTECTED METHODS USED BY THE PARSER *.
+   *
+   * @return the value
+   */
   /**
    * @return the value
    */
@@ -113,7 +139,9 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
   }
 
   /**
-   * @param string -
+   * Sets the value.
+   *
+   * @param string the new value
    */
   public void setValue(String string) {
     value = string;

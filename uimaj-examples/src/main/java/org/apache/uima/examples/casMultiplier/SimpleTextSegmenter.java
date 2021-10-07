@@ -50,7 +50,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
-    mSegmentSize = ((Integer) aContext.getConfigParameterValue("SegmentSize")).intValue();
+    mSegmentSize = (Integer) aContext.getConfigParameterValue("SegmentSize");
   }
 
   /*

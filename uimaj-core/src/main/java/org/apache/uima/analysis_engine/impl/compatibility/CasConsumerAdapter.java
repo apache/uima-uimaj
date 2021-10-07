@@ -75,7 +75,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
     desc.setMetaData(mMetaData);
 
-    Map<String, Object> paramsMap = new HashMap<String, Object>();
+    Map<String, Object> paramsMap = new HashMap<>();
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCasConsumer.initialize(desc, paramsMap);
   }

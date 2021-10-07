@@ -42,9 +42,16 @@ import org.apache.uima.util.UimaTimer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+
+/**
+ * The Class CPMUtils.
+ */
 public class CPMUtils {
+  
+  /** The Constant CPM_LOG_RESOURCE_BUNDLE. */
   public static final String CPM_LOG_RESOURCE_BUNDLE = "org.apache.uima.collection.impl.cpm.cpm_messages";
 
+  /** The timer. */
   private static UimaTimer timer = null;
 
   /**
@@ -64,7 +71,7 @@ public class CPMUtils {
 
   /**
    * Sets the timer.
-   * 
+   *
    * @param aTimer the new timer
    */
   public static void setTimer(UimaTimer aTimer) {
@@ -72,7 +79,8 @@ public class CPMUtils {
   }
 
   /**
-   * 
+   * Gets the timer.
+   *
    * @return the timer
    */
   public static UimaTimer getTimer() {
@@ -81,7 +89,7 @@ public class CPMUtils {
 
   /**
    * Convert to absolute path.
-   * 
+   *
    * @param aSystemVar the a system var
    * @param aExpr the a expr
    * @param aPathToConvert the a path to convert
@@ -97,7 +105,7 @@ public class CPMUtils {
   /**
    * Return timer to measure performace of the cpm. The timer can optionally be configured in the
    * CPE descriptor. If none defined, the method returns default timer.
-   * 
+   *
    * @param aTimerClass the a timer class
    * @return - customer timer or JavaTimer (default)
    * @throws Exception -
@@ -113,7 +121,7 @@ public class CPMUtils {
 
   /**
    * Returns the total duration of a given event.
-   * 
+   *
    * @param aPT -
    *          Event container
    * @param eventName -
@@ -143,8 +151,8 @@ public class CPMUtils {
   }
 
   /**
-   * Dumps all events in the process trace object
-   * 
+   * Dumps all events in the process trace object.
+   *
    * @param aPTr -
    *          event container
    */
@@ -169,7 +177,7 @@ public class CPMUtils {
   /**
    * Finds an occurance of the ##CPM_HOME in a value parameter and returns it with an expanded form
    * (ie.c:/cpm/...) based on the env variable CPM_HOME.
-   * 
+   *
    * @param value the value
    * @return the string
    */
@@ -185,13 +193,11 @@ public class CPMUtils {
   }
 
   /**
-   * Finds a node with a given path and returns its textual value
-   * 
-   * @param path
-   *          String - XPath path to a node
+   * Finds a node with a given path and returns its textual value.
+   *
+   * @param aNode the a node
    * @return textual value of a node indicated in the XPath path
-   * 
-   * @exception Exception -
+   * @exception Exception the exception
    */
   private static String extractText(Node aNode) throws Exception {
     String text = null;
@@ -209,7 +215,8 @@ public class CPMUtils {
   }
 
   /**
-   * 
+   * Gets the configurable feature.
+   *
    * @param entityNode the entity node
    * @return a configurable feature
    * @throws ConfigurationException -
@@ -246,11 +253,10 @@ public class CPMUtils {
   }
 
   /**
-   * Returns text associated with TEXT_NODE element
-   * 
+   * Returns text associated with TEXT_NODE element.
+   *
    * @param aList -
    *          list of elements
-   * 
    * @return - Text
    */
   private static String getTextValue(NodeList aList) {
@@ -265,7 +271,7 @@ public class CPMUtils {
 
   /**
    * Gets the features.
-   * 
+   *
    * @param attributesNode the attributes node
    * @return a list of features
    * @throws ConfigurationException -
@@ -309,7 +315,7 @@ public class CPMUtils {
 
   /**
    * Find deploy directory.
-   * 
+   *
    * @param aServiceName the a service name
    * @return the deploy directory
    * @throws Exception -
@@ -343,7 +349,8 @@ public class CPMUtils {
   }
 
   /**
-   * 
+   * Gets the directories.
+   *
    * @return an array of directories
    * @throws Exception -
    */
@@ -376,6 +383,15 @@ public class CPMUtils {
 
   }
 
+  /**
+   * Gets the feature as int.
+   *
+   * @param aCas the a cas
+   * @param aFeature the a feature
+   * @param aName the a name
+   * @return the feature as int
+   * @throws Exception the exception
+   */
   public static int getFeatureAsInt(CAS aCas, Feature aFeature, String aName) throws Exception {
     Feature seqNo2 = aFeature.getRange().getFeatureByBaseName(aName);
     FeatureStructure documentMetaData = aCas.getView(CAS.NAME_DEFAULT_SOFA).getDocumentAnnotation()
@@ -384,8 +400,8 @@ public class CPMUtils {
   }
 
   /**
-   * Returns a value associated with a given feature
-   * 
+   * Returns a value associated with a given feature.
+   *
    * @param aCas -
    *          Cas containing data to extract
    * @param aFeature -

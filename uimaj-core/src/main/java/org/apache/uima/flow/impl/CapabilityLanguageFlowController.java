@@ -65,8 +65,8 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
   private Map<String, List<AnalysisSequenceCapabilityNode>> mFlowTable;
   
-  private final Map<String, ResultSpecification> lastResultSpecForComponent = 
-    new HashMap<String, ResultSpecification>();
+  private final Map<String, ResultSpecification> lastResultSpecForComponent =
+      new HashMap<>();
 
   /**
    * main language separator e.g 'en' and 'en-US'
@@ -83,7 +83,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     mComponentMetaDataMap = aContext.getAnalysisEngineMetaDataMap();
 
     // build a list of AnalysisSequenceNodes from the capabilityLanguageFlow
-    mStaticSequence = new ArrayList<AnalysisSequenceCapabilityNode>();
+    mStaticSequence = new ArrayList<>();
     CapabilityLanguageFlow flowConstraints = (CapabilityLanguageFlow) aContext
             .getAggregateMetadata().getFlowConstraints();
     for (String aeKey : flowConstraints.getCapabilityLanguageFlow()) {
@@ -119,11 +119,11 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    */
   protected Map<String, List<AnalysisSequenceCapabilityNode>> computeFlowTable(Capability[] aCapabilities) {
     // create flowTable
-    Map<String, List<AnalysisSequenceCapabilityNode>> flowTable = 
-      new HashMap<String, List<AnalysisSequenceCapabilityNode>>();
+    Map<String, List<AnalysisSequenceCapabilityNode>> flowTable =
+        new HashMap<>();
 
     // get all languages from the capabilities
-    Set<String> languages = new HashSet<String>();
+    Set<String> languages = new HashSet<>();
     for (Capability capability : aCapabilities) {
       for (String capabilityLanguage : capability.getLanguagesSupported()) {
         languages.add(capabilityLanguage);
@@ -162,7 +162,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     }
 
     // create array list for the current sequence
-    List<AnalysisSequenceCapabilityNode> newSequence = new ArrayList<AnalysisSequenceCapabilityNode>();
+    List<AnalysisSequenceCapabilityNode> newSequence = new ArrayList<>();
 
     // loop over all annotators that should be called
     // In this loop we will gradually reduce the set of output capabilities 
@@ -179,7 +179,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
       // if country extension is available
       if (index >= 0) {
         // create Set for outputSpecs, so we can eliminate duplicates
-        Set<TypeOrFeature> outputSpec = new HashSet<TypeOrFeature>();
+        Set<TypeOrFeature> outputSpec = new HashSet<>();
 
         // add language with country extension removed, 
         // to the existing output capabilities (or if non exist, just use

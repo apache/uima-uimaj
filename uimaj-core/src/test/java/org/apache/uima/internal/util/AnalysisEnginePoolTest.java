@@ -19,9 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -41,6 +38,9 @@ import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class AnalysisEnginePoolTest extends TestCase {

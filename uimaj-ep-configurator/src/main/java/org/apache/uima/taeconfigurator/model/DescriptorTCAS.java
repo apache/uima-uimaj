@@ -27,18 +27,30 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
+
 /**
- * Model part: CAS corresponding to the descriptor being edited
+ * Model part: CAS corresponding to the descriptor being edited.
  */
 
 public class DescriptorTCAS extends AbstractModelPart {
 
+  /** The cached result. */
   private CAS cachedResult;
 
+  /**
+   * Instantiates a new descriptor TCAS.
+   *
+   * @param modelRoot the model root
+   */
   public DescriptorTCAS(MultiPageEditor modelRoot) {
     super(modelRoot);
   }
 
+  /**
+   * Validate.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public void validate() throws ResourceInitializationException {
 
     AnalysisEngineDescription ae = (AnalysisEngineDescription) modelRoot.getAeDescription().clone();
@@ -67,6 +79,8 @@ public class DescriptorTCAS extends AbstractModelPart {
   }
 
   /**
+   * Gets the.
+   *
    * @return a CAS for the model descriptor
    */
   public CAS get() {
@@ -76,11 +90,19 @@ public class DescriptorTCAS extends AbstractModelPart {
     return cachedResult;
   }
 
+  /**
+   * Sets the.
+   *
+   * @param tcas the tcas
+   */
   public void set(CAS tcas) {
     cachedResult = tcas;
     dirty = false;
   }
 
+  /**
+   * Update.
+   */
   private void update() {
     try {
       validate();

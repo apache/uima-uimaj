@@ -64,7 +64,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    * first.
    */
   protected Map<Class<? extends ResourceSpecifier>, List<Class<? extends Resource>>> mClassMap =
-	      Collections.synchronizedMap(new HashMap<Class<? extends ResourceSpecifier>, List<Class<? extends Resource>>>());
+	      Collections.synchronizedMap(new HashMap<>());
 
   /**
    * Produces an appropriate <code>Resource</code> instance from a <code>ResourceSpecifier</code>.
@@ -171,12 +171,8 @@ public class SimpleResourceFactory implements ResourceFactory {
    *          specifiers of the given class.
    */
   public void addMapping(Class<? extends ResourceSpecifier> aSpecifierInterface, Class<? extends Resource> aResourceClass) {
-    List<Class<? extends Resource>> mappingList = mClassMap.get(aSpecifierInterface);
-    if (mappingList == null) {
-      // No mapping exists. Create a new list and put it in the map.
-      mappingList = new ArrayList<Class<? extends Resource>>();
-      mClassMap.put(aSpecifierInterface, mappingList);
-    }
+    List<Class<? extends Resource>> mappingList = mClassMap.computeIfAbsent(aSpecifierInterface, k -> new ArrayList<>());
+    // No mapping exists. Create a new list and put it in the map.
 
     // add the new Resource Class to the end of the mapping list
     mappingList.add(aResourceClass);
