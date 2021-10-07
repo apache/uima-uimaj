@@ -24,14 +24,14 @@ package org.apache.uima.cas.impl;
  *
  */
 public class TypeImpl_annot extends TypeImpl_annotBase {
-    
+
   public TypeImpl_annot(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
   }
-  
+
   @Override
   public boolean isAnnotationType() {
     return true;
   }
- 
+
 }

@@ -255,6 +255,7 @@ public class RunAE implements StatusCallbackListener {
    *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
    */
+  @Override
   public void initializationComplete() {
   }
 
@@ -266,6 +267,7 @@ public class RunAE implements StatusCallbackListener {
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
+  @Override
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     if (aStatus.isException()) {
       Iterator iter = aStatus.getExceptions().iterator();
@@ -294,6 +296,7 @@ public class RunAE implements StatusCallbackListener {
    *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
    */
+  @Override
   public void aborted() {
     System.out.println("Processing Aborted");
 
@@ -304,6 +307,7 @@ public class RunAE implements StatusCallbackListener {
    *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() {
   }
 
@@ -312,6 +316,7 @@ public class RunAE implements StatusCallbackListener {
    *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() {
     // output performance stats
     if (statsLevel > 0) {
@@ -331,6 +336,7 @@ public class RunAE implements StatusCallbackListener {
    *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#paused()
    */
+  @Override
   public void paused() {
   }
 
@@ -339,6 +345,7 @@ public class RunAE implements StatusCallbackListener {
    *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#resumed()
    */
+  @Override
   public void resumed() {
   }
 

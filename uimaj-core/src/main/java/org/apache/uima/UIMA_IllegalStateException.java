@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 /**
@@ -24,8 +23,6 @@ package org.apache.uima;
  * object on which the method was called is not in an appropriate state for the requested operation.
  * This extends <code>RuntimeException</code> and so does not need to be declared in the throws
  * clause of methods.
- * 
- * 
  */
 public class UIMA_IllegalStateException extends UIMARuntimeException {
 
@@ -75,23 +72,28 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
 
   /**
    * Message key for a standard UIMA exception message: ResourceManager.setCasManager was called
-   * after the CAS Manager had already been set.  You can only call setCasManager once, and you
-   * cannot have previously called ResourceManager.getCasManager or initialized any
-   * AnalysisEngines that use this ResourceManager.
+   * after the CAS Manager had already been set. You can only call setCasManager once, and you
+   * cannot have previously called ResourceManager.getCasManager or initialized any AnalysisEngines
+   * that use this ResourceManager.
    */
   public static final String CANNOT_SET_CAS_MANAGER = "cannot_set_cas_manager";
-  
-  /** Cannot do feature accessing for JCas class {0}, because it is not associated with a committed UIMA Type, either because the type doesn''t exist, or hasn''t been committed.*/
+
+  /**
+   * Cannot do feature accessing for JCas class {0}, because it is not associated with a committed
+   * UIMA Type, either because the type doesn''t exist, or hasn''t been committed.
+   */
   public static final String JCAS_NO_TYPE = "JCAS_NO_TYPE";
-  
-  /** Loaded JCas Type {0} has feature {1} with two different type systems having different offsets; this is not supported. */
+
+  /**
+   * Loaded JCas Type {0} has feature {1} with two different type systems having different offsets;
+   * this is not supported.
+   */
   public static final String JCAS_INCOMPATIBLE_TYPE_SYSTEMS = "JCAS_INCOMPATIBLE_TYPE_SYSTEMS";
 
   /**
    * Creates a new exception with a null message.
    */
   public UIMA_IllegalStateException() {
-    super();
   }
 
   /**
@@ -112,8 +114,8 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -131,8 +133,8 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -149,8 +151,8 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -165,8 +167,8 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.

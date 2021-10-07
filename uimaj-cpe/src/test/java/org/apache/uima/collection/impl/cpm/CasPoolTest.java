@@ -19,9 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
@@ -34,18 +31,23 @@ import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test insures that a common type system is shared in the CPM cas pool.
  * 
  */
-public class CasPoolTest extends TestCase {
+public class CasPoolTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
@@ -53,10 +55,9 @@ public class CasPoolTest extends TestCase {
 
   /**
    * @throws Exception -
-   * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
@@ -66,7 +67,8 @@ public class CasPoolTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testCasPool() throws Exception {
+    @Test
+    public void testCasPool() throws Exception {
     // process 100 documents and multiple threads
     int documentCount = 100;
     int threadCount = 5;
@@ -77,6 +79,7 @@ public class CasPoolTest extends TestCase {
     // create and register a status callback listener
     TestStatusCallbackListener listener = new TestStatusCallbackListener() {
       TypeSystem sts = null;
+      @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
         super.entityProcessComplete(aCas, aStatus);
         if (sts == null) {

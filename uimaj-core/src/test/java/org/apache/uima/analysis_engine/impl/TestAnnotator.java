@@ -71,6 +71,8 @@ public class TestAnnotator extends CasAnnotator_ImplBase {
 
   @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
+    // set static fields to contain document text, result spec,
+    // and value of StringParam configuration parameter.
     lastDocument = aCAS.getDocumentText();
     lastResultSpec = getResultSpecification();
     ConfigurationManager cfgMgr = ((UimaContextAdmin) getContext()).getConfigurationManager();

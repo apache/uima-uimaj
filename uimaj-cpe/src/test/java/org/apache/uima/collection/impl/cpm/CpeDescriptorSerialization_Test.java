@@ -19,11 +19,13 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-
-import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
@@ -40,6 +42,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * reading an example Descriptor from FileSystem and adding other CasProcessors via API
@@ -47,7 +51,7 @@ import org.apache.uima.util.XMLInputSource;
  * After generating a new Descriptor with the modified data, the generated descriptor file must be
  * equivalent to the referenced file.
  */
-public class CpeDescriptorSerialization_Test extends TestCase {
+public class CpeDescriptorSerialization_Test {
 
   private File testBaseDir;
 
@@ -56,7 +60,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     // get test base path setting
     this.testBaseDir = JUnitExtension.getFile("CpmTests/CpeAPITest");
   }
@@ -67,7 +72,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testReadDescriptor() throws Exception {
+    @Test
+    public void testReadDescriptor() throws Exception {
 
     // input file
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf.xml");
@@ -96,7 +102,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testReadDescriptor2() throws Exception {
+    @Test
+    public void testReadDescriptor2() throws Exception {
 
     // input file
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf2.xml");
@@ -125,7 +132,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAddRemoteCasProcessor() throws Exception {
+    @Test
+    public void testAddRemoteCasProcessor() throws Exception {
 
     // parse cpe descriptor file
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
@@ -161,7 +169,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAddLocalCasProcessor() throws Exception {
+    @Test
+    public void testAddLocalCasProcessor() throws Exception {
 
     // parse cpe descriptor file
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
@@ -195,7 +204,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAddIntegratedCasProcessor() throws Exception {
+    @Test
+    public void testAddIntegratedCasProcessor() throws Exception {
 
     // parse cpe descriptor file
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");

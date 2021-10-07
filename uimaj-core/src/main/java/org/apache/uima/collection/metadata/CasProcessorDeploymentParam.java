@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.metadata;
 
 import org.apache.uima.resource.metadata.MetaDataObject;
@@ -24,58 +23,62 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 /**
  * An object that holds configuration information used for building CPE Descriptor. It provides the
  * means of configuring deployment parameter used by the CPE to deploy CasProcessor.
- * 
- * 
  */
 public interface CasProcessorDeploymentParam extends MetaDataObject {
   /**
    * Sets the name of the parameter
    * 
-   * @param aParamName -
-   *          a name
-   * @throws CpeDescriptorException tbd
+   * @param aParamName
+   *          - a name
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void setParameterName(String aParamName) throws CpeDescriptorException;
+  void setParameterName(String aParamName) throws CpeDescriptorException;
 
   /**
    * Returns the name of the parameter
    * 
    * @return - name as String
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public String getParameterName() throws CpeDescriptorException;
+  String getParameterName() throws CpeDescriptorException;
 
   /**
    * Sets the value of the deployment parameter
    * 
-   * @param aParamValue -
-   *          parameter value
-   * @throws CpeDescriptorException tbd
+   * @param aParamValue
+   *          - parameter value
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void setParameterValue(String aParamValue) throws CpeDescriptorException;
+  void setParameterValue(String aParamValue) throws CpeDescriptorException;
 
   /**
    * Returns deployment parameter value
    * 
    * @return - value as String
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public String getParameterValue() throws CpeDescriptorException;
+  String getParameterValue() throws CpeDescriptorException;
 
   /**
    * Sets deployment parameter value type
    * 
-   * @param aParamType -
-   *          value type (string, int, etc)
-   * @throws CpeDescriptorException tbd
+   * @param aParamType
+   *          - value type (string, int, etc)
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void setParameterType(String aParamType) throws CpeDescriptorException;
+  void setParameterType(String aParamType) throws CpeDescriptorException;
 
   /**
    * Returns deployment parameter value type
    * 
    * @return - value type (string, int, etc)
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public String getParameterType() throws CpeDescriptorException;
+  String getParameterType() throws CpeDescriptorException;
 }

@@ -39,6 +39,7 @@ class OverwriteQuery implements IOverwriteQuery {
     this.shell = shell;
   }
   
+  @Override
   public String queryOverwrite(final String pathString) {
 
     if (ALL.equals(result)) {
@@ -55,6 +56,7 @@ class OverwriteQuery implements IOverwriteQuery {
     // Must executed synchronously, otherwise the result is not available
     // when the return statement is executed
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         MessageDialog dialog = new MessageDialog(shell, "CAS target file already exists" , null,
                 "The CAS target file already exists: \n" + pathString + 

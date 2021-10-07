@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="This is a test ."/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData _indexed="1" _id="2" _ref_sofa="1" begin="0" end="16" documentId="doc" isLastSegment="false"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="3" _ref_sofa="1" begin="0" end="4" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="4" _ref_sofa="1" begin="5" end="7" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="5" _ref_sofa="1" begin="8" end="9" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="6" _ref_sofa="1" begin="10" end="14" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="7" _ref_sofa="1" begin="15" end="16" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="8" _ref_sofa="1" begin="0" end="16"/>
+    <webanno.custom.SimpleLink _indexed="1" _id="9" _ref_sofa="1" begin="0" end="4" _ref_next="11"/>
+    <webanno.custom.SimpleLink _indexed="1" _id="10" _ref_sofa="1" begin="0" end="4"/>
+    <webanno.custom.SimpleLink _indexed="1" _id="11" _ref_sofa="1" begin="5" end="7" _ref_next="13"/>
+    <webanno.custom.SimpleLink _indexed="1" _id="12" _ref_sofa="1" begin="5" end="7" _ref_next="10"/>
+    <webanno.custom.SimpleLink _indexed="1" _id="13" _ref_sofa="1" begin="8" end="9"/>
+    <webanno.custom.SimpleLink _indexed="1" _id="14" _ref_sofa="1" begin="8" end="9" _ref_next="12"/>
+    <webanno.custom.SimpleChain _indexed="1" _id="16" _ref_sofa="1" _ref_first="14"/>
+    <webanno.custom.SimpleChain _indexed="1" _id="15" _ref_sofa="1" _ref_first="9"/>
+</CAS>

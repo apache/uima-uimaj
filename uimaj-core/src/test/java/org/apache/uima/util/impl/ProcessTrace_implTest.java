@@ -23,29 +23,14 @@ import java.util.List;
 
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-
-public class ProcessTrace_implTest extends TestCase {
-
-  /**
-   * Constructor for ProcessTrace_implTest.
-   * 
-   * @param arg0
-   */
-  public ProcessTrace_implTest(String arg0) {
-    super(arg0);
-  }
-
+public class ProcessTrace_implTest {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
+  @Test
   public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
@@ -97,6 +82,7 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertEquals(3, evt1.getSubEvents().size());
   }
 
+  @Test
   public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
@@ -123,6 +109,7 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for List getEventsByComponentName(String, boolean)
    */
+  @Test
   public void testGetEventsByComponentName() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
@@ -166,6 +153,7 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for List getEventsByType(String, boolean)
    */
+  @Test
   public void testGetEventsByType() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
@@ -199,6 +187,7 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for ProcessTraceEvent getEvent(String, String)
    */
+  @Test
   public void testGetEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // create some events
@@ -222,6 +211,7 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertNull(evt);
   }
 
+  @Test
   public void testAggregate() {
     // create two ProcessTrace objects
     ProcessTrace_impl pt1 = new ProcessTrace_impl();

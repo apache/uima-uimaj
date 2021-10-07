@@ -19,6 +19,12 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,20 +53,22 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 /**
  * Class comment for TypeSystemTest.java goes here.
  * 
  */
-public class TypeSystemTest extends TestCase {
+public class TypeSystemTest {
 
   private class SetupTest implements AnnotatorInitializer {
     /**
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(org.apache.uima.cas.admin.TypeSystemMgr)
      */
+    @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
 
       // ///////////////////////////////////////////////////////////////////////
@@ -159,12 +167,13 @@ public class TypeSystemTest extends TestCase {
       // retrieved
       // by name on types more than one level removed from the introducing
       // type.
-      assertTrue(tsm.getFeatureByFullName(annot2name + TypeSystem.FEATURE_SEPARATOR
-              + CAS.FEATURE_BASE_NAME_BEGIN) != null);
+      assertTrue(tsm.getFeatureByFullName(
+              annot2name + TypeSystem.FEATURE_SEPARATOR + CAS.FEATURE_BASE_NAME_BEGIN) != null);
 
       String inhTestFeat = "inhTestFeat";
       tsm.addFeature(inhTestFeat, annot1, nameTest);
-      assertTrue(tsm.getFeatureByFullName(annot2name + TypeSystem.FEATURE_SEPARATOR + inhTestFeat) != null);
+      assertTrue(tsm.getFeatureByFullName(
+              annot2name + TypeSystem.FEATURE_SEPARATOR + inhTestFeat) != null);
 
       // Test illegal feature names.
       Feature feat = null;
@@ -278,6 +287,7 @@ public class TypeSystemTest extends TestCase {
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initIndexes(org.apache.uima.cas.admin.FSIndexRepositoryMgr,
      *      org.apache.uima.cas.TypeSystem)
      */
+    @Override
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ats) {
       // Do nothing for the purposes of this test.
     }
@@ -288,20 +298,8 @@ public class TypeSystemTest extends TestCase {
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for TypeSystemTest.
-   * 
-   * @param arg0
-   */
-  public TypeSystemTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -311,23 +309,27 @@ public class TypeSystemTest extends TestCase {
     }
   }
 
+  @AfterEach
   public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
+  @Test
   public void testSuperTypeBuiltIn() {
     CAS cas = CASInitializer.initCas(new SetupTest(), null);
     TypeSystem ts = cas.getTypeSystem();
     Type stringArray = ts.getType("uima.cas.StringArray");
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
   }
-  
+
+  @Test
   public void testNameChecking() {
     CAS tcas = CASInitializer.initCas(new SetupTest(), null);
     assertTrue(tcas != null);
   }
 
+  @Test
   public void testGetParent() {
     assertTrue(this.ts.getParent(this.ts.getType(CAS.TYPE_NAME_TOP)) == null);
     Type annotBase = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
@@ -337,6 +339,7 @@ public class TypeSystemTest extends TestCase {
     assertTrue(this.ts.getParent(this.ts.getType(CASTestSetup.TOKEN_TYPE)) == annot);
   }
 
+  @Test
   public void testGetType() {
     Type top = this.ts.getTopType();
     assertTrue(top != null);
@@ -350,6 +353,7 @@ public class TypeSystemTest extends TestCase {
   /*
    * Test for Feature getFeature(String)
    */
+  @Test
   public void testGetFeature() {
     Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Feature start = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
@@ -361,11 +365,12 @@ public class TypeSystemTest extends TestCase {
     assertTrue(end.getRange() == integer);
     Feature start1 = annot.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start1);
-    Feature start2 = this.ts.getType(CASTestSetup.TOKEN_TYPE).getFeatureByBaseName(
-            CAS.FEATURE_BASE_NAME_BEGIN);
+    Feature start2 = this.ts.getType(CASTestSetup.TOKEN_TYPE)
+            .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start2);
   }
 
+  @Test
   public void testGetTypeIterator() {
     Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
@@ -380,6 +385,7 @@ public class TypeSystemTest extends TestCase {
     assertTrue(v.contains(CASTestSetup.SENT_TYPE));
   }
 
+  @Test
   public void testGetFeatures() {
     Iterator<Feature> it = this.ts.getFeatures();
     // Put feature names in vector and test for some known features.
@@ -397,12 +403,14 @@ public class TypeSystemTest extends TestCase {
     // assertTrue(v.contains(arrayPrefix + CAS.ARRAY_LENGTH_FEAT));
   }
 
+  @Test
   public void testGetTopType() {
     Type top = this.ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
   }
 
+  @Test
   public void testGetDirectlySubsumedTypes() {
     List<Type> subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
@@ -418,6 +426,7 @@ public class TypeSystemTest extends TestCase {
   /*
    * Test for boolean subsumes(Type, Type)
    */
+  @Test
   public void testSubsumes() {
     Type top = this.ts.getTopType();
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
@@ -438,6 +447,7 @@ public class TypeSystemTest extends TestCase {
   /**
    * Test presence of builtin types and their properties.
    */
+  @Test
   public void testBuiltinTypes() {
     assertTrue(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal());
     assertTrue(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal());
@@ -448,6 +458,7 @@ public class TypeSystemTest extends TestCase {
   /**
    * Test creation of type system with static [T]CASFactory methods.
    */
+  @Test
   public void testCreateTypeSystem() {
     // Test creation of CAS type system.
     TypeSystemMgr tsMgr = CASFactory.createTypeSystem();
@@ -466,6 +477,7 @@ public class TypeSystemTest extends TestCase {
    * Test array types.
    * 
    */
+  @Test
   public void testArrayTypes() {
     // Our version of object arrays. Type is built-in and has special name,
     // for backwards compatibility.
@@ -499,16 +511,17 @@ public class TypeSystemTest extends TestCase {
     assertTrue(this.ts.subsumes(fsArrayType, annotationArray));
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
   }
-  
+
+  @Test
   public void testSerializeTypeSystem() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/arrayValueDescriptor.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
-        .exists());
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+            descriptorFile.exists());
     TypeSystem typeSystem = null;
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
-      AnalysisEngineDescription spec = (AnalysisEngineDescription) parser.parse(new XMLInputSource(
-          descriptorFile));
+      AnalysisEngineDescription spec = (AnalysisEngineDescription) parser
+              .parse(new XMLInputSource(descriptorFile));
       typeSystem = UIMAFramework.produceAnalysisEngine(spec).newCAS().getTypeSystem();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
@@ -534,7 +547,7 @@ public class TypeSystemTest extends TestCase {
       assertTrue(false);
     }
     InputStream is = new ByteArrayInputStream(os.toByteArray());
-//    System.out.println(os.toString());
+    // System.out.println(os.toString());
     XMLInputSource xis = new XMLInputSource(is, new File("."));
     Object descriptor = null;
     try {
@@ -556,9 +569,10 @@ public class TypeSystemTest extends TestCase {
       assertTrue(false);
     }
   }
-  
+
+  @Test
   public void testSerializeParameterizedArrayTypeSystem() {
-    
+
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     try {
       TypeSystem2Xml.typeSystem2Xml(ts, os);
@@ -573,7 +587,7 @@ public class TypeSystemTest extends TestCase {
       assertTrue(false);
     }
     InputStream is = new ByteArrayInputStream(os.toByteArray());
-//    System.out.println(os.toString());
+    // System.out.println(os.toString());
     XMLInputSource xis = new XMLInputSource(is, new File("."));
     Object descriptor = null;
     try {
@@ -595,10 +609,4 @@ public class TypeSystemTest extends TestCase {
       assertTrue(false);
     }
   }
-  
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeSystemTest.class);
-  }
-
 }

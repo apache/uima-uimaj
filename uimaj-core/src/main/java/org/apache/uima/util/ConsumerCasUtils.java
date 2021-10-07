@@ -31,7 +31,7 @@ public class ConsumerCasUtils {
     int result = 0;
     Type type = aCasView.getTypeSystem().getType(aTypeS);
     if (type != null) {
-      FSIterator<Annotation> idIter = aCasView.<Annotation>getAnnotationIndex(type).iterator();
+      FSIterator<Annotation> idIter = aCasView.<Annotation> getAnnotationIndex(type).iterator();
       while (idIter.isValid()) {
         org.apache.uima.cas.FeatureStructure idFS = idIter.get();
         result = idFS
@@ -49,8 +49,8 @@ public class ConsumerCasUtils {
       FSIterator<AnnotationFS> idIter = aCasView.getAnnotationIndex(type).iterator();
       while (idIter.isValid()) {
         org.apache.uima.cas.FeatureStructure idFS = idIter.get();
-        result = idFS.getStringValue(aCasView.getTypeSystem().getFeatureByFullName(
-                aTypeS + ":" + aFeatS));
+        result = idFS.getStringValue(
+                aCasView.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
         idIter.moveToNext();
       }
     }

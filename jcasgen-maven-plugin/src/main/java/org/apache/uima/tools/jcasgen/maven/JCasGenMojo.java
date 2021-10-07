@@ -100,6 +100,7 @@ public class JCasGenMojo extends AbstractMojo {
   @Parameter(defaultValue = "false", required = true)
   private boolean limitToProject;
 
+  @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     // add the generated sources to the build
     if (!this.outputDirectory.exists()) {
@@ -231,16 +232,20 @@ public class JCasGenMojo extends AbstractMojo {
     public JCasGenProgressMonitor() {
     }
 
+    @Override
     public void done() {
     }
 
+    @Override
     public void beginTask(String name, int totalWorked) {
     }
 
+    @Override
     public void subTask(String message) {
       getLog().info("JCasGen: " + message);
     }
 
+    @Override
     public void worked(int work) {
     }
   }
@@ -254,6 +259,7 @@ public class JCasGenMojo extends AbstractMojo {
      * called by the common JCasGen code when it detects an error
      * If no exception, the "exception" parameter is null
      */
+    @Override
     public void newError(int severity, String message, Exception exception) {
       String fullMessage = "JCasGen: " + message;
       if (severity == IError.INFO) {

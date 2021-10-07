@@ -34,8 +34,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 /**
  * A registry containing (ResourceSpecifier Class, {@link ResourceFactory}) pairs. Also implements
  * the <code>ResourceFactory</code> interface, and produces resources by delegating to the most
- * recently registered <code>ResourceFactory</code> instance that can handle the class of the
- * given specifier object.
+ * recently registered <code>ResourceFactory</code> instance that can handle the class of the given
+ * specifier object.
  * 
  * 
  */
@@ -50,8 +50,10 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
-  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
-          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
+  @Override
+  public Resource produceResource(Class<? extends Resource> aResourceClass,
+          ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+          throws ResourceInitializationException {
     // check for factories registered for this resource specifier type
     // (most recently registered first)
     ListIterator<Registration> it = mRegisteredFactories.listIterator(mRegisteredFactories.size());
@@ -71,6 +73,7 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
   /**
    * @see org.apache.uima.CompositeResourceFactory#registerFactory(Class,ResourceFactory)
    */
+  @Override
   public void registerFactory(Class aResourceSpecifierInterface, ResourceFactory aFactory) {
     mRegisteredFactories.add(new Registration(aResourceSpecifierInterface, aFactory));
   }

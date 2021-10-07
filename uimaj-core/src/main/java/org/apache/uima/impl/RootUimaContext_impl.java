@@ -67,21 +67,21 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
   /**
    * Current Session
    * 
-   * Has general setter and getter;
-   * marked volatile to allow effect of setting to be seen on another thread
+   * Has general setter and getter; marked volatile to allow effect of setting to be seen on another
+   * thread
    */
   private volatile Session mSession;
-  
+
   /**
    * External parameter override specifications - held at the root context level
    */
   protected volatile Settings mExternalOverrides;
-  
+
   @Override
   public Settings getExternalOverrides() {
     return mExternalOverrides;
   }
-  
+
   @Override
   public void setExternalOverrides(Settings externalOverrides) {
     mExternalOverrides = externalOverrides;
@@ -92,16 +92,17 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
     // to allow these to be final,
     // which causes a store memory barrier to be inserted for them
     // which makes other accesses to them "safe" from other threads
-    //   without further synchronization
+    // without further synchronization
     mResourceManager = UIMAFramework.newContextResourceManager.get();
     mConfigurationManager = UIMAFramework.newContextConfigManager.get();
   }
+
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.UimaContextAdmin#initialize(org.apache.uima.resource.ResourceCreationSpecifier,
-   *      org.apache.uima.util.Logger, org.apache.uima.resource.ResourceManager,
-   *      ConfigurationManager)
+   * @see
+   * org.apache.uima.UimaContextAdmin#initialize(org.apache.uima.resource.ResourceCreationSpecifier,
+   * org.apache.uima.util.Logger, org.apache.uima.resource.ResourceManager, ConfigurationManager)
    */
   @Override
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,

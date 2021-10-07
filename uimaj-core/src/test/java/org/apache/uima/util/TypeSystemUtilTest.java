@@ -26,29 +26,29 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class TypeSystemUtilTest extends TestCase {
+public class TypeSystemUtilTest {
+  @Test
   public void testTypeSystem2TypeSystemDescription() throws Exception {
-    //create a CAS with example type system
+    // create a CAS with example type system
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-    TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(typeSystemFile));
-    
-    //add an example type to test FSArrays with and without elementTypes
+    TypeSystemDescription tsDesc = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
+
+    // add an example type to test FSArrays with and without elementTypes
     TypeDescription type = tsDesc.addType("example.TestType", "", "uima.tcas.Annotation");
-    type.addFeature("testFeat", "", "uima.cas.FSArray","uima.tcas.Annotation", null);
+    type.addFeature("testFeat", "", "uima.cas.FSArray", "uima.tcas.Annotation", null);
     TypeDescription type2 = tsDesc.addType("example.TestType2", "", "uima.tcas.Annotation");
     type2.addFeature("testFeat", "", "uima.cas.FSArray");
 
-    
-    CAS cas = CasCreationUtils.createCas(tsDesc, null, null);    
-    //convert that CAS's type system back to a TypeSystemDescription
-    TypeSystemDescription tsDesc2 = TypeSystemUtil.typeSystem2TypeSystemDescription(cas.getTypeSystem());
-    //test that this is valid by creating a new CAS
+    CAS cas = CasCreationUtils.createCas(tsDesc, null, null);
+    // convert that CAS's type system back to a TypeSystemDescription
+    TypeSystemDescription tsDesc2 = TypeSystemUtil
+            .typeSystem2TypeSystemDescription(cas.getTypeSystem());
+    // test that this is valid by creating a new CAS
     CasCreationUtils.createCas(tsDesc2, null, null);
-    
+
     // Check that can be written (without cluttering up the console)
     StringWriter out = new StringWriter();
     tsDesc2.toXML(out);

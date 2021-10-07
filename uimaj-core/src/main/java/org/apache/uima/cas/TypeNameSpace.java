@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 /**
@@ -25,5 +24,4 @@ package org.apache.uima.cas;
 public interface TypeNameSpace {
 
   Type getType(String typeName);
-
 }

@@ -51,7 +51,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   private UimaContext mUimaContext;
 
   private boolean mSofaAware;
-  
+
   private boolean mProcessCalled;
 
   /**
@@ -74,6 +74,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     // Initialize the CollectionReader, passing the appropriate UimaContext
     // We pass an empty descriptor to satisfy the Collection Reader's initialize
@@ -116,6 +117,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     // Does nothing on the first call to process - CollectionReaders ignore their input CAS.
     // On a subsequent call to process, we want to reset the CollectionReader, which we
@@ -128,8 +130,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
       } catch (ResourceConfigurationException e) {
         throw new AnalysisEngineProcessException(e);
       }
-    }
-    else {
+    } else {
       mProcessCalled = true;
     }
   }
@@ -139,6 +140,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     // CollectionReaders don't implement batchProcessComplete
   }
@@ -148,6 +150,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     // CollectionReaders don't implement collectionProcessComplete
   }
@@ -157,6 +160,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#destroy()
    */
+  @Override
   public void destroy() {
     mCollectionReader.destroy();
   }
@@ -166,6 +170,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceInitializationException, ResourceConfigurationException {
     mCollectionReader.reconfigure();
   }
@@ -175,6 +180,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     try {
       return mCollectionReader.hasNext();
@@ -190,6 +196,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     // get a new CAS
     CAS cas = mUimaContext.getEmptyCas(CAS.class);
@@ -217,13 +224,14 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent#next(org.apache.uima.core.AbstractCas)
+   * @see
+   * org.apache.uima.analysis_component.AnalysisComponent#next(org.apache.uima.core.AbstractCas)
    */
   public void next(AbstractCas aEmptyCas) throws AnalysisEngineProcessException {
     if (!CAS.class.isAssignableFrom(aEmptyCas.getClass())) {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
-                  aEmptyCas.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { CAS.class, aEmptyCas.getClass() });
     }
 
   }
@@ -233,6 +241,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @return the CAS interface required by this annotator
    */
+  @Override
   public Class<? extends AbstractCas> getRequiredCasInterface() {
     // CollectionReaders don't use the input CAS, so they don't
     // care what CAS interface they receive
@@ -244,10 +253,12 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
    */
+  @Override
   public int getCasInstancesRequired() {
     return 1;
   }
 
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     // Collection Readers
   }

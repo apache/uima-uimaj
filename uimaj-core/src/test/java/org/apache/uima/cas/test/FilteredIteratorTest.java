@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 
 import org.apache.uima.cas.CAS;
@@ -35,14 +38,15 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
  * 
  */
-public class FilteredIteratorTest extends TestCase {
+public class FilteredIteratorTest {
 
   private CAS cas;
 
@@ -76,15 +80,7 @@ public class FilteredIteratorTest extends TestCase {
 
   private Type annotationType;
 
-  /**
-   * Constructor for FilteredIteratorTest.
-   * 
-   * @param arg0
-   */
-  public FilteredIteratorTest(String arg0) {
-    super(arg0);
-  }
-
+  @BeforeEach
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -125,6 +121,7 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(annotationType != null);
   }
 
+  @AfterEach
   public void tearDown() {
     this.cas = null;
     this.ts = null;
@@ -144,6 +141,7 @@ public class FilteredIteratorTest extends TestCase {
     this.annotationType = null;
   }
 
+  @Test
   public void testIterator1() {
 
     try {
@@ -166,23 +164,24 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
     iterAndCount1(false);
-    
-//    if (FSIndexFlat.enabled) {
-//      expandBeyondFlatThreshold(6);  // enables flat iterator
-//      iterAndCount1(true);
-//    }
-    
+
+    // if (FSIndexFlat.enabled) {
+    // expandBeyondFlatThreshold(6); // enables flat iterator
+    // iterAndCount1(true);
+    // }
+
   }
-  
+
   private void iterAndCount1(boolean isFlat) {
     // create filtered iterator over Tokens only
-    FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();  // always non-flat because just did index update
-    
+    FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator(); // always non-flat because
+                                                                       // just did index update
+
     FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(tokenType);
-    
+
     it = cas.createFilteredIterator(it, constraint);
-    
+
     // do iteration
     while (it.isValid()) {
       AnnotationFS a = it.get();
@@ -193,8 +192,9 @@ public class FilteredIteratorTest extends TestCase {
     }
 
     // Count number of annotations.
-    it = cas.getAnnotationIndex().iterator();  
-//    assertTrue( (isFlat) ? (it instanceof FSIndexFlat.FSIteratorFlat) : it instanceof FSIteratorWrapper);
+    it = cas.getAnnotationIndex().iterator();
+    // assertTrue( (isFlat) ? (it instanceof FSIndexFlat.FSIteratorFlat) : it instanceof
+    // FSIteratorWrapper);
 
     int countAll = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
@@ -220,6 +220,7 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(countAll == countFiltered);
   }
 
+  @Test
   public void testIterator1a() {
 
     try {
@@ -242,11 +243,11 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
     iterAndCount1a();
-    
-//    expandBeyondFlatThreshold(6);  // enables flat iterator
+
+    // expandBeyondFlatThreshold(6); // enables flat iterator
     iterAndCount1a();
   }
-  
+
   private void iterAndCount1a() {
     // create filtered iterator over Tokens only
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();
@@ -270,8 +271,8 @@ public class FilteredIteratorTest extends TestCase {
    * public void testIterator1b() {
    * 
    * try { cas.setDocumentText("A test."); } catch (CASRuntimeException e) { assertTrue(false); }
-   * ((CASMgr) cas).enableSetText(false); boolean exc = false; try { cas.setDocumentText("A
-   * test."); } catch (CASRuntimeException e) { assertTrue(e.getError() ==
+   * ((CASMgr) cas).enableSetText(false); boolean exc = false; try { cas.setDocumentText("A test.");
+   * } catch (CASRuntimeException e) { assertTrue(e.getError() ==
    * CASRuntimeException.SET_DOC_TEXT_DISABLED); exc = true; } assertTrue(exc); ((CASMgr)
    * cas).enableSetText(true);
    * 
@@ -300,6 +301,7 @@ public class FilteredIteratorTest extends TestCase {
    * it.moveToNext(); } }
    */
 
+  @Test
   public void testIterator2() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
@@ -328,10 +330,10 @@ public class FilteredIteratorTest extends TestCase {
       cas.getIndexRepository().addFS(token);
 
       iterAndCount2();
-      
-//      expandBeyondFlatThreshold(6);  // enables flat iterator
+
+      // expandBeyondFlatThreshold(6); // enables flat iterator
       iterAndCount2();
-          
+
     } catch (Exception e) {
       e.printStackTrace();
       fail();
@@ -378,7 +380,8 @@ public class FilteredIteratorTest extends TestCase {
     // System.out.println("Count: " + count);
     // assertTrue(count == 4);
   }
-  
+
+  @Test
   public void testIterator2a() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
@@ -407,16 +410,16 @@ public class FilteredIteratorTest extends TestCase {
       cas.getIndexRepository().addFS(token);
 
       iterAndCount2a();
-      
-//      expandBeyondFlatThreshold(6);  // enables flat iterator
+
+      // expandBeyondFlatThreshold(6); // enables flat iterator
       iterAndCount2a();
-      
+
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
     }
   }
-  
+
   private void iterAndCount2a() {
     String lemma = "the";
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
@@ -458,6 +461,7 @@ public class FilteredIteratorTest extends TestCase {
 
   }
 
+  @Test
   public void testIterator2b() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
@@ -496,16 +500,16 @@ public class FilteredIteratorTest extends TestCase {
       cas.getIndexRepository().addFS(token);
 
       iterAndCount2b();
-      
-//      expandBeyondFlatThreshold(6);  // enables flat iterator
+
+      // expandBeyondFlatThreshold(6); // enables flat iterator
       iterAndCount2b();
-      
+
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
     }
   }
-  
+
   private void iterAndCount2b() {
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
 
@@ -554,23 +558,24 @@ public class FilteredIteratorTest extends TestCase {
    * ConstraintParserFactory.getDefaultConstraintParser(); cons = parser.parse(
    * tokenTypeFeat.getShortName() + " isa (" + sepType.getName() + "|" + eosType.getName() + ")"); }
    * catch (Exception e) { assertTrue(false); } it = this.cas.createFilteredIterator(it, cons); int
-   * count = 0; for (it.moveToFirst(); it.isValid(); it.moveToNext()) { ++count; } assertTrue(count ==
-   * 4); } catch (Exception e) { e.printStackTrace(); assertTrue(false); } }
+   * count = 0; for (it.moveToFirst(); it.isValid(); it.moveToNext()) { ++count; } assertTrue(count
+   * == 4); } catch (Exception e) { e.printStackTrace(); assertTrue(false); } }
    * 
    * public static void main(String[] args) { FilteredIteratorTest test = new
    * FilteredIteratorTest(null); test.run(); }
    */
-  
+
   // add enough tokens to make the total be > THRESHOLD_FOR_FLATTENING, ii is the current number...
-  // this is so that the flattening can happen 
-//  private void expandBeyondFlatThreshold(int ii) {
-//    int t = FSIndexFlat.THRESHOLD_FOR_FLATTENING;
-//    FeatureStructure wordFS = this.cas.createFS(wordType);
-//    for (int i = 0; i < t - ii; i++) {
-//      AnnotationFS token = cas.createAnnotation(tokenType, 99, 99);
-//      token.setStringValue(lemmaFeat, "dummytype");  // stuff to make the filter not throw null pointer exceptions
-//      token.setFeatureValue(tokenTypeFeat, wordFS);
-//      cas.getIndexRepository().addFS(token);
-//    }
-//  }
+  // this is so that the flattening can happen
+  // private void expandBeyondFlatThreshold(int ii) {
+  // int t = FSIndexFlat.THRESHOLD_FOR_FLATTENING;
+  // FeatureStructure wordFS = this.cas.createFS(wordType);
+  // for (int i = 0; i < t - ii; i++) {
+  // AnnotationFS token = cas.createAnnotation(tokenType, 99, 99);
+  // token.setStringValue(lemmaFeat, "dummytype"); // stuff to make the filter not throw null
+  // pointer exceptions
+  // token.setFeatureValue(tokenTypeFeat, wordFS);
+  // cas.getIndexRepository().addFS(token);
+  // }
+  // }
 }

@@ -19,8 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.impl.cpm.utils.DescriptorMakeUtil;
@@ -30,19 +28,19 @@ import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class CpmInitTest extends TestCase {
+public class CpmInitTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
-  public void testInitSingleThreadCPMMode() throws Exception {
+    @Test
+    public void testInitSingleThreadCPMMode() throws Exception {
     int documentCount = 10000000;
     int threadCount = 1;
 
@@ -74,7 +72,8 @@ public class CpmInitTest extends TestCase {
     }
   }
 
-  public void testInitMultiThreadCPMMode() throws Exception {
+    @Test
+    public void testInitMultiThreadCPMMode() throws Exception {
     int documentCount = 10000000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 
@@ -105,7 +104,8 @@ public class CpmInitTest extends TestCase {
     }
   }
 
-  public void testInitMultiThreadCPM() throws Exception {
+    @Test
+    public void testInitMultiThreadCPM() throws Exception {
     int documentCount = 10000000;
     int threadCount = 3;
 

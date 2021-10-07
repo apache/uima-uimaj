@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas_data.impl;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,29 +55,19 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 /**
  * Tests XCasToCasDataSaxHandler. Also Tests CasDataToXCas.
  * 
  */
-public class XCasToCasDataSaxHandlerTest extends TestCase {
-
-  /**
-   * Constructor for XCasToCasDataSaxHandlerTest.
-   * 
-   * @param arg0
-   */
-  public XCasToCasDataSaxHandlerTest(String arg0) {
-    super(arg0);
-  }
-
+public class XCasToCasDataSaxHandlerTest {
+  @Test
   public void testParse() throws Exception {
     try {
       CasData casData = new CasDataImpl();
@@ -94,10 +86,9 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
         FeatureStructure fs = fsIter.next();
         if ("Crawl_colon_URL".equals(fs.getType())) {
           // System.out.println("[" + fs.getFeatureValue("value") + "]");
-          Assert
-                  .assertEquals(
-                          "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
-                          fs.getFeatureValue("value").toString());
+          Assert.assertEquals(
+                  "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
+                  fs.getFeatureValue("value").toString());
           foundCrawlUrl = true;
         }
       }
@@ -107,17 +98,18 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     }
   }
 
+  @Test
   public void testConversions() throws Exception {
     try {
       // complex CAS obtained by deserialization
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-              new XMLInputSource(typeSystemFile));
+      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
+              .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
 
       InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-      
+
       XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
       ContentHandler deserHandler = deser.getXCASHandler(cas);
       SAXParserFactory fact = SAXParserFactory.newInstance();
@@ -129,8 +121,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       _testConversions(cas);
 
       // a CAS with multiple Sofas
-      InputStream translatorAeStream = new FileInputStream(JUnitExtension
-              .getFile("CpeSofaTest/TransAnnotator.xml"));
+      InputStream translatorAeStream = new FileInputStream(
+              JUnitExtension.getFile("CpeSofaTest/TransAnnotator.xml"));
       AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
       AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
@@ -145,9 +137,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     }
   }
 
-  private void _testConversions(CAS aCAS) throws IOException,
-          ParserConfigurationException, SAXException, ResourceInitializationException,
-          CASRuntimeException {
+  private void _testConversions(CAS aCAS) throws IOException, ParserConfigurationException,
+          SAXException, ResourceInitializationException, CASRuntimeException {
     // generate XCAS events and pipe them to XCasToCasDataSaxHandler
     CasData casData = new CasDataImpl();
     XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(casData);
@@ -167,12 +158,12 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
 
     generator.generateXCas(casData);
     String xml = sw.getBuffer().toString();
-    
-    //workaround for XML serializatioj problem on Sun Java 1.4
+
+    // workaround for XML serializatioj problem on Sun Java 1.4
     if (!builtInXmlSerializationSupportsCRs()) {
-      xml = xml.replaceAll("&#10;", "&#13;&#10;");  
+      xml = xml.replaceAll("&#10;", "&#13;&#10;");
     }
-    
+
     UIMAFramework.getLogger(XCasToCasDataSaxHandlerTest.class).log(Level.FINE, xml);
 
     // deserialize back into CAS for comparison
@@ -223,21 +214,21 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       }
     }
   }
-  
+
   /**
-   * Checks the Java vendor and version and returns true if running a version
-   * of Java whose built-in XSLT support can properly serialize carriage return
-   * characters, and false if not.  It seems to be the case that Sun JVMs prior
-   * to 1.5 do not properly serialize carriage return characters.  We have to
-   * modify our test case to account for this.
+   * Checks the Java vendor and version and returns true if running a version of Java whose built-in
+   * XSLT support can properly serialize carriage return characters, and false if not. It seems to
+   * be the case that Sun JVMs prior to 1.5 do not properly serialize carriage return characters. We
+   * have to modify our test case to account for this.
+   * 
    * @return true if XML serialization of CRs behave properly in the current JRE
    */
   private boolean builtInXmlSerializationSupportsCRs() {
     String javaVendor = System.getProperty("java.vendor");
-    if( javaVendor.startsWith("Sun") ) {
-        String javaVersion = System.getProperty("java.version");
-        if( javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4") )
-            return false;
+    if (javaVendor.startsWith("Sun")) {
+      String javaVersion = System.getProperty("java.version");
+      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4"))
+        return false;
     }
     return true;
   }

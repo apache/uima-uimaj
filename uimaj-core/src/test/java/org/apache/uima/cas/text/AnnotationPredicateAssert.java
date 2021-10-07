@@ -28,73 +28,75 @@ import org.assertj.core.api.SoftAssertions;
 
 public class AnnotationPredicateAssert {
   public static void assertPosition(SoftAssertions aSoftly, RelativePosition aCondition,
-      RelativePositionPredicate aPredicate, List<TestCase> aTestCases) {
+          RelativePositionPredicate aPredicate, List<TestCase> aTestCases) {
     for (TestCase testCase : aTestCases) {
-      aSoftly.assertThat(testCase.getTest().apply(aPredicate))
-          .as(testCase.getDescription())
-          .isEqualTo(testCase.getValidPositions().contains(aCondition));
+      aSoftly.assertThat(testCase.getTest().apply(aPredicate)).as(testCase.getDescription())
+              .isEqualTo(testCase.getValidPositions().contains(aCondition));
     }
   }
-  
+
   @FunctionalInterface
-  public static interface RelativePositionPredicate {
+  public interface RelativePositionPredicate {
     boolean apply(int beginA, int endA, int beginB, int endB);
   }
 
   @FunctionalInterface
-  public static interface RelativeAnnotationPositionPredicate {
+  public interface RelativeAnnotationPositionPredicate {
     boolean apply(AnnotationFS aAnnotation, int beginB, int endB);
   }
 
   @FunctionalInterface
-  public static interface RelativeAnnotationPredicate {
+  public interface RelativeAnnotationPredicate {
     boolean apply(AnnotationFS aAnnotationA, AnnotationFS aAnnotationB);
   }
 
   public static RelativePositionPredicate toRelativePositionPredicate1(CAS aCas,
-      RelativeAnnotationPositionPredicate aPred) {
-    return (beginA, endA, beginB, endB) -> { 
+          RelativeAnnotationPositionPredicate aPred) {
+    return (beginA, endA, beginB, endB) -> {
       aCas.reset();
       Type type = aCas.getAnnotationType();
-      return aPred.apply(aCas.createAnnotation(type, beginA, endA), beginB, endB);};
+      return aPred.apply(aCas.createAnnotation(type, beginA, endA), beginB, endB);
+    };
   }
 
   public static RelativePositionPredicate toRelativePositionPredicate1Inverse(CAS aCas,
-      RelativeAnnotationPositionPredicate aPred) {
-    return (beginA, endA, beginB, endB) -> { 
-      aCas.reset();
-      Type type = aCas.getAnnotationType();
-      return aPred.apply(aCas.createAnnotation(type, beginB, endB), beginA, endA);};
-  }
-
-  public static RelativePositionPredicate toRelativePositionPredicate2(CAS aCas, RelativeAnnotationPredicate aPred) {
+          RelativeAnnotationPositionPredicate aPred) {
     return (beginA, endA, beginB, endB) -> {
       aCas.reset();
       Type type = aCas.getAnnotationType();
-      return aPred.apply(
-          aCas.createAnnotation(type, beginA, endA), 
-          aCas.createAnnotation(type, beginB, endB));
-      };
+      return aPred.apply(aCas.createAnnotation(type, beginB, endB), beginA, endA);
+    };
   }
 
-  public static RelativePositionPredicate toRelativePositionPredicate2Inverse(CAS aCas, RelativeAnnotationPredicate aPred) {
+  public static RelativePositionPredicate toRelativePositionPredicate2(CAS aCas,
+          RelativeAnnotationPredicate aPred) {
     return (beginA, endA, beginB, endB) -> {
       aCas.reset();
       Type type = aCas.getAnnotationType();
-      return aPred.apply(
-          aCas.createAnnotation(type, beginB, endB), 
-          aCas.createAnnotation(type, beginA, endA));
-      };
+      return aPred.apply(aCas.createAnnotation(type, beginA, endA),
+              aCas.createAnnotation(type, beginB, endB));
+    };
+  }
+
+  public static RelativePositionPredicate toRelativePositionPredicate2Inverse(CAS aCas,
+          RelativeAnnotationPredicate aPred) {
+    return (beginA, endA, beginB, endB) -> {
+      aCas.reset();
+      Type type = aCas.getAnnotationType();
+      return aPred.apply(aCas.createAnnotation(type, beginB, endB),
+              aCas.createAnnotation(type, beginA, endA));
+    };
   }
 
   public static class TestCase {
     private final String description;
 
     private final Function<RelativePositionPredicate, Boolean> predicate;
-    
+
     private final List<RelativePosition> validPositions;
 
-    public TestCase(String aDescription, Function<RelativePositionPredicate, Boolean> aPredicate, List<RelativePosition> aValidPositions) {
+    public TestCase(String aDescription, Function<RelativePositionPredicate, Boolean> aPredicate,
+            List<RelativePosition> aValidPositions) {
       description = aDescription;
       predicate = aPredicate;
       validPositions = aValidPositions;
@@ -107,7 +109,7 @@ public class AnnotationPredicateAssert {
     public Function<RelativePositionPredicate, Boolean> getTest() {
       return predicate;
     }
-    
+
     public List<RelativePosition> getValidPositions() {
       return validPositions;
     }

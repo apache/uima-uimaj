@@ -271,12 +271,14 @@ public class VNS extends VinciServableAdapter {
     BaseServer server = null;
     if (bindAddress != null) {
       server = new BaseServer(vns) {
+        @Override
         protected ServerSocket createServerSocket(int port) throws IOException {
           return new ServerSocket(port, backlog, InetAddress.getByName(bindAddress));
         }
       };
     } else {
       server = new BaseServer(vns) {
+        @Override
         protected ServerSocket createServerSocket(int port) throws IOException {
           return new ServerSocket(port, backlog);
         }
@@ -529,6 +531,7 @@ public class VNS extends VinciServableAdapter {
   }
 
   /* Main processing routine */
+  @Override
   public Transportable eval(Transportable inp) throws ServiceException {
     VinciFrame in = (VinciFrame) inp;
     VinciFrame out = null;
@@ -909,6 +912,7 @@ public class VNS extends VinciServableAdapter {
         final String s_host = srv.host;
         final int s_port = srv.port;
         new Thread(new Runnable() {
+          @Override
           public void run() {
             Debug.p("Trying to shutdown old service ...");
             VinciFrame shutdown = new VinciFrame();
@@ -1267,6 +1271,7 @@ public class VNS extends VinciServableAdapter {
     }
   }
 
+  @Override
   public void cleanExit() {
     Debug.p("Exiting now ...");
     quitFile.delete();
@@ -1327,6 +1332,7 @@ class BackupThread implements Runnable {
     Debug.p("All files written to disk");
   }
 
+  @Override
   public void run() {
     Debug.p("Backup thread started");
     while (true) {
@@ -1362,6 +1368,7 @@ class exitThread extends Thread {
     run = true;
   }
 
+  @Override
   public void run() {
     if (parent == null)
       return;

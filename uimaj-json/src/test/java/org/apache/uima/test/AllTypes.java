@@ -11,19 +11,17 @@ import java.lang.invoke.MethodHandle;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
-import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.IntegerList;
+import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
-import org.apache.uima.jcas.cas.IntegerList;
-import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.jcas.cas.BooleanArray;
 
 
 /** 

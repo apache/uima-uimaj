@@ -19,6 +19,9 @@
 
 package org.apache.uima.pear.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,14 +42,14 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
- * The PEAR runtime tests installs two pears files that both use JCas classes 
- * in their processing.
+ * The PEAR runtime tests installs two pears files that both use JCas classes in their processing.
  */
-public class PearRuntimeTest extends TestCase {
+public class PearRuntimeTest {
 
   // Temporary working directory, used to install the pear package
   private File tempInstallDir = null;
@@ -54,7 +57,8 @@ public class PearRuntimeTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
 
     // create temporary working directory
     File tempFile = File.createTempFile("pear_runtime_test_", "tmp");
@@ -68,25 +72,29 @@ public class PearRuntimeTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     if (this.tempInstallDir != null) {
       FileUtil.deleteDirectory(this.tempInstallDir);
     }
   }
 
+  @Test
   public void testPearSofaMapping() throws Exception {
-    AnalysisEngineDescription desc = createAeDescriptionFromPears(new String[]{"pearTests/pearSofaMap.pear"});
-    Capability[] capabilities = new Capability[]{UIMAFramework.getResourceSpecifierFactory().createCapability()};
-    capabilities[0].setInputSofas(new String[] {"_InitialView"});
-    capabilities[0].setOutputSofas(new String[] {"GermanDocument"});
+    AnalysisEngineDescription desc = createAeDescriptionFromPears(
+            new String[] { "pearTests/pearSofaMap.pear" });
+    Capability[] capabilities = new Capability[] {
+        UIMAFramework.getResourceSpecifierFactory().createCapability() };
+    capabilities[0].setInputSofas(new String[] { "_InitialView" });
+    capabilities[0].setOutputSofas(new String[] { "GermanDocument" });
     desc.getAnalysisEngineMetaData().setCapabilities(capabilities);
-    SofaMapping[] sofaMappings = new SofaMapping[] 
-      {UIMAFramework.getResourceSpecifierFactory().createSofaMapping(),
-       UIMAFramework.getResourceSpecifierFactory().createSofaMapping()};
-//    <componentKey>ProjectForPear_pear</componentKey>
-//    <componentSofaName>EnglishDocument</componentSofaName>
-//    <aggregateSofaName>_InitialView</aggregateSofaName>
-  
+    SofaMapping[] sofaMappings = new SofaMapping[] {
+        UIMAFramework.getResourceSpecifierFactory().createSofaMapping(),
+        UIMAFramework.getResourceSpecifierFactory().createSofaMapping() };
+    // <componentKey>ProjectForPear_pear</componentKey>
+    // <componentSofaName>EnglishDocument</componentSofaName>
+    // <aggregateSofaName>_InitialView</aggregateSofaName>
+
     sofaMappings[0].setComponentKey("Pear0");
     sofaMappings[1].setComponentKey("Pear0");
     sofaMappings[0].setComponentSofaName("EnglishDocument");
@@ -97,39 +105,41 @@ public class PearRuntimeTest extends TestCase {
     CAS cas = runDesc(desc);
   }
 
+  @Test
   public void testPearRuntime() throws Exception {
 
-    CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/DateTime.pear", "pearTests/RoomNumber.pear"});
-    
-    //check if 3 annotations are available in the CAS index
+    CAS cas = this.runPearRuntimeTestcase(
+            new String[] { "pearTests/DateTime.pear", "pearTests/RoomNumber.pear" });
+
+    // check if 3 annotations are available in the CAS index
     // The 3 annotations are the doc annotation, plus 2 room numbers
-    //  The date-time annotators are skipped because the default result spec is "en"
-    //    and is missing the "x-unspecified"
+    // The date-time annotators are skipped because the default result spec is "en"
+    // and is missing the "x-unspecified"
     assertEquals(cas.getAnnotationIndex().size(), 3);
-//    FSIterator i = cas.getAnnotationIndex().iterator();
-//    while (i.hasNext()) {
-//      System.out.println(i.next());
-//    }
-   }
+    // FSIterator i = cas.getAnnotationIndex().iterator();
+    // while (i.hasNext()) {
+    // System.out.println(i.next());
+    // }
+  }
 
-  
-
+  @Test
   public void testPearRuntimeDocAnnot() throws Exception {
 
-    CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear"});
+    CAS cas = this.runPearRuntimeTestcase(
+            new String[] { "pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear" });
 
-    //check if 3 annotations are available in the CAS index
+    // check if 3 annotations are available in the CAS index
     assertEquals(cas.getAnnotationIndex().size(), 3);
-   }
+  }
 
-  private Import [] installPears(String [] pears) throws IOException {
+  private Import[] installPears(String[] pears) throws IOException {
     List<Import> result = new ArrayList<>();
     for (String s : pears) {
       result.add(installPear(s));
     }
     return result.toArray(new Import[result.size()]);
   }
-  
+
   private Import installPear(String pear) throws IOException {
     // check temporary working directory
     if (this.tempInstallDir == null)
@@ -141,12 +151,11 @@ public class PearRuntimeTest extends TestCase {
     assertNotNull(pearFile);
 
     // Install PEAR packages
-    PackageBrowser instPear = PackageInstaller
-            .installPackage(this.tempInstallDir, pearFile, true);
+    PackageBrowser instPear = PackageInstaller.installPackage(this.tempInstallDir, pearFile, true);
 
     // check pear PackageBrowser object
-    assertNotNull(instPear); 
- 
+    assertNotNull(instPear);
+
     // import pear specifiers
     Import impPear = UIMAFramework.getResourceSpecifierFactory().createImport();
     File import1 = new File(instPear.getComponentPearDescPath());
@@ -154,7 +163,7 @@ public class PearRuntimeTest extends TestCase {
 
     return impPear;
   }
-  
+
   private AnalysisEngineDescription createAeDescriptionFromPears(String[] pears) throws Exception {
     Import[] impPears = installPears(pears);
 
@@ -165,7 +174,7 @@ public class PearRuntimeTest extends TestCase {
 
     // add delegates as imports
     Map<String, MetaDataObject> delegates = desc.getDelegateAnalysisEngineSpecifiersWithImports();
-    String [] keys = new String[impPears.length];
+    String[] keys = new String[impPears.length];
     for (int i = 0; i < impPears.length; i++) {
       keys[i] = "Pear" + i;
       delegates.put(keys[i], impPears[i]);
@@ -182,17 +191,17 @@ public class PearRuntimeTest extends TestCase {
     md.setVersion("1.0");
     md.setFlowConstraints(fixedFlow);
 
-    // serialize descriptor  
-//    String outputDir = JUnitExtension.getFile("pearTests/DateTime.pear").getParent(); File
-//    outputFile = new File(outputDir, "PearAggregate.xml"); OutputStream outStream = new
-//    BufferedOutputStream(new FileOutputStream(outputFile)); Writer writer = new
-//    OutputStreamWriter(outStream, OutputFormat.Defaults.Encoding); XMLSerializer xmlSerializer =
-//    new XMLSerializer(); xmlSerializer.setWriter(writer);
-//    desc.toXML(xmlSerializer.getContentHandler(), true); writer.close();
+    // serialize descriptor
+    // String outputDir = JUnitExtension.getFile("pearTests/DateTime.pear").getParent(); File
+    // outputFile = new File(outputDir, "PearAggregate.xml"); OutputStream outStream = new
+    // BufferedOutputStream(new FileOutputStream(outputFile)); Writer writer = new
+    // OutputStreamWriter(outStream, OutputFormat.Defaults.Encoding); XMLSerializer xmlSerializer =
+    // new XMLSerializer(); xmlSerializer.setWriter(writer);
+    // desc.toXML(xmlSerializer.getContentHandler(), true); writer.close();
     return desc;
 
   }
-  
+
   private CAS runDesc(AnalysisEngineDescription desc) throws Exception {
     // Create analysis engine from aggregate ae description
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, null, null);
@@ -200,17 +209,17 @@ public class PearRuntimeTest extends TestCase {
 
     // Create a CAS with a sample document text and process the CAS
     CAS cas = ae.newCAS();
-    cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM and a Room number GN-K35 or two GN-K37");
+    cas.setDocumentText(
+            "Sample text to process with a date 05/29/07 and a time 9:45 AM and a Room number GN-K35 or two GN-K37");
     cas.setDocumentLanguage("en");
     ae.process(cas);
-    
+
     return cas;
   }
-  
 
   private CAS runPearRuntimeTestcase(String[] pears) throws Exception {
-    
-    AnalysisEngineDescription desc = createAeDescriptionFromPears(pears);    
+
+    AnalysisEngineDescription desc = createAeDescriptionFromPears(pears);
     return runDesc(desc);
   }
 }

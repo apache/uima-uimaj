@@ -72,6 +72,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * @throws ResourceInitializationException
    *           if there is error in initializing the resources
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
 
     // extract configuration parameter settings
@@ -110,6 +111,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(CAS)
    */
+  @Override
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     JCas jcas;
     try {
@@ -167,6 +169,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * 
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
+  @Override
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
@@ -184,6 +187,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    *           if there is an IO Error
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
+  @Override
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
     if (fileWriter != null) {
@@ -201,6 +205,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * 
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     super.reconfigure();
     // extract configuration parameter settings
@@ -231,6 +236,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * 
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     if (fileWriter != null) {
       try {

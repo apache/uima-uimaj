@@ -46,10 +46,12 @@ import org.apache.vinci.transport.util.TransportableConverter;
 public class AFrame extends VinciFrame {
   private Attributes a = null;
 
+  @Override
   public void setAttributes(Attributes s) {
     a = s;
   }
 
+  @Override
   public Attributes getAttributes() {
     return a;
   }
@@ -62,6 +64,7 @@ public class AFrame extends VinciFrame {
   }
 
   private static TransportableFactory aFrameFactory = new TransportableFactory() {
+    @Override
     public Transportable makeTransportable() {
       return new AFrame();
     }
@@ -104,6 +107,7 @@ public class AFrame extends VinciFrame {
    * @pre tag_name != null
    * @pre initialCapacity &ge; 0
    */
+  @Override
   public Frame createSubFrame(String tag_name, int initialCapacity) {
     return new AFrame(initialCapacity);
   }
@@ -113,6 +117,7 @@ public class AFrame extends VinciFrame {
    * 
    * @pre array != null
    */
+  @Override
   public FrameLeaf createFrameLeaf(byte[] array) {
     return new AFrameLeaf(array, false);
   }

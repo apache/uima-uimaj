@@ -28,31 +28,32 @@ import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
  * implements OrderedFsSet_array partially, for iterator use
  */
 
-public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implements CopyOnWriteIndexPart<T> {
-  
+public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
+        implements CopyOnWriteIndexPart<T> {
+
   private OrderedFsSet_array<T> set;
-    
+
   final public int a_firstUsedslot;
   final public int a_nextFreeslot;
   final public OrderedFsSet_array<T> original;
   final private int original_size;
-  
-  public T[] a;  // derived from "set" above
-   
+
+  public T[] a; // derived from "set" above
+
   public CopyOnWriteOrderedFsSet_array(OrderedFsSet_array<T> original) {
-    this.set = original;    
+    this.set = original;
     this.original = original;
-//    this.comparatorNoTypeWithoutID = original.comparatorNoTypeWithoutID;
-//    this.comparatorNoTypeWithID = original.comparatorNoTypeWithID;
+    // this.comparatorNoTypeWithoutID = original.comparatorNoTypeWithoutID;
+    // this.comparatorNoTypeWithID = original.comparatorNoTypeWithID;
     this.a_firstUsedslot = original.a_firstUsedslot;
     this.a_nextFreeslot = original.a_nextFreeslot;
     this.a = (T[]) original.a;
     this.original_size = original.size();
   }
-  
+
   /**
-   * Called by index when about to make an update
-   * This copy captures the state of things before the update happens
+   * Called by index when about to make an update This copy captures the state of things before the
+   * update happens
    */
   @Override
   public void makeReadOnlyCopy() {
@@ -60,14 +61,16 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
     this.a = (T[]) set.a;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#isOriginal(java.lang.Object)
    */
   @Override
   public boolean isOriginal() {
     return set == original;
   }
-  
+
   /**
    * @see java.lang.Object#hashCode()
    */
@@ -82,7 +85,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof CopyOnWriteOrderedFsSet_array) {
-      return set.equals(((CopyOnWriteOrderedFsSet_array)obj).set);  // set object equals
+      return set.equals(((CopyOnWriteOrderedFsSet_array) obj).set); // set object equals
     }
     return false;
   }
@@ -91,16 +94,17 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
    * @see OrderedFsSet_array#size()
    * @return the size of this version of the index (maybe not the current index size)
    */
+  @Override
   final public int size() {
     return original_size;
   }
 
-//  /**
-//   * @return the modification count
-//   */
-//  public int getModificationCount() {
-//    return set.getModificationCount();
-//  }
+  // /**
+  // * @return the modification count
+  // */
+  // public int getModificationCount() {
+  // return set.getModificationCount();
+  // }
 
   /**
    * @see OrderedFsSet_array#toString()
@@ -109,12 +113,14 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
   public String toString() {
     return set.toString();
   }
-    
+
   public OrderedFsSet_array<T> getOfsa() {
     return set;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Iterable#iterator()
    */
   @Override
@@ -122,7 +128,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
     return new Iterator<T>() {
 
       int pos = a_firstUsedslot;
-      
+
       @Override
       public boolean hasNext() {
         return pos >= 0 && pos < a_nextFreeslot;
@@ -134,12 +140,15 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
           throw new NoSuchElementException();
         }
         return (T) a[pos++];
-      }      
+      }
     };
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[], int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[],
+   * int)
    */
   @Override
   public int copyToArray(T[] target, int startingIndexInTarget) {

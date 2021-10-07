@@ -48,7 +48,6 @@ public class MultiAnnotViewerFrame extends JFrame {
    * @throws java.awt.HeadlessException the java.awt. headless exception
    */
   public MultiAnnotViewerFrame() {
-    super();
     // TODO Auto-generated constructor stub
   }
 

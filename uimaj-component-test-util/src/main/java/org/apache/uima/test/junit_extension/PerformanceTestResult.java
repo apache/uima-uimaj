@@ -35,98 +35,98 @@ public interface PerformanceTestResult {
     *
     * @return Returns the number of processed characters.
     */
-  public int getNumberOfProcessedCharacters();
+  int getNumberOfProcessedCharacters();
   
   /**
    * Gets the number of processed files.
    *
    * @return Returns the number of processed files.
    */
-  public int getNumberOfProcessedFiles();
+  int getNumberOfProcessedFiles();
 
   /**
    * Gets the UIMA datapath.
    *
    * @return Returns the UIMA datapath setting used for the performance test.
    */
-  public String getUIMADatapath();
+  String getUIMADatapath();
    
   /**
    * Gets the ae init time.
    *
    * @return Returns the analysis engine initialization time.
    */
-  public TimeSpan getAeInitTime();
+  TimeSpan getAeInitTime();
 
   /**
    * Gets the file io time.
    *
    * @return Returns the file I/O time.
    */
-  public TimeSpan getFileIoTime();
+  TimeSpan getFileIoTime();
 
   /**
    * Gets the number of created annotations.
    *
    * @return Returns the number of created annotations.
    */
-  public int getNumberOfCreatedAnnotations();
+  int getNumberOfCreatedAnnotations();
 
   /**
    * Gets the number of repeated runs.
    *
    * @return Returns the setting for the number of repeated runs.
    */
-  public int getNumberOfRepeatedRuns();
+  int getNumberOfRepeatedRuns();
 
   /**
    * Gets the overall time.
    *
    * @return Returns the overall time of the performance run
    */
-  public TimeSpan getOverallTime();
+  TimeSpan getOverallTime();
 
   /**
    * Gets the ae processing time.
    *
    * @return Returns the analysis engine processing time.
    */
-  public TimeSpan getAeProcessingTime();
+  TimeSpan getAeProcessingTime();
 
   /**
    * Checks if is repeat single mode.
    *
    * @return Returns the setting of the repeat mode mode.
    */
-  public boolean isRepeatSingleMode();
+  boolean isRepeatSingleMode();
 
   /**
    * Gets the ae desc file path.
    *
    * @return Returns the analysis engine descriptor file path.
    */
-  public String getAeDescFilePath();
+  String getAeDescFilePath();
 
   /**
    * Gets the test file directory path.
    *
    * @return Returns the test file directory used for the performance run.
    */
-  public String getTestFileDirectoryPath();
+  String getTestFileDirectoryPath();
 
   /**
    * Gets the ae warmup time.
    *
    * @return Returns the analysis engine warmup time.
    */
-  public TimeSpan getAeWarmupTime();
+  TimeSpan getAeWarmupTime();
 
   /**
    * Checks if is do ae warmup.
    *
    * @return Returns the setting the the analysis engine warmup.
    */
-  public boolean isDoAeWarmup();
+  boolean isDoAeWarmup();
 
   /**
    * write performance results as colum.
@@ -138,26 +138,26 @@ public interface PerformanceTestResult {
    * 
    * @throws Exception passthru
    */
-  public void writePerfResultsAsColumn(String level, File file) throws Exception;
+  void writePerfResultsAsColumn(String level, File file) throws Exception;
   
   /**
    * Gets the ae cleanup time.
    *
    * @return Returns the analysis engine cleanup time.
    */
-  public TimeSpan getAeCleanupTime();
+  TimeSpan getAeCleanupTime();
 
   /**
    * Gets the document preparation time.
    *
    * @return Returns the document preparation time.
    */
-  public TimeSpan getDocumentPreparationTime();
+  TimeSpan getDocumentPreparationTime();
 
   /**
    * Gets the processed file size.
    *
    * @return Returns the processed file collection size.
    */
-  public long getProcessedFileSize();
+  long getProcessedFileSize();
 }

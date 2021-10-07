@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:cassis="http:///cassis.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <tcas:DocumentAnnotation xmi:id="9" sofa="8" begin="0" end="47" language="x-unspecified"/>
+    <cas:StringArray xmi:id="2">
+        <elements>A</elements>
+        <elements>B</elements>
+        <elements>C</elements>
+    </cas:StringArray>
+    <cas:StringArray xmi:id="1">
+        <elements>LNC</elements>
+        <elements>MTH</elements>
+        <elements>SNOMEDCT_US</elements>
+    </cas:StringArray>
+    <cassis:Group xmi:id="10" sofa="8" begin="0" end="0" collection2="1 2 3">
+        <collection1>A</collection1>
+        <collection1>B</collection1>
+        <collection1>C</collection1>
+    </cassis:Group>
+    <cas:FSArray xmi:id="3" elements="9 1 2 10"/>
+    <cas:FSArray xmi:id="4" elements="2 0 0 9"/>
+    <cas:NonEmptyFSList xmi:id="6" tail="7" head="10"/>
+    <cas:NonEmptyFSList xmi:id="5" tail="6" head="2"/>
+    <cas:EmptyFSList xmi:id="7"/>
+    <cas:Sofa xmi:id="8" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="Joe waited for the train . The train was late ."/>
+    <cas:View sofa="8" members="9 2 1 10 3 4 6 5 7"/>
+</xmi:XMI>

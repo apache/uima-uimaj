@@ -31,13 +31,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.vinci.transport.document.XMLToVinci;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
-import org.apache.vinci.transport.document.XMLToVinci;
 
 /**
  * Primary interface into the services database.
@@ -521,6 +520,7 @@ public class ServiceRegistry {
       maxPort = max;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (!(o instanceof PortRange))
         return false;

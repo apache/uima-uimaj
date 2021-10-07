@@ -20,9 +20,8 @@
 package org.apache.uima.cas;
 
 /**
- * Common parts of the Array interfaces.
- * Doesn't implement AbstactNonModifiableCollection because
- *   the specializations of things like toArray using primitives don't work
+ * Common parts of the Array interfaces. Doesn't implement AbstactNonModifiableCollection because
+ * the specializations of things like toArray using primitives don't work
  */
 public interface CommonArrayFS<E> extends FeatureStructure {
 
@@ -31,7 +30,7 @@ public interface CommonArrayFS<E> extends FeatureStructure {
    * 
    * @return The size of the array.
    */
-  int size(); 
+  int size();
 
   /**
    * Creates a new string array and copies this array values into it.
@@ -49,48 +48,47 @@ public interface CommonArrayFS<E> extends FeatureStructure {
    * Copy the contents of the array to an external string array.
    * 
    * @param srcOffset
-   *                The index of the first element to copy.
+   *          The index of the first element to copy.
    * @param dest
-   *                The array to copy to.
+   *          The array to copy to.
    * @param destOffset
-   *                Where to start copying into <code>dest</code>.
+   *          Where to start copying into <code>dest</code>.
    * @param length
-   *                The number of elements to copy.
+   *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *                    If <code>srcOffset &lt; 0</code> or
-   *                    <code>length &gt; size()</code> or
-   *                    <code>destOffset + length &gt; destArray.length</code>.
+   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
+   *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-      throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
-   * Copy the contents of an external string array into this array. The strings
-   * are parsed and converted to floats.
+   * Copy the contents of an external string array into this array. The strings are parsed and
+   * converted to floats.
    * 
    * @param src
-   *                The source array.
+   *          The source array.
    * @param srcOffset
-   *                Where to start copying in the source array.
+   *          Where to start copying in the source array.
    * @param destOffset
-   *                Where to start copying to in the destination array.
+   *          Where to start copying to in the destination array.
    * @param length
-   *                The number of elements to copy.
+   *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *                    When length conditions are not met.
+   *              When length conditions are not met.
    * @exception NumberFormatException
-   *                    When the input strings do not represent valid floats.
+   *              When the input strings do not represent valid floats.
    * @exception UnsupportedOperationException
-   *                    When the array is an array of FSs.
+   *              When the array is an array of FSs.
    */
   void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-      throws ArrayIndexOutOfBoundsException, NumberFormatException;
+          throws ArrayIndexOutOfBoundsException, NumberFormatException;
 
   /**
    * @return a comma-separated string of the string values of the elements of the array
    */
-  default String getValuesAsCommaSeparatedString() { 
-    String [] sa = toStringArray();
+  default String getValuesAsCommaSeparatedString() {
+    String[] sa = toStringArray();
     StringBuilder sb = new StringBuilder();
     boolean isFirst = true;
     for (String s : sa) {
@@ -105,10 +103,12 @@ public interface CommonArrayFS<E> extends FeatureStructure {
 
   /**
    * Copy values from another array of the same kind
-   * @param v the other array
+   * 
+   * @param v
+   *          the other array
    */
   void copyValuesFrom(CommonArrayFS<E> v);
-  
+
   /**
    * @return true if the array is empty
    */

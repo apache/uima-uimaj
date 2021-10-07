@@ -47,7 +47,6 @@ public class RecentFilesList {
    * @param maxSize The maximum size to which the list can grow.
    */
   public RecentFilesList(int maxSize) {
-    super();
     this.list = new ArrayList<>();
     this.max = maxSize;
   }

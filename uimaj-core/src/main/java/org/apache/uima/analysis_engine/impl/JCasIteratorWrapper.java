@@ -40,6 +40,7 @@ public class JCasIteratorWrapper implements JCasIterator {
    * 
    * @see org.apache.uima.core.CasIterator#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return mCasIterator.hasNext();
   }
@@ -49,6 +50,7 @@ public class JCasIteratorWrapper implements JCasIterator {
    * 
    * @see org.apache.uima.analysis_engine.CasIterator#next()
    */
+  @Override
   public JCas next() throws AnalysisEngineProcessException {
     try {
       return mCasIterator.next().getJCas();
@@ -62,6 +64,7 @@ public class JCasIteratorWrapper implements JCasIterator {
    * 
    * @see org.apache.uima.analysis_engine.JCasIterator#release()
    */
+  @Override
   public void release() {
     mCasIterator.release();
   }
