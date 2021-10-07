@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,21 +44,57 @@ public interface ResourceManager {
    * UNIX).
    * 
    * @return the data path
+   * 
+   * @deprecated Use {@link #getDataPathElements()} instead.
    */
+  @Deprecated
   String getDataPath();
+
+  /**
+   * Gets the data path elements used to resolve relative paths.
+   * 
+   * @return the data path elements
+   */
+  String[] getDataPathElements();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by
    * separating them with the System <code>path.separator</code> character (; on windows, : on
-   * UNIX). The elements of this path may be URLs or File paths.
+   * UNIX). Elements of this path may be absolute or relative file paths.
    * 
    * @param aPath
    *          the data path
    * 
    * @throws MalformedURLException
    *           if an element of the path is neither a valid URL or a valid file path
+   * @deprecated Use {@link #setDataPathElements} instead.
    */
+  @Deprecated
   void setDataPath(String aPath) throws MalformedURLException;
+
+  /**
+   * Sets the data path elements used to resolve relative paths. Elements of this path may be
+   * absolute or relative file paths.
+   * 
+   * @param aElements
+   *          the data path
+   * 
+   * @throws MalformedURLException
+   *           if an element of the path is neither a valid URL or a valid file path
+   */
+  void setDataPathElements(String... aElements) throws MalformedURLException;
+
+  /**
+   * Sets the data path elements used to resolve relative paths. Elements of this path may be
+   * absolute or relative file paths.
+   * 
+   * @param aElements
+   *          the data path
+   * 
+   * @throws MalformedURLException
+   *           if an element of the path is neither a valid URL or a valid file path
+   */
+  void setDataPathElements(File... aElements) throws MalformedURLException;
 
   /**
    * Attempts to resolve a relative path to an absolute path using the same mechanism that the

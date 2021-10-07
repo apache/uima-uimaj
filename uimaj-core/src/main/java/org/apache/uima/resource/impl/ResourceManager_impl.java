@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -77,7 +78,7 @@ public class ResourceManager_impl implements ResourceManager {
    *   These are used to validate multiple declarations, and to get
    *   a resource to tie it to a binding
    */
- // @formatter:on
+  // @formatter:on
   static protected class ResourceRegistration { // make protected
                                                 // https://issues.apache.org/jira/browse/UIMA-2102
     /**
@@ -111,6 +112,7 @@ public class ResourceManager_impl implements ResourceManager {
   private static final URL[] emptyURLarray = new URL[0];
 
   private AtomicBoolean isDestroyed = new AtomicBoolean(false);
+
   /**
    * a monitor lock for synchronizing get/set of casManager ref
    */
@@ -365,12 +367,27 @@ public class ResourceManager_impl implements ResourceManager {
     return getRelativePathResolver().getDataPath();
   }
 
+  @Override
+  public String[] getDataPathElements() {
+    return getRelativePathResolver().getDataPathElements();
+  }
+
   /**
    * @see org.apache.uima.resource.ResourceManager#setDataPath(String)
    */
   @Override
   public void setDataPath(String aPath) throws MalformedURLException {
     getRelativePathResolver().setDataPath(aPath);
+  }
+
+  @Override
+  public void setDataPathElements(String... aElements) throws MalformedURLException {
+    getRelativePathResolver().setDataPathElements(aElements);
+  }
+
+  @Override
+  public void setDataPathElements(File... aElements) throws MalformedURLException {
+    getRelativePathResolver().setDataPathElements(aElements);
   }
 
   /*

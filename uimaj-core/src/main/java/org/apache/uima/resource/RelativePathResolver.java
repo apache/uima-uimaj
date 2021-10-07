@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -37,8 +38,18 @@ public interface RelativePathResolver {
    * UNIX). Elements of this path may be absolute or relative file paths.
    * 
    * @return the data path
+   * @deprecated Use {@link #getDataPathElements} instead.
    */
+  @Deprecated
   String getDataPath();
+
+  /**
+   * Gets the data path used to resolve relative paths. Elements of this path may be absolute or
+   * relative file paths.
+   * 
+   * @return the data path
+   */
+  String[] getDataPathElements();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by
@@ -50,8 +61,34 @@ public interface RelativePathResolver {
    * 
    * @throws MalformedURLException
    *           if a file path could not be converted to a URL
+   * @deprecated Use {@link #setDataPathElements} instead.
    */
+  @Deprecated
   void setDataPath(String aPath) throws MalformedURLException;
+
+  /**
+   * Sets the data path elements used to resolve relative paths. Elements of this path may be
+   * absolute or relative file paths.
+   * 
+   * @param aElements
+   *          the data path elements
+   * 
+   * @throws MalformedURLException
+   *           if a file path could not be converted to a URL
+   */
+  void setDataPathElements(String... aElements) throws MalformedURLException;
+
+  /**
+   * Sets the data path elements used to resolve relative paths. Elements of this path may be
+   * absolute or relative file paths.
+   * 
+   * @param aElements
+   *          the data path elements
+   * 
+   * @throws MalformedURLException
+   *           if a file path could not be converted to a URL
+   */
+  void setDataPathElements(File... aElements) throws MalformedURLException;
 
   /**
    * Resolves a relative URL to an absolute URL. This will attempt to resolve the URL relative to
@@ -75,5 +112,4 @@ public interface RelativePathResolver {
    *          the ClassLoader that should be used to resolve the resources.
    */
   void setPathResolverClassLoader(ClassLoader aClassLoader);
-
 }

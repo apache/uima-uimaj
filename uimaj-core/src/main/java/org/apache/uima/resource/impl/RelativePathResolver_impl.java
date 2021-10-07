@@ -19,12 +19,16 @@
 
 package org.apache.uima.resource.impl;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -33,13 +37,11 @@ import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link RelativePathResolver}.
- * 
- * 
  */
 public class RelativePathResolver_impl implements RelativePathResolver {
 
   /** Data path as a string. */
-  private String mDataPath;
+  private String[] mDataPath;
 
   /** Array of base URLs parsed from the data path. */
   private URL[] mBaseUrls;
@@ -80,32 +82,76 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       setDataPath(dataPath);
     } catch (MalformedURLException e) {
       // initialize to empty path
-      mDataPath = "";
+      mDataPath = Constants.EMPTY_STRING_ARRAY;
       mBaseUrls = Constants.EMPTY_URL_ARRAY;
     }
     mClassLoader = aClassLoader;
   }
 
-  /**
-   * @see org.apache.uima.resource.RelativePathResolver#getDataPath()
-   */
   @Override
+  @Deprecated
   public String getDataPath() {
+    String pathSepChar = System.getProperty("path.separator");
+    return stream(mDataPath).collect(joining(pathSepChar));
+  }
+
+  @Override
+  public String[] getDataPathElements() {
     return mDataPath;
   }
 
-  /**
-   * @see org.apache.uima.resource.RelativePathResolver#setDataPath(java.lang.String)
-   */
   @Override
+  public void setDataPathElements(File... aPaths) throws MalformedURLException {
+    if (aPaths == null) {
+      mDataPath = Constants.EMPTY_STRING_ARRAY;
+      mBaseUrls = Constants.EMPTY_URL_ARRAY;
+      return;
+    }
+
+    mDataPath = Arrays.stream(aPaths) //
+            .map(File::getPath) //
+            .toArray(String[]::new);
+    mBaseUrls = new URL[aPaths.length];
+    for (int i = 0; i < aPaths.length; i++) {
+      // Note, this URL can contain space characters if there were spaces in the
+      // datapath. This may not be ideal but we're keeping that behavior for
+      // backwards compatibility. Some components relied on this (e.g. by calling
+      // URL.getFile() and expecting it to be a valid file name).
+      mBaseUrls[i] = aPaths[i].toURL();
+    }
+  }
+
+  @Override
+  public void setDataPathElements(String... aPaths) throws MalformedURLException {
+    if (aPaths == null) {
+      mDataPath = null;
+      mBaseUrls = null;
+      return;
+    }
+
+    mDataPath = Arrays.copyOf(aPaths, aPaths.length);
+    mBaseUrls = new URL[aPaths.length];
+    for (int i = 0; i < aPaths.length; i++) {
+      // Note, this URL can contain space characters if there were spaces in the
+      // datapath. This may not be ideal but we're keeping that behavior for
+      // backwards compatibility. Some components relied on this (e.g. by calling
+      // URL.getFile() and expecting it to be a valid file name).
+      mBaseUrls[i] = new File(aPaths[i]).toURL();
+    }
+  }
+
+  @Override
+  @Deprecated
   public void setDataPath(String aPath) throws MalformedURLException {
     List<URL> urls = new ArrayList<>();
+    List<String> paths = new ArrayList<>();
 
     // tokenize based on path.separator system property
     String pathSepChar = System.getProperty("path.separator");
     StringTokenizer tokenizer = new StringTokenizer(aPath, pathSepChar);
     while (tokenizer.hasMoreTokens()) {
       String tok = tokenizer.nextToken();
+      paths.add(tok);
       URL url = new File(tok).toURL();
       urls.add(url);
       // Note, this URL can contain space characters if there were spaces in the
@@ -113,14 +159,10 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       // backwards compatibility. Some components relied on this (e.g. by calling
       // URL.getFile() and expecting it to be a valid file name).
     }
-    mBaseUrls = new URL[urls.size()];
-    urls.toArray(mBaseUrls);
-    mDataPath = aPath;
+    mBaseUrls = urls.toArray(new URL[urls.size()]);
+    mDataPath = paths.toArray(new String[paths.size()]);
   }
 
-  /**
-   * @see org.apache.uima.resource.RelativePathResolver#resolveRelativePath(java.net.URL)
-   */
   @Override
   public URL resolveRelativePath(URL aRelativeUrl) {
     // try each base URL
@@ -129,8 +171,9 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       try {
         URL absUrl = new URL(baseUrls[i], aRelativeUrl.toString());
         // if file exists here, return this URL
-        if (fileExistsAtUrl(absUrl))
+        if (fileExistsAtUrl(absUrl)) {
           return absUrl;
+        }
       } catch (MalformedURLException e) {
         // ignore and move on to next base URL
       }
