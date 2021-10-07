@@ -19,6 +19,8 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,13 +28,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,6 +66,7 @@ import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.Session_impl;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -97,7 +98,9 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Test;
 import org.xml.sax.ContentHandler;
 
 import junit.framework.TestCase;
@@ -119,6 +122,7 @@ public class AnalysisEngine_implTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
+  @Override
   protected void setUp() throws Exception {
     super.setUp();
   }
@@ -614,12 +618,13 @@ public class AnalysisEngine_implTest extends TestCase {
 
   public void testReconfigure() throws Exception {
     try {
+      CAS cas = CasCreationUtils.createCas();
+
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
-      primitiveDesc
-              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+      primitiveDesc.setAnnotatorImplementationName(TestAnnotator.class.getName());
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
@@ -656,29 +661,67 @@ public class AnalysisEngine_implTest extends TestCase {
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
-      p2.setOverrides(new String[] {"Test/StringParam"});
-      aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
-              new ConfigurationParameter[] { p2 });
+      p2.setOverrides(new String[] { "Test/StringParam" });
+      aggDesc.getMetaData().getConfigurationParameterDeclarations()
+              .setConfigurationParameters(new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
       // instantiate TextAnalysisEngine
       AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
       aggAe.initialize(aggDesc, null);
 
-      assertEquals("Test3", TestAnnotator.stringParamValue);
+      assertThat(TestAnnotator.stringParamValue) //
+              .as("Initial parameter value has been set properly") //
+              .isEqualTo("Test3");
 
       // reconfigure
       aggAe.setConfigParameterValue("StringParam", "Test4");
       aggAe.reconfigure();
+      aggAe.process(cas);
 
       // test again
-      assertEquals("Test4", TestAnnotator.stringParamValue);
-      
+      assertThat(TestAnnotator.stringParamValue) //
+              .as("Parameter value has been reconfigured") //
+              .isEqualTo("Test4");
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
+  @Test
+  public void thatConfigurationManagerSessionIsValidAfterInitializingDelegateComponent()
+          throws Exception {
+    AnalysisEngineDescription pseudoAggregateDesc = UIMAFramework.getResourceSpecifierFactory()
+            .createAnalysisEngineDescription();
+    pseudoAggregateDesc.setPrimitive(true);
+    pseudoAggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    pseudoAggregateDesc.setAnnotatorImplementationName(
+            TestProgramaticPseudoAggregateAnnotator.class.getName());
+    ConfigurationParameter param = new ConfigurationParameter_impl();
+    param.setName("StringParam");
+    param.setType(ConfigurationParameter.TYPE_STRING);
+    pseudoAggregateDesc.getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
+            .setConfigurationParameters(new ConfigurationParameter[] { param });
+    pseudoAggregateDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
+            new NameValuePair[] { new NameValuePair_impl("StringParam", "initial") });
+
+    AnalysisEngine pseudoAggregate = UIMAFramework.produceAnalysisEngine(pseudoAggregateDesc);
+    pseudoAggregate.setConfigParameterValue("StringParam", "changed");
+    pseudoAggregate.reconfigure();
+    pseudoAggregate.process(CasCreationUtils.createCas());
+
+    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+      softly.assertThat(TestAnnotator.lastConfigurationManagerSession) //
+              .as("ConfigurationManager session has not been tampered with")
+              .isInstanceOf(Session_impl.class) //
+              .isSameAs(pseudoAggregate.getUimaContext().getSession());
+      softly.assertThat(TestAnnotator.stringParamValue) //
+              .as("Parameter value has updated value") //
+              .isEqualTo("changed");
+    }
+  }
+
+  @Test
   public void testCreateAnalysisProcessData() throws Exception {
     try {
       // create simple primitive TAE with type system and indexes
