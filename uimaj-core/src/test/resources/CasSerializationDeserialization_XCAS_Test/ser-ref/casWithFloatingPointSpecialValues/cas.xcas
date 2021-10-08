@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <SpecialValuesType _indexed="1" _id="1" doubleZero="0.0" doubleOne="1.0" doublePosInfinity="Infinity" doubleNegInfinity="-Infinity" doubleNan="NaN" floatZero="0.0" floatOne="1.0" floatPosInfinity="Infinity" floatNegInfinity="-Infinity" floatNan="NaN"/>
+    <uima.cas.DoubleArray _indexed="1" _id="2" size="5">
+        <i>0.0</i>
+        <i>1.0</i>
+        <i>-Infinity</i>
+        <i>Infinity</i>
+        <i>NaN</i>
+    </uima.cas.DoubleArray>
+    <uima.cas.FloatArray _indexed="1" _id="3" size="5">
+        <i>0.0</i>
+        <i>1.0</i>
+        <i>-Infinity</i>
+        <i>Infinity</i>
+        <i>NaN</i>
+    </uima.cas.FloatArray>
+</CAS>

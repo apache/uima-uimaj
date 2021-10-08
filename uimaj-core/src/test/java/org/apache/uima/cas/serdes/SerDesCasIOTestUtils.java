@@ -142,9 +142,9 @@ public class SerDesCasIOTestUtils {
         builders.map(builder -> builder //
                 .withCycle(cycle::performCycle) //
                 .withAssertion((targetCasFile, referenceCasFile) -> {
-                  CAS targetCas = CasCreationUtils.createCas();
+                  CAS targetCas = createCasMaybeWithTypesystem(referenceCasFile);
+                  CAS referenceCas = createCasMaybeWithTypesystem(referenceCasFile);
                   des(targetCas, targetCasFile, CasLoadMode.DEFAULT);
-                  CAS referenceCas = CasCreationUtils.createCas();
                   des(referenceCas, referenceCasFile, CasLoadMode.DEFAULT);
                   assertThat(toComparableString(targetCas))
                           .isEqualTo(toComparableString(referenceCas));
