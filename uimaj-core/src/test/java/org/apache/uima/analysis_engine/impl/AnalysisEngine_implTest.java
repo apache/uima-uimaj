@@ -19,6 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -70,6 +71,7 @@ import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.Session_impl;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -93,6 +95,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
@@ -100,6 +103,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
@@ -613,12 +617,13 @@ public class AnalysisEngine_implTest {
   @Test
   public void testReconfigure() throws Exception {
     try {
+      CAS cas = CasCreationUtils.createCas();
+
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
-      primitiveDesc
-              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+      primitiveDesc.setAnnotatorImplementationName(TestAnnotator.class.getName());
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
@@ -664,17 +669,54 @@ public class AnalysisEngine_implTest {
       AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
       aggAe.initialize(aggDesc, null);
 
-      assertEquals("Test3", TestAnnotator.stringParamValue);
+      assertThat(TestAnnotator.stringParamValue) //
+              .as("Initial parameter value has been set properly") //
+              .isEqualTo("Test3");
 
       // reconfigure
       aggAe.setConfigParameterValue("StringParam", "Test4");
       aggAe.reconfigure();
+      aggAe.process(cas);
 
       // test again
-      assertEquals("Test4", TestAnnotator.stringParamValue);
-
+      assertThat(TestAnnotator.stringParamValue) //
+              .as("Parameter value has been reconfigured") //
+              .isEqualTo("Test4");
     } catch (Exception e) {
       JUnitExtension.handleException(e);
+    }
+  }
+
+  @Test
+  public void thatConfigurationManagerSessionIsValidAfterInitializingDelegateComponent()
+          throws Exception {
+    AnalysisEngineDescription pseudoAggregateDesc = UIMAFramework.getResourceSpecifierFactory()
+            .createAnalysisEngineDescription();
+    pseudoAggregateDesc.setPrimitive(true);
+    pseudoAggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    pseudoAggregateDesc.setAnnotatorImplementationName(
+            TestProgramaticPseudoAggregateAnnotator.class.getName());
+    ConfigurationParameter param = new ConfigurationParameter_impl();
+    param.setName("StringParam");
+    param.setType(ConfigurationParameter.TYPE_STRING);
+    pseudoAggregateDesc.getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
+            .setConfigurationParameters(new ConfigurationParameter[] { param });
+    pseudoAggregateDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
+            new NameValuePair[] { new NameValuePair_impl("StringParam", "initial") });
+
+    AnalysisEngine pseudoAggregate = UIMAFramework.produceAnalysisEngine(pseudoAggregateDesc);
+    pseudoAggregate.setConfigParameterValue("StringParam", "changed");
+    pseudoAggregate.reconfigure();
+    pseudoAggregate.process(CasCreationUtils.createCas());
+
+    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+      softly.assertThat(TestAnnotator.lastConfigurationManagerSession) //
+              .as("ConfigurationManager session has not been tampered with")
+              .isInstanceOf(Session_impl.class) //
+              .isSameAs(pseudoAggregate.getUimaContext().getSession());
+      softly.assertThat(TestAnnotator.stringParamValue) //
+              .as("Parameter value has updated value") //
+              .isEqualTo("changed");
     }
   }
 

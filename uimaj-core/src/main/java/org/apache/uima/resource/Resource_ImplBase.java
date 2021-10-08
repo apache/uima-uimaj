@@ -188,7 +188,6 @@ public abstract class Resource_ImplBase implements Resource {
         mUimaContextAdmin.getConfigurationManager().createContext(
                 mUimaContextAdmin.getQualifiedContextName(), getMetaData(),
                 mUimaContextAdmin.getExternalOverrides());
-        mUimaContextAdmin.getConfigurationManager().setSession(mUimaContextAdmin.getSession());
       } catch (ResourceConfigurationException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
@@ -300,10 +299,11 @@ public abstract class Resource_ImplBase implements Resource {
    */
   @Override
   public ResourceManager getResourceManager() {
-    if (getUimaContextAdmin() != null)
+    if (getUimaContextAdmin() != null) {
       return getUimaContextAdmin().getResourceManager();
-    else
+    } else {
       return null;
+    }
   }
 
   /*

@@ -290,6 +290,7 @@
                   <exclude>src/test/resources/ProgrammaticallyCreatedCasDataSuite/**/*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/cas.*</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/data.*</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/typesystem.xml</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug.xmi</exclude>
                   <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug-typesystem.xml</exclude>
                   <exclude>src/test/resources/data/moby.txt</exclude>
