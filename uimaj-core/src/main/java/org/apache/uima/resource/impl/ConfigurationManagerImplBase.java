@@ -107,6 +107,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     mSession = aSession;
   }
 
+  public Session getSession() {
+    return mSession;
+  }
+
   /*
    * (non-Javadoc)
    * 

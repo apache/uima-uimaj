@@ -23,9 +23,7 @@ import static org.apache.uima.cas.SerialFormat.BINARY;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
-import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
-import static org.apache.uima.util.CasLoadMode.REINIT;
 
 import java.util.List;
 
@@ -48,15 +46,11 @@ public class CasSerializationDeserialization_BINARY_Test {
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
           new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
-          new CasSerDesCycleConfiguration(FORMAT + " / REINIT", //
-                  (a, b) -> serdes(a, b, FORMAT, REINIT)));
+                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)));
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
           new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, DEFAULT)),
-          new CasDesSerCycleConfiguration(FORMAT + " / REINIT", //
-                  (a, b) -> desser(createCas(), a, b, FORMAT, REINIT)));
+                  (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, DEFAULT)));
 
   private static List<SerRefTestScenario> serRefScenarios() {
     return SerDesCasIOTestUtils.serRefScenarios(FORMAT, CAS_FILE_NAME);
@@ -67,7 +61,8 @@ public class CasSerializationDeserialization_BINARY_Test {
   }
 
   private static List<DesSerTestScenario> roundTripDesSerScenarios() throws Exception {
-    return SerDesCasIOTestUtils.roundTripDesSerScenariosComparingFileContents(desSerCycles, CAS_FILE_NAME);
+    return SerDesCasIOTestUtils.roundTripDesSerScenariosComparingFileContents(desSerCycles,
+            CAS_FILE_NAME);
   }
 
   private static List<SerDesTestScenario> serDesScenarios() {
