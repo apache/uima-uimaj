@@ -110,7 +110,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
     mLogger = aLogger;
     // mResourceManager = aResourceManager;
     // mConfigurationManager = aConfigurationManager;
-    mSession = new Session_impl();
+    setSession(new Session_impl());
   }
 
   /**

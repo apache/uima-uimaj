@@ -19,22 +19,22 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
-import org.apache.uima.analysis_engine.annotator.AnnotatorContextException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
-import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
-import org.apache.uima.analysis_engine.annotator.TextAnnotator;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.resource.ConfigurationManager;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.Session;
+import org.apache.uima.resource.impl.ConfigurationManager_impl;
 
 /**
  * Annotator class used for testing.
- * 
  */
-public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
+public class TestAnnotator extends CasAnnotator_ImplBase {
   // Process method saves information to these static fields,
   // which are queried by the unit test.
   public static String lastDocument;
@@ -45,6 +45,8 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
 
   public static boolean typeSystemInitCalled;
 
+  public static Session lastConfigurationManagerSession;
+
   public static synchronized String getLastDocument() {
     return lastDocument;
   }
@@ -53,21 +55,13 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
     return lastResultSpec;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(AnnotatorContext)
-   */
   @Override
-  public void initialize(AnnotatorContext aContext)
-          throws AnnotatorConfigurationException, AnnotatorInitializationException {
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
     lastResultSpec = null;
     lastDocument = null;
-    try {
-      stringParamValue = (String) getContext().getConfigParameterValue("StringParam");
-    } catch (AnnotatorContextException e) {
-      throw new AnnotatorInitializationException(e);
-    }
+    stringParamValue = (String) getContext().getConfigParameterValue("StringParam");
   }
 
   @Override
@@ -75,14 +69,13 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
     typeSystemInitCalled = true;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
-   */
   @Override
-  public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+  public void process(CAS aCAS) throws AnalysisEngineProcessException {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.
     lastDocument = aCAS.getDocumentText();
-    lastResultSpec = aResultSpec;
+    lastResultSpec = getResultSpecification();
+    ConfigurationManager cfgMgr = ((UimaContextAdmin) getContext()).getConfigurationManager();
+    lastConfigurationManagerSession = ((ConfigurationManager_impl) cfgMgr).getSession();
   }
 }
