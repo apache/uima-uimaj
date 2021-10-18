@@ -20,42 +20,29 @@
 package org.apache.uima.resource.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.FileLanguageResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the FileLanguageResource_impl class.
  * 
  */
-public class FileLanguageResource_implTest extends TestCase {
+public class FileLanguageResource_implTest {
 
-  /**
-   * Constructor for FileLanguageResource_implTest.
-   * 
-   * @param arg0
-   */
-  public FileLanguageResource_implTest(String arg0) throws IOException {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-      super.setUp();
-
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();
-      File baseDir = JUnitExtension.getFile("ResourceTest");     
-      spec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());
+      File baseDir = JUnitExtension.getFile("ResourceTest");
+      spec.setFileUrlPrefix(
+              new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());
       spec.setFileUrlSuffix(".dat");
       mResource = new FileLanguageResource_impl();
       mResource.initialize(spec, Collections.EMPTY_MAP);
@@ -64,6 +51,7 @@ public class FileLanguageResource_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetDataResource() throws Exception {
     try {
       DataResource enResource = mResource.getDataResource(new String[] { "en" });

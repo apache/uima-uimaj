@@ -31,7 +31,7 @@ public interface OperationalProperties {
    * 
    * @return true if this component modifies the CAS, false if it does not.
    */
-  public boolean getModifiesCas();
+  boolean getModifiesCas();
 
   /**
    * Sets whether this component will modify the CAS.
@@ -39,7 +39,7 @@ public interface OperationalProperties {
    * @param aModifiesCas
    *          true if this component modifies the CAS, false if it does not.
    */
-  public void setModifiesCas(boolean aModifiesCas);
+  void setModifiesCas(boolean aModifiesCas);
 
   /**
    * Gets whether multiple instances of this component can be run in parallel, each receiving a
@@ -47,7 +47,7 @@ public interface OperationalProperties {
    * 
    * @return true if multiple instances can be run in parallel, false if not
    */
-  public boolean isMultipleDeploymentAllowed();
+  boolean isMultipleDeploymentAllowed();
 
   /**
    * Sets whether multiple instances of this component can be run in parallel, each receiving a
@@ -56,7 +56,7 @@ public interface OperationalProperties {
    * @param aMultipleDeploymentAllowed
    *          true if multiple instances can be run in parallel, false if not
    */
-  public void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed);
+  void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed);
 
   /**
    * Gets whether this AnalysisEngine may output new CASes. If this property is set to true, an
@@ -67,7 +67,7 @@ public interface OperationalProperties {
    * 
    * @return true if this component may output new CASes, false if it does not
    */
-  public boolean getOutputsNewCASes();
+  boolean getOutputsNewCASes();
 
   /**
    * Sets whether this AnalysisEngine may output new CASes. If this property is set to true, an
@@ -79,6 +79,6 @@ public interface OperationalProperties {
    * @param aOutputsNewCASes
    *          true if this component may output new CASes, false if it does not
    */
-  public void setOutputsNewCASes(boolean aOutputsNewCASes);
-  
+  void setOutputsNewCASes(boolean aOutputsNewCASes);
+
 }

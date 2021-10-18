@@ -134,31 +134,34 @@ import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.Level;
 
 /**
- * Implements the CAS interfaces. This class must be public because we need to
- * be able to create instance of it from outside the package. Use at your own
- * risk. May change without notice.
+ * Implements the CAS interfaces. This class must be public because we need to be able to create
+ * instance of it from outside the package. Use at your own risk. May change without notice.
  * 
  */
-public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS, TypeSystemConstants {
+public class CASImpl extends AbstractCas_ImplBase
+        implements CAS, CASMgr, LowLevelCAS, TypeSystemConstants {
 
   private static final String DISABLE_SUBTYPE_FSARRAY_CREATION = "uima.disable_subtype_fsarray_creation";
-  static final boolean IS_DISABLE_SUBTYPE_FSARRAY_CREATION = 
-      Misc.getNoValueSystemProperty(DISABLE_SUBTYPE_FSARRAY_CREATION);
-  
+  static final boolean IS_DISABLE_SUBTYPE_FSARRAY_CREATION = Misc
+          .getNoValueSystemProperty(DISABLE_SUBTYPE_FSARRAY_CREATION);
+
   private static final String TRACE_FSS = "uima.trace_fs_creation_and_updating";
-//  public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
+  // public static final boolean IS_USE_V2_IDS = false; // if false, ids increment by 1
   private static final boolean trace = false; // debug
-  public static final boolean traceFSs = // false;  // debug - trace FS creation and update
-      Misc.getNoValueSystemProperty(TRACE_FSS);
-  
-  public static final boolean traceCow = false;  // debug - trace copy on write actions, index adds / deletes 
+  public static final boolean traceFSs = // false; // debug - trace FS creation and update
+          Misc.getNoValueSystemProperty(TRACE_FSS);
+
+  public static final boolean traceCow = false; // debug - trace copy on write actions, index adds /
+                                                // deletes
   private static final String traceFile = "traceFSs.log.txt";
   private static final PrintStream traceOut;
   static {
     try {
       if (traceFSs) {
         System.out.println("Creating traceFSs file in directory " + System.getProperty("user.dir"));
-        traceOut = traceFSs ? new PrintStream(new BufferedOutputStream(new FileOutputStream(traceFile, false))) : null;
+        traceOut = traceFSs
+                ? new PrintStream(new BufferedOutputStream(new FileOutputStream(traceFile, false)))
+                : null;
       } else {
         traceOut = null;
       }
@@ -186,66 +189,68 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public static final int TRUE = 1;
 
   public static final int FALSE = 0;
-  
+
   public static final int DEFAULT_INITIAL_HEAP_SIZE = 500_000;
-  
+
   public static final int DEFAULT_RESET_HEAP_SIZE = 5_000_000;
 
   /**
-   * The UIMA framework detects (unless disabled, for high performance) updates to indexed FS which update
-   * key values used as keys in indexes.  Normally the framework will protect against index corruption by 
-   * temporarily removing the FS from the indexes, then do the update to the feature value, and then addback
-   * the changed FS.
+   * The UIMA framework detects (unless disabled, for high performance) updates to indexed FS which
+   * update key values used as keys in indexes. Normally the framework will protect against index
+   * corruption by temporarily removing the FS from the indexes, then do the update to the feature
+   * value, and then addback the changed FS.
    * <p>
-   * Users can use the protectIndexes() methods to explicitly control this remove - add back cycle, for instance
-   * to "batch" together several updates to multiple features in a FS.
+   * Users can use the protectIndexes() methods to explicitly control this remove - add back cycle,
+   * for instance to "batch" together several updates to multiple features in a FS.
    * <p>
-   * Some build processes may want to FAIL if any unprotected updates of this kind occur, instead of having the
-   * framework silently recover them.  This is enabled by having the framework throw an exception;  this is controlled
-   * by this global JVM property, which, if defined, causes the framework to throw an exception rather than recover.
+   * Some build processes may want to FAIL if any unprotected updates of this kind occur, instead of
+   * having the framework silently recover them. This is enabled by having the framework throw an
+   * exception; this is controlled by this global JVM property, which, if defined, causes the
+   * framework to throw an exception rather than recover.
    * 
    */
   public static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
-  
+
   // public for test case use
-  public static boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc.getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
-  
+  public static boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc
+          .getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
+
   /**
-   * Define this JVM property to enable checking for invalid updates to features which are used as 
+   * Define this JVM property to enable checking for invalid updates to features which are used as
    * keys by any index.
    * <ul>
-   *   <li>The following are the same:  -Duima.check_invalid_fs_updates    and -Duima.check_invalid_fs_updates=true</li>
-   * </ul> 
+   * <li>The following are the same: -Duima.check_invalid_fs_updates and
+   * -Duima.check_invalid_fs_updates=true</li>
+   * </ul>
    */
   public static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
 
-  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = 
-      IS_THROW_EXCEPTION_CORRUPT_INDEX || Misc.getNoValueSystemProperty(REPORT_FS_UPDATES_CORRUPTS);
-
+  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX
+          || Misc.getNoValueSystemProperty(REPORT_FS_UPDATES_CORRUPTS);
 
   /**
-   * Set this JVM property to false for high performance, (no checking);
-   * insure you don't have the report flag (above) turned on - otherwise it will force this to "true".
+   * Set this JVM property to false for high performance, (no checking); insure you don't have the
+   * report flag (above) turned on - otherwise it will force this to "true".
    */
   public static final String DISABLE_PROTECT_INDEXES = "uima.disable_auto_protect_indexes";
-  
+
   /**
    * the protect indexes flag is on by default, but may be turned of via setting the property.
    * 
    * This is overridden if a report is requested or the exception detection is on.
    */
-  private static final boolean IS_DISABLED_PROTECT_INDEXES = 
-      Misc.getNoValueSystemProperty(DISABLE_PROTECT_INDEXES) &&
-      !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX &&
-      !IS_THROW_EXCEPTION_CORRUPT_INDEX;
- 
+  private static final boolean IS_DISABLED_PROTECT_INDEXES = Misc
+          .getNoValueSystemProperty(DISABLE_PROTECT_INDEXES) && !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX
+          && !IS_THROW_EXCEPTION_CORRUPT_INDEX;
+
   public static final String ALWAYS_HOLD_ONTO_FSS = "uima.default_v2_id_references";
-  static final boolean IS_ALWAYS_HOLD_ONTO_FSS =    // debug and users of low-level cas apis with deserialization
-      Misc.getNoValueSystemProperty(ALWAYS_HOLD_ONTO_FSS);
-//  private static final int REF_DATA_FOR_ALLOC_SIZE = 1024;
-//  private static final int INT_DATA_FOR_ALLOC_SIZE = 1024;
-//  
-  
+  static final boolean IS_ALWAYS_HOLD_ONTO_FSS = // debug and users of low-level cas apis with
+                                                 // deserialization
+          Misc.getNoValueSystemProperty(ALWAYS_HOLD_ONTO_FSS);
+  // private static final int REF_DATA_FOR_ALLOC_SIZE = 1024;
+  // private static final int INT_DATA_FOR_ALLOC_SIZE = 1024;
+  //
+
   // this next seemingly non-sensical static block
   // is to force the classes needed by Eclipse debugging to load
   // otherwise, you get a com.sun.jdi.ClassNotLoadedException when
@@ -254,22 +259,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     new DebugNameValuePair(null, null);
     new DebugFSLogicalStructure();
   }
-  
-  private final static ThreadLocal<Boolean> defaultV2IdRefs = 
-      InheritableThreadLocal.withInitial(() -> null);
-  
+
+  private final static ThreadLocal<Boolean> defaultV2IdRefs = InheritableThreadLocal
+          .withInitial(() -> null);
+
   public static ThreadLocal<Boolean> getDefaultV2IdRefs() {
     return defaultV2IdRefs;
   }
-  
+
   // Static classes representing shared instance data
   // - shared data is computed once for all views
-  
+
   /**
-   * Journaling changes for computing delta cas.
-   * Each instance represents one or more changes for one feature structure
-   * A particular Feature Structure may have multiple FsChange instances
-   *   but we attempt to minimize this
+   * Journaling changes for computing delta cas. Each instance represents one or more changes for
+   * one feature structure A particular Feature Structure may have multiple FsChange instances but
+   * we attempt to minimize this
    */
   public static class FsChange {
     /** ref to the FS being modified */
@@ -278,26 +282,26 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * which feature (by offset) is modified
      */
     final BitSet featuresModified;
-    
-    final PositiveIntSet arrayUpdates; 
+
+    final PositiveIntSet arrayUpdates;
 
     FsChange(TOP fs) {
       this.fs = fs;
       TypeImpl ti = fs._getTypeImpl();
-      featuresModified = (ti.highestOffset == -1) ? null : new BitSet(ti.highestOffset + 1); 
+      featuresModified = (ti.highestOffset == -1) ? null : new BitSet(ti.highestOffset + 1);
       arrayUpdates = (ti.isArray()) ? new PositiveIntSet_impl() : null;
     }
-    
+
     void addFeatData(int v) {
       featuresModified.set(v);
     }
-        
+
     void addArrayData(int v, int nbrOfConsecutive) {
       for (int i = 0; i < nbrOfConsecutive; i++) {
         arrayUpdates.add(v++);
       }
     }
-    
+
     void addArrayData(PositiveIntSet indexesPlus1) {
       indexesPlus1.forAllInts(i -> arrayUpdates.add(i - 1));
     }
@@ -311,68 +315,71 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     public boolean equals(Object obj) {
       if (obj == null || !(obj instanceof FsChange)) {
         return false;
-    }
-      return ((FsChange)obj).fs._id == fs._id;
+      }
+      return ((FsChange) obj).fs._id == fs._id;
     }
   }
- 
+
   /**
-   * Instances are put into a Stack, to remember previous state to switch back to,
-   * when switching class loaders and locking the CAS
+   * Instances are put into a Stack, to remember previous state to switch back to, when switching
+   * class loaders and locking the CAS
+   * 
    * https://issues.apache.org/jira/browse/UIMA-6057
    */
   static class SwitchControl {
     final boolean wasLocked;
     boolean wasSwitched = false;
-    
+
     SwitchControl(boolean wasLocked) {
       this.wasLocked = wasLocked;
     }
   }
-  
 
   // fields shared among all CASes belong to views of a common base CAS
   static class SharedViewData {
     /**
-     * map from FS ids to FSs.  
+     * map from FS ids to FSs.
      */
-     final private Id2FS id2fs;
-     /** set to > 0 to reuse an id, 0 otherwise */
-     private int reuseId = 0;
-         
+    final private Id2FS id2fs;
+    /** set to > 0 to reuse an id, 0 otherwise */
+    private int reuseId = 0;
+
     // Base CAS for all views
     final private CASImpl baseCAS;
-    
+
     /**
-     * These fields are here, not in TypeSystemImpl, because different CASes may have different indexes but share the same type system
-     * They hold the same data (constant per CAS) but are accessed with different indexes
+     * These fields are here, not in TypeSystemImpl, because different CASes may have different
+     * indexes but share the same type system They hold the same data (constant per CAS) but are
+     * accessed with different indexes
      */
     private final BitSet featureCodesInIndexKeys = new BitSet(1024); // 128 bytes
-//    private final BitSet featureJiInIndexKeys = new BitSet(1024);  // indexed by JCas Feature Index, not feature code.
-    
+    // private final BitSet featureJiInIndexKeys = new BitSet(1024); // indexed by JCas Feature
+    // Index, not feature code.
+
     // A map from SofaNumbers which are also view numbers to IndexRepositories.
-    // these numbers are dense, and start with 1.  1 is the initial view.  0 is the base cas
+    // these numbers are dense, and start with 1. 1 is the initial view. 0 is the base cas
     ArrayList<FSIndexRepositoryImpl> sofa2indexMap;
 
-
+    // @formatter:off
     /**
      * A map from Sofa numbers to CAS views.
      * number 0 - not used
      * number 1 - used for view named "_InitialView"
      * number 2-n used for other views
      * 
-     * Note: this is not reset with "Cas Reset" because views (really, their associated index repos) 
+     * Note: this is not reset with "Cas Reset" because views (really, their associated index repos)
      * take a lot of setup for the indexes.
      * However, the maximum view count is reset; so creation of new views "reuses" these pre-setup indexRepos 
      * associated with these views.
      */
+    // @formatter:on
     ArrayList<CASImpl> sofaNbr2ViewMap;
 
     /**
      * a set of instantiated sofaNames
      */
     private Set<String> sofaNameSet;
-    
+
     // Flag that initial Sofa has been created
     private boolean initialSofaCreated = false;
 
@@ -384,7 +391,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // FS cover classes for this CAS. Defaults to the ClassLoader used
     // to load the CASImpl class.
     private ClassLoader jcasClassLoader = this.getClass().getClassLoader();
-    
+
     /*****************************
      * PEAR Support
      *****************************/
@@ -395,22 +402,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     /**
      * Save area for suspending this while we create a base instance
      */
-    private ClassLoader suspendPreviousJCasClassLoader;  
-    
+    private ClassLoader suspendPreviousJCasClassLoader;
+
     /**
-     * A map from IDs to already created trampoline FSs for the base FS with that id.
-     * These are used when in a Pear and retrieving a FS (via index or deref) and you want the 
-     * Pear version for that ID.
-     * There are potentially multiple maps - one per PEAR Classpath
+     * A map from IDs to already created trampoline FSs for the base FS with that id. These are used
+     * when in a Pear and retrieving a FS (via index or deref) and you want the Pear version for
+     * that ID. There are potentially multiple maps - one per PEAR Classpath
      */
     private JCasHashMap id2tramp = null;
     /**
-     * a map from IDs of FSs that have a Pear version, to the base (non-Pear) version
-     * used to locate the base version for adding to indexes
+     * a map from IDs of FSs that have a Pear version, to the base (non-Pear) version used to locate
+     * the base version for adding to indexes
      */
     private JCasHashMap id2base = null;
-    private final Map<ClassLoader, JCasHashMap> cl2id2tramp = new IdentityHashMap<>(); 
-    
+    private final Map<ClassLoader, JCasHashMap> cl2id2tramp = new IdentityHashMap<>();
+
+    // @formatter:off
     /**
      * The current (active, switches at Pear boundaries) FsGenerators (excluding array-generators)
      * key = type code
@@ -418,19 +425,23 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * Cache for setting this kept in TypeSystemImpl, by classloader 
      *   - shared among all CASs that use that Type System and class loader
      *   -- in turn, initialized from FSClassRegistry, once per classloader / typesystem combo 
-     *   
-     * Pear generators are mostly null except for instances where the PEAR has redefined
-     * the JCas cover class
+     * 
+     * Pear generators are mostly null except for instances where the PEAR has redefined the JCas
+     * cover class
      */
+    // @formatter:on
     private FsGenerator3[] generators;
+
+    // @formatter:off
     /**
      * When generating a new instance of a FS in a PEAR where there's an alternate JCas class impl,
      * generate the base version, and make the alternate a trampoline to it.
      *   Note: in future, if it is known that this FS is never used outside of this PEAR, then can
      *         skip generating the double version
      */
-    private FsGenerator3[] baseGenerators; 
-    
+    // @formatter:on
+    private FsGenerator3[] baseGenerators;
+
     // If this CAS can be flushed (reset) or not.
     // often, the framework disables this before calling users code
     private boolean flushEnabled = true;
@@ -439,93 +450,88 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private TypeSystemImpl tsi;
 
     private ComponentInfo componentInfo;
-    
+
     /**
-     * This tracks the changes for delta cas
-     * May also in the future support Journaling by component,
-     * allowing determination of which component in a flow 
-     * created/updated a FeatureStructure (not implmented)
+     * This tracks the changes for delta cas May also in the future support Journaling by component,
+     * allowing determination of which component in a flow created/updated a FeatureStructure (not
+     * implmented)
      * 
-     * TrackingMarkers are held on to by things outside of the 
-     * Cas, to support switching from one tracking marker to 
-     * another (currently not used, but designed to support
-     * Component Journaling).
+     * TrackingMarkers are held on to by things outside of the Cas, to support switching from one
+     * tracking marker to another (currently not used, but designed to support Component
+     * Journaling).
      * 
-     * We track changes on a granularity of features
-     *   and for features which are arrays, which element of the array
-     *   (This last to enable efficient delta serializations of 
-     *      giant arrays of things, where you've only updated a few items)
-     *   
-     * The FsChange doesn't store the changed data, only stores the 
-     *   ref info needed to get to what was changed.  
+     * We track changes on a granularity of features and for features which are arrays, which
+     * element of the array (This last to enable efficient delta serializations of giant arrays of
+     * things, where you've only updated a few items)
+     * 
+     * The FsChange doesn't store the changed data, only stores the ref info needed to get to what
+     * was changed.
      */
     private MarkerImpl trackingMark;
-   
+
     /**
-     * Track modified preexistingFSs
-     * Note this is a map, keyed by the FS, so all changes are merged when added
+     * Track modified preexistingFSs Note this is a map, keyed by the FS, so all changes are merged
+     * when added
      */
     private Map<TOP, FsChange> modifiedPreexistingFSs;
-      
+
     /**
-     * This list currently only contains at most 1 element.
-     * If Journaling is implemented, it may contain an
-     * element per component being journaled.
+     * This list currently only contains at most 1 element. If Journaling is implemented, it may
+     * contain an element per component being journaled.
      */
     private List<MarkerImpl> trackingMarkList;
-   
+
     /**
      * This stack corresponds to nested protectIndexes contexts. Normally should be very shallow.
      */
     private final ArrayList<FSsTobeAddedback> fssTobeAddedback = new ArrayList<>();
-    
+
     /**
-     * This version is for single fs use, by binary deserializers and by automatic mode
-     * Only one user at a time is allowed.
+     * This version is for single fs use, by binary deserializers and by automatic mode Only one
+     * user at a time is allowed.
      */
-    private final FSsTobeAddedbackSingle fsTobeAddedbackSingle = (FSsTobeAddedbackSingle) FSsTobeAddedback.createSingle();
+    private final FSsTobeAddedbackSingle fsTobeAddedbackSingle = (FSsTobeAddedbackSingle) FSsTobeAddedback
+            .createSingle();
     /**
      * Set to true while this is in use.
      */
     boolean fsTobeAddedbackSingleInUse = false;
-    
+
     /**
      * temporarily set to true by deserialization routines doing their own management of this check
      */
     boolean disableAutoCorruptionCheck = false;
-    
-    // used to generate FSIDs, increments by 1 for each use.  First id == 1
+
+    // used to generate FSIDs, increments by 1 for each use. First id == 1
     /**
-     * The fsId of the last created FS
-     * used to generate FSIDs, increments by 1 for each use.  First id == 1
+     * The fsId of the last created FS used to generate FSIDs, increments by 1 for each use. First
+     * id == 1
      */
     private int fsIdGenerator = 0;
-    
+
     /**
      * The version 2 size on the main heap of the last created FS
      */
     private int lastFsV2Size = 1;
 
     /**
-     * used to "capture" the fsIdGenerator value for a read-only CAS to be visible in
-     * other threads
+     * used to "capture" the fsIdGenerator value for a read-only CAS to be visible in other threads
      */
     AtomicInteger fsIdLastValue = new AtomicInteger(0);
-    
 
     // mostly for debug - counts # times cas is reset
     private final AtomicInteger casResets = new AtomicInteger(0);
-    
+
     // unique ID for a created CAS view, not updated if CAS is reset and reused
     private final String casId = String.valueOf(casIdProvider.incrementAndGet());
-    
+
     // shared singltons, created at type system commit
-    
+
     private EmptyFSList emptyFSList;
     private EmptyFloatList emptyFloatList;
     private EmptyIntegerList emptyIntegerList;
     private EmptyStringList emptyStringList;
-    
+
     private FloatArray emptyFloatArray;
     private final Map<Type, FSArray> emptyFSArrayMap = new HashMap<>();
     private IntegerArray emptyIntegerArray;
@@ -537,62 +543,68 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private BooleanArray emptyBooleanArray;
 
     /**
-     * Created at startup time, lives as long as the CAS lives
-     * Serves to reference code for binary cas ser/des that used to live
-     * in this class, but was moved out
+     * Created at startup time, lives as long as the CAS lives Serves to reference code for binary
+     * cas ser/des that used to live in this class, but was moved out
      */
     private final BinaryCasSerDes bcsd;
-    
+
     /**
-     * Created when doing binary or form4 non-delta (de)serialization, used in subsequent delta ser/deserialization
-     * Created when doing binary or form4 non-delta ser/deserialization, used in subsequent delta (de)serialization
-     * Reset with CasReset or deltaMergesComplete API call 
+     * Created when doing binary or form4 non-delta (de)serialization, used in subsequent delta
+     * ser/deserialization Created when doing binary or form4 non-delta ser/deserialization, used in
+     * subsequent delta (de)serialization Reset with CasReset or deltaMergesComplete API call
      */
     private CommonSerDesSequential csds;
-    
+
     /*************************************************
      * VERSION 2 LOW_LEVEL_API COMPATIBILITY SUPPORT *
      *************************************************/
+    // @formatter:off
     /**
      * A StringSet used only to support ll_get/setInt api
      *   get adds string to this and returns the int handle
      *   set retrieves the string, given the handle
      * lazy initialized
      */
+    // @formatter:on
     private StringSet llstringSet = null;
+
+    // @formatter:off
     /**
      * A LongSet used only to support v2 ll_get/setInt api
      *   get adds long to this and returns the int handle
      *   set retrieves the long, given the handle
      * lazy initialized
      */
+    // @formatter:on
     private LongSet lllongSet = null;
-    
+
     // For tracing FS creation and updating, normally disabled
     private final StringBuilder traceFScreationSb = traceFSs ? new StringBuilder() : null;
     private final StringBuilder traceCowSb = traceCow ? new StringBuilder() : null;
-    private int traceFSid = 0; 
+    private int traceFSid = 0;
     private boolean traceFSisCreate;
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
-    private int nextId2Addr = 1;  // only for tracing, to convert id's to v2 addresses
+    private int nextId2Addr = 1; // only for tracing, to convert id's to v2 addresses
     final private int initialHeapSize;
+    // @formatter:off
     /** if true, 
      *    modify fs creation to save in id2fs map
      *    modify deserializers to create fss with ids the same as the serialized form (
      *      or the V2 "address" imputed from that)
      *    modify serializers to include reachables only found via id2fs table
-     *    
-     *    not static because is updated (see ll_enableV2IdRefs)
+     * 
+     * not static because is updated (see ll_enableV2IdRefs)
      */
+    // @formatter:on
     private boolean isId2Fs;
-    
+
     /**
-     * a stack used to remember and restore previous state of cas lock and class loaders
-     * when switching classloaders and locking the cas
-     * https://issues.apache.org/jira/browse/UIMA-6057
+     * a stack used to remember and restore previous state of cas lock and class loaders when
+     * switching classloaders and locking the cas https://issues.apache.org/jira/browse/UIMA-6057
      */
     private final Deque<SwitchControl> switchControl = new ArrayDeque<>();
-    
+
+    // @formatter:off
     /******************************************************************************************
      * C A S   S T A T E    management                                                        *
      *    Cas state is implemented in a way to allow the Java to efficiently                  * 
@@ -601,32 +613,40 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      *    when the state is changed.  This is done using a MutableCallSite plus that          *
      *    objects "syncAll" method.                                                           *
      ******************************************************************************************/
-    private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
+    // @formatter:on
+    private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class);
 
     private static final MethodType noArgBoolean = MethodType.methodType(boolean.class);
     private static final MethodHandle mh_return_false;
     private static final MethodHandle mh_return_true;
-    static {try {
-      mh_return_false = MethodHandles.lookup().findStatic(CasState.class, "return_false", noArgBoolean);
-      mh_return_true  = MethodHandles.lookup().findStatic(CasState.class, "return_true", noArgBoolean);
-    } catch (NoSuchMethodException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } }
-    
+    static {
+      try {
+        mh_return_false = MethodHandles.lookup().findStatic(CasState.class, "return_false",
+                noArgBoolean);
+        mh_return_true = MethodHandles.lookup().findStatic(CasState.class, "return_true",
+                noArgBoolean);
+      } catch (NoSuchMethodException | IllegalAccessException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     private final MutableCallSite is_updatable_callsite = new MutableCallSite(mh_return_true);
     private final MutableCallSite is_readable_callsite = new MutableCallSite(mh_return_true);
-    
+
     private final MethodHandle is_updatable = is_updatable_callsite.dynamicInvoker();
     private final MethodHandle is_readable = is_readable_callsite.dynamicInvoker();
 
-    private final MutableCallSite[] is_updatable_callsites = new MutableCallSite[] {is_updatable_callsite};
-    private final MutableCallSite[] is_readable_callsites = new MutableCallSite[] {is_readable_callsite};
-    
+    private final MutableCallSite[] is_updatable_callsites = new MutableCallSite[] {
+        is_updatable_callsite };
+    private final MutableCallSite[] is_readable_callsites = new MutableCallSite[] {
+        is_readable_callsite };
+
     private volatile Thread current_one_thread_access = null;
-    
-    private void updateCallSite(boolean desired_state, MethodHandle tester, MutableCallSite c, MethodHandle mh, MutableCallSite[] cs) {
+
+    private void updateCallSite(boolean desired_state, MethodHandle tester, MutableCallSite c,
+            MethodHandle mh, MutableCallSite[] cs) {
       try {
-        if (((boolean)tester.invokeExact()) != desired_state) {
+        if (((boolean) tester.invokeExact()) != desired_state) {
           c.setTarget(mh);
           MutableCallSite.syncAll(cs);
         }
@@ -634,32 +654,31 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         Misc.internalError(e);
       }
     }
-    
+
     private synchronized boolean setCasState(CasState state, Thread thread) {
       boolean wasAdded = casState.add(state);
-      if (wasAdded || 
-          (state == CasState.NO_ACCESS && thread != current_one_thread_access)) {
+      if (wasAdded || (state == CasState.NO_ACCESS && thread != current_one_thread_access)) {
         switch (state) {
-        case READ_ONLY:
-          if (casState.contains(CasState.NO_ACCESS))
-         {
-            break;  // ignore readonly if no-access is set
-        }
-          updateCallSite(false, is_updatable, is_updatable_callsite, mh_return_false, is_updatable_callsites);
-          break;
-        case NO_ACCESS:
-          current_one_thread_access = thread;
-          MethodHandle mh = CasState.produce_one_thread_access_test(thread);
-          boolean b = true; // value ignored, needed to avoid compile warning
-          try {
-            b = (boolean) mh.invokeExact();
-          } catch (Throwable e) {
-            Misc.internalError(e);
-          }
-          updateCallSite(b, is_updatable, is_updatable_callsite, mh, is_updatable_callsites);
-          updateCallSite(b, is_readable, is_readable_callsite, mh, is_readable_callsites);
-          break;
-        default:
+          case READ_ONLY:
+            if (casState.contains(CasState.NO_ACCESS)) {
+              break; // ignore readonly if no-access is set
+            }
+            updateCallSite(false, is_updatable, is_updatable_callsite, mh_return_false,
+                    is_updatable_callsites);
+            break;
+          case NO_ACCESS:
+            current_one_thread_access = thread;
+            MethodHandle mh = CasState.produce_one_thread_access_test(thread);
+            boolean b = true; // value ignored, needed to avoid compile warning
+            try {
+              b = (boolean) mh.invokeExact();
+            } catch (Throwable e) {
+              Misc.internalError(e);
+            }
+            updateCallSite(b, is_updatable, is_updatable_callsite, mh, is_updatable_callsites);
+            updateCallSite(b, is_readable, is_readable_callsite, mh, is_readable_callsites);
+            break;
+          default:
         }
       }
       return wasAdded;
@@ -669,18 +688,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       boolean wasRemoved = casState.remove(state);
       if (wasRemoved) {
         switch (state) {
-        case READ_ONLY:
-          if (casState.contains(CasState.NO_ACCESS)) {
+          case READ_ONLY:
+            if (casState.contains(CasState.NO_ACCESS)) {
+              break;
+            }
+            updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true,
+                    is_updatable_callsites);
             break;
-        } 
-          updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true, is_updatable_callsites);
-          break;
-        case NO_ACCESS:
-          current_one_thread_access = null;
-          updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true, is_updatable_callsites);
-          updateCallSite(true, is_readable, is_readable_callsite, mh_return_true, is_readable_callsites);
-          break;
-        default:
+          case NO_ACCESS:
+            current_one_thread_access = null;
+            updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true,
+                    is_updatable_callsites);
+            updateCallSite(true, is_readable, is_readable_callsite, mh_return_true,
+                    is_readable_callsites);
+            break;
+          default:
         }
       }
       return wasRemoved;
@@ -694,29 +716,28 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       id2fs = new Id2FS(initialHeapSize);
       if (traceFSs) {
         id2addr.add(0);
-    }
-      
+      }
+
       Boolean v = getDefaultV2IdRefs().get();
-      isId2Fs = (v == null) 
-                  ? IS_ALWAYS_HOLD_ONTO_FSS
-                  : v;
+      isId2Fs = (v == null) ? IS_ALWAYS_HOLD_ONTO_FSS : v;
     }
-    
+
     void clearCasReset() {
       // fss
       fsIdGenerator = 0;
       lastFsV2Size = 1;
       id2fs.clear();
-      
+
       // pear caches
       id2tramp = null;
       id2base = null;
-      for (Iterator<Entry<ClassLoader, JCasHashMap>> it = cl2id2tramp.entrySet().iterator(); it.hasNext();) {
+      for (Iterator<Entry<ClassLoader, JCasHashMap>> it = cl2id2tramp.entrySet().iterator(); it
+              .hasNext();) {
         Entry<ClassLoader, JCasHashMap> e = it.next();
         ClassLoader cl = e.getKey();
         e.getValue().clear();
-        if (cl instanceof UIMAClassLoader) {  // https://issues.apache.org/jira/browse/UIMA-5801
-          if (((UIMAClassLoader)cl).isClosed()) {
+        if (cl instanceof UIMAClassLoader) { // https://issues.apache.org/jira/browse/UIMA-5801
+          if (((UIMAClassLoader) cl).isClosed()) {
             it.remove();
           }
         }
@@ -725,11 +746,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // index corruption avoidance
       fssTobeAddedback.clear();
       fsTobeAddedbackSingle.clear();
-      fsTobeAddedbackSingleInUse = false; 
+      fsTobeAddedbackSingleInUse = false;
       disableAutoCorruptionCheck = false;
 
       // misc
-      flushEnabled = true;      
+      flushEnabled = true;
       componentInfo = null;
       bcsd.clear();
       csds = null;
@@ -741,12 +762,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         id2addr.add(0);
         nextId2Addr = 1;
       }
-      
+
       emptyFloatList = null; // these cleared in case new ts redefines?
       emptyFSList = null;
       emptyIntegerList = null;
       emptyStringList = null;
-      
+
       emptyFloatArray = null;
       emptyFSArrayMap.clear();
       emptyIntegerArray = null;
@@ -756,47 +777,49 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       emptyShortArray = null;
       emptyByteArray = null;
       emptyBooleanArray = null;
-  
+
       current_one_thread_access = null;
-      updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true, is_updatable_callsites);
-      updateCallSite(true, is_readable, is_readable_callsite, mh_return_true, is_readable_callsites);
-      
+      updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true,
+              is_updatable_callsites);
+      updateCallSite(true, is_readable, is_readable_callsite, mh_return_true,
+              is_readable_callsites);
+
       clearNonSharedInstanceData();
-      
+
     }
-    
+
     /**
      * called by resetNoQuestions and cas complete reinit
      */
     void clearSofaInfo() {
       sofaNameSet.clear();
-      initialSofaCreated = false;      
+      initialSofaCreated = false;
     }
-    
+
+    // @formatter:off
     /**
      * Called from CasComplete deserialization (reinit).
      * 
-     * Skips the resetNoQuestions operation of flushing the indexes, 
-     *   since these will be reinitialized with potentially new definitions.
-     *   
+     * Skips the resetNoQuestions operation of flushing the indexes, since these will be
+     * reinitialized with potentially new definitions.
+     * 
      * Clears additional data related to having the
      *   - type system potentially change
      *   - the features belonging to indexes change
-     *   
      */
+    // @formatter:on
     void clear() {
-      resetNoQuestions(false);  // false - skip flushing the index repos
+      resetNoQuestions(false); // false - skip flushing the index repos
 
       // type system + index spec
       tsi = null;
       featureCodesInIndexKeys.clear();
-//      featureJiInIndexKeys.clear();
-      
-      
+      // featureJiInIndexKeys.clear();
+
       /**
-       * Clear the existing views, except keep the info for the initial view
-       * so that the cas complete deserialization after setting up the new index repository in the base cas 
-       * can "refresh" the existing initial view (if present; if not present, a new one is created).
+       * Clear the existing views, except keep the info for the initial view so that the cas
+       * complete deserialization after setting up the new index repository in the base cas can
+       * "refresh" the existing initial view (if present; if not present, a new one is created).
        */
       if (sofaNbr2ViewMap.size() >= 1) {
         // have initial view - preserve it
@@ -808,36 +831,36 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         sofaNbr2ViewMap.clear();
         viewCount = 0;
       }
-      
+
     }
-    
+
     private void resetNoQuestions(boolean flushIndexRepos) {
       casResets.incrementAndGet();
       if (trace) {
-        System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
-           " for CasId = " + casId + ", new reset count = " + casResets.get());
+        System.out.println("CAS Reset in thread " + Thread.currentThread().getName()
+                + " for CasId = " + casId + ", new reset count = " + casResets.get());
       }
 
       clearCasReset(); // also clears cached FSs
-       
+
       if (flushIndexRepos) {
         flushIndexRepositoriesAllViews();
       }
-      
+
       clearTrackingMarks();
-      
-      clearSofaInfo();  // but keep initial view, and other views
-                                 // because setting up the index infrastructure is expensive
-      viewCount = 1;  // initial view
-      
+
+      clearSofaInfo(); // but keep initial view, and other views
+                       // because setting up the index infrastructure is expensive
+      viewCount = 1; // initial view
+
       traceFSid = 0;
       if (traceFSs) {
         traceFScreationSb.setLength(0);
       }
       componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
-      switchControl.clear();  //  https://issues.apache.org/jira/browse/UIMA-6057
+      switchControl.clear(); // https://issues.apache.org/jira/browse/UIMA-6057
     }
-    
+
     private void flushIndexRepositoriesAllViews() {
       int numViews = viewCount;
       for (int view = 1; view <= numViews; view++) {
@@ -846,28 +869,28 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           tcas.indexRepository.flush();
         }
       }
-      
-   // safety : in case this public method is called on other than the base cas 
-      baseCAS.indexRepository.flush();  // for base view, other views flushed above
+
+      // safety : in case this public method is called on other than the base cas
+      baseCAS.indexRepository.flush(); // for base view, other views flushed above
     }
-    
+
     private void clearNonSharedInstanceData() {
       int numViews = viewCount;
       for (int view = 1; view <= numViews; view++) {
         CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
-        if (tcas != null) {         
-          tcas.mySofaRef = null;  // was in v2: (1 == view) ? -1 : 0;
+        if (tcas != null) {
+          tcas.mySofaRef = null; // was in v2: (1 == view) ? -1 : 0;
           tcas.docAnnotIter = null;
         }
-      }      
+      }
     }
-       
+
     private void clearTrackingMarks() {
       // resets all markers that might be held by things outside the Cas
       // Currently (2009) this list has a max of 1 element
       // Future impl may have one element per component for component Journaling
       if (trackingMarkList != null) {
-        for (int i=0; i < trackingMarkList.size(); i++) {
+        for (int i = 0; i < trackingMarkList.size(); i++) {
           trackingMarkList.get(i).isValid = false;
         }
       }
@@ -876,41 +899,43 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (null != modifiedPreexistingFSs) {
         modifiedPreexistingFSs.clear();
       }
-      
+
       trackingMarkList = null;
     }
-    
+
     // switches ClassLoader but does not lock CAS
     void switchClassLoader(ClassLoader newClassLoader, boolean wasLocked) {
-      //    https://issues.apache.org/jira/browse/UIMA-6057
-      SwitchControl switchControlInstance = new SwitchControl(wasLocked);  
+      // https://issues.apache.org/jira/browse/UIMA-6057
+      SwitchControl switchControlInstance = new SwitchControl(wasLocked);
       switchControl.push(switchControlInstance);
-      
+
       if (null == newClassLoader) { // is null if no cl set
         return;
       }
-      
+
       if (!(newClassLoader instanceof UIMAClassLoader)) {
         UIMAFramework.getLogger()
                 .debug("Calling switchClassLoader with a classloader of type [{}] that is not "
                         + "a UIMAClassLoader may cause JCas wrappers to be loaded from the wrong "
-                        + "classloader.",
-                        newClassLoader.getClass().getName());
+                        + "classloader.", newClassLoader.getClass().getName());
       }
-      
+
       if (newClassLoader != jcasClassLoader) {
         if (null != previousJCasClassLoader) {
-          /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
-          throw new CASRuntimeException(CASRuntimeException.SWITCH_CLASS_LOADER_NESTED, 
-                                        previousJCasClassLoader, jcasClassLoader, newClassLoader);
+          /**
+           * Multiply nested classloaders not supported. Original base loader: {0}, current nested
+           * loader: {1}, trying to switch to loader: {2}.
+           */
+          throw new CASRuntimeException(CASRuntimeException.SWITCH_CLASS_LOADER_NESTED,
+                  previousJCasClassLoader, jcasClassLoader, newClassLoader);
         }
         // System.out.println("Switching to new class loader");
         previousJCasClassLoader = jcasClassLoader;
         jcasClassLoader = newClassLoader;
         switchControlInstance.wasSwitched = true;
         generators = tsi.getGeneratorsForClassLoader(newClassLoader, true); // true - isPear
-        
-        assert null == id2tramp;  // is null outside of a pear
+
+        assert null == id2tramp; // is null outside of a pear
         id2tramp = cl2id2tramp.get(newClassLoader);
         if (null == id2tramp) {
           cl2id2tramp.put(newClassLoader, id2tramp = new JCasHashMap(32));
@@ -920,13 +945,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         }
       }
     }
-    
+
     void restoreClassLoader(boolean empty_switchControl, SwitchControl switchControlInstance) {
       if (null == previousJCasClassLoader) {
         return;
       }
-      
-      if ((empty_switchControl || switchControlInstance.wasSwitched) && previousJCasClassLoader != jcasClassLoader) {
+
+      if ((empty_switchControl || switchControlInstance.wasSwitched)
+              && previousJCasClassLoader != jcasClassLoader) {
         // System.out.println("Switching back to previous class loader");
         jcasClassLoader = previousJCasClassLoader;
         previousJCasClassLoader = null;
@@ -934,7 +960,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         id2tramp = null;
       }
     }
-    
+
+    // @formatter:off
     /**
      * The logic for this is:
      *   - normal - add 1 to the value of the previous 
@@ -952,47 +979,48 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * @param fs - the fs, used to compute its "size" on the v2 heap when emulating v2 addresses
      * @return the id to use
      */
+    // @formatter:on
     private int getNextFsId(TOP fs) {
-      if (reuseId != 0) {  // for pear use
-//      l.setStrongRef(fs, reuseId);
+      if (reuseId != 0) { // for pear use
+        // l.setStrongRef(fs, reuseId);
         int r = reuseId;
         reuseId = 0;
-        return r;  // reuseId reset to 0 by callers' try/finally block
-      } 
-      
-  //    l.add(fs);
-  //    if (id2fs.size() != (2 + fsIdGenerator.get())) {
-  //      System.out.println("debug out of sync id generator and id2fs size");
-  //    }
-  //    assert(l.size() == (2 + fsIdGenerator));
+        return r; // reuseId reset to 0 by callers' try/finally block
+      }
+
+      // l.add(fs);
+      // if (id2fs.size() != (2 + fsIdGenerator.get())) {
+      // System.out.println("debug out of sync id generator and id2fs size");
+      // }
+      // assert(l.size() == (2 + fsIdGenerator));
       final int p = fsIdGenerator;
-      
+
       final int r = fsIdGenerator = peekNextFsId();
-      
-      if (r < p) { 
+
+      if (r < p) {
         throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
       }
-      
+
       if (isId2Fs) {
         // this computation is partial - misses length of arrays stored on heap
-        // because that info not yet available  
+        // because that info not yet available
         // It is added later via call to adjustLastFsV2size(int)
         lastFsV2Size = fs._getTypeImpl().getFsSpaceReq();
       }
       return r;
     }
-    
+
     /**
      * @return the lastUsedFsId + the size of that or 1
      */
     int peekNextFsId() {
       return fsIdGenerator + lastFsV2IdIncr();
     }
-    
+
     int lastFsV2IdIncr() {
       return (isId2Fs ? lastFsV2Size : 1);
     }
-    
+
     private CASImpl getViewFromSofaNbr(int nbr) {
       final ArrayList<CASImpl> sn2v = sofaNbr2ViewMap;
       if (nbr < sn2v.size()) {
@@ -1000,7 +1028,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       return null;
     }
-    
+
     // For internal platform use only
     CASImpl getInitialView() {
       CASImpl couldBeThis = getViewFromSofaNbr(1);
@@ -1014,36 +1042,40 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       viewCount = 1;
       return aView;
     }
-    
+
     void setViewForSofaNbr(int nbr, CASImpl view) {
       Misc.setWithExpand(sofaNbr2ViewMap, nbr, view);
     }
 
   }
-  
+
   /**********************************************
-   * C A S   S T A T E    m a n a g e m e n t   *
+   * C A S S T A T E m a n a g e m e n t *
    **********************************************/
 
   /**
-   * @param state to add to the set
+   * @param state
+   *          to add to the set
    * @return true if the set changed as a result of this operation
    */
   public boolean setCasState(CasState state) {
     return setCasState(state, null);
   }
-  
+
   /**
-   * @param state to add to the set
-   * @param thread null or the thread to permit access to 
+   * @param state
+   *          to add to the set
+   * @param thread
+   *          null or the thread to permit access to
    * @return true if the set changed as a result of this operation
    */
   public boolean setCasState(CasState state, Thread thread) {
     return svd.setCasState(state, thread);
   }
-  
+
   /**
-   * @param state to see if it is among the items in this set
+   * @param state
+   *          to see if it is among the items in this set
    * @return true if the set contains that state
    */
   public boolean containsCasState(CasState state) {
@@ -1051,7 +1083,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @param state to be removed
+   * @param state
+   *          to be removed
    * @return true if it was present, and is now removed
    */
   public boolean clearCasState(CasState state) {
@@ -1065,7 +1098,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw new RuntimeException(e);
     }
   }
-  
+
   boolean is_readable() {
     try {
       return (boolean) svd.is_readable.invokeExact();
@@ -1073,7 +1106,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw new RuntimeException(e);
     }
   }
-  
+
   /*****************************************************************
    * Non-shared instance data kept per CAS view incl base CAS
    *****************************************************************/
@@ -1082,59 +1115,64 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // public only for cross package access
   public boolean isCasLocked() {
-    return ! svd.flushEnabled;
+    return !svd.flushEnabled;
   }
-  
+
   /** The index repository. Referenced by XmiCasSerializer */
   FSIndexRepositoryImpl indexRepository;
 
-//  private Object[] currentRefDataForAlloc = new Object[REF_DATA_FOR_ALLOC_SIZE];
-//  private Object[] returnRefDataForAlloc;
-//  private int[]    currentIntDataForAlloc = new int[INT_DATA_FOR_ALLOC_SIZE];
-//  private int[]    returnIntDataForAlloc;
-//  private int      nextRefDataOffsetForAlloc = 0;
-//  private int      nextIntDataOffsetForAlloc = 0;
+  // private Object[] currentRefDataForAlloc = new Object[REF_DATA_FOR_ALLOC_SIZE];
+  // private Object[] returnRefDataForAlloc;
+  // private int[] currentIntDataForAlloc = new int[INT_DATA_FOR_ALLOC_SIZE];
+  // private int[] returnIntDataForAlloc;
+  // private int nextRefDataOffsetForAlloc = 0;
+  // private int nextIntDataOffsetForAlloc = 0;
 
+  // @formatter:off
   /**
    * The Feature Structure for the sofa FS for this view, or
    * null
    * //-1 if the sofa FS is for the initial view, or
    * // 0 if there is no sofa FS - for instance, in the "base cas"
    */
+  // @formatter:on
   private Sofa mySofaRef = null;
 
   /** the corresponding JCas object */
   JCasImpl jcas = null;
 
+  // @formatter:off
   /**
    * Copies of frequently accessed data pulled up for 
    * locality of reference - only an optimization
    *   - each value needs to be reset appropriately 
    *   - getters check for null, and if null, do the get.
    */
-  
+  // @formatter:on
   private TypeSystemImpl tsi_local;
-  
-  /** 
-   * for Pear generation - set this to the base FS
-   * not in SharedViewData to reduce object traversal when
-   * generating FSs
+
+  /**
+   * for Pear generation - set this to the base FS not in SharedViewData to reduce object traversal
+   * when generating FSs
    */
   FeatureStructureImplC pearBaseFs = null;
-  
+
+  // @formatter:off
   /**
    * Optimization - keep a documentAnnotationIterator handy for getting a ref to the doc annot
    *   Initialized lazily, synchronized
    *   One per cas view
    */
+  // @formatter:on
   private volatile FSIterator<Annotation> docAnnotIter = null;
-  
-  // UIMA-6199 provides access to non-indexed doc annot 
-  //   to allow sofa setting to set the "length" of the local sofa data string
-  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+
+  // UIMA-6199 provides access to non-indexed doc annot
+  // to allow sofa setting to set the "length" of the local sofa data string
+  // @see updateDocumentAnnotation() updateDocumentAnnotation.
   private volatile Annotation deserialized_doc_annot_not_indexed = null;
-  
-//  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
+
+  // private StackTraceElement[] addbackSingleTrace = null; // for debug use only, normally
+  // commented out
 
   // CASImpl(TypeSystemImpl typeSystem) {
   // this(typeSystem, DEFAULT_INITIAL_HEAP_SIZE);
@@ -1149,15 +1187,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // }
 
   /*
-   * Configure a new (base view) CASImpl, **not a new view** typeSystem can be
-   * null, in which case a new instance of TypeSystemImpl is set up, but not
-   * committed. If typeSystem is not null, it is committed (locked). ** Note: it
-   * is assumed that the caller of this will always set up the initial view **
-   * by calling
+   * Configure a new (base view) CASImpl, **not a new view** typeSystem can be null, in which case a
+   * new instance of TypeSystemImpl is set up, but not committed. If typeSystem is not null, it is
+   * committed (locked). ** Note: it is assumed that the caller of this will always set up the
+   * initial view ** by calling
    */
 
-  public CASImpl(TypeSystemImpl typeSystem, int initialHeapSize ) {
-    super();
+  public CASImpl(TypeSystemImpl typeSystem, int initialHeapSize) {
     TypeSystemImpl ts;
     final boolean externalTypeSystem = (typeSystem != null);
 
@@ -1169,20 +1205,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
 
     this.svd = new SharedViewData(this, initialHeapSize, ts);
-//    this.svd.baseCAS = this;
+    // this.svd.baseCAS = this;
 
-//    this.svd.heap = new Heap(initialHeapSize);
+    // this.svd.heap = new Heap(initialHeapSize);
 
     if (externalTypeSystem) {
       commitTypeSystem();
     }
-   
+
     this.svd.sofa2indexMap = new ArrayList<>();
     this.svd.sofaNbr2ViewMap = new ArrayList<>();
     this.svd.sofaNameSet = new HashSet<>();
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
-    
+
     this.svd.clearTrackingMarks();
   }
 
@@ -1202,23 +1238,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // Use this when creating a CAS view
   CASImpl(CASImpl cas, SofaFS aSofa) {
-    
+
     // these next fields are final and must be set in the constructor
     this.svd = cas.svd;
 
     this.mySofaRef = (Sofa) aSofa;
 
     // get the indexRepository for this Sofa
-    this.indexRepository = (this.mySofaRef == null) ? 
-        (FSIndexRepositoryImpl) cas.getSofaIndexRepository(1) : 
-        (FSIndexRepositoryImpl) cas.getSofaIndexRepository(aSofa);
+    this.indexRepository = (this.mySofaRef == null)
+            ? (FSIndexRepositoryImpl) cas.getSofaIndexRepository(1)
+            : (FSIndexRepositoryImpl) cas.getSofaIndexRepository(aSofa);
     if (null == this.indexRepository) {
       // create the indexRepository for this CAS
       // use the baseIR to create a lightweight IR copy
       FSIndexRepositoryImpl baseIndexRepo = (FSIndexRepositoryImpl) cas.getBaseIndexRepository();
       this.indexRepository = new FSIndexRepositoryImpl(this, baseIndexRepo);
       // the index creation depends on "indexRepository" already being set
-      baseIndexRepo.name2indexMap.keySet().stream().forEach(key -> this.indexRepository.createIndex(baseIndexRepo, key));
+      baseIndexRepo.name2indexMap.keySet().stream()
+              .forEach(key -> this.indexRepository.createIndex(baseIndexRepo, key));
       this.indexRepository.commit();
       // save new sofa index
       if (this.mySofaRef == null) {
@@ -1244,10 +1281,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.jcas = null;
 
     // create the indexRepository for this Sofa
-    final FSIndexRepositoryImpl baseIndexRepo = (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository();
-    this.indexRepository = new FSIndexRepositoryImpl(this,baseIndexRepo);
+    final FSIndexRepositoryImpl baseIndexRepo = (FSIndexRepositoryImpl) ((CASImpl) cas)
+            .getBaseIndexRepository();
+    this.indexRepository = new FSIndexRepositoryImpl(this, baseIndexRepo);
     // the index creation depends on "indexRepository" already being set
-    baseIndexRepo.name2indexMap.keySet().stream().forEach(key -> this.indexRepository.createIndex(baseIndexRepo, key));
+    baseIndexRepo.name2indexMap.keySet().stream()
+            .forEach(key -> this.indexRepository.createIndex(baseIndexRepo, key));
 
     this.indexRepository.commit();
     // save new sofa index
@@ -1259,16 +1298,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   private void checkInternalCodes(CASMgrSerializer ser) throws CASAdminException {
-    if ((ser.topTypeCode > 0)
-        && (ser.topTypeCode != topTypeCode)) {
+    if ((ser.topTypeCode > 0) && (ser.topTypeCode != topTypeCode)) {
       throw new CASAdminException(CASAdminException.DESERIALIZATION_ERROR);
     }
     if (ser.featureOffsets == null) {
       return;
     }
-//    if (ser.featureOffsets.length != this.svd.casMetadata.featureOffset.length) {
-//      throw new CASAdminException(CASAdminException.DESERIALIZATION_ERROR);
-//    }
+    // if (ser.featureOffsets.length != this.svd.casMetadata.featureOffset.length) {
+    // throw new CASAdminException(CASAdminException.DESERIALIZATION_ERROR);
+    // }
     TypeSystemImpl tsi = getTypeSystemImpl();
     for (int i = 1; i < ser.featureOffsets.length; i++) {
       FeatureImpl fi = tsi.getFeatureForCode_checked(i);
@@ -1279,43 +1317,42 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  
   // ----------------------------------------
-  //   accessors for data in SharedViewData
+  // accessors for data in SharedViewData
   // ----------------------------------------
-   
+
   public boolean isId2Fs() {
     return svd.isId2Fs;
   }
-  
+
   Id2FS getId2FSs() {
     return svd.id2fs;
   }
-  
+
   void set_id2fs(TOP fs) {
     svd.id2fs.put(fs);
   }
-  
+
   void set_reuseId(int id) {
     svd.reuseId = id;
   }
-  
+
   void setLastUsedFsId(int id) {
     svd.fsIdGenerator = id;
   }
-  
+
   void setLastFsV2Size(int size) {
     svd.lastFsV2Size = size;
   }
-  
+
   void addSofaViewName(String id) {
     svd.sofaNameSet.add(id);
   }
-  
+
   void setViewCount(int n) {
     svd.viewCount = n;
   }
-  
+
   void addbackSingle(TOP fs) {
     if (!svd.fsTobeAddedbackSingleInUse) {
       Misc.internalError();
@@ -1323,39 +1360,39 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     svd.fsTobeAddedbackSingle.addback(fs);
     svd.fsTobeAddedbackSingleInUse = false;
   }
-  
+
   void addbackSingleIfWasRemoved(boolean wasRemoved, TOP fs) {
     if (wasRemoved) {
       addbackSingle(fs);
     }
     svd.fsTobeAddedbackSingleInUse = false;
   }
-   
+
   private FSsTobeAddedback getAddback(int size) {
     if (svd.fsTobeAddedbackSingleInUse) {
       Misc.internalError();
     }
     return svd.fssTobeAddedback.get(size - 1);
   }
-  
+
   FSsTobeAddedbackSingle getAddbackSingle() {
     if (svd.fsTobeAddedbackSingleInUse) {
-//      System.out.println(Misc.dumpCallers(addbackSingleTrace, 2, 100));
+      // System.out.println(Misc.dumpCallers(addbackSingleTrace, 2, 100));
       Misc.internalError();
     }
-//    addbackSingleTrace = Thread.currentThread().getStackTrace();
-    
+    // addbackSingleTrace = Thread.currentThread().getStackTrace();
+
     svd.fsTobeAddedbackSingleInUse = true;
-    svd.fsTobeAddedbackSingle.clear();  // safety
+    svd.fsTobeAddedbackSingle.clear(); // safety
     return svd.fsTobeAddedbackSingle;
   }
-  
-  void featureCodes_inIndexKeysAdd(int featCode/*, int registryIndex*/) {
+
+  void featureCodes_inIndexKeysAdd(int featCode/* , int registryIndex */) {
     svd.featureCodesInIndexKeys.set(featCode);
-//     skip adding if no JCas registry entry for this feature
-//    if (registryIndex >= 0) {
-//      svd.featureJiInIndexKeys.set(registryIndex);
-//    }
+    // skip adding if no JCas registry entry for this feature
+    // if (registryIndex >= 0) {
+    // svd.featureJiInIndexKeys.set(registryIndex);
+    // }
   }
 
   @Override
@@ -1374,9 +1411,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return this.tsi_local;
   }
-  
+
   /**
    * Set the shared svd type system ref, in all views
+   * 
    * @param ts
    */
   void installTypeSystemInAllViews(TypeSystemImpl ts) {
@@ -1386,100 +1424,104 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       for (CASImpl view : sn2v.subList(1, sn2v.size())) {
         view.tsi_local = ts;
       }
-    } 
-    this.getBaseCAS().tsi_local = ts;  
+    }
+    this.getBaseCAS().tsi_local = ts;
   }
-    
+
   @Override
   public ConstraintFactory getConstraintFactory() {
     return ConstraintFactory.instance();
   }
 
   /**
-   * Create the appropriate Feature Structure Java instance
-   *   - from whatever the generator for this type specifies.
-   *   
-   * @param type the type to create
+   * Create the appropriate Feature Structure Java instance - from whatever the generator for this
+   * type specifies.
+   * 
+   * @param type
+   *          the type to create
    * @return a Java object representing the FeatureStructure impl in Java.
    */
   @Override
   public <T extends FeatureStructure> T createFS(Type type) {
     final TypeImpl ti = (TypeImpl) type;
     if (!ti.isCreatableAndNotBuiltinArray()) {
-      throw new CASRuntimeException(CASRuntimeException.NON_CREATABLE_TYPE, type.getName(), "CAS.createFS()");
+      throw new CASRuntimeException(CASRuntimeException.NON_CREATABLE_TYPE, type.getName(),
+              "CAS.createFS()");
     }
     return (T) createFSAnnotCheck(ti);
   }
-  
+
   private <T extends FeatureStructureImplC> T createFSAnnotCheck(TypeImpl ti) {
     if (ti.isAnnotationBaseType()) {
       // not here, will be checked later in AnnotationBase constructor
-//      if (this.isBaseCas()) {    
-//        throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, ti.getName());
-//      }
-      getSofaRef();  // materialize this if not present; required for setting the sofa ref
-                     // must happen before the annotation is created, for compressed form 6 serialization order
-                     // to insure sofa precedes the ref of it
+      // if (this.isBaseCas()) {
+      // throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
+      // ti.getName());
+      // }
+      getSofaRef(); // materialize this if not present; required for setting the sofa ref
+                    // must happen before the annotation is created, for compressed form 6
+                    // serialization order
+                    // to insure sofa precedes the ref of it
     }
-    
+
     assertTypeBelongsToCasTypesystem(ti);
 
-    FsGenerator3 g = svd.generators[ti.getCode()];  // get generator or null
-    
-    return (g != null) 
-             ? (T) g.createFS(ti, this)
-              // pear case, with no overriding pear - use base    
-             : (T) createFsFromGenerator(svd.baseGenerators, ti);
+    FsGenerator3 g = svd.generators[ti.getCode()]; // get generator or null
 
-//    
-//    
-//    // not pear or no special cover class for this
-//      
-//    
-//      TOP fs = createFsFromGenerator(svd.baseGenerators, ti);
-//      
-//      FsGenerator g = svd.generators[ti.getCode()];  // get pear generator or null
-//      return (g != null) 
-//               ? (T) pearConvert(fs, g)
-//               : (T) fs;
-//    }
-//  
-//    return (T) createFsFromGenerator(svd.generators, ti);
+    return (g != null) ? (T) g.createFS(ti, this)
+            // pear case, with no overriding pear - use base
+            : (T) createFsFromGenerator(svd.baseGenerators, ti);
+
+    //
+    //
+    // // not pear or no special cover class for this
+    //
+    //
+    // TOP fs = createFsFromGenerator(svd.baseGenerators, ti);
+    //
+    // FsGenerator g = svd.generators[ti.getCode()]; // get pear generator or null
+    // return (g != null)
+    // ? (T) pearConvert(fs, g)
+    // : (T) fs;
+    // }
+    //
+    // return (T) createFsFromGenerator(svd.generators, ti);
   }
-  
+
   private static final AtomicInteger strictTypeSourceCheckMessageCount = new AtomicInteger(0);
-  
+
   private void assertTypeBelongsToCasTypesystem(TypeImpl ti) {
     if (tsi_local != null && ti.getTypeSystem() != tsi_local) {
       String message = String.format(
               "Creating a feature structure of type [%s](%d) from type system [%s] in CAS with "
-              + "different type system [%s] is not supported.",
-              ti.getName(), ti.getCode(), format("<%,d>", identityHashCode(ti.getTypeSystem())), 
+                      + "different type system [%s] is not supported.",
+              ti.getName(), ti.getCode(), format("<%,d>", identityHashCode(ti.getTypeSystem())),
               format("<%,d>", identityHashCode(tsi_local)));
-    
+
       if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
         throw new IllegalArgumentException(message);
-      }
-      else {
-        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message, UIMAFramework.getLogger());
+      } else {
+        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message,
+                UIMAFramework.getLogger());
       }
     }
   }
-  
+
   /**
-   * Called during construction of FS.
-   * For normal FS "new" operators, if in PEAR context, make the base version
+   * Called during construction of FS. For normal FS "new" operators, if in PEAR context, make the
+   * base version
+   * 
    * @param fs
    * @param ti
    * @return true if made a base for a trampoline
    */
   boolean maybeMakeBaseVersionForPear(FeatureStructureImplC fs, TypeImpl ti) {
     if (!inPearContext()) {
-        return false;
+      return false;
     }
-    FsGenerator3 g = svd.generators[ti.getCode()];  // get pear generator or null
+    FsGenerator3 g = svd.generators[ti.getCode()]; // get pear generator or null
     if (g == null) {
-        return false;
+      return false;
     }
     TOP baseFs;
     try {
@@ -1496,30 +1538,39 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     pearBaseFs = baseFs;
     return true;
   }
- 
+
   private TOP createFsFromGenerator(FsGenerator3[] gs, TypeImpl ti) {
     return gs[ti.getCode()].createFS(ti, this);
   }
-  
-  
+
   public TOP createArray(TypeImpl array_type, int arrayLength) {
     TypeImpl_array tia = (TypeImpl_array) array_type;
     TypeImpl componentType = tia.getComponentType();
     if (componentType.isPrimitive()) {
       checkArrayPreconditions(arrayLength);
       switch (componentType.getCode()) {
-      case intTypeCode: return new IntegerArray(array_type, this, arrayLength);
-      case floatTypeCode: return new FloatArray(array_type, this, arrayLength);
-      case booleanTypeCode: return new BooleanArray(array_type, this, arrayLength);
-      case byteTypeCode: return new ByteArray(array_type, this, arrayLength);
-      case shortTypeCode: return new ShortArray(array_type, this, arrayLength);
-      case longTypeCode: return new LongArray(array_type, this, arrayLength);
-      case doubleTypeCode: return new DoubleArray(array_type, this, arrayLength);
-      case stringTypeCode: return new StringArray(array_type, this, arrayLength);
-      default: throw Misc.internalError();
+        case intTypeCode:
+          return new IntegerArray(array_type, this, arrayLength);
+        case floatTypeCode:
+          return new FloatArray(array_type, this, arrayLength);
+        case booleanTypeCode:
+          return new BooleanArray(array_type, this, arrayLength);
+        case byteTypeCode:
+          return new ByteArray(array_type, this, arrayLength);
+        case shortTypeCode:
+          return new ShortArray(array_type, this, arrayLength);
+        case longTypeCode:
+          return new LongArray(array_type, this, arrayLength);
+        case doubleTypeCode:
+          return new DoubleArray(array_type, this, arrayLength);
+        case stringTypeCode:
+          return new StringArray(array_type, this, arrayLength);
+        default:
+          throw Misc.internalError();
       }
     }
-//    return (TOP) createArrayFS(/* array_type, */ arrayLength);  // for backwards compat w/ v2, don't create typed arrays
+    // return (TOP) createArrayFS(/* array_type, */ arrayLength); // for backwards compat w/ v2,
+    // don't create typed arrays
     if (IS_DISABLE_SUBTYPE_FSARRAY_CREATION) {
       return (TOP) createArrayFS(arrayLength);
     } else {
@@ -1527,23 +1578,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  /* 
-   * ===============  These methods might be deprecated in favor of
-   *                  new FSArray(jcas, length) etc.
-   *                  except that these run with the CAS, not JCas 
-   * (non-Javadoc)
+  /*
+   * =============== These methods might be deprecated in favor of new FSArray(jcas, length) etc.
+   * except that these run with the CAS, not JCas (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.CAS#createArrayFS(int)
    */
   @Override
   public ArrayFS createArrayFS(int length) {
     return createArrayFS(getTypeSystemImpl().fsArrayType, length);
   }
-  
+
   private ArrayFS createArrayFS(TypeImpl type, int length) {
     checkArrayPreconditions(length);
-    return new FSArray(type, this, length);         
+    return new FSArray(type, this, length);
   }
-  
+
   @Override
   public IntArrayFS createIntArrayFS(int length) {
     checkArrayPreconditions(length);
@@ -1561,7 +1611,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     checkArrayPreconditions(length);
     return new StringArray(getTypeSystemImpl().stringArrayType, this, length);
   }
-  
 
   // return true if only one sofa and it is the default text sofa
   public boolean isBackwardCompatibleCas() {
@@ -1573,7 +1622,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (!this.svd.initialSofaCreated) {
       return false;
     }
-    
+
     Sofa sofa = this.getInitialView().getSofa();
 
     // check for mime type exactly equal to "text"
@@ -1632,46 +1681,45 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   Sofa createSofa(String sofaName, String mimeType) {
     return createSofa(++this.svd.viewCount, sofaName, mimeType);
   }
-  
+
   Sofa createSofa(int sofaNum, String sofaName, String mimeType) {
     if (this.svd.sofaNameSet.contains(sofaName)) {
       throw new CASRuntimeException(CASRuntimeException.SOFANAME_ALREADY_EXISTS, sofaName);
     }
     final boolean viewAlreadyExists = sofaNum == this.svd.viewCount;
     if (!viewAlreadyExists) {
-      if (sofaNum == 1) {      // skip the test for sofaNum == 1 - this can be set "later"
+      if (sofaNum == 1) { // skip the test for sofaNum == 1 - this can be set "later"
         if (this.svd.viewCount == 0) {
           this.svd.viewCount = 1;
         } // else it is == or higher, so don't reset it down
       } else { // sofa is not initial sofa - is guaranteed to be set when view created
-//        if (sofaNum != this.svd.viewCount + 1) {
-//          System.out.println("debug");
-//        }
+        // if (sofaNum != this.svd.viewCount + 1) {
+        // System.out.println("debug");
+        // }
         assert (sofaNum == this.svd.viewCount + 1);
-        this.svd.viewCount = sofaNum;        
+        this.svd.viewCount = sofaNum;
       }
     }
-    
-    Sofa sofa = new Sofa(
-        getTypeSystemImpl().sofaType, 
-        this.getBaseCAS(),  // view for a sofa is the base cas to correspond to where it gets indexed
-        sofaNum,
-        sofaName,
-        mimeType);
-    
+
+    Sofa sofa = new Sofa(getTypeSystemImpl().sofaType, this.getBaseCAS(), // view for a sofa is the
+                                                                          // base cas to correspond
+                                                                          // to where it gets
+                                                                          // indexed
+            sofaNum, sofaName, mimeType);
+
     this.getBaseIndexRepository().addFS(sofa);
     this.svd.sofaNameSet.add(sofaName);
     if (!viewAlreadyExists) {
-      getView(sofa);  // create the view that goes with this Sofa
+      getView(sofa); // create the view that goes with this Sofa
     }
     return sofa;
   }
-  
+
   boolean hasView(String name) {
     return this.svd.sofaNameSet.contains(name);
   }
 
-  Sofa createInitialSofa(String mimeType) { 
+  Sofa createInitialSofa(String mimeType) {
     Sofa sofa = createSofa(1, CAS.NAME_DEFAULT_SOFA, mimeType);
 
     registerInitialSofa();
@@ -1716,18 +1764,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return aSofa;
   }
-  
-  
+
   public int ll_getSofaNum(int sofaRef) {
-    return ((Sofa)getFsFromId_checked(sofaRef)).getSofaNum();
+    return ((Sofa) getFsFromId_checked(sofaRef)).getSofaNum();
   }
-  
+
   public String ll_getSofaID(int sofaRef) {
-    return ((Sofa)getFsFromId_checked(sofaRef)).getSofaID(); 
+    return ((Sofa) getFsFromId_checked(sofaRef)).getSofaID();
   }
-  
+
   public String ll_getSofaDataString(int sofaAddr) {
-    return ((Sofa)getFsFromId_checked(sofaAddr)).getSofaString();
+    return ((Sofa) getFsFromId_checked(sofaAddr)).getSofaString();
   }
 
   public CASImpl getBaseCAS() {
@@ -1736,7 +1783,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @Override
   public <T extends SofaFS> FSIterator<T> getSofaIterator() {
-    FSIndex<T> sofaIndex = this.svd.baseCAS.indexRepository.<T>getIndex(CAS.SOFA_INDEX_NAME);
+    FSIndex<T> sofaIndex = this.svd.baseCAS.indexRepository.<T> getIndex(CAS.SOFA_INDEX_NAME);
     return sofaIndex.iterator();
   }
 
@@ -1749,77 +1796,80 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return this.mySofaRef;
   }
-  
-  
 
   // For internal use only
   public InputStream getSofaDataStream(SofaFS aSofa) {
-        
-    Sofa sofa = (Sofa) aSofa;    
+
+    Sofa sofa = (Sofa) aSofa;
     String sd = sofa.getLocalStringData();
 
     if (null != sd) {
       ByteArrayInputStream bis;
       bis = new ByteArrayInputStream(sd.getBytes(StandardCharsets.UTF_8));
       return bis;
-      
+
     } else if (null != aSofa.getLocalFSData()) {
       TOP fs = (TOP) sofa.getLocalFSData();
       ByteBuffer buf = null;
-      switch(fs._getTypeCode()) {
-      
-      case stringArrayTypeCode: {
-        StringBuilder sb = new StringBuilder();
-        final String[] theArray = ((StringArray) fs)._getTheArray();
-        
-        for (int i = 0; i < theArray.length; i++) {
-          if (i != 0) {
-            sb.append('\n');
+      switch (fs._getTypeCode()) {
+
+        case stringArrayTypeCode: {
+          StringBuilder sb = new StringBuilder();
+          final String[] theArray = ((StringArray) fs)._getTheArray();
+
+          for (int i = 0; i < theArray.length; i++) {
+            if (i != 0) {
+              sb.append('\n');
+            }
+            sb.append(theArray[i]);
           }
-          sb.append(theArray[i]);
+          return new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8));
         }
-        return new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8) );
-      }
-      case intArrayTypeCode: {
-        final int[] theArray = ((IntegerArray) fs)._getTheArray();
-        (buf = ByteBuffer.allocate(theArray.length * 4)).asIntBuffer().put(theArray, 0, theArray.length);
-        break;
-      }
-        
-      case floatArrayTypeCode: {
-        final float[] theArray = ((FloatArray) fs)._getTheArray();
-        (buf = ByteBuffer.allocate(theArray.length * 4)).asFloatBuffer().put(theArray, 0, theArray.length);
-        break;
-      }
-        
-      case byteArrayTypeCode: {
-        final byte[] theArray = ((ByteArray) fs)._getTheArray();
-        buf = ByteBuffer.wrap(theArray);
-        break;
+        case intArrayTypeCode: {
+          final int[] theArray = ((IntegerArray) fs)._getTheArray();
+          (buf = ByteBuffer.allocate(theArray.length * 4)).asIntBuffer().put(theArray, 0,
+                  theArray.length);
+          break;
+        }
+
+        case floatArrayTypeCode: {
+          final float[] theArray = ((FloatArray) fs)._getTheArray();
+          (buf = ByteBuffer.allocate(theArray.length * 4)).asFloatBuffer().put(theArray, 0,
+                  theArray.length);
+          break;
+        }
+
+        case byteArrayTypeCode: {
+          final byte[] theArray = ((ByteArray) fs)._getTheArray();
+          buf = ByteBuffer.wrap(theArray);
+          break;
+        }
+
+        case shortArrayTypeCode: {
+          final short[] theArray = ((ShortArray) fs)._getTheArray();
+          (buf = ByteBuffer.allocate(theArray.length * 2)).asShortBuffer().put(theArray, 0,
+                  theArray.length);
+          break;
+        }
+
+        case longArrayTypeCode: {
+          final long[] theArray = ((LongArray) fs)._getTheArray();
+          (buf = ByteBuffer.allocate(theArray.length * 8)).asLongBuffer().put(theArray, 0,
+                  theArray.length);
+          break;
+        }
+
+        case doubleArrayTypeCode: {
+          final double[] theArray = ((DoubleArray) fs)._getTheArray();
+          (buf = ByteBuffer.allocate(theArray.length * 8)).asDoubleBuffer().put(theArray, 0,
+                  theArray.length);
+          break;
+        }
+
+        default:
+          throw Misc.internalError();
       }
 
-      case shortArrayTypeCode: {
-        final short[] theArray = ((ShortArray) fs)._getTheArray();
-        (buf = ByteBuffer.allocate(theArray.length * 2)).asShortBuffer().put(theArray, 0, theArray.length);
-        break;
-      }
-
-      case longArrayTypeCode: {
-        final long[] theArray = ((LongArray) fs)._getTheArray();
-        (buf = ByteBuffer.allocate(theArray.length * 8)).asLongBuffer().put(theArray, 0, theArray.length);
-         break;
-      }
-         
-      case doubleArrayTypeCode: {
-        final double[] theArray = ((DoubleArray) fs)._getTheArray();
-        (buf = ByteBuffer.allocate(theArray.length * 8)).asDoubleBuffer().put(theArray, 0, theArray.length);
-        break;
-      }
-
-      default:
-        throw Misc.internalError();
-      }
-      
       ByteArrayInputStream bis = new ByteArrayInputStream(buf.array());
       return bis;
 
@@ -1831,12 +1881,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       } catch (IOException exc) {
         throw new CASRuntimeException(CASRuntimeException.SOFADATASTREAM_ERROR, exc.getMessage());
       }
-    } 
+    }
     return null;
   }
 
   @Override
-  public<T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
+  public <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it,
+          FSMatchConstraint cons) {
     return new FilteredIterator<>(it, cons);
   }
 
@@ -1852,8 +1903,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // at the same time
     final ClassLoader cl = getJCasClassLoader();
     synchronized (ts) {
-//      //debug
-//      System.out.format("debug committing ts %s classLoader %s%n", ts.hashCode(), cl);
+      // //debug
+      // System.out.format("debug committing ts %s classLoader %s%n", ts.hashCode(), cl);
       if (!ts.isCommitted()) {
         ts.set_skip_loading_user_jcas(skip_loading_user_jcas);
         TypeSystemImpl tsc = ts.commit(cl);
@@ -1861,19 +1912,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           installTypeSystemInAllViews(tsc);
           ts = tsc;
         }
-      } 
-    } 
-    svd.baseGenerators = svd.generators = ts.getGeneratorsForClassLoader(cl, false);  // false - not PEAR            
-        
+      }
+    }
+    svd.baseGenerators = svd.generators = ts.getGeneratorsForClassLoader(cl, false); // false - not
+                                                                                     // PEAR
+
     createIndexRepository();
     return ts;
-    
+
   }
-  
+
   public TypeSystemImpl commitTypeSystem() {
     return commitTypeSystem(false);
   }
-  
+
   private void createIndexRepository() {
     if (!this.getTypeSystemMgr().isCommitted()) {
       throw new CASAdminException(CASAdminException.MUST_COMMIT_TYPE_SYSTEM);
@@ -1935,7 +1987,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void flush() {
     reset();
   }
-  
+
   @Override
   public FSIndexRepository getIndexRepository() {
     if (this == this.svd.baseCAS) {
@@ -1954,11 +2006,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return null;
   }
-  
+
   FSIndexRepositoryImpl getBaseIndexRepositoryImpl() {
     return this.svd.baseCAS.indexRepository;
   }
-  
+
   void addSofaFsToIndex(SofaFS sofa) {
     this.svd.baseCAS.getBaseIndexRepository().addFS(sofa);
   }
@@ -1967,14 +2019,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.mySofaRef = aSofa;
   }
 
-
   /**
    * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
    */
   @Override
   public <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it) {
-//    return new FSListIteratorImpl<T>(it);
-    return it;  // in v3, FSIterator extends listIterator
+    // return new FSListIteratorImpl<T>(it);
+    return it; // in v3, FSIterator extends listIterator
   }
 
   /**
@@ -1992,56 +2043,59 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // this.svd.casMetadata.fsClassRegistry = fsClassReg;
   // }
 
-  
   // JCasGen'd cover classes use this to add their generators to the class
   // registry
   // Note that this now (June 2007) a no-op for JCasGen'd generators
-  // Also previously (but not now) used in JCas initialization to copy-down super generators to subtypes
+  // Also previously (but not now) used in JCas initialization to copy-down super generators to
+  // subtypes
   // as needed
   public FSClassRegistry getFSClassRegistry() {
     return null;
-//    return getTypeSystemImpl().getFSClassRegistry();
+    // return getTypeSystemImpl().getFSClassRegistry();
   }
 
   /**
-   * @param fs the Feature Structure being updated
-   * @param fi the Feature of fs being updated, or null if fs is an array 
+   * @param fs
+   *          the Feature Structure being updated
+   * @param fi
+   *          the Feature of fs being updated, or null if fs is an array
    * @param arrayIndexStart
    * @param nbrOfConsecutive
    */
   private void logFSUpdate(TOP fs, FeatureImpl fi, int arrayIndexStart, int nbrOfConsecutive) {
-   
-    //log the FS
-    
+
+    // log the FS
+
     final Map<TOP, FsChange> changes = this.svd.modifiedPreexistingFSs;
-    
-    //create or use last FsChange element
-    
+
+    // create or use last FsChange element
+
     FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
-          
+
     if (fi == null) {
       Misc.assertUie(arrayIndexStart >= 0);
       change.addArrayData(arrayIndexStart, nbrOfConsecutive);
     } else {
-      change.addFeatData(fi.getOffset());  
+      change.addFeatData(fi.getOffset());
     }
   }
 
   /**
-   * @param fs the Feature Structure being updated
+   * @param fs
+   *          the Feature Structure being updated
    * @param arrayIndexStart
    * @param nbrOfConsecutive
    */
   private void logFSUpdate(TOP fs, PositiveIntSet indexesPlus1) {
-   
-    //log the FS
-    
+
+    // log the FS
+
     final Map<TOP, FsChange> changes = this.svd.modifiedPreexistingFSs;
-    
-    //create or use last FsChange element
-    
+
+    // create or use last FsChange element
+
     FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
-          
+
     change.addArrayData(indexesPlus1);
   }
 
@@ -2049,54 +2103,54 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     logFSUpdate(fs, fi, -1, -1); // indicate non-array call
   }
 
-  
   /**
-   * This is your link from the low-level API to the high-level API. Use this
-   * method to create a FeatureStructure object from an address. Note that the
-   * reverse is not supported by public APIs (i.e., there is currently no way to
-   * get at the address of a FeatureStructure. Maybe we will need to change
-   * that.
+   * This is your link from the low-level API to the high-level API. Use this method to create a
+   * FeatureStructure object from an address. Note that the reverse is not supported by public APIs
+   * (i.e., there is currently no way to get at the address of a FeatureStructure. Maybe we will
+   * need to change that.
    * 
    * The "create" in "createFS" is a misnomer - the FS must already be created.
    * 
-   * @param id The id of the feature structure to be created.
-   * @param <T> The Java class associated with this feature structure
+   * @param id
+   *          The id of the feature structure to be created.
+   * @param <T>
+   *          The Java class associated with this feature structure
    * @return A FeatureStructure object.
    */
   public <T extends TOP> T createFS(int id) {
     return getFsFromId_checked(id);
   }
-  
+
   public int getArraySize(CommonArrayFS fs) {
     return fs.size();
   }
-  
+
   @Override
   public int ll_getArraySize(int id) {
     return getArraySize(getFsFromId_checked(id));
   }
-        
+
   final void setWithCheckAndJournal(TOP fs, FeatureImpl fi, Runnable setter) {
     if (fs._inSetSortedIndex()) {
       boolean wasRemoved = checkForInvalidFeatureSetting(fs, fi.getCode());
       setter.run();
       if (wasRemoved) {
         maybeAddback(fs);
-      } 
+      }
     } else {
       setter.run();
     }
 
     maybeLogUpdate(fs, fi);
   }
-  
+
   final public void setWithCheckAndJournal(TOP fs, int featCode, Runnable setter) {
     if (fs._inSetSortedIndex()) {
       boolean wasRemoved = checkForInvalidFeatureSetting(fs, featCode);
       setter.run();
       if (wasRemoved) {
         maybeAddback(fs);
-      } 
+      }
     } else {
       setter.run();
     }
@@ -2104,56 +2158,66 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     maybeLogUpdate(fs, featCode);
   }
 
-    
-//  public void setWithCheck(FeatureStructureImplC fs, FeatureImpl feat, Runnable setter) {
-//    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat);
-//    setter.run();
-//    if (wasRemoved) {
-//      maybeAddback(fs);
-//    }
-//  }
-  
+  // public void setWithCheck(FeatureStructureImplC fs, FeatureImpl feat, Runnable setter) {
+  // boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat);
+  // setter.run();
+  // if (wasRemoved) {
+  // maybeAddback(fs);
+  // }
+  // }
+
   /**
-   * This method called by setters in JCas gen'd classes when 
-   * the setter must check for journaling
-   * @param fs -
-   * @param fi -
-   * @param setter -
+   * This method called by setters in JCas gen'd classes when the setter must check for journaling
+   * 
+   * @param fs
+   *          -
+   * @param fi
+   *          -
+   * @param setter
+   *          -
    */
   public final void setWithJournal(FeatureStructureImplC fs, FeatureImpl fi, Runnable setter) {
     setter.run();
     maybeLogUpdate(fs, fi);
   }
-  
+
   public final boolean isLoggingNeeded(FeatureStructureImplC fs) {
     return this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id);
   }
-  
-  /** 
-   * @param fs the Feature Structure being updated
-   * @param feat the feature of fs being updated, or null if fs is a primitive array
-   * @param i the index being updated
+
+  /**
+   * @param fs
+   *          the Feature Structure being updated
+   * @param feat
+   *          the feature of fs being updated, or null if fs is a primitive array
+   * @param i
+   *          the index being updated
    */
   final public void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat, i, 1);
-    }    
+    }
   }
-  
-  /** 
-   * @param fs the Feature Structure being updated
-   * @param indexesPlus1 - a set of indexes (plus 1) that have been update
+
+  /**
+   * @param fs
+   *          the Feature Structure being updated
+   * @param indexesPlus1
+   *          - a set of indexes (plus 1) that have been update
    */
   final public void maybeLogArrayUpdates(FeatureStructureImplC fs, PositiveIntSet indexesPlus1) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, indexesPlus1);
-    }    
+    }
   }
-  
+
   /**
-   * @param fs a primitive array FS
-   * @param startingIndex -
-   * @param length number of consequtive items
+   * @param fs
+   *          a primitive array FS
+   * @param startingIndex
+   *          -
+   * @param length
+   *          number of consequtive items
    */
   public final void maybeLogArrayUpdates(FeatureStructureImplC fs, int startingIndex, int length) {
     if (isLoggingNeeded(fs)) {
@@ -2161,56 +2225,57 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  
   final public void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat);
     }
   }
-  
+
   final public void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
     if (isLoggingNeeded(fs)) {
-      this.logFSUpdate((TOP)fs, getFeatFromCode_checked(featCode));
+      this.logFSUpdate((TOP) fs, getFeatFromCode_checked(featCode));
     }
   }
-  
+
   final public boolean isLogging() {
     return this.svd.trackingMark != null;
   }
-    
-//  /**
-//   * Common setter code for features in Feature Structures
-//   * 
-//   * These come in two styles:  one with int values, one with Object values
-//   *   Object values are FS or Strings or JavaObjects
-//   */
-//  
-//  /**
-//   * low level setter 
-//   *  
-//   * @param fs      the feature structure
-//   * @param feat    the feature to set
-//   * @param value -
-//   */
-//  
-//  public void setFeatureValue(FeatureStructureImplC fs, FeatureImpl feat, int value) {
-//    fs.setIntValue(feat, value);
-////    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
-////    fs._intData[feat.getAdjustedOffset()] = value;
-////    if (wasRemoved) {
-////      maybeAddback(fs);
-////    }
-////    maybeLogUpdate(fs, feat);
-//  }
+
+  // /**
+  // * Common setter code for features in Feature Structures
+  // *
+  // * These come in two styles: one with int values, one with Object values
+  // * Object values are FS or Strings or JavaObjects
+  // */
+  //
+  // /**
+  // * low level setter
+  // *
+  // * @param fs the feature structure
+  // * @param feat the feature to set
+  // * @param value -
+  // */
+  //
+  // public void setFeatureValue(FeatureStructureImplC fs, FeatureImpl feat, int value) {
+  // fs.setIntValue(feat, value);
+  //// boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
+  //// fs._intData[feat.getAdjustedOffset()] = value;
+  //// if (wasRemoved) {
+  //// maybeAddback(fs);
+  //// }
+  //// maybeLogUpdate(fs, feat);
+  // }
 
   /**
-   * version for longs, uses two slots
-   * Only called from FeatureStructureImplC after determining 
-   *   there is no local field to use
-   * Is here because of 3 calls to things in this class
-   * @param fsIn      the feature structure
-   * @param feat    the feature to set
-   * @param v -
+   * version for longs, uses two slots Only called from FeatureStructureImplC after determining
+   * there is no local field to use Is here because of 3 calls to things in this class
+   * 
+   * @param fsIn
+   *          the feature structure
+   * @param feat
+   *          the feature to set
+   * @param v
+   *          -
    */
   public void setLongValue(FeatureStructureImplC fsIn, FeatureImpl feat, long v) {
     TOP fs = (TOP) fsIn;
@@ -2220,108 +2285,143 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (wasRemoved) {
         maybeAddback(fs);
       }
-      
+
     } else {
       fs._setLongValueNcNj(feat, v);
     }
     maybeLogUpdate(fs, feat);
   }
-    
+
   void setFeatureValue(int fsRef, int featureCode, TOP value) {
-    getFsFromId_checked(fsRef).setFeatureValue(getFeatFromCode_checked(featureCode), value); 
+    getFsFromId_checked(fsRef).setFeatureValue(getFeatFromCode_checked(featureCode), value);
   }
-  
+
   /**
-   * internal use - special setter for setting feature values, including
-   *   special handling if the feature is for the sofaArray,
-   *   when deserializing
-   * @param fs - 
-   * @param feat -
-   * @param value -
+   * internal use - special setter for setting feature values, including special handling if the
+   * feature is for the sofaArray, when deserializing
+   * 
+   * @param fs
+   *          -
+   * @param feat
+   *          -
+   * @param value
+   *          -
    */
   public static void setFeatureValueMaybeSofa(TOP fs, FeatureImpl feat, TOP value) {
     if (fs instanceof Sofa) {
       assert feat.getCode() == sofaArrayFeatCode;
-      ((Sofa)fs).setLocalSofaData(value);
+      ((Sofa) fs).setLocalSofaData(value);
     } else {
       fs.setFeatureValue(feat, value);
     }
   }
-  
+
   /**
-   * Internal use, for cases where deserializing - special case setting sofString to skip updating the document annotation
-   * @param fs -
-   * @param feat -
-   * @param s -
+   * Internal use, for cases where deserializing - special case setting sofString to skip updating
+   * the document annotation
+   * 
+   * @param fs
+   *          -
+   * @param feat
+   *          -
+   * @param s
+   *          -
    */
-  public static void setFeatureValueFromStringNoDocAnnotUpdate(FeatureStructureImplC fs, FeatureImpl feat, String s) {
-    if (fs instanceof Sofa && 
-        feat.getCode() == sofaStringFeatCode) {
-      ((Sofa)fs).setLocalSofaDataNoDocAnnotUpdate(s);
+  public static void setFeatureValueFromStringNoDocAnnotUpdate(FeatureStructureImplC fs,
+          FeatureImpl feat, String s) {
+    if (fs instanceof Sofa && feat.getCode() == sofaStringFeatCode) {
+      ((Sofa) fs).setLocalSofaDataNoDocAnnotUpdate(s);
     } else {
       setFeatureValueFromString(fs, feat, s);
     }
   }
-  
+
   /**
    * Supports setting slots to "0" for null values
-   * @param fs The feature structure to update
-   * @param feat the feature to update-
-   * @param s the string representation of the value, could be null
+   * 
+   * @param fs
+   *          The feature structure to update
+   * @param feat
+   *          the feature to update-
+   * @param s
+   *          the string representation of the value, could be null
    */
-  public static void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat, String s) {
+  public static void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat,
+          String s) {
     final TypeImpl range = feat.getRangeImpl();
     if (fs instanceof Sofa) {
       // sofa has special setters
       Sofa sofa = (Sofa) fs;
       switch (feat.getCode()) {
-      case sofaMimeFeatCode : sofa.setMimeType(s); break;
-      case sofaStringFeatCode: sofa.setLocalSofaData(s); break;
-      case sofaUriFeatCode: sofa.setRemoteSofaURI(s); break;
-      default: // left empty - ignore trying to set final fields
+        case sofaMimeFeatCode:
+          sofa.setMimeType(s);
+          break;
+        case sofaStringFeatCode:
+          sofa.setLocalSofaData(s);
+          break;
+        case sofaUriFeatCode:
+          sofa.setRemoteSofaURI(s);
+          break;
+        default: // left empty - ignore trying to set final fields
       }
       return;
     }
-    
+
     if (feat.isInInt) {
       switch (range.getCode()) {
-      case floatTypeCode :   fs.setFloatValue(feat, (s == null) ? 0F : Float.parseFloat(s)); break;
-      case booleanTypeCode : fs.setBooleanValue(feat, (s == null) ? false : Boolean.parseBoolean(s)); break;
-      case longTypeCode :    fs.setLongValue(feat, (s == null) ? 0L : Long.parseLong(s)); break;
-      case doubleTypeCode :  fs.setDoubleValue(feat, (s == null) ? 0D : Double.parseDouble(s)); break;
-      case byteTypeCode :  fs.setByteValue(feat, (s == null) ? 0 : Byte.parseByte(s)); break;
-      case shortTypeCode :  fs.setShortValue(feat, (s == null) ? 0 : Short.parseShort(s)); break;
-      case intTypeCode :  fs.setIntValue(feat, (s == null) ? 0 : Integer.parseInt(s)); break;
-      default:                              fs.setIntValue(feat, (s == null) ? 0 : Integer.parseInt(s));
+        case floatTypeCode:
+          fs.setFloatValue(feat, (s == null) ? 0F : Float.parseFloat(s));
+          break;
+        case booleanTypeCode:
+          fs.setBooleanValue(feat, (s == null) ? false : Boolean.parseBoolean(s));
+          break;
+        case longTypeCode:
+          fs.setLongValue(feat, (s == null) ? 0L : Long.parseLong(s));
+          break;
+        case doubleTypeCode:
+          fs.setDoubleValue(feat, (s == null) ? 0D : Double.parseDouble(s));
+          break;
+        case byteTypeCode:
+          fs.setByteValue(feat, (s == null) ? 0 : Byte.parseByte(s));
+          break;
+        case shortTypeCode:
+          fs.setShortValue(feat, (s == null) ? 0 : Short.parseShort(s));
+          break;
+        case intTypeCode:
+          fs.setIntValue(feat, (s == null) ? 0 : Integer.parseInt(s));
+          break;
+        default:
+          fs.setIntValue(feat, (s == null) ? 0 : Integer.parseInt(s));
       }
     } else if (range.isRefType) {
       if (s == null) {
-        fs.setFeatureValue(feat,  null);
+        fs.setFeatureValue(feat, null);
       } else {
-        // Setting a reference value "{0}" from a string is not supported. 
-        throw new CASRuntimeException(CASRuntimeException.SET_REF_FROM_STRING_NOT_SUPPORTED, feat.getName());
+        // Setting a reference value "{0}" from a string is not supported.
+        throw new CASRuntimeException(CASRuntimeException.SET_REF_FROM_STRING_NOT_SUPPORTED,
+                feat.getName());
       }
-    } else if (range.isStringOrStringSubtype()) {  // includes TypeImplSubString
+    } else if (range.isStringOrStringSubtype()) { // includes TypeImplSubString
       // is String or Substring
       fs.setStringValue(feat, (s == null) ? null : s);
-//    } else if (range == getTypeSystemImpl().javaObjectType) {
-//      fs.setJavaObjectValue(feat, (s == null) ? null : deserializeJavaObject(s));
+      // } else if (range == getTypeSystemImpl().javaObjectType) {
+      // fs.setJavaObjectValue(feat, (s == null) ? null : deserializeJavaObject(s));
     } else {
       Misc.internalError();
-    }    
+    }
   }
 
-//  private Object deserializeJavaObject(String s) {
-//    throw new UnsupportedOperationException("Deserializing JavaObjects not yet implemented");
-//  }
-//
-//  static String serializeJavaObject(Object s) {
-//    throw new UnsupportedOperationException("Serializing JavaObjects not yet implemented");
-//  }
+  // private Object deserializeJavaObject(String s) {
+  // throw new UnsupportedOperationException("Deserializing JavaObjects not yet implemented");
+  // }
+  //
+  // static String serializeJavaObject(Object s) {
+  // throw new UnsupportedOperationException("Serializing JavaObjects not yet implemented");
+  // }
 
   /*
-   * This should be the only place where the encoding of floats and doubles in terms of ints is specified
-   * Someday we may want to preserve NAN things using "raw" versions
+   * This should be the only place where the encoding of floats and doubles in terms of ints is
+   * specified Someday we may want to preserve NAN things using "raw" versions
    */
   public static final float int2float(int i) {
     return Float.intBitsToFloat(i);
@@ -2345,15 +2445,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final boolean isAbstractArrayType(Type type) {
-    return isArrayType(type); 
+    return isArrayType(type);
   }
-  
+
   public final boolean isArrayType(Type type) {
     return ((TypeImpl) type).isArray();
   }
 
   public final boolean isPrimitiveArrayType(Type type) {
-    return (type instanceof TypeImpl_array) && ! type.getComponentType().isPrimitive();
+    return (type instanceof TypeImpl_array) && !type.getComponentType().isPrimitive();
   }
 
   public final boolean isIntArrayType(Type type) {
@@ -2361,63 +2461,63 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final boolean isFloatArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == floatArrayTypeCode;
+    return ((TypeImpl) type).getCode() == floatArrayTypeCode;
   }
 
   public final boolean isStringArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == stringArrayTypeCode;
+    return ((TypeImpl) type).getCode() == stringArrayTypeCode;
   }
 
   public final boolean isBooleanArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == booleanArrayTypeCode;
+    return ((TypeImpl) type).getCode() == booleanArrayTypeCode;
   }
 
   public final boolean isByteArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == byteArrayTypeCode;
+    return ((TypeImpl) type).getCode() == byteArrayTypeCode;
   }
 
   public final boolean isShortArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == byteArrayTypeCode;
+    return ((TypeImpl) type).getCode() == byteArrayTypeCode;
   }
 
   public final boolean isLongArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == longArrayTypeCode;
+    return ((TypeImpl) type).getCode() == longArrayTypeCode;
   }
 
   public final boolean isDoubleArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == doubleArrayTypeCode;
+    return ((TypeImpl) type).getCode() == doubleArrayTypeCode;
   }
 
   public final boolean isFSArrayType(Type type) {
-    return ((TypeImpl)type).getCode() == fsArrayTypeCode;
+    return ((TypeImpl) type).getCode() == fsArrayTypeCode;
   }
 
   public final boolean isIntType(Type type) {
-    return ((TypeImpl)type).getCode() == intTypeCode;
+    return ((TypeImpl) type).getCode() == intTypeCode;
   }
 
   public final boolean isFloatType(Type type) {
-    return ((TypeImpl)type).getCode() == floatTypeCode;
+    return ((TypeImpl) type).getCode() == floatTypeCode;
   }
 
   public final boolean isByteType(Type type) {
-    return ((TypeImpl)type).getCode() == byteTypeCode;
+    return ((TypeImpl) type).getCode() == byteTypeCode;
   }
 
   public final boolean isBooleanType(Type type) {
-    return ((TypeImpl)type).getCode() == floatTypeCode;
+    return ((TypeImpl) type).getCode() == floatTypeCode;
   }
 
   public final boolean isShortType(Type type) {
-    return ((TypeImpl)type).getCode() == shortTypeCode;
+    return ((TypeImpl) type).getCode() == shortTypeCode;
   }
 
   public final boolean isLongType(Type type) {
-    return ((TypeImpl)type).getCode() == longTypeCode;
+    return ((TypeImpl) type).getCode() == longTypeCode;
   }
 
   public final boolean isDoubleType(Type type) {
-    return ((TypeImpl)type).getCode() == doubleTypeCode;
+    return ((TypeImpl) type).getCode() == doubleTypeCode;
   }
 
   /*
@@ -2454,7 +2554,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.getViewFromSofaNbr(sofaNum);
   }
 
-  
   @Override
   public CAS getCurrentView() {
     return getView(CAS.NAME_DEFAULT_SOFA);
@@ -2470,25 +2569,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return this.jcas;
   }
-  
+
   @Override
-public JCasImpl getJCasImpl() {
+  public JCasImpl getJCasImpl() {
     if (this.jcas == null) {
       this.jcas = JCasImpl.getJCas(this);
     }
     return this.jcas;
   }
 
-
-//  /**
-//   * Internal use only
-//   * 
-//   * @return corresponding JCas, assuming it exists
-//   */
-//  public JCas getExistingJCas() {
-//    return this.jcas;
-//  }
-//
+  // /**
+  // * Internal use only
+  // *
+  // * @return corresponding JCas, assuming it exists
+  // */
+  // public JCas getExistingJCas() {
+  // return this.jcas;
+  // }
+  //
   // Create JCas view of aSofa
   @Override
   public JCas getJCas(SofaFS aSofa) throws CASException {
@@ -2498,11 +2596,10 @@ public JCasImpl getJCasImpl() {
     return getView(aSofa).getJCas();
     /*
      * // If a JCas already exists for this Sofa, return it JCas aJCas = (JCas)
-     * this.svd.baseCAS.sofa2jcasMap.get(Integer.valueOf(aSofa.getSofaRef())); if
-     * (null != aJCas) { return aJCas; } // Get view of aSofa CASImpl view =
-     * (CASImpl) getView(aSofa); // wrap in JCas aJCas = view.getJCas();
-     * this.sofa2jcasMap.put(Integer.valueOf(aSofa.getSofaRef()), aJCas); return
-     * aJCas;
+     * this.svd.baseCAS.sofa2jcasMap.get(Integer.valueOf(aSofa.getSofaRef())); if (null != aJCas) {
+     * return aJCas; } // Get view of aSofa CASImpl view = (CASImpl) getView(aSofa); // wrap in JCas
+     * aJCas = view.getJCas(); this.sofa2jcasMap.put(Integer.valueOf(aSofa.getSofaRef()), aJCas);
+     * return aJCas;
      */
   }
 
@@ -2513,7 +2610,7 @@ public JCasImpl getJCasImpl() {
     // sofa guaranteed to be non-null by above method.
     return getJCas(sofa);
   }
-  
+
   // For internal platform use only
   CASImpl getInitialView() {
     return svd.getInitialView();
@@ -2568,27 +2665,24 @@ public JCasImpl getJCasImpl() {
    * 
    * @see org.apache.uima.cas.CAS#getView(org.apache.uima.cas.SofaFS)
    * 
-   * Callers of this can have created Sofas in the CAS without views: using the
-   * old deprecated createSofa apis (this is being fixed so these will create
-   * the views) via deserialization, which will put the sofaFSs into the CAS
-   * without creating the views, and then call this to create the views. - for
-   * deserialization: there are 2 kinds: 1 is xmi the other is binary. - for
-   * xmi: there is 1.4.x compatible and 2.1 compatible. The older format can
-   * have sofaNbrs in the order 2, 3, 4, 1 (initial sofa), 5, 6, 7 The newer
-   * format has them in order. For deserialized sofas, we insure here that there
-   * are no duplicates. This is not done in the deserializers - they use either
-   * heap dumping (binary) or generic fs creators (xmi).
+   * Callers of this can have created Sofas in the CAS without views: using the old deprecated
+   * createSofa apis (this is being fixed so these will create the views) via deserialization, which
+   * will put the sofaFSs into the CAS without creating the views, and then call this to create the
+   * views. - for deserialization: there are 2 kinds: 1 is xmi the other is binary. - for xmi: there
+   * is 1.4.x compatible and 2.1 compatible. The older format can have sofaNbrs in the order 2, 3,
+   * 4, 1 (initial sofa), 5, 6, 7 The newer format has them in order. For deserialized sofas, we
+   * insure here that there are no duplicates. This is not done in the deserializers - they use
+   * either heap dumping (binary) or generic fs creators (xmi).
    * 
-   * Goal is to detect case where check is needed (sofa exists, but view not yet
-   * created). This is done by looking for cases where sofaNbr &gt; curViewCount.
-   * This only works if the sofaNbrs go up by 1 (except for the initial sofa) in
-   * the input sequence of calls.
+   * Goal is to detect case where check is needed (sofa exists, but view not yet created). This is
+   * done by looking for cases where sofaNbr &gt; curViewCount. This only works if the sofaNbrs go
+   * up by 1 (except for the initial sofa) in the input sequence of calls.
    */
   @Override
   public CASImpl getView(SofaFS aSofa) {
     Sofa sofa = (Sofa) aSofa;
     final int sofaNbr = sofa.getSofaRef();
-//    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
+    // final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
 
     CASImpl aView = svd.getViewFromSofaNbr(sofaNbr);
     if (null == aView) {
@@ -2612,26 +2706,23 @@ public JCasImpl getJCasImpl() {
     verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, aSofa);
     return aView;
   }
-  
-//  boolean isSofaView(int sofaAddr) {
-//    if (mySofaRef == null) {
-//      // don't create initial sofa
-//      return false;
-//    }
-//    return mySofaRef == sofaAddr;
-//  }
-  
-  
+
+  // boolean isSofaView(int sofaAddr) {
+  // if (mySofaRef == null) {
+  // // don't create initial sofa
+  // return false;
+  // }
+  // return mySofaRef == sofaAddr;
+  // }
 
   /*
-   * for Sofas being added (determined by sofaNbr &gt; curViewCount): verify sofa
-   * name is not already present, and record it for future tests
+   * for Sofas being added (determined by sofaNbr &gt; curViewCount): verify sofa name is not
+   * already present, and record it for future tests
    * 
-   * Only should do the name test & update in the case of deserialized new sofas
-   * coming in. These will come in, in order. Exception is "_InitialView" which
-   * could come in the middle. If it comes in the middle, no test will be done
-   * for duplicates, and it won't be added to set of known names. This is ok
-   * because the createVIew special cases this test. Users could corrupt an xmi
+   * Only should do the name test & update in the case of deserialized new sofas coming in. These
+   * will come in, in order. Exception is "_InitialView" which could come in the middle. If it comes
+   * in the middle, no test will be done for duplicates, and it won't be added to set of known
+   * names. This is ok because the createVIew special cases this test. Users could corrupt an xmi
    * input, which would make this logic fail.
    */
   private void verifySofaNameUniqueIfDeserializedViewAdded(int sofaNbr, SofaFS aSofa) {
@@ -2651,7 +2742,7 @@ public JCasImpl getJCasImpl() {
       // ll_getStringValue(((FeatureStructureImpl)aSofa).getAddress(),
       // ((FeatureImpl) idFeat).getCode());
       Misc.assertUie(this.svd.sofaNameSet.contains(id));
-//      this.svd.sofaNameSet.add(id);
+      // this.svd.sofaNameSet.add(id);
     }
   }
 
@@ -2682,13 +2773,14 @@ public JCasImpl getJCasImpl() {
    * @param featCode
    */
   private final void checkLowLevelParams(TOP fs, TypeImpl domType, int featCode) {
- 
+
     checkFeature(featCode);
     checkTypeHasFeature(domType, featCode);
   }
 
   /**
    * Check that the featCode is a feature of the domain type
+   * 
    * @param domTypeCode
    * @param featCode
    */
@@ -2698,49 +2790,42 @@ public JCasImpl getJCasImpl() {
 
   private final void checkTypeHasFeature(TypeImpl domainType, FeatureImpl feature) {
     if (!domainType.isAppropriateFeature(feature)) {
-      throw new LowLevelException(LowLevelException.FEAT_DOM_ERROR,
-          domainType.getCode(),
-          domainType.getName(),
-          feature.getCode(),
-          feature.getName());
+      throw new LowLevelException(LowLevelException.FEAT_DOM_ERROR, domainType.getCode(),
+              domainType.getName(), feature.getCode(), feature.getName());
     }
   }
+
   /**
-   * Check the range is appropriate for this type/feature. Throws
-   * LowLevelException if it isn't.
+   * Check the range is appropriate for this type/feature. Throws LowLevelException if it isn't.
    * 
    * @param domType
-   *                domain type
+   *          domain type
    * @param ranType
-   *                range type
+   *          range type
    * @param feat
-   *                feature
+   *          feature
    */
   public final void checkTypingConditions(Type domType, Type ranType, Feature feat) {
     TypeImpl domainTi = (TypeImpl) domType;
     FeatureImpl fi = (FeatureImpl) feat;
     checkTypeHasFeature(domainTi, fi);
     if (!((TypeImpl) fi.getRange()).subsumes((TypeImpl) ranType)) {
-      throw new LowLevelException(LowLevelException.FEAT_RAN_ERROR,
-          fi.getCode(),
-          feat.getName(),
-          ((TypeImpl) ranType).getCode(),
-          ranType.getName());
+      throw new LowLevelException(LowLevelException.FEAT_RAN_ERROR, fi.getCode(), feat.getName(),
+              ((TypeImpl) ranType).getCode(), ranType.getName());
     }
   }
 
   /**
    * Validate a feature's range is a ref to a feature structure
+   * 
    * @param featCode
    * @throws LowLevelException
    */
 
   private final void checkFsRan(FeatureImpl fi) throws LowLevelException {
     if (!fi.getRangeImpl().isRefType) {
-      throw new LowLevelException(LowLevelException.FS_RAN_TYPE_ERROR,
-          fi.getCode(),
-          fi.getName(),
-          fi.getRange().getName());
+      throw new LowLevelException(LowLevelException.FS_RAN_TYPE_ERROR, fi.getCode(), fi.getName(),
+              fi.getRange().getName());
     }
   }
 
@@ -2749,19 +2834,19 @@ public JCasImpl getJCasImpl() {
       throw new LowLevelException(LowLevelException.INVALID_FEATURE_CODE, featureCode);
     }
   }
-  
+
   private TypeImpl getTypeFromCode(int typeCode) {
     return getTypeSystemImpl().getTypeForCode(typeCode);
   }
-  
+
   private TypeImpl getTypeFromCode_checked(int typeCode) {
     return getTypeSystemImpl().getTypeForCode_checked(typeCode);
   }
-  
+
   private FeatureImpl getFeatFromCode_checked(int featureCode) {
     return getTypeSystemImpl().getFeatureForCode_checked(featureCode);
   }
-  
+
   public final <T extends TOP> T getFsFromId_checked(int fsRef) {
     T r = getFsFromId(fsRef);
     if (r == null) {
@@ -2769,9 +2854,9 @@ public JCasImpl getJCasImpl() {
         return null;
       }
       LowLevelException e = new LowLevelException(LowLevelException.INVALID_FS_REF, fsRef);
-      // this form to enable seeing this even if the 
-      //   throwable is silently handled.
-//      System.err.println("debug " + e);      
+      // this form to enable seeing this even if the
+      // throwable is silently handled.
+      // System.err.println("debug " + e);
       throw e;
     }
     return r;
@@ -2807,11 +2892,14 @@ public JCasImpl getJCasImpl() {
     }
     return fs._id;
   }
-  
-  /** 
+
+  /**
    * used for ll_setIntValue which changes type code
-   * @param ti - the type of the created FS
-   * @param id - the id to use 
+   * 
+   * @param ti
+   *          - the type of the created FS
+   * @param id
+   *          - the id to use
    * @return the FS
    */
   private TOP createFsWithExistingId(TypeImpl ti, int id) {
@@ -2826,8 +2914,10 @@ public JCasImpl getJCasImpl() {
   }
 
   /*
-  /**
+   * /**
+   * 
    * @param arrayLength
+   * 
    * @return the id of the created array
    * 
    * @see org.apache.uima.cas.impl.LowLevelCAS#ll_createArray(int, int)
@@ -2836,27 +2926,28 @@ public JCasImpl getJCasImpl() {
   public int ll_createArray(int typeCode, int arrayLength) {
     TOP fs = createArray(getTypeFromCode_checked(typeCode), arrayLength);
     setId2FsMaybeUnconditionally(fs);
-    return fs._id;      
+    return fs._id;
   }
 
   /**
-   * (for backwards compatibility with V2 CASImpl)
-   * Create a temporary (i.e., per document) array FS on the heap.
+   * (for backwards compatibility with V2 CASImpl) Create a temporary (i.e., per document) array FS
+   * on the heap.
    * 
    * @param type
-   *                The type code of the array to be created.
+   *          The type code of the array to be created.
    * @param len
-   *                The length of the array to be created.
-   * @return -               
+   *          The length of the array to be created.
+   * @return -
    * @exception ArrayIndexOutOfBoundsException
-   *                    If <code>type</code> is not a type.
+   *              If <code>type</code> is not a type.
    */
   public int createTempArray(int type, int len) {
     return ll_createArray(type, len);
   }
-  
+
   /**
-   * @param arrayLength -
+   * @param arrayLength
+   *          -
    * @return the id of the created array
    */
   @Override
@@ -2867,7 +2958,8 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * @param arrayLength -
+   * @param arrayLength
+   *          -
    * @return the id of the created array
    */
   @Override
@@ -2878,7 +2970,8 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * @param arrayLength -
+   * @param arrayLength
+   *          -
    * @return the id of the created array
    */
   @Override
@@ -2889,7 +2982,8 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * @param arrayLength -
+   * @param arrayLength
+   *          -
    * @return the id of the created array
    */
   @Override
@@ -2900,7 +2994,8 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * @param arrayLength -
+   * @param arrayLength
+   *          -
    * @return the id of the created array
    */
   @Override
@@ -2911,7 +3006,8 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * @param arrayLength -
+   * @param arrayLength
+   *          -
    * @return the id of the created array
    */
   @Override
@@ -2919,7 +3015,8 @@ public JCasImpl getJCasImpl() {
     TypeImpl ti = getTypeFromCode_checked(typeCode);
     if (doChecks) {
       if (!ti.isArray()) {
-        throw new LowLevelException(LowLevelException.CREATE_ARRAY_OF_TYPE_ERROR, typeCode, ti.getName());
+        throw new LowLevelException(LowLevelException.CREATE_ARRAY_OF_TYPE_ERROR, typeCode,
+                ti.getName());
       }
       if (arrayLength < 0) {
         throw new LowLevelException(LowLevelException.ILLEGAL_ARRAY_LENGTH, arrayLength);
@@ -2929,7 +3026,7 @@ public JCasImpl getJCasImpl() {
     set_id2fs(fs);
     return fs._id;
   }
-  
+
   public void validateArraySize(int length) {
     if (length < 0) {
       /** Array size must be &gt;= 0. */
@@ -2938,8 +3035,8 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * Safety - any time the low level API to a FS is requested,
-   * hold on to that FS until CAS reset to mimic how v2 works.
+   * Safety - any time the low level API to a FS is requested, hold on to that FS until CAS reset to
+   * mimic how v2 works.
    */
   @Override
   public final int ll_getFSRef(FeatureStructure fs) {
@@ -2948,11 +3045,11 @@ public JCasImpl getJCasImpl() {
     }
     TOP fst = (TOP) fs;
     if (fst._isPearTrampoline()) {
-      return fst._id;  // no need to hold on to this one - it's in jcas hash maps
+      return fst._id; // no need to hold on to this one - it's in jcas hash maps
     }
     // uncond. because this method can be called multiple times
-    svd.id2fs.putUnconditionally(fst);  // hold on to it
-    return ((FeatureStructureImplC)fs)._id;
+    svd.id2fs.putUnconditionally(fst); // hold on to it
+    return ((FeatureStructureImplC) fs)._id;
   }
 
   @Override
@@ -2960,6 +3057,7 @@ public JCasImpl getJCasImpl() {
     return getFsFromId_checked(id);
   }
 
+  // @formatter:off
   /**
    * Handle some unusual backwards compatibility cases
    *   featureCode = 0 - implies getting the type code
@@ -2970,6 +3068,7 @@ public JCasImpl getJCasImpl() {
    * @param featureCode -
    * @return -
    */
+  // @formatter:on
   @Override
   public final int ll_getIntValue(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
@@ -2977,38 +3076,36 @@ public JCasImpl getJCasImpl() {
       return fs._getTypeImpl().getCode(); // case where the type is being requested
     }
     FeatureImpl fi = getFeatFromCode_checked(featureCode);
-    
+
     SlotKind kind = fi.getSlotKind();
-    switch(kind) {
-    case Slot_HeapRef:
-      return fs.getFeatureValue(fi)._id;
-  
-    case Slot_Boolean:
-    case Slot_Byte:
-    case Slot_Short:
-    case Slot_Int:
-    case Slot_Float:
-      return fs._getIntValueNc(fi);
-      
-    case Slot_StrRef:
-      return getCodeForString(fs._getStringValueNc(fi));
-      
-    case Slot_LongRef:
-      return getCodeForLong(fs._getLongValueNc(fi));
-    case Slot_DoubleRef:
-      return getCodeForLong(CASImpl.double2long(fs._getDoubleValueNc(fi)));
-      
-    default: throw new CASRuntimeException(
-          CASRuntimeException.INAPPROP_RANGE, 
-          fi.getName(), 
-          "int", 
-          fi.getRange().getName());
+    switch (kind) {
+      case Slot_HeapRef:
+        return fs.getFeatureValue(fi)._id;
+
+      case Slot_Boolean:
+      case Slot_Byte:
+      case Slot_Short:
+      case Slot_Int:
+      case Slot_Float:
+        return fs._getIntValueNc(fi);
+
+      case Slot_StrRef:
+        return getCodeForString(fs._getStringValueNc(fi));
+
+      case Slot_LongRef:
+        return getCodeForLong(fs._getLongValueNc(fi));
+      case Slot_DoubleRef:
+        return getCodeForLong(CASImpl.double2long(fs._getDoubleValueNc(fi)));
+
+      default:
+        throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int",
+                fi.getRange().getName());
     }
   }
 
-//  public final int ll_getIntValueFeatOffset(int fsRef, int featureOffset) {
-//    return ll_getFSForRef(fsRef)._intData[featureOffset];
-//  }
+  // public final int ll_getIntValueFeatOffset(int fsRef, int featureOffset) {
+  // return ll_getFSForRef(fsRef)._intData[featureOffset];
+  // }
 
   @Override
   public final float ll_getFloatValue(int fsRef, int featureCode) {
@@ -3019,19 +3116,19 @@ public JCasImpl getJCasImpl() {
   public final String ll_getStringValue(int fsRef, int featureCode) {
     return getFsFromId_checked(fsRef).getStringValue(getFeatFromCode_checked(featureCode));
   }
-  
-//  public final String ll_getStringValueFeatOffset(int fsRef, int featureOffset) {
-//    return (String) getFsFromId_checked(fsRef)._refData[featureOffset];
-//  }
+
+  // public final String ll_getStringValueFeatOffset(int fsRef, int featureOffset) {
+  // return (String) getFsFromId_checked(fsRef)._refData[featureOffset];
+  // }
 
   @Override
   public final int ll_getRefValue(int fsRef, int featureCode) {
     return getFsFromId_checked(fsRef).getFeatureValue(getFeatFromCode_checked(featureCode))._id();
   }
 
-//  public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
-//    return ((FeatureStructureImplC)getFsFromId_checked(fsRef)._refData[featureOffset]).id();
-//  }
+  // public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
+  // return ((FeatureStructureImplC)getFsFromId_checked(fsRef)._refData[featureOffset]).id();
+  // }
 
   @Override
   public final int ll_getIntValue(int fsRef, int featureCode, boolean doTypeChecks) {
@@ -3044,8 +3141,7 @@ public JCasImpl getJCasImpl() {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_getFloatValue(int, int,
-   *      boolean)
+   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_getFloatValue(int, int, boolean)
    */
   @Override
   public final float ll_getFloatValue(int fsRef, int featureCode, boolean doTypeChecks) {
@@ -3058,8 +3154,7 @@ public JCasImpl getJCasImpl() {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_getStringValue(int, int,
-   *      boolean)
+   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_getStringValue(int, int, boolean)
    */
   @Override
   public final String ll_getStringValue(int fsRef, int featureCode, boolean doTypeChecks) {
@@ -3081,36 +3176,39 @@ public JCasImpl getJCasImpl() {
     }
     return getFsFromId_checked(fsRef).getFeatureValue(getFeatFromCode_checked(featureCode))._id();
   }
-  
+
   /**
-   * This is the method all normal FS feature "setters" call before doing the set operation
-   * on values where the range could be used as an index key.
+   * This is the method all normal FS feature "setters" call before doing the set operation on
+   * values where the range could be used as an index key.
    * <p>
-   * If enabled, it will check if the update may corrupt any index in any view.  The check tests
-   * whether the feature is being used as a key in one or more indexes and if the FS is in one or more 
-   * corruptable view indexes. 
+   * If enabled, it will check if the update may corrupt any index in any view. The check tests
+   * whether the feature is being used as a key in one or more indexes and if the FS is in one or
+   * more corruptable view indexes.
    * <p>
    * If true, then:
    * <ul>
-   *   <li>it may remove and remember (for later adding-back) the FS from all corruptable indexes
-   *   (bag indexes are not corruptable via updating, so these are skipped). 
-   *   The addback occurs later either via an explicit call to do so, or the end of a protectIndex block, or.
-   *   (if autoIndexProtect is enabled) after the individual feature update is completed.</li>
-   *   <li>it may give a WARN level message to the log. This enables users to 
-   *   implement their own optimized handling of this for "high performance"
-   *   applications which do not want the overhead of runtime checking.  </li></ul>
-   * <p>  
-   *   
-   * @param fs - the FS to test if it is in the indexes
-   * @param featCode - the feature being tested
+   * <li>it may remove and remember (for later adding-back) the FS from all corruptable indexes (bag
+   * indexes are not corruptable via updating, so these are skipped). The addback occurs later
+   * either via an explicit call to do so, or the end of a protectIndex block, or. (if
+   * autoIndexProtect is enabled) after the individual feature update is completed.</li>
+   * <li>it may give a WARN level message to the log. This enables users to implement their own
+   * optimized handling of this for "high performance" applications which do not want the overhead
+   * of runtime checking.</li>
+   * </ul>
+   * <p>
+   * 
+   * @param fs
+   *          - the FS to test if it is in the indexes
+   * @param featCode
+   *          - the feature being tested
    * @return true if something may need to be added back
-   */  
+   */
   private boolean checkForInvalidFeatureSetting(TOP fs, int featCode) {
     if (doInvalidFeatSettingCheck(fs)) {
       if (!svd.featureCodesInIndexKeys.get(featCode)) { // skip if no index uses this feature
         return false;
       }
- 
+
       boolean wasRemoved = checkForInvalidFeatureSetting2(fs);
       if (wasRemoved && doCorruptReport()) {
         featModWhileInIndexReport(fs, featCode);
@@ -3119,13 +3217,17 @@ public JCasImpl getJCasImpl() {
     }
     return false;
   }
- 
+
   /**
    * version for deserializers, and for set document language, using their own store for toBeAdded
    * Doesn't report updating of corruptable slots.
-   * @param fs -
-   * @param featCode -
-   * @param toBeAdded -
+   * 
+   * @param fs
+   *          -
+   * @param featCode
+   *          -
+   * @param toBeAdded
+   *          -
    * @return -
    */
   boolean checkForInvalidFeatureSetting(TOP fs, int featCode, FSsTobeAddedback toBeAdded) {
@@ -3133,89 +3235,95 @@ public JCasImpl getJCasImpl() {
       if (!svd.featureCodesInIndexKeys.get(featCode)) { // skip if no index uses this feature
         return false;
       }
- 
+
       boolean wasRemoved = removeFromCorruptableIndexAnyView(fs, toBeAdded);
-//      if (wasRemoved && doCorruptReport()) {
-//        featModWhileInIndexReport(fs, featCode);
-//      }
+      // if (wasRemoved && doCorruptReport()) {
+      // featModWhileInIndexReport(fs, featCode);
+      // }
       return wasRemoved;
     }
     return false;
   }
 
   /**
-   * version for deserializers, using their own store for toBeAdded
-   *          and not bothering to check for particular features
-   * Doesn't report updating of corruptable slots.
-   * @param fs -
-   * @param featCode -
-   * @param toBeAdded -
+   * version for deserializers, using their own store for toBeAdded and not bothering to check for
+   * particular features Doesn't report updating of corruptable slots.
+   * 
+   * @param fs
+   *          -
+   * @param featCode
+   *          -
+   * @param toBeAdded
+   *          -
    * @return -
    */
   boolean checkForInvalidFeatureSetting(TOP fs, FSsTobeAddedback toBeAdded) {
     if (doInvalidFeatSettingCheck(fs)) {
- 
+
       boolean wasRemoved = removeFromCorruptableIndexAnyView(fs, toBeAdded);
-//      if (wasRemoved && doCorruptReport()) {
-//        featModWhileInIndexReport(fs, null);
-//      }
+      // if (wasRemoved && doCorruptReport()) {
+      // featModWhileInIndexReport(fs, null);
+      // }
       return wasRemoved;
     }
     return false;
   }
-  
-//  // version of above, but using jcasFieldRegistryIndex
-//  private boolean checkForInvalidFeatureSettingJFRI(TOP fs, int jcasFieldRegistryIndex) {
-//    if (doInvalidFeatSettingCheck(fs) &&
-//        svd.featureJiInIndexKeys.get(jcasFieldRegistryIndex)) {
-//      
-//      boolean wasRemoved = checkForInvalidFeatureSetting2(fs);
-//      
-////      if (wasRemoved && doCorruptReport()) {
-////        featModWhileInIndexReport(fs, getFeatFromRegistry(jcasFieldRegistryIndex));
-////      }
-//      return wasRemoved;
-//    }
-//    return false;
-//  }
-  
+
+  // // version of above, but using jcasFieldRegistryIndex
+  // private boolean checkForInvalidFeatureSettingJFRI(TOP fs, int jcasFieldRegistryIndex) {
+  // if (doInvalidFeatSettingCheck(fs) &&
+  // svd.featureJiInIndexKeys.get(jcasFieldRegistryIndex)) {
+  //
+  // boolean wasRemoved = checkForInvalidFeatureSetting2(fs);
+  //
+  //// if (wasRemoved && doCorruptReport()) {
+  //// featModWhileInIndexReport(fs, getFeatFromRegistry(jcasFieldRegistryIndex));
+  //// }
+  // return wasRemoved;
+  // }
+  // return false;
+  // }
+
   private boolean checkForInvalidFeatureSetting2(TOP fs) {
     final int ssz = svd.fssTobeAddedback.size();
 
     // next method skips if the fsRef is not in the index (cache)
-    boolean wasRemoved = removeFromCorruptableIndexAnyView(
-        fs, 
-        (ssz > 0) ? getAddback(ssz) :   // validates single not in use
-                    getAddbackSingle()  // validates single usage at a time
-        );
+    boolean wasRemoved = removeFromCorruptableIndexAnyView(fs, (ssz > 0) ? getAddback(ssz) : // validates
+                                                                                             // single
+                                                                                             // not
+                                                                                             // in
+                                                                                             // use
+            getAddbackSingle() // validates single usage at a time
+    );
     if (!wasRemoved && svd.fsTobeAddedbackSingleInUse) {
       svd.fsTobeAddedbackSingleInUse = false;
     }
     return wasRemoved;
   }
 
-//  public FeatureImpl getFeatFromRegistry(int jcasFieldRegistryIndex) {
-//    return getFSClassRegistry().featuresFromJFRI[jcasFieldRegistryIndex];
-//  }
-  
+  // public FeatureImpl getFeatFromRegistry(int jcasFieldRegistryIndex) {
+  // return getFSClassRegistry().featuresFromJFRI[jcasFieldRegistryIndex];
+  // }
+
   private boolean doCorruptReport() {
-    return 
-        // skip message if wasn't removed
-        // skip message if protected in explicit block
-        IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && svd.fssTobeAddedback.size() == 0;
+    return
+    // skip message if wasn't removed
+    // skip message if protected in explicit block
+    IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && svd.fssTobeAddedback.size() == 0;
   }
-  
+
   /**
    * 
-   * @param fs - 
-   * @return false if the fs is not in a set or sorted index (bit in fs), or
-   *               the auto protect is disabled and we're not in an explicit protect block
+   * @param fs
+   *          -
+   * @return false if the fs is not in a set or sorted index (bit in fs), or the auto protect is
+   *         disabled and we're not in an explicit protect block
    */
   private boolean doInvalidFeatSettingCheck(TOP fs) {
     if (!fs._inSetSortedIndex()) {
       return false;
     }
-    
+
     final int ssz = svd.fssTobeAddedback.size();
     // skip if protection is disabled, and no explicit protection block
     if (IS_DISABLED_PROTECT_INDEXES && ssz == 0) {
@@ -3227,7 +3335,7 @@ public JCasImpl getJCasImpl() {
   private void featModWhileInIndexReport(FeatureStructure fs, int featCode) {
     featModWhileInIndexReport(fs, getFeatFromCode_checked(featCode));
   }
-  
+
   private void featModWhileInIndexReport(FeatureStructure fs, FeatureImpl fi) {
     // prepare a message which includes the feature which is a key, the fs, and
     // the call stack.
@@ -3236,70 +3344,73 @@ public JCasImpl getJCasImpl() {
     new Throwable().printStackTrace(pw);
     pw.close();
     String msg = String.format(
-        "While FS was in the index, the feature \"%s\""
-        + ", which is used as a key in one or more indexes, "
-        + "was modified\n FS = \"%s\"\n%s%n",
-        (fi == null)? "for-all-features" : fi.getName(),
-        fs.toString(),  
-        sw.toString());        
+            "While FS was in the index, the feature \"%s\""
+                    + ", which is used as a key in one or more indexes, "
+                    + "was modified\n FS = \"%s\"\n%s%n",
+            (fi == null) ? "for-all-features" : fi.getName(), fs.toString(), sw.toString());
     UIMAFramework.getLogger().log(Level.WARNING, msg);
-    
+
     if (IS_THROW_EXCEPTION_CORRUPT_INDEX) {
-      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE, new Object[]{});
-    }        
+      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE, new Object[] {});
+    }
   }
-    
+
+  // @formatter:off
   /**
    * Only called if there was something removed that needs to be added back
    * 
    * skip the addback (to defer it until later) if:
    *   - running in block mode (you can tell this if svd.fssTobeAddedback.size() &gt; 0) or
    * if running in block mode, the add back is delayed until the end of the block
-   *   
-   * @param fs the fs to add back
+   * 
+   * @param fs
+   *          the fs to add back
    */
+  // @formatter:on
   public void maybeAddback(TOP fs) {
     if (svd.fssTobeAddedback.size() == 0) {
-      assert(svd.fsTobeAddedbackSingleInUse);
+      assert (svd.fsTobeAddedbackSingleInUse);
       svd.fsTobeAddedbackSingle.addback(fs);
       svd.fsTobeAddedbackSingleInUse = false;
     }
   }
-  
+
   boolean removeFromCorruptableIndexAnyView(final TOP fs, FSsTobeAddedback toBeAdded) {
     return removeFromIndexAnyView(fs, toBeAdded, FSIndexRepositoryImpl.SKIP_BAG_INDEXES);
   }
 
   /**
-   * This might be called from low level set int value, if we support switching types, and we want to 
-   *   remove the old type from all indexes.
-   * @param fs the fs to maybe remove
-   * @param toBeAdded a place to record the removal so we can add it back later
-   * @param isSkipBagIndexes is true usually, we don't need to remove/readd to bag indexes (except for the case
-   *        of supporting switching types via low level set int for v2 backwards compatibility)
+   * This might be called from low level set int value, if we support switching types, and we want
+   * to remove the old type from all indexes.
+   * 
+   * @param fs
+   *          the fs to maybe remove
+   * @param toBeAdded
+   *          a place to record the removal so we can add it back later
+   * @param isSkipBagIndexes
+   *          is true usually, we don't need to remove/readd to bag indexes (except for the case of
+   *          supporting switching types via low level set int for v2 backwards compatibility)
    * @return true if was removed from one or more indexes
    */
-  boolean removeFromIndexAnyView(final TOP fs, FSsTobeAddedback toBeAdded, boolean isSkipBagIndexes) {
-    final TypeImpl ti = ((FeatureStructureImplC)fs)._getTypeImpl();
+  boolean removeFromIndexAnyView(final TOP fs, FSsTobeAddedback toBeAdded,
+          boolean isSkipBagIndexes) {
+    final TypeImpl ti = ((FeatureStructureImplC) fs)._getTypeImpl();
     if (ti.isAnnotationBaseType()) {
-      boolean r = removeAndRecord(fs, 
-                                  (FSIndexRepositoryImpl) fs._casView.getIndexRepository(), 
-                                  toBeAdded, 
-                                  isSkipBagIndexes);
-      fs._resetInSetSortedIndex(); 
+      boolean r = removeAndRecord(fs, (FSIndexRepositoryImpl) fs._casView.getIndexRepository(),
+              toBeAdded, isSkipBagIndexes);
+      fs._resetInSetSortedIndex();
       return r;
     }
-    
+
     // not a subtype of AnnotationBase, need to check all views (except base)
     // sofas indexed in the base view are not corruptable.
-        
+
     final Iterator<CAS> viewIterator = getViewIterator();
     boolean wasRemoved = false;
     while (viewIterator.hasNext()) {
-      wasRemoved |= removeAndRecord(fs, 
-                                    (FSIndexRepositoryImpl) viewIterator.next().getIndexRepository(), 
-                                    toBeAdded,
-                                    isSkipBagIndexes);
+      wasRemoved |= removeAndRecord(fs,
+              (FSIndexRepositoryImpl) viewIterator.next().getIndexRepository(), toBeAdded,
+              isSkipBagIndexes);
     }
     fs._resetInSetSortedIndex();
     return wasRemoved;
@@ -3307,20 +3418,27 @@ public JCasImpl getJCasImpl() {
 
   /**
    * remove a FS from all indexes in this view (except bag indexes, if isSkipBagIndex is true)
-   * @param fs the fs to be removed
-   * @param ir the view
-   * @param toBeAdded the place to record how many times it was in the index, per view
-   * @param isSkipBagIndex set to true for corruptable removes, false for remove in all cases from all indexes
+   * 
+   * @param fs
+   *          the fs to be removed
+   * @param ir
+   *          the view
+   * @param toBeAdded
+   *          the place to record how many times it was in the index, per view
+   * @param isSkipBagIndex
+   *          set to true for corruptable removes, false for remove in all cases from all indexes
    * @return true if it was removed, false if it wasn't in any corruptable index.
    */
-  private boolean removeAndRecord(TOP fs, FSIndexRepositoryImpl ir, FSsTobeAddedback toBeAdded, boolean isSkipBagIndex) {
-    boolean wasRemoved = ir.removeFS_ret(fs, isSkipBagIndex);                                        
+  private boolean removeAndRecord(TOP fs, FSIndexRepositoryImpl ir, FSsTobeAddedback toBeAdded,
+          boolean isSkipBagIndex) {
+    boolean wasRemoved = ir.removeFS_ret(fs, isSkipBagIndex);
     if (wasRemoved) {
       toBeAdded.recordRemove(fs, ir, 1);
     }
     return wasRemoved;
-  }  
+  }
 
+  // @formatter:off
   /**
    * Special considerations:
    *   Interface with corruption checking
@@ -3331,211 +3449,216 @@ public JCasImpl getJCasImpl() {
    *       a ref: treat int as FS "addr"
    *       not an int: handle like v2 where reasonable
    */
+  // @formatter:on
   @Override
   public final void ll_setIntValue(int fsRef, int featureCode, int value) {
     TOP fs = getFsFromId_checked(fsRef);
-    
+
     if (featureCode == 0) {
       switchFsType(fs, value);
       return;
     }
-    
+
     FeatureImpl fi = getFeatFromCode_checked(featureCode);
-    
+
     if (fs._getTypeImpl().isArray()) {
-      throw new UnsupportedOperationException("ll_setIntValue not permitted to set a feature of an array");
+      throw new UnsupportedOperationException(
+              "ll_setIntValue not permitted to set a feature of an array");
     }
     SlotKind kind = fi.getSlotKind();
-    
-    switch(kind) {
-    case Slot_HeapRef: 
-      if (fi.getCode() == annotBaseSofaFeatCode) {
-        // setting the sofa ref of an annotationBase
-        // can't change this so just verify it's the same
-        TOP sofa = fs.getFeatureValue(fi);
-        if (sofa._id != value) {
-          throw new UnsupportedOperationException("ll_setIntValue not permitted to change a sofaRef feature");          
+
+    switch (kind) {
+      case Slot_HeapRef:
+        if (fi.getCode() == annotBaseSofaFeatCode) {
+          // setting the sofa ref of an annotationBase
+          // can't change this so just verify it's the same
+          TOP sofa = fs.getFeatureValue(fi);
+          if (sofa._id != value) {
+            throw new UnsupportedOperationException(
+                    "ll_setIntValue not permitted to change a sofaRef feature");
+          }
+          return; // if the same, just ignore, already set
         }
-        return;  // if the same, just ignore, already set
-      }
-      
-      TOP ref = fs._casView.getFsFromId_checked(value);
-      fs.setFeatureValue(fi, ref); // does the right feature check, too
-      return;
- 
-    case Slot_Boolean: 
-    case Slot_Byte: 
-    case Slot_Short: 
-    case Slot_Int:
-    case Slot_Float:
-      fs._setIntValueCJ(fi, value); 
-      break;
-      
-    case Slot_StrRef:
-      String s = getStringForCode(value);
-      if (s == null && value != 0) {
-        Misc.internalError(new Exception("ll_setIntValue got null string for non-0 handle: " + value));
-      }
-      fs._setRefValueNfcCJ(fi, getStringForCode(value));
-      break;
-      
-    case Slot_LongRef:
-    case Slot_DoubleRef:
-      Long lng = getLongForCode(value);
-      if (lng == null) {
-        Misc.internalError(new Exception("ll_setIntValue got null Long/Double for handle: " + value));
-      }
-      fs._setLongValueNfcCJ(fi, lng);
-      break;
-      
-    default: 
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int", fi.getRange().getName());
-//      System.err.println("debug " + e);
-      throw e;  
-    }  
+
+        TOP ref = fs._casView.getFsFromId_checked(value);
+        fs.setFeatureValue(fi, ref); // does the right feature check, too
+        return;
+
+      case Slot_Boolean:
+      case Slot_Byte:
+      case Slot_Short:
+      case Slot_Int:
+      case Slot_Float:
+        fs._setIntValueCJ(fi, value);
+        break;
+
+      case Slot_StrRef:
+        String s = getStringForCode(value);
+        if (s == null && value != 0) {
+          Misc.internalError(
+                  new Exception("ll_setIntValue got null string for non-0 handle: " + value));
+        }
+        fs._setRefValueNfcCJ(fi, getStringForCode(value));
+        break;
+
+      case Slot_LongRef:
+      case Slot_DoubleRef:
+        Long lng = getLongForCode(value);
+        if (lng == null) {
+          Misc.internalError(
+                  new Exception("ll_setIntValue got null Long/Double for handle: " + value));
+        }
+        fs._setLongValueNfcCJ(fi, lng);
+        break;
+
+      default:
+        CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE,
+                fi.getName(), "int", fi.getRange().getName());
+        // System.err.println("debug " + e);
+        throw e;
+    }
   }
-  
+
   private String getStringForCode(int i) {
     if (null == svd.llstringSet) {
       return null;
     }
     return svd.llstringSet.getStringForCode(i);
   }
-  
+
   private int getCodeForString(String s) {
     if (null == svd.llstringSet) {
       svd.llstringSet = new StringSet();
     }
-    return svd.llstringSet.getCodeForString(s);  // avoids adding duplicates
+    return svd.llstringSet.getCodeForString(s); // avoids adding duplicates
   }
-  
+
   private Long getLongForCode(int i) {
     if (null == svd.lllongSet) {
       return null;
     }
     return svd.lllongSet.getLongForCode(i);
   }
-  
+
   private int getCodeForLong(long s) {
     if (null == svd.lllongSet) {
       svd.lllongSet = new LongSet();
     }
-    return svd.lllongSet.getCodeForLong(s);  // avoids adding duplicates
+    return svd.lllongSet.getCodeForLong(s); // avoids adding duplicates
   }
 
   private void switchFsType(TOP fs, int value) {
-//    throw new UnsupportedOperationException();
+    // throw new UnsupportedOperationException();
     // case where the type is being changed
     // if the new type is a sub/super type of the existing type,
-    //   some field data may be copied
+    // some field data may be copied
     // if not, no data is copied.
     //
-    //   Item is removed from index and re-indexed
-    
+    // Item is removed from index and re-indexed
+
     // to emulate what V2 did,
-    //   the indexing didn't change
-    //   all the slots were the same
-    
+    // the indexing didn't change
+    // all the slots were the same
+
     //
-        
-    boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(), FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
+
+    boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(),
+            FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
     if (!wasRemoved) {
       svd.fsTobeAddedbackSingleInUse = false;
     }
     TypeImpl newType = getTypeFromCode_checked(value);
     Class<?> newClass = newType.getJavaClass();
-    if ((fs instanceof UimaSerializable) ||
-        UimaSerializable.class.isAssignableFrom(newClass)) {
+    if ((fs instanceof UimaSerializable) || UimaSerializable.class.isAssignableFrom(newClass)) {
       throw new UnsupportedOperationException("can't switch type to/from UimaSerializable");
     }
 
     // Measurement - record which type gets switched to which other type
-    //               count how many times
-    //               record which JCas cover class goes with each type
-    //               key = old type, new type, old jcas cover class, new jcas cover class
-    //               value = count
+    // count how many times
+    // record which JCas cover class goes with each type
+    // key = old type, new type, old jcas cover class, new jcas cover class
+    // value = count
     MeasureSwitchType mst = null;
     if (MEASURE_SETINT) {
       MeasureSwitchType key = new MeasureSwitchType(fs._getTypeImpl(), newType);
-      synchronized (measureSwitches)  { // map access / updating must be synchronized
-        mst = measureSwitches.get(key); 
+      synchronized (measureSwitches) { // map access / updating must be synchronized
+        mst = measureSwitches.get(key);
         if (null == mst) {
           measureSwitches.put(key, key);
           mst = key;
-        }      
-        mst.count ++;
+        }
+        mst.count++;
         mst.newSubsumesOld = newType.subsumes(fs._getTypeImpl());
         mst.oldSubsumesNew = fs._getTypeImpl().subsumes(newType);
       }
     }
 
-    if (newClass == fs._getTypeImpl().getJavaClass() ||
-        newType.subsumes(fs._getTypeImpl())) {
+    if (newClass == fs._getTypeImpl().getJavaClass() || newType.subsumes(fs._getTypeImpl())) {
       // switch in place
       fs._setTypeImpl(newType);
       return;
     }
-    
-    // if types don't subsume each other, we 
-    //   deviate a bit from V2 behavior
-    //   and skip copying the feature slots
-    boolean isOkToCopyFeatures = // true ||  // debug 
-                                 fs._getTypeImpl().subsumes(newType) ||
-                                 newType.subsumes(fs._getTypeImpl());
-//      throw new CASRuntimeException(CASRuntimeException.ILLEGAL_TYPE_CHANGE, newType.getName(), fs._getTypeImpl().getName());
-    TOP newFs = createFsWithExistingId(newType, fs._id);  // updates id -> fs map
+
+    // if types don't subsume each other, we
+    // deviate a bit from V2 behavior
+    // and skip copying the feature slots
+    boolean isOkToCopyFeatures = // true || // debug
+            fs._getTypeImpl().subsumes(newType) || newType.subsumes(fs._getTypeImpl());
+    // throw new CASRuntimeException(CASRuntimeException.ILLEGAL_TYPE_CHANGE, newType.getName(),
+    // fs._getTypeImpl().getName());
+    TOP newFs = createFsWithExistingId(newType, fs._id); // updates id -> fs map
     // initialize fields:
-    if (isOkToCopyFeatures) { 
+    if (isOkToCopyFeatures) {
       newFs._copyIntAndRefArraysFrom(fs);
-    } 
-     
-//    if (wasRemoved) {
-//      addbackSingle(newFs);
-//    }
-    
+    }
+
+    // if (wasRemoved) {
+    // addbackSingle(newFs);
+    // }
+
     // replace refs in existing FSs with new
     // will miss any fs's held by user code - no way to fix that without
-    //   universal indirection - very inefficient, so just accept for now
+    // universal indirection - very inefficient, so just accept for now
     long st = System.nanoTime();
     walkReachablePlusFSsSorted(fsItem -> {
-          if (fsItem._getTypeImpl().hasRefFeature) {
-            if (fsItem instanceof FSArray) {
-              TOP[] a = ((FSArray)fsItem)._getTheArray();
-              for (int i = 0; i < a.length; i++) {
-                if (fs == a[i]) {
-                  a[i] = newFs;
-                }
-              }
-              return;
-            }
-          
-            final int sz = fsItem._getTypeImpl().nbrOfUsedRefDataSlots;
-            for (int i = 0; i < sz; i++) {
-              Object o = fsItem._getRefValueCommon(i);
-              if (o == fs) {
-                fsItem._setRefValueCommon(i, newFs);
-    //            fsItem._refData[i] = newFs;
-              }
+      if (fsItem._getTypeImpl().hasRefFeature) {
+        if (fsItem instanceof FSArray) {
+          TOP[] a = ((FSArray) fsItem)._getTheArray();
+          for (int i = 0; i < a.length; i++) {
+            if (fs == a[i]) {
+              a[i] = newFs;
             }
           }
-        }, 
-        null,   // mark
-        null,   // null or predicate for filtering what gets added
-        null);  // null or type mapper, skips if not in other ts
+          return;
+        }
+
+        final int sz = fsItem._getTypeImpl().nbrOfUsedRefDataSlots;
+        for (int i = 0; i < sz; i++) {
+          Object o = fsItem._getRefValueCommon(i);
+          if (o == fs) {
+            fsItem._setRefValueCommon(i, newFs);
+            // fsItem._refData[i] = newFs;
+          }
+        }
+      }
+    }, null, // mark
+            null, // null or predicate for filtering what gets added
+            null); // null or type mapper, skips if not in other ts
 
     if (MEASURE_SETINT) {
       mst.scantime += System.nanoTime() - st;
     }
   }
-  
+
   @Override
   public final void ll_setFloatValue(int fsRef, int featureCode, float value) {
-    getFsFromId_checked(fsRef).setFloatValue(getFeatFromCode_checked(featureCode),  value);
+    getFsFromId_checked(fsRef).setFloatValue(getFeatFromCode_checked(featureCode), value);
   }
-  
-//  public final void ll_setFloatValueNoIndexCorruptionCheck(int fsRef, int featureCode, float value) {
-//    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, float2int(value));
-//  }
+
+  // public final void ll_setFloatValueNoIndexCorruptionCheck(int fsRef, int featureCode, float
+  // value) {
+  // setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, float2int(value));
+  // }
 
   @Override
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
@@ -3547,7 +3670,7 @@ public JCasImpl getJCasImpl() {
     // no index check because refs can't be keys
     setFeatureValue(fsRef, featureCode, getFsFromId_checked(value));
   }
-  
+
   @Override
   public final void ll_setIntValue(int fsRef, int featureCode, int value, boolean doTypeChecks) {
     if (doTypeChecks) {
@@ -3557,7 +3680,8 @@ public JCasImpl getJCasImpl() {
   }
 
   @Override
-  public final void ll_setFloatValue(int fsRef, int featureCode, float value, boolean doTypeChecks) {
+  public final void ll_setFloatValue(int fsRef, int featureCode, float value,
+          boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, featureCode);
     }
@@ -3565,7 +3689,8 @@ public JCasImpl getJCasImpl() {
   }
 
   @Override
-  public final void ll_setStringValue(int fsRef, int featureCode, String value, boolean doTypeChecks) {
+  public final void ll_setStringValue(int fsRef, int featureCode, String value,
+          boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, featureCode);
     }
@@ -3574,7 +3699,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public final void ll_setCharBufferValue(int fsRef, int featureCode, char[] buffer, int start,
-      int length, boolean doTypeChecks) {
+          int length, boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, featureCode);
     }
@@ -3583,15 +3708,14 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public final void ll_setCharBufferValue(int fsRef, int featureCode, char[] buffer, int start,
-      int length) {
+          int length) {
     ll_setStringValue(fsRef, featureCode, new String(buffer, start, length));
   }
 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_copyCharBufferValue(int, int,
-   *      char, int)
+   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_copyCharBufferValue(int, int, char, int)
    */
   @Override
   public int ll_copyCharBufferValue(int fsRef, int featureCode, char[] buffer, int start) {
@@ -3599,7 +3723,7 @@ public JCasImpl getJCasImpl() {
     if (str == null) {
       return -1;
     }
-    
+
     final int len = str.length();
     final int requestedMax = start + len;
     // Check that the buffer is long enough to copy the whole string. If it isn't long enough, we
@@ -3614,8 +3738,7 @@ public JCasImpl getJCasImpl() {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_getCharBufferValueSize(int,
-   *      int)
+   * @see org.apache.uima.cas.impl.LowLevelCAS#ll_getCharBufferValueSize(int, int)
    */
   @Override
   public int ll_getCharBufferValueSize(int fsRef, int featureCode) {
@@ -3634,45 +3757,43 @@ public JCasImpl getJCasImpl() {
   public final int getIntArrayValue(IntegerArray array, int i) {
     return array.get(i);
   }
-  
+
   public final float getFloatArrayValue(FloatArray array, int i) {
     return array.get(i);
   }
-  
+
   public final String getStringArrayValue(StringArray array, int i) {
     return array.get(i);
   }
-  
+
   public final FeatureStructure getRefArrayValue(FSArray array, int i) {
     return array.get(i);
   }
-  
+
   @Override
   public final int ll_getIntArrayValue(int fsRef, int position) {
-    return getIntArrayValue(((IntegerArray)getFsFromId_checked(fsRef)), position);
+    return getIntArrayValue(((IntegerArray) getFsFromId_checked(fsRef)), position);
   }
 
   @Override
   public final float ll_getFloatArrayValue(int fsRef, int position) {
-    return getFloatArrayValue(((FloatArray)getFsFromId_checked(fsRef)), position);
+    return getFloatArrayValue(((FloatArray) getFsFromId_checked(fsRef)), position);
   }
-  
+
   @Override
   public final String ll_getStringArrayValue(int fsRef, int position) {
-    return getStringArrayValue(((StringArray)getFsFromId_checked(fsRef)), position);
+    return getStringArrayValue(((StringArray) getFsFromId_checked(fsRef)), position);
   }
 
   @Override
   public final int ll_getRefArrayValue(int fsRef, int position) {
-    return ((TOP)getRefArrayValue(((FSArray)getFsFromId_checked(fsRef)), position))._id();
+    return ((TOP) getRefArrayValue(((FSArray) getFsFromId_checked(fsRef)), position))._id();
   }
 
   private void throwAccessTypeError(int fsRef, int typeCode) {
-    throw new LowLevelException(LowLevelException.ACCESS_TYPE_ERROR,
-        fsRef,
-        typeCode,
-                 getTypeSystemImpl().ll_getTypeForCode(typeCode).getName(),
-                 getTypeSystemImpl().ll_getTypeForCode(ll_getFSRefType(fsRef)).getName());
+    throw new LowLevelException(LowLevelException.ACCESS_TYPE_ERROR, fsRef, typeCode,
+            getTypeSystemImpl().ll_getTypeForCode(typeCode).getName(),
+            getTypeSystemImpl().ll_getTypeForCode(ll_getFSRefType(fsRef)).getName());
   }
 
   public final void checkArrayBounds(int fsRef, int pos) {
@@ -3688,10 +3809,12 @@ public JCasImpl getJCasImpl() {
 
   public final void checkArrayBounds(int arrayLength, int pos, int length) {
     if ((pos < 0) || (length < 0) || ((pos + length) > arrayLength)) {
-      throw new LowLevelException(LowLevelException.ARRAY_INDEX_LENGTH_OUT_OF_RANGE, Integer.toString(pos), Integer.toString(length));
+      throw new LowLevelException(LowLevelException.ARRAY_INDEX_LENGTH_OUT_OF_RANGE,
+              Integer.toString(pos), Integer.toString(length));
     }
   }
 
+  // @formatter:off
   /**
    * Check that the fsRef is valid.
    * Check that the fs is featureCode belongs to the fs 
@@ -3702,31 +3825,33 @@ public JCasImpl getJCasImpl() {
    * @param typeCode
    * @param featureCode
    */
+  // @formatter:on
   private final void checkNonArrayConditions(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
 
     final TypeImpl domainType = (TypeImpl) fs.getType();
-    
-//    checkTypeAt(domType, fs);  // since the type is from the FS, it's always OK
-    checkFeature(featureCode);  // checks that the featureCode is in the range of all feature codes
-    
+
+    // checkTypeAt(domType, fs); // since the type is from the FS, it's always OK
+    checkFeature(featureCode); // checks that the featureCode is in the range of all feature codes
+
     TypeSystemImpl tsi = getTypeSystemImpl();
     FeatureImpl fi = tsi.getFeatureForCode_checked(featureCode);
-    checkTypeHasFeature(domainType, fi); // checks that the feature code is one of the features of the type
-    
-//    checkFsRan(fi);
+    checkTypeHasFeature(domainType, fi); // checks that the feature code is one of the features of
+                                         // the type
+
+    // checkFsRan(fi);
   }
 
   private final void checkFsRefConditions(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
-    checkLowLevelParams(fs, fs._getTypeImpl(), featureCode);  // checks type has feature
+    checkLowLevelParams(fs, fs._getTypeImpl(), featureCode); // checks type has feature
 
     TypeSystemImpl tsi = getTypeSystemImpl();
     FeatureImpl fi = tsi.getFeatureForCode_checked(featureCode);
     checkFsRan(fi);
 
     // next not needed because checkFsRan already validates this
-//    checkFsRef(fsRef + this.svd.casMetadata.featureOffset[featureCode]);
+    // checkFsRef(fsRef + this.svd.casMetadata.featureOffset[featureCode]);
   }
 
   // private final void checkArrayConditions(int fsRef, int typeCode,
@@ -3811,36 +3936,37 @@ public JCasImpl getJCasImpl() {
     ll_setRefArrayValue(fsRef, position, value);
   }
 
-  /* ************************
-   * Low Level Array Setters
-   * ************************/
-  
+  // ************************
+  // Low Level Array Setters
+  // ************************
+
   @Override
   public void ll_setIntArrayValue(int fsRef, int position, int value) {
     IntegerArray array = getFsFromId_checked(fsRef);
-    array.set(position,  value);  // that set operation does required journaling
+    array.set(position, value); // that set operation does required journaling
   }
 
   @Override
   public void ll_setFloatArrayValue(int fsRef, int position, float value) {
     FloatArray array = getFsFromId_checked(fsRef);
-    array.set(position,  value);  // that set operation does required journaling
+    array.set(position, value); // that set operation does required journaling
   }
 
   @Override
   public void ll_setStringArrayValue(int fsRef, int position, String value) {
     StringArray array = getFsFromId_checked(fsRef);
-    array.set(position,  value);  // that set operation does required journaling
+    array.set(position, value); // that set operation does required journaling
   }
 
   @Override
   public void ll_setRefArrayValue(int fsRef, int position, int value) {
     FSArray array = getFsFromId_checked(fsRef);
-    array.set(position,  getFsFromId_checked(value));  // that set operation does required journaling
+    array.set(position, getFsFromId_checked(value)); // that set operation does required journaling
   }
 
   /**
-   * @param fsRef an id for a FS
+   * @param fsRef
+   *          an id for a FS
    * @return the type code for this FS
    */
   @Override
@@ -3883,7 +4009,7 @@ public JCasImpl getJCasImpl() {
   public void setJCasClassLoader(ClassLoader classLoader) {
     this.svd.jcasClassLoader = classLoader;
   }
-  
+
   public void switchClassLoader(ClassLoader newClassLoader, boolean wasLocked) {
     this.svd.switchClassLoader(newClassLoader, wasLocked);
   }
@@ -3896,9 +4022,9 @@ public JCasImpl getJCasImpl() {
   // Callers of this method always code the "restoreClassLoaderUnlockCAS" in
   // pairs,
   // protected as needed with try - finally blocks.
-  //   
+  //
   // Special handling is needed for CAS Mulipliers - they can modify a cas up to
-  // the point they no longer "own" it. 
+  // the point they no longer "own" it.
   // So the try / finally approach doesn't fit
 
   public void switchClassLoaderLockCas(Object userCode) {
@@ -3912,15 +4038,15 @@ public JCasImpl getJCasImpl() {
     svd.switchClassLoader(newClassLoader, wasLocked);
   }
 
-//  // internal use, public for cross-package ref
-//  public boolean usingBaseClassLoader() {
-//    return (this.svd.jcasClassLoader == this.svd.previousJCasClassLoader);
-//  }
+  // // internal use, public for cross-package ref
+  // public boolean usingBaseClassLoader() {
+  // return (this.svd.jcasClassLoader == this.svd.previousJCasClassLoader);
+  // }
 
   public void restoreClassLoaderUnlockCas() {
     boolean empty_switchControl = this.svd.switchControl.isEmpty();
-    SwitchControl switchControlInstance = empty_switchControl ? null :this.svd.switchControl.pop();
-    if (empty_switchControl || ! switchControlInstance.wasLocked) {
+    SwitchControl switchControlInstance = empty_switchControl ? null : this.svd.switchControl.pop();
+    if (empty_switchControl || !switchControlInstance.wasLocked) {
       // unlock CAS functions
       enableReset(true);
     }
@@ -3928,10 +4054,10 @@ public JCasImpl getJCasImpl() {
     svd.restoreClassLoader(empty_switchControl, switchControlInstance);
 
   }
-  
+
   @Override
   public FeatureValuePath createFeatureValuePath(String featureValuePath)
-      throws CASRuntimeException {
+          throws CASRuntimeException {
     return FeatureValuePathImpl.getFeaturePath(featureValuePath);
   }
 
@@ -3960,11 +4086,10 @@ public JCasImpl getJCasImpl() {
     }
   }
 
-  
-  /* **********************************
-   *    A R R A Y   C R E A T I O N
-   ************************************/
-  
+  // **********************************
+  // A R R A Y C R E A T I O N
+  // **********************************
+
   @Override
   public ByteArrayFS createByteArrayFS(int length) throws CASRuntimeException {
     checkArrayPreconditions(length);
@@ -4035,20 +4160,20 @@ public JCasImpl getJCasImpl() {
   }
 
   // impossible to implement in v3; change callers
-//  public long ll_getLongValue(int offset) {
-//    return this.getLongHeap().getHeapValue(offset);
-//  }
+  // public long ll_getLongValue(int offset) {
+  // return this.getLongHeap().getHeapValue(offset);
+  // }
 
   @Override
   public long ll_getLongValue(int fsRef, int featureCode) {
     return getFsFromId_checked(fsRef).getLongValue(getFeatFromCode_checked(featureCode));
   }
 
-//  public long ll_getLongValueFeatOffset(int fsRef, int offset) {
-//    TOP fs = getFsFromId_checked(fsRef);
-//    return fs.getLongValueOffset(offset);
-//  }
-  
+  // public long ll_getLongValueFeatOffset(int fsRef, int offset) {
+  // TOP fs = getFsFromId_checked(fsRef);
+  // return fs.getLongValueOffset(offset);
+  // }
+
   @Override
   public long ll_getLongValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
@@ -4061,12 +4186,11 @@ public JCasImpl getJCasImpl() {
   public double ll_getDoubleValue(int fsRef, int featureCode) {
     return getFsFromId_checked(fsRef).getDoubleValue(getFeatFromCode_checked(featureCode));
   }
-  
-//  public double ll_getDoubleValueFeatOffset(int fsRef, int offset) {
-//    TOP fs = getFsFromId_checked(fsRef);
-//    return fs.getDoubleValueOffset(offset);
-//  }
 
+  // public double ll_getDoubleValueFeatOffset(int fsRef, int offset) {
+  // TOP fs = getFsFromId_checked(fsRef);
+  // return fs.getDoubleValueOffset(offset);
+  // }
 
   @Override
   public double ll_getDoubleValue(int fsRef, int featureCode, boolean doTypeChecks) {
@@ -4198,7 +4322,8 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public void ll_setByteArrayValue(int fsRef, int position, byte value, boolean doTypeChecks) {
-    ll_setByteArrayValue(fsRef, position, value);}
+    ll_setByteArrayValue(fsRef, position, value);
+  }
 
   @Override
   public void ll_setBooleanArrayValue(int fsRef, int position, boolean b) {
@@ -4206,7 +4331,8 @@ public JCasImpl getJCasImpl() {
   }
 
   @Override
-  public void ll_setBooleanArrayValue(int fsRef, int position, boolean value, boolean doTypeChecks) {
+  public void ll_setBooleanArrayValue(int fsRef, int position, boolean value,
+          boolean doTypeChecks) {
     ll_setBooleanArrayValue(fsRef, position, value);
   }
 
@@ -4241,18 +4367,19 @@ public JCasImpl getJCasImpl() {
   }
 
   public boolean isAnnotationType(Type t) {
-    return ((TypeImpl)t).isAnnotationType();
+    return ((TypeImpl) t).isAnnotationType();
   }
 
   /**
-   * @param t the type code to test
+   * @param t
+   *          the type code to test
    * @return true if that type is subsumed by AnnotationBase type
    */
   public boolean isSubtypeOfAnnotationBaseType(int t) {
     TypeImpl ti = getTypeFromCode(t);
-    return (ti == null) ? false : ti.isAnnotationBaseType(); 
+    return (ti == null) ? false : ti.isAnnotationBaseType();
   }
-  
+
   public boolean isBaseCas() {
     return this == getBaseCAS();
   }
@@ -4260,41 +4387,44 @@ public JCasImpl getJCasImpl() {
   @Override
   public Annotation createAnnotation(Type type, int begin, int end) {
     // duplicates a later check
-//    if (this.isBaseCas()) {
-//      // Can't create annotation on base CAS
-//      throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, "createAnnotation(Type, int, int)");
-//    }
+    // if (this.isBaseCas()) {
+    // // Can't create annotation on base CAS
+    // throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD,
+    // "createAnnotation(Type, int, int)");
+    // }
     Annotation fs = (Annotation) createFS(type);
     fs.setBegin(begin);
     fs.setEnd(end);
     return fs;
   }
-  
+
   public int ll_createAnnotation(int typeCode, int begin, int end) {
     TOP fs = createAnnotation(getTypeFromCode(typeCode), begin, end);
     set_id2fs(fs); // to prevent gc from reclaiming
     return fs._id();
   }
-  
+
   /**
-   * The generic spec T extends AnnotationFS (rather than AnnotationFS) allows the method
-   * JCasImpl getAnnotationIndex to return Annotation instead of AnnotationFS
-   * @param <T> the Java class associated with the annotation index
+   * The generic spec T extends AnnotationFS (rather than AnnotationFS) allows the method JCasImpl
+   * getAnnotationIndex to return Annotation instead of AnnotationFS
+   * 
+   * @param <T>
+   *          the Java class associated with the annotation index
    * @return the annotation index
    */
   @Override
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex() {
     return (AnnotationIndex<T>) indexRepository.getAnnotationIndex(getTypeSystemImpl().annotType);
   }
-  
-  
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.CAS#getAnnotationIndex(org.apache.uima.cas.Type)
    */
   @Override
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type)
-      throws CASRuntimeException {
+          throws CASRuntimeException {
     return (AnnotationIndex<T>) indexRepository.getAnnotationIndex((TypeImpl) type);
   }
 
@@ -4325,7 +4455,7 @@ public JCasImpl getJCasImpl() {
   private <T extends AnnotationFS> T createDocumentAnnotation(int length) {
     final TypeSystemImpl ts = getTypeSystemImpl();
     // Remove any existing document annotations.
-    FSIterator<T> it = this.<T>getAnnotationIndex(ts.docType).iterator();
+    FSIterator<T> it = this.<T> getAnnotationIndex(ts.docType).iterator();
     List<T> list = new ArrayList<>();
     while (it.isValid()) {
       list.add(it.get());
@@ -4334,29 +4464,29 @@ public JCasImpl getJCasImpl() {
     for (int i = 0; i < list.size(); i++) {
       getIndexRepository().removeFS(list.get(i));
     }
-    
+
     return (T) createDocumentAnnotationNoRemove(length);
   }
-  
+
   private <T extends Annotation> T createDocumentAnnotationNoRemove(int length) {
     T docAnnot = createDocumentAnnotationNoRemoveNoIndex(length);
     addFsToIndexes(docAnnot);
-    return docAnnot;    
+    return docAnnot;
   }
-  
+
   public <T extends Annotation> T createDocumentAnnotationNoRemoveNoIndex(int length) {
     final TypeSystemImpl ts = getTypeSystemImpl();
     AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
     docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
-    return (T) docAnnot;    
+    return (T) docAnnot;
   }
-    
+
   public int ll_createDocumentAnnotation(int length) {
     final int fsRef = ll_createDocumentAnnotationNoIndex(0, length);
     ll_getIndexRepository().ll_addFS(fsRef);
     return fsRef;
   }
-  
+
   public int ll_createDocumentAnnotationNoIndex(int begin, int end) {
     final TypeSystemImpl ts = getTypeSystemImpl();
     int fsRef = ll_createAnnotation(ts.docType.getCode(), begin, end);
@@ -4366,13 +4496,15 @@ public JCasImpl getJCasImpl() {
 
   // For the "built-in" instance of Document Annotation, set the
   // "end" feature to be the length of the sofa string
+  // @formatter:off
   /**
    * updates the document annotation (only if the sofa's local string data != null)
    *   setting the end feature to be the length of the sofa string, if any.
    *   creates the document annotation if not present
    *   only works if not in the base cas
-   *     
+   * 
    */
+  // @formatter:on
   public void updateDocumentAnnotation() {
     if (!mySofaIsValid() || this == this.svd.baseCAS) {
       return;
@@ -4380,20 +4512,21 @@ public JCasImpl getJCasImpl() {
     String newDoc = this.mySofaRef.getLocalStringData();
     if (null != newDoc) {
       Annotation docAnnot = getDocumentAnnotationNoCreate();
-      if (docAnnot != null) {     
-        // use a local instance of the add-back memory because this may be called as a side effect of updating a sofa
+      if (docAnnot != null) {
+        // use a local instance of the add-back memory because this may be called as a side effect
+        // of updating a sofa
         FSsTobeAddedback tobeAddedback = FSsTobeAddedback.createSingle();
-        boolean wasRemoved = this.checkForInvalidFeatureSetting(
-            docAnnot, getTypeSystemImpl().endFeat.getCode(), tobeAddedback);
+        boolean wasRemoved = this.checkForInvalidFeatureSetting(docAnnot,
+                getTypeSystemImpl().endFeat.getCode(), tobeAddedback);
         docAnnot._setIntValueNfc(endFeatAdjOffset, newDoc.length());
         if (wasRemoved) {
           tobeAddedback.addback(docAnnot);
         }
       } else if (deserialized_doc_annot_not_indexed != null) {
-        // UIMA-6199 provides access to non-indexed doc annot 
-        //   to allow sofa setting to set the "length" of the local sofa data string
-        //   @see updateDocumentAnnotation() updateDocumentAnnotation.
-        deserialized_doc_annot_not_indexed._setIntValueNfc(endFeatAdjOffset,  newDoc.length());
+        // UIMA-6199 provides access to non-indexed doc annot
+        // to allow sofa setting to set the "length" of the local sofa data string
+        // @see updateDocumentAnnotation() updateDocumentAnnotation.
+        deserialized_doc_annot_not_indexed._setIntValueNfc(endFeatAdjOffset, newDoc.length());
       } else {
         // not in the index (yet)
         createDocumentAnnotation(newDoc.length());
@@ -4401,11 +4534,11 @@ public JCasImpl getJCasImpl() {
     }
     return;
   }
-  
+
   /**
-   * Generic issue:  The returned document annotation could be either an instance of 
-   *   DocumentAnnotation or a subclass of it, or an instance of Annotation - the Java cover class used for 
-   *   annotations when JCas is not being used.
+   * Generic issue: The returned document annotation could be either an instance of
+   * DocumentAnnotation or a subclass of it, or an instance of Annotation - the Java cover class
+   * used for annotations when JCas is not being used.
    */
   @Override
   public <T extends AnnotationFS> T getDocumentAnnotation() {
@@ -4416,19 +4549,17 @@ public JCasImpl getJCasImpl() {
       return docAnnot;
     }
   }
-  
+
   public <T extends AnnotationFS> T getDocumentAnnotationNoCreate() {
     if (this == this.svd.baseCAS) {
       // base CAS has no document
       return null;
     }
     FSIterator<Annotation> it = getDocAnnotIter();
-    it.moveToFirst();  // revalidate in case index updated
+    it.moveToFirst(); // revalidate in case index updated
     if (it.isValid()) {
       Annotation r = it.get();
-      return (T) (inPearContext() 
-                  ? pearConvert(r)
-                  : r);
+      return (T) (inPearContext() ? pearConvert(r) : r);
     }
     return null;
   }
@@ -4439,22 +4570,21 @@ public JCasImpl getJCasImpl() {
     }
     synchronized (this) {
       if (docAnnotIter == null) {
-        docAnnotIter = this.<Annotation>getAnnotationIndex(getTypeSystemImpl().docType).iterator();
+        docAnnotIter = this.<Annotation> getAnnotationIndex(getTypeSystemImpl().docType).iterator();
       }
       return docAnnotIter;
     }
   }
+
   /**
    * 
    * @return the fs addr of the document annotation found via the index, or 0 if not there
    */
   public int ll_getDocumentAnnotation() {
     AnnotationFS r = getDocumentAnnotationNoCreate();
-    return (r == null) 
-             ? 0
-             : r._id();
+    return (r == null) ? 0 : r._id();
   }
-  
+
   @Override
   public String getDocumentLanguage() {
     if (this == this.svd.baseCAS) {
@@ -4502,9 +4632,9 @@ public JCasImpl getJCasImpl() {
       // base CAS has no Sofa nothin
       return null;
     }
-//  return mySofaRef.getSofaDataStream();  // this just goes to the next method
-    return mySofaIsValid() ? this.getSofaDataStream(mySofaRef) : null; 
- 
+    // return mySofaRef.getSofaDataStream(); // this just goes to the next method
+    return mySofaIsValid() ? this.getSofaDataStream(mySofaRef) : null;
+
   }
 
   @Override
@@ -4520,7 +4650,7 @@ public JCasImpl getJCasImpl() {
   public Sofa getSofa() {
     return mySofaRef;
   }
-  
+
   /**
    * @return the addr of the sofaFS associated with this view, or 0
    */
@@ -4531,9 +4661,8 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public String getViewName() {
-    return (this == svd.getViewFromSofaNbr(1)) ? CAS.NAME_DEFAULT_SOFA :
-           mySofaIsValid() ? mySofaRef.getSofaID() : 
-           null; 
+    return (this == svd.getViewFromSofaNbr(1)) ? CAS.NAME_DEFAULT_SOFA
+            : mySofaIsValid() ? mySofaRef.getSofaID() : null;
   }
 
   private boolean mySofaIsValid() {
@@ -4542,7 +4671,7 @@ public JCasImpl getJCasImpl() {
 
   void setDocTextFromDeserializtion(String text) {
     if (mySofaIsValid()) {
-      Sofa sofa = getSofaRef();  // creates sofa if doesn't already exist
+      Sofa sofa = getSofaRef(); // creates sofa if doesn't already exist
       sofa.setLocalSofaDataNoDocAnnotUpdate(text);
     }
   }
@@ -4550,12 +4679,14 @@ public JCasImpl getJCasImpl() {
   @Override
   public void setDocumentLanguage(String languageCode) {
     if (this == this.svd.baseCAS) {
-      throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, "setDocumentLanguage(String)");
+      throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD,
+              "setDocumentLanguage(String)");
     }
     Annotation docAnnot = getDocumentAnnotation();
     FeatureImpl languageFeature = getTypeSystemImpl().langFeat;
     languageCode = Language.normalize(languageCode);
-    boolean wasRemoved = this.checkForInvalidFeatureSetting(docAnnot, languageFeature.getCode(), this.getAddbackSingle());
+    boolean wasRemoved = this.checkForInvalidFeatureSetting(docAnnot, languageFeature.getCode(),
+            this.getAddbackSingle());
     docAnnot.setStringValue(getTypeSystemImpl().langFeat, languageCode);
     addbackSingleIfWasRemoved(wasRemoved, docAnnot);
   }
@@ -4563,7 +4694,7 @@ public JCasImpl getJCasImpl() {
   private void setSofaThingsMime(Consumer<Sofa> c, String msg) {
     if (this == this.svd.baseCAS) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, msg);
-    }   
+    }
     Sofa sofa = getSofaRef();
     c.accept(sofa);
   }
@@ -4580,14 +4711,15 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public void setSofaDataArray(FeatureStructure array, String mime) {
-    setSofaThingsMime(sofa -> sofa.setLocalSofaData(array, mime), "setSofaDataArray(FeatureStructure, mime)");
+    setSofaThingsMime(sofa -> sofa.setLocalSofaData(array, mime),
+            "setSofaDataArray(FeatureStructure, mime)");
   }
 
   @Override
   public void setSofaDataURI(String uri, String mime) throws CASRuntimeException {
     setSofaThingsMime(sofa -> sofa.setRemoteSofaURI(uri, mime), "setSofaDataURI(String, String)");
   }
-  
+
   @Override
   public void setCurrentComponentInfo(ComponentInfo info) {
     // always store component info in base CAS
@@ -4603,15 +4735,15 @@ public JCasImpl getJCasImpl() {
    */
   @Override
   public void addFsToIndexes(FeatureStructure fs) {
-//    if (fs instanceof AnnotationBaseFS) {
-//      final CAS sofaView = ((AnnotationBaseFS) fs).getView();
-//      if (sofaView != this) {
-//        CASRuntimeException e = new CASRuntimeException(
-//            CASRuntimeException.ANNOTATION_IN_WRONG_INDEX, new String[] { fs.toString(),
-//                sofaView.getSofa().getSofaID(), this.getSofa().getSofaID() });
-//        throw e;
-//      }
-//    }
+    // if (fs instanceof AnnotationBaseFS) {
+    // final CAS sofaView = ((AnnotationBaseFS) fs).getView();
+    // if (sofaView != this) {
+    // CASRuntimeException e = new CASRuntimeException(
+    // CASRuntimeException.ANNOTATION_IN_WRONG_INDEX, new String[] { fs.toString(),
+    // sofaView.getSofa().getSofaID(), this.getSofa().getSofaID() });
+    // throw e;
+    // }
+    // }
     this.indexRepository.addFS(fs);
   }
 
@@ -4624,20 +4756,22 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * @param fs the AnnotationBase instance
+   * @param fs
+   *          the AnnotationBase instance
    * @return the view associated with this FS where it could be indexed
    */
   public CASImpl getSofaCasView(AnnotationBase fs) {
     return fs._casView;
-//    Sofa sofa = fs.getSofa();
-//    
-//    if (null != sofa && sofa != this.getSofa()) {
-//      return (CASImpl) this.getView(sofa.getSofaNum());
-//    }
-//    
-//    /* Note: sofa == null means annotation created from low-level APIs, without setting sofa feature
-//     * Ignore this for backwards compatibility */
-//    return this;
+    // Sofa sofa = fs.getSofa();
+    //
+    // if (null != sofa && sofa != this.getSofa()) {
+    // return (CASImpl) this.getView(sofa.getSofaNum());
+    // }
+    //
+    // /* Note: sofa == null means annotation created from low-level APIs, without setting sofa
+    // feature
+    // * Ignore this for backwards compatibility */
+    // return this;
   }
 
   @Override
@@ -4645,34 +4779,36 @@ public JCasImpl getJCasImpl() {
     return getSofaCasView(getFsFromId_checked(id));
   }
 
-//  public Iterator<CAS> getViewIterator() {
-//    List<CAS> viewList = new ArrayList<CAS>();
-//    // add initial view if it has no sofa
-//    if (!((CASImpl) getInitialView()).mySofaIsValid()) {
-//      viewList.add(getInitialView());
-//    }
-//    // add views with Sofas
-//    FSIterator<SofaFS> sofaIter = getSofaIterator();
-//    while (sofaIter.hasNext()) {
-//      viewList.add(getView(sofaIter.next()));
-//    }
-//    return viewList.iterator();
-//  }
-  
+  // public Iterator<CAS> getViewIterator() {
+  // List<CAS> viewList = new ArrayList<CAS>();
+  // // add initial view if it has no sofa
+  // if (!((CASImpl) getInitialView()).mySofaIsValid()) {
+  // viewList.add(getInitialView());
+  // }
+  // // add views with Sofas
+  // FSIterator<SofaFS> sofaIter = getSofaIterator();
+  // while (sofaIter.hasNext()) {
+  // viewList.add(getView(sofaIter.next()));
+  // }
+  // return viewList.iterator();
+  // }
+
   /**
    * Creates the initial view (without a sofa) if not present
-   * @return the number of views, excluding the base view, including the initial view (even if not initially present or no sofa)
+   * 
+   * @return the number of views, excluding the base view, including the initial view (even if not
+   *         initially present or no sofa)
    */
   public int getNumberOfViews() {
-    CASImpl initialView = getInitialView();  // creates one if not existing, w/o sofa
+    CASImpl initialView = getInitialView(); // creates one if not existing, w/o sofa
     int nbrSofas = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
-    return initialView.mySofaIsValid() ? nbrSofas : 1 + nbrSofas; 
+    return initialView.mySofaIsValid() ? nbrSofas : 1 + nbrSofas;
   }
-  
+
   public int getNumberOfSofas() {
     return this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
   }
-   
+
   /*
    * (non-Javadoc)
    * 
@@ -4681,30 +4817,32 @@ public JCasImpl getJCasImpl() {
   @Override
   public <T extends CAS> Iterator<T> getViewIterator() {
     return new Iterator<T>() {
-      
-      final CASImpl initialView = getInitialView();  // creates one if not existing, w/o sofa  
 
-      boolean isInitialView_but_noSofa = !initialView.mySofaIsValid(); // true if has no Sofa in initial view
-                                                           //     but is reset to false once iterator moves
-                                                           //     off of initial view.
-      
-                                                           // if initial view has a sofa, we just use the 
-                                                           // sofa iterator instead.
+      final CASImpl initialView = getInitialView(); // creates one if not existing, w/o sofa
 
-      final FSIterator<Sofa> sofaIter = getSofaIterator(); 
+      boolean isInitialView_but_noSofa = !initialView.mySofaIsValid(); // true if has no Sofa in
+                                                                       // initial view
+      // but is reset to false once iterator moves
+      // off of initial view.
+
+      // if initial view has a sofa, we just use the
+      // sofa iterator instead.
+
+      final FSIterator<Sofa> sofaIter = getSofaIterator();
 
       @Override
       public boolean hasNext() {
         if (isInitialView_but_noSofa) {
           return true;
         }
-        return sofaIter.hasNext(); 
+        return sofaIter.hasNext();
       }
 
       @Override
       public T next() {
         if (isInitialView_but_noSofa) {
-          isInitialView_but_noSofa = false;  // no incr of sofa iterator because it was missing initial view
+          isInitialView_but_noSofa = false; // no incr of sofa iterator because it was missing
+                                            // initial view
           return (T) initialView;
         }
         return (T) getView(sofaIter.next());
@@ -4714,7 +4852,7 @@ public JCasImpl getJCasImpl() {
       public void remove() {
         throw new UnsupportedOperationException();
       }
-      
+
     };
   }
 
@@ -4725,30 +4863,32 @@ public JCasImpl getJCasImpl() {
    */
   public Iterator<CASImpl> getViewImplIterator() {
     return new Iterator<CASImpl>() {
-      
-      final CASImpl initialView = getInitialView();  // creates one if not existing, w/o sofa  
 
-      boolean isInitialView_but_noSofa = !initialView.mySofaIsValid(); // true if has no Sofa in initial view
-                                                           //     but is reset to false once iterator moves
-                                                           //     off of initial view.
-      
-                                                           // if initial view has a sofa, we just use the 
-                                                           // sofa iterator instead.
+      final CASImpl initialView = getInitialView(); // creates one if not existing, w/o sofa
 
-      final FSIterator<Sofa> sofaIter = getSofaIterator(); 
+      boolean isInitialView_but_noSofa = !initialView.mySofaIsValid(); // true if has no Sofa in
+                                                                       // initial view
+      // but is reset to false once iterator moves
+      // off of initial view.
+
+      // if initial view has a sofa, we just use the
+      // sofa iterator instead.
+
+      final FSIterator<Sofa> sofaIter = getSofaIterator();
 
       @Override
       public boolean hasNext() {
         if (isInitialView_but_noSofa) { // set to false once iterator moves off of first value
           return true;
         }
-        return sofaIter.hasNext(); 
+        return sofaIter.hasNext();
       }
 
       @Override
       public CASImpl next() {
         if (isInitialView_but_noSofa) {
-          isInitialView_but_noSofa = false;  // no incr of sofa iterator because it was missing initial view
+          isInitialView_but_noSofa = false; // no incr of sofa iterator because it was missing
+                                            // initial view
           return initialView;
         }
         return getView(sofaIter.next());
@@ -4758,13 +4898,15 @@ public JCasImpl getJCasImpl() {
       public void remove() {
         throw new UnsupportedOperationException();
       }
-      
+
     };
   }
-  
+
   /**
-   * iterate over all views in view order (by view number) 
-   * @param processViews action to perform on the views.
+   * iterate over all views in view order (by view number)
+   * 
+   * @param processViews
+   *          action to perform on the views.
    */
   public void forAllViews(Consumer<CASImpl> processViews) {
     final int numViews = this.getNumberOfViews();
@@ -4772,11 +4914,11 @@ public JCasImpl getJCasImpl() {
       CASImpl view = (viewNbr == 1) ? getInitialView() : (CASImpl) getView(viewNbr);
       processViews.accept(view);
     }
-//    
-//    Iterator<CASImpl> it = getViewImplIterator();
-//    while (it.hasNext()) {
-//      processViews.accept(it.next());
-//    }
+    //
+    // Iterator<CASImpl> it = getViewImplIterator();
+    // while (it.hasNext()) {
+    // processViews.accept(it.next());
+    // }
   }
 
   void forAllSofas(Consumer<Sofa> processSofa) {
@@ -4787,9 +4929,10 @@ public JCasImpl getJCasImpl() {
   }
 
   /**
-   * Excludes base view's ir,
-   * Includes the initial view's ir only if it has a sofa defined
-   * @param processIr the code to execute
+   * Excludes base view's ir, Includes the initial view's ir only if it has a sofa defined
+   * 
+   * @param processIr
+   *          the code to execute
    */
   void forAllIndexRepos(Consumer<FSIndexRepositoryImpl> processIr) {
     final int numViews = this.getViewCount();
@@ -4797,7 +4940,7 @@ public JCasImpl getJCasImpl() {
       processIr.accept(this.getSofaIndexRepository(viewNum));
     }
   }
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -4822,24 +4965,23 @@ public JCasImpl getJCasImpl() {
       String sofaId = sofa.getSofaID();
       if (sofaId.startsWith(absolutePrefix)) {
         if ((sofaId.length() == absolutePrefix.length())
-            || (sofaId.charAt(absolutePrefix.length()) == '.')) {
+                || (sofaId.charAt(absolutePrefix.length()) == '.')) {
           viewList.add(getView(sofa));
         }
       }
     }
     return viewList.iterator();
   }
-    
+
   /**
    * protectIndexes
    * 
-   * Within the scope of protectIndexes, 
-   *   feature updates are checked, and if found to be a key, and the FS is in a corruptible index,
-   *     then the FS is removed from the indexes (in all necessary views) (perhaps multiple times
-   *     if the FS was added to the indexes multiple times), and this removal is recorded on
-   *     an new instance of FSsTobeReindexed appended to fssTobeAddedback.
-   *     
-   *   Later, when the protectIndexes is closed, the tobe items are added back to the indexes.
+   * Within the scope of protectIndexes, feature updates are checked, and if found to be a key, and
+   * the FS is in a corruptible index, then the FS is removed from the indexes (in all necessary
+   * views) (perhaps multiple times if the FS was added to the indexes multiple times), and this
+   * removal is recorded on an new instance of FSsTobeReindexed appended to fssTobeAddedback.
+   * 
+   * Later, when the protectIndexes is closed, the tobe items are added back to the indexes.
    */
   @Override
   public AutoCloseableNoException protectIndexes() {
@@ -4847,15 +4989,16 @@ public JCasImpl getJCasImpl() {
     svd.fssTobeAddedback.add(r);
     return r;
   }
-  
-  void dropProtectIndexesLevel () {
+
+  void dropProtectIndexesLevel() {
     if (svd.fssTobeAddedback.isEmpty()) {
       return;
     }
-    
-    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
+
+    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() - 1);
   }
-  
+
+  // @formatter:off
   /**
    * This design is to support normal operations where the
    *   addbacks could be nested
@@ -4867,7 +5010,7 @@ public JCasImpl getJCasImpl() {
    *         - leave stack alone
    *    3) the addbacks are in the list but not at the end
    *         - remove it and all later ones, calling addback on each     
-   *  
+   * 
    * If the "withProtectedindexes" approach is used, it guarantees proper 
    * nesting, but the Runnable can't throw checked exceptions.
    * 
@@ -4875,20 +5018,22 @@ public JCasImpl getJCasImpl() {
    * form in Java 8 to do a similar thing with no restrictions on what the
    * body can contain.
    * 
-   * @param addbacks -
+   * @param addbacks
+   *          -
    */
-  void addbackModifiedFSs (FSsTobeAddedback addbacks) {
-    final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;
-    
+  // @formatter:on
+  void addbackModifiedFSs(FSsTobeAddedback addbacks) {
+    final List<FSsTobeAddedback> listOfAddbackInfos = svd.fssTobeAddedback;
+
     // case 1: the addbacks are the last in the stack:
     if (listOfAddbackInfos.get(listOfAddbackInfos.size() - 1) == addbacks) {
       listOfAddbackInfos.remove(listOfAddbackInfos.size() - 1);
       addbacks.addback();
       return;
-    } 
-     
+    }
+
     int pos = listOfAddbackInfos.indexOf(addbacks);
-    
+
     // case 2: the addbacks are in the stack, but there are others following it
     if (pos >= 0) {
       for (int i = listOfAddbackInfos.size() - 1; i >= pos; i--) {
@@ -4896,15 +5041,16 @@ public JCasImpl getJCasImpl() {
         toAddBack.addback();
       }
       return;
-    }      
-    
+    }
+
     // case 3: the addbacks are not in the list - just remove them, ignore the list
     addbacks.addback();
   }
-  
+
   /**
    * 
-   * @param r an inner block of code to be run with 
+   * @param r
+   *          an inner block of code to be run with
    */
   @Override
   public void protectIndexes(Runnable r) {
@@ -4915,239 +5061,238 @@ public JCasImpl getJCasImpl() {
       addbackModifiedFSs((FSsTobeAddedback) addbacks);
     }
   }
-  
 
   /**
-   * The current implementation only supports 1 marker call per 
-   * CAS.  Subsequent calls will throw an error.
+   * The current implementation only supports 1 marker call per CAS. Subsequent calls will throw an
+   * error.
    * 
-   * The design is intended to support (at some future point)
-   * multiple markers; for this to work, the intent is to 
-   * extend the MarkerImpl to keep track of indexes into
-   * these IntVectors specifying where that marker starts/ends.
+   * The design is intended to support (at some future point) multiple markers; for this to work,
+   * the intent is to extend the MarkerImpl to keep track of indexes into these IntVectors
+   * specifying where that marker starts/ends.
    */
   @Override
   public Marker createMarker() {
     if (isCasLocked()) {
-	    throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
-  	}
-  	this.svd.trackingMark = new MarkerImpl(this.getLastUsedFsId() + 1, 
-  			this);
-  	if (this.svd.modifiedPreexistingFSs == null) {
-  	  this.svd.modifiedPreexistingFSs = new IdentityHashMap<>();
-  	}
-  	if (this.svd.modifiedPreexistingFSs.size() > 0) {
-  	  errorMultipleMarkers();
-  	}
+      throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
+    }
+    this.svd.trackingMark = new MarkerImpl(this.getLastUsedFsId() + 1, this);
+    if (this.svd.modifiedPreexistingFSs == null) {
+      this.svd.modifiedPreexistingFSs = new IdentityHashMap<>();
+    }
+    if (this.svd.modifiedPreexistingFSs.size() > 0) {
+      errorMultipleMarkers();
+    }
 
-  	if (this.svd.trackingMarkList == null) {
-  	  this.svd.trackingMarkList = new ArrayList<>();
-  	} else {errorMultipleMarkers();}
-  	this.svd.trackingMarkList.add(this.svd.trackingMark);
-  	return this.svd.trackingMark;
+    if (this.svd.trackingMarkList == null) {
+      this.svd.trackingMarkList = new ArrayList<>();
+    } else {
+      errorMultipleMarkers();
+    }
+    this.svd.trackingMarkList.add(this.svd.trackingMark);
+    return this.svd.trackingMark;
   }
-    
+
   private void errorMultipleMarkers() {
     throw new CASRuntimeException(CASRuntimeException.MULTIPLE_CREATE_MARKER);
   }
-  
-  
+
   // made public https://issues.apache.org/jira/browse/UIMA-2478
   public MarkerImpl getCurrentMark() {
-	  return this.svd.trackingMark;
+    return this.svd.trackingMark;
   }
-  
+
   /**
    * 
-   * @return an array of FsChange items, one per modified Fs, 
-   *         sorted in order of fs._id
+   * @return an array of FsChange items, one per modified Fs, sorted in order of fs._id
    */
   FsChange[] getModifiedFSList() {
     final Map<TOP, FsChange> mods = this.svd.modifiedPreexistingFSs;
-	  FsChange[] r = mods.values().toArray(new FsChange[mods.size()]);
-	  Arrays.sort(r, 0, mods.size(), (c1, c2) -> Integer.compare(c1.fs._id, c2.fs._id));
-	  return r;
+    FsChange[] r = mods.values().toArray(new FsChange[mods.size()]);
+    Arrays.sort(r, 0, mods.size(), (c1, c2) -> Integer.compare(c1.fs._id, c2.fs._id));
+    return r;
   }
-  
+
   boolean isInModifiedPreexisting(TOP fs) {
     return this.svd.modifiedPreexistingFSs.containsKey(fs);
   }
-    
+
   @Override
   public String toString() {
-    String sofa =  (mySofaRef == null) 
-                     ? (isBaseCas() 
-                          ? "Base CAS" 
-                          : "_InitialView or no Sofa") 
-                     : mySofaRef.getSofaID();
-//                 (mySofaRef == 0) ? "no Sofa" :
-                       
+    String sofa = (mySofaRef == null) ? (isBaseCas() ? "Base CAS" : "_InitialView or no Sofa")
+            : mySofaRef.getSofaID();
+    // (mySofaRef == 0) ? "no Sofa" :
+
     return this.getClass().getSimpleName() + ":" + getCasId() + "[view: " + sofa + "]";
   }
-    
+
   public int getCasResets() {
     return svd.casResets.get();
   }
-  
+
   /**
    * @return an identifier for this CAS, globally unique within the classloader
    */
   public String getCasId() {
     return svd.casId;
   }
-  
+
   final public int getNextFsId(TOP fs) {
     return svd.getNextFsId(fs);
   }
-  
+
   public void adjustLastFsV2Size_arrays(int arrayLength) {
-    svd.lastFsV2Size += 1 + arrayLength;  // 1 is for array length value
+    svd.lastFsV2Size += 1 + arrayLength; // 1 is for array length value
   }
-  
+
   public void adjustLastFsV2size_nonHeapStoredArrays() {
-    svd.lastFsV2Size += 2;  // length and index into other special heap
+    svd.lastFsV2Size += 2; // length and index into other special heap
   }
-  
+
   /**
    * Test case use
-   * @param fss the FSs to include in the id 2 fs map
+   * 
+   * @param fss
+   *          the FSs to include in the id 2 fs map
    */
-  public void setId2FSsMaybeUnconditionally(FeatureStructure ... fss) {
+  public void setId2FSsMaybeUnconditionally(FeatureStructure... fss) {
     for (FeatureStructure fs : fss) {
       setId2FsMaybeUnconditionally((TOP) fs);
     }
   }
-  
+
   private void setId2FsMaybeUnconditionally(TOP fs) {
     if (svd.isId2Fs) {
       svd.id2fs.putUnconditionally(fs);
     } else {
       set_id2fs(fs);
-    }   
+    }
   }
-  
-//  Not currently used
-//  public Int2ObjHashMap<TOP, TOP> getId2FSs() {
-//    return svd.id2fs.getId2fs();
-//  }
-  
-//  final private int getNextFsId() {
-//    return ++ svd.fsIdGenerator;
-//  }
-  
+
+  // Not currently used
+  // public Int2ObjHashMap<TOP, TOP> getId2FSs() {
+  // return svd.id2fs.getId2fs();
+  // }
+
+  // final private int getNextFsId() {
+  // return ++ svd.fsIdGenerator;
+  // }
+
   final public int getLastUsedFsId() {
     return svd.fsIdGenerator;
   }
-  
+
   final public int peekNextFsId() {
     return svd.peekNextFsId();
   }
-  
+
   final public int lastV2IdIncr() {
     return svd.lastFsV2IdIncr();
   }
-  
+
   /**
-   * Call this to capture the current value of fsIdGenerator and make it 
-   * available to other threads.
+   * Call this to capture the current value of fsIdGenerator and make it available to other threads.
    * 
-   * Must be called on a thread that has been synchronized with the thread used for creating FSs for this CAS.
+   * Must be called on a thread that has been synchronized with the thread used for creating FSs for
+   * this CAS.
    */
   final public void captureLastFsIdForOtherThread() {
     svd.fsIdLastValue.set(svd.fsIdGenerator);
   }
-    
+
   public <T extends TOP> T getFsFromId(int id) {
-    return (T) this.svd.id2fs.get(id); 
+    return (T) this.svd.id2fs.get(id);
   }
-  
-  
-//  /**
-//   * plus means all reachable, plus maybe others not reachable but not yet gc'd
-//   * @param action -
-//   */
-//  public void walkReachablePlusFSsSorted(Consumer<TOP> action) {
-//    this.svd.id2fs.walkReachablePlusFSsSorted(action);
-//  }
-  
-//  /**
-//   * called for delta serialization - walks just the new items above the line
-//   * @param action -
-//   * @param fromId - the id of the first item to walk from
-//   */
-//  public void walkReachablePlusFSsSorted(Consumer<TOP> action, int fromId) {
-//    this.svd.id2fs.walkReachablePlueFSsSorted(action, fromId);
-//  }
+
+  // /**
+  // * plus means all reachable, plus maybe others not reachable but not yet gc'd
+  // * @param action -
+  // */
+  // public void walkReachablePlusFSsSorted(Consumer<TOP> action) {
+  // this.svd.id2fs.walkReachablePlusFSsSorted(action);
+  // }
+
+  // /**
+  // * called for delta serialization - walks just the new items above the line
+  // * @param action -
+  // * @param fromId - the id of the first item to walk from
+  // */
+  // public void walkReachablePlusFSsSorted(Consumer<TOP> action, int fromId) {
+  // this.svd.id2fs.walkReachablePlueFSsSorted(action, fromId);
+  // }
   /**
-   * find all of the FSs via the indexes plus what's reachable.
-   * sort into order by id,
+   * find all of the FSs via the indexes plus what's reachable. sort into order by id,
    * 
-   * Apply the action to those
-   * Return the list of sorted FSs
+   * Apply the action to those Return the list of sorted FSs
    * 
-   * @param action_filtered   action to perform on each item after filtering
-   * @param mark null or the mark
-   * @param includeFilter null or a filter (exclude items not in other type system)
-   * @param typeMapper null or how to map to other type system, used to skip things missing in other type system
+   * @param action_filtered
+   *          action to perform on each item after filtering
+   * @param mark
+   *          null or the mark
+   * @param includeFilter
+   *          null or a filter (exclude items not in other type system)
+   * @param typeMapper
+   *          null or how to map to other type system, used to skip things missing in other type
+   *          system
    * @return sorted list of all found items (ignoring mark)
    */
-  public List<TOP> walkReachablePlusFSsSorted(
-    Consumer<TOP> action_filtered, MarkerImpl mark, Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {    
-    List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper).getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
+  public List<TOP> walkReachablePlusFSsSorted(Consumer<TOP> action_filtered, MarkerImpl mark,
+          Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {
+    List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper)
+            .getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
     List<TOP> filtered = filterAboveMark(all, mark);
     for (TOP fs : filtered) {
       action_filtered.accept(fs);
     }
     return all;
   }
-  
+
   static List<TOP> filterAboveMark(List<TOP> all, MarkerImpl mark) {
     if (null == mark) {
       return all;
     }
     int c = Collections.binarySearch(all, TOP._createSearchKey(mark.nextFSId),
-        (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
+            (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
     if (c < 0) {
       c = (-c) - 1;
     }
-    return all.subList(c,  all.size());
+    return all.subList(c, all.size());
   }
-  
-//  /**
-//   * Get the Java class corresponding to a particular type
-//   * Only valid after type system commit
-//   * 
-//   * @param type
-//   * @return
-//   */
-//  public <T extends FeatureStructure> Class<T> getClass4Type(Type type) {
-//    TypeSystemImpl tsi = getTypeSystemImpl();
-//    if (!tsi.isCommitted()) {
-//      throw new CASRuntimeException(CASRuntimeException.GET_CLASS_FOR_TYPE_BEFORE_TS_COMMIT);
-//    }
-//    
-//  }
-  
+
+  // /**
+  // * Get the Java class corresponding to a particular type
+  // * Only valid after type system commit
+  // *
+  // * @param type
+  // * @return
+  // */
+  // public <T extends FeatureStructure> Class<T> getClass4Type(Type type) {
+  // TypeSystemImpl tsi = getTypeSystemImpl();
+  // if (!tsi.isCommitted()) {
+  // throw new CASRuntimeException(CASRuntimeException.GET_CLASS_FOR_TYPE_BEFORE_TS_COMMIT);
+  // }
+  //
+  // }
+
   public final static boolean isSameCAS(CAS c1, CAS c2) {
     CASImpl ci1 = (CASImpl) c1.getLowLevelCAS();
     CASImpl ci2 = (CASImpl) c2.getLowLevelCAS();
     return ci1.getBaseCAS() == ci2.getBaseCAS();
   }
-  
+
   public boolean isInCAS(FeatureStructure fs) {
-    return ((TOP)fs)._casView.getBaseCAS() == this.getBaseCAS();
+    return ((TOP) fs)._casView.getBaseCAS() == this.getBaseCAS();
   }
-  
-//  /**
-//   * 
-//   * @param typecode -
-//   * @return Object that can be cast to either a 2 or 3 arg createFs functional interface
-//   *         FsGenerator or FsGeneratorArray
-//   */
-//  private Object getFsGenerator(int typecode) {
-//    return getTypeSystemImpl().getGenerator(typecode);
-//  }
-  
+
+  // /**
+  // *
+  // * @param typecode -
+  // * @return Object that can be cast to either a 2 or 3 arg createFs functional interface
+  // * FsGenerator or FsGeneratorArray
+  // */
+  // private Object getFsGenerator(int typecode) {
+  // return getTypeSystemImpl().getGenerator(typecode);
+  // }
+
   public final void checkArrayPreconditions(int len) throws CASRuntimeException {
     // Check array size.
     if (len < 0) {
@@ -5156,7 +5301,7 @@ public JCasImpl getJCasImpl() {
   }
 
   @Override
-public <T extends TOP> EmptyFSList<T> emptyFSList() {
+  public <T extends TOP> EmptyFSList<T> emptyFSList() {
     if (null == svd.emptyFSList) {
       svd.emptyFSList = new EmptyFSList<>(getTypeSystemImpl().fsEListType, this);
     }
@@ -5167,54 +5312,54 @@ public <T extends TOP> EmptyFSList<T> emptyFSList() {
    * @see org.apache.uima.cas.CAS#emptyFloatList()
    */
   @Override
-public EmptyFloatList emptyFloatList() {
+  public EmptyFloatList emptyFloatList() {
     if (null == svd.emptyFloatList) {
       svd.emptyFloatList = new EmptyFloatList(getTypeSystemImpl().floatEListType, this);
     }
     return svd.emptyFloatList;
   }
-  
+
   @Override
-public EmptyIntegerList emptyIntegerList() {
+  public EmptyIntegerList emptyIntegerList() {
     if (null == svd.emptyIntegerList) {
       svd.emptyIntegerList = new EmptyIntegerList(getTypeSystemImpl().intEListType, this);
     }
     return svd.emptyIntegerList;
   }
-  
+
   @Override
-public EmptyStringList emptyStringList() {
+  public EmptyStringList emptyStringList() {
     if (null == svd.emptyStringList) {
       svd.emptyStringList = new EmptyStringList(getTypeSystemImpl().stringEListType, this);
     }
     return svd.emptyStringList;
   }
-  
+
   public CommonArrayFS emptyArray(Type type) {
-    switch (((TypeImpl)type).getCode()) {
-    case TypeSystemConstants.booleanArrayTypeCode :
-      return emptyBooleanArray();
-    case TypeSystemConstants.byteArrayTypeCode :
-      return emptyByteArray();
-    case TypeSystemConstants.shortArrayTypeCode :
-      return emptyShortArray();
-    case TypeSystemConstants.intArrayTypeCode :
-      return emptyIntegerArray();
-    case TypeSystemConstants.floatArrayTypeCode :
-      return emptyFloatArray();
-    case TypeSystemConstants.longArrayTypeCode :
-      return emptyLongArray();
-    case TypeSystemConstants.doubleArrayTypeCode :
-      return emptyDoubleArray();
-    case TypeSystemConstants.stringArrayTypeCode :
-      return emptyStringArray();
-    default: // TypeSystemConstants.fsArrayTypeCode or any other type
-      return emptyFSArray();
+    switch (((TypeImpl) type).getCode()) {
+      case TypeSystemConstants.booleanArrayTypeCode:
+        return emptyBooleanArray();
+      case TypeSystemConstants.byteArrayTypeCode:
+        return emptyByteArray();
+      case TypeSystemConstants.shortArrayTypeCode:
+        return emptyShortArray();
+      case TypeSystemConstants.intArrayTypeCode:
+        return emptyIntegerArray();
+      case TypeSystemConstants.floatArrayTypeCode:
+        return emptyFloatArray();
+      case TypeSystemConstants.longArrayTypeCode:
+        return emptyLongArray();
+      case TypeSystemConstants.doubleArrayTypeCode:
+        return emptyDoubleArray();
+      case TypeSystemConstants.stringArrayTypeCode:
+        return emptyStringArray();
+      default: // TypeSystemConstants.fsArrayTypeCode or any other type
+        return emptyFSArray();
     }
   }
-  
+
   @Override
-public FloatArray emptyFloatArray() {
+  public FloatArray emptyFloatArray() {
     if (null == svd.emptyFloatArray) {
       svd.emptyFloatArray = new FloatArray(this.getJCas(), 0);
     }
@@ -5225,195 +5370,228 @@ public FloatArray emptyFloatArray() {
   public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     return emptyFSArray(null);
   }
-  
+
   @Override
   public <T extends FeatureStructure> FSArray<T> emptyFSArray(Type type) {
-    return svd.emptyFSArrayMap.computeIfAbsent(type, t -> (t == null) 
-        ? new FSArray(this.getJCas(), 0)
-        : new FSArray((TypeImpl) getTypeSystemImpl().getArrayType(type), this, 0));
+    return svd.emptyFSArrayMap.computeIfAbsent(type,
+            t -> (t == null) ? new FSArray(this.getJCas(), 0)
+                    : new FSArray((TypeImpl) getTypeSystemImpl().getArrayType(type), this, 0));
   }
-  
+
   @Override
-public IntegerArray emptyIntegerArray() {
+  public IntegerArray emptyIntegerArray() {
     if (null == svd.emptyIntegerArray) {
       svd.emptyIntegerArray = new IntegerArray(this.getJCas(), 0);
     }
     return svd.emptyIntegerArray;
   }
-  
+
   @Override
-public StringArray emptyStringArray() {
+  public StringArray emptyStringArray() {
     if (null == svd.emptyStringArray) {
       svd.emptyStringArray = new StringArray(this.getJCas(), 0);
     }
     return svd.emptyStringArray;
   }
-  
+
   @Override
-public DoubleArray emptyDoubleArray() {
+  public DoubleArray emptyDoubleArray() {
     if (null == svd.emptyDoubleArray) {
       svd.emptyDoubleArray = new DoubleArray(this.getJCas(), 0);
     }
     return svd.emptyDoubleArray;
   }
-  
+
   @Override
-public LongArray emptyLongArray() {
+  public LongArray emptyLongArray() {
     if (null == svd.emptyLongArray) {
       svd.emptyLongArray = new LongArray(this.getJCas(), 0);
     }
     return svd.emptyLongArray;
   }
-  
+
   @Override
-public ShortArray emptyShortArray() {
+  public ShortArray emptyShortArray() {
     if (null == svd.emptyShortArray) {
       svd.emptyShortArray = new ShortArray(this.getJCas(), 0);
     }
     return svd.emptyShortArray;
   }
-  
+
   @Override
-public ByteArray emptyByteArray() {
+  public ByteArray emptyByteArray() {
     if (null == svd.emptyByteArray) {
       svd.emptyByteArray = new ByteArray(this.getJCas(), 0);
     }
     return svd.emptyByteArray;
   }
-  
+
   @Override
-public BooleanArray emptyBooleanArray() {
+  public BooleanArray emptyBooleanArray() {
     if (null == svd.emptyBooleanArray) {
       svd.emptyBooleanArray = new BooleanArray(this.getJCas(), 0);
     }
     return svd.emptyBooleanArray;
   }
-  
+
   /**
-   * @param rangeCode special codes for serialization use only
+   * @param rangeCode
+   *          special codes for serialization use only
    * @return the empty list (shared) corresponding to the type
    */
   public EmptyList emptyList(int rangeCode) {
-    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? emptyIntegerList() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? emptyFloatList() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? emptyStringList() :
-                                                                       emptyFSList();
+    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? emptyIntegerList()
+            : (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? emptyFloatList()
+                    : (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? emptyStringList()
+                            : emptyFSList();
   }
-  
+
   /**
    * Get an empty list from the type code of a list
-   * @param typeCode -
+   * 
+   * @param typeCode
+   *          -
    * @return -
    */
   public EmptyList emptyListFromTypeCode(int typeCode) {
     switch (typeCode) {
-    case fsListTypeCode:
-    case fsEListTypeCode:
-    case fsNeListTypeCode: return emptyFSList();
-    case floatListTypeCode:
-    case floatEListTypeCode:
-    case floatNeListTypeCode: return emptyFloatList();
-    case intListTypeCode:
-    case intEListTypeCode:
-    case intNeListTypeCode: return emptyIntegerList();
-    case stringListTypeCode:
-    case stringEListTypeCode:
-    case stringNeListTypeCode: return emptyStringList();
-    default: throw new IllegalArgumentException();
+      case fsListTypeCode:
+      case fsEListTypeCode:
+      case fsNeListTypeCode:
+        return emptyFSList();
+      case floatListTypeCode:
+      case floatEListTypeCode:
+      case floatNeListTypeCode:
+        return emptyFloatList();
+      case intListTypeCode:
+      case intEListTypeCode:
+      case intNeListTypeCode:
+        return emptyIntegerList();
+      case stringListTypeCode:
+      case stringEListTypeCode:
+      case stringNeListTypeCode:
+        return emptyStringList();
+      default:
+        throw new IllegalArgumentException();
     }
   }
-  
-//  /**
-//   * Copies a feature, from one fs to another
-//   *   FSs may belong to different CASes, but must have the same type system
-//   *   Features must have compatible ranges
-//   *   The target must not be indexed
-//   *   The target must be a "new" (above the "mark") FS
-//   * @param fsSrc source FS
-//   * @param fi Feature to copy
-//   * @param fsTgt target FS
-//   */
-//  public static void copyFeature(TOP fsSrc, FeatureImpl fi, TOP fsTgt) {
-//    if (!copyFeatureExceptFsRef(fsSrc, fi, fsTgt, fi)) {
-//      if (!fi.isAnnotBaseSofaRef) {
-//        fsTgt._setFeatureValueNcNj(fi, fsSrc._getFeatureValueNc(fi));
-//      }
-//    }
-//  }
-  
+
+  // /**
+  // * Copies a feature, from one fs to another
+  // * FSs may belong to different CASes, but must have the same type system
+  // * Features must have compatible ranges
+  // * The target must not be indexed
+  // * The target must be a "new" (above the "mark") FS
+  // * @param fsSrc source FS
+  // * @param fi Feature to copy
+  // * @param fsTgt target FS
+  // */
+  // public static void copyFeature(TOP fsSrc, FeatureImpl fi, TOP fsTgt) {
+  // if (!copyFeatureExceptFsRef(fsSrc, fi, fsTgt, fi)) {
+  // if (!fi.isAnnotBaseSofaRef) {
+  // fsTgt._setFeatureValueNcNj(fi, fsSrc._getFeatureValueNc(fi));
+  // }
+  // }
+  // }
+
   /**
-   * Copies a feature from one fs to another
-   * FSs may be in different type systems 
-   *   Doesn't copy a feature ref, but instead returns false.  
-   *     This is because feature refs can't cross CASes
-   * @param fsSrc source FS
-   * @param fiSrc feature in source to copy
-   * @param fsTgt target FS
-   * @param fiTgt feature in target to set
+   * Copies a feature from one fs to another FSs may be in different type systems Doesn't copy a
+   * feature ref, but instead returns false. This is because feature refs can't cross CASes
+   * 
+   * @param fsSrc
+   *          source FS
+   * @param fiSrc
+   *          feature in source to copy
+   * @param fsTgt
+   *          target FS
+   * @param fiTgt
+   *          feature in target to set
    * @return false if feature is an fsRef
    */
-  public static boolean copyFeatureExceptFsRef(TOP fsSrc, FeatureImpl fiSrc, TOP fsTgt, FeatureImpl fiTgt) {
-   switch (fiSrc.getRangeImpl().getCode()) {
-    case booleanTypeCode    : fsTgt._setBooleanValueNcNj(   fiTgt, fsSrc._getBooleanValueNc(   fiSrc)); break;
-    case byteTypeCode       : fsTgt._setByteValueNcNj(      fiTgt, fsSrc._getByteValueNc(      fiSrc)); break;
-    case shortTypeCode      : fsTgt._setShortValueNcNj(     fiTgt, fsSrc._getShortValueNc(     fiSrc)); break;
-    case intTypeCode        : fsTgt._setIntValueNcNj(       fiTgt, fsSrc._getIntValueNc(       fiSrc)); break;
-    case longTypeCode       : fsTgt._setLongValueNcNj(      fiTgt, fsSrc._getLongValueNc(      fiSrc)); break;
-    case floatTypeCode      : fsTgt._setFloatValueNcNj(     fiTgt, fsSrc._getFloatValueNc(     fiSrc)); break;
-    case doubleTypeCode     : fsTgt._setDoubleValueNcNj(    fiTgt, fsSrc._getDoubleValueNc(    fiSrc)); break;
-    case stringTypeCode     : fsTgt._setStringValueNcNj(    fiTgt, fsSrc._getStringValueNc(    fiSrc)); break;
-//    case javaObjectTypeCode : fsTgt._setJavaObjectValueNcNj(fiTgt, fsSrc.getJavaObjectValue(fiSrc)); break;
-               // skip setting sofaRef - it's final and can't be set
-    default: 
-      if (fiSrc.getRangeImpl().isStringSubtype()) {
-        fsTgt._setStringValueNcNj(    fiTgt, fsSrc._getStringValueNc(    fiSrc)); break;  // does substring range check
-      }
-      return false;
+  public static boolean copyFeatureExceptFsRef(TOP fsSrc, FeatureImpl fiSrc, TOP fsTgt,
+          FeatureImpl fiTgt) {
+    switch (fiSrc.getRangeImpl().getCode()) {
+      case booleanTypeCode:
+        fsTgt._setBooleanValueNcNj(fiTgt, fsSrc._getBooleanValueNc(fiSrc));
+        break;
+      case byteTypeCode:
+        fsTgt._setByteValueNcNj(fiTgt, fsSrc._getByteValueNc(fiSrc));
+        break;
+      case shortTypeCode:
+        fsTgt._setShortValueNcNj(fiTgt, fsSrc._getShortValueNc(fiSrc));
+        break;
+      case intTypeCode:
+        fsTgt._setIntValueNcNj(fiTgt, fsSrc._getIntValueNc(fiSrc));
+        break;
+      case longTypeCode:
+        fsTgt._setLongValueNcNj(fiTgt, fsSrc._getLongValueNc(fiSrc));
+        break;
+      case floatTypeCode:
+        fsTgt._setFloatValueNcNj(fiTgt, fsSrc._getFloatValueNc(fiSrc));
+        break;
+      case doubleTypeCode:
+        fsTgt._setDoubleValueNcNj(fiTgt, fsSrc._getDoubleValueNc(fiSrc));
+        break;
+      case stringTypeCode:
+        fsTgt._setStringValueNcNj(fiTgt, fsSrc._getStringValueNc(fiSrc));
+        break;
+      // case javaObjectTypeCode : fsTgt._setJavaObjectValueNcNj(fiTgt,
+      // fsSrc.getJavaObjectValue(fiSrc)); break;
+      // skip setting sofaRef - it's final and can't be set
+      default:
+        if (fiSrc.getRangeImpl().isStringSubtype()) {
+          fsTgt._setStringValueNcNj(fiTgt, fsSrc._getStringValueNc(fiSrc));
+          break; // does substring range check
+        }
+        return false;
     } // end of switch
     return true;
   }
 
   public static CommonArrayFS copyArray(TOP srcArray) {
     CommonArrayFS srcCA = (CommonArrayFS) srcArray;
-    CommonArrayFS copy = (CommonArrayFS) srcArray._casView.createArray(srcArray._getTypeImpl(), srcCA.size());
-    copy.copyValuesFrom(srcCA); 
+    CommonArrayFS copy = (CommonArrayFS) srcArray._casView.createArray(srcArray._getTypeImpl(),
+            srcCA.size());
+    copy.copyValuesFrom(srcCA);
     return copy;
   }
-    
+
   public BinaryCasSerDes getBinaryCasSerDes() {
     return svd.bcsd;
   }
-  
+
   /**
    * @return the saved CommonSerDesSequential info
    */
   CommonSerDesSequential getCsds() {
-    return svd.csds; 
+    return svd.csds;
   }
-  
+
   void setCsds(CommonSerDesSequential csds) {
     svd.csds = csds;
   }
-  
+
   CommonSerDesSequential newCsds() {
     return svd.csds = new CommonSerDesSequential(this.getBaseCAS());
   }
-  
+
   /**
-   * A space-freeing optimization for use cases where (multiple) delta CASes are being deserialized into this CAS and merged.
+   * A space-freeing optimization for use cases where (multiple) delta CASes are being deserialized
+   * into this CAS and merged.
    */
   public void deltaMergesComplete() {
     svd.csds = null;
   }
 
+  // @formatter:off
   /******************************************
    * PEAR support
    *   Don't modify the type system because it is in use on multiple threads
-   *   
+   * 
    *   Handling of id2fs for low level APIs:
    *     FSs in id2fs map are the outer non-pear ones
    *     Any gets do pear conversion if needed.
-   *   
+   * 
    ******************************************/
   /**
    * Convert base FS to Pear equivalent
@@ -5424,6 +5602,7 @@ public BooleanArray emptyBooleanArray() {
    * @param aFs
    * @return
    */
+  // @formatter:on
   static <T extends FeatureStructure> T pearConvert(T aFs) {
     if (null == aFs) {
       return null;
@@ -5436,13 +5615,13 @@ public BooleanArray emptyBooleanArray() {
       return aFs;
     }
     return (T) view.pearConvert(fs, generator);
-  }  
-  
+  }
+
   /**
-   * Inner method - after determining there is a generator
-   * First see if already have generated the pear version, and if so,
-   * use that.
-   * Otherwise, create the pear version and save in trampoline table  
+   * Inner method - after determining there is a generator First see if already have generated the
+   * pear version, and if so, use that. Otherwise, create the pear version and save in trampoline
+   * table
+   * 
    * @param fs
    * @param g
    * @return
@@ -5450,10 +5629,10 @@ public BooleanArray emptyBooleanArray() {
   private TOP pearConvert(TOP fs, FsGenerator3 g) {
     return svd.id2tramp.putIfAbsent(fs._id, k -> {
 
-      svd.reuseId = k;  // create new FS using base FS's ID
+      svd.reuseId = k; // create new FS using base FS's ID
       pearBaseFs = fs;
       TOP r;
-      // createFS below is modified because of pearBaseFs non-null to 
+      // createFS below is modified because of pearBaseFs non-null to
       // "share" the int and data arrays
       try {
         r = g.createFS(fs._getTypeImpl(), this);
@@ -5464,18 +5643,20 @@ public BooleanArray emptyBooleanArray() {
       assert r != null;
       if (r instanceof UimaSerializable) {
         throw new UnsupportedOperationException(
-            "Pears with Alternate implementations of JCas classes implementing UimaSerializable not supported.");
-//        ((UimaSerializable) fs)._save_to_cas_data();  // updates in r too
-//        ((UimaSerializable) r)._init_from_cas_data();
+                "Pears with Alternate implementations of JCas classes implementing UimaSerializable not supported.");
+        // ((UimaSerializable) fs)._save_to_cas_data(); // updates in r too
+        // ((UimaSerializable) r)._init_from_cas_data();
       }
       return r;
     });
   }
-  
+
   /**
-   * Given a trampoline FS, return the corresponding base Fs
-   * Supports adding Fs (which must be a non-trampoline version) to indexes
-   * @param fs trampoline fs
+   * Given a trampoline FS, return the corresponding base Fs Supports adding Fs (which must be a
+   * non-trampoline version) to indexes
+   * 
+   * @param fs
+   *          trampoline fs
    * @return the corresponding base fs
    */
   <T extends TOP> T getBaseFsFromTrampoline(T fs) {
@@ -5483,33 +5664,34 @@ public BooleanArray emptyBooleanArray() {
     assert r != null;
     return (T) r;
   }
-  
-  /* *****************************************
-   * DEBUGGING and TRACING
-   ******************************************/
-  
+
+  // *****************************************
+  // DEBUGGING and TRACING
+  // *****************************************
+
   public void traceFSCreate(FeatureStructureImplC fs) {
     StringBuilder b = svd.traceFScreationSb;
     if (b.length() > 0) {
       traceFSflush();
     }
     // normally commented-out for matching with v2
-//    // mark annotations created by subiterator
-//    if (fs._getTypeCode() == TypeSystemConstants.annotTypeCode) {
-//      StackTraceElement[] stktr = Thread.currentThread().getStackTrace();
-//      if (stktr.length > 7 && stktr[6].getClassName().equals("org.apache.uima.cas.impl.Subiterator")) {
-//        b.append('*');
-//      }
-//    }
+    // // mark annotations created by subiterator
+    // if (fs._getTypeCode() == TypeSystemConstants.annotTypeCode) {
+    // StackTraceElement[] stktr = Thread.currentThread().getStackTrace();
+    // if (stktr.length > 7 &&
+    // stktr[6].getClassName().equals("org.apache.uima.cas.impl.Subiterator")) {
+    // b.append('*');
+    // }
+    // }
     svd.id2addr.add(svd.nextId2Addr);
-    svd.nextId2Addr += fs._getTypeImpl().getFsSpaceReq((TOP)fs);
+    svd.nextId2Addr += fs._getTypeImpl().getFsSpaceReq((TOP) fs);
     traceFSfs(fs);
     svd.traceFSisCreate = true;
     if (fs._getTypeImpl().isArray()) {
-      b.append(" l:").append(((CommonArrayFS)fs).size());
+      b.append(" l:").append(((CommonArrayFS) fs).size());
     }
   }
-  
+
   void traceFSfs(FeatureStructureImplC fs) {
     StringBuilder b = svd.traceFScreationSb;
     svd.traceFSid = fs._id;
@@ -5520,15 +5702,15 @@ public BooleanArray emptyBooleanArray() {
     }
     b.append(" v:").append(Misc.elide(viewName, 8));
     b.append(" i:").append(String.format("%-5s", geti2addr(fs._id)));
-    b.append(" t:").append(Misc.elide(fs._getTypeImpl().getShortName(), 10));    
+    b.append(" t:").append(Misc.elide(fs._getTypeImpl().getShortName(), 10));
   }
-  
+
   void traceIndexMod(boolean isAdd, TOP fs, boolean isAddbackOrSkipBag) {
     StringBuilder b = svd.traceCowSb;
     b.setLength(0);
     b.append(isAdd ? (isAddbackOrSkipBag ? "abk_idx " : "add_idx ")
-                   : (isAddbackOrSkipBag ? "rmv_auto_idx " : "rmv_norm_idx "));
-//    b.append(fs.toString());
+            : (isAddbackOrSkipBag ? "rmv_auto_idx " : "rmv_norm_idx "));
+    // b.append(fs.toString());
     b.append(fs._getTypeImpl().getShortName()).append(":").append(fs._id);
     if (fs instanceof Annotation) {
       Annotation ann = (Annotation) fs;
@@ -5536,9 +5718,9 @@ public BooleanArray emptyBooleanArray() {
       b.append(" end: ").append(ann.getEnd());
       b.append(" txt: \"").append(Misc.elide(ann.getCoveredText(), 10)).append("\"");
     }
-    traceOut.println(b);         
+    traceOut.println(b);
   }
-  
+
   void traceCowCopy(FsIndex_singletype<?> index) {
     StringBuilder b = svd.traceCowSb;
     b.setLength(0);
@@ -5546,7 +5728,7 @@ public BooleanArray emptyBooleanArray() {
     b.append(" i: ").append(index);
     traceOut.println(b);
   }
-  
+
   void traceCowCopyUse(FsIndex_singletype<?> index) {
     StringBuilder b = svd.traceCowSb;
     b.setLength(0);
@@ -5555,8 +5737,7 @@ public BooleanArray emptyBooleanArray() {
     traceOut.println(b);
   }
 
-
-  void traceCowReinit(String kind, FsIndex_singletype<?> index) { 
+  void traceCowReinit(String kind, FsIndex_singletype<?> index) {
     StringBuilder b = svd.traceCowSb;
     b.setLength(0);
     b.append("cow-redo: ");
@@ -5569,9 +5750,9 @@ public BooleanArray emptyBooleanArray() {
 
   /** only used for tracing, enables tracing 2 slots for long/double */
   private FeatureImpl prevFi;
-  
+
   void traceFSfeat(FeatureStructureImplC fs, FeatureImpl fi, Object v) {
-    //debug
+    // debug
     FeatureImpl originalFi = fi;
     StringBuilder b = svd.traceFScreationSb;
     assert (b.length() > 0);
@@ -5579,10 +5760,15 @@ public BooleanArray emptyBooleanArray() {
       traceFSfeatUpdate(fs);
     }
     if (fi == null) { // happens on 2nd setInt call from cas copier copyfeatures for Long / Double
-      switch(prevFi.getSlotKind()) {
-      case Slot_DoubleRef: v = fs._getDoubleValueNc(prevFi); break; // correct double and long
-      case Slot_LongRef:   v = fs._getLongValueNc(prevFi); break; // correct double and long
-      default: Misc.internalError();
+      switch (prevFi.getSlotKind()) {
+        case Slot_DoubleRef:
+          v = fs._getDoubleValueNc(prevFi);
+          break; // correct double and long
+        case Slot_LongRef:
+          v = fs._getLongValueNc(prevFi);
+          break; // correct double and long
+        default:
+          Misc.internalError();
       }
       fi = prevFi;
       prevFi = null;
@@ -5595,67 +5781,66 @@ public BooleanArray emptyBooleanArray() {
       if (v instanceof Integer) {
         return; // wait till the next part is traced
       } else if (v instanceof Long) {
-        v = CASImpl.long2double((long)v);
+        v = CASImpl.long2double((long) v);
       }
     }
 
     if (fi.getSlotKind() == SlotKind.Slot_LongRef && (v instanceof Integer)) {
-      return;   // output done on the next int call
+      return; // output done on the next int call
     }
 
     String fv = getTraceRepOfObj(fi, v);
-//    if (geti2addr(fs._id).equals("79") &&
-//        fn.equals("sofa")) {
-//      new Throwable().printStackTrace(traceOut);
-//    }
-//    // debug 
-//    if (fn.equals("lemma") && 
-//        fv.startsWith("Lemma:") &&
-//        debug1cnt < 2) {
-//      debug1cnt ++;
-//      traceOut.println("setting lemma feat:");
-//      new Throwable().printStackTrace(traceOut);
-//    }
+    // if (geti2addr(fs._id).equals("79") &&
+    // fn.equals("sofa")) {
+    // new Throwable().printStackTrace(traceOut);
+    // }
+    // // debug
+    // if (fn.equals("lemma") &&
+    // fv.startsWith("Lemma:") &&
+    // debug1cnt < 2) {
+    // debug1cnt ++;
+    // traceOut.println("setting lemma feat:");
+    // new Throwable().printStackTrace(traceOut);
+    // }
     // debug
-//    if (fs._getTypeImpl().getShortName().equals("Passage") &&
-//        "score".equals(fn) && 
-//        debug2cnt < 5) {
-//      debug2cnt++;
-//      traceOut.println("setting score feat in Passage");
-//      new Throwable().printStackTrace(traceOut);
-//    }
+    // if (fs._getTypeImpl().getShortName().equals("Passage") &&
+    // "score".equals(fn) &&
+    // debug2cnt < 5) {
+    // debug2cnt++;
+    // traceOut.println("setting score feat in Passage");
+    // new Throwable().printStackTrace(traceOut);
+    // }
     // debug
     int i_v = Math.max(0, 10 - fn.length());
-    int i_n = Math.max(0,  10 - fv.length());
-    
+    int i_n = Math.max(0, 10 - fv.length());
+
     fn = Misc.elide(fn, 10 + i_n, false);
     fv = Misc.elide(fv, 10 + i_v, false);
     // debug
-//    if (!svd.traceFSisCreate && fn.equals("uninf.dWord") && fv.equals("XsgTokens")) {
-//      traceOut.println("debug uninf.dWord:XsgTokens: " + Misc.getCallers(3, 10));
-//    }
+    // if (!svd.traceFSisCreate && fn.equals("uninf.dWord") && fv.equals("XsgTokens")) {
+    // traceOut.println("debug uninf.dWord:XsgTokens: " + Misc.getCallers(3, 10));
+    // }
     b.append(' ').append(Misc.elide(fn + ':' + fv, 21));
     // value of a feature:
-    //  - "null" or
-    //  - if FS: type:id (converted to addr)
-    //  - v.toString()
+    // - "null" or
+    // - if FS: type:id (converted to addr)
+    // - v.toString()
   }
-  
-//  private static int debug2cnt = 0;
-  
+
+  // private static int debug2cnt = 0;
+
   /**
    * @param v
-   * @return value of the feature:
-   * "null" or if FS: type:id (converted to addr) or v.toString()
-   *   Note: white space in strings converted to "_' characters
+   * @return value of the feature: "null" or if FS: type:id (converted to addr) or v.toString()
+   *         Note: white space in strings converted to "_' characters
    */
   private String getTraceRepOfObj(FeatureImpl fi, Object v) {
     if (v instanceof TOP) {
       TOP fs = (TOP) v;
-      return Misc.elide(fs.getType().getShortName(), 5, false)  + ':' + geti2addr(fs._id);
-    } 
+      return Misc.elide(fs.getType().getShortName(), 5, false) + ':' + geti2addr(fs._id);
+    }
     if (v == null) {
-        return "null";
+      return "null";
     }
     if (v instanceof String) {
       String s = Misc.elide((String) v, 50, false);
@@ -5664,25 +5849,26 @@ public BooleanArray emptyBooleanArray() {
     if (v instanceof Integer) {
       int iv = (int) v;
       switch (fi.getSlotKind()) {
-      case Slot_Boolean: return (iv == 1) ? "true" : "false";
-      case Slot_Byte:
-      case Slot_Short:
-      case Slot_Int: return Integer.toString(iv);
-      case Slot_Float: return Float.toString(int2float(iv));
-      default:
-        // Ignore
+        case Slot_Boolean:
+          return (iv == 1) ? "true" : "false";
+        case Slot_Byte:
+        case Slot_Short:
+        case Slot_Int:
+          return Integer.toString(iv);
+        case Slot_Float:
+          return Float.toString(int2float(iv));
+        default:
+          // Ignore
       }
     }
     if (v instanceof Long) {
       long vl = (long) v;
-      return (fi.getSlotKind() == SlotKind.Slot_DoubleRef)
-               ? Double.toString(long2double(vl))
-               : Long.toString(vl);       
+      return (fi.getSlotKind() == SlotKind.Slot_DoubleRef) ? Double.toString(long2double(vl))
+              : Long.toString(vl);
     }
     return Misc.replaceWhiteSpace(v.toString(), "_");
   }
-  
-  
+
   private String geti2addr(int id) {
     if (id >= svd.id2addr.size()) {
       return Integer.toString(id) + '!';
@@ -5690,27 +5876,25 @@ public BooleanArray emptyBooleanArray() {
     return Integer.toString(svd.id2addr.get(id));
   }
 
-  
   void traceFSfeatUpdate(FeatureStructureImplC fs) {
     traceFSflush();
     traceFSfs(fs);
-    svd.traceFSisCreate = false; 
+    svd.traceFSisCreate = false;
   }
-  
+
   public StringBuilder traceFSflush() {
     if (!traceFSs) {
-        return null;
+      return null;
     }
     StringBuilder b = svd.traceFScreationSb;
     if (b.length() > 0) {
-      traceOut.println((svd.traceFSisCreate ? "cr: " :
-                                              "up: ") + b);
+      traceOut.println((svd.traceFSisCreate ? "cr: " : "up: ") + b);
       b.setLength(0);
       svd.traceFSisCreate = false;
     }
     return b;
   }
-  
+
   private static class MeasureSwitchType {
     TypeImpl oldType;
     TypeImpl newType;
@@ -5720,14 +5904,14 @@ public BooleanArray emptyBooleanArray() {
     boolean newSubsumesOld;
     boolean oldSubsumesNew;
     long scantime = 0;
-    
+
     MeasureSwitchType(TypeImpl oldType, TypeImpl newType) {
       this.oldType = oldType;
       this.oldJCasClassName = oldType.getJavaClass().getName();
       this.newType = newType;
       this.newJCasClassName = newType.getJavaClass().getName();
     }
-    
+
     @Override
     public int hashCode() {
       final int prime = 31;
@@ -5738,6 +5922,7 @@ public BooleanArray emptyBooleanArray() {
       result = prime * result + ((oldType == null) ? 0 : oldType.hashCode());
       return result;
     }
+
     @Override
     public boolean equals(Object obj) {
       if (this == obj) {
@@ -5781,32 +5966,33 @@ public BooleanArray emptyBooleanArray() {
       return true;
     }
   }
-  
+
   private static final Map<MeasureSwitchType, MeasureSwitchType> measureSwitches = new HashMap<>();
-  
+
   static {
     if (MEASURE_SETINT) {
       Runtime.getRuntime().addShutdownHook(new Thread(null, () -> {
         System.out.println("debug Switch Types dump, # entries: " + measureSwitches.size());
         int s1 = 0, s2 = 0, s3 = 0;
         for (MeasureSwitchType mst : measureSwitches.keySet()) {
-          s1 = Math.max(s1,  mst.oldType.getName().length());
-          s2 = Math.max(s2,  mst.newType.getName().length());
-          s3 = Math.max(s3,  mst.oldJCasClassName.length());
+          s1 = Math.max(s1, mst.oldType.getName().length());
+          s2 = Math.max(s2, mst.newType.getName().length());
+          s3 = Math.max(s3, mst.oldJCasClassName.length());
         }
-  
+
         for (MeasureSwitchType mst : measureSwitches.keySet()) {
-          System.out.format("count: %,6d scantime = %,7d ms,  subsumes: %s %s,   type: %-" + s1 + "s  newType: %-" + s2 + "s,  cl: %-" + s3 + "s, newCl: %s%n", 
-              mst.count, mst.scantime / 1000000,
-              mst.newSubsumesOld ? "n>o" : "   ",
-              mst.oldSubsumesNew ? "o>w" : "   ",
-              mst.oldType.getName(), mst.newType.getName(), mst.oldJCasClassName, mst.newJCasClassName);
+          System.out.format(
+                  "count: %,6d scantime = %,7d ms,  subsumes: %s %s,   type: %-" + s1
+                          + "s  newType: %-" + s2 + "s,  cl: %-" + s3 + "s, newCl: %s%n",
+                  mst.count, mst.scantime / 1000000, mst.newSubsumesOld ? "n>o" : "   ",
+                  mst.oldSubsumesNew ? "o>w" : "   ", mst.oldType.getName(), mst.newType.getName(),
+                  mst.oldJCasClassName, mst.newJCasClassName);
         }
-        
-//        if (traceFSs) {
-//          System.err.println("debug closing traceFSs output");
-//          traceOut.close();
-//        }
+
+        // if (traceFSs) {
+        // System.err.println("debug closing traceFSs output");
+        // traceOut.close();
+        // }
       }, "Dump SwitchTypes"));
     }
 
@@ -5818,38 +6004,39 @@ public BooleanArray emptyBooleanArray() {
       }, "close trace output"));
     }
   }
-  
+
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.admin.CASMgr#setCAS(org.apache.uima.cas.CAS)
-   *      Internal use Never called Kept because it's in the interface.
+   * @see org.apache.uima.cas.admin.CASMgr#setCAS(org.apache.uima.cas.CAS) Internal use Never called
+   * Kept because it's in the interface.
    */
   @Override
   @Deprecated
-  public void setCAS(CAS cas) {}
-  
+  public void setCAS(CAS cas) {
+  }
+
   /**
-   * @return true if in Pear context, or external context outside AnalysisEngine having a UIMA Extension class loader
-   *                e.g., if calling a call-back routine loaded outside the AE.
+   * @return true if in Pear context, or external context outside AnalysisEngine having a UIMA
+   *         Extension class loader e.g., if calling a call-back routine loaded outside the AE.
    */
   boolean inPearContext() {
     return svd.previousJCasClassLoader != null;
   }
-  
+
   /**
-   * Pear context suspended while creating a base version, when we need to create a new FS 
-   *   (we need to create both the base and the trampoline version)
+   * Pear context suspended while creating a base version, when we need to create a new FS (we need
+   * to create both the base and the trampoline version)
    */
   private void suspendPearContext() {
     svd.suspendPreviousJCasClassLoader = svd.previousJCasClassLoader;
     svd.previousJCasClassLoader = null;
   }
-  
+
   private void restorePearContext() {
     svd.previousJCasClassLoader = svd.suspendPreviousJCasClassLoader;
   }
-  
+
   /**
    * 
    * @return the initial heap size specified or defaulted
@@ -5861,53 +6048,59 @@ public BooleanArray emptyBooleanArray() {
   // backwards compatibility - reinit calls
   // just the public apis
   /**
-   * Deserializer for Java-object serialized instance of CASSerializer
-   *   Used by Soap
-   * @param ser - The instance to convert back to a CAS
+   * Deserializer for Java-object serialized instance of CASSerializer Used by Soap
+   * 
+   * @param ser
+   *          - The instance to convert back to a CAS
    */
   public void reinit(CASSerializer ser) {
     svd.bcsd.reinit(ser);
   }
-  
+
   /**
    * Deserializer for CASCompleteSerializer instances - includes type system and index definitions
    * Never delta
-   * @param casCompSer -
+   * 
+   * @param casCompSer
+   *          -
    */
   public void reinit(CASCompleteSerializer casCompSer) {
     svd.bcsd.reinit(casCompSer);
   }
-  
+
+  // @formatter:off
   /**
    * --------------------------------------------------------------------- 
    * see Blob Format in CASSerializer
    * 
-   * This reads in and deserializes CAS data from a stream. Byte swapping may be
-   * needed if the blob is from C++ -- C++ blob serialization writes data in
-   * native byte order.
+   * This reads in and deserializes CAS data from a stream. Byte swapping may be needed if the blob
+   * is from C++ -- C++ blob serialization writes data in native byte order.
    * 
-   * Supports delta deserialization.  For that, the the csds from the serialization event must be used.
-   *  
-   * @param istream -
+   * Supports delta deserialization. For that, the the csds from the serialization event must be
+   * used.
+   * 
+   * @param istream
+   *          -
    * @return - the format of the input stream detected
-   * @throws CASRuntimeException wraps IOException
+   * @throws CASRuntimeException
+   *           wraps IOException
    */
-
+  // @formatter:on
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
     return svd.bcsd.reinit(istream);
   }
-  
+
   void maybeHoldOntoFS(FeatureStructureImplC fs) {
     if (svd.isId2Fs) {
-      svd.id2fs.put((TOP)fs);  // does an assert - prev id should not be there
+      svd.id2fs.put((TOP) fs); // does an assert - prev id should not be there
     }
   }
-  
+
   public void swapInPearVersion(Object[] a) {
     if (!inPearContext()) {
       return;
     }
-  
+
     for (int i = 0; i < a.length; i++) {
       Object ao = a[i];
       if (ao instanceof TOP) {
@@ -5915,7 +6108,7 @@ public BooleanArray emptyBooleanArray() {
       }
     }
   }
-  
+
   public Collection<?> collectNonPearVersions(Collection<?> c) {
     if (c.size() == 0 || !inPearContext()) {
       return c;
@@ -5928,20 +6121,18 @@ public BooleanArray emptyBooleanArray() {
     }
     return items;
   }
-  
+
   public <T> Spliterator<T> makePearAware(Spliterator<T> baseSi) {
     if (!inPearContext()) {
       return baseSi;
     }
-    
+
     return new Spliterator<T>() {
 
       @Override
       public boolean tryAdvance(Consumer<? super T> action) {
-        return baseSi.tryAdvance(item -> action.accept(
-            (item instanceof TOP) 
-              ? (T) pearConvert((TOP)item)
-              : item));
+        return baseSi.tryAdvance(
+                item -> action.accept((item instanceof TOP) ? (T) pearConvert((TOP) item) : item));
       }
 
       @Override
@@ -5958,72 +6149,72 @@ public BooleanArray emptyBooleanArray() {
       public int characteristics() {
         return baseSi.characteristics();
       }
-      
+
     };
   }
-  
+
   @Override
-public boolean is_ll_enableV2IdRefs() {
+  public boolean is_ll_enableV2IdRefs() {
     return svd.isId2Fs;
   }
-  
+
   @Override
-public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
+  public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
     final boolean restoreState = svd.isId2Fs;
     if (enable && !restoreState && svd.fsIdGenerator != 0) {
       throw new IllegalStateException("CAS must be empty when switching to V2 ID References mode.");
     }
-    AutoCloseableNoException r = () -> svd.isId2Fs = restoreState; 
+    AutoCloseableNoException r = () -> svd.isId2Fs = restoreState;
     svd.isId2Fs = enable;
     return r;
   }
 
-//  int allocIntData(int sz) {
-//    
-//    if (sz > INT_DATA_FOR_ALLOC_SIZE / 4) {
-//      returnIntDataForAlloc = new int[sz];
-//      return 0;
-//    }
-//    
-//    if (sz + nextIntDataOffsetForAlloc > INT_DATA_FOR_ALLOC_SIZE) {
-//      // too large to fit, alloc a new one
-//      currentIntDataForAlloc = new int[INT_DATA_FOR_ALLOC_SIZE];
-//      nextIntDataOffsetForAlloc = 0;
-//    }
-//    int r = nextIntDataOffsetForAlloc;
-//    nextIntDataOffsetForAlloc += sz;
-//    returnIntDataForAlloc = currentIntDataForAlloc;
-//    return r;
-//  }
-//  
-//  int[] getReturnIntDataForAlloc() {
-//    return returnIntDataForAlloc;
-//  }
-//
-//  int allocRefData(int sz) {
-//
-//    if (sz > REF_DATA_FOR_ALLOC_SIZE / 4) {
-//      returnRefDataForAlloc = new Object[sz];
-//      return 0;
-//    }
-//    
-//    if (sz + nextRefDataOffsetForAlloc > REF_DATA_FOR_ALLOC_SIZE) {
-//      // too large to fit, alloc a new one
-//      currentRefDataForAlloc = new Object[REF_DATA_FOR_ALLOC_SIZE];
-//      nextRefDataOffsetForAlloc = 0;
-//    }
-//    int r = nextRefDataOffsetForAlloc;
-//    nextRefDataOffsetForAlloc += sz;
-//    returnRefDataForAlloc = currentRefDataForAlloc;
-//    return r;
-//  }
-//  
-//  Object[] getReturnRefDataForAlloc() {
-//    return returnRefDataForAlloc;
-//  }
-  // UIMA-6199 provides access to non-indexed doc annot 
-  //   to allow sofa setting to set the "length" of the local sofa data string
-  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+  // int allocIntData(int sz) {
+  //
+  // if (sz > INT_DATA_FOR_ALLOC_SIZE / 4) {
+  // returnIntDataForAlloc = new int[sz];
+  // return 0;
+  // }
+  //
+  // if (sz + nextIntDataOffsetForAlloc > INT_DATA_FOR_ALLOC_SIZE) {
+  // // too large to fit, alloc a new one
+  // currentIntDataForAlloc = new int[INT_DATA_FOR_ALLOC_SIZE];
+  // nextIntDataOffsetForAlloc = 0;
+  // }
+  // int r = nextIntDataOffsetForAlloc;
+  // nextIntDataOffsetForAlloc += sz;
+  // returnIntDataForAlloc = currentIntDataForAlloc;
+  // return r;
+  // }
+  //
+  // int[] getReturnIntDataForAlloc() {
+  // return returnIntDataForAlloc;
+  // }
+  //
+  // int allocRefData(int sz) {
+  //
+  // if (sz > REF_DATA_FOR_ALLOC_SIZE / 4) {
+  // returnRefDataForAlloc = new Object[sz];
+  // return 0;
+  // }
+  //
+  // if (sz + nextRefDataOffsetForAlloc > REF_DATA_FOR_ALLOC_SIZE) {
+  // // too large to fit, alloc a new one
+  // currentRefDataForAlloc = new Object[REF_DATA_FOR_ALLOC_SIZE];
+  // nextRefDataOffsetForAlloc = 0;
+  // }
+  // int r = nextRefDataOffsetForAlloc;
+  // nextRefDataOffsetForAlloc += sz;
+  // returnRefDataForAlloc = currentRefDataForAlloc;
+  // return r;
+  // }
+  //
+  // Object[] getReturnRefDataForAlloc() {
+  // return returnRefDataForAlloc;
+  // }
+  // UIMA-6199 provides access to non-indexed doc annot
+  // to allow sofa setting to set the "length" of the local sofa data string
+  // @see updateDocumentAnnotation() updateDocumentAnnotation.
   public void set_deserialized_doc_annot_not_indexed(Annotation doc_annot) {
     deserialized_doc_annot_not_indexed = doc_annot;
   }

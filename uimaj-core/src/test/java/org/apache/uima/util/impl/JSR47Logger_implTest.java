@@ -24,13 +24,13 @@ import java.util.logging.Logger;
 import org.apache.uima.util.Level;
 import org.junit.Assert;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * UIMA Logging Test
  * 
  */
-public class JSR47Logger_implTest extends TestCase {
+public class JSR47Logger_implTest {
 
   private static HashMap<String, Level> logLevels = new HashMap<>(9);
   static {
@@ -45,10 +45,7 @@ public class JSR47Logger_implTest extends TestCase {
     logLevels.put("ALL", Level.ALL);
   }
 
-  public JSR47Logger_implTest(String arg0) {
-    super(arg0);
-  }
-
+  @Test
   public void testLogWrapperCreation() throws Exception {
 
     // Set the root logger's level to INFO ... may not be the default
@@ -71,6 +68,7 @@ public class JSR47Logger_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testIsLoggable() throws Exception {
     // create logger
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
@@ -173,6 +171,7 @@ public class JSR47Logger_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testMessageLogMethods() throws Exception {
     // create Logger
     final org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();
@@ -239,6 +238,7 @@ public class JSR47Logger_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testMessageKeyLogMethods() throws Exception {
     // create Logger
     org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();

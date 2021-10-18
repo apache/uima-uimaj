@@ -1,6 +1,4 @@
-
-
-   
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package org.apache.uima.cas.test;
@@ -101,5 +99,3 @@ public class Sentence extends Annotation {
   private void readObject() {/*default - does nothing empty block */}
      
 }
-
-    

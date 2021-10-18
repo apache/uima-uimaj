@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,12 +68,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
-
-
-public class JcasSofaTest extends TestCase {
+public class JcasSofaTest {
 
   private CASMgr casMgr;
 
@@ -78,16 +81,9 @@ public class JcasSofaTest extends TestCase {
 
   private JCas jcas;
 
-  public JcasSofaTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-      super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -111,7 +107,8 @@ public class JcasSofaTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  
+
+  @AfterEach
   public void tearDown() {
     casMgr = null;
     jcas = null;
@@ -121,17 +118,18 @@ public class JcasSofaTest extends TestCase {
   /**
    * Test driver.
    */
+  @Test
   public void testMain() throws Exception {
     try {
 
       // Create a Sofa using OLD APIs for now
       CAS view = cas.createView("EnglishDocument");
-//      SofaID_impl id = new SofaID_impl();
-//      id.setSofaID("EnglishDocument");
-//      Sofa es = new Sofa(jcas, id, "text");
+      // SofaID_impl id = new SofaID_impl();
+      // id.setSofaID("EnglishDocument");
+      // Sofa es = new Sofa(jcas, id, "text");
       // Initial View is #1!!!
       assertTrue(2 == view.getSofa().getSofaRef());
-//      assertTrue(2 == es.getSofaRef());
+      // assertTrue(2 == es.getSofaRef());
 
       // Set the document text
       view.setSofaDataString("this beer is good", null);
@@ -161,13 +159,13 @@ public class JcasSofaTest extends TestCase {
       } catch (IOException e2) {
         e2.printStackTrace();
       }
-      
+
       // Delete the generated file.
       File xcasFile = new File(xcasFilename);
       if (xcasFile.exists()) {
         assertTrue(xcasFile.delete());
       }
-      
+
       // Add a new Sofa
       // id.setSofaID("GermanDocument");
       // Sofa gs = new Sofa(jcas, id, "text");
@@ -279,8 +277,8 @@ public class JcasSofaTest extends TestCase {
       assertTrue(("this").equals(engAnnot.getCoveredText()));
       assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(frAnnot.getType().getName()));
       assertTrue(("cette").equals(frAnnot.getCoveredText()));
-      assertTrue(("org.apache.uima.cas.test.CrossAnnotation").equals(gerCrossAnnot.getType()
-              .getName()));
+      assertTrue(("org.apache.uima.cas.test.CrossAnnotation")
+              .equals(gerCrossAnnot.getType().getName()));
       assertTrue(("das").equals(gerCrossAnnot.getCoveredText()));
 
       // Test that the other annotation feature of cross annotations works
@@ -299,23 +297,22 @@ public class JcasSofaTest extends TestCase {
       assertTrue(("cette").equals(tstAnnot.getCoveredText()));
       tstAnnot = (Annotation) anArray.get(2);
       assertTrue(("das").equals(tstAnnot.getCoveredText()));
-      
-//      // code to write out test cas used by other routines,
-//      // normally commented out, unless need to regenerate
-//      xcasFilename = "testTypeSystemNew.xml";
-//      ser = new XCASSerializer(cas.getTypeSystem());
-//      outputXCAS = new FileOutputStream(xcasFilename);
-//      xmlSer = new XMLSerializer(outputXCAS);
-//      try {
-//        ser.serialize(cas, xmlSer.getContentHandler());
-//        outputXCAS.close();
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      } catch (SAXException e) {
-//        e.printStackTrace();
-//      }
-      
-      
+
+      // // code to write out test cas used by other routines,
+      // // normally commented out, unless need to regenerate
+      // xcasFilename = "testTypeSystemNew.xml";
+      // ser = new XCASSerializer(cas.getTypeSystem());
+      // outputXCAS = new FileOutputStream(xcasFilename);
+      // xmlSer = new XMLSerializer(outputXCAS);
+      // try {
+      // ser.serialize(cas, xmlSer.getContentHandler());
+      // outputXCAS.close();
+      // } catch (IOException e) {
+      // e.printStackTrace();
+      // } catch (SAXException e) {
+      // e.printStackTrace();
+      // }
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -324,6 +321,7 @@ public class JcasSofaTest extends TestCase {
   /*
    * Test stream access to Sofa Data.
    */
+  @Test
   public void testSofaDataStream() throws Exception {
     try {
 
@@ -416,7 +414,7 @@ public class JcasSofaTest extends TestCase {
       PrintWriter out = new PrintWriter(sofaFileName);
       out.print("this beer is good");
       out.close();
-      
+
       // read sofa data
       InputStream is = stringView.getSofaDataStream();
       assertTrue(is != null);
@@ -438,7 +436,7 @@ public class JcasSofaTest extends TestCase {
       }
 
       bis.close();
-      
+
       is = floatArrayView.getSofaDataStream();
       assertTrue(is != null);
       bis = new BufferedInputStream(is);
@@ -496,7 +494,7 @@ public class JcasSofaTest extends TestCase {
       }
       assertTrue(buf.toString().equals("this beer is good"));
       is.close();
-      
+
       // Delete the generated file.
       File xcasFile = new File(sofaFileName);
       if (xcasFile.exists()) {
@@ -506,7 +504,8 @@ public class JcasSofaTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  
+
+  @Test
   public void testIndexTwice() throws Exception {
     try {
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
@@ -516,39 +515,33 @@ public class JcasSofaTest extends TestCase {
 
       Annotation annot = new Annotation(newJCas);
       annot.addToIndexes();
-      
+
       Iterator<Annotation> annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
       Annotation annot2 = annotIter.next();
       assertEquals(annot, annot2);
       assertEquals(annot2.getSofa(), annot2.getCASImpl().getSofa());
-      
+
       annot2.addToIndexes();
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-    catch (Exception e) {
-      JUnitExtension.handleException(e);      
-    }    
   }
-  
+
+  @Test
   public void testGetSofa() throws Exception {
     try {
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-              new XMLInputSource(typeSystemFile));
+      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
+              .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
       CAS newCas = CasCreationUtils.createCas(typeSystem, null, null);
-      File xcasFile = JUnitExtension.getFile("ExampleCas/multiSofaCas.xml"); 
+      File xcasFile = JUnitExtension.getFile("ExampleCas/multiSofaCas.xml");
       XCASDeserializer.deserialize(new FileInputStream(xcasFile), newCas);
       JCas newJCas = newCas.getJCas();
-      
+
       SofaID sofaId = new SofaID_impl("EnglishDocument");
       JCas view = newJCas.getView(newJCas.getSofa(sofaId));
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-    catch (Exception e) {
-      JUnitExtension.handleException(e);      
-    }      
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(JcasSofaTest.class);
-  }
-
 }

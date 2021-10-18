@@ -40,7 +40,6 @@ public class FileSaveEventHandler implements ActionListener {
    * @param frame the frame
    */
   public FileSaveEventHandler(MainFrame frame) {
-    super();
     this.main = frame;
   }
 

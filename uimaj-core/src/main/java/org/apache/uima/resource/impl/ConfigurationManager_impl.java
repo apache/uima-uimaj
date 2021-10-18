@@ -44,7 +44,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * resource bundle for log messages
    */
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-  
+
   /**
    * Map containing configuration parameter values and links for parameter values shared by all
    * sessions.
@@ -56,13 +56,16 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#declareParameters(java.lang.String,
+   * @see
+   * org.apache.uima.resource.impl.ConfigurationManagerImplBase#declareParameters(java.lang.String,
    * org.apache.uima.resource.metadata.ConfigurationParameter[],
-   * org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String, java.lang.String)
+   * org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String,
+   * java.lang.String)
    */
+  @Override
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-          ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
-          throws ResourceConfigurationException {
+          ConfigurationParameterSettings aSettings, String aContextName,
+          Settings aExternalOverrides) throws ResourceConfigurationException {
     super.declareParameters(aGroupName, aParams, aSettings, aContextName, aExternalOverrides);
     // iterate over config. param _declarations_ and build mSharedParamNap
     if (aParams != null) {
@@ -94,7 +97,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
           }
         }
         mSharedParamMap.put(qname, paramValue);
-        
+
         // Log parameter & value & how it was found ... could do when validate them?
         if (UIMAFramework.getLogger(this.getClass()).isLoggable(Level.CONFIG)) {
           Object realValue = paramValue;
@@ -119,8 +122,8 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
               // Ignore errors caused by failure to validate parameter settings (see Jira 3123)
             }
           }
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "declareParameters",
-                  LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                  "declareParameters", LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
                   new Object[] { aParams[i].getName(), aContextName, realValue, from });
         }
       }
@@ -130,14 +133,17 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#lookupSharedParamNoLinks(java.lang.String)
+   * @see
+   * org.apache.uima.resource.impl.ConfigurationManagerImplBase#lookupSharedParamNoLinks(java.lang.
+   * String)
    */
+  @Override
   protected Object lookupSharedParamNoLinks(String aCompleteName) {
     return mSharedParamMap.get(aCompleteName);
   }
-  
+
   /*
-   * Create the appropriate type of parameter object from the value of the external override 
+   * Create the appropriate type of parameter object from the value of the external override
    */
   private Object createParam(String value, String paramType) throws ResourceConfigurationException {
     if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
@@ -150,7 +156,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
       return value;
     }
   }
-  
+
   private Object createParams(String[] values, String paramType) {
     if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
       return createParamsForClass(values, Boolean.class);
@@ -162,19 +168,22 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
       return values;
     }
   }
-  
+
   /*
    * Convert the string to the appropriate object
    */
-  private <T> Object createParamForClass(String value, Class<T> clas) throws ResourceConfigurationException {
+  private <T> Object createParamForClass(String value, Class<T> clas)
+          throws ResourceConfigurationException {
     Method valOf;
     try {
       valOf = clas.getMethod("valueOf", String.class);
       return valOf.invoke(null, value);
-    } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+            | IllegalArgumentException | InvocationTargetException e) {
       if (e.getCause() instanceof NumberFormatException) {
         // External override value "{0}" is not an integer
-        throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_NUMERIC_ERROR, 
+        throw new ResourceConfigurationException(
+                ResourceConfigurationException.EXTERNAL_OVERRIDE_NUMERIC_ERROR,
                 new Object[] { value });
       }
       e.printStackTrace();
@@ -182,10 +191,10 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
     }
 
   }
-  
+
   /*
-   * Convert the array of strings to the appropriate array of objects.
-   * Suppress the warnings about the casts.
+   * Convert the array of strings to the appropriate array of objects. Suppress the warnings about
+   * the casts.
    */
   @SuppressWarnings("unchecked")
   private <T> Object createParamsForClass(String[] values, Class<T> clas) {
@@ -202,5 +211,5 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
       throw new IllegalArgumentException(e.getCause());
     }
   }
-  
+
 }

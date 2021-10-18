@@ -19,25 +19,20 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class IntArrayFSTest extends TestCase {
+public class IntArrayFSTest {
 
   private CAS cas;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public IntArrayFSTest(String arg0) {
-    super(arg0);
-  }
-
+  @BeforeEach
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -46,14 +41,12 @@ public class IntArrayFSTest extends TestCase {
     }
   }
 
+  @AfterEach
   public void tearDown() {
     this.cas = null;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IntArrayFSTest.class);
-  }
-
+  @Test
   public void testSet() {
     IntArrayFS array = this.cas.createIntArrayFS(0);
     assertTrue(array != null);
@@ -115,6 +108,7 @@ public class IntArrayFSTest extends TestCase {
     assertTrue(exceptionCaught);
   }
 
+  @Test
   public void testToArray() {
     // From CAS array to Java array.
     IntArrayFS array = this.cas.createIntArrayFS(3);

@@ -42,7 +42,6 @@ public class XmiCasFileOpenHandler implements ActionListener {
   // Default constructor, not used.
   @SuppressWarnings("unused")
   private XmiCasFileOpenHandler() {
-    super();
     this.main = null;
   }
 
@@ -52,7 +51,6 @@ public class XmiCasFileOpenHandler implements ActionListener {
    * @param main the main
    */
   public XmiCasFileOpenHandler(MainFrame main) {
-    super();
     this.main = main;
   }
   

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="16" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="Joe waited for the train . The train was late ."/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="17" _ref_sofa="16" begin="0" end="47" language="x-unspecified"/>
+    <uima.cas.StringArray _indexed="1" _id="2" size="3">
+        <i>A</i>
+        <i>B</i>
+        <i>C</i>
+    </uima.cas.StringArray>
+    <uima.cas.StringArray _indexed="1" _id="1" size="3">
+        <i>LNC</i>
+        <i>MTH</i>
+        <i>SNOMEDCT_US</i>
+    </uima.cas.StringArray>
+    <uima.cas.StringArray _indexed="1" _id="10" size="5">
+        <i>aaiguewilz</i>
+        <i>orarzvmgty</i>
+        <i>mkshhvglpk</i>
+        <i>ffvdpcdvbx</i>
+        <i>jsqcoqzpxb</i>
+    </uima.cas.StringArray>
+    <cassis.Group _indexed="1" _id="18" _ref_sofa="16" begin="0" end="0" _ref_strings="27" _ref_shorts="20" _ref_integers="19" _ref_longs="21" _ref_booleans="25" _ref_bytes="24" _ref_floats="22" _ref_doubles="23" _ref_fses="26"/>
+    <cassis.Group _indexed="1" _id="28" _ref_sofa="16" begin="0" end="0" _ref_shorts="30" _ref_integers="29" _ref_longs="31" _ref_booleans="35" _ref_bytes="34" _ref_floats="32" _ref_doubles="33" _ref_fses="36"/>
+    <cassis.Group _indexed="1" _id="37" _ref_sofa="16" begin="0" end="0"/>
+    <uima.cas.FSArray _indexed="1" _id="3" size="4">
+        <i>17</i>
+        <i>1</i>
+        <i>2</i>
+        <i>18</i>
+    </uima.cas.FSArray>
+    <uima.cas.FSArray _indexed="1" _id="4" size="4">
+        <i>2</i>
+        <i/>
+        <i/>
+        <i>17</i>
+    </uima.cas.FSArray>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="6" _ref_tail="7" _ref_head="18"/>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="5" _ref_tail="6" _ref_head="2"/>
+    <uima.cas.EmptyFSList _indexed="1" _id="7"/>
+    <uima.cas.FloatArray _indexed="1" _id="8" size="4">
+        <i>0.7275637</i>
+        <i>0.054665208</i>
+        <i>0.6832234</i>
+        <i>0.0479393</i>
+    </uima.cas.FloatArray>
+    <uima.cas.IntegerArray _indexed="1" _id="9" size="6">
+        <i>1325939940</i>
+        <i>-248792245</i>
+        <i>1190043011</i>
+        <i>-1255373459</i>
+        <i>-1436456258</i>
+        <i>392236186</i>
+    </uima.cas.IntegerArray>
+    <uima.cas.BooleanArray _indexed="1" _id="11" size="3">
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+    </uima.cas.BooleanArray>
+    <uima.cas.ByteArray _indexed="1" _id="12" size="4">
+        <i>66</i>
+        <i>-37</i>
+        <i>48</i>
+        <i>100</i>
+    </uima.cas.ByteArray>
+    <uima.cas.ShortArray _indexed="1" _id="13" size="4">
+        <i>1929</i>
+        <i>13467</i>
+        <i>15132</i>
+        <i>15893</i>
+    </uima.cas.ShortArray>
+    <uima.cas.LongArray _indexed="1" _id="14" size="1">
+        <i>2516571677013944794</i>
+    </uima.cas.LongArray>
+    <uima.cas.DoubleArray _indexed="1" _id="15" size="3">
+        <i>0.4362829094329638</i>
+        <i>0.6487936445670887</i>
+        <i>0.6959691863162578</i>
+    </uima.cas.DoubleArray>
+    <uima.cas.FSArray _id="36" size="0"/>
+    <uima.cas.DoubleArray _id="33" size="0"/>
+    <uima.cas.FloatArray _id="32" size="0"/>
+    <uima.cas.ByteArray _id="34" size="0"/>
+    <uima.cas.BooleanArray _id="35" size="0"/>
+    <uima.cas.LongArray _id="31" size="0"/>
+    <uima.cas.IntegerArray _id="29" size="0"/>
+    <uima.cas.ShortArray _id="30" size="0"/>
+    <uima.cas.FSArray _id="26" size="3">
+        <i/>
+        <i>3</i>
+        <i>4</i>
+    </uima.cas.FSArray>
+    <uima.cas.DoubleArray _id="23" size="3">
+        <i>1.0</i>
+        <i>2.0</i>
+        <i>3.0</i>
+    </uima.cas.DoubleArray>
+    <uima.cas.FloatArray _id="22" size="3">
+        <i>1.0</i>
+        <i>2.0</i>
+        <i>3.0</i>
+    </uima.cas.FloatArray>
+    <uima.cas.ByteArray _id="24" size="4">
+        <i>66</i>
+        <i>-37</i>
+        <i>48</i>
+        <i>100</i>
+    </uima.cas.ByteArray>
+    <uima.cas.BooleanArray _id="25" size="2">
+        <i>true</i>
+        <i>false</i>
+    </uima.cas.BooleanArray>
+    <uima.cas.LongArray _id="21" size="3">
+        <i>1</i>
+        <i>2</i>
+        <i>3</i>
+    </uima.cas.LongArray>
+    <uima.cas.IntegerArray _id="19" size="3">
+        <i>1</i>
+        <i>2</i>
+        <i>3</i>
+    </uima.cas.IntegerArray>
+    <uima.cas.ShortArray _id="20" size="3">
+        <i>1</i>
+        <i>2</i>
+        <i>3</i>
+    </uima.cas.ShortArray>
+    <uima.cas.StringArray _id="27" size="3">
+        <i>A</i>
+        <i>B</i>
+        <i>C</i>
+    </uima.cas.StringArray>
+</CAS>

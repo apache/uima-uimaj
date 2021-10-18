@@ -19,10 +19,6 @@
 
 package org.apache.uima.adapter.vinci.util;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.vinci.transport.Attributes;
 import org.apache.vinci.transport.FrameComponent;
 import org.apache.vinci.transport.FrameLeaf;
@@ -30,6 +26,9 @@ import org.apache.vinci.transport.KeyValuePair;
 import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.document.AFrame;
 import org.apache.vinci.transport.document.AFrameLeaf;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 // TODO: Auto-generated Javadoc
 /**

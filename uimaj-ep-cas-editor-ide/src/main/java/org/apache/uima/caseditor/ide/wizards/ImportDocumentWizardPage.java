@@ -149,6 +149,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     		&& isEncodingSupported);
   }
 
+  @Override
   public void createControl(Composite parent) {
 
     Composite composite = new Composite(parent, SWT.NONE);
@@ -163,6 +164,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     addButton.setText("Add");
     addButton.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called
       }
@@ -170,6 +172,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       /**
        * Opens a file dialog and adds the selected files to the file table viewer.
        */
+      @Override
       public void widgetSelected(SelectionEvent e) {
 
         // open a file dialog
@@ -193,6 +196,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     removeButton.setText("Remove");
     removeButton.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called
       }
@@ -200,6 +204,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       /**
        * Removes selected elements from the file table viewer.
        */
+      @Override
       @SuppressWarnings("rawtypes")
       public void widgetSelected(SelectionEvent e) {
         IStructuredSelection selection = (IStructuredSelection) fileTable.getSelection();
@@ -224,6 +229,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     selectAllButton.setText("Select All");
     selectAllButton.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called
       }
@@ -231,6 +237,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       /**
        * Selects all elements in the file table viewer.
        */
+      @Override
       public void widgetSelected(SelectionEvent e) {
         fileTable.getTable().selectAll();
         fileTable.setSelection(fileTable.getSelection());
@@ -243,6 +250,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     deselectAllButton.setText("Deselect All");
     deselectAllButton.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called
       }
@@ -250,6 +258,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       /**
        * Deselects all elements in the file table viewer.
        */
+      @Override
       public void widgetSelected(SelectionEvent e) {
         fileTable.getTable().deselectAll();
         fileTable.setSelection(fileTable.getSelection());
@@ -273,6 +282,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     browseForFolder.setText("Browse");
     browseForFolder.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called
       }
@@ -281,6 +291,7 @@ final class ImportDocumentWizardPage extends WizardPage {
        * Opens the corpus folder chooser dialog and shows the chosen dialog in the corpus folder
        * text field.
        */
+      @Override
       public void widgetSelected(SelectionEvent e) {
 
         final ElementTreeSelectionDialog folderSelectionDialog = new ElementTreeSelectionDialog(
@@ -300,6 +311,7 @@ final class ImportDocumentWizardPage extends WizardPage {
         folderSelectionDialog.setMessage("Please choose a folder.");
 
         folderSelectionDialog.setValidator(new ISelectionStatusValidator() {
+          @Override
           public IStatus validate(Object[] selection) {
 
             if (selection.length == 1) {
@@ -370,6 +382,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     languageText.setText(language);
     languageText.addModifyListener(new ModifyListener() {
       
+      @Override
       public void modifyText(ModifyEvent e) {
         language = languageText.getText();
         store.setValue(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_LANG, language);
@@ -404,23 +417,27 @@ final class ImportDocumentWizardPage extends WizardPage {
     encodingCombo.setText(importEncoding);
     encodingCombo.addSelectionListener(new SelectionListener() {
   		
-  		public void widgetSelected(SelectionEvent e) {
+  		@Override
+      public void widgetSelected(SelectionEvent e) {
   			importEncoding = encodingCombo.getText();
   			updatePageState();
   		}
   		
-  		public void widgetDefaultSelected(SelectionEvent e) {
+  		@Override
+      public void widgetDefaultSelected(SelectionEvent e) {
   		}
   	});
     
     encodingCombo.addKeyListener(new KeyListener() {
 		
-  		public void keyReleased(KeyEvent e) {
+  		@Override
+      public void keyReleased(KeyEvent e) {
   			importEncoding = encodingCombo.getText();
   			updatePageState();
   		}
   		
-  		public void keyPressed(KeyEvent e) {
+  		@Override
+      public void keyPressed(KeyEvent e) {
   		}
   	});
     
@@ -440,11 +457,13 @@ final class ImportDocumentWizardPage extends WizardPage {
     
     casFormatCombo.addSelectionListener(new SelectionListener() {
   		
-  		public void widgetSelected(SelectionEvent e) {
+  		@Override
+      public void widgetSelected(SelectionEvent e) {
   			documentFormat = SerialFormat.valueOf(casFormatCombo.getText());
   		}
   		
-  		public void widgetDefaultSelected(SelectionEvent e) {
+  		@Override
+      public void widgetDefaultSelected(SelectionEvent e) {
   		}
   	});
     

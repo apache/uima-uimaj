@@ -22,19 +22,21 @@ package org.apache.uima.flow;
 import org.apache.uima.analysis_engine.ResultSpecification;
 
 /**
- * Special type of SimpleStep intended only for backwards compatibility with
- * the behavior of the Capability Language Flow in UIMA 1.x.  Allows the
- * Flow Controller to set a Result Specification for the AE that will be called next.
+ * Special type of SimpleStep intended only for backwards compatibility with the behavior of the
+ * Capability Language Flow in UIMA 1.x. Allows the Flow Controller to set a Result Specification
+ * for the AE that will be called next.
  * 
- * @deprecated  For backwards compatibility with Capability Language Flow only.
- *   User-developed Flow Controllers should not use this.
+ * @deprecated For backwards compatibility with Capability Language Flow only. User-developed Flow
+ *             Controllers should not use this.
  */
 @Deprecated
 public class SimpleStepWithResultSpec extends SimpleStep {
 
   /**
-   * @param aCasProcessorKey key
-   * @param aResultSpec Result Specification
+   * @param aCasProcessorKey
+   *          key
+   * @param aResultSpec
+   *          Result Specification
    */
   public SimpleStepWithResultSpec(String aCasProcessorKey, ResultSpecification aResultSpec) {
     super(aCasProcessorKey);
@@ -53,11 +55,12 @@ public class SimpleStepWithResultSpec extends SimpleStep {
   /**
    * Sets the results specification
    * 
-   * @param aResultSpec the results specification to set
+   * @param aResultSpec
+   *          the results specification to set
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mResultSpec = aResultSpec;
   }
-  
+
   private ResultSpecification mResultSpec;
 }

@@ -22,9 +22,10 @@ import org.apache.uima.cas.SofaFS;
 
 /**
  * v2 backwards compatibility
+ * 
  * @deprecated use Sofa instead
  */
 @Deprecated
 public interface SofaFSImpl extends SofaFS {
- 
+
 }

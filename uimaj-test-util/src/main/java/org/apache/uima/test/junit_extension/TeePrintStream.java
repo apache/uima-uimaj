@@ -47,6 +47,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#checkError()
    */
+  @Override
   public boolean checkError() {
     if (this.original.checkError() && this.teeStream.checkError())
       return true;
@@ -57,6 +58,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.OutputStream#close()
    */
+  @Override
   public void close() {
     this.original.close();
     this.teeStream.close();
@@ -65,6 +67,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.OutputStream#flush()
    */
+  @Override
   public void flush() {
     this.original.flush();
     this.teeStream.flush();
@@ -73,6 +76,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(boolean)
    */
+  @Override
   public void print(boolean b) {
     this.original.print(b);
     this.teeStream.print(b);
@@ -81,6 +85,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(char)
    */
+  @Override
   public void print(char c) {
     this.original.print(c);
     this.teeStream.print(c);
@@ -89,6 +94,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(char[])
    */
+  @Override
   public void print(char[] s) {
     this.original.print(s);
     this.teeStream.print(s);
@@ -97,6 +103,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(double)
    */
+  @Override
   public void print(double d) {
     this.original.print(d);
     this.teeStream.print(d);
@@ -105,6 +112,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(float)
    */
+  @Override
   public void print(float f) {
     this.original.print(f);
     this.teeStream.print(f);
@@ -113,6 +121,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(int)
    */
+  @Override
   public void print(int i) {
     this.original.print(i);
     this.teeStream.print(i);
@@ -121,6 +130,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(long)
    */
+  @Override
   public void print(long l) {
     this.original.print(l);
     this.teeStream.print(l);
@@ -129,6 +139,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(java.lang.Object)
    */
+  @Override
   public void print(Object obj) {
     this.original.print(obj);
     this.teeStream.print(obj);
@@ -137,6 +148,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#print(java.lang.String)
    */
+  @Override
   public void print(String s) {
     this.original.print(s);
     this.teeStream.print(s);
@@ -145,6 +157,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println()
    */
+  @Override
   public void println() {
     this.original.println();
     this.teeStream.println();
@@ -153,6 +166,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(boolean)
    */
+  @Override
   public void println(boolean x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -161,6 +175,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(char)
    */
+  @Override
   public void println(char x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -169,6 +184,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(char[])
    */
+  @Override
   public void println(char[] x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -177,6 +193,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(double)
    */
+  @Override
   public void println(double x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -185,6 +202,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(float)
    */
+  @Override
   public void println(float x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -193,6 +211,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(int)
    */
+  @Override
   public void println(int x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -201,6 +220,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(long)
    */
+  @Override
   public void println(long x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -209,6 +229,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(java.lang.Object)
    */
+  @Override
   public void println(Object x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -217,6 +238,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.PrintStream#println(java.lang.String)
    */
+  @Override
   public void println(String x) {
     this.original.println(x);
     this.teeStream.println(x);
@@ -225,6 +247,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.OutputStream#write(byte[], int, int)
    */
+  @Override
   public void write(byte[] buf, int off, int len) {
     this.original.write(buf, off, len);
     this.teeStream.write(buf, off, len);
@@ -233,6 +256,7 @@ public class TeePrintStream extends PrintStream {
   /**
    * @see java.io.OutputStream#write(int)
    */
+  @Override
   public void write(int b) {
     this.original.write(b);
     this.teeStream.write(b);

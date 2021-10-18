@@ -37,27 +37,24 @@ public final class AxiomaticAnnotationPredicates {
   }
 
   public static boolean colocated(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return coveredBy(aXBegin, aXEnd, aYBegin, aYEnd) 
-        && covering(aXBegin, aXEnd, aYBegin, aYEnd);
+    return coveredBy(aXBegin, aXEnd, aYBegin, aYEnd) && covering(aXBegin, aXEnd, aYBegin, aYEnd);
   }
 
   public static boolean overlapping(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return overlappingAtBegin(aXBegin, aXEnd, aYBegin, aYEnd)
-        || overlappingAtEnd(aXBegin, aXEnd, aYBegin, aYEnd)
-        || covering(aXBegin, aXEnd, aYBegin, aYEnd) 
-        || coveredBy(aXBegin, aXEnd, aYBegin, aYEnd);
+            || overlappingAtEnd(aXBegin, aXEnd, aYBegin, aYEnd)
+            || covering(aXBegin, aXEnd, aYBegin, aYEnd)
+            || coveredBy(aXBegin, aXEnd, aYBegin, aYEnd);
   }
 
   public static boolean overlappingAtBegin(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return !coveredBy(aXBegin, aXBegin, aYBegin, aYEnd)
-        && coveredBy(aXEnd, aXEnd, aYBegin, aYEnd)
-        && !colocated(aXEnd, aXEnd, aYBegin, aYBegin);
+    return !coveredBy(aXBegin, aXBegin, aYBegin, aYEnd) && coveredBy(aXEnd, aXEnd, aYBegin, aYEnd)
+            && !colocated(aXEnd, aXEnd, aYBegin, aYBegin);
   }
 
   public static boolean overlappingAtEnd(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return coveredBy(aXBegin, aXBegin, aYBegin, aYEnd)
-        && !coveredBy(aXEnd, aXEnd, aYBegin, aYEnd)
-        && !colocated(aXBegin, aXBegin, aYEnd, aYEnd);
+    return coveredBy(aXBegin, aXBegin, aYBegin, aYEnd) && !coveredBy(aXEnd, aXEnd, aYBegin, aYEnd)
+            && !colocated(aXBegin, aXBegin, aYEnd, aYEnd);
   }
 
   public static boolean following(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {

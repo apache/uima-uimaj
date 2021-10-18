@@ -19,6 +19,7 @@
 
 package org.apache.uima.taeconfigurator.editors.xml;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -29,7 +30,6 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.custom.StyleRange;
 
 

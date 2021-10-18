@@ -33,7 +33,6 @@ public class BinaryTree {
   private Object value;
 
   public BinaryTree() {
-    super();
     this.mother = null;
     this.left = null;
     this.right = null;

@@ -18,13 +18,16 @@
  */
 package org.apache.uima.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-
-public class FileUtilsTest extends TestCase {
+public class FileUtilsTest {
+  @Test
   public void testFindRelativePath() throws Exception {
     File target = new File("/this/is/a/file.txt");
     File base = new File("/this/is/a/test");
@@ -41,6 +44,7 @@ public class FileUtilsTest extends TestCase {
     }
   }
 
+  @Test
   public void testReadWriteTempFile() throws IOException {
     final String tmpDirPath = System.getProperty("java.io.tmpdir");
     assertNotNull("java.io.tmpdir system property not available", tmpDirPath);
@@ -48,17 +52,17 @@ public class FileUtilsTest extends TestCase {
     File tmpFile1 = FileUtils.createTempFile("test", null, tmpDir);
     File tmpFile2 = FileUtils.createTempFile("test", null, tmpDir);
     final String text = "This is some text to test file writing.  Add an Umlaut for encoding tests:"
-        + "\n  Greetings from T\u00FCbingen!\n";
+            + "\n  Greetings from T\u00FCbingen!\n";
     final String utf8 = "UTF-8";
 
-   //  UIMA-2050 Does not work on all platform encodings
-   //  Solution: Do not do it!
-   //  FileUtils.saveString2File(text, tmpFile1);
-   //  assertEquals(text, FileUtils.file2String(tmpFile1));
-    
+    // UIMA-2050 Does not work on all platform encodings
+    // Solution: Do not do it!
+    // FileUtils.saveString2File(text, tmpFile1);
+    // assertEquals(text, FileUtils.file2String(tmpFile1));
+
     FileUtils.saveString2File(text, tmpFile2, utf8);
     assertEquals(text, FileUtils.file2String(tmpFile2, utf8));
-    
+
     FileUtils.deleteRecursive(tmpDir);
   }
 }

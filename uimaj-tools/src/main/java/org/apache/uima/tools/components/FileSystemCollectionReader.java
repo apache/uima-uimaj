@@ -104,6 +104,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
     String dirPath = ((String) getConfigParameterValue(PARAM_INPUTDIR)).trim();
     File directory = new File(dirPath);
@@ -137,6 +138,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.CollectionReader#hasNext()
    */
+  @Override
   public boolean hasNext() {
     return mCurrentIndex < mFiles.size();
   }
@@ -144,6 +146,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     JCas jcas;
     try {
@@ -210,12 +213,14 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     return new Progress[] { new ProgressImpl(mCurrentIndex, mFiles.size(), Progress.ENTITIES) };
   }

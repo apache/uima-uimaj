@@ -26,10 +26,9 @@ import java.util.NoSuchElementException;
 
 /**
  * Helper class to read array-based binary search trees with integers as keys and values. No write
- * access to the tree is provided. See
- * {@link org.apache.uima.internal.util.rb_trees.IntRedBlackTree IntRedBlackTree} on how to generate
- * such an array representation. The name is a bit of a misnomer, since nothing in this class is
- * specific to red-black trees.
+ * access to the tree is provided. See {@link org.apache.uima.internal.util.rb_trees.IntRedBlackTree
+ * IntRedBlackTree} on how to generate such an array representation. The name is a bit of a
+ * misnomer, since nothing in this class is specific to red-black trees.
  * 
  * <p>
  * Suppose <code>i</code> is the position of the first cell encoding a tree node in array
@@ -40,13 +39,13 @@ import java.util.NoSuchElementException;
  * <li><code>a[i+2]</code> is one of:
  * <ul>
  * <li><code>IntRBTArray.TERMINAL</code>: this is a terminal node</li>
- * <li><code>IntRBTArray.LEFTDTR</code>: this node only has a left daughter, so
- * <code>a[i+3]</code> is the first cell of the left daughter node</li>
+ * <li><code>IntRBTArray.LEFTDTR</code>: this node only has a left daughter, so <code>a[i+3]</code>
+ * is the first cell of the left daughter node</li>
  * <li><code>IntRBTArray.RIGHTDTR</code>: this node only has a right daughter, so
  * <code>a[i+3]</code> is the first cell of the right daughter node</li>
- * <li><code>IntRBTArray.TWODTRS</code>: this node has two daughters. <code>a[i+3]</code>
- * contains the address of the right daughter, and <code>a[i+4]</code> is the start of the left
- * daughter node</li>
+ * <li><code>IntRBTArray.TWODTRS</code>: this node has two daughters. <code>a[i+3]</code> contains
+ * the address of the right daughter, and <code>a[i+4]</code> is the start of the left daughter
+ * node</li>
  * </ul>
  * </li>
  * </ul>
@@ -140,11 +139,11 @@ public class IntRBTArray {
    * 
    * @param i
    *          The key.
-   * @return The address of the value for <code>i</code>, if it's found; <code>-1</code>,
-   *         else. This routine may also return <code>-1</code> when the tree is corrupted. Of
-   *         course, with a corrupted tree, results will in general be unpredictable. However, this
-   *         routine will not throw an
-   *         {@link java.lang.ArrayIndexOutOfBoundsException ArrayIndexOutOfBoundsException}.
+   * @return The address of the value for <code>i</code>, if it's found; <code>-1</code>, else. This
+   *         routine may also return <code>-1</code> when the tree is corrupted. Of course, with a
+   *         corrupted tree, results will in general be unpredictable. However, this routine will
+   *         not throw an {@link java.lang.ArrayIndexOutOfBoundsException
+   *         ArrayIndexOutOfBoundsException}.
    */
   public int getPosition(int i) throws NoSuchElementException {
     // See the comments about the memory layout of the array at the

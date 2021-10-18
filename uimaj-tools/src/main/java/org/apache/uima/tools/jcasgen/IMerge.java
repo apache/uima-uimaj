@@ -40,7 +40,7 @@ public interface IMerge {
    * @param targetFile the target file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
+  void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
           String targetContainer, String targetPath, String targetClassName, File targetFile)
           throws IOException;
 }

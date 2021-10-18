@@ -19,53 +19,40 @@
 
 package org.apache.uima.collection.impl;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.EntityProcessStatus;
-import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class CollectionProcessingEngine_implTest extends TestCase {
+public class CollectionProcessingEngine_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile(
       "CollectionProcessingEngineImplTest").getPath()
       + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
-  /**
-         * Constructor for CollectionProcessingEngine_implTest.
-         * 
-         * @param arg0
-         */
-  public CollectionProcessingEngine_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-         * (non-Javadoc)
-         * 
-         * @see junit.framework.TestCase#setUp()
-         */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     File referenceFile = JUnitExtension
 	.getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml");
     System.setProperty("CPM_HOME", referenceFile.getParentFile().getParentFile().getAbsolutePath());
   }
 
-  public void testPerformanceTuningSettings() throws Exception {
+    @Test
+    public void testPerformanceTuningSettings() throws Exception {
     try {
       Properties newProps = UIMAFramework.getDefaultPerformanceTuningProperties();
       newProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "100000");
@@ -90,7 +77,8 @@ public class CollectionProcessingEngine_implTest extends TestCase {
     }
   }
 
-  public void testExternalResoures() throws Exception {
+    @Test
+    public void testExternalResoures() throws Exception {
     try {
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
@@ -113,7 +101,8 @@ public class CollectionProcessingEngine_implTest extends TestCase {
     }
   }
   
-  public void testCasMultiplierTypeSystem() throws Throwable {
+    @Test
+    public void testCasMultiplierTypeSystem() throws Throwable {
     CpeDescription cpeDesc = UIMAFramework.getXMLParser()
             .parseCpeDescription(new XMLInputSource(
                     JUnitExtension.getFile("CollectionProcessingEngineImplTest/cpeWithWrappedCasMultiplier.xml")));

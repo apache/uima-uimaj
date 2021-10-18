@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="5" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="This is a test ."/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData _indexed="1" _id="6" _ref_sofa="5" begin="0" end="16" documentId="doc" isLastSegment="false"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="7" _ref_sofa="5" begin="0" end="4" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="8" _ref_sofa="5" begin="5" end="7" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="9" _ref_sofa="5" begin="8" end="9" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="10" _ref_sofa="5" begin="10" end="14" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="11" _ref_sofa="5" begin="15" end="16" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="12" _ref_sofa="5" begin="0" end="16"/>
+    <webanno.custom.SimpleSpan _indexed="1" _id="13" _ref_sofa="5" begin="5" end="7"/>
+    <webanno.custom.SimpleSpan _indexed="1" _id="14" _ref_sofa="5" begin="8" end="9"/>
+    <webanno.custom.ComplexLinkType _indexed="1" _id="3" _ref_target="13"/>
+    <webanno.custom.ComplexLinkType _indexed="1" _id="2" _ref_target="14"/>
+    <webanno.custom.ComplexLinkType _indexed="1" _id="1" _ref_target="14"/>
+    <webanno.custom.ComplexLinkType _indexed="1" _id="4" _ref_target="13"/>
+    <webanno.custom.ComplexLinkHost _indexed="1" _id="15" _ref_sofa="5" begin="0" end="4" _ref_links="16"/>
+    <webanno.custom.ComplexLinkHost _indexed="1" _id="17" _ref_sofa="5" begin="0" end="4" _ref_links="18"/>
+    <uima.cas.FSArray _id="18" size="2">
+        <i>3</i>
+        <i>2</i>
+    </uima.cas.FSArray>
+    <uima.cas.FSArray _id="16" size="2">
+        <i>4</i>
+        <i>1</i>
+    </uima.cas.FSArray>
+</CAS>

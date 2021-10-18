@@ -46,7 +46,6 @@ public class PopupHandler implements ActionListener {
    * @param n the n
    */
   public PopupHandler(MainFrame frame, int n) {
-    super();
     this.main = frame;
     this.node = n;
   }

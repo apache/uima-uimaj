@@ -43,6 +43,7 @@ class StringConstraint extends PathConstraint implements FSMatchConstraint {
     this.stringConstraint = cons;
   }
 
+  @Override
   public boolean match(FeatureStructure fs) {
     // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
     final int max = this.featNames.size() - 1; // The last position in the
@@ -67,6 +68,7 @@ class StringConstraint extends PathConstraint implements FSMatchConstraint {
     return this.stringConstraint.match(fs.getStringValue(feat));
   }
 
+  @Override
   public String toString() {
     return super.toString() + " " + this.stringConstraint.toString();
   }

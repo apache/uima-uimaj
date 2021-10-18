@@ -27,42 +27,39 @@ import java.util.ArrayList;
  * based on ArrayList
  * 
  * This impl is for use in a single thread case only
- *  
- * Implements Map - like interface:
- *   keys are ints &ge; 0
- *   
- * values can be anything, but null is the value returned by get if not found so 
- *   values probably should not be null
- *   
+ * 
+ * Implements Map - like interface: keys are ints &ge; 0
+ * 
+ * values can be anything, but null is the value returned by get if not found so values probably
+ * should not be null
+ * 
  * remove not currently supported
- *   
+ * 
  */
 public class Int2ObjListMap<T> {
-  
+
   private final ArrayList<T> values;
-  
+
   public Int2ObjListMap() {
     values = new ArrayList<>();
   }
-  
+
   public Int2ObjListMap(int initialSize) {
     values = new ArrayList<>(initialSize);
   }
-  
+
   public void clear() {
     values.clear();
   }
 
   public T get(int key) {
-    return (key < 0 || key >= values.size()) 
-             ? null 
-             : values.get(key);
+    return (key < 0 || key >= values.size()) ? null : values.get(key);
   }
-  
+
   public T put(int key, T value) {
     T prev = get(key);
-    Misc.setWithExpand(values,  key,  value);
+    Misc.setWithExpand(values, key, value);
     return prev;
   }
-  
+
 }

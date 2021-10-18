@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -38,25 +42,28 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class ArrayIndexTest extends TestCase implements TextAnnotator {
+public class ArrayIndexTest implements TextAnnotator {
 
   private static final String idxId = "ArrayIndex";
 
   private AnalysisEngine ae = null;
 
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     // Start up TAE
-    XMLInputSource input = new XMLInputSource(JUnitExtension
-            .getFile("CASTests/desc/ArrayIndexTest.xml"));
-    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(input);
+    XMLInputSource input = new XMLInputSource(
+            JUnitExtension.getFile("CASTests/desc/ArrayIndexTest.xml"));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(input);
     this.ae = UIMAFramework.produceAnalysisEngine(desc);
 
   }
 
+  @Test
   public void testArrayIndex() {
     try {
       CAS cas = this.ae.newCAS();
@@ -67,7 +74,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
       FSIndex<FeatureStructure> arrayIndexAll = ir.getIndex(idxId);
       assertEquals(countIndexMembers(arrayIndexAll), 0);
-      FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId, ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+      FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId,
+              ts.getType(CAS.TYPE_NAME_FS_ARRAY));
       assertEquals(countIndexMembers(arrayIndexFSArray), 0);
       FSIndex<FeatureStructure> arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
       assertNull(arrayIndexAnnotArray);
@@ -85,36 +93,36 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
     return count;
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @AfterEach
+  public void tearDown() throws Exception {
     this.ae.destroy();
   }
 
+  @Override
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // Do nothing.
   }
 
-  public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException {
+  @Override
+  public void initialize(AnnotatorContext aContext)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException {
     // do nothing
   }
 
-  public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException {
+  @Override
+  public void typeSystemInit(TypeSystem aTypeSystem)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException {
     // do nothing
   }
 
-  public void reconfigure() throws AnnotatorConfigurationException,
-          AnnotatorInitializationException {
+  @Override
+  public void reconfigure()
+          throws AnnotatorConfigurationException, AnnotatorInitializationException {
     // do nothing
   }
 
+  @Override
   public void destroy() {
     // do nothing
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ArrayIndexTest.class);
-  }
-
 }

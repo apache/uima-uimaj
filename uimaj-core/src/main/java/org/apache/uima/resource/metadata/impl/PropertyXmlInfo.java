@@ -47,8 +47,8 @@ public class PropertyXmlInfo {
 
   /**
    * Only used for properties with array values, this determines the tag name of each array element.
-   * As with <code>aXmlName</code>, this may be null, which will cause each array element to have
-   * a tag determined by its class.
+   * As with <code>aXmlName</code>, this may be null, which will cause each array element to have a
+   * tag determined by its class.
    */
   public String arrayElementTagName;
 
@@ -81,7 +81,8 @@ public class PropertyXmlInfo {
    * @param aPropName
    *          name of the property
    * @param aXmlName
-   *          name of xml element that represents this property (may be null - see {@link #xmlElementName}).
+   *          name of xml element that represents this property (may be null - see
+   *          {@link #xmlElementName}).
    */
   public PropertyXmlInfo(String aPropName, String aXmlName) {
     this(aPropName, aXmlName, true, null);
@@ -93,7 +94,8 @@ public class PropertyXmlInfo {
    * @param aPropName
    *          name of the property
    * @param aXmlName
-   *          name of xml element that represents this property (may be null - see {@link #xmlElementName}.
+   *          name of xml element that represents this property (may be null - see
+   *          {@link #xmlElementName}.
    * @param aOmitIfNull
    *          if true, this property should be omitted entirely from the XML if its value is null
    */
@@ -113,8 +115,8 @@ public class PropertyXmlInfo {
    *          if true, this property should be omitted entirely from the XML if its value is null
    * @param aArrayElementTagName
    *          only used for properties with array values, this determines the tag name of each array
-   *          element. As with <code>aXmlName</code>, this may be null, which will cause each
-   *          array element to have a tag determined by its class.
+   *          element. As with <code>aXmlName</code>, this may be null, which will cause each array
+   *          element to have a tag determined by its class.
    */
   public PropertyXmlInfo(String aPropName, String aXmlElementName, boolean aOmitIfNull,
           String aArrayElementTagName) {

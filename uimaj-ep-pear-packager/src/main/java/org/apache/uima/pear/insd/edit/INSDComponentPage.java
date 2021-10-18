@@ -22,6 +22,7 @@ package org.apache.uima.pear.insd.edit;
 import java.util.Hashtable;
 
 import org.apache.uima.pear.PearException;
+import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -45,8 +46,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
-
-import org.apache.uima.pear.tools.InstallationDescriptor;
 
 
 /**

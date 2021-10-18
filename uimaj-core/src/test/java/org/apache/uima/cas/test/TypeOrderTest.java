@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,12 +49,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-
-public class TypeOrderTest extends TestCase {
+public class TypeOrderTest {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
@@ -78,7 +80,7 @@ public class TypeOrderTest extends TestCase {
 
   public static final String SENT_TYPE = "Sentence";
 
-//  private CASMgr casMgr;
+  // private CASMgr casMgr;
 
   private CAS cas;
 
@@ -88,19 +90,14 @@ public class TypeOrderTest extends TestCase {
 
   private Type sentenceType;
 
-  public TypeOrderTest(String arg) {
-    super(arg);
-  }
+  @BeforeEach
+  public void setUp() throws Exception {
+    // this.casMgr = initCAS();
+    File descriptorFile = JUnitExtension
+            .getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+            descriptorFile.exists());
 
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-//    this.casMgr = initCAS();
-    File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
-    
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
@@ -126,8 +123,9 @@ public class TypeOrderTest extends TestCase {
     assertTrue(this.annotationType != null);
   }
 
+  @AfterEach
   public void tearDown() {
-//    this.casMgr = null;
+    // this.casMgr = null;
     this.cas = null;
     this.tokenType = null;
     this.sentenceType = null;
@@ -135,6 +133,7 @@ public class TypeOrderTest extends TestCase {
   }
 
   // Initialize the first CAS.
+  @Test
   public void testInitCAS() {
     // Create a CASMgr. Ensures existence of AnnotationFS type.
     CASMgr cas1 = CASFactory.createCAS();
@@ -188,52 +187,55 @@ public class TypeOrderTest extends TestCase {
   /**
    * Test driver.
    */
+  @Test
   public void testMain() throws Exception {
 
     File refFile = JUnitExtension.getFile("CASTests/CasTypeOrderTestRef.txt");
     Assert.assertNotNull(refFile);
     File outputFile = new File(JUnitExtension.getFile("CASTests"), "CasTypeOderTest_testouput.txt");
-    OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(
-            outputFile , false), StandardCharsets.UTF_8);
-    Assert.assertNotNull(fileWriter);   
-    
+    OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(outputFile, false),
+            StandardCharsets.UTF_8);
+    Assert.assertNotNull(fileWriter);
+
     for (int i = 0; i < 10; i++) {
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     }
     for (int i = 19; i >= 10; i--) {
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository()
+              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     }
 
-    FSIterator<FeatureStructure> it = this.cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX).iterator();
+    FSIterator<FeatureStructure> it = this.cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX)
+            .iterator();
 
     // it = cas.getAnnotationIndex().iterator();
     AnnotationFS fs;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       fs = (AnnotationFS) it.get();
-      fileWriter.write(
-       fs.getType().getName()
-       + ": "
-       + fs.getBegin()
-       + " - "
-       + fs.getEnd() + "\n");
+      fileWriter.write(fs.getType().getName() + ": " + fs.getBegin() + " - " + fs.getEnd() + "\n");
     }
-    
+
     fileWriter.close();
-    //System.out.println(refFile.getAbsolutePath());
-    //System.out.println(outputFile.getAbsolutePath());
-    Assert.assertTrue("Comparing ref " + refFile.getAbsolutePath() + " and output " + outputFile.getAbsolutePath(), FileCompare.compare(refFile, outputFile));
+    // System.out.println(refFile.getAbsolutePath());
+    // System.out.println(outputFile.getAbsolutePath());
+    Assert.assertTrue("Comparing ref " + refFile.getAbsolutePath() + " and output "
+            + outputFile.getAbsolutePath(), FileCompare.compare(refFile, outputFile));
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeOrderTest.class);
-  }
-
 }

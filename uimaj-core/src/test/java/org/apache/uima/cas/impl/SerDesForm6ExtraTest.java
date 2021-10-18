@@ -38,7 +38,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasIOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SerDesForm6ExtraTest {
   private final static String TYPE_NAME_ELEMENT = "Element";
@@ -52,7 +52,7 @@ public class SerDesForm6ExtraTest {
   public void thatArraySubtypesCanBeDeserialized() throws Exception {
 
     CAS cas = prepCasWithNegativeDeltaReference();
-    
+
     // Now finally test whether form 6 serialization can handle the Element[] type and the negative
     // delta reference
     byte[] form6Data;
@@ -60,23 +60,21 @@ public class SerDesForm6ExtraTest {
       CasIOUtils.save(cas, bos, COMPRESSED_FILTERED_TSI);
       form6Data = bos.toByteArray();
     }
-    
+
     try (ByteArrayInputStream bis = new ByteArrayInputStream(form6Data)) {
       TypeSystem ts = cas.getTypeSystem();
       Serialization.deserializeCAS(cas, bis, ts, null);
     }
   }
 
-  private CAS prepCasWithNegativeDeltaReference() throws Exception
-  {
+  private CAS prepCasWithNegativeDeltaReference() throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType(TYPE_NAME_ELEMENT, NO_DESCRIPTION, TYPE_NAME_ANNOTATION);
     TypeDescription arrayHolderTypeDesc = tsd.addType(TYPE_NAME_ARRAY_HOLDER, NO_DESCRIPTION,
-        TYPE_NAME_ANNOTATION);
+            TYPE_NAME_ANNOTATION);
     arrayHolderTypeDesc.addFeature(FEATURE_NAME_ARRAY, NO_DESCRIPTION, TYPE_NAME_FS_ARRAY,
-        TYPE_NAME_ELEMENT, null);
+            TYPE_NAME_ELEMENT, null);
 
-    
     CAS cas = createCas(tsd, null, null);
     cas.setDocumentText("This is a test.");
 
@@ -87,12 +85,12 @@ public class SerDesForm6ExtraTest {
     // during binary serialization
     AnnotationFS element1 = cas.createAnnotation(elementType, 0, cas.getDocumentText().length());
     AnnotationFS element2 = cas.createAnnotation(elementType, 0, cas.getDocumentText().length());
-    
+
     AnnotationFS holder2 = cas.createAnnotation(holderType, 0, 0);
     ArrayFS<FeatureStructure> array2 = cas.createArrayFS(1);
     array2.set(0, element2);
     holder2.setFeatureValue(holderType.getFeatureByBaseName(FEATURE_NAME_ARRAY), array2);
-    
+
     AnnotationFS holder1 = cas.createAnnotation(holderType, 1, 1);
     ArrayFS<FeatureStructure> array1 = cas.createArrayFS(1);
     array1.set(0, element1);
@@ -103,7 +101,7 @@ public class SerDesForm6ExtraTest {
     cas.addFsToIndexes(holder2);
     cas.addFsToIndexes(holder1);
     // END: Setup CAS so that the reference to element1 in holder1 is encoded as a negative delta
-    
+
     // BEGIN: Setup Element[] type
     // We cannot directly create array subtypes - but they are created during de-serialization
     // e.g. of XMI files. So to trigger the creation of the Element[] type in the CAS, we need
@@ -113,16 +111,16 @@ public class SerDesForm6ExtraTest {
       CasIOUtils.save(cas, bos, XMI);
       xmiData = bos.toByteArray();
     }
-    
+
     // While deserializing the XMI, the specific array subtype "Element[]" should be created
     try (ByteArrayInputStream bis = new ByteArrayInputStream(xmiData)) {
       CasIOUtils.load(bis, cas);
-    }    
-    
+    }
+
     Type elementArrayType = cas.getTypeSystem().getArrayType(elementType);
     assertThat(elementArrayType).isNotNull();
     // END: Setup Element[] type
-    
+
     return cas;
   }
 }

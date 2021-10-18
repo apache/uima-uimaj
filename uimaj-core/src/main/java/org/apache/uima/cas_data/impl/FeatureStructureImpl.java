@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import java.util.Map;
@@ -27,9 +26,8 @@ import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
 import org.apache.uima.util.impl.Constants;
 
-
 public class FeatureStructureImpl implements FeatureStructure {
-  
+
   private static final long serialVersionUID = -1828536763993413045L;
 
   private Map<String, FeatureValue> mFeatureMap;
@@ -44,14 +42,17 @@ public class FeatureStructureImpl implements FeatureStructure {
     mFeatureMap = new TreeMap<>();
   }
 
+  @Override
   public String getType() {
     return mFSType;
   }
 
+  @Override
   public void setType(String aType) {
     mFSType = aType;
   }
 
+  @Override
   public String[] getFeatureNames() {
     Set<String> aSet = mFeatureMap.keySet();
     String[] featureNames = new String[aSet.size()];
@@ -59,10 +60,12 @@ public class FeatureStructureImpl implements FeatureStructure {
     return featureNames;
   }
 
+  @Override
   public FeatureValue getFeatureValue(String aFeatureName) {
     return mFeatureMap.get(aFeatureName);
   }
 
+  @Override
   public void setFeatureValue(String aFeatureType, FeatureValue aValue) {
     mFeatureMap.put(aFeatureType, aValue);
   }
@@ -71,6 +74,7 @@ public class FeatureStructureImpl implements FeatureStructure {
     return this;
   }
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('\n').append(getType()).append('\n');
@@ -95,6 +99,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   /**
    * @return an ID string
    */
+  @Override
   public String getId() {
     return mId;
   }
@@ -102,18 +107,22 @@ public class FeatureStructureImpl implements FeatureStructure {
   /**
    * @return true if it is indexed
    */
+  @Override
   @Deprecated
   public boolean isIndexed() {
     return mIndexed.length > 0;
   }
 
   /**
-   * @param string -
+   * @param string
+   *          -
    */
+  @Override
   public void setId(String string) {
     mId = string;
   }
 
+  @Override
   @Deprecated
   public void setIndexed(boolean b) {
     mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility
@@ -124,6 +133,7 @@ public class FeatureStructureImpl implements FeatureStructure {
    * 
    * @see org.apache.uima.cas_data.FeatureStructure#getIndexed()
    */
+  @Override
   public int[] getIndexed() {
     return mIndexed;
   }
@@ -133,11 +143,12 @@ public class FeatureStructureImpl implements FeatureStructure {
    * 
    * @see org.apache.uima.cas_data.FeatureStructure#setIndexed(int[])
    */
+  @Override
   public void setIndexed(int[] aIndexed) {
-    if (aIndexed == null)
+    if (aIndexed == null) {
       mIndexed = Constants.EMPTY_INT_ARRAY;
-    else
+    } else {
       mIndexed = aIndexed;
+    }
   }
-
 }

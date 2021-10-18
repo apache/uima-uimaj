@@ -31,7 +31,6 @@ abstract class PathConstraint implements FSMatchConstraint {
   protected ArrayList<String> featNames;
 
   protected PathConstraint() {
-    super();
   }
 
   PathConstraint(ArrayList<String> featNames) {

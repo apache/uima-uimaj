@@ -34,48 +34,42 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test the pear installation verification
  */
 public class PearInstallationVerificationTest {
-
-  // Temporary working directory, used to install the pear package
-  public @Rule TemporaryFolder temp = new TemporaryFolder();
-  
   @Test
-  public void testAePearVerification() throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/analysisEngine.pear"), 
-            temp.newFolder("pear_verification_test_tmp"));
+  public void testAePearVerification(@TempDir
+  File temp) throws Exception {
+    assertThatPearInstalls(getFile("pearTests/analysisEngine.pear"), temp);
   }
 
   @Test
-  public void testCcPearVerification() throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/casConsumer.pear"), 
-            temp.newFolder("pear_verification_test_tmp"));
+  public void testCcPearVerification(@TempDir
+  File temp) throws Exception {
+    assertThatPearInstalls(getFile("pearTests/casConsumer.pear"), temp);
   }
 
   @Test
-  public void testTsPearVerification() throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/typeSystem.pear"), 
-            temp.newFolder("pear_verification_test_tmp"));
+  public void testTsPearVerification(@TempDir
+  File temp) throws Exception {
+    assertThatPearInstalls(getFile("pearTests/typeSystem.pear"), temp);
   }
 
   // TODO: create testcases for ci, cr, cpe pear packages
 
   @Test
-  public void thatSpecialXmlCharactersInTargetPathDoNotBreakInstallation() throws Exception {
-    assertThatPearInstalls(
-            getFile("pearTests/analysisEngine.pear"),
+  public void thatSpecialXmlCharactersInTargetPathDoNotBreakInstallation(@TempDir
+  File temp) throws Exception {
+    File folder = new File(temp, "!'&");
+    folder.mkdirs();
+    assertThatPearInstalls(getFile("pearTests/analysisEngine.pear"),
             // on windows, can't use these chars
-            //   <>:"/\|?*  
-            temp.newFolder("!'&"));
+            // <>:"/\|?*
+            folder);
   }
 
   private void assertThatPearInstalls(File pearFile, File targetDir) throws InvalidXMLException,
