@@ -63,7 +63,9 @@ public class Log4JMessageCapture implements AutoCloseableNoException {
   }
 
   public List<LogEvent> getAndClearLatestEvents() {
-    return latestEvents;
+    List<LogEvent> result = new ArrayList<>(latestEvents);
+    latestEvents.clear();
+    return result;
   }
 
   public List<LogEvent> getAllEvents() {

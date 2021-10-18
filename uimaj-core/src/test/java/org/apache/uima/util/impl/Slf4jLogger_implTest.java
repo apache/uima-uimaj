@@ -18,6 +18,7 @@
  */
 package org.apache.uima.util.impl;
 
+import static java.lang.System.arraycopy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -46,7 +47,7 @@ public class Slf4jLogger_implTest {
       assertThat(capture.getAndClearLatestEvents()) //
               .extracting( //
                       e -> e.getMessage().getFormattedMessage(), //
-                      e -> e.getMessage().getThrowable()) //
+                      e -> e.getThrown()) //
               .containsExactly( //
                       tuple("test", null));
     }
@@ -59,7 +60,7 @@ public class Slf4jLogger_implTest {
       assertThat(capture.getAndClearLatestEvents()) //
               .extracting( //
                       e -> e.getMessage().getFormattedMessage(), //
-                      e -> e.getMessage().getThrowable()) //
+                      e -> e.getThrown()) //
               .containsExactly( //
                       tuple("test", ex));
     }
@@ -80,7 +81,7 @@ public class Slf4jLogger_implTest {
         assertThat(capture.getAndClearLatestEvents()) //
                 .extracting( //
                         e -> e.getMessage().getFormattedMessage(), //
-                        e -> e.getMessage().getThrowable()) //
+                        e -> e.getThrown()) //
                 .containsExactly( //
                         tuple(String.join(" ", values), null));
       }
@@ -99,14 +100,14 @@ public class Slf4jLogger_implTest {
         }
 
         Object[] valuesPlusEx = new Object[paramCount + 1];
-        System.arraycopy(values.toArray(), 0, valuesPlusEx, 0, paramCount);
+        arraycopy(values.toArray(), 0, valuesPlusEx, 0, paramCount);
         valuesPlusEx[paramCount] = ex;
         sut.debug(String.join(" ", placeholders), valuesPlusEx);
 
         assertThat(capture.getAndClearLatestEvents()) //
                 .extracting( //
                         e -> e.getMessage().getFormattedMessage(), //
-                        e -> e.getMessage().getThrowable()) //
+                        e -> e.getThrown()) //
                 .containsExactly( //
                         tuple(String.join(" ", values), ex));
       }
