@@ -99,5 +99,3 @@ public class Token extends Annotation {
   private void readObject() {/*default - does nothing empty block */}
      
 }
-
-    

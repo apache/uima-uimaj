@@ -148,9 +148,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(0);
 
   /**
-   * Map from adjusted offset in int features to feature. 
+   * Map from adjusted offset in int features to feature.
    * 
-   * Corrects for Long/Double values taking 2 int slots. 
+   * Corrects for Long/Double values taking 2 int slots.
    * 
    * Set at commit time
    */

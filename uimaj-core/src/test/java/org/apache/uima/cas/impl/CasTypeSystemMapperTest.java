@@ -507,7 +507,7 @@ public class CasTypeSystemMapperTest {
         ftg2.set(i, v == (featsToInclude2 & v));
       }
     }
-    
+
  // @formatter:off
     /** 
      * Type system  called to initialize the type system.

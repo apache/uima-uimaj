@@ -87,5 +87,3 @@ public class TokenType extends TOP {
   private void readObject() {/*default - does nothing empty block */}
      
 }
-
-    

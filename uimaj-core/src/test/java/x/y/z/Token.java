@@ -205,5 +205,3 @@ public class Token extends Annotation {
     ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)))).set(i, v);
   }  
   }
-
-    

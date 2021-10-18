@@ -121,5 +121,3 @@ public class Sentence extends Annotation {
   }    
     
   }
-
-    

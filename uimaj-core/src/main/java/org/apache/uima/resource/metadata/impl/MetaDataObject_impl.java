@@ -222,7 +222,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * Information, kept globally (by thread) for one serialization 
+   * Information, kept globally (by thread) for one serialization
    * 
    * Inherited by some custom impls, e.g. TypeOrFeature_impl
    */

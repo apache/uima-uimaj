@@ -174,7 +174,7 @@ public class CasPool {
   }
 
   /**
-   * Creates a new CasPool. 
+   * Creates a new CasPool.
    * 
    * TODO: do we need this method AND the one that takes a CasManager?
    * 

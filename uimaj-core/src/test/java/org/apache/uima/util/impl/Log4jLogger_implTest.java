@@ -184,46 +184,7 @@ public class Log4jLogger_implTest {
 
   @Test
   public void testMessageLogMethods() throws Exception {
-    // final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
-    final int[] nbrcalls = new int[1];
-    nbrcalls[0] = 0;
-
-    // Tell the logger to log everything
-    // long start = System.nanoTime();
-    org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager
-            .getRootLogger();
-    // System.out.format("debug time to init logger is %f%n ", ((double)(System.nanoTime() - start))
-    // / 1000000000.0d);
-    rootLogger.get().setLevel(org.apache.logging.log4j.Level.ALL);
-    rootLogger.getContext().updateLoggers();
-    // Configurator.setLevel(null, org.apache.logging.log4j.Level.ALL);
-    // final LoggerContext loggerContext = LoggerContext.getContext(false);
-    // final LoggerConfig loggerConfig = loggerContext.getConfiguration().getRootLogger();
-    //
-    // Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
-    // Capture the logging output without actually logging it
-    // ConsoleAppender app = (ConsoleAppender)
-    // rootLogger.getAppenders().values().stream().findFirst().get();
-    // add the filter to the shared Logger Context appender
-    ConsoleAppender app = (ConsoleAppender) rootLogger.get().getAppenders().values().stream()
-            .findFirst().get();
-    Filter filter = new AbstractFilter() {
-      @Override
-      public Result filter(LogEvent event) {
-        nbrcalls[0]++;
-        StackTraceElement ste = event.getSource();
-        System.out.printf("[%s:%s] %s%n", ste.getFileName(), ste.getLineNumber(),
-                event.getMessage().getFormattedMessage());
-        assertEquals(Log4jLogger_implTest.this.getClass().getName(), ste.getClassName());
-        return Result.DENY;
-      }
-    };
-
-    app.addFilter(filter);
-
-    try {
-      // create Logger
-      // debug
+    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
       org.apache.uima.util.Logger tempLogger = null;
       try {
         tempLogger = Log4jLogger_impl.getInstance(getClass());
@@ -233,18 +194,9 @@ public class Log4jLogger_implTest {
         System.err.println("debug finished stacktrace");
         throw e;
       }
+
       final org.apache.uima.util.Logger logger = tempLogger;
-      // reset log level to INFO
       logger.setLevel(Level.INFO);
-      // Configurator.setLevel("Console", org.apache.logging.log4j.Level.INFO);
-
-      // File file = File.createTempFile("LoggingTest","log");
-      // file.deleteOnExit();
-
-      // change output temporary file
-      // logger.setOutputStream(new PrintStream(new FileOutputStream(file)));
-
-      // log test with method log(Level,String)
 
       logger.log(Level.INFO, "My first test message");
       logger.log(Level.INFO, "");
@@ -293,16 +245,13 @@ public class Log4jLogger_implTest {
       logger.logException(ex);
       logger.logException(null);
 
-      assertEquals(16, nbrcalls[0]); // all calls except those with null or "" msgs (including
-                                     // non-null throwable/exception)
+      // all calls except those with null or "" msgs (including non-null throwable/exception)
+      assertEquals(16, capture.getAllEvents().size());
+
       // https://issues.apache.org/jira/browse/UIMA-5719
       logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
               "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
-
-    } finally {
-      app.removeFilter(filter);
     }
-
   }
 
   @Test

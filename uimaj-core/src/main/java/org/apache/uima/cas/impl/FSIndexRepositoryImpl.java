@@ -512,9 +512,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final TypeSystemImpl ts = this.sii.tsi;
 
     // **********************************************
-    // for each type in the TypeSystem, 
-    //   create a list of iicp's 
-    //     each one corresponding to a defined index
+    // for each type in the TypeSystem,
+    // create a list of iicp's
+    // each one corresponding to a defined index
     // **********************************************
     final int numTypes = ts.getNumberOfTypes() + 1; // Type counting starts at 1.
     // Can't instantiate arrays of generic types, but this is ok for ArrayList.
@@ -527,7 +527,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   // ***************
-  // Create indexes 
+  // Create indexes
   // ***************
 
   /**
@@ -1250,7 +1250,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // }
 
   // *****************************************
-  //    Adding/removing FS to/from the index
+  // Adding/removing FS to/from the index
   // *****************************************
   public void addFS(int fsRef) {
     ll_addFS(fsRef);

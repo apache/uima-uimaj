@@ -389,7 +389,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   // }
 
   /**
-   * Fast version of findKey Keeps the last node referenced 
+   * Fast version of findKey Keeps the last node referenced
    * 
    * *** NOT THREAD SAFE ***
    * 

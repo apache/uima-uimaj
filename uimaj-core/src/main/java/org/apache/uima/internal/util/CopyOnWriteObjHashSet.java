@@ -52,7 +52,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
 
   // ***************************************************
   // These methods to make this class easily usable by *
-  // FsIterator_bag                                    *
+  // FsIterator_bag *
   // ***************************************************
 
   /**
