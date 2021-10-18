@@ -25,11 +25,12 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.uima.util.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Slf4jLogger_implTest {
+public class Slf4jLogger_implCapturingTest {
 
   private final Exception ex = new IllegalArgumentException("boom");
 
@@ -37,19 +38,28 @@ public class Slf4jLogger_implTest {
 
   @Before
   public void setup() {
-    sut = Slf4jLogger_impl.getInstance();
+    sut = new Slf4jLogger_impl(null);
   }
 
   @Test
   public void thatSimpleMessageIsLogged() throws Exception {
     try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
-      sut.debug("test");
+      sut.trace("test", ex);
+      sut.debug("test", ex);
+      sut.info("test", ex);
+      sut.warn("test", ex);
+      sut.error("test", ex);
       assertThat(capture.getAndClearLatestEvents()) //
               .extracting( //
+                      e -> e.getLevel(), //
                       e -> e.getMessage().getFormattedMessage(), //
                       e -> e.getThrown()) //
               .containsExactly( //
-                      tuple("test", null));
+                      tuple(Level.TRACE, "test", ex), //
+                      tuple(Level.DEBUG, "test", ex), //
+                      tuple(Level.INFO, "test", ex), //
+                      tuple(Level.WARN, "test", ex), //
+                      tuple(Level.ERROR, "test", ex));
     }
   }
 
@@ -85,6 +95,66 @@ public class Slf4jLogger_implTest {
                 .containsExactly( //
                         tuple(String.join(" ", values), null));
       }
+    }
+  }
+
+  @Test
+  public void thatOneParameterAndThrowableAreLogged() throws Exception {
+    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+      sut.debug("{}", "1", ex);
+
+      assertThat(capture.getAndClearLatestEvents()) //
+              .extracting( //
+                      e -> e.getMessage().getFormattedMessage(), //
+                      e -> e.getThrown()) //
+              .containsExactly( //
+                      tuple("1", ex));
+    }
+  }
+
+  @Test
+  public void thatTwoParametersAndThrowableAreLogged() throws Exception {
+    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+      sut.trace("{} {}", "1", "2", ex);
+      sut.debug("{} {}", "1", "2", ex);
+      sut.info("{} {}", "1", "2", ex);
+      sut.warn("{} {}", "1", "2", ex);
+      sut.error("{} {}", "1", "2", ex);
+
+      assertThat(capture.getAndClearLatestEvents()) //
+              .extracting( //
+                      e -> e.getLevel(), //
+                      e -> e.getMessage().getFormattedMessage(), //
+                      e -> e.getThrown()) //
+              .containsExactly( //
+                      tuple(Level.TRACE, "1 2", ex), //
+                      tuple(Level.DEBUG, "1 2", ex), //
+                      tuple(Level.INFO, "1 2", ex), //
+                      tuple(Level.WARN, "1 2", ex), //
+                      tuple(Level.ERROR, "1 2", ex));
+    }
+  }
+
+  @Test
+  public void thatThreeParametersAndThrowableAreLogged() throws Exception {
+    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+      sut.trace("{} {} {}", "1", "2", "3", ex);
+      sut.debug("{} {} {}", "1", "2", "3", ex);
+      sut.info("{} {} {}", "1", "2", "3", ex);
+      sut.warn("{} {} {}", "1", "2", "3", ex);
+      sut.error("{} {} {}", "1", "2", "3", ex);
+
+      assertThat(capture.getAndClearLatestEvents()) //
+              .extracting( //
+                      e -> e.getLevel(), //
+                      e -> e.getMessage().getFormattedMessage(), //
+                      e -> e.getThrown()) //
+              .containsExactly( //
+                      tuple(Level.TRACE, "1 2 3", ex), //
+                      tuple(Level.DEBUG, "1 2 3", ex), //
+                      tuple(Level.INFO, "1 2 3", ex), //
+                      tuple(Level.WARN, "1 2 3", ex), //
+                      tuple(Level.ERROR, "1 2 3", ex));
     }
   }
 

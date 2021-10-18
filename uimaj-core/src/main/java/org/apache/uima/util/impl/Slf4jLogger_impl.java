@@ -97,7 +97,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @param component
    *          specified source class
    */
-  private Slf4jLogger_impl(Class<?> component) {
+  Slf4jLogger_impl(Class<?> component) {
     super(component);
     final String loggerName = (component != null) ? component.getName() : "org.apache.uima";
 
