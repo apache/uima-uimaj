@@ -551,19 +551,23 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigurationGroupNames() {
-    ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
-            getQualifiedContextName()).getConfigurationGroups();
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+    if (paramDecls == null) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    ConfigurationGroup[] groups = paramDecls.getConfigurationGroups();
     if (groups == null) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      Set<String> names = new TreeSet<>();
-      for (int i = 0; i < groups.length; i++) {
-        names.addAll(Arrays.asList(groups[i].getNames()));
-      }
-      String[] nameArray = new String[names.size()];
-      names.toArray(nameArray);
-      return nameArray;
     }
+
+    Set<String> names = new TreeSet<>();
+    for (int i = 0; i < groups.length; i++) {
+      names.addAll(Arrays.asList(groups[i].getNames()));
+    }
+
+    return names.toArray(new String[names.size()]);
   }
 
   /*
@@ -575,10 +579,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public String[] getConfigParameterNames() {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
             .getConfigParameterDeclarations(getQualifiedContextName());
-
     if (paramDecls == null) {
       return Constants.EMPTY_STRING_ARRAY;
-      }
+    }
 
     ConfigurationParameter[] params = paramDecls.getConfigurationParameters();
     if (params == null || params.length == 0) {
@@ -597,7 +600,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public String[] getConfigParameterNames(String aGroup) {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
             .getConfigParameterDeclarations(getQualifiedContextName());
-
     if (paramDecls == null) {
       return Constants.EMPTY_STRING_ARRAY;
     }
@@ -607,20 +609,20 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       return Constants.EMPTY_STRING_ARRAY;
     }
 
-      List<String> names = new ArrayList<>();
+    List<String> names = new ArrayList<>();
     ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
-      if (commonParams != null) {
-        for (int i = 0; i < commonParams.length; i++) {
-          names.add(commonParams[i].getName());
-        }
+    if (commonParams != null) {
+      for (int i = 0; i < commonParams.length; i++) {
+        names.add(commonParams[i].getName());
       }
+    }
 
-      for (int i = 0; i < groups.length; i++) {
-        ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
-        for (int j = 0; j < groupParams.length; j++) {
-          names.add(groupParams[j].getName());
-        }
+    for (int i = 0; i < groups.length; i++) {
+      ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
+      for (int j = 0; j < groupParams.length; j++) {
+        names.add(groupParams[j].getName());
       }
+    }
 
     return names.toArray(new String[names.size()]);
   }
@@ -686,7 +688,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     for (int i = 0; i < sofaArr.length; i++) {
       if (aSofaID.equals(sofaArr[i].getSofaID()))
         return sofaArr[i].getComponentSofaName();
-    }
+      }
     return componentSofaName;
   }
 

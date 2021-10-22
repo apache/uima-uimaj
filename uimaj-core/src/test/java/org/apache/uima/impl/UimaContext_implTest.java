@@ -44,8 +44,8 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 
@@ -277,6 +277,13 @@ public class UimaContext_implTest extends TestCase {
     // try on something that has no groups
     names = mContext.getConfigurationGroupNames();
     Assert.assertEquals(0, names.length);
+  }
+
+  public void testGetConfigurationGroupNamesWorksWhenNoParametersHaveBeenDeclared() {
+    UimaContext emptyContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
+
+    assertThat(emptyContext.getConfigurationGroupNames()).isEmpty();
   }
 
   public void testGetConfigParameterNames() {
