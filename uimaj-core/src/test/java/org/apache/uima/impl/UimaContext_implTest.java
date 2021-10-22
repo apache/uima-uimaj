@@ -53,6 +53,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 public class UimaContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
@@ -271,6 +272,14 @@ public class UimaContext_implTest {
     // try on something that has no groups
     names = mContext.getConfigurationGroupNames();
     Assert.assertEquals(0, names.length);
+  }
+
+  @Test
+  public void thatGetConfigurationGroupNamesWorksWhenNoParametersHaveBeenDeclared() {
+    UimaContext emptyContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
+
+    assertThat(emptyContext.getConfigurationGroupNames()).isEmpty();
   }
 
   @Test

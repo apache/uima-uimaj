@@ -558,19 +558,23 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigurationGroupNames() {
-    ConfigurationGroup[] groups = getConfigurationManager()
-            .getConfigParameterDeclarations(getQualifiedContextName()).getConfigurationGroups();
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+    if (paramDecls == null) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    ConfigurationGroup[] groups = paramDecls.getConfigurationGroups();
     if (groups == null) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      Set<String> names = new TreeSet<>();
-      for (int i = 0; i < groups.length; i++) {
-        names.addAll(Arrays.asList(groups[i].getNames()));
-      }
-      String[] nameArray = new String[names.size()];
-      names.toArray(nameArray);
-      return nameArray;
     }
+
+    Set<String> names = new TreeSet<>();
+    for (int i = 0; i < groups.length; i++) {
+      names.addAll(Arrays.asList(groups[i].getNames()));
+    }
+
+    return names.toArray(new String[names.size()]);
   }
 
   /*
@@ -582,7 +586,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public String[] getConfigParameterNames() {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
             .getConfigParameterDeclarations(getQualifiedContextName());
-
     if (paramDecls == null) {
       return Constants.EMPTY_STRING_ARRAY;
     }
@@ -604,7 +607,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public String[] getConfigParameterNames(String aGroup) {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
             .getConfigParameterDeclarations(getQualifiedContextName());
-
     if (paramDecls == null) {
       return Constants.EMPTY_STRING_ARRAY;
     }
