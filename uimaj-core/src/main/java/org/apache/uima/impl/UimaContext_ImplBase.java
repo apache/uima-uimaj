@@ -602,30 +602,34 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames(String aGroup) {
-    ConfigurationGroup[] groups = getConfigurationManager()
-            .getConfigParameterDeclarations(getQualifiedContextName())
-            .getConfigurationGroupDeclarations(aGroup);
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+
+    if (paramDecls == null) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    ConfigurationGroup[] groups = paramDecls.getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      List<String> names = new ArrayList<>();
-      ConfigurationParameter[] commonParams = getConfigurationManager()
-              .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
-      if (commonParams != null) {
-        for (int i = 0; i < commonParams.length; i++) {
-          names.add(commonParams[i].getName());
-        }
-      }
-      for (int i = 0; i < groups.length; i++) {
-        ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
-        for (int j = 0; j < groupParams.length; j++) {
-          names.add(groupParams[j].getName());
-        }
-      }
-      String[] nameArray = new String[names.size()];
-      names.toArray(nameArray);
-      return nameArray;
     }
+
+    List<String> names = new ArrayList<>();
+    ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
+    if (commonParams != null) {
+      for (int i = 0; i < commonParams.length; i++) {
+        names.add(commonParams[i].getName());
+      }
+    }
+
+    for (int i = 0; i < groups.length; i++) {
+      ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
+      for (int j = 0; j < groupParams.length; j++) {
+        names.add(groupParams[j].getName());
+      }
+    }
+
+    return names.toArray(new String[names.size()]);
   }
 
   /**

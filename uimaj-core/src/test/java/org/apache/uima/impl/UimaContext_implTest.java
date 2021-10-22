@@ -301,6 +301,7 @@ public class UimaContext_implTest {
             UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
 
     assertThat(emptyContext.getConfigParameterNames()).isEmpty();
+    assertThat(emptyContext.getConfigParameterNames("blah")).isEmpty();
   }
 
   @Test
