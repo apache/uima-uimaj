@@ -572,17 +572,19 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames() {
-    ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
-            getQualifiedContextName()).getConfigurationParameters();
-    if (params == null) {
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+
+    if (paramDecls == null) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      String[] names = new String[params.length];
-      for (int i = 0; i < params.length; i++) {
-        names[i] = params[i].getName();
       }
-      return names;
+
+    ConfigurationParameter[] params = paramDecls.getConfigurationParameters();
+    if (params == null || params.length == 0) {
+      return Constants.EMPTY_STRING_ARRAY;
     }
+
+    return Arrays.stream(params).map(ConfigurationParameter::getName).toArray(String[]::new);
   }
 
   /*
@@ -592,29 +594,34 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames(String aGroup) {
-    ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
-            getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+
+    if (paramDecls == null) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    ConfigurationGroup[] groups = paramDecls.getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
+    }
+
       List<String> names = new ArrayList<>();
-      ConfigurationParameter[] commonParams = getConfigurationManager()
-              .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
+    ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
       if (commonParams != null) {
         for (int i = 0; i < commonParams.length; i++) {
           names.add(commonParams[i].getName());
         }
       }
+
       for (int i = 0; i < groups.length; i++) {
         ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
         for (int j = 0; j < groupParams.length; j++) {
           names.add(groupParams[j].getName());
         }
       }
-      String[] nameArray = new String[names.size()];
-      names.toArray(nameArray);
-      return nameArray;
-    }
+
+    return names.toArray(new String[names.size()]);
   }
 
   /**

@@ -19,6 +19,8 @@
 
 package org.apache.uima.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -296,6 +298,14 @@ public class UimaContext_implTest extends TestCase {
     Assert.assertEquals(2, names.length);
     Assert.assertEquals("GrouplessParam1", names[0]);
     Assert.assertEquals("GrouplessParam2", names[1]);
+  }
+
+  public void testGetConfigParameterNamesWorksWhenNoParametersHaveBeenDeclared() {
+    UimaContext emptyContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
+
+    assertThat(emptyContext.getConfigParameterNames()).isEmpty();
+    assertThat(emptyContext.getConfigParameterNames("blah")).isEmpty();
   }
 
   public void testGetConfigParameterNamesString() {
