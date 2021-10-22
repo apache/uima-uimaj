@@ -19,6 +19,7 @@
 
 package org.apache.uima.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -51,6 +52,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 
 public class UimaContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
@@ -273,6 +275,14 @@ public class UimaContext_implTest {
   }
 
   @Test
+  public void thatGetConfigurationGroupNamesWorksWhenNoParametersHaveBeenDeclared() {
+    UimaContext emptyContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
+
+    assertThat(emptyContext.getConfigurationGroupNames()).isEmpty();
+  }
+
+  @Test
   public void testGetConfigParameterNames() {
     String[] names = mContext.getConfigParameterNames();
     Assert.assertEquals(6, names.length);
@@ -292,6 +302,15 @@ public class UimaContext_implTest {
     Assert.assertEquals(2, names.length);
     Assert.assertEquals("GrouplessParam1", names[0]);
     Assert.assertEquals("GrouplessParam2", names[1]);
+  }
+
+  @Test
+  public void thatGetConfigParameterNamesWorksWhenNoParametersHaveBeenDeclared() {
+    UimaContext emptyContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
+
+    assertThat(emptyContext.getConfigParameterNames()).isEmpty();
+    assertThat(emptyContext.getConfigParameterNames("blah")).isEmpty();
   }
 
   @Test
