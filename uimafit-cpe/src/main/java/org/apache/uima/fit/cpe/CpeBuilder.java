@@ -97,8 +97,8 @@ public class CpeBuilder {
    * @throws CpeDescriptorException
    *           if there was a problem adding the reader to the CPE.
    */
-  public void setReader(CollectionReaderDescription aDesc) throws IOException, SAXException,
-          CpeDescriptorException {
+  public void setReader(CollectionReaderDescription aDesc)
+          throws IOException, SAXException, CpeDescriptorException {
     // Remove all collection readers
     cpeDesc.setAllCollectionCollectionReaders(new CpeCollectionReader[0]);
 
@@ -123,8 +123,8 @@ public class CpeBuilder {
    * @throws InvalidXMLException
    *           if import resolution failed
    */
-  public void setAnalysisEngine(AnalysisEngineDescription aDesc) throws IOException, SAXException,
-          CpeDescriptorException, InvalidXMLException {
+  public void setAnalysisEngine(AnalysisEngineDescription aDesc)
+          throws IOException, SAXException, CpeDescriptorException, InvalidXMLException {
     // Remove all CAS processors
     cpeDesc.setCpeCasProcessors(null);
 
@@ -176,8 +176,8 @@ public class CpeBuilder {
    *          A resource specifier that should we materialized.
    * @return The file containing the XML representation of the given resource.
    */
-  private static File materializeDescriptor(ResourceSpecifier resource) throws IOException,
-          SAXException {
+  private static File materializeDescriptor(ResourceSpecifier resource)
+          throws IOException, SAXException {
     File tempDesc = File.createTempFile("desc", ".xml");
     tempDesc.deleteOnExit();
 
@@ -195,7 +195,8 @@ public class CpeBuilder {
   }
 
   private static CpeIntegratedCasProcessor createProcessor(String key,
-          AnalysisEngineDescription aDesc) throws IOException, SAXException, CpeDescriptorException {
+          AnalysisEngineDescription aDesc)
+          throws IOException, SAXException, CpeDescriptorException {
     URL descUrl = materializeDescriptor(aDesc).toURI().toURL();
 
     CpeInclude cpeInclude = getResourceSpecifierFactory().createInclude();
@@ -205,6 +206,7 @@ public class CpeBuilder {
     ccd.setInclude(cpeInclude);
 
     CpeIntegratedCasProcessor proc = produceCasProcessor(key);
+    proc.setName(key);
     proc.setCpeComponentDescriptor(ccd);
     proc.setAttributeValue(CpeDefaultValues.PROCESSING_UNIT_THREAD_COUNT, 1);
     proc.setActionOnMaxError(ACTION_ON_MAX_ERROR);

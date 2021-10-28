@@ -42,7 +42,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * This is an example taken from our test cases:
  * </p>
  * 
- * <pre><code>
+ * <pre>
+ * <code>
  * import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
  * 
  * AggregateBuilder builder = new AggregateBuilder();
@@ -55,7 +56,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * builder.add(createPrimitiveDescription(Annotator3.class, typeSystemDescription),
  *     ViewNames.INITIAL_VIEW, "B");
  * AnalysisEngine aggregateEngine = builder.createAggregate();
- * </code></pre>
+ * </code>
+ * </pre>
  */
 public class AggregateBuilder {
 
@@ -114,17 +116,7 @@ public class AggregateBuilder {
    * @return the name of the component generated for the {@link AnalysisEngineDescription}
    */
   public String add(AnalysisEngineDescription aed, String... viewNames) {
-    String componentName = aed.getAnalysisEngineMetaData().getName();
-    if (componentName == null || componentName.equals("")) {
-      if (aed.isPrimitive()) {
-        componentName = aed.getAnnotatorImplementationName();
-      } else {
-        componentName = "aggregate";
-      }
-    }
-    if (componentNames.contains(componentName)) {
-      componentName = componentName + "." + (componentNames.size() + 1);
-    }
+    String componentName = AnalysisEngineFactory.generateDelegateKey(aed, componentNames.size());
     add(componentName, aed, viewNames);
     return componentName;
   }
@@ -220,8 +212,8 @@ public class AggregateBuilder {
    */
   public AnalysisEngineDescription createAggregateDescription()
           throws ResourceInitializationException {
-    return AnalysisEngineFactory.createEngineDescription(analysisEngineDescriptions,
-            componentNames, typePriorities,
-            sofaMappings.toArray(new SofaMapping[sofaMappings.size()]), flowControllerDescription);
+    return AnalysisEngineFactory.createEngineDescription(analysisEngineDescriptions, componentNames,
+            typePriorities, sofaMappings.toArray(new SofaMapping[sofaMappings.size()]),
+            flowControllerDescription);
   }
 }

@@ -19,9 +19,12 @@
 package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
+import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineFromPath;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.generateDelegateKey;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.sanitizeDelegateKey;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
@@ -614,5 +617,50 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     assertThat(indexes[0])
         .extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName, FsIndexDescription::getKind)
         .containsExactly("Automatically Scanned Index", Token.class.getName(), FsIndexDescription.KIND_SORTED);
+  }
+  
+  @Test
+  public void thatGenerationOfDelegateKeysWorks() {
+    AnalysisEngineDescription desc = getResourceSpecifierFactory().createAnalysisEngineDescription();
+    desc.setImplementationName("i.am.a.Teapot");
+    
+    desc.setPrimitive(false);
+    assertThat(generateDelegateKey(desc, 0)) //
+      .as("Aggregates use 'aggregate' if no name is set in their metadata") //
+      .isEqualTo("aggregate-0");
+
+    desc.setPrimitive(true);
+    assertThat(generateDelegateKey(desc, 0)) //
+      .as("Primitives use the class name if no name is set in their metadata") //
+      .isEqualTo("i.am.a.Teapot-0");
+
+    desc.setPrimitive(true);
+    desc.getAnalysisEngineMetaData().setName("Primitive");
+    assertThat(generateDelegateKey(desc, 0)) //
+      .as("If a name is set in the metdata, that is used") //
+      .isEqualTo("Primitive-0");
+
+    desc.setPrimitive(false);
+    desc.getAnalysisEngineMetaData().setName("Aggregate");
+    assertThat(generateDelegateKey(desc, 0)) //
+      .as("If a name is set in the metdata, that is used") //
+      .isEqualTo("Aggregate-0");
+  }
+  
+  @Test
+  public void thatDelegateKeySanitationWorks() {
+    assertThat(sanitizeDelegateKey(null)).isEqualTo(null);
+    assertThat(sanitizeDelegateKey("")).isEqualTo(null);
+    assertThat(sanitizeDelegateKey(" ")).isEqualTo(null);
+    assertThat(sanitizeDelegateKey("Tröröö")).isEqualTo("Tröröö");
+    assertThat(sanitizeDelegateKey("测试名称")).isEqualTo("测试名称");
+    assertThat(sanitizeDelegateKey(" name ")).isEqualTo("name");
+    assertThat(sanitizeDelegateKey(" my\nname ")).isEqualTo("my_name");
+    assertThat(sanitizeDelegateKey(" my\tname ")).isEqualTo("my_name");
+    assertThat(sanitizeDelegateKey(" my__name ")).isEqualTo("my_name");
+    assertThat(sanitizeDelegateKey(" my\t\nname ")).isEqualTo("my_name");
+    assertThat(sanitizeDelegateKey("Name of the component")).isEqualTo("Name_of_the_component");
+    assertThat(sanitizeDelegateKey("this/that")).isEqualTo(null);
+    assertThat(sanitizeDelegateKey("this\\that")).isEqualTo(null);
   }
 }
