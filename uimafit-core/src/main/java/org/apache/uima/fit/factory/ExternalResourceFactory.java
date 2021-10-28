@@ -19,6 +19,7 @@
 
 package org.apache.uima.fit.factory;
 
+import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
@@ -1303,7 +1304,7 @@ public final class ExternalResourceFactory {
   }
 
   static String uniqueResourceKey(String aKey) {
-    return aKey + '-' + DISAMBIGUATOR.getAndIncrement();
+    return aKey + '-' + identityHashCode(DISAMBIGUATOR) + '-' + DISAMBIGUATOR.getAndIncrement();
   }
 
   /**
