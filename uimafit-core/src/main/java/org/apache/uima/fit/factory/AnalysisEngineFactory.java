@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.factory;
 
+import static java.lang.Character.isJavaIdentifierPart;
+import static java.lang.Character.isWhitespace;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.descriptor.OperationalProperties.MODIFIES_CAS_DEFAULT;
 import static org.apache.uima.fit.descriptor.OperationalProperties.MULTIPLE_DEPLOYMENT_ALLOWED_DEFAULT;
@@ -107,7 +109,8 @@ public final class AnalysisEngineFactory {
   public static AnalysisEngine createEngine(String descriptorName, Object... configurationData)
           throws InvalidXMLException, IOException, ResourceInitializationException {
     AnalysisEngineDescription aed = createEngineDescription(descriptorName, configurationData);
-    return UIMAFramework.produceAnalysisEngine(aed, ResourceManagerFactory.newResourceManager(), null);
+    return UIMAFramework.produceAnalysisEngine(aed, ResourceManagerFactory.newResourceManager(),
+            null);
   }
 
   /**
@@ -133,8 +136,8 @@ public final class AnalysisEngineFactory {
    */
   @Deprecated
   public static AnalysisEngine createAnalysisEngine(String descriptorName,
-          Object... configurationData) throws InvalidXMLException, IOException,
-          ResourceInitializationException {
+          Object... configurationData)
+          throws InvalidXMLException, IOException, ResourceInitializationException {
     return createEngine(descriptorName, configurationData);
   }
 
@@ -767,8 +770,8 @@ public final class AnalysisEngineFactory {
    *      component instances?</a>
    */
   public static AnalysisEngine createEngineFromPath(String descriptorPath,
-          Object... configurationData) throws InvalidXMLException, IOException,
-          ResourceInitializationException {
+          Object... configurationData)
+          throws InvalidXMLException, IOException, ResourceInitializationException {
     AnalysisEngineDescription desc = createEngineDescriptionFromPath(descriptorPath,
             configurationData);
     return UIMAFramework.produceAnalysisEngine(desc, ResourceManagerFactory.newResourceManager(),
@@ -798,8 +801,8 @@ public final class AnalysisEngineFactory {
    */
   @Deprecated
   public static AnalysisEngine createAnalysisEngineFromPath(String descriptorPath,
-          Object... configurationData) throws InvalidXMLException, IOException,
-          ResourceInitializationException {
+          Object... configurationData)
+          throws InvalidXMLException, IOException, ResourceInitializationException {
     return createEngineFromPath(descriptorPath, configurationData);
   }
 
@@ -885,8 +888,8 @@ public final class AnalysisEngineFactory {
    */
   @Deprecated
   public static AnalysisEngineDescription createAnalysisEngineDescriptionFromPath(
-          String descriptorPath, Object... configurationData) throws InvalidXMLException,
-          IOException {
+          String descriptorPath, Object... configurationData)
+          throws InvalidXMLException, IOException {
     return createEngineDescriptionFromPath(descriptorPath, configurationData);
   }
 
@@ -913,17 +916,15 @@ public final class AnalysisEngineFactory {
     URL url;
     try {
       url = imprt.findAbsoluteUrl(ResourceManagerFactory.newResourceManager());
-    }
-    catch (ResourceInitializationException e) {
+    } catch (ResourceInitializationException e) {
       if (e.getCause() instanceof IOException) {
         throw (IOException) e.getCause();
-      }
-      else {
+      } else {
         throw new IOException(e);
       }
     }
-    ResourceSpecifier specifier = ResourceCreationSpecifierFactory.createResourceCreationSpecifier(
-            url, configurationData);
+    ResourceSpecifier specifier = ResourceCreationSpecifierFactory
+            .createResourceCreationSpecifier(url, configurationData);
     return (AnalysisEngineDescription) specifier;
   }
 
@@ -1336,7 +1337,7 @@ public final class AnalysisEngineFactory {
 
     // set indexes from the argument to this call and from the annotation present in the
     // component
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     if (indexes != null) {
       fsIndexes.add(indexes);
     }
@@ -1436,8 +1437,8 @@ public final class AnalysisEngineFactory {
           SofaMapping[] sofaMappings, Object... configurationData)
           throws ResourceInitializationException {
 
-    List<AnalysisEngineDescription> primitiveEngineDescriptions = new ArrayList<AnalysisEngineDescription>();
-    List<String> componentNames = new ArrayList<String>();
+    List<AnalysisEngineDescription> primitiveEngineDescriptions = new ArrayList<>();
+    List<String> componentNames = new ArrayList<>();
 
     for (Class<? extends AnalysisComponent> componentClass : componentClasses) {
       AnalysisEngineDescription primitiveDescription = createEngineDescription(componentClass,
@@ -1495,14 +1496,60 @@ public final class AnalysisEngineFactory {
     String[] names = new String[analysisEngineDescriptions.length];
     int i = 0;
     for (AnalysisEngineDescription aed : analysisEngineDescriptions) {
-      names[i] = aed.getImplementationName() + "-" + i;
+      names[i] = generateDelegateKey(aed, i);
       i++;
     }
 
     return createEngineDescription(asList(analysisEngineDescriptions), asList(names), null, null,
             null);
   }
+  
+  // Intentionally package-private! We need this in the AggregateBuilder and we would like to test
+  // it, but it shouldn't really be part of the public API.
+  static String generateDelegateKey(AnalysisEngineDescription aAed, int aIndex) {
+    if (aAed.getMetaData() != null) {
+      String sanitizedName = sanitizeDelegateKey(aAed.getMetaData().getName());
+      if (sanitizedName != null) {
+        return sanitizedName + "-" + aIndex;
+      }
+    } 
 
+    if (aAed.isPrimitive()) {
+      return aAed.getImplementationName() + "-" + aIndex;
+    }
+    
+    return "aggregate-" + aIndex;
+  }
+  
+  static String sanitizeDelegateKey(String name) {
+    if (name == null) {
+      return null;
+    }
+    
+    String trimmedName = name.trim();
+    if (trimmedName.isEmpty()) {
+      return null;
+    }
+    
+    StringBuilder buf = new StringBuilder();
+    for (int i = 0; i < trimmedName.length(); i++) {
+      char c = trimmedName.charAt(i);
+      if (isWhitespace(c) || c == '_') {
+        if (buf.length() > 0 && buf.charAt(buf.length()-1) != '_') {
+          buf.append('_');
+        }
+      }
+      else if (!isJavaIdentifierPart(c)) {
+        return null;
+      }
+      else {
+        buf.append(c);
+      }
+    }
+    
+    return buf.toString();
+  }
+  
   /**
    * Create and configure an aggregate {@link AnalysisEngine} from several component descriptions.
    * 
@@ -1547,8 +1594,8 @@ public final class AnalysisEngineFactory {
           SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription,
           Object... configurationData) throws ResourceInitializationException {
 
-    List<AnalysisEngineDescription> primitiveEngineDescriptions = new ArrayList<AnalysisEngineDescription>();
-    List<String> componentNames = new ArrayList<String>();
+    List<AnalysisEngineDescription> primitiveEngineDescriptions = new ArrayList<>();
+    List<String> componentNames = new ArrayList<>();
 
     for (Class<? extends AnalysisComponent> componentClass : componentClasses) {
       AnalysisEngineDescription primitiveDescription = createEngineDescription(componentClass,
@@ -1695,7 +1742,7 @@ public final class AnalysisEngineFactory {
     desc.getAnalysisEngineMetaData().getOperationalProperties()
             .setMultipleDeploymentAllowed(allowMultipleDeploy);
 
-    List<String> flowNames = new ArrayList<String>();
+    List<String> flowNames = new ArrayList<>();
 
     for (int i = 0; i < analysisEngineDescriptions.size(); i++) {
       AnalysisEngineDescription aed = analysisEngineDescriptions.get(i);

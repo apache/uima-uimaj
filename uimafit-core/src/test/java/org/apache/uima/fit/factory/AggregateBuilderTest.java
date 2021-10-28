@@ -117,9 +117,9 @@ public class AggregateBuilderTest extends ComponentTestBase {
     String componentName3 = builder.add(AnalysisEngineFactory.createEngineDescription(
             Annotator1.class, typeSystemDescription));
 
-    assertEquals("org.apache.uima.fit.factory.testAes.Annotator1", componentName1);
-    assertEquals("org.apache.uima.fit.factory.testAes.Annotator1.2", componentName2);
-    assertEquals("org.apache.uima.fit.factory.testAes.Annotator1.3", componentName3);
+    assertEquals("org.apache.uima.fit.factory.testAes.Annotator1-0", componentName1);
+    assertEquals("org.apache.uima.fit.factory.testAes.Annotator1-1", componentName2);
+    assertEquals("org.apache.uima.fit.factory.testAes.Annotator1-2", componentName3);
 
     builder.addSofaMapping(componentName1, ViewNames.PARENTHESES_VIEW, "A");
     builder.addSofaMapping(componentName2, ViewNames.PARENTHESES_VIEW, "B");
