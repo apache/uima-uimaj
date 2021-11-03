@@ -188,7 +188,7 @@ public class XCASDeserializer {
 
     // map incoming _indexed values
     /**
-     * Map external SofaNum -> internal sofaNum 
+     * Map external SofaNum -> internal sofaNum
      * 
      * internal sofaNums also used to index indexRepositories -> ref to FsIndexRepositoryImpl
      */

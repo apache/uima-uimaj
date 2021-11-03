@@ -146,7 +146,7 @@ public interface ConfigurationManager {
    * @param aContextName
    *          the name for which to get the parameter declarations
    * 
-   * @return parameter declarations for the context
+   * @return parameter declarations for the context or {@code null} if there are no declarations.
    */
   ConfigurationParameterDeclarations getConfigParameterDeclarations(String aContextName);
 

@@ -157,5 +157,3 @@ public class OfShorts extends Annotation {
     ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_f1Shorts)))).set(i, v);
   }  
   }
-
-    

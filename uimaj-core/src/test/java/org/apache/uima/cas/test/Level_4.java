@@ -88,5 +88,3 @@ public class Level_4 extends Level_3 {
   private void readObject() {/*default - does nothing empty block */}
   
 }
-
-    

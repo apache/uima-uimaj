@@ -86,5 +86,3 @@ public class Separator extends TokenType {
   private void readObject() {/*default - does nothing empty block */}
      
 }
-
-    

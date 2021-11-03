@@ -130,7 +130,7 @@ public class JCasRegistry {
   }
 
   /**
-   * NOT CURRENTLY USED 
+   * NOT CURRENTLY USED
    * 
    * Gets the number of cover classes that have been registered.
    * 

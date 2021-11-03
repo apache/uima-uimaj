@@ -477,5 +477,3 @@ public class Root extends TOP {
     ((DoubleArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayDouble)))).set(i, v);
   }  
   }
-
-    

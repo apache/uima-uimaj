@@ -56,6 +56,7 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
+import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.Settings;
@@ -557,19 +558,23 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigurationGroupNames() {
-    ConfigurationGroup[] groups = getConfigurationManager()
-            .getConfigParameterDeclarations(getQualifiedContextName()).getConfigurationGroups();
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+    if (paramDecls == null) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    ConfigurationGroup[] groups = paramDecls.getConfigurationGroups();
     if (groups == null) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      Set<String> names = new TreeSet<>();
-      for (int i = 0; i < groups.length; i++) {
-        names.addAll(Arrays.asList(groups[i].getNames()));
-      }
-      String[] nameArray = new String[names.size()];
-      names.toArray(nameArray);
-      return nameArray;
     }
+
+    Set<String> names = new TreeSet<>();
+    for (int i = 0; i < groups.length; i++) {
+      names.addAll(Arrays.asList(groups[i].getNames()));
+    }
+
+    return names.toArray(new String[names.size()]);
   }
 
   /*
@@ -579,17 +584,18 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames() {
-    ConfigurationParameter[] params = getConfigurationManager()
-            .getConfigParameterDeclarations(getQualifiedContextName()).getConfigurationParameters();
-    if (params == null) {
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+    if (paramDecls == null) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      String[] names = new String[params.length];
-      for (int i = 0; i < params.length; i++) {
-        names[i] = params[i].getName();
-      }
-      return names;
     }
+
+    ConfigurationParameter[] params = paramDecls.getConfigurationParameters();
+    if (params == null || params.length == 0) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    return Arrays.stream(params).map(ConfigurationParameter::getName).toArray(String[]::new);
   }
 
   /*
@@ -599,30 +605,33 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public String[] getConfigParameterNames(String aGroup) {
-    ConfigurationGroup[] groups = getConfigurationManager()
-            .getConfigParameterDeclarations(getQualifiedContextName())
-            .getConfigurationGroupDeclarations(aGroup);
+    ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
+            .getConfigParameterDeclarations(getQualifiedContextName());
+    if (paramDecls == null) {
+      return Constants.EMPTY_STRING_ARRAY;
+    }
+
+    ConfigurationGroup[] groups = paramDecls.getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
       return Constants.EMPTY_STRING_ARRAY;
-    } else {
-      List<String> names = new ArrayList<>();
-      ConfigurationParameter[] commonParams = getConfigurationManager()
-              .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
-      if (commonParams != null) {
-        for (int i = 0; i < commonParams.length; i++) {
-          names.add(commonParams[i].getName());
-        }
-      }
-      for (int i = 0; i < groups.length; i++) {
-        ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
-        for (int j = 0; j < groupParams.length; j++) {
-          names.add(groupParams[j].getName());
-        }
-      }
-      String[] nameArray = new String[names.size()];
-      names.toArray(nameArray);
-      return nameArray;
     }
+
+    List<String> names = new ArrayList<>();
+    ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
+    if (commonParams != null) {
+      for (int i = 0; i < commonParams.length; i++) {
+        names.add(commonParams[i].getName());
+      }
+    }
+
+    for (int i = 0; i < groups.length; i++) {
+      ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
+      for (int j = 0; j < groupParams.length; j++) {
+        names.add(groupParams[j].getName());
+      }
+    }
+
+    return names.toArray(new String[names.size()]);
   }
 
   /**
@@ -658,15 +667,17 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     String absoluteSofaName = null;
     if (index < 0) {
       absoluteSofaName = mSofaMappings.get(nameToMap);
-      if (absoluteSofaName == null)
+      if (absoluteSofaName == null) {
         absoluteSofaName = nameToMap;
+      }
 
     } else {
       nameToMap = aSofaName.substring(0, index);
       String rest = aSofaName.substring(index);
       String absoluteRoot = mSofaMappings.get(nameToMap);
-      if (absoluteRoot == null)
+      if (absoluteRoot == null) {
         absoluteRoot = nameToMap;
+      }
       absoluteSofaName = absoluteRoot + rest;
     }
     SofaID sofaid = new SofaID_impl();
@@ -684,8 +695,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     String componentSofaName = aSofaID;
     SofaID[] sofaArr = getSofaMappings();
     for (int i = 0; i < sofaArr.length; i++) {
-      if (aSofaID.equals(sofaArr[i].getSofaID()))
+      if (aSofaID.equals(sofaArr[i].getSofaID())) {
         return sofaArr[i].getComponentSofaName();
+      }
     }
     return componentSofaName;
   }
@@ -852,14 +864,16 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       String absoluteSofaName = null;
       if (index < 0) {
         absoluteSofaName = mSofaMappings.get(nameToMap);
-        if (absoluteSofaName == null)
+        if (absoluteSofaName == null) {
           absoluteSofaName = nameToMap;
+        }
       } else {
         nameToMap = aSofaName.substring(0, index);
         String rest = aSofaName.substring(index);
         String absoluteRoot = mSofaMappings.get(nameToMap);
-        if (absoluteRoot == null)
+        if (absoluteRoot == null) {
           absoluteRoot = nameToMap;
+        }
         absoluteSofaName = absoluteRoot + rest;
       }
       return absoluteSofaName;

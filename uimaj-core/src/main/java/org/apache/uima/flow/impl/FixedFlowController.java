@@ -75,7 +75,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   private static final int ACTION_DROP = 2;
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
-  
+
 //@formatter:off
   // make final to work better in multi-thread case  UIMA-2373
   // working assumption: 
@@ -94,7 +94,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
   //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
 //@formatter:on
-  final private List<String> mSequence = new CopyOnWriteArrayList<>();  //UIMA-4013
+  final private List<String> mSequence = new CopyOnWriteArrayList<>(); // UIMA-4013
 
   private int mActionAfterCasMultiplier;
 
