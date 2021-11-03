@@ -82,5 +82,3 @@ public class EndOfSentence extends TokenType {
   private void readObject() {/*default - does nothing empty block */}
      
 }
-
-    

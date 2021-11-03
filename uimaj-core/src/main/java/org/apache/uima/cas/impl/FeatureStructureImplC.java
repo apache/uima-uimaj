@@ -285,7 +285,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
 
   // ***********************
-  //    Index Add Remove
+  // Index Add Remove
   // ***********************
 
   /**
@@ -344,7 +344,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
 
   // *******************************
-  //    IDs and Type
+  // IDs and Type
   // *******************************
   /**
    * NOTE: Possible name collision

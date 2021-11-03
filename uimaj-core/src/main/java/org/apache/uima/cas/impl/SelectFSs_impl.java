@@ -139,7 +139,6 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   private AnnotationFS boundingFs = null;
   private boolean noResult = false;
 
-  
 //@formatter:off
   /* **********************************************
    * Constructors
@@ -1369,7 +1368,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   }
 
   // *******************************************
-  // The methods below are alternatives 
+  // The methods below are alternatives
   // to the methods above, that combine
   // frequently used patterns into more
   // concise forms using positional arguments

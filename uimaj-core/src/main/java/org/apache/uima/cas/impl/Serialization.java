@@ -50,9 +50,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class Serialization {
 
   // *************************************************************
-  // These methods convert a CAS to / from a serializable object * 
-  // and vice-versa.                                             *
-  // Some also handle type system and index definitions          *
+  // These methods convert a CAS to / from a serializable object *
+  // and vice-versa. *
+  // Some also handle type system and index definitions *
   // *************************************************************
 
   /**
@@ -171,7 +171,7 @@ public class Serialization {
 
   // *****************************************************************************
   // Methods from here on do some form of custom serialization / deserialization *
-  // with data streams, byte arrays, etc.                                        *   
+  // with data streams, byte arrays, etc. *
   // *****************************************************************************
 
   /**
@@ -225,7 +225,7 @@ public class Serialization {
   }
 
   // *****************************************************************************
-  // Methods from here on use some form of compression                           *
+  // Methods from here on use some form of compression *
   // *****************************************************************************
 
   /**

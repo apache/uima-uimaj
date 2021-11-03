@@ -157,5 +157,3 @@ public class OfStrings extends Annotation {
     ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_f1Strings)))).set(i, v);
   }  
   }
-
-    

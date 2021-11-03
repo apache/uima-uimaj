@@ -127,5 +127,3 @@ public class AbstractType extends TOP {
   }    
     
   }
-
-    

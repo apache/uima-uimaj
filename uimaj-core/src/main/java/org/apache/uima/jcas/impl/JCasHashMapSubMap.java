@@ -28,7 +28,7 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.IteratorNvc;
 
 /**
- * Part of the JCasHashMap. 
+ * Part of the JCasHashMap.
  * 
  * There are multiple instances of this class, one per concurrancy level
  */

@@ -69,7 +69,7 @@ public interface Settings {
    * them with the value for key. Recursively evaluate the value to be substituted. NOTE: infinite
    * loops not detected! If the key variable has not been defined, an exception is thrown. To avoid
    * evaluation and get ${key} in the output escape the $ or { Arrays are returned as a
-   * comma-separated string, e.g. "[elem1,elem2]" 
+   * comma-separated string, e.g. "[elem1,elem2]"
    * 
    * Note: escape characters are not removed as they may affect array separators.
    * 

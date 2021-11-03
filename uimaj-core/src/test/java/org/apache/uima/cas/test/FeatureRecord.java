@@ -154,5 +154,3 @@ public class FeatureRecord extends TOP {
   }    
     
   }
-
-    

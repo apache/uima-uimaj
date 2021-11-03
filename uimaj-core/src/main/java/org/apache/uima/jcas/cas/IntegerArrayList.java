@@ -564,5 +564,3 @@ public class IntegerArrayList extends TOP implements
   }
     
 }
-
-    

@@ -142,5 +142,3 @@ public class EnrichedEntity extends Annotation {
   }    
     
   }
-
-    

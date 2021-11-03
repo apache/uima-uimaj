@@ -384,22 +384,21 @@ public class AnnotationIteratorTest {
     // a.getBegin(), a.getEnd());
     // }
 
-    assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable()
-        .containsExactly( //
-                ann[58], ann[11], ann[12], //
-                ann[76], ann[13], ann[14], ann[15], //
-                ann[59], ann[16], //
-                ann[69], ann[17], ann[18], ann[19], ann[20], //
-                ann[60], ann[21], ann[22], //
-                ann[70], ann[23], ann[24], //
-                ann[71], ann[25], //
-                ann[61], ann[26], ann[27], ann[28], ann[29], ann[30], //
-                ann[62], ann[31], //
-                ann[72], ann[32], ann[33], ann[34], ann[35], //
-                ann[63], ann[36], ann[37], //
-                ann[73], ann[38], ann[39], //
-                ann[74], ann[40],  //
-                ann[64], ann[41], ann[42]);
+    assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable().containsExactly( //
+            ann[58], ann[11], ann[12], //
+            ann[76], ann[13], ann[14], ann[15], //
+            ann[59], ann[16], //
+            ann[69], ann[17], ann[18], ann[19], ann[20], //
+            ann[60], ann[21], ann[22], //
+            ann[70], ann[23], ann[24], //
+            ann[71], ann[25], //
+            ann[61], ann[26], ann[27], ann[28], ann[29], ann[30], //
+            ann[62], ann[31], //
+            ann[72], ann[32], ann[33], ann[34], ann[35], //
+            ann[63], ann[36], ann[37], //
+            ann[73], ann[38], ann[39], //
+            ann[74], ann[40], //
+            ann[64], ann[41], ann[42]);
     assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable()
             .extracting(a -> asList(ann).indexOf(a), a -> a.getType(), a -> a.getBegin(),
                     a -> a.getEnd())
@@ -437,18 +436,16 @@ public class AnnotationIteratorTest {
     AnnotationFS sent = cas.getAnnotationIndex(this.sentenceType).iterator().get();
     assertThat(annotIndex.subiterator(sent, false, true)).toIterable()
             .as("Subiterator over annot unambiguous strict")
-            .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
-            .containsExactly( //
-                    tuple(tokenType, 0, 5),  //
+            .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd()).containsExactly( //
+                    tuple(tokenType, 0, 5), //
                     tuple(tokenType, 5, 10));
     assertCount("Subiterator over annot unambiguous strict", 2,
             annotIndex.subiterator(sent, false, true));
 
     assertThat(annotIndex.select().nonOverlapping().coveredBy(sent).asList())
             .as("Subiterator select over annot unambiguous strict")
-            .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
-            .containsExactly( //
-                    tuple(tokenType, 0, 5),  //
+            .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd()).containsExactly( //
+                    tuple(tokenType, 0, 5), //
                     tuple(tokenType, 5, 10));
     assertCount("Subiterator select over annot unambiguous strict", 2,
             annotIndex.select().nonOverlapping().coveredBy(sent));

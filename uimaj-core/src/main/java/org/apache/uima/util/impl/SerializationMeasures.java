@@ -306,7 +306,7 @@ public class SerializationMeasures {
           Slot_StrOffset, //
           Slot_StrLength, //
           Slot_StrChars, //
-          Slot_Long_High,//
+          Slot_Long_High, //
           Slot_Long_Low, //
           Slot_Float_Mantissa_Sign, //
           Slot_Float_Exponent, //

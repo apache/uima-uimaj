@@ -331,7 +331,7 @@ public class XCASDeserializerTest {
 
   @Test
   public void testMultipleSofas() throws Exception {
-      //@formatter:off
+    //@formatter:off
     /*************************************************
      * Make CAS with 2 sofas, initial and OtherSofa  *
      *                                               *

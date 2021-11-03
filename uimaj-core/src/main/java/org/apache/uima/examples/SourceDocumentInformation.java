@@ -204,5 +204,3 @@ public class SourceDocumentInformation extends Annotation {
   }    
     
   }
-
-    
