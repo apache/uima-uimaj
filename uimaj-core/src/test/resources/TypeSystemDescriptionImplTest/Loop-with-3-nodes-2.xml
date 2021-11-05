@@ -21,16 +21,17 @@
 	 ***************************************************************
    -->
 
-<name>Circular2</name>
+
+<name>Circular3-2</name>
 <description>For testing circular imports.</description>
 <version>0.1</version>
 <vendor>The Apache Software Foundation</vendor>
 <imports>
-<import location="Circular1.xml"/>
+<import location="Loop-with-3-nodes-3.xml"/>
 </imports>
 <types>
 <typeDescription>
-<name>Bar</name>
+<name>Foo</name>
 <description/>
 <supertypeName>uima.tcas.Annotation</supertypeName>
 </typeDescription>

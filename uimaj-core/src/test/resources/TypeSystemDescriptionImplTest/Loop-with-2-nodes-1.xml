@@ -27,7 +27,7 @@
 <version>0.1</version>
 <vendor>The Apache Software Foundation</vendor>
 <imports>
-<import location="Circular2.xml"/>
+<import location="Loop-with-2-nodes-2.xml"/>
 </imports>
 <types>
 <typeDescription>

@@ -277,24 +277,55 @@ public class TypeSystemDescription_implTest {
 
   @Test
   public void thatCircularImportsDoNotCrash() throws Exception {
-    File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
+    File descriptor = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-1.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
     ts.resolveImports();
     assertEquals(2, ts.getTypes().length);
   }
 
   @Test
-  public void thatCircularImportsDoNotConfuseResourceManagerCache() throws Exception {
+  public void thatLoopWithTwoNodesDoNotConfuseResourceManagerCache() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
-    File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
-    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+    File circular1 = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-1.xml");
+    File circular2 = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-2.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(circular1));
     ts.resolveImports(resMgr);
     assertThat(ts.getTypes()).hasSize(2);
 
     Map<String, XMLizable> cache = resMgr.getImportCache();
-    assertThat(cache).hasSize(1);
-    TypeSystemDescription cachedTsd = (TypeSystemDescription) cache.values().iterator().next();
-    assertThat(cachedTsd.getTypes()).hasSize(2);
+    assertThat(cache).containsOnlyKeys(circular1.toURL().toString(), circular2.toURL().toString());
+
+    TypeSystemDescription cachedCircular1Tsd = (TypeSystemDescription) cache
+            .get(circular1.toURL().toString());
+    TypeSystemDescription cachedCircular2Tsd = (TypeSystemDescription) cache
+            .get(circular2.toURL().toString());
+    assertThat(cachedCircular1Tsd.getTypes()).hasSize(2);
+    assertThat(cachedCircular2Tsd.getTypes()).hasSize(2);
+  }
+
+  @Test
+  public void thatLoopWithThreeNodesDoNotConfuseResourceManagerCache() throws Exception {
+    ResourceManager resMgr = newDefaultResourceManager();
+    File circular1 = getFile("TypeSystemDescriptionImplTest/Loop-with-3-nodes-1.xml");
+    File circular2 = getFile("TypeSystemDescriptionImplTest/Loop-with-3-nodes-2.xml");
+    File circular3 = getFile("TypeSystemDescriptionImplTest/Loop-with-3-nodes-3.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(circular1));
+    ts.resolveImports(resMgr);
+    assertThat(ts.getTypes()).hasSize(3);
+
+    Map<String, XMLizable> cache = resMgr.getImportCache();
+    assertThat(cache).containsOnlyKeys(circular1.toURL().toString(), circular2.toURL().toString(),
+            circular3.toURL().toString());
+
+    TypeSystemDescription cachedCircular1Tsd = (TypeSystemDescription) cache
+            .get(circular1.toURL().toString());
+    TypeSystemDescription cachedCircular2Tsd = (TypeSystemDescription) cache
+            .get(circular2.toURL().toString());
+    TypeSystemDescription cachedCircular3Tsd = (TypeSystemDescription) cache
+            .get(circular3.toURL().toString());
+    assertThat(cachedCircular1Tsd.getTypes()).hasSize(3);
+    assertThat(cachedCircular2Tsd.getTypes()).hasSize(3);
+    assertThat(cachedCircular3Tsd.getTypes()).hasSize(3);
   }
 
   @Test
