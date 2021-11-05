@@ -20,7 +20,10 @@ package org.apache.uima.resource.metadata.impl;
 
 import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.joining;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,9 +32,23 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FeatureDescription;
@@ -44,6 +61,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLizable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -79,29 +97,33 @@ public class TypeSystemDescription_implTest {
     assertThat(ts.getVersion()).isEqualTo("0.1");
 
     assertThat(ts.getImports()).extracting(Import::getName, Import::getLocation).containsExactly(
-        tuple("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", null),
-        tuple(null, "TypeSystemImportedByLocation.xml"),
-        tuple("TypeSystemImportedFromDataPath", null));
+            tuple("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", null),
+            tuple(null, "TypeSystemImportedByLocation.xml"),
+            tuple("TypeSystemImportedFromDataPath", null));
 
-    assertThat(ts.getTypes()).extracting(TypeDescription::getName, TypeDescription::getDescription,
-        TypeDescription::getSupertypeName)
-        .containsExactly(tuple("NamedEntity", "Anything that has a name.", "uima.tcas.Annotation"),
-            tuple("Person", "A person.", "NamedEntity"), tuple("Place", "A place.", "NamedEntity"),
-            tuple("DocumentStructure",
-                "Identifies document structure, such as sentence or paragraph.",
-                "uima.tcas.Annotation"),
-            tuple("Paragraph", "A paragraph.", "DocumentStructure"),
-            tuple("Sentence", "A sentence.", "DocumentStructure"));
+    assertThat(ts.getTypes())
+            .extracting(TypeDescription::getName, TypeDescription::getDescription,
+                    TypeDescription::getSupertypeName)
+            .containsExactly(
+                    tuple("NamedEntity", "Anything that has a name.", "uima.tcas.Annotation"),
+                    tuple("Person", "A person.", "NamedEntity"),
+                    tuple("Place", "A place.", "NamedEntity"),
+                    tuple("DocumentStructure",
+                            "Identifies document structure, such as sentence or paragraph.",
+                            "uima.tcas.Annotation"),
+                    tuple("Paragraph", "A paragraph.", "DocumentStructure"),
+                    tuple("Sentence", "A sentence.", "DocumentStructure"));
 
     assertThat(ts.getTypes()[4].getFeatures())
-        .extracting(FeatureDescription::getName, FeatureDescription::getDescription,
-            FeatureDescription::getRangeTypeName, FeatureDescription::getElementType,
-            FeatureDescription::getMultipleReferencesAllowed)
-        .containsExactly(
-            tuple("sentences", "Direct references to sentences in this paragraph",
-                "uima.cas.FSArray", "Sentence", false),
-            tuple("testMultiRefAllowedFeature", "A test feature that allows multiple references.",
-                "uima.cas.FSArray", null, true));
+            .extracting(FeatureDescription::getName, FeatureDescription::getDescription,
+                    FeatureDescription::getRangeTypeName, FeatureDescription::getElementType,
+                    FeatureDescription::getMultipleReferencesAllowed)
+            .containsExactly(
+                    tuple("sentences", "Direct references to sentences in this paragraph",
+                            "uima.cas.FSArray", "Sentence", false),
+                    tuple("testMultiRefAllowedFeature",
+                            "A test feature that allows multiple references.", "uima.cas.FSArray",
+                            null, true));
   }
 
   @Test
@@ -113,25 +135,166 @@ public class TypeSystemDescription_implTest {
 
     assertThatThrownBy(() -> ts.resolveImports()).isInstanceOf(InvalidXMLException.class);
     assertThat(ts.getTypes()).as(
-        "Type count after resolving failed should be same as before / no side effect on exception")
-        .hasSize(6);
+            "Type count after resolving failed should be same as before / no side effect on exception")
+            .hasSize(6);
 
     // set data path correctly and it should work
     ResourceManager resMgr = newDefaultResourceManager();
     resMgr.setDataPath(
-        JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
+            JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
     ts.resolveImports(resMgr);
 
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
   }
 
   @Test
+  public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorksBulk()
+          throws Exception {
+    for (int i = 0; i < 100; i++) {
+      thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks();
+    }
+  }
+
+  public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks()
+          throws Exception {
+    final int tsCount = 5;
+    final int passes = 3;
+    final int importsPerPass = 1;
+
+    File workDir = new File(
+            "target/test-output/TypeSystemDescription_implTest/thatConcurrentImportResolvingWorks");
+    FileUtils.deleteQuietly(workDir);
+    workDir.mkdirs();
+
+    // Generate random type systems
+    Map<File, TypeSystemDescription> allTypeSystems = new LinkedHashMap<>();
+    Map<File, Set<TypeDescription>> filesWithTransitiveTypes = new LinkedHashMap<>();
+    Map<File, Set<File>> transitiveImportsByFile = new LinkedHashMap<>();
+    for (int i = 0; i < tsCount; i++) {
+      TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+      TypeDescription type = tsd.addType("Type" + i, "", CAS.TYPE_NAME_TOP);
+      File tsdFile = new File(workDir, "tsd" + i + ".xml");
+      allTypeSystems.put(tsdFile, tsd);
+      filesWithTransitiveTypes.put(tsdFile, new LinkedHashSet<>(asList(type)));
+      transitiveImportsByFile.put(tsdFile, new LinkedHashSet<>());
+    }
+
+    // Add random imports to the type systems
+    Map<File, Set<TypeDescription>> transitiveTypesByFile = new LinkedHashMap<>();
+    for (int p = 0; p < passes; p++) {
+      System.out.println("===============");
+      List<Entry<File, TypeSystemDescription>> allTypeSystemEntries = new ArrayList<>(
+              allTypeSystems.entrySet());
+      Collections.shuffle(allTypeSystemEntries);
+      Iterator<Entry<File, TypeSystemDescription>> allTypeSystemEntriesIterator = allTypeSystemEntries
+              .iterator();
+
+      while (allTypeSystemEntriesIterator.hasNext()) {
+        Entry<File, TypeSystemDescription> thisTsd = allTypeSystemEntriesIterator.next();
+        TypeSystemDescription tsdDesc = thisTsd.getValue();
+        File tsdFile = thisTsd.getKey();
+
+        Set<TypeDescription> importedTypes = filesWithTransitiveTypes.get(tsdFile);
+        Set<File> importedFiles = transitiveImportsByFile.get(tsdFile);
+        Set<Import> imports = new LinkedHashSet<>(asList(tsdDesc.getImports()));
+        for (int i = 0; i < importsPerPass && allTypeSystemEntriesIterator.hasNext(); i++) {
+          Entry<File, TypeSystemDescription> otherTsd = allTypeSystemEntriesIterator.next();
+          Import tsdImport = getResourceSpecifierFactory().createImport();
+          // toURL is used intentionally here because we do not want the chars to get escaped
+          tsdImport.setLocation(otherTsd.getKey().toURL().toString());
+          imports.add(tsdImport);
+          importedTypes.addAll(filesWithTransitiveTypes.get(otherTsd.getKey()));
+          importedFiles.add(otherTsd.getKey());
+          importedFiles.addAll(transitiveImportsByFile.computeIfAbsent(otherTsd.getKey(),
+                  $ -> new LinkedHashSet<>()));
+        }
+
+        System.out.printf("%s imports %s%n", tsdFile.getName(), imports);
+        tsdDesc.setImports(imports.stream().toArray(Import[]::new));
+        transitiveTypesByFile.put(tsdFile, importedTypes);
+      }
+
+      for (Entry<File, TypeSystemDescription> e : allTypeSystemEntries) {
+        for (File f : new ArrayList<>(transitiveImportsByFile.get(e.getKey()))) {
+          transitiveImportsByFile.get(e.getKey()).addAll(transitiveImportsByFile.get(f));
+        }
+      }
+
+      for (Entry<File, TypeSystemDescription> e : allTypeSystemEntries) {
+        Set<TypeDescription> importedTypes = filesWithTransitiveTypes.get(e.getKey());
+        for (File f : transitiveImportsByFile.get(e.getKey())) {
+          importedTypes.addAll(filesWithTransitiveTypes.get(f));
+        }
+      }
+    }
+
+    // Write all the type systems to disk
+    for (Entry<File, TypeSystemDescription> e : allTypeSystems.entrySet()) {
+      try (OutputStream os = Files.newOutputStream(e.getKey().toPath())) {
+        e.getValue().toXML(os);
+      }
+    }
+
+    List<Entry<File, Set<TypeDescription>>> transitiveTypesByFileList = new ArrayList<>(
+            transitiveTypesByFile.entrySet());
+    transitiveTypesByFileList.sort(comparing(e -> e.getKey().getName()));
+
+    for (Entry<File, Set<TypeDescription>> e : transitiveTypesByFileList) {
+      Set<TypeDescription> types = e.getValue();
+      System.out.printf("%s %3d Types  : %s%n", e.getKey(), types.size(),
+              types.stream().map(TypeDescription::getName).sorted().collect(joining(", ")));
+      Set<File> imports = transitiveImportsByFile.get(e.getKey());
+      System.out.printf("%s %3d Imports: %s%n", e.getKey(), imports.size(),
+              imports.stream().map(File::getName).sorted().collect(joining(", ")));
+    }
+
+    ResourceManager resMgr = newDefaultResourceManager();
+    for (Entry<File, Set<TypeDescription>> e : transitiveTypesByFileList) {
+      TypeSystemDescription tsd = getXMLParser()
+              .parseTypeSystemDescription(new XMLInputSource(e.getKey()));
+      tsd.resolveImports(resMgr);
+
+      String[] expectedUniqueTypeNames = e.getValue().stream() //
+              .map(TypeDescription::getName) //
+              .sorted() //
+              .distinct() //
+              .toArray(String[]::new);
+
+      String[] actualUniqueTypeNames = Stream.of(tsd.getTypes()) //
+              .map(TypeDescription::getName) //
+              .sorted() //
+              .distinct() //
+              .toArray(String[]::new);
+
+      assertThat(actualUniqueTypeNames) //
+              .as("Mismatch in %s", e.getKey()) //
+              .containsExactly(expectedUniqueTypeNames);
+      assertThat(tsd.getTypes()) //
+              .as("Mismatch in %s", e.getKey()) //
+              .containsAll(e.getValue());
+    }
+  }
+
+  @Test
   public void thatCircularImportsDoNotCrash() throws Exception {
-    // test that circular imports don't crash
     File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
     ts.resolveImports();
     assertEquals(2, ts.getTypes().length);
+  }
+
+  @Test
+  public void thatCircularImportsDoNotConfuseResourceManagerCache() throws Exception {
+    ResourceManager resMgr = newDefaultResourceManager();
+    File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+    ts.resolveImports(resMgr);
+    assertThat(ts.getTypes()).hasSize(2);
+
+    Map<String, XMLizable> cache = resMgr.getImportCache();
+    assertThat(cache).hasSize(1);
+    TypeSystemDescription cachedTsd = (TypeSystemDescription) cache.values().iterator().next();
+    assertThat(cachedTsd.getTypes()).hasSize(2);
   }
 
   @Test
@@ -159,10 +322,10 @@ public class TypeSystemDescription_implTest {
     imports[0].setLocation("TypeSystemImportedByLocation.xml");
 
     TypeSystemDescription typeSystemDescription = getResourceSpecifierFactory()
-        .createTypeSystemDescription();
+            .createTypeSystemDescription();
     typeSystemDescription.setImports(imports);
     TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
-        .clone();
+            .clone();
     typeSystemWithResolvedImports.resolveImports(resMgr);
 
     assertThat(typeSystemWithResolvedImports.getTypes()).isNotEmpty();
@@ -170,7 +333,7 @@ public class TypeSystemDescription_implTest {
     // test that importing the same descriptor twice (using the same ResourceManager) caches
     // the result of the first import and does not create new objects
     TypeSystemDescription typeSystemDescription2 = getResourceSpecifierFactory()
-        .createTypeSystemDescription();
+            .createTypeSystemDescription();
 
     Import_impl[] imports2 = { new Import_impl() };
     imports2[0].setSourceUrl(url);
@@ -178,13 +341,13 @@ public class TypeSystemDescription_implTest {
 
     typeSystemDescription2.setImports(imports2);
     TypeSystemDescription typeSystemWithResolvedImports2 = (TypeSystemDescription) typeSystemDescription2
-        .clone();
+            .clone();
     typeSystemWithResolvedImports2.resolveImports(resMgr);
 
     assertThat(typeSystemWithResolvedImports.getTypes())
-        .as("Resolved imports in second type system are the same as in the first (cached)")
-        .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
-        .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
+            .as("Resolved imports in second type system are the same as in the first (cached)")
+            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
+            .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
   }
 
   @Test
@@ -194,7 +357,7 @@ public class TypeSystemDescription_implTest {
     TypeSystemDescription tsDesc = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));
 
     assertThatThrownBy(() -> CasCreationUtils.createCas(tsDesc, null, null))
-        .isInstanceOf(ResourceInitializationException.class)
-        .hasMessageContaining("uima.cas.String");
+            .isInstanceOf(ResourceInitializationException.class)
+            .hasMessageContaining("uima.cas.String");
   }
 }
