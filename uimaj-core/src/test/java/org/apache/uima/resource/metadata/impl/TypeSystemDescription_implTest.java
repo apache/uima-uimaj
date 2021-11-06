@@ -145,6 +145,62 @@ public class TypeSystemDescription_implTest {
     ts.resolveImports(resMgr);
 
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
+
+    String typeSystemImportedByLocation = new File(
+            "target/test-classes/TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml")
+                    .toURI().toURL().toString();
+    String typeSystemImportedFromDataPath = new File(
+            "target/test-classes/TypeSystemDescriptionImplTest/dataPathDir/TypeSystemImportedFromDataPath.xml")
+                    .toURI().toURL().toString();
+    String typeSystemImportedByName = new File(
+            "target/test-classes/org/apache/uima/resource/metadata/impl/TypeSystemImportedByName.xml")
+                    .toURI().toURL().toString();
+
+    Map<String, XMLizable> cache = resMgr.getImportCache();
+    assertThat(cache).containsOnlyKeys(typeSystemImportedByLocation, typeSystemImportedByName,
+            typeSystemImportedFromDataPath);
+
+    TypeSystemDescription typeSystemImportedByLocationTSD = (TypeSystemDescription) cache
+            .get(typeSystemImportedByLocation);
+    assertThat(typeSystemImportedByLocationTSD.getTypes()).hasSize(2);
+
+    TypeSystemDescription typeSystemImportedFromDataPathTSD = (TypeSystemDescription) cache
+            .get(typeSystemImportedFromDataPath);
+    assertThat(typeSystemImportedFromDataPathTSD.getTypes()).hasSize(2);
+
+    TypeSystemDescription typeSystemImportedByNameTSD = (TypeSystemDescription) cache
+            .get(typeSystemImportedByName);
+    assertThat(typeSystemImportedByNameTSD.getTypes()).hasSize(3);
+  }
+
+  @Test
+  public void testTransitiveResolveImports() throws Exception {
+    File descriptor = getFile("TypeSystemDescriptionImplTest/Transitive-with-3-nodes-1.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+
+    assertThat(ts.getTypes()).as("Type count before resolving the descriptor").hasSize(1);
+
+    ResourceManager resMgr = newDefaultResourceManager();
+    ts.resolveImports(resMgr);
+
+    assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(3);
+    assertThat(ts.getImports()).hasSize(0);
+    
+    String typeSystem2 = new File(descriptor.getParent(), "Transitive-with-3-nodes-2.xml").toURI()
+            .toURL().toString();
+    String typeSystem3 = new File(descriptor.getParent(), "Transitive-with-3-nodes-3.xml").toURI()
+            .toURL().toString();
+
+    Map<String, XMLizable> cache = resMgr.getImportCache();
+    assertThat(cache).containsOnlyKeys(typeSystem2, typeSystem3);
+
+    TypeSystemDescription typeSystem2TSD = (TypeSystemDescription) cache.get(typeSystem2);
+    assertThat(typeSystem2TSD.getTypes()).hasSize(2);
+    assertThat(typeSystem2TSD.getImports()).hasSize(0);
+
+    TypeSystemDescription typeSystem3TSD = (TypeSystemDescription) cache.get(typeSystem3);
+    assertThat(typeSystem3TSD.getTypes()).hasSize(1);
+    assertThat(typeSystem3TSD.getImports()).hasSize(0);
   }
 
   @Test
