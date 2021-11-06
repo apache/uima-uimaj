@@ -214,8 +214,7 @@ public class TypeSystemDescription_implTest {
   public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks()
           throws Exception {
     final int tsCount = 5;
-    // TODO increase passes again for testing cycles
-    final int passes = 1;
+    final int passes = 3;
     final int importsPerPass = 1;
 
     File workDir = new File(
