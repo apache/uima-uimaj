@@ -51,6 +51,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -330,7 +331,7 @@ public class TypeSystemDescription_implTest {
               .containsAll(e.getValue());
     }
   }
-
+  
   @Test
   public void thatCircularImportsDoNotCrash() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-1.xml");
@@ -376,7 +377,7 @@ public class TypeSystemDescription_implTest {
     TypeSystemDescription cachedCircular3Tsd = (TypeSystemDescription) cache
             .get(circular3.toURI().toURL().toString());
     assertThat(ts.getTypes()).hasSize(3);
-    assertThat(cachedCircular2Tsd.getTypes()).hasSize(1);
+    assertThat(cachedCircular2Tsd.getTypes()).hasSize(2);
     assertThat(cachedCircular3Tsd.getTypes()).hasSize(1);
   }
 

@@ -211,6 +211,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
+    // TODO what to do with aAlreadyImportedTypeSystemURLs???
     List<TypeDescription> result = new ArrayList<>();
 
     if (getImports() == null || getImports().length == 0) {
@@ -219,59 +220,55 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
     Deque<String> typeSystemStack = new LinkedList<>();
     typeSystemStack.push(getSourceUrlString());
-    aAlreadyImportedTypeSystemURLs.add(getSourceUrlString());
-
-    resolveImports(result, typeSystemStack, aAlreadyImportedTypeSystemURLs, aResourceManager);
+    resolveImports(result, typeSystemStack, aResourceManager);
     typeSystemStack.pop();
 
     setTypes(result.toArray(new TypeDescription_impl[0]));
     setImports(Import.EMPTY_IMPORTS);
   }
 
-  private boolean resolveImports(List<TypeDescription> result, Deque<String> stack,
-          Collection<String> visited, ResourceManager aResourceManager) throws InvalidXMLException {
+  private boolean resolveImports(List<TypeDescription> result, Deque<String> stack, ResourceManager aResourceManager) throws InvalidXMLException {
+
+    Import[] imports = getImports();
+
+    if (imports.length == 0) {
+      result.addAll(Arrays.asList(getTypes()));
+      return true;
+    }
 
     List<Import> unresolvedImports = new ArrayList<>();
     List<TypeDescription> resolvedTypeDescriptions = new ArrayList<>();
     resolvedTypeDescriptions.addAll(Arrays.asList(getTypes()));
 
-    boolean completelyResolved = true;
-
-    Import[] imports = getImports();
     for (Import tsImport : imports) {
 
       URL url = tsImport.findAbsoluteUrl(aResourceManager);
       String urlString = url.toString();
 
-      if (visited.contains(urlString)) {
-        // cycle detected? -> completelyResolved = false, not able to completely resolve imports
-        // right now
-        completelyResolved &= !stack.contains(urlString);
+      if (stack.contains(urlString)) {
+        unresolvedImports.add(tsImport);
         continue;
       }
-      stack.push(urlString);
-      visited.add(urlString);
-
+      
       TypeSystemDescription_impl importedDescription = getTypeSystemDescription(url,
               aResourceManager);
+      stack.push(urlString);
       boolean importCompletelyResolved = importedDescription
-              .resolveImports(resolvedTypeDescriptions, stack, visited, aResourceManager);
+              .resolveImports(resolvedTypeDescriptions, stack, aResourceManager);
       if (!importCompletelyResolved) {
         // TODO: update importUrlsCache? here or at all?
         unresolvedImports.add(tsImport);
       }
-      completelyResolved &= importCompletelyResolved;
       stack.pop();
     }
 
-    if (imports.length != unresolvedImports.size()) {
-      // update own resolved status
-      setTypes(resolvedTypeDescriptions.toArray(new TypeDescription_impl[0]));
-      setImports(unresolvedImports.toArray(new Import[0]));
-    }
+    // update own resolved status
+    setTypes(resolvedTypeDescriptions.toArray(new TypeDescription_impl[0]));
+    setImports(unresolvedImports.toArray(new Import[0]));
+
     result.addAll(resolvedTypeDescriptions);
 
-    return completelyResolved;
+    return unresolvedImports.isEmpty();
   }
 
   private TypeSystemDescription_impl getTypeSystemDescription(URL url,
