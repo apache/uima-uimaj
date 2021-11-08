@@ -241,7 +241,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
     Deque<String> typeSystemStack = new LinkedList<>();
     typeSystemStack.push(getSourceUrlString());
-    Map<String, TypeDescription> resolvedTypes = new LinkedHashMap<>();
+    Map<TypeKey, TypeDescription> resolvedTypes = new LinkedHashMap<>();
     resolveImports(this, new HashSet<>(), resolvedTypes, typeSystemStack, aResourceManager);
     typeSystemStack.pop();
 
@@ -266,7 +266,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    *           if an import could not be processed.
    */
   private static void resolveImports(TypeSystemDescription aDesc, Set<String> aAlreadyVisited,
-          Map<String, TypeDescription> aAllImportedTypes, Deque<String> aStack,
+          Map<TypeKey, TypeDescription> aAllImportedTypes, Deque<String> aStack,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
     if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
@@ -282,7 +282,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    Map<String, TypeDescription> resolvedTypes = new LinkedHashMap<>();
+    Map<TypeKey, TypeDescription> resolvedTypes = new LinkedHashMap<>();
     collectAllTypes(aDesc, resolvedTypes);
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
@@ -342,16 +342,42 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     aAlreadyVisited.add(aDesc.getSourceUrlString());
   }
 
-  private static void collectAllTypes(TypeSystemDescription aDesc,
-          Map<String, TypeDescription> aAllImportedTypes) {
-    TypeDescription[] types = aDesc.getTypes();
-    for (int i = 0; i < types.length; i++) {
-      aAllImportedTypes.put(typeKey(types[i].getSourceUrlString(), i, types[i]), types[i]);
+  private static class TypeKey {
+    private final TypeSystemDescription typeSystem;
+    private final TypeDescription type;
+
+    public TypeKey(TypeSystemDescription aTypeSystem, TypeDescription aType) {
+      typeSystem = aTypeSystem;
+      type = aType;
+    }
+
+    @Override
+    public int hashCode() {
+      return System.identityHashCode(typeSystem) + System.identityHashCode(type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      TypeKey other = (TypeKey) obj;
+      return type == other.type && typeSystem == other.typeSystem;
     }
   }
 
-  private static String typeKey(String aUrl, int aIndex, TypeDescription aType) {
-    return aUrl + "#" + aType.getName() + "@" + aIndex;
+  private static void collectAllTypes(TypeSystemDescription aDesc,
+          Map<TypeKey, TypeDescription> aAllImportedTypes) {
+    TypeDescription[] types = aDesc.getTypes();
+    for (int i = 0; i < types.length; i++) {
+      aAllImportedTypes.put(new TypeKey(aDesc, types[i]), types[i]);
+    }
   }
 
   private static TypeSystemDescription getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
