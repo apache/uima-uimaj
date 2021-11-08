@@ -21,10 +21,12 @@ package org.apache.uima.resource.metadata.impl;
 import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
+import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -33,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -148,7 +151,34 @@ public class TypeSystemDescription_implTest {
             JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
     ts.resolveImports(resMgr);
 
-    assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
+    assertThat(ts.getTypes()) //
+            .as("Types after resolving the descriptor.") //
+            .extracting( //
+                    t -> Paths.get(URI.create(t.getSourceUrlString())).getFileName().toString(),
+                    TypeDescription::getName) //
+            .containsExactlyInAnyOrder( //
+                    tuple("TestTypeSystem.xml", "NamedEntity"), //
+                    tuple("TestTypeSystem.xml", "Person"), //
+                    tuple("TestTypeSystem.xml", "Place"), //
+                    tuple("TestTypeSystem.xml", "DocumentStructure"), //
+                    tuple("TestTypeSystem.xml", "Paragraph"), //
+                    tuple("TestTypeSystem.xml", "Sentence"), //
+                    tuple("TypeSystemImportedByName.xml", "TestType1"), //
+                    tuple("TypeSystemImportedByName.xml", "NamedEntity"), //
+                    tuple("TypeSystemImportedByName.xml", "TestType2"), //
+                    tuple("TypeSystemImportedByLocation.xml", "TestType1"), //
+                    tuple("TypeSystemImportedByLocation.xml", "TestType3"), //
+                    tuple("TypeSystemImportedFromDataPath.xml", "TestType4"), //
+                    tuple("TypeSystemImportedFromDataPath.xml", "TestType3"));
+    List<String> uniqueTypeNames = Stream.of(ts.getTypes()).map(TypeDescription::getName).distinct()
+            .sorted().collect(toList());
+    assertThat(uniqueTypeNames) //
+            .as("Unique type names after resolving the descriptor") //
+            .containsExactly("DocumentStructure", "NamedEntity", "Paragraph", "Person", "Place",
+                    "Sentence", "TestType1", "TestType2", "TestType3", "TestType4");
+    TypeSystemDescription mergedTsd = mergeTypeSystems(asList(ts));
+    assertThat(Stream.of(mergedTsd.getTypes()).map(TypeDescription::getName).sorted()
+            .collect(toList())).as("Type count after merging all the types ").hasSize(10);
 
     String typeSystemImportedByLocation = new File(
             "target/test-classes/TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml")

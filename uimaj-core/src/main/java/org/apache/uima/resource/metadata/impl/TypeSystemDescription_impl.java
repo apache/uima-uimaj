@@ -246,7 +246,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     resolveImports(this, new HashSet<>(), result, typeSystemStack, aResourceManager);
     typeSystemStack.pop();
 
-    setTypes(result.toArray(new TypeDescription_impl[0]));
+    setTypes(result.toArray(new TypeDescription_impl[result.size()]));
     setImports(Import.EMPTY_IMPORTS);
   }
 
@@ -267,7 +267,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    *           if an import could not be processed.
    */
   private static void resolveImports(TypeSystemDescription aDesc, Set<String> aAlreadyVisited,
-          List<TypeDescription> aAllImportedTypes, Deque<String> aStack,
+          Collection<TypeDescription> aAllImportedTypes, Deque<String> aStack,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
     if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
@@ -283,7 +283,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    List<TypeDescription> resolvedTypes = new ArrayList<>(asList(aDesc.getTypes()));
+    Collection<TypeDescription> resolvedTypes = new ArrayList<>(asList(aDesc.getTypes()));
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
@@ -304,12 +304,6 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
       aStack.push(absUrlString);
 
-      // The imported type system is obtained from the resource manager cache or loaded from disk
-      // and then immediately added to the resource manager cache. Afterwards, the type system is
-      // resolved. This can cause a change to the (cached) type system (i.e. imported types being
-      // inlined and imports being removed). To avoid concurrency problems, we need to synchronize
-      // this entire process (loading and resolving) so that other threads only see them once they
-      // are in a state that does not change anymore.
       synchronized (importCache) {
         TypeSystemDescription importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
                 importCache);
@@ -324,6 +318,16 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
       aStack.pop();
     }
+
+    // REC: If a descriptor contains unresolved imports (i.e. it is part of a loop), then
+    // we will repeatedly come here and repeatedly add types to the current descriptor. For every
+    // resolve call, the list of types will grow. I think that actually not inlining the types
+    // is the proper solution here. Always performing the graph walk and collecting a minimal list
+    // of types seems way better than inlining types and potentially ending up with a *very* large
+    // list of types which then needs to be boiled down again by the type system merging mechanism
+    // when the type system is instantiated. Also, by not inlining the types and not removing the
+    // imports, we do not run into problems with eternally growing the list of types.
+    // An alternative to inlining could be to only store distinct types during inlining.
 
     // update own resolved status
     aDesc.setTypes(resolvedTypes.toArray(new TypeDescription_impl[resolvedTypes.size()]));
