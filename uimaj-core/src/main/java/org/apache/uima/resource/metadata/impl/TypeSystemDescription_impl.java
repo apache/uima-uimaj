@@ -19,10 +19,12 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static java.util.Arrays.asList;
+import static org.apache.uima.UIMAFramework.getXMLParser;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -74,6 +76,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -81,6 +84,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -88,6 +92,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#getVersion()
    */
+  @Override
   public String getVersion() {
     return mVersion;
   }
@@ -95,6 +100,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#setVersion(String)
    */
+  @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
@@ -102,6 +108,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -109,6 +116,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -116,6 +124,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#getVendor()
    */
+  @Override
   public String getVendor() {
     return mVendor;
   }
@@ -123,6 +132,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see ResourceMetaData#setVendor(String)
    */
+  @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
@@ -130,6 +140,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see TypeSystemDescription#getImports()
    */
+  @Override
   public Import[] getImports() {
     return mImports;
   }
@@ -137,6 +148,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see TypeSystemDescription#setImports(Import[])
    */
+  @Override
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -148,6 +160,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see TypeSystemDescription#getTypes()
    */
+  @Override
   public TypeDescription[] getTypes() {
     return mTypes;
   }
@@ -155,6 +168,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see TypeSystemDescription#setTypes(TypeDescription[])
    */
+  @Override
   public void setTypes(TypeDescription[] aTypes) {
     if (aTypes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -166,6 +180,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see TypeSystemDescription#addType(String, String, String)
    */
+  @Override
   public TypeDescription addType(String aTypeName, String aDescription, String aSupertypeName) {
     // create new type description
     TypeDescription newType = new TypeDescription_impl(aTypeName, aDescription, aSupertypeName);
@@ -187,10 +202,12 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   /**
    * @see TypeSystemDescription#getType(java.lang.String)
    */
+  @Override
   public TypeDescription getType(String aTypeName) {
     for (int i = 0; i < mTypes.length; i++) {
-      if (aTypeName.equals(mTypes[i].getName()))
+      if (aTypeName.equals(mTypes[i].getName())) {
         return mTypes[i];
+      }
     }
     return null;
   }
@@ -199,15 +216,19 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    * @see TypeSystemDescription#resolveImports()
    */
   // allow these calls to be done multiple times on this same object, in different threads
+  @Override
   public synchronized void resolveImports() throws InvalidXMLException {
     resolveImports(UIMAFramework.newDefaultResourceManager());
   }
 
+  @Override
   public synchronized void resolveImports(ResourceManager aResourceManager)
           throws InvalidXMLException {
     resolveImports(new TreeSet<>(), aResourceManager);
   }
 
+  @Deprecated
+  @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
@@ -227,73 +248,101 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     setImports(Import.EMPTY_IMPORTS);
   }
 
-  private boolean resolveImports(List<TypeDescription> result, Deque<String> stack, ResourceManager aResourceManager) throws InvalidXMLException {
+  /**
+   * Resolves the imports in the current type system description. If there are circular dependencies
+   * between the type systems, the those imports involved in the circular dependency will remain
+   * unresolved.
+   * 
+   * @param aAllImportedTypes
+   *          all the types that are found in the (transitively) imported type systems are collected
+   *          in this list.
+   * @param aStack
+   *          the path through the type system import graph that was walked to reach the current
+   *          type system.
+   * @param aResourceManager
+   *          the resource manager used to load the imported type systems.
+   * @throws InvalidXMLException
+   *           if an import could not be processed.
+   */
+  private void resolveImports(List<TypeDescription> aAllImportedTypes, Deque<String> aStack,
+          ResourceManager aResourceManager) throws InvalidXMLException {
 
     Import[] imports = getImports();
 
     if (imports.length == 0) {
-      result.addAll(Arrays.asList(getTypes()));
-      return true;
+      aAllImportedTypes.addAll(asList(getTypes()));
+      return;
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    List<TypeDescription> resolvedTypeDescriptions = new ArrayList<>();
-    resolvedTypeDescriptions.addAll(Arrays.asList(getTypes()));
+    List<TypeDescription> resolvedTypes = new ArrayList<>(asList(getTypes()));
 
+    Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
+      URL absUrl = tsImport.findAbsoluteUrl(aResourceManager);
+      String absUrlString = absUrl.toString();
 
-      URL url = tsImport.findAbsoluteUrl(aResourceManager);
-      String urlString = url.toString();
-
-      if (stack.contains(urlString)) {
+      if (aStack.contains(absUrlString)) {
         unresolvedImports.add(tsImport);
         continue;
       }
-      
-      TypeSystemDescription_impl importedDescription = getTypeSystemDescription(url,
-              aResourceManager);
-      stack.push(urlString);
-      boolean importCompletelyResolved = importedDescription
-              .resolveImports(resolvedTypeDescriptions, stack, aResourceManager);
-      if (!importCompletelyResolved) {
-        // TODO: update importUrlsCache? here or at all?
-        unresolvedImports.add(tsImport);
+
+      aStack.push(absUrlString);
+
+      // The imported type system is obtained from the resource manager cache or loaded from disk
+      // and then immediately added to the resource manager cache. Afterwards, the type system is
+      // resolved. This can cause a change to the (cached) type system (i.e. imported types being
+      // inlined and imports being removed). To avoid concurrency problems, we need to synchronize
+      // this entire process (loading and resolving) so that other threads only see them once they
+      // are in a state that does not change anymore.
+      synchronized (importCache) {
+        TypeSystemDescription_impl importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
+                importCache);
+
+        importedTS.resolveImports(resolvedTypes, aStack, aResourceManager);
+
+        if (importedTS.getImports().length > 0) {
+          // TODO: update importUrlsCache? here or at all?
+          unresolvedImports.add(tsImport);
+        }
       }
-      stack.pop();
+
+      aStack.pop();
     }
 
     // update own resolved status
-    setTypes(resolvedTypeDescriptions.toArray(new TypeDescription_impl[0]));
-    setImports(unresolvedImports.toArray(new Import[0]));
+    setTypes(resolvedTypes.toArray(new TypeDescription_impl[resolvedTypes.size()]));
+    setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
 
-    result.addAll(resolvedTypeDescriptions);
-
-    return unresolvedImports.isEmpty();
+    aAllImportedTypes.addAll(resolvedTypes);
   }
 
-  private TypeSystemDescription_impl getTypeSystemDescription(URL url,
-          ResourceManager resourceManager) throws InvalidXMLException {
-
-    String urlString = url.toString();
-    // TODO where to synchronize the importCache?
-    Map<String, XMLizable> importCache = ((ResourceManager_impl) resourceManager).getImportCache();
-    XMLizable cachedObject = importCache.get(urlString);
+  private TypeSystemDescription_impl getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
+          Map<String, XMLizable> aImportCache) throws InvalidXMLException {
+    XMLizable cachedObject = aImportCache.get(aAbsUrl.toString());
     if (cachedObject instanceof TypeSystemDescription_impl) {
       return (TypeSystemDescription_impl) cachedObject;
     }
+
+    return loadTypeSystemDescription(aTsImport, aAbsUrl, aImportCache);
+  }
+
+  private TypeSystemDescription_impl loadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
+          Map<String, XMLizable> aImportCache) throws InvalidXMLException {
+    String urlString = aAbsUrl.toString();
     try {
-      XMLInputSource input = new XMLInputSource(url);
-      TypeSystemDescription description = UIMAFramework.getXMLParser()
-              .parseTypeSystemDescription(input);
-      importCache.put(urlString, description);
+      XMLInputSource input = new XMLInputSource(aAbsUrl);
+      TypeSystemDescription description = getXMLParser().parseTypeSystemDescription(input);
+      aImportCache.put(urlString, description);
       // TODO cast?
       return (TypeSystemDescription_impl) description;
     } catch (IOException e) {
       throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-              new Object[] { url, urlString }, e);
+              new Object[] { aAbsUrl, aTsImport.getLocation() }, e);
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
