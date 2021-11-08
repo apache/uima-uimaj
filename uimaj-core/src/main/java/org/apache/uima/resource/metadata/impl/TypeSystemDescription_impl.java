@@ -241,7 +241,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
     Deque<String> typeSystemStack = new LinkedList<>();
     typeSystemStack.push(getSourceUrlString());
-    resolveImports(result, typeSystemStack, aResourceManager);
+    resolveImports(this, result, typeSystemStack, aResourceManager);
     typeSystemStack.pop();
 
     setTypes(result.toArray(new TypeDescription_impl[0]));
@@ -264,18 +264,19 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    * @throws InvalidXMLException
    *           if an import could not be processed.
    */
-  private void resolveImports(List<TypeDescription> aAllImportedTypes, Deque<String> aStack,
+  private static void resolveImports(TypeSystemDescription aDesc,
+          List<TypeDescription> aAllImportedTypes, Deque<String> aStack,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
-    Import[] imports = getImports();
+    Import[] imports = aDesc.getImports();
 
     if (imports.length == 0) {
-      aAllImportedTypes.addAll(asList(getTypes()));
+      aAllImportedTypes.addAll(asList(aDesc.getTypes()));
       return;
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    List<TypeDescription> resolvedTypes = new ArrayList<>(asList(getTypes()));
+    List<TypeDescription> resolvedTypes = new ArrayList<>(asList(aDesc.getTypes()));
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
@@ -296,10 +297,10 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
       // this entire process (loading and resolving) so that other threads only see them once they
       // are in a state that does not change anymore.
       synchronized (importCache) {
-        TypeSystemDescription_impl importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
+        TypeSystemDescription importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
                 importCache);
 
-        importedTS.resolveImports(resolvedTypes, aStack, aResourceManager);
+        resolveImports(importedTS, resolvedTypes, aStack, aResourceManager);
 
         if (importedTS.getImports().length > 0) {
           // TODO: update importUrlsCache? here or at all?
@@ -311,31 +312,30 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     }
 
     // update own resolved status
-    setTypes(resolvedTypes.toArray(new TypeDescription_impl[resolvedTypes.size()]));
-    setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
+    aDesc.setTypes(resolvedTypes.toArray(new TypeDescription_impl[resolvedTypes.size()]));
+    aDesc.setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
 
     aAllImportedTypes.addAll(resolvedTypes);
   }
 
-  private TypeSystemDescription_impl getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
+  private static TypeSystemDescription getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
           Map<String, XMLizable> aImportCache) throws InvalidXMLException {
     XMLizable cachedObject = aImportCache.get(aAbsUrl.toString());
-    if (cachedObject instanceof TypeSystemDescription_impl) {
-      return (TypeSystemDescription_impl) cachedObject;
+    if (cachedObject instanceof TypeSystemDescription) {
+      return (TypeSystemDescription) cachedObject;
     }
 
     return loadTypeSystemDescription(aTsImport, aAbsUrl, aImportCache);
   }
 
-  private TypeSystemDescription_impl loadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
+  private static TypeSystemDescription loadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
           Map<String, XMLizable> aImportCache) throws InvalidXMLException {
     String urlString = aAbsUrl.toString();
     try {
       XMLInputSource input = new XMLInputSource(aAbsUrl);
       TypeSystemDescription description = getXMLParser().parseTypeSystemDescription(input);
       aImportCache.put(urlString, description);
-      // TODO cast?
-      return (TypeSystemDescription_impl) description;
+      return description;
     } catch (IOException e) {
       throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
               new Object[] { aAbsUrl, aTsImport.getLocation() }, e);
