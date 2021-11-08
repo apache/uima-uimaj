@@ -21,7 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.joining;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
@@ -32,6 +31,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
@@ -51,7 +51,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -68,6 +67,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.xml.sax.SAXException;
 
 public class TypeSystemDescription_implTest {
   public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
@@ -205,19 +205,54 @@ public class TypeSystemDescription_implTest {
   }
 
   @Test
-  public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorksBulk()
+  public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks()
           throws Exception {
-    for (int i = 0; i < 100; i++) {
-      thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks();
+    final int maxTsCount = 7;
+    final int maxPasses = 5;
+    final int maxImportsPerPass = 4;
+    final int runs = 100;
+
+    for (int i = 0; i < runs; i++) {
+      final int tsCount = ((i * maxTsCount) / runs) + 1;
+      final int passes = ((i * maxPasses) / runs) + 1;
+      final int importsPerPass = ((i * maxImportsPerPass) / runs) + 1;
+
+      System.out.printf("Run %d: TS: %d  passes: %d  imports-per-pass:%d%n", i, tsCount, passes,
+              importsPerPass);
+
+      List<Entry<File, Set<TypeDescription>>> data = prepareComplexImportScenario(tsCount, passes,
+              importsPerPass);
+
+      ResourceManager resMgr = newDefaultResourceManager();
+      for (Entry<File, Set<TypeDescription>> e : data) {
+        TypeSystemDescription tsd = getXMLParser()
+                .parseTypeSystemDescription(new XMLInputSource(e.getKey()));
+        tsd.resolveImports(resMgr);
+
+        String[] expectedUniqueTypeNames = e.getValue().stream() //
+                .map(TypeDescription::getName) //
+                .sorted() //
+                .distinct() //
+                .toArray(String[]::new);
+
+        String[] actualUniqueTypeNames = Stream.of(tsd.getTypes()) //
+                .map(TypeDescription::getName) //
+                .sorted() //
+                .distinct() //
+                .toArray(String[]::new);
+
+        assertThat(actualUniqueTypeNames) //
+                .as("Mismatch in %s", e.getKey()) //
+                .containsExactly(expectedUniqueTypeNames);
+        assertThat(tsd.getTypes()) //
+                .as("Mismatch in %s", e.getKey()) //
+                .containsAll(e.getValue());
+      }
     }
   }
 
-  public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks()
-          throws Exception {
-    final int tsCount = 5;
-    final int passes = 3;
-    final int importsPerPass = 1;
-
+  private List<Entry<File, Set<TypeDescription>>> prepareComplexImportScenario(int tsCount,
+          int passes, int importsPerPass) throws IOException, SAXException {
     File workDir = new File(
             "target/test-output/TypeSystemDescription_implTest/thatConcurrentImportResolvingWorks");
     FileUtils.deleteQuietly(workDir);
@@ -239,7 +274,7 @@ public class TypeSystemDescription_implTest {
     // Add random imports to the type systems
     Map<File, Set<TypeDescription>> transitiveTypesByFile = new LinkedHashMap<>();
     for (int p = 0; p < passes; p++) {
-      System.out.println("===============");
+      // System.out.println("===============");
       List<Entry<File, TypeSystemDescription>> allTypeSystemEntries = new ArrayList<>(
               allTypeSystems.entrySet());
       Collections.shuffle(allTypeSystemEntries);
@@ -266,7 +301,7 @@ public class TypeSystemDescription_implTest {
                   $ -> new LinkedHashSet<>()));
         }
 
-        System.out.printf("%s imports %s%n", tsdFile.getName(), imports);
+        // System.out.printf("%s imports %s%n", tsdFile.getName(), imports);
         tsdDesc.setImports(imports.stream().toArray(Import[]::new));
         transitiveTypesByFile.put(tsdFile, importedTypes);
       }
@@ -296,42 +331,18 @@ public class TypeSystemDescription_implTest {
             transitiveTypesByFile.entrySet());
     transitiveTypesByFileList.sort(comparing(e -> e.getKey().getName()));
 
-    for (Entry<File, Set<TypeDescription>> e : transitiveTypesByFileList) {
-      Set<TypeDescription> types = e.getValue();
-      System.out.printf("%s %3d Types  : %s%n", e.getKey(), types.size(),
-              types.stream().map(TypeDescription::getName).sorted().collect(joining(", ")));
-      Set<File> imports = transitiveImportsByFile.get(e.getKey());
-      System.out.printf("%s %3d Imports: %s%n", e.getKey(), imports.size(),
-              imports.stream().map(File::getName).sorted().collect(joining(", ")));
-    }
+    // for (Entry<File, Set<TypeDescription>> e : transitiveTypesByFileList) {
+    // Set<TypeDescription> types = e.getValue();
+    // System.out.printf("%s %3d Types : %s%n", e.getKey(), types.size(),
+    // types.stream().map(TypeDescription::getName).sorted().collect(joining(", ")));
+    // Set<File> imports = transitiveImportsByFile.get(e.getKey());
+    // System.out.printf("%s %3d Imports: %s%n", e.getKey(), imports.size(),
+    // imports.stream().map(File::getName).sorted().collect(joining(", ")));
+    // }
 
-    ResourceManager resMgr = newDefaultResourceManager();
-    for (Entry<File, Set<TypeDescription>> e : transitiveTypesByFileList) {
-      TypeSystemDescription tsd = getXMLParser()
-              .parseTypeSystemDescription(new XMLInputSource(e.getKey()));
-      tsd.resolveImports(resMgr);
-
-      String[] expectedUniqueTypeNames = e.getValue().stream() //
-              .map(TypeDescription::getName) //
-              .sorted() //
-              .distinct() //
-              .toArray(String[]::new);
-
-      String[] actualUniqueTypeNames = Stream.of(tsd.getTypes()) //
-              .map(TypeDescription::getName) //
-              .sorted() //
-              .distinct() //
-              .toArray(String[]::new);
-
-      assertThat(actualUniqueTypeNames) //
-              .as("Mismatch in %s", e.getKey()) //
-              .containsExactly(expectedUniqueTypeNames);
-      assertThat(tsd.getTypes()) //
-              .as("Mismatch in %s", e.getKey()) //
-              .containsAll(e.getValue());
-    }
+    return transitiveTypesByFileList;
   }
-  
+
   @Test
   public void thatCircularImportsDoNotCrash() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-1.xml");

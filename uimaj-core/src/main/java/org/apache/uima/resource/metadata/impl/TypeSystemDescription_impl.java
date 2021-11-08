@@ -27,9 +27,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
@@ -241,7 +243,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
     Deque<String> typeSystemStack = new LinkedList<>();
     typeSystemStack.push(getSourceUrlString());
-    resolveImports(this, result, typeSystemStack, aResourceManager);
+    resolveImports(this, new HashSet<>(), result, typeSystemStack, aResourceManager);
     typeSystemStack.pop();
 
     setTypes(result.toArray(new TypeDescription_impl[0]));
@@ -264,9 +266,13 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    * @throws InvalidXMLException
    *           if an import could not be processed.
    */
-  private static void resolveImports(TypeSystemDescription aDesc,
+  private static void resolveImports(TypeSystemDescription aDesc, Set<String> aAlreadyVisited,
           List<TypeDescription> aAllImportedTypes, Deque<String> aStack,
           ResourceManager aResourceManager) throws InvalidXMLException {
+
+    if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
+      return;
+    }
 
     Import[] imports = aDesc.getImports();
 
@@ -300,7 +306,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
         TypeSystemDescription importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
                 importCache);
 
-        resolveImports(importedTS, resolvedTypes, aStack, aResourceManager);
+        resolveImports(importedTS, aAlreadyVisited, resolvedTypes, aStack, aResourceManager);
 
         if (importedTS.getImports().length > 0) {
           // TODO: update importUrlsCache? here or at all?
@@ -316,6 +322,8 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     aDesc.setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
 
     aAllImportedTypes.addAll(resolvedTypes);
+
+    aAlreadyVisited.add(aDesc.getSourceUrlString());
   }
 
   private static TypeSystemDescription getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
