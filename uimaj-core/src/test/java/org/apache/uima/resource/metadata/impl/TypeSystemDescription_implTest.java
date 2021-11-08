@@ -186,7 +186,7 @@ public class TypeSystemDescription_implTest {
 
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(3);
     assertThat(ts.getImports()).hasSize(0);
-    
+
     String typeSystem2 = new File(descriptor.getParent(), "Transitive-with-3-nodes-2.xml").toURI()
             .toURL().toString();
     String typeSystem3 = new File(descriptor.getParent(), "Transitive-with-3-nodes-3.xml").toURI()
@@ -210,24 +210,34 @@ public class TypeSystemDescription_implTest {
     final int maxTsCount = 7;
     final int maxPasses = 5;
     final int maxImportsPerPass = 4;
-    final int runs = 100;
+    final int maxTypesPerTypeSystem = 1;
+    final int maxFeaturesPerType = 1;
+    final int runs = 1000;
 
     for (int i = 0; i < runs; i++) {
       final int tsCount = ((i * maxTsCount) / runs) + 1;
       final int passes = ((i * maxPasses) / runs) + 1;
       final int importsPerPass = ((i * maxImportsPerPass) / runs) + 1;
+      final int typesPerTypeSystem = ((i * maxTypesPerTypeSystem) / runs) + 1;
+      final int featuresPerType = ((i * maxFeaturesPerType) / runs) + 1;
 
-      System.out.printf("Run %d: TS: %d  passes: %d  imports-per-pass:%d%n", i, tsCount, passes,
-              importsPerPass);
+      System.out.printf(
+              "Run %d: TS: %d  types-per-TS: %d  features-per-type: %d  passes: %d  imports-per-pass:%d%n",
+              i + 1, tsCount, typesPerTypeSystem, featuresPerType, passes, importsPerPass);
 
-      List<Entry<File, Set<TypeDescription>>> data = prepareComplexImportScenario(tsCount, passes,
-              importsPerPass);
+      List<Entry<File, Set<TypeDescription>>> data = prepareComplexImportScenario(tsCount,
+              typesPerTypeSystem, featuresPerType, passes, importsPerPass);
 
+      long totalDuration = 0;
       ResourceManager resMgr = newDefaultResourceManager();
       for (Entry<File, Set<TypeDescription>> e : data) {
         TypeSystemDescription tsd = getXMLParser()
                 .parseTypeSystemDescription(new XMLInputSource(e.getKey()));
+
+        long startTime = System.currentTimeMillis();
         tsd.resolveImports(resMgr);
+        long duration = System.currentTimeMillis() - startTime;
+        totalDuration += duration;
 
         String[] expectedUniqueTypeNames = e.getValue().stream() //
                 .map(TypeDescription::getName) //
@@ -241,6 +251,9 @@ public class TypeSystemDescription_implTest {
                 .distinct() //
                 .toArray(String[]::new);
 
+        System.out.printf("Types: %d  unique types: %d (%dms)%n", tsd.getTypes().length,
+                actualUniqueTypeNames.length, duration);
+
         assertThat(actualUniqueTypeNames) //
                 .as("Mismatch in %s", e.getKey()) //
                 .containsExactly(expectedUniqueTypeNames);
@@ -248,11 +261,14 @@ public class TypeSystemDescription_implTest {
                 .as("Mismatch in %s", e.getKey()) //
                 .containsAll(e.getValue());
       }
+
+      System.out.printf("Total time spent resolving imports: %dms%n", totalDuration);
     }
   }
 
   private List<Entry<File, Set<TypeDescription>>> prepareComplexImportScenario(int tsCount,
-          int passes, int importsPerPass) throws IOException, SAXException {
+          int typesPerTypeSystem, int featuresPerType, int passes, int importsPerPass)
+          throws IOException, SAXException {
     File workDir = new File(
             "target/test-output/TypeSystemDescription_implTest/thatConcurrentImportResolvingWorks");
     FileUtils.deleteQuietly(workDir);
@@ -264,10 +280,15 @@ public class TypeSystemDescription_implTest {
     Map<File, Set<File>> transitiveImportsByFile = new LinkedHashMap<>();
     for (int i = 0; i < tsCount; i++) {
       TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
-      TypeDescription type = tsd.addType("Type" + i, "", CAS.TYPE_NAME_TOP);
+      for (int t = 0; t < typesPerTypeSystem; t++) {
+        TypeDescription type = tsd.addType("Type" + i + "_" + t, "", CAS.TYPE_NAME_TOP);
+        for (int f = 0; f < featuresPerType; f++) {
+          type.addFeature("Feature_" + i + "_" + t + "_" + f, "", CAS.TYPE_NAME_INTEGER);
+        }
+      }
       File tsdFile = new File(workDir, "tsd" + i + ".xml");
       allTypeSystems.put(tsdFile, tsd);
-      filesWithTransitiveTypes.put(tsdFile, new LinkedHashSet<>(asList(type)));
+      filesWithTransitiveTypes.put(tsdFile, new LinkedHashSet<>(asList(tsd.getTypes())));
       transitiveImportsByFile.put(tsdFile, new LinkedHashSet<>());
     }
 

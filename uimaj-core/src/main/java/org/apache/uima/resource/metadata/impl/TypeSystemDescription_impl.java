@@ -267,7 +267,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    *           if an import could not be processed.
    */
   private static void resolveImports(TypeSystemDescription aDesc, Set<String> aAlreadyVisited,
-          List<TypeDescription> aAllImportedTypes, Deque<String> aStack,
+          Collection<TypeDescription> aAllImportedTypes, Deque<String> aStack,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
     if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
@@ -282,10 +282,14 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    List<TypeDescription> resolvedTypes = new ArrayList<>(asList(aDesc.getTypes()));
+    Set<TypeDescription> resolvedTypes = new HashSet<>(asList(aDesc.getTypes()));
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
+      if (aDesc.getSourceUrlString().equals(tsImport.getLocation())) {
+        continue;
+      }
+
       URL absUrl = tsImport.findAbsoluteUrl(aResourceManager);
       String absUrlString = absUrl.toString();
 
