@@ -271,6 +271,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
           ResourceManager aResourceManager) throws InvalidXMLException {
 
     if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
+      aAllImportedTypes.addAll(asList(aDesc.getTypes()));
       return;
     }
 
@@ -286,6 +287,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
+      // Skip self-imports
       if (aDesc.getSourceUrlString().equals(tsImport.getLocation())) {
         continue;
       }
@@ -293,6 +295,8 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
       URL absUrl = tsImport.findAbsoluteUrl(aResourceManager);
       String absUrlString = absUrl.toString();
 
+      // Loop cancellation - skip imports of type systems that lie on the path from the
+      // entry point to the current type system
       if (aStack.contains(absUrlString)) {
         unresolvedImports.add(tsImport);
         continue;

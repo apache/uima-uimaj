@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -51,6 +53,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -202,6 +205,43 @@ public class TypeSystemDescription_implTest {
     TypeSystemDescription typeSystem3TSD = (TypeSystemDescription) cache.get(typeSystem3);
     assertThat(typeSystem3TSD.getTypes()).hasSize(1);
     assertThat(typeSystem3TSD.getImports()).hasSize(0);
+  }
+
+  @Test
+  public void thatComplexImportScenario1Works() throws Exception {
+
+    List<String> entryPoints = asList("tsd0.xml", "tsd5.xml");
+
+    List<String> files = new ArrayList<>();
+    try (Stream<Path> fs = Files.list(
+            Paths.get("src/test/resources/TypeSystemDescriptionImplTest/complexImportScenario1"))) {
+      fs.filter(f -> entryPoints.contains(f.getFileName().toString())) //
+              .map(Object::toString).sorted().forEach(files::add);
+    }
+
+    Map<String, List<String>> expectedResults = new LinkedHashMap<>();
+    expectedResults.put("tsd0.xml", //
+            asList("Type0_0", "Type1_0", "Type2_0", "Type3_0", "Type4_0", "Type5_0", "Type6_0"));
+    expectedResults.put("tsd5.xml", //
+            asList("Type1_0", "Type2_0", "Type3_0", "Type5_0", "Type6_0"));
+
+    Map<String, List<String>> actualResults = new LinkedHashMap<>();
+
+    ResourceManager resMgr = new ResourceManager_impl();
+    for (String f : files) {
+      TypeSystemDescription tsd = getXMLParser()
+              .parseTypeSystemDescription(new XMLInputSource(new File(f)));
+      tsd.resolveImports(resMgr);
+      String[] actualUniqueTypeNames = Stream.of(tsd.getTypes()) //
+              .map(TypeDescription::getName) //
+              .sorted() //
+              .distinct() //
+              .toArray(String[]::new);
+      System.out.printf("%s %s%n", f, String.join(", ", actualUniqueTypeNames));
+      actualResults.put(Paths.get(f).getFileName().toString(), asList(actualUniqueTypeNames));
+    }
+
+    assertThat(actualResults).containsExactlyEntriesOf(expectedResults);
   }
 
   @Test
