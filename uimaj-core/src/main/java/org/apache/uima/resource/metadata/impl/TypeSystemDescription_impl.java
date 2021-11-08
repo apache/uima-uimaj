@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource.metadata.impl;
 
-import static java.util.Arrays.asList;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 
 import java.io.IOException;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -233,9 +233,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
-
     // TODO what to do with aAlreadyImportedTypeSystemURLs???
-    List<TypeDescription> result = new ArrayList<>();
 
     if (getImports() == null || getImports().length == 0) {
       return;
@@ -243,10 +241,11 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
     Deque<String> typeSystemStack = new LinkedList<>();
     typeSystemStack.push(getSourceUrlString());
-    resolveImports(this, new HashSet<>(), result, typeSystemStack, aResourceManager);
+    Map<String, TypeDescription> resolvedTypes = new LinkedHashMap<>();
+    resolveImports(this, new HashSet<>(), resolvedTypes, typeSystemStack, aResourceManager);
     typeSystemStack.pop();
 
-    setTypes(result.toArray(new TypeDescription_impl[result.size()]));
+    setTypes(resolvedTypes.values().toArray(new TypeDescription_impl[resolvedTypes.size()]));
     setImports(Import.EMPTY_IMPORTS);
   }
 
@@ -267,23 +266,24 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
    *           if an import could not be processed.
    */
   private static void resolveImports(TypeSystemDescription aDesc, Set<String> aAlreadyVisited,
-          Collection<TypeDescription> aAllImportedTypes, Deque<String> aStack,
+          Map<String, TypeDescription> aAllImportedTypes, Deque<String> aStack,
           ResourceManager aResourceManager) throws InvalidXMLException {
 
     if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
-      aAllImportedTypes.addAll(asList(aDesc.getTypes()));
+      collectAllTypes(aDesc, aAllImportedTypes);
       return;
     }
 
     Import[] imports = aDesc.getImports();
 
     if (imports.length == 0) {
-      aAllImportedTypes.addAll(asList(aDesc.getTypes()));
+      collectAllTypes(aDesc, aAllImportedTypes);
       return;
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    Collection<TypeDescription> resolvedTypes = new ArrayList<>(asList(aDesc.getTypes()));
+    Map<String, TypeDescription> resolvedTypes = new LinkedHashMap<>();
+    collectAllTypes(aDesc, resolvedTypes);
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
@@ -328,14 +328,30 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     // when the type system is instantiated. Also, by not inlining the types and not removing the
     // imports, we do not run into problems with eternally growing the list of types.
     // An alternative to inlining could be to only store distinct types during inlining.
+    boolean iReallyReallyWantToInlineTypesAndRiskStrongAccumulation = true;
 
     // update own resolved status
-    aDesc.setTypes(resolvedTypes.toArray(new TypeDescription_impl[resolvedTypes.size()]));
-    aDesc.setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
+    if (iReallyReallyWantToInlineTypesAndRiskStrongAccumulation) {
+      aDesc.setTypes(
+              resolvedTypes.values().toArray(new TypeDescription_impl[resolvedTypes.size()]));
+      aDesc.setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
+    }
 
-    aAllImportedTypes.addAll(resolvedTypes);
+    aAllImportedTypes.putAll(resolvedTypes);
 
     aAlreadyVisited.add(aDesc.getSourceUrlString());
+  }
+
+  private static void collectAllTypes(TypeSystemDescription aDesc,
+          Map<String, TypeDescription> aAllImportedTypes) {
+    TypeDescription[] types = aDesc.getTypes();
+    for (int i = 0; i < types.length; i++) {
+      aAllImportedTypes.put(typeKey(types[i].getSourceUrlString(), i, types[i]), types[i]);
+    }
+  }
+
+  private static String typeKey(String aUrl, int aIndex, TypeDescription aType) {
+    return aUrl + "#" + aType.getName() + "@" + aIndex;
   }
 
   private static TypeSystemDescription getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
