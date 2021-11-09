@@ -26,16 +26,12 @@ import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
-import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,8 +55,6 @@ import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
@@ -90,82 +84,8 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void testResolveImports() throws Exception {
-    File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
-    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
-
-    assertThat(ts.getTypes()).as("Type count before resolving the descriptor").hasSize(6);
-
-    assertThatThrownBy(() -> ts.resolveImports()).isInstanceOf(InvalidXMLException.class);
-    assertThat(ts.getTypes()).as(
-            "Type count after resolving failed should be same as before / no side effect on exception")
-            .hasSize(6);
-
-    // set data path correctly and it should work
-    ResourceManager resMgr = newDefaultResourceManager();
-    resMgr.setDataPath(
-            JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
-    ts.resolveImports(resMgr);
-
-    assertThat(ts.getTypes()) //
-            .as("Types after resolving the descriptor.") //
-            .extracting( //
-                    t -> Paths.get(URI.create(t.getSourceUrlString())).getFileName().toString(),
-                    TypeDescription::getName) //
-            .containsExactlyInAnyOrder( //
-                    tuple("TestTypeSystem.xml", "NamedEntity"), //
-                    tuple("TestTypeSystem.xml", "Person"), //
-                    tuple("TestTypeSystem.xml", "Place"), //
-                    tuple("TestTypeSystem.xml", "DocumentStructure"), //
-                    tuple("TestTypeSystem.xml", "Paragraph"), //
-                    tuple("TestTypeSystem.xml", "Sentence"), //
-                    tuple("TypeSystemImportedByName.xml", "TestType1"), //
-                    tuple("TypeSystemImportedByName.xml", "NamedEntity"), //
-                    tuple("TypeSystemImportedByName.xml", "TestType2"), //
-                    tuple("TypeSystemImportedByLocation.xml", "TestType1"), //
-                    tuple("TypeSystemImportedByLocation.xml", "TestType3"), //
-                    tuple("TypeSystemImportedFromDataPath.xml", "TestType4"), //
-                    tuple("TypeSystemImportedFromDataPath.xml", "TestType3"));
-    List<String> uniqueTypeNames = Stream.of(ts.getTypes()).map(TypeDescription::getName).distinct()
-            .sorted().collect(toList());
-    assertThat(uniqueTypeNames) //
-            .as("Unique type names after resolving the descriptor") //
-            .containsExactly("DocumentStructure", "NamedEntity", "Paragraph", "Person", "Place",
-                    "Sentence", "TestType1", "TestType2", "TestType3", "TestType4");
-    TypeSystemDescription mergedTsd = mergeTypeSystems(asList(ts));
-    assertThat(Stream.of(mergedTsd.getTypes()).map(TypeDescription::getName).sorted()
-            .collect(toList())).as("Type count after merging all the types ").hasSize(10);
-
-    String typeSystemImportedByLocation = new File(
-            "target/test-classes/TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml")
-                    .toURI().toURL().toString();
-    String typeSystemImportedFromDataPath = new File(
-            "target/test-classes/TypeSystemDescriptionImplTest/dataPathDir/TypeSystemImportedFromDataPath.xml")
-                    .toURI().toURL().toString();
-    String typeSystemImportedByName = new File(
-            "target/test-classes/org/apache/uima/resource/metadata/impl/TypeSystemImportedByName.xml")
-                    .toURI().toURL().toString();
-
-    Map<String, XMLizable> cache = resMgr.getImportCache();
-    assertThat(cache).containsOnlyKeys(typeSystemImportedByLocation, typeSystemImportedByName,
-            typeSystemImportedFromDataPath);
-
-    TypeSystemDescription typeSystemImportedByLocationTSD = (TypeSystemDescription) cache
-            .get(typeSystemImportedByLocation);
-    assertThat(typeSystemImportedByLocationTSD.getTypes()).hasSize(2);
-
-    TypeSystemDescription typeSystemImportedFromDataPathTSD = (TypeSystemDescription) cache
-            .get(typeSystemImportedFromDataPath);
-    assertThat(typeSystemImportedFromDataPathTSD.getTypes()).hasSize(2);
-
-    TypeSystemDescription typeSystemImportedByNameTSD = (TypeSystemDescription) cache
-            .get(typeSystemImportedByName);
-    assertThat(typeSystemImportedByNameTSD.getTypes()).hasSize(3);
-  }
-
-  @Test
   public void testTransitiveResolveImports() throws Exception {
-    File descriptor = getFile("TypeSystemDescriptionImplTest/Transitive-with-3-nodes-1.xml");
+    File descriptor = getFile("ImportResolverTest/Transitive-with-3-nodes-1.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
     assertThat(ts.getTypes()).as("Type count before resolving the descriptor").hasSize(1);
@@ -200,7 +120,7 @@ public class ImportResolverTest {
 
     List<String> files = new ArrayList<>();
     try (Stream<Path> fs = Files.list(
-            Paths.get("src/test/resources/TypeSystemDescriptionImplTest/complexImportScenario1"))) {
+            Paths.get("src/test/resources/ImportResolverTest/complexImportScenario1"))) {
       fs.filter(f -> entryPoints.contains(f.getFileName().toString())) //
               .map(Object::toString).sorted().forEach(files::add);
     }
@@ -415,7 +335,7 @@ public class ImportResolverTest {
 
   @Test
   public void thatCircularImportsDoNotCrash() throws Exception {
-    File descriptor = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-1.xml");
+    File descriptor = getFile("ImportResolverTest/Loop-with-2-nodes-1.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
     ts.resolveImports();
     assertEquals(2, ts.getTypes().length);
@@ -424,8 +344,8 @@ public class ImportResolverTest {
   @Test
   public void thatLoopWithTwoNodesDoNotConfuseResourceManagerCache() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
-    File circular1 = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-1.xml");
-    File circular2 = getFile("TypeSystemDescriptionImplTest/Loop-with-2-nodes-2.xml");
+    File circular1 = getFile("ImportResolverTest/Loop-with-2-nodes-1.xml");
+    File circular2 = getFile("ImportResolverTest/Loop-with-2-nodes-2.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(circular1));
     ts.resolveImports(resMgr);
     assertThat(ts.getTypes()).hasSize(2);
@@ -442,9 +362,9 @@ public class ImportResolverTest {
   @Test
   public void thatLoopWithThreeNodesDoNotConfuseResourceManagerCache() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
-    File circular1 = getFile("TypeSystemDescriptionImplTest/Loop-with-3-nodes-1.xml");
-    File circular2 = getFile("TypeSystemDescriptionImplTest/Loop-with-3-nodes-2.xml");
-    File circular3 = getFile("TypeSystemDescriptionImplTest/Loop-with-3-nodes-3.xml");
+    File circular1 = getFile("ImportResolverTest/Loop-with-3-nodes-1.xml");
+    File circular2 = getFile("ImportResolverTest/Loop-with-3-nodes-2.xml");
+    File circular3 = getFile("ImportResolverTest/Loop-with-3-nodes-3.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(circular1));
     ts.resolveImports(resMgr);
     assertThat(ts.getTypes()).hasSize(3);
