@@ -19,32 +19,16 @@
 
 package org.apache.uima.resource.metadata.impl;
 
-import static org.apache.uima.UIMAFramework.getXMLParser;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
-import org.apache.uima.util.XMLizable;
 
 /**
  * Reference implementation of {@link TypeSystemDescription}.
@@ -220,167 +204,22 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   // allow these calls to be done multiple times on this same object, in different threads
   @Override
   public synchronized void resolveImports() throws InvalidXMLException {
-    resolveImports(UIMAFramework.newDefaultResourceManager());
+    resolveImports(null, UIMAFramework.newDefaultResourceManager());
   }
 
   @Override
   public synchronized void resolveImports(ResourceManager aResourceManager)
           throws InvalidXMLException {
-    resolveImports(new TreeSet<>(), aResourceManager);
+    resolveImports(null, aResourceManager);
   }
 
   @Deprecated
   @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
-    // TODO what to do with aAlreadyImportedTypeSystemURLs???
-
-    if (getImports() == null || getImports().length == 0) {
-      return;
-    }
-
-    Deque<String> typeSystemStack = new LinkedList<>();
-    typeSystemStack.push(getSourceUrlString());
-    Map<TypeKey, TypeDescription> resolvedTypes = new LinkedHashMap<>();
-    resolveImports(this, new HashSet<>(), resolvedTypes, typeSystemStack, aResourceManager);
-    typeSystemStack.pop();
-
-    setTypes(resolvedTypes.values().toArray(new TypeDescription_impl[resolvedTypes.size()]));
-    setImports(Import.EMPTY_IMPORTS);
-  }
-
-  /**
-   * Resolves the imports in the current type system description. If there are circular dependencies
-   * between the type systems, the those imports involved in the circular dependency will remain
-   * unresolved.
-   * 
-   * @param aAllImportedTypes
-   *          all the types that are found in the (transitively) imported type systems are collected
-   *          in this list.
-   * @param aStack
-   *          the path through the type system import graph that was walked to reach the current
-   *          type system.
-   * @param aResourceManager
-   *          the resource manager used to load the imported type systems.
-   * @throws InvalidXMLException
-   *           if an import could not be processed.
-   */
-  private static void resolveImports(TypeSystemDescription aDesc, Set<String> aAlreadyVisited,
-          Map<TypeKey, TypeDescription> aAllImportedTypes, Deque<String> aStack,
-          ResourceManager aResourceManager) throws InvalidXMLException {
-
-    if (aAlreadyVisited.contains(aDesc.getSourceUrlString())) {
-      collectAllTypes(aDesc, aAllImportedTypes);
-      return;
-    }
-
-    Import[] imports = aDesc.getImports();
-
-    if (imports.length == 0) {
-      collectAllTypes(aDesc, aAllImportedTypes);
-      return;
-    }
-
-    List<Import> unresolvedImports = new ArrayList<>();
-    collectAllTypes(aDesc, aAllImportedTypes);
-
-    Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
-    for (Import tsImport : imports) {
-      // Skip self-imports
-      if (aDesc.getSourceUrlString().equals(tsImport.getLocation())) {
-        continue;
-      }
-
-      URL absUrl = tsImport.findAbsoluteUrl(aResourceManager);
-      String absUrlString = absUrl.toString();
-
-      // Loop cancellation - skip imports of type systems that lie on the path from the
-      // entry point to the current type system
-      if (aStack.contains(absUrlString)) {
-        unresolvedImports.add(tsImport);
-        continue;
-      }
-
-      aStack.push(absUrlString);
-
-      synchronized (importCache) {
-        TypeSystemDescription importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
-                importCache);
-
-        resolveImports(importedTS, aAlreadyVisited, aAllImportedTypes, aStack, aResourceManager);
-
-        if (importedTS.getImports().length > 0) {
-          // TODO: update importUrlsCache? here or at all?
-          unresolvedImports.add(tsImport);
-        }
-      }
-
-      aStack.pop();
-    }
-
-    aAlreadyVisited.add(aDesc.getSourceUrlString());
-  }
-
-  private static class TypeKey {
-    private final TypeSystemDescription typeSystem;
-    private final TypeDescription type;
-
-    public TypeKey(TypeSystemDescription aTypeSystem, TypeDescription aType) {
-      typeSystem = aTypeSystem;
-      type = aType;
-    }
-
-    @Override
-    public int hashCode() {
-      return System.identityHashCode(typeSystem) + System.identityHashCode(type);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
-      TypeKey other = (TypeKey) obj;
-      return type == other.type && typeSystem == other.typeSystem;
-    }
-  }
-
-  private static void collectAllTypes(TypeSystemDescription aDesc,
-          Map<TypeKey, TypeDescription> aAllImportedTypes) {
-    TypeDescription[] types = aDesc.getTypes();
-    for (int i = 0; i < types.length; i++) {
-      aAllImportedTypes.put(new TypeKey(aDesc, types[i]), types[i]);
-    }
-  }
-
-  private static TypeSystemDescription getOrLoadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
-          Map<String, XMLizable> aImportCache) throws InvalidXMLException {
-    XMLizable cachedObject = aImportCache.get(aAbsUrl.toString());
-    if (cachedObject instanceof TypeSystemDescription) {
-      return (TypeSystemDescription) cachedObject;
-    }
-
-    return loadTypeSystemDescription(aTsImport, aAbsUrl, aImportCache);
-  }
-
-  private static TypeSystemDescription loadTypeSystemDescription(Import aTsImport, URL aAbsUrl,
-          Map<String, XMLizable> aImportCache) throws InvalidXMLException {
-    String urlString = aAbsUrl.toString();
-    try {
-      XMLInputSource input = new XMLInputSource(aAbsUrl);
-      TypeSystemDescription description = getXMLParser().parseTypeSystemDescription(input);
-      aImportCache.put(urlString, description);
-      return description;
-    } catch (IOException e) {
-      throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-              new Object[] { aAbsUrl, aTsImport.getLocation() }, e);
-    }
+    ImportResolver<TypeSystemDescription, TypeDescription> resolver = new ImportResolver<>(
+            TypeSystemDescriptionImportResolverAdapter::new);
+    resolver.resolveImports(this, aAlreadyImportedTypeSystemURLs, aResourceManager);
   }
 
   @Override
