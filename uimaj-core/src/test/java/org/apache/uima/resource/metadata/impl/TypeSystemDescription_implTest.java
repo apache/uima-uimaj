@@ -229,8 +229,8 @@ public class TypeSystemDescription_implTest {
     assertThat(cache).containsOnlyKeys(typeSystem2, typeSystem3);
 
     TypeSystemDescription typeSystem2TSD = (TypeSystemDescription) cache.get(typeSystem2);
-    assertThat(typeSystem2TSD.getTypes()).hasSize(2);
-    assertThat(typeSystem2TSD.getImports()).hasSize(0);
+    assertThat(typeSystem2TSD.getTypes()).hasSize(1);
+    assertThat(typeSystem2TSD.getImports()).hasSize(1);
 
     TypeSystemDescription typeSystem3TSD = (TypeSystemDescription) cache.get(typeSystem3);
     assertThat(typeSystem3TSD.getTypes()).hasSize(1);
@@ -479,7 +479,7 @@ public class TypeSystemDescription_implTest {
     TypeSystemDescription cachedCircular3Tsd = (TypeSystemDescription) cache
             .get(circular3.toURI().toURL().toString());
     assertThat(ts.getTypes()).hasSize(3);
-    assertThat(cachedCircular2Tsd.getTypes()).hasSize(2);
+    assertThat(cachedCircular2Tsd.getTypes()).hasSize(1);
     assertThat(cachedCircular3Tsd.getTypes()).hasSize(1);
   }
 

@@ -282,8 +282,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     }
 
     List<Import> unresolvedImports = new ArrayList<>();
-    Map<TypeKey, TypeDescription> resolvedTypes = new LinkedHashMap<>();
-    collectAllTypes(aDesc, resolvedTypes);
+    collectAllTypes(aDesc, aAllImportedTypes);
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (Import tsImport : imports) {
@@ -308,7 +307,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
         TypeSystemDescription importedTS = getOrLoadTypeSystemDescription(tsImport, absUrl,
                 importCache);
 
-        resolveImports(importedTS, aAlreadyVisited, resolvedTypes, aStack, aResourceManager);
+        resolveImports(importedTS, aAlreadyVisited, aAllImportedTypes, aStack, aResourceManager);
 
         if (importedTS.getImports().length > 0) {
           // TODO: update importUrlsCache? here or at all?
@@ -318,26 +317,6 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
 
       aStack.pop();
     }
-
-    // REC: If a descriptor contains unresolved imports (i.e. it is part of a loop), then
-    // we will repeatedly come here and repeatedly add types to the current descriptor. For every
-    // resolve call, the list of types will grow. I think that actually not inlining the types
-    // is the proper solution here. Always performing the graph walk and collecting a minimal list
-    // of types seems way better than inlining types and potentially ending up with a *very* large
-    // list of types which then needs to be boiled down again by the type system merging mechanism
-    // when the type system is instantiated. Also, by not inlining the types and not removing the
-    // imports, we do not run into problems with eternally growing the list of types.
-    // An alternative to inlining could be to only store distinct types during inlining.
-    boolean iReallyReallyWantToInlineTypesAndRiskStrongAccumulation = true;
-
-    // update own resolved status
-    if (iReallyReallyWantToInlineTypesAndRiskStrongAccumulation) {
-      aDesc.setTypes(
-              resolvedTypes.values().toArray(new TypeDescription_impl[resolvedTypes.size()]));
-      aDesc.setImports(unresolvedImports.toArray(new Import[unresolvedImports.size()]));
-    }
-
-    aAllImportedTypes.putAll(resolvedTypes);
 
     aAlreadyVisited.add(aDesc.getSourceUrlString());
   }
