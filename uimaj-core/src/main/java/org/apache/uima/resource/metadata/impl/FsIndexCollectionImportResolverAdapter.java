@@ -25,11 +25,11 @@ import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
-import org.apache.uima.resource.metadata.impl.ImportResolver.DescriptionAdapter;
+import org.apache.uima.resource.metadata.impl.ImportResolver.DescriptorAdapter;
 import org.apache.uima.resource.metadata.impl.ImportResolver.ParserFunction;
 
 class FsIndexCollectionImportResolverAdapter
-        implements DescriptionAdapter<FsIndexCollection, FsIndexDescription> {
+        implements DescriptorAdapter<FsIndexCollection, FsIndexDescription> {
   private final FsIndexCollection delegate;
 
   public FsIndexCollectionImportResolverAdapter(FsIndexCollection aDelegate) {

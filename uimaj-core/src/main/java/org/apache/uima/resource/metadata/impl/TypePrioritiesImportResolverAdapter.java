@@ -25,11 +25,11 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
-import org.apache.uima.resource.metadata.impl.ImportResolver.DescriptionAdapter;
+import org.apache.uima.resource.metadata.impl.ImportResolver.DescriptorAdapter;
 import org.apache.uima.resource.metadata.impl.ImportResolver.ParserFunction;
 
 class TypePrioritiesImportResolverAdapter
-        implements DescriptionAdapter<TypePriorities, TypePriorityList> {
+        implements DescriptorAdapter<TypePriorities, TypePriorityList> {
   private final TypePriorities delegate;
 
   public TypePrioritiesImportResolverAdapter(TypePriorities aDelegate) {

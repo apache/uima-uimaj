@@ -36,17 +36,34 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
 
-public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDataObject> {
+class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends MetaDataObject> {
 
-  private Function<D, DescriptionAdapter<D, COLLECTIBLE>> adapterFactory;
+  private Function<DESCRIPTOR, DescriptorAdapter<DESCRIPTOR, COLLECTIBLE>> adapterFactory;
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  ImportResolver(Function<D, DescriptionAdapter> aAdapterFactory) {
+  ImportResolver(Function<DESCRIPTOR, DescriptorAdapter> aAdapterFactory) {
     adapterFactory = (Function) aAdapterFactory;
+  }
+
+  /**
+   * Resolves the imports in the given descriptor.
+   * 
+   * @param aDesc
+   *          the descriptor in which to resolve the imports.
+   * @param aResourceManager
+   *          the resource manager used to load the imported descriptions. If this argument is
+   *          {@code null} then a new default resource manager is created.
+   * @throws InvalidXMLException
+   *           if an import could not be processed.
+   */
+  void resolveImports(DESCRIPTOR aDesc, ResourceManager aResourceManager)
+          throws InvalidXMLException {
+    resolveImports(aDesc, null, aResourceManager);
   }
 
   /**
@@ -62,11 +79,14 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
    *          {@code null} then a new default resource manager is created.
    * @throws InvalidXMLException
    *           if an import could not be processed.
+   * @deprecated Exists only to support a deprecated methods like
+   *             {@link TypeSystemDescription#resolveImports(Collection, ResourceManager)}.
+   *             Scheduled for removal in UIMA 4.0.
    */
-  public void resolveImports(D aDesc,
-          Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
-          throws InvalidXMLException {
-    DescriptionAdapter<D, COLLECTIBLE> wrapper = adapterFactory.apply(aDesc);
+  @Deprecated
+  void resolveImports(DESCRIPTOR aDesc, Collection<String> aAlreadyImportedURLs,
+          ResourceManager aResourceManager) throws InvalidXMLException {
+    DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> wrapper = adapterFactory.apply(aDesc);
 
     if (wrapper.getImports() == null || wrapper.getImports().length == 0) {
       return;
@@ -109,9 +129,9 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
    * @throws InvalidXMLException
    *           if an import could not be processed.
    */
-  private void resolveImports(DescriptionAdapter<D, COLLECTIBLE> aWrapper, Set<String> aAlreadyVisited,
-          Map<Key, COLLECTIBLE> aAllCollectedObjects, Deque<String> aStack,
-          ResourceManager aResourceManager) throws InvalidXMLException {
+  private void resolveImports(DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> aWrapper,
+          Set<String> aAlreadyVisited, Map<Key, COLLECTIBLE> aAllCollectedObjects,
+          Deque<String> aStack, ResourceManager aResourceManager) throws InvalidXMLException {
 
     if (aAlreadyVisited.contains(aWrapper.unwrap().getSourceUrlString())) {
       collectAll(aWrapper, aAllCollectedObjects);
@@ -154,14 +174,13 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
       aStack.push(absUrlString);
 
       synchronized (importCache) {
-        DescriptionAdapter<D, COLLECTIBLE> importedTSAdapter = adapterFactory
+        DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> importedTSAdapter = adapterFactory
                 .apply(getOrLoadDescription(imp, absUrl, importCache, aWrapper));
 
         resolveImports(importedTSAdapter, aAlreadyVisited, aAllCollectedObjects, aStack,
                 aResourceManager);
 
         if (importedTSAdapter.getImports().length > 0) {
-          // TODO: update importUrlsCache? here or at all?
           unresolvedImports.add(imp);
         }
       }
@@ -172,17 +191,18 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
     aAlreadyVisited.add(aWrapper.unwrap().getSourceUrlString());
   }
 
-  private void collectAll(DescriptionAdapter<D, COLLECTIBLE> aWrapper, Map<Key, COLLECTIBLE> aAllCollectibleObjects) {
+  private void collectAll(DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> aWrapper,
+          Map<Key, COLLECTIBLE> aAllCollectibleObjects) {
     COLLECTIBLE[] collectibles = aWrapper.getCollectibles();
     for (int i = 0; i < collectibles.length; i++) {
       aAllCollectibleObjects.put(new Key(collectibles[i]), collectibles[i]);
     }
   }
 
-  private D getOrLoadDescription(Import aImport, URL aAbsUrl, Map<String, XMLizable> aImportCache,
-          DescriptionAdapter<D, COLLECTIBLE> aWrapper)
+  private DESCRIPTOR getOrLoadDescription(Import aImport, URL aAbsUrl,
+          Map<String, XMLizable> aImportCache, DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> aWrapper)
           throws InvalidXMLException {
-    Class<D> descClass = aWrapper.getDescriptorClass();
+    Class<DESCRIPTOR> descClass = aWrapper.getDescriptorClass();
 
     XMLizable cachedDescriptor = aImportCache.get(aAbsUrl.toString());
     if (descClass.isInstance(cachedDescriptor)) {
@@ -192,13 +212,13 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
     return loadDescriptor(aImport, aAbsUrl, aImportCache, aWrapper.getParser());
   }
 
-  private D loadDescriptor(Import aImport, URL aAbsUrl, Map<String, XMLizable> aImportCache,
-          ParserFunction<D> aParserFunction)
+  private DESCRIPTOR loadDescriptor(Import aImport, URL aAbsUrl,
+          Map<String, XMLizable> aImportCache, ParserFunction<DESCRIPTOR> aParserFunction)
           throws InvalidXMLException {
     String urlString = aAbsUrl.toString();
     try {
       XMLInputSource input = new XMLInputSource(aAbsUrl);
-      D descriptor = aParserFunction.apply(input);
+      DESCRIPTOR descriptor = aParserFunction.apply(input);
       aImportCache.put(urlString, descriptor);
       return descriptor;
     } catch (IOException e) {
@@ -207,7 +227,7 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
     }
   }
 
-  interface DescriptionAdapter<DESCRIPTOR, COLLECTIBLE> {
+  interface DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> {
     Import[] getImports();
 
     void clearImports();
@@ -226,8 +246,8 @@ public class ImportResolver<D extends MetaDataObject, COLLECTIBLE extends MetaDa
   }
 
   @FunctionalInterface
-  interface ParserFunction<T> {
-    T apply(XMLInputSource aArg0) throws InvalidXMLException;
+  interface ParserFunction<DESCRIPTOR> {
+    DESCRIPTOR apply(XMLInputSource aArg0) throws InvalidXMLException;
   }
 
   private class Key {

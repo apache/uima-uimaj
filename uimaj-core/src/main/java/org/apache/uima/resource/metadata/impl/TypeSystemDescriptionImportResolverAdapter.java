@@ -25,11 +25,11 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.resource.metadata.impl.ImportResolver.DescriptionAdapter;
+import org.apache.uima.resource.metadata.impl.ImportResolver.DescriptorAdapter;
 import org.apache.uima.resource.metadata.impl.ImportResolver.ParserFunction;
 
 class TypeSystemDescriptionImportResolverAdapter
-        implements DescriptionAdapter<TypeSystemDescription, TypeDescription> {
+        implements DescriptorAdapter<TypeSystemDescription, TypeDescription> {
   private final TypeSystemDescription delegate;
 
   public TypeSystemDescriptionImportResolverAdapter(TypeSystemDescription aDelegate) {

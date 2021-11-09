@@ -847,6 +847,14 @@ public class ResourceManager_impl implements ResourceManager {
     return importCache;
   }
 
+  /**
+   * Was used during import resolving until UIMA 3.2.0. Is no longer used since since import
+   * resolving has been migrated to the
+   * {@code org.apache.uima.resource.metadata.impl.ImportResolver}.
+   * 
+   * @deprecated No longer used. Scheduled for removal in UIMA 4.0.
+   */
+  @Deprecated
   public Map<String, Set<String>> getImportUrlsCache() {
     return importUrlsCache;
   }
