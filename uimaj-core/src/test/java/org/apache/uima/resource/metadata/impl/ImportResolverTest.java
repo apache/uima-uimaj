@@ -435,16 +435,49 @@ public class ImportResolverTest {
 
   @Test
   public void thatResolveImportsDoesNothingWhenThereAreNoImports() throws Exception {
-    // calling resolveImports when there are none should do nothing
     File descriptor = getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
 
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
-    assertThat(ts.getTypes()).hasSize(2);
+    TypeDescription[] preExistingTypes = ts.getTypes();
+    assertThat(preExistingTypes).hasSize(2);
 
     ts.resolveImports();
 
-    assertThat(ts.getTypes()).hasSize(2);
+    assertThat(ts.getTypes()) //
+            .as("Calling resolveImports when there are none should do nothing") //
+            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b)) //
+            .containsExactly(preExistingTypes);
+  }
+
+  @Test
+  public void thatTypeDescriptionsOriginallyContainedAreNotDefensivelyCloned() throws Exception {
+    File descriptor = getFile("ImportResolverTest/Loop-with-2-nodes-1.xml");
+
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+
+    TypeDescription[] preExistingTypes = ts.getTypes();
+    assertThat(preExistingTypes).hasSize(1);
+
+    ts.resolveImports();
+
+    assertThat(ts.getTypes()) //
+            .as("The pre-existing type descriptions should not have been cloned") //
+            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b)) //
+            .contains(preExistingTypes);
+  }
+
+  @Test
+  public void thatSelfImportWorks() throws Exception {
+    File descriptor = getFile("ImportResolverTest/SelfImport.xml");
+
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+
+    assertThat(ts.getTypes()).hasSize(1);
+
+    ts.resolveImports();
+
+    assertThat(ts.getTypes()).hasSize(1);
   }
 
   @Test

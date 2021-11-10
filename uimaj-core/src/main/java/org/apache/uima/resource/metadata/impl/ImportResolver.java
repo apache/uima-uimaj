@@ -18,14 +18,17 @@
  */
 package org.apache.uima.resource.metadata.impl;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -94,6 +97,9 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       return;
     }
 
+    Set<COLLECTIBLE> originalTypes = Collections.newSetFromMap(new IdentityHashMap<>());
+    originalTypes.addAll(asList(wrapper.getCollectibles()));
+
     ResourceManager resourceManager = aResourceManager;
     if (aResourceManager == null) {
       resourceManager = UIMAFramework.newDefaultResourceManager();
@@ -116,9 +122,8 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
     // Defensive copy to prevent cache pollution in case the caller makes changes to the by
     // casting collectibles to their mutable implementation and making changes to them.
     wrapper.setCollectibles(collectedObjects.values().stream() //
-            .map(c -> (COLLECTIBLE) c.clone()) //
+            .map(c -> originalTypes.contains(c) ? c : (COLLECTIBLE) c.clone()) //
             .collect(toList()));
-    // wrapper.setCollectibles(collectedObjects.values());
     wrapper.clearImports();
   }
 
