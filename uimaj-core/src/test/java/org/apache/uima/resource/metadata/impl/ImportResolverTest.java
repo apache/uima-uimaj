@@ -257,6 +257,9 @@ public class ImportResolverTest {
 
     log.info("Average import resolving time in {} type systems: {}ms", typeSystemsProcessed,
             totalDurationAllRuns / (double) typeSystemsProcessed);
+    log.info("Note that the multi-threaded average is higher than a single-threaded average "
+            + "because multiple threads may wait in parallel for a descriptor to be parsed "
+            + "and each of them will count the waiting time towards their individual duration.");
   }
 
   private class ResolveImportsRunner implements Callable<ResolveImportsRunner> {

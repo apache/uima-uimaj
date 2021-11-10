@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -31,7 +30,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -157,7 +155,6 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       return;
     }
 
-    List<Import> unresolvedImports = new ArrayList<>();
     collectAll(aWrapper, aAllCollectedObjects);
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
@@ -179,7 +176,6 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       // Loop cancellation - skip imports of descriptors that lie on the path from the
       // entry point to the current descriptor
       if (aStack.contains(absUrlString)) {
-        unresolvedImports.add(imp);
         continue;
       }
 
@@ -191,10 +187,6 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
 
         resolveImports(importedTSAdapter, aAlreadyVisited, aAllCollectedObjects, aStack,
                 aResourceManager);
-
-        if (importedTSAdapter.getImports().length > 0) {
-          unresolvedImports.add(imp);
-        }
       }
 
       aStack.pop();
