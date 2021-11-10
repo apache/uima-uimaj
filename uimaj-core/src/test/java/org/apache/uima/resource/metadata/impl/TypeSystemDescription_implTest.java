@@ -18,18 +18,21 @@
  */
 package org.apache.uima.resource.metadata.impl;
 
-import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
-import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
+import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -43,6 +46,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLizable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,69 +125,60 @@ public class TypeSystemDescription_implTest {
             JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
     ts.resolveImports(resMgr);
 
-    assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
-  }
+    assertThat(ts.getTypes()) //
+            .as("Types after resolving the descriptor.") //
+            .extracting( //
+                    t -> Paths.get(URI.create(t.getSourceUrlString())).getFileName().toString(),
+                    TypeDescription::getName) //
+            .containsExactlyInAnyOrder( //
+                    tuple("TestTypeSystem.xml", "NamedEntity"), //
+                    tuple("TestTypeSystem.xml", "Person"), //
+                    tuple("TestTypeSystem.xml", "Place"), //
+                    tuple("TestTypeSystem.xml", "DocumentStructure"), //
+                    tuple("TestTypeSystem.xml", "Paragraph"), //
+                    tuple("TestTypeSystem.xml", "Sentence"), //
+                    tuple("TypeSystemImportedByName.xml", "TestType1"), //
+                    tuple("TypeSystemImportedByName.xml", "NamedEntity"), //
+                    tuple("TypeSystemImportedByName.xml", "TestType2"), //
+                    tuple("TypeSystemImportedByLocation.xml", "TestType1"), //
+                    tuple("TypeSystemImportedByLocation.xml", "TestType3"), //
+                    tuple("TypeSystemImportedFromDataPath.xml", "TestType4"), //
+                    tuple("TypeSystemImportedFromDataPath.xml", "TestType3"));
+    List<String> uniqueTypeNames = Stream.of(ts.getTypes()).map(TypeDescription::getName).distinct()
+            .sorted().collect(toList());
+    assertThat(uniqueTypeNames) //
+            .as("Unique type names after resolving the descriptor") //
+            .containsExactly("DocumentStructure", "NamedEntity", "Paragraph", "Person", "Place",
+                    "Sentence", "TestType1", "TestType2", "TestType3", "TestType4");
+    TypeSystemDescription mergedTsd = mergeTypeSystems(asList(ts));
+    assertThat(Stream.of(mergedTsd.getTypes()).map(TypeDescription::getName).sorted()
+            .collect(toList())).as("Type count after merging all the types ").hasSize(10);
 
-  @Test
-  public void thatCircularImportsDoNotCrash() throws Exception {
-    // test that circular imports don't crash
-    File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
-    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
-    ts.resolveImports();
-    assertEquals(2, ts.getTypes().length);
-  }
+    String typeSystemImportedByLocation = new File(
+            "target/test-classes/TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml")
+                    .toURI().toURL().toString();
+    String typeSystemImportedFromDataPath = new File(
+            "target/test-classes/TypeSystemDescriptionImplTest/dataPathDir/TypeSystemImportedFromDataPath.xml")
+                    .toURI().toURL().toString();
+    String typeSystemImportedByName = new File(
+            "target/test-classes/org/apache/uima/resource/metadata/impl/TypeSystemImportedByName.xml")
+                    .toURI().toURL().toString();
 
-  @Test
-  public void thatResolveImportsDoesNothingWhenThereAreNoImports() throws Exception {
-    // calling resolveImports when there are none should do nothing
-    File descriptor = getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
+    Map<String, XMLizable> cache = resMgr.getImportCache();
+    assertThat(cache).containsOnlyKeys(typeSystemImportedByLocation, typeSystemImportedByName,
+            typeSystemImportedFromDataPath);
 
-    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+    TypeSystemDescription typeSystemImportedByLocationTSD = (TypeSystemDescription) cache
+            .get(typeSystemImportedByLocation);
+    assertThat(typeSystemImportedByLocationTSD.getTypes()).hasSize(2);
 
-    assertThat(ts.getTypes()).hasSize(2);
+    TypeSystemDescription typeSystemImportedFromDataPathTSD = (TypeSystemDescription) cache
+            .get(typeSystemImportedFromDataPath);
+    assertThat(typeSystemImportedFromDataPathTSD.getTypes()).hasSize(2);
 
-    ts.resolveImports();
-
-    assertThat(ts.getTypes()).hasSize(2);
-  }
-
-  @Test
-  public void thatImportFromProgrammaticallyCreatedTypeSystemDescriptionWorks() throws Exception {
-    ResourceManager resMgr = newDefaultResourceManager();
-    URL url = getFile("TypeSystemDescriptionImplTest").toURL();
-
-    // test import from programatically created TypeSystemDescription
-    Import_impl[] imports = { new Import_impl() };
-    imports[0].setSourceUrl(url);
-    imports[0].setLocation("TypeSystemImportedByLocation.xml");
-
-    TypeSystemDescription typeSystemDescription = getResourceSpecifierFactory()
-            .createTypeSystemDescription();
-    typeSystemDescription.setImports(imports);
-    TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
-            .clone();
-    typeSystemWithResolvedImports.resolveImports(resMgr);
-
-    assertThat(typeSystemWithResolvedImports.getTypes()).isNotEmpty();
-
-    // test that importing the same descriptor twice (using the same ResourceManager) caches
-    // the result of the first import and does not create new objects
-    TypeSystemDescription typeSystemDescription2 = getResourceSpecifierFactory()
-            .createTypeSystemDescription();
-
-    Import_impl[] imports2 = { new Import_impl() };
-    imports2[0].setSourceUrl(url);
-    imports2[0].setLocation("TypeSystemImportedByLocation.xml");
-
-    typeSystemDescription2.setImports(imports2);
-    TypeSystemDescription typeSystemWithResolvedImports2 = (TypeSystemDescription) typeSystemDescription2
-            .clone();
-    typeSystemWithResolvedImports2.resolveImports(resMgr);
-
-    assertThat(typeSystemWithResolvedImports.getTypes())
-            .as("Resolved imports in second type system are the same as in the first (cached)")
-            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
-            .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
+    TypeSystemDescription typeSystemImportedByNameTSD = (TypeSystemDescription) cache
+            .get(typeSystemImportedByName);
+    assertThat(typeSystemImportedByNameTSD.getTypes()).hasSize(3);
   }
 
   @Test
