@@ -29,53 +29,58 @@ import org.apache.uima.jcas.cas.TOP;
 /**
  * An iterator for a single type for a set or sorted index
  * 
- * NOTE: This is the version used for set/sorted iterators
- *   It is built directly on top of a CopyOnWrite wrapper for OrderedFsSet_array
- *   It uses the version of OrdereFsSet_array that has no embedded nulls
- * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
+ * NOTE: This is the version used for set/sorted iterators It is built directly on top of a
+ * CopyOnWrite wrapper for OrderedFsSet_array It uses the version of OrdereFsSet_array that has no
+ * embedded nulls
+ * 
+ * @param <T>
+ *          the type of FSs being returned from the iterator, supplied by the calling context
  */
 class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
-  // not final, because on moveToFirst/Last/FS, the semantics dictate that 
+  // not final, because on moveToFirst/Last/FS, the semantics dictate that
   // if the underlying index was updated, this should iterate over that.
-  protected CopyOnWriteOrderedFsSet_array ofsa;  // orderedFsSet_array;
-  
+  protected CopyOnWriteOrderedFsSet_array ofsa; // orderedFsSet_array;
+
   protected int pos;
 
   protected final FsIndex_set_sorted<T> ll_index;
-   
+
   /**
-   * if the iterator is configured to ignore TypeOrdering, then
-   * the comparator omits the type (if the index has a type order key)
+   * if the iterator is configured to ignore TypeOrdering, then the comparator omits the type (if
+   * the index has a type order key)
    */
-  protected final Comparator<TOP> comparatorMaybeNoTypeWithoutID;  
-  
-  public FsIterator_set_sorted2(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper, Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
-    super((TypeImpl)ll_index.getType());
+  protected final Comparator<TOP> comparatorMaybeNoTypeWithoutID;
+
+  public FsIterator_set_sorted2(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper,
+          Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
+    super((TypeImpl) ll_index.getType());
     this.comparatorMaybeNoTypeWithoutID = comparatorMaybeNoTypeWithoutID;
-    
+
     this.ll_index = ll_index;
     ofsa = (CopyOnWriteOrderedFsSet_array) cow_wrapper;
     pos = ofsa.a_firstUsedslot;
-//    incrToSkipOverNulls(); 
-//    if (MEASURE) {
-//      int s = ofsa.a_nextFreeslot - ofsa.a_firstUsedslot;
-//      iterPctEmptySkip[(s - ofsa.size()) * 10 / s] ++;
-//    }   
+    // incrToSkipOverNulls();
+    // if (MEASURE) {
+    // int s = ofsa.a_nextFreeslot - ofsa.a_firstUsedslot;
+    // iterPctEmptySkip[(s - ofsa.size()) * 10 / s] ++;
+    // }
   }
-  
+
   @Override
   public boolean maybeReinitIterator() {
     if (!ofsa.isOriginal()) {
       // can't share this copy with other iterators - they may have not done a moveToFirst, etc.
-      //   and need to continue with the previous view
+      // and need to continue with the previous view
       ofsa = (CopyOnWriteOrderedFsSet_array) ll_index.getNonNullCow();
       return true;
     }
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#isValid()
    */
   @Override
@@ -83,7 +88,9 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     return pos >= ofsa.a_firstUsedslot && pos < ofsa.a_nextFreeslot;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#getNvc()
    */
   @Override
@@ -91,53 +98,57 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     return (T) ofsa.a[pos];
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToNextNvc()
    */
   @Override
   public void moveToNextNvc() {
     pos++;
-//    incrToSkipOverNulls();
+    // incrToSkipOverNulls();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToPreviousNvc()
    */
   @Override
   public void moveToPreviousNvc() {
     pos--;
-//    decrToSkipOverNulls();
+    // decrToSkipOverNulls();
   }
-  
+
   // Internal use
   @Override
   public void moveToFirstNoReinit() {
     pos = ofsa.a_firstUsedslot;
   }
-  
+
   // Internal use
   @Override
   public void moveToLastNoReinit() {
     pos = ofsa.a_nextFreeslot - 1;
   }
-  
+
   // Internal use
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
     pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID);
 
     if (pos < 0) {
-      pos = (-pos) - 1;  // insertion point, one above
+      pos = (-pos) - 1; // insertion point, one above
       return;
     }
-    
+
     int savedPos = pos;
-    
+
     // pos is the equal-with-id item
 
     moveToPreviousNvc();
     if (isValid()) {
-      if (0 == comparatorMaybeNoTypeWithoutID.compare((TOP)get(), (TOP) fs)) {
+      if (0 == comparatorMaybeNoTypeWithoutID.compare((TOP) get(), (TOP) fs)) {
         moveToLeftMost(fs);
       } else {
         // did not compare equal, so previous was the right position
@@ -147,36 +158,41 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
       // went one before start, restore to start
       pos = savedPos;
     }
-    
+
     return;
   }
 
-//  // Internal use
-//  public void moveToExactNoReinit(FeatureStructure fs) {
-//    pos = ofsa.getOfsa().find((TOP) fs);  // find == find with ID 
-//    // if not found, this will be negative marking iterator invalid
-//  }
+  // // Internal use
+  // public void moveToExactNoReinit(FeatureStructure fs) {
+  // pos = ofsa.getOfsa().find((TOP) fs); // find == find with ID
+  // // if not found, this will be negative marking iterator invalid
+  // }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   @Override
   public FsIterator_singletype<T> copy() {
-    FsIterator_set_sorted2<T> r = new FsIterator_set_sorted2<>(ll_index, ofsa, comparatorMaybeNoTypeWithoutID);
+    FsIterator_set_sorted2<T> r = new FsIterator_set_sorted2<>(ll_index, ofsa,
+            comparatorMaybeNoTypeWithoutID);
     r.pos = pos;
     return r;
   }
 
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.cas.FSIterator#getType()
-//   */
-//  @Override
-//  public Type getType() {
-//    // TODO Auto-generated method stub
-//    return LowLevelIterator.super.getType();
-//  }
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.cas.FSIterator#getType()
+  // */
+  // @Override
+  // public Type getType() {
+  // // TODO Auto-generated method stub
+  // return LowLevelIterator.super.getType();
+  // }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
    */
   @Override
@@ -184,7 +200,9 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     return ofsa.size();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_getIndex()
    */
   @Override
@@ -192,57 +210,60 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     return ll_index;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_maxAnnotSpan()
    */
   @Override
   public int ll_maxAnnotSpan() {
     FsIndex_set_sorted<T> ss_idx = ll_index;
-    return ss_idx.isAnnotIdx 
-        ? ss_idx.ll_maxAnnotSpan()
-        : Integer.MAX_VALUE;
+    return ss_idx.isAnnotIdx ? ss_idx.ll_maxAnnotSpan() : Integer.MAX_VALUE;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
-   * This is local to this class because it references the ofsa
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated() This is local to this
+   * class because it references the ofsa
    */
   @Override
   public boolean isIndexesHaveBeenUpdated() {
     return ofsa != ll_index.getCopyOnWriteIndexPart();
   }
-      
-//  private void incrToSkipOverNulls() {
-//    while (pos < ofsa.a_nextFreeslot) {
-//      if (ofsa.a[pos] != null) {
-//        break;
-//      }
-//      pos ++;
-//    }
-//  }
-//
-//  private void decrToSkipOverNulls() {
-//    while (pos >= ofsa.a_firstUsedslot) {
-//      if (ofsa.a[pos] != null) {
-//        break;
-//      }
-//      pos --;
-//    }
-//  }
-  
+
+  // private void incrToSkipOverNulls() {
+  // while (pos < ofsa.a_nextFreeslot) {
+  // if (ofsa.a[pos] != null) {
+  // break;
+  // }
+  // pos ++;
+  // }
+  // }
+  //
+  // private void decrToSkipOverNulls() {
+  // while (pos >= ofsa.a_firstUsedslot) {
+  // if (ofsa.a[pos] != null) {
+  // break;
+  // }
+  // pos --;
+  // }
+  // }
+
   /**
-   * Starting at a position where the item is equal to fs
-   * using the compare without id, 
-   * move to the leftmost one
+   * Starting at a position where the item is equal to fs using the compare without id, move to the
+   * leftmost one
    * 
-   * search opportunistically, starting at 1 before, 2, 4, 8, 16, etc.
-   * then doing binary search in the opposite dir
+   * search opportunistically, starting at 1 before, 2, 4, 8, 16, etc. then doing binary search in
+   * the opposite dir
    * 
    * These methods are in this class because they manipulate "pos"
-   * @param fs -
+   * 
+   * @param fs
+   *          -
    */
   private void moveToLeftMost(FeatureStructure fs) {
-    
+
     // adjust to move to left-most equal item
     boolean comparedEqual = false;
     int origPos = pos;
@@ -250,13 +271,13 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     while (isValid()) {
       int upperValidPos = pos;
       pos = origPos - span;
-      pos = Math.max(-1,  pos);
-//      decrToSkipOverNulls();
+      pos = Math.max(-1, pos);
+      // decrToSkipOverNulls();
       if (!isValid()) {
         moveToLeftMostUp(fs, upperValidPos);
         return;
       }
-      comparedEqual = (0 == comparatorMaybeNoTypeWithoutID.compare((TOP)get(), (TOP) fs));
+      comparedEqual = (0 == comparatorMaybeNoTypeWithoutID.compare((TOP) get(), (TOP) fs));
       if (!comparedEqual) {
         moveToLeftMostUp(fs, upperValidPos);
         return;
@@ -264,10 +285,11 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
       span = span << 1;
     }
   }
-  
+
   /**
-   * Must be possible to leave the pos == to upperValidPos.
-   * Starts searching from next above current pos
+   * Must be possible to leave the pos == to upperValidPos. Starts searching from next above current
+   * pos
+   * 
    * @param fs
    * @param upperValidPos
    */
@@ -284,15 +306,18 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     if (pos == upperValidPos) {
       return;
     }
-    pos = ofsa.getOfsa().binarySearchLeftMostEqual((TOP) fs, pos, upperValidPos, comparatorMaybeNoTypeWithoutID);
+    pos = ofsa.getOfsa().binarySearchLeftMostEqual((TOP) fs, pos, upperValidPos,
+            comparatorMaybeNoTypeWithoutID);
   }
-  
+
   @Override
   public Comparator<TOP> getComparator() {
     return comparatorMaybeNoTypeWithoutID;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#moveToSupported()
    */
   @Override
@@ -304,24 +329,22 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   public int size() {
     return ofsa.size();
   }
-  
-//  @Override
-//  protected int getModificationCountFromIndex() {
-//    return ofsa.getModificationCount();
-//  }
-  
-//  /**
-//   * Never returns an index to a "null" (deleted) item.
-//   * If all items are LT key, returns - size - 1 
-//   * @param fs the key
-//   * @return the lowest position whose item is equal to or greater than fs;
-//   *         if not equal, the item's position is returned as -insertionPoint - 1. 
-//   *         If the key is greater than all elements, return -size - 1). 
-//   */
-//  private int find(TOP fs) {
-//    return ofsa.getOfsa().find(fs);
-//  }
-  
+
+  // @Override
+  // protected int getModificationCountFromIndex() {
+  // return ofsa.getModificationCount();
+  // }
+
+  // /**
+  // * Never returns an index to a "null" (deleted) item.
+  // * If all items are LT key, returns - size - 1
+  // * @param fs the key
+  // * @return the lowest position whose item is equal to or greater than fs;
+  // * if not equal, the item's position is returned as -insertionPoint - 1.
+  // * If the key is greater than all elements, return -size - 1).
+  // */
+  // private int find(TOP fs) {
+  // return ofsa.getOfsa().find(fs);
+  // }
 
 }
-

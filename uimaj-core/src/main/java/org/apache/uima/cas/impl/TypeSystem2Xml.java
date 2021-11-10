@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class TypeSystem2Xml {
   /**
-   * Converts a TypeSystem object to XML.  Built-in types and array types are not included.
+   * Converts a TypeSystem object to XML. Built-in types and array types are not included.
    * 
    * @param aTypeSystem
    *          the TypeSystem to convert
@@ -108,42 +108,42 @@ public class TypeSystem2Xml {
           final int typeClass = llts.ll_getTypeClass(llts.ll_getCodeForType(rangeType));
           String typeName = null;
           switch (typeClass) {
-          case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY: {
-            typeName = CAS.TYPE_NAME_BOOLEAN_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_SHORTARRAY: {
-            typeName = CAS.TYPE_NAME_SHORT_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_BYTEARRAY: {
-            typeName = CAS.TYPE_NAME_BYTE_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
-            typeName = CAS.TYPE_NAME_DOUBLE_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_FLOATARRAY: {
-            typeName = CAS.TYPE_NAME_FLOAT_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_FSARRAY: {
-            typeName = CAS.TYPE_NAME_FS_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_INTARRAY: {
-            typeName = CAS.TYPE_NAME_INTEGER_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_LONGARRAY: {
-            typeName = CAS.TYPE_NAME_LONG_ARRAY;
-            break;
-          }
-          case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
-            typeName = CAS.TYPE_NAME_STRING_ARRAY;
-            break;
-          }
+            case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY: {
+              typeName = CAS.TYPE_NAME_BOOLEAN_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_SHORTARRAY: {
+              typeName = CAS.TYPE_NAME_SHORT_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_BYTEARRAY: {
+              typeName = CAS.TYPE_NAME_BYTE_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
+              typeName = CAS.TYPE_NAME_DOUBLE_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_FLOATARRAY: {
+              typeName = CAS.TYPE_NAME_FLOAT_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_FSARRAY: {
+              typeName = CAS.TYPE_NAME_FS_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_INTARRAY: {
+              typeName = CAS.TYPE_NAME_INTEGER_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_LONGARRAY: {
+              typeName = CAS.TYPE_NAME_LONG_ARRAY;
+              break;
+            }
+            case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
+              typeName = CAS.TYPE_NAME_STRING_ARRAY;
+              break;
+            }
           }
           featDesc.setRangeTypeName(typeName);
           // TODO: make sure this works for arrays of arrays

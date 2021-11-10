@@ -26,13 +26,13 @@ package org.apache.uima.tools.jcasgen;
 public interface IError {
   
   /** The Constant ERROR. */
-  public static final int ERROR = 2;
+  int ERROR = 2;
 
   /** The Constant WARN. */
-  public static final int WARN = 1;
+  int WARN = 1;
 
   /** The Constant INFO. */
-  public static final int INFO = 0;
+  int INFO = 0;
 
   /**
    * New error.
@@ -41,5 +41,5 @@ public interface IError {
    * @param message the message
    * @param e the e
    */
-  public void newError(int Severity, String message, Exception e);
+  void newError(int Severity, String message, Exception e);
 }

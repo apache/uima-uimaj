@@ -22,12 +22,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * A Functional Interface for generating Java Feature Structures
- * NO LONGER USED
+ * A Functional Interface for generating Java Feature Structures NO LONGER USED
  */
 @FunctionalInterface
 public interface FsGeneratorArray {
-  
+
   TOP createFS(TypeImpl typeImpl, CASImpl casImpl, int length);
-  
+
 }

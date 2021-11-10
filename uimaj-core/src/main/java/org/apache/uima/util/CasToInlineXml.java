@@ -46,24 +46,23 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Generates an *approximate* inline XML representation of a CAS.
- * Annotation types are represented as XML tags, features are represented as attributes.
+ * Generates an *approximate* inline XML representation of a CAS. Annotation types are represented
+ * as XML tags, features are represented as attributes.
  * 
- * Features whose values are FeatureStructures are not represented.
- * Feature values which are strings longer than 64 characters are truncated.
- * Feature values which are arrays of primitives are represented by
- * strings that look like [ xxx, xxx ]
+ * Features whose values are FeatureStructures are not represented. Feature values which are strings
+ * longer than 64 characters are truncated. Feature values which are arrays of primitives are
+ * represented by strings that look like [ xxx, xxx ]
  * 
  * The Subject of analysis is presumed to be a text string.
  * 
- * Some characters in the document's Subject-of-analysis
- * are replaced by blanks, because the characters aren't valid in xml documents.
+ * Some characters in the document's Subject-of-analysis are replaced by blanks, because the
+ * characters aren't valid in xml documents.
  * 
- * It doesn't work for annotations which are overlapping, because these cannot
- * be properly represented as properly - nested XML.
+ * It doesn't work for annotations which are overlapping, because these cannot be properly
+ * represented as properly - nested XML.
  * 
- * To use this, make an instance of this class, and
- * (optionally) set the formattedOutput to true or false.
+ * To use this, make an instance of this class, and (optionally) set the formattedOutput to true or
+ * false.
  * 
  * Then call one of the public methods to format or generate the Inline XML.
  */
@@ -81,9 +80,12 @@ public class CasToInlineXml {
 
   /**
    * Formats a CAS as a String.
-   * @param aCAS the cas to format as an xml string
+   * 
+   * @param aCAS
+   *          the cas to format as an xml string
    * @return the XML representation of the CAS
-   * @throws CASException -
+   * @throws CASException
+   *           -
    */
   public String format(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -91,10 +93,14 @@ public class CasToInlineXml {
 
   /**
    * Formats a CAS as a String. Only FeatureStructures matching the given filter will be output.
-   * @param aCAS CAS
-   * @param aFilter a filter to limit the Feature Structures 
+   * 
+   * @param aCAS
+   *          CAS
+   * @param aFilter
+   *          a filter to limit the Feature Structures
    * @return the XML representation
-   * @throws CASException -
+   * @throws CASException
+   *           -
    */
   public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     return generateXML(aCAS, aFilter);
@@ -106,7 +112,8 @@ public class CasToInlineXml {
    * @param aCAS
    *          CAS to generate from
    * @return the inline XML version of the CAS
-   * @throws CASException -
+   * @throws CASException
+   *           -
    */
   public String generateXML(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -120,10 +127,13 @@ public class CasToInlineXml {
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
    *          omitted), all annotations are included.
-   * @param aHandler the content handler to use
-   * @throws CASException -
+   * @param aHandler
+   *          the content handler to use
+   * @throws CASException
+   *           -
    */
-  public void generateXML(CAS aCAS, FSMatchConstraint aFilter, ContentHandler aHandler) throws CASException {
+  public void generateXML(CAS aCAS, FSMatchConstraint aFilter, ContentHandler aHandler)
+          throws CASException {
 
     // get document text
     String docText = aCAS.getDocumentText();
@@ -132,7 +142,7 @@ public class CasToInlineXml {
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator<Annotation> iterator = aCAS.<Annotation>getAnnotationIndex().iterator();
+    FSIterator<Annotation> iterator = aCAS.<Annotation> getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -173,7 +183,7 @@ public class CasToInlineXml {
               aHandler.characters(docCharArray, pos, nextAnnot.getBegin() - pos);
               pos = nextAnnot.getBegin();
               aHandler.startElement("", nextAnnot.getType().getName(),
-                  nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
+                      nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -181,7 +191,7 @@ public class CasToInlineXml {
               curAnnot = nextAnnot;
             } catch (StringIndexOutOfBoundsException e) {
               System.err.println("Invalid annotation range: " + nextAnnot.getBegin() + ","
-                  + nextAnnot.getEnd() + " in document of length " + docText.length());
+                      + nextAnnot.getEnd() + " in document of length " + docText.length());
             }
           }
           iterator.moveToNext();
@@ -193,7 +203,7 @@ public class CasToInlineXml {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                + curAnnot.getEnd() + " in document of length " + docText.length());
+                    + curAnnot.getEnd() + " in document of length " + docText.length());
           }
           aHandler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
@@ -209,7 +219,7 @@ public class CasToInlineXml {
           pos = curAnnot.getEnd();
         } catch (StringIndexOutOfBoundsException e) {
           System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-              + curAnnot.getEnd() + "in document of length " + docText.length());
+                  + curAnnot.getEnd() + "in document of length " + docText.length());
         }
         aHandler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
@@ -223,7 +233,7 @@ public class CasToInlineXml {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                + curAnnot.getEnd() + "in document of length " + docText.length());
+                    + curAnnot.getEnd() + "in document of length " + docText.length());
           }
           aHandler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
         }
@@ -240,7 +250,6 @@ public class CasToInlineXml {
     }
   }
 
-
   /**
    * Generates inline XML from a CAS.
    * 
@@ -249,7 +258,8 @@ public class CasToInlineXml {
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
    *          ommitted), all annotations are included.
-   * @throws CASException -
+   * @throws CASException
+   *           -
    * @return the inline form
    */
   public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
@@ -366,8 +376,8 @@ public class CasToInlineXml {
   private void replaceInvalidXmlChars(char[] aChars) {
     for (int i = 0; i < aChars.length; i++) {
       if ((aChars[i] < 0x20 && aChars[i] != 0x09 && aChars[i] != 0x0A && aChars[i] != 0x0D)
-          || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
-          || aChars[i] == 0xFFFF) {
+              || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
+              || aChars[i] == 0xFFFF) {
         // System.out.println("Found invalid XML character: " + (int)aChars[i] + " at position " +
         // i); //temp
         aChars[i] = ' ';
@@ -375,18 +385,19 @@ public class CasToInlineXml {
     }
   }
 
-
   /**
    * @return true if the output will be formatted
    */
   public boolean isFormattedOutput() {
     return formattedOutput;
   }
-  
+
   /**
-   * Set a flag that will be used to control how the ContentHandler
-   * will be initialized - to either format or not, the generated Inline XML
-   * @param formattedOutput true means to format the output, and is the default
+   * Set a flag that will be used to control how the ContentHandler will be initialized - to either
+   * format or not, the generated Inline XML
+   * 
+   * @param formattedOutput
+   *          true means to format the output, and is the default
    */
   public void setFormattedOutput(boolean formattedOutput) {
     this.formattedOutput = formattedOutput;

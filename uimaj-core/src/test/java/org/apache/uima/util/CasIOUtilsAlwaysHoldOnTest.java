@@ -29,52 +29,51 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CasIOUtilsAlwaysHoldOnTest {
   @Test
   public void thatDocumentAnnotationIsNotResurrected() throws Exception {
-    // Must set this to true, otherwise the test will not fail. Setting it to true will cause 
+    // Must set this to true, otherwise the test will not fail. Setting it to true will cause
     // FSes which are not in any index to still be serialized out. When reading this data back,
     // UIMA will find the non-indexed DocumentAnnotation and add it back without checking whether
     // is was actually indexed or not.
     System.setProperty(CASImpl.ALWAYS_HOLD_ONTO_FSS, "true");
-      
+
     String customDocAnnoTypeName = "org.apache.uima.testing.CustomDocumentAnnotation";
-      
-    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
+
+    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
+            .createTypeSystemDescription();
     tsd.addType(customDocAnnoTypeName, "", CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-    
+
     CAS cas = CasCreationUtils.createCas(tsd, null, null);
-    
+
     // Initialize the default document annotation
     // ... then immediately remove it from the indexes.
     FeatureStructure da = cas.getDocumentAnnotation();
 
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
-        .extracting(fs -> fs.getType().getName())
-        .containsExactly(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-    
+            .extracting(fs -> fs.getType().getName())
+            .containsExactly(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+
     cas.removeFsFromIndexes(da);
-    
+
     // Now add a new document annotation of our custom type
     FeatureStructure cda = cas.createFS(cas.getTypeSystem().getType(customDocAnnoTypeName));
     cas.addFsToIndexes(cda);
 
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
-        .extracting(fs -> fs.getType().getName())
-        .containsExactly(customDocAnnoTypeName);
-    
+            .extracting(fs -> fs.getType().getName()).containsExactly(customDocAnnoTypeName);
+
     // Serialize to a buffer
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     CasIOUtils.save(cas, bos, SerialFormat.SERIALIZED_TSI);
-    
+
     // Deserialize from the buffer
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
     CasIOUtils.load(bis, cas);
-    
+
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
-        .extracting(fs -> fs.getType().getName())
-        .containsExactly(customDocAnnoTypeName);
+            .extracting(fs -> fs.getType().getName()).containsExactly(customDocAnnoTypeName);
   }
 }

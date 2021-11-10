@@ -43,8 +43,8 @@ public class SymbolTable {
 
   final private HashMap<String, Integer> symbol2intMap; // String -> Integer
 
-  final private ArrayList<String> int2symbolMap; // switch from Vector to avoid sync contention 
-  
+  final private ArrayList<String> int2symbolMap; // switch from Vector to avoid sync contention
+
   /**
    * Use this constructor if you need your symbol numbering to start at a different point than 0.
    * 
@@ -186,6 +186,7 @@ public class SymbolTable {
    * 
    * @return A string representing the symbol table.
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append("{ ");

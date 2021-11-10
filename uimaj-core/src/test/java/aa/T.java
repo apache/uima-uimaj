@@ -1,7 +1,5 @@
 package aa;
-
-
-   
+//@formatter:off
 /* Apache UIMA v3 - First created by JCasGen Thu Jan 04 17:25:52 EST 2018 */
 
 
@@ -114,5 +112,3 @@ public class T extends TOP {
   }    
     
   }
-
-    

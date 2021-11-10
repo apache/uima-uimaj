@@ -30,7 +30,7 @@ import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIndexDescription {
 
   static final long serialVersionUID = 8939000196947456114L;
-  
+
   static final FsIndexKeyDescription[] EMPTY_FS_INDEX_KEY_DESCRIPTION_ARRAY = new FsIndexKeyDescription[0];
 
   private String mLabel;
@@ -49,6 +49,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#getLabel()
    */
+  @Override
   public String getLabel() {
     return mLabel;
   }
@@ -56,6 +57,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#setLabel(String)
    */
+  @Override
   public void setLabel(String aLabel) {
     mLabel = aLabel;
   }
@@ -63,6 +65,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#getTypeName()
    */
+  @Override
   public String getTypeName() {
     return mTypeName;
   }
@@ -70,6 +73,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#setTypeName(String)
    */
+  @Override
   public void setTypeName(String aTypeName) {
     mTypeName = aTypeName;
   }
@@ -77,6 +81,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#getKind
    */
+  @Override
   public String getKind() {
     return mKind;
   }
@@ -84,6 +89,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#setKind(String)
    */
+  @Override
   public void setKind(String aKind) {
     mKind = aKind;
   }
@@ -91,6 +97,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#getKeys()
    */
+  @Override
   public FsIndexKeyDescription[] getKeys() {
     return mKeys;
   }
@@ -98,6 +105,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   /**
    * @see FsIndexDescription#setKeys(FsIndexKeyDescription[])
    */
+  @Override
   public void setKeys(FsIndexKeyDescription[] aKeys) {
     if (aKeys == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
@@ -106,6 +114,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
     mKeys = aKeys;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

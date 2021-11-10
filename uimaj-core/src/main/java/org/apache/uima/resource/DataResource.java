@@ -27,11 +27,11 @@ import java.util.Map;
 
 /**
  * <code>DataResource</code> is a simple resource that provides access to data. All
- * <code>DataResource</code>s will implement the {@link #getInputStream()} method to provide
- * access to their data.
+ * <code>DataResource</code>s will implement the {@link #getInputStream()} method to provide access
+ * to their data.
  * <p>
- * <code>DataResource</code>s may optionally implement {@link #getUrl()}, which would return the
- * URL where the data is located. This may be necessary for some applications, but it is strongly
+ * <code>DataResource</code>s may optionally implement {@link #getUrl()}, which would return the URL
+ * where the data is located. This may be necessary for some applications, but it is strongly
  * recommended the {@link #getInputStream()} be used whenever possible, because accessing the data
  * directly via the URL does not allow the ResourceManager to assist in caching or sharing of data.
  * 
@@ -48,7 +48,7 @@ public interface DataResource extends Resource {
    * @throws IOException
    *           if an I/O error occurred when trying to open the stream
    */
-  public InputStream getInputStream() throws IOException;
+  InputStream getInputStream() throws IOException;
 
   /**
    * Gets the URI of the data. In general, this method will return a URI that is equivalent to the
@@ -58,7 +58,7 @@ public interface DataResource extends Resource {
    * 
    * @return The URI of the data
    */
-  public URI getUri();
+  URI getUri();
 
   /**
    * Gets the URL where the data is stored. This method may return null if there is no appropriate
@@ -68,15 +68,15 @@ public interface DataResource extends Resource {
    * 
    * @return the URL where the data is stored, or null if this is not available.
    */
-  public URL getUrl();
+  URL getUrl();
 
   /**
-   * Determines if this <code>DataResource</code> is equal to another <code>DataResource</code>.
-   * It is important that <code>DataResource</code> implementations override this method
-   * appropriately, because the {@link ResourceManager} can make use of this method to determine
-   * when cached data can be reused. Two <code>DataResource</code>s that are <code>equal</code>
-   * according to this method will be considered to provide access to the same data; therefore, a
-   * common cache can be used.
+   * Determines if this <code>DataResource</code> is equal to another <code>DataResource</code>. It
+   * is important that <code>DataResource</code> implementations override this method appropriately,
+   * because the {@link ResourceManager} can make use of this method to determine when cached data
+   * can be reused. Two <code>DataResource</code>s that are <code>equal</code> according to this
+   * method will be considered to provide access to the same data; therefore, a common cache can be
+   * used.
    * 
    * @param aObj
    *          the object to compare to
@@ -84,7 +84,8 @@ public interface DataResource extends Resource {
    * @return true if and only if <code>aObj</code> is a <code>DataResource</code> and provides
    *         access to the same data as this object.
    */
-  public boolean equals(Object aObj);
+  @Override
+  boolean equals(Object aObj);
 
   /**
    * Gest the hash code for this <code>DataResource</code>. As always, if the
@@ -93,7 +94,8 @@ public interface DataResource extends Resource {
    * 
    * @return the hash code for this object
    */
-  public int hashCode();
+  @Override
+  int hashCode();
 
   /**
    * Key for the initialization parameter whose value is a reference to the
@@ -101,5 +103,5 @@ public interface DataResource extends Resource {
    * URLs. This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to
    * the {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_RELATIVE_PATH_RESOLVER = "RELATIVE_PATH_RESOLVER";
+  String PARAM_RELATIVE_PATH_RESOLVER = "RELATIVE_PATH_RESOLVER";
 }

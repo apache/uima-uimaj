@@ -186,6 +186,7 @@ public class FrameLeaf extends FrameComponent {
     this(bool ? TransportConstants.TRUE_VALUE : TransportConstants.FALSE_VALUE);
   }
 
+  @Override
   public String toString() {
     try {
       return UTFConverter.convertUTFToString(data);

@@ -40,7 +40,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Deserializes a CAS from a standoff-XML format. This class can read the XMI format introduced in
  * UIMA v1.4 as well as the XCAS format from previous versions.
  * 
- * This class is abstract, because it only has static methods and should never be instantiated 
+ * This class is abstract, because it only has static methods and should never be instantiated
  */
 public abstract class XmlCasDeserializer {
   /**
@@ -94,7 +94,7 @@ public abstract class XmlCasDeserializer {
    * @param aLenient
    *          if true, unknown Types will be ignored. If false, unknown Types will cause an
    *          exception. The default is false.
-   * @return the format of the data  
+   * @return the format of the data
    * 
    * @throws SAXException
    *           if an XML Parsing error occurs
@@ -102,14 +102,14 @@ public abstract class XmlCasDeserializer {
    *           if an I/O failure occurs
    */
   static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
-      throws SAXException, IOException {
+          throws SAXException, IOException {
     XMLReader xmlReader = XMLUtils.createXMLReader();
     XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));
     return (handler.mDelegateHandler instanceof XmiCasDeserializer.XmiCasDeserializerHandler)
-             ? SerialFormat.XMI
-             : SerialFormat.XCAS;
+            ? SerialFormat.XMI
+            : SerialFormat.XCAS;
   }
 
   static class XmlCasDeserializerHandler extends DefaultHandler {
@@ -118,12 +118,13 @@ public abstract class XmlCasDeserializer {
     private boolean mLenient;
 
     private ContentHandler mDelegateHandler; // will be set to either XMI or XCAS
-    
+
     XmlCasDeserializerHandler(CAS cas, boolean lenient) {
       mCAS = cas;
       mLenient = lenient;
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
       if (mDelegateHandler == null) {
@@ -136,8 +137,8 @@ public abstract class XmlCasDeserializer {
         } else if ("CAS".equals(localName)) // use XCAS
         {
           XCASDeserializer deser = new XCASDeserializer(mCAS.getTypeSystem());
-          mDelegateHandler = deser
-                  .getXCASHandler(mCAS, mLenient ? new OutOfTypeSystemData() : null);
+          mDelegateHandler = deser.getXCASHandler(mCAS,
+                  mLenient ? new OutOfTypeSystemData() : null);
         } else // default to XMI
         {
           XmiCasDeserializer deser = new XmiCasDeserializer(mCAS.getTypeSystem());
@@ -148,26 +149,32 @@ public abstract class XmlCasDeserializer {
       mDelegateHandler.startElement(uri, localName, qName, attributes);
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       mDelegateHandler.characters(ch, start, length);
     }
 
+    @Override
     public void endDocument() throws SAXException {
       mDelegateHandler.endDocument();
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       mDelegateHandler.endElement(uri, localName, qName);
     }
 
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw e;
     }
 
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
 
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       throw e;
     }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// @formatter:off
 package org.apache.uima.cas.test;
 
 import java.lang.invoke.CallSite;
@@ -131,5 +131,3 @@ public class Level_1 extends Annotation {
 
   
 }
-
-    

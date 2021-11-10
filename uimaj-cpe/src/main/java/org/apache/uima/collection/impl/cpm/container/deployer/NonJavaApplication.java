@@ -19,7 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,6 +56,7 @@ public class NonJavaApplication extends RunnableApplication {
    * @param aCasProcessor -
    * @throws ResourceConfigurationException passthru
    */
+  @Override
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);

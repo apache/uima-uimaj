@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 import java.util.Arrays;
@@ -31,160 +30,188 @@ import org.apache.uima.util.impl.Constants;
  */
 public interface List_of_ints extends Iterable<Integer> {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#size()
    */
-  public int size();
+  int size();
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#isEmpty()
    */
   default boolean isEmpty() {
     return size() == 0;
   };
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#contains(java.lang.Object)
    */
   default boolean contains(int i) {
     return indexOf(i) != -1;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#toArray()
    */
-  public int[] toArray();
-  
+  int[] toArray();
+
   /**
    * Avoid copying, return the original array, if start/end offsets not in use
+   * 
    * @return -
    */
-  public int[] toArrayMinCopy();
+  int[] toArrayMinCopy();
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#add(java.lang.Object)
    */
-  public boolean add(int i);
+  boolean add(int i);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#remove(java.lang.Object)
    */
-  public boolean remove(int i);
+  boolean remove(int i);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#clear()
    */
-  public void clear();
+  void clear();
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#get(int)
    */
-  public int get(int index);
+  int get(int index);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#set(int, java.lang.Object)
    */
-  public int set(int index, int element);
+  int set(int index, int element);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#add(int, java.lang.Object)
    */
-  public void add(int index, int element);
+  void add(int index, int element);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#remove(int)
    */
-  public int removeAtIndex(int index);
+  int removeAtIndex(int index);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#indexOf(java.lang.Object)
    */
-  public int indexOf(int i);
+  int indexOf(int i);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.List#lastIndexOf(java.lang.Object)
    */
-  public int lastIndexOf(int i);
+  int lastIndexOf(int i);
 
-  public List_of_ints subList(int fromIndex, int toIndex);
-  
-  public OfInt iterator();
-  
-  public IntListIterator intListIterator();
-  
-  public void copyFromArray(int[] src, int srcPos, int destPos, int length);
-  
-  public void copyToArray(int srcPos, int[] dest, int destPos, int length);
+  List_of_ints subList(int fromIndex, int toIndex);
 
-  public void sort();
-  
-  public static List_of_ints EMPTY_LIST() {
+  @Override
+  OfInt iterator();
+
+  IntListIterator intListIterator();
+
+  void copyFromArray(int[] src, int srcPos, int destPos, int length);
+
+  void copyToArray(int srcPos, int[] dest, int destPos, int length);
+
+  void sort();
+
+  static List_of_ints EMPTY_LIST() {
     return new List_of_ints() {
-      
+
       @Override
       public int[] toArray() {
         return Constants.EMPTY_INT_ARRAY;
       }
-      
+
       @Override
       public int[] toArrayMinCopy() {
-        return Constants.EMPTY_INT_ARRAY;        
+        return Constants.EMPTY_INT_ARRAY;
       }
-      
+
       @Override
       public List_of_ints subList(int fromIndex, int toIndex) {
         throw new IndexOutOfBoundsException();
       }
-      
+
       @Override
       public int size() {
         return 0;
       }
-      
+
       @Override
       public int set(int index, int element) {
         throw new IndexOutOfBoundsException();
       }
-      
+
       @Override
       public int removeAtIndex(int index) {
         throw new IndexOutOfBoundsException();
       }
-      
+
       @Override
       public boolean remove(int i) {
         return false;
       }
-      
+
       @Override
       public int lastIndexOf(int i) {
         return -1;
       }
-            
+
       @Override
       public int indexOf(int i) {
         return -1;
       }
-      
+
       @Override
       public int get(int index) {
         throw new IndexOutOfBoundsException();
       }
-      
+
       @Override
       public boolean contains(int i) {
         return false;
       }
-      
+
       @Override
-      public void clear() {        
+      public void clear() {
       }
-      
+
       @Override
       public void add(int index, int element) {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public boolean add(int i) {
         throw new UnsupportedOperationException();
@@ -194,32 +221,55 @@ public interface List_of_ints extends Iterable<Integer> {
       public OfInt iterator() {
         return new OfInt() {
           @Override
-          public boolean hasNext() {return false;}
+          public boolean hasNext() {
+            return false;
+          }
+
           @Override
-          public Integer next() {throw new NoSuchElementException();}
+          public Integer next() {
+            throw new NoSuchElementException();
+          }
+
           @Override
-          public int nextInt() {throw new NoSuchElementException();}
+          public int nextInt() {
+            throw new NoSuchElementException();
+          }
         };
       }
-      
+
       @Override
       public IntListIterator intListIterator() {
         return new IntListIterator() {
           @Override
-          public boolean hasNext() {return false;}
+          public boolean hasNext() {
+            return false;
+          }
+
           @Override
-          public int nextNvc() {throw new IllegalStateException();}
+          public int nextNvc() {
+            throw new IllegalStateException();
+          }
+
           @Override
-          public boolean hasPrevious() {return false;}
+          public boolean hasPrevious() {
+            return false;
+          }
+
           @Override
-          public int previousNvc() {throw new IllegalStateException();}
+          public int previousNvc() {
+            throw new IllegalStateException();
+          }
+
           @Override
-          public void moveToStart() {}
+          public void moveToStart() {
+          }
+
           @Override
-          public void moveToEnd() {}
+          public void moveToEnd() {
+          }
         };
       }
-      
+
       @Override
       public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
         throw new UnsupportedOperationException();
@@ -229,16 +279,17 @@ public interface List_of_ints extends Iterable<Integer> {
       public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
-      public void sort() {};
+      public void sort() {
+      };
     };
   }
-  
+
   static List_of_ints newInstance(int[] ia) {
     return newInstance(ia, 0, ia.length);
   }
-  
+
   static List_of_ints newInstance(final int[] ia, final int start, final int end) {
     return new List_of_ints() {
 
@@ -249,14 +300,12 @@ public interface List_of_ints extends Iterable<Integer> {
 
       @Override
       public int[] toArray() {
-        return Arrays.copyOfRange(ia, start, end); 
+        return Arrays.copyOfRange(ia, start, end);
       }
-      
+
       @Override
       public int[] toArrayMinCopy() {
-        return (start == 0 && end == size()) 
-            ? ia
-            : toArray();
+        return (start == 0 && end == size()) ? ia : toArray();
       }
 
       @Override
@@ -323,8 +372,9 @@ public interface List_of_ints extends Iterable<Integer> {
 
       @Override
       public OfInt iterator() {
-        return new OfInt () {
+        return new OfInt() {
           int pos = 0;
+
           @Override
           public boolean hasNext() {
             return pos < ia.length;
@@ -345,20 +395,21 @@ public interface List_of_ints extends Iterable<Integer> {
             }
             return ia[pos++];
           }
-       
+
         };
-      }  
-      
-      @Override 
+      }
+
+      @Override
       public IntListIterator intListIterator() {
         return new IntListIterator() {
 
           private int pos = 0;
+
           @Override
           public boolean hasNext() {
             return pos >= 0 && pos < size();
           }
-          
+
           @Override
           public int nextNvc() {
             return get(pos++);
@@ -366,13 +417,14 @@ public interface List_of_ints extends Iterable<Integer> {
 
           @Override
           public boolean hasPrevious() {
-            return pos > 0 && pos < size(); 
+            return pos > 0 && pos < size();
           }
 
           @Override
           public int previousNvc() {
             return get(--pos);
           }
+
           @Override
           public void moveToStart() {
             pos = 0;
@@ -382,26 +434,24 @@ public interface List_of_ints extends Iterable<Integer> {
           public void moveToEnd() {
             pos = size() - 1;
           }
-          
+
         };
       }
-      
+
       @Override
       public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
         System.arraycopy(src, srcPos, ia, start + destPos, length);
       }
-      
+
       @Override
       public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
         System.arraycopy(ia, start + srcPos, dest, destPos, length);
       }
-      
+
       @Override
       public void sort() {
         Arrays.sort(ia, start, end);
       }
-    
     };
   }
-
 }

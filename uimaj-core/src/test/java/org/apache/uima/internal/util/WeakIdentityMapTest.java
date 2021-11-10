@@ -33,25 +33,25 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * <p>This implementation was adapted from <a href="http://lucene.apache.org/">Apache Lucene</a>.
+ * <p>
+ * This implementation was adapted from <a href="http://lucene.apache.org/">Apache Lucene</a>.
  */
 public class WeakIdentityMapTest {
 
   private Random random = new Random();
-  
+
   @Test
   public void testSimpleHashMap() {
-    final WeakIdentityMap<String,String> map =
-      WeakIdentityMap.newHashMap(random.nextBoolean());
+    final WeakIdentityMap<String, String> map = WeakIdentityMap.newHashMap(random.nextBoolean());
     // we keep strong references to the keys,
     // so WeakIdentityMap will not forget about them:
     String key1 = new String("foo");
     String key2 = new String("foo");
     String key3 = new String("foo");
-    
+
     assertNotSame(key1, key2);
     assertEquals(key1, key2);
     assertNotSame(key1, key3);
@@ -71,14 +71,14 @@ public class WeakIdentityMapTest {
     // 2 more keys:
     map.put(key1, "bar1");
     map.put(key2, "bar2");
-    
+
     assertEquals(3, map.size());
 
     assertEquals("bar1", map.get(key1));
     assertEquals("bar2", map.get(key2));
     assertEquals(null, map.get(key3));
     assertEquals("null", map.get(null));
-    
+
     assertTrue(map.containsKey(key1));
     assertTrue(map.containsKey(key2));
     assertFalse(map.containsKey(key3));
@@ -90,12 +90,12 @@ public class WeakIdentityMapTest {
     map.put(null, "null");
 
     assertEquals(3, map.size());
-    
+
     assertEquals("bar1", map.get(key1));
     assertEquals("bar2", map.get(key2));
     assertEquals(null, map.get(key3));
     assertEquals("null", map.get(null));
-    
+
     assertTrue(map.containsKey(key1));
     assertTrue(map.containsKey(key2));
     assertFalse(map.containsKey(key3));
@@ -109,7 +109,7 @@ public class WeakIdentityMapTest {
     map.put(key2, "bar2");
     map.put(key3, "bar3");
     assertEquals(3, map.size());
-    
+
     int c = 0, keysAssigned = 0;
     for (Iterator<String> it = map.keyIterator(); it.hasNext();) {
       assertTrue(it.hasNext()); // try again, should return same result!
@@ -119,8 +119,8 @@ public class WeakIdentityMapTest {
       c++;
     }
     assertEquals(3, c);
-    assertEquals("all keys must have been seen", 1+2+4, keysAssigned);
-    
+    assertEquals("all keys must have been seen", 1 + 2 + 4, keysAssigned);
+
     c = 0;
     for (Iterator<String> it = map.valueIterator(); it.hasNext();) {
       final String v = it.next();
@@ -128,46 +128,48 @@ public class WeakIdentityMapTest {
       c++;
     }
     assertEquals(3, c);
-    
+
     // clear strong refs
     key1 = key2 = key3 = null;
-    
+
     // check that GC does not cause problems in reap() method, wait 1 second and let GC work:
     int size = map.size();
-    for (int i = 0; size > 0 && i < 10; i++) try {
-      System.runFinalization();
-      System.gc();
-      int newSize = map.size();
-      assertTrue("previousSize("+size+")>=newSize("+newSize+")", size >= newSize);
-      size = newSize;
-      Thread.sleep(100L);
-      c = 0;
-      for (Iterator<String> it = map.keyIterator(); it.hasNext();) {
-        assertNotNull(it.next());
-        c++;
+    for (int i = 0; size > 0 && i < 10; i++)
+      try {
+        System.runFinalization();
+        System.gc();
+        int newSize = map.size();
+        assertTrue("previousSize(" + size + ")>=newSize(" + newSize + ")", size >= newSize);
+        size = newSize;
+        Thread.sleep(100L);
+        c = 0;
+        for (Iterator<String> it = map.keyIterator(); it.hasNext();) {
+          assertNotNull(it.next());
+          c++;
+        }
+        newSize = map.size();
+        assertTrue("previousSize(" + size + ")>=iteratorSize(" + c + ")", size >= c);
+        assertTrue("iteratorSize(" + c + ")>=newSize(" + newSize + ")", c >= newSize);
+        size = newSize;
+      } catch (InterruptedException ie) {
       }
-      newSize = map.size();
-      assertTrue("previousSize("+size+")>=iteratorSize("+c+")", size >= c);
-      assertTrue("iteratorSize("+c+")>=newSize("+newSize+")", c >= newSize);
-      size = newSize;
-    } catch (InterruptedException ie) {}
 
     map.clear();
     assertEquals(0, map.size());
     assertTrue(map.isEmpty());
-    
+
     Iterator<String> it = map.keyIterator();
     assertFalse(it.hasNext());
     assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
       it.next();
     });
-    
+
     key1 = new String("foo");
     key2 = new String("foo");
     map.put(key1, "bar1");
     map.put(key2, "bar2");
     assertEquals(2, map.size());
-    
+
     map.clear();
     assertEquals(0, map.size());
     assertTrue(map.isEmpty());
@@ -179,15 +181,15 @@ public class WeakIdentityMapTest {
     final int threadCount = 4;
     final int keyCount = 1024;
     final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
-    final WeakIdentityMap<Object,Integer> map =
-      WeakIdentityMap.newConcurrentHashMap(random.nextBoolean());
+    final WeakIdentityMap<Object, Integer> map = WeakIdentityMap
+            .newConcurrentHashMap(random.nextBoolean());
     // we keep strong references to the keys,
     // so WeakIdentityMap will not forget about them:
     final AtomicReferenceArray<Object> keys = new AtomicReferenceArray<>(keyCount);
     for (int j = 0; j < keyCount; j++) {
       keys.set(j, new Object());
     }
-    
+
     try {
       for (int t = 0; t < threadCount; t++) {
         final Random rnd = new Random(random.nextLong());
@@ -229,33 +231,36 @@ public class WeakIdentityMapTest {
       }
     } finally {
       exec.shutdown();
-      while (!exec.awaitTermination(1000L, TimeUnit.MILLISECONDS));
+      while (!exec.awaitTermination(1000L, TimeUnit.MILLISECONDS))
+        ;
     }
-    
+
     // clear strong refs
     for (int j = 0; j < keyCount; j++) {
       keys.set(j, null);
     }
-    
+
     // check that GC does not cause problems in reap() method:
     int size = map.size();
-    for (int i = 0; size > 0 && i < 10; i++) try {
-      System.runFinalization();
-      System.gc();
-      int newSize = map.size();
-      assertTrue("previousSize("+size+")>=newSize("+newSize+")", size >= newSize);
-      size = newSize;
-      Thread.sleep(100L);
-      int c = 0;
-      for (Iterator<Object> it = map.keyIterator(); it.hasNext();) {
-        assertNotNull(it.next());
-        c++;
+    for (int i = 0; size > 0 && i < 10; i++)
+      try {
+        System.runFinalization();
+        System.gc();
+        int newSize = map.size();
+        assertTrue("previousSize(" + size + ")>=newSize(" + newSize + ")", size >= newSize);
+        size = newSize;
+        Thread.sleep(100L);
+        int c = 0;
+        for (Iterator<Object> it = map.keyIterator(); it.hasNext();) {
+          assertNotNull(it.next());
+          c++;
+        }
+        newSize = map.size();
+        assertTrue("previousSize(" + size + ")>=iteratorSize(" + c + ")", size >= c);
+        assertTrue("iteratorSize(" + c + ")>=newSize(" + newSize + ")", c >= newSize);
+        size = newSize;
+      } catch (InterruptedException ie) {
       }
-      newSize = map.size();
-      assertTrue("previousSize("+size+")>=iteratorSize("+c+")", size >= c);
-      assertTrue("iteratorSize("+c+")>=newSize("+newSize+")", c >= newSize);
-      size = newSize;
-    } catch (InterruptedException ie) {}
   }
 
 }

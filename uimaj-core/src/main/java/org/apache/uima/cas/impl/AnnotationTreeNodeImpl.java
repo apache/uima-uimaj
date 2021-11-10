@@ -25,8 +25,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationTreeNode;
 
-
-public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements AnnotationTreeNode<T> {
+public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements AnnotationTreeNode<T> {
 
   private T annot;
 
@@ -37,18 +36,20 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
   private int pos;
 
   AnnotationTreeNodeImpl() {
-    super();
     this.dtrs = new ArrayList<>();
   }
 
+  @Override
   public AnnotationTreeNode<T> getParent() {
     return this.parent;
   }
 
+  @Override
   public int getChildCount() {
     return this.dtrs.size();
   }
 
+  @Override
   public AnnotationTreeNode<T> getChild(int i) throws CASRuntimeException {
     try {
       return this.dtrs.get(i);
@@ -57,6 +58,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
     }
   }
 
+  @Override
   public AnnotationTreeNode<T> getNextSibling() {
     if (this.parent == null) {
       return null;
@@ -68,6 +70,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
     }
   }
 
+  @Override
   public AnnotationTreeNode<T> getPreviousSibling() {
     if (this.parent == null) {
       return null;
@@ -84,6 +87,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
    * 
    * @see org.apache.uima.cas.text.AnnotationTreeNode#getChildren()
    */
+  @Override
   public ArrayList<AnnotationTreeNode<T>> getChildren() {
     return this.dtrs;
   }
@@ -93,6 +97,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
    * 
    * @see org.apache.uima.cas.text.AnnotationTreeNode#get()
    */
+  @Override
   public T get() {
     return this.annot;
   }
@@ -109,5 +114,5 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
     child.parent = this;
     this.dtrs.add(child);
   }
-  
+
 }

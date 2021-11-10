@@ -37,6 +37,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 
 public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
+  @Override
   public void process(CAS aCas) throws AnalysisEngineProcessException {
     CAS englishView, germanView;
 

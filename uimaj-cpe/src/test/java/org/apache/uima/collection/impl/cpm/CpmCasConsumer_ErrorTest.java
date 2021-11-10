@@ -19,9 +19,9 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import java.util.Iterator;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.util.Iterator;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -36,6 +36,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
 import org.apache.uima.util.Level;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test CasConsumer Error Handling<br>
@@ -66,7 +68,7 @@ import org.apache.uima.util.Level;
  * @see org.apache.uima.collection.impl.cpm.CpmAE_ErrorTest
  * @see org.apache.uima.collection.impl.cpm.CpmCollectionReader_ErrorTest
  */
-public class CpmCasConsumer_ErrorTest extends TestCase {
+public class CpmCasConsumer_ErrorTest {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 
@@ -90,7 +92,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithResourceInitializationException() throws Exception {
+    @Test
+    public void testInitializeWithResourceInitializationException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -129,7 +132,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithNullPointerException() throws Exception {
+    @Test
+    public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -169,7 +173,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithOutOfMemoryError() throws Exception {
+    @Test
+    public void testInitializeWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean errorThrown = false;
@@ -207,7 +212,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessCasWithIOException() throws Exception {
+    @Test
+    public void testProcessCasWithIOException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -240,7 +246,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessCasWithResourceProcessException() throws Exception {
+    @Test
+    public void testProcessCasWithResourceProcessException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -272,7 +279,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessCasWithOutOfMemoryError() throws Exception {
+    @Test
+    public void testProcessCasWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -301,7 +309,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessCasWithNullPointerException() throws Exception {
+    @Test
+    public void testProcessCasWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -322,12 +331,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
             exceptionSequence), FunctionErrorStore.getCount());
   }
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 

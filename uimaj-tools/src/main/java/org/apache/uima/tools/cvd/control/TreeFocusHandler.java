@@ -41,7 +41,6 @@ public class TreeFocusHandler implements FocusListener {
    * @param tree the tree
    */
   public TreeFocusHandler(JTree tree) {
-    super();
     this.tree = tree;
   }
 

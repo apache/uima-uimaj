@@ -59,23 +59,26 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
   public static boolean typeSystemInitCalled;
 
   public static String allContexts = "";
-  
+
   public static synchronized String getLastDocument() {
-    return lastDocument;  
+    return lastDocument;
   }
 
   /*
    * @throws ResourceInitializationException tbd
+   * 
    * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
     lastDocument = null;
     stringParamValue = (String) aContext.getConfigParameterValue("StringParam");
-    
+
     // Check if can get an arbitrary external parameter from the override settings
-    // Note: this annotator launched with external overrides loaded from testExternalOverride2.settings 
+    // Note: this annotator launched with external overrides loaded from
+    // testExternalOverride2.settings
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
       // Test getting a (0-length) array of strings
@@ -87,9 +90,9 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         Assert.fail(e.getMessage());
       }
       Assert.assertEquals(0, actuals.length);
-      
+
       // Test assigning an array to a string and vice-versa
-      // prefix-suffix     Prefix-${suffix}
+      // prefix-suffix Prefix-${suffix}
       // suffix = should be ignored
       String actual = null;
       try {
@@ -98,7 +101,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         Assert.fail(e.getMessage());
       }
       Assert.assertEquals(expected, actual);
-      
+
       // Test assigning an array to a string and vice-versa
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("test.externalFloatArray");
@@ -115,12 +118,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
       // Test a stand-alone settings object
       Settings testSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-      String lines = "foo = ${bar} \n" +
-                "bar : [ok \n OK] \n" +
-                "bad = ${missing} \n" +
-                "loop1 = one ${loop2} \n" +
-                "loop2 = two ${loop3} \n" +
-                "loop3 = three ${loop1} \n" ;
+      String lines = "foo = ${bar} \n" + "bar : [ok \n OK] \n" + "bad = ${missing} \n"
+              + "loop1 = one ${loop2} \n" + "loop2 = two ${loop3} \n" + "loop3 = three ${loop1} \n";
       InputStream is;
       try {
         is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
@@ -143,7 +142,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       } catch (Exception e) {
         Assert.fail(e.toString());
       }
-      
+
       // Test POFO access via UimaContextHolder
       long threadId = Thread.currentThread().getId();
       UimaContextHolderTest testPojoAccess = new UimaContextHolderTest();
@@ -158,20 +157,18 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       testPojoAccess.result = null;
       Thread thrd = new Thread(testPojoAccess);
       thrd.start();
-      synchronized(thrd) {
+      synchronized (thrd) {
         try {
           thrd.wait();
           Assert.assertEquals(expected, testPojoAccess.result);
           Assert.assertNotSame(threadId, testPojoAccess.threadId);
         } catch (InterruptedException e) {
-          Assert.fail();        }
+          Assert.fail();
+        }
       }
       // Try from a process - should fail
-      String[] args = {
-              System.getProperty("java.home")+"/bin/java",
-              "-cp", 
-              System.getProperty("java.class.path"), 
-              UimaContextHolderTest.class.getName()};
+      String[] args = { System.getProperty("java.home") + "/bin/java", "-cp",
+          System.getProperty("java.class.path"), UimaContextHolderTest.class.getName() };
       ProcessBuilder pb = new ProcessBuilder(args);
       try {
         Process proc = pb.start();
@@ -180,8 +177,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       } catch (IOException | InterruptedException e) {
         Assert.fail();
       }
-      
-      
+
       // Test getting a string value
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
@@ -189,16 +185,20 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         Assert.fail(e.getMessage());
       }
       Assert.assertEquals(expected, actual);
-      
+
       // Create a nested engine with a different settings
       String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
       try {
-        //XMLInputSource in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
-        XMLInputSource in = new XMLInputSource(new File(resDir, "AnnotatorWithExternalOverrides.xml"));
-        AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+        // XMLInputSource in = new
+        // XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
+        XMLInputSource in = new XMLInputSource(
+                new File(resDir, "AnnotatorWithExternalOverrides.xml"));
+        AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+                .parseAnalysisEngineDescription(in);
         Map<String, Object> additionalParams = new HashMap<>();
         Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-        FileInputStream fis = new FileInputStream(new File(resDir, "testExternalOverride2.settings"));
+        FileInputStream fis = new FileInputStream(
+                new File(resDir, "testExternalOverride2.settings"));
         extSettings.load(fis);
         fis.close();
         additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
@@ -206,7 +206,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       } catch (Exception e) {
         Assert.fail();
       }
-      
+
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
       } catch (ResourceConfigurationException e) {
@@ -216,9 +216,10 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
     }
     // Used to check initialization order by testManyDelegates
-    allContexts  = allContexts + contextName.substring(1);
+    allContexts = allContexts + contextName.substring(1);
   }
 
+  @Override
   public void typeSystemInit(TypeSystem aTypeSystem) {
     typeSystemInitCalled = true;
   }
@@ -226,6 +227,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
   /**
    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
    */
+  @Override
   public void process(CAS aCAS) {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.

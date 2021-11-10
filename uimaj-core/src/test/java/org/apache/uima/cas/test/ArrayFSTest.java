@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -27,24 +31,17 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class ArrayFSTest extends TestCase {
+public class ArrayFSTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public ArrayFSTest(String arg0) {
-    super(arg0);
-  }
-
+  @BeforeEach
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -54,15 +51,13 @@ public class ArrayFSTest extends TestCase {
     }
   }
 
+  @AfterEach
   public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ArrayFSTest.class);
-  }
-
+  @Test
   public void testSet() {
     // Check that we can't create arrays of size smaller than 0.
     boolean exceptionCaught = false;
@@ -96,7 +91,7 @@ public class ArrayFSTest extends TestCase {
       String[] stringArray = array.toStringArray();
       assertTrue(stringArray.length == 3);
       for (int i = 0; i < array.size(); i++) {
-	assertNotNull(stringArray[i]);
+        assertNotNull(stringArray[i]);
       }
     } catch (ArrayIndexOutOfBoundsException e) {
       assertTrue(false);
@@ -134,6 +129,7 @@ public class ArrayFSTest extends TestCase {
     assertTrue(exceptionCaught);
   }
 
+  @Test
   public void testToArray() {
     // From CAS array to Java array.
     FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
@@ -168,6 +164,7 @@ public class ArrayFSTest extends TestCase {
     assertTrue(array.get(0) == null);
   }
 
+  @Test
   public void testCopyToArray() {
     FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
@@ -186,9 +183,9 @@ public class ArrayFSTest extends TestCase {
     array.copyToArray(1, fsArray, destinationOffset, array.size() - 1);
     array.copyToArray(1, stringArray, destinationOffset, array.size() - 1);
     assertTrue(fs2.equals(fsArray[destinationOffset]));
-    assertTrue(fs3.equals(fsArray[destinationOffset+1]));
+    assertTrue(fs3.equals(fsArray[destinationOffset + 1]));
     assertNotNull(stringArray[destinationOffset]);
-    assertNotNull(stringArray[destinationOffset+1]);
+    assertNotNull(stringArray[destinationOffset + 1]);
     for (int i = 0; i < destinationOffset; i++) {
       assertNull(fsArray[i]);
       assertNull(stringArray[i]);
@@ -198,7 +195,8 @@ public class ArrayFSTest extends TestCase {
       assertNull(stringArray[i]);
     }
   }
-  
+
+  @Test
   public void testArraysOfArrays() {
     Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);

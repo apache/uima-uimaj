@@ -18,7 +18,7 @@
  */
 package org.apache.uima.jcas.tcas;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,14 +45,17 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
-public class DocumentAnnotationTest extends TestCase {
+public class DocumentAnnotationTest {
   JCas jcas;
   private CAS source;
   private CAS target;
   
-  public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
       this.jcas = cas.getJCas();
@@ -61,7 +64,8 @@ public class DocumentAnnotationTest extends TestCase {
     }
   }
   
-  public void testGetDocumentAnnotation() throws Exception {
+    @Test
+    public void testGetDocumentAnnotation() throws Exception {
     try {
       assertTrue(jcas.getDocumentAnnotationFs() instanceof DocumentAnnotation);
     } catch (Exception e) {
@@ -69,7 +73,8 @@ public class DocumentAnnotationTest extends TestCase {
     }
   }
   
-  public void testCreateDocumentAnnot() throws Exception {
+    @Test
+    public void testCreateDocumentAnnot() throws Exception {
     try {
       DocumentAnnotation b = (DocumentAnnotation) jcas.getDocumentAnnotationFs();
       jcas.reset();
@@ -79,7 +84,8 @@ public class DocumentAnnotationTest extends TestCase {
     }
   }
   
-  public void testDocMeta() throws Exception {
+    @Test
+    public void testDocMeta() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));
@@ -117,7 +123,8 @@ public class DocumentAnnotationTest extends TestCase {
     assertTrue(CasCompare.compareCASes((CASImpl)source, (CASImpl)target));
   }
   
-  public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
+    @Test
+    public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));

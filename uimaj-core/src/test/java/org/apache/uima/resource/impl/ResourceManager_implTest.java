@@ -19,8 +19,9 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
@@ -37,17 +38,17 @@ import org.apache.uima.resource.metadata.impl.ExternalResourceBinding_impl;
 import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-
-public class ResourceManager_implTest extends TestCase {
+public class ResourceManager_implTest {
   private final File TEST_DATA_FILE = JUnitExtension
           .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
 
-  private final String TEST_DATAPATH_WITH_SPACES = JUnitExtension.getFile(
-          "ResourceTest/spaces in dir name").toString();
+  private final String TEST_DATAPATH_WITH_SPACES = JUnitExtension
+          .getFile("ResourceTest/spaces in dir name").toString();
 
   private final String TEST_FILE_IN_DATAPATH = "file:Test.dat";
 
@@ -59,21 +60,9 @@ public class ResourceManager_implTest extends TestCase {
 
   private ResourceManager_impl mManager;
 
-  /**
-   * Constructor for ResourceManager_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourceManager_implTest(String arg0) throws IOException {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-      super.setUp();
       mManager = new ResourceManager_impl();
       mManager.setDataPath(TEST_DATAPATH_WITH_SPACES);
 
@@ -96,8 +85,8 @@ public class ResourceManager_implTest extends TestCase {
       FileLanguageResourceSpecifier langSpec = new FileLanguageResourceSpecifier_impl();
 
       File baseDir = JUnitExtension.getFile("ResourceTest");
-      langSpec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL()
-              .toString());
+      langSpec.setFileUrlPrefix(
+              new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());
       langSpec.setFileUrlSuffix(".dat");
       ExternalResourceDescription desc3 = new ExternalResourceDescription_impl();
       desc3.setName("myLanguageResource");
@@ -123,8 +112,8 @@ public class ResourceManager_implTest extends TestCase {
       desc6.setResourceSpecifier(fileSpec);
       desc6.setName("myResourceWithFilePathNotUrl");
 
-      cfg.setExternalResources(new ExternalResourceDescription[] { desc, desc2, desc3, desc4,
-          desc5, desc6 });
+      cfg.setExternalResources(
+              new ExternalResourceDescription[] { desc, desc2, desc3, desc4, desc5, desc6 });
 
       // define bindings
       ExternalResourceBinding binding1 = new ExternalResourceBinding_impl();
@@ -155,10 +144,12 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
+  @AfterEach
   public void tearDown() {
     mManager = null;
   }
-  
+
+  @Test
   public void testSetDataPath() throws Exception {
     try {
       String path = "c:\\this\\path\\is;for\\windows";
@@ -169,38 +160,39 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResource() throws Exception {
     try {
       // test retrieval
       DataResource r1 = (DataResource) mManager.getResource(TEST_CONTEXT_NAME + "myDataKey");
       Assert.assertEquals(TEST_DATA_FILE.toURL(), r1.getUrl());
 
-      TestResourceInterface r2 = (TestResourceInterface) mManager.getResource(TEST_CONTEXT_NAME
-              + "myCustomObjectKey");
+      TestResourceInterface r2 = (TestResourceInterface) mManager
+              .getResource(TEST_CONTEXT_NAME + "myCustomObjectKey");
       Assert.assertEquals(TEST_STRING, r2.readString());
 
-      DataResource en_r = (DataResource) mManager.getResource(TEST_CONTEXT_NAME
-              + "myLanguageResourceKey", new String[] { "en" });
-      Assert.assertTrue(en_r.getUrl().toString().endsWith(
-              "FileLanguageResource_implTest_data_en.dat"));
+      DataResource en_r = (DataResource) mManager
+              .getResource(TEST_CONTEXT_NAME + "myLanguageResourceKey", new String[] { "en" });
+      Assert.assertTrue(
+              en_r.getUrl().toString().endsWith("FileLanguageResource_implTest_data_en.dat"));
 
-      DataResource de_r = (DataResource) mManager.getResource(TEST_CONTEXT_NAME
-              + "myLanguageResourceKey", new String[] { "de" });
-      Assert.assertTrue(de_r.getUrl().toString().endsWith(
-              "FileLanguageResource_implTest_data_de.dat"));
+      DataResource de_r = (DataResource) mManager
+              .getResource(TEST_CONTEXT_NAME + "myLanguageResourceKey", new String[] { "de" });
+      Assert.assertTrue(
+              de_r.getUrl().toString().endsWith("FileLanguageResource_implTest_data_de.dat"));
 
       // this should get the exact same DataResource object as for the "en" param
-      DataResource enus_r = (DataResource) mManager.getResource(TEST_CONTEXT_NAME
-              + "myLanguageResourceKey", new String[] { "en-US" });
+      DataResource enus_r = (DataResource) mManager
+              .getResource(TEST_CONTEXT_NAME + "myLanguageResourceKey", new String[] { "en-US" });
       Assert.assertTrue(en_r == enus_r);
 
-      TestResourceInterface en_obj = (TestResourceInterface) mManager.getResource(TEST_CONTEXT_NAME
-              + "myLanguageResourceObjectKey", new String[] { "en" });
+      TestResourceInterface en_obj = (TestResourceInterface) mManager.getResource(
+              TEST_CONTEXT_NAME + "myLanguageResourceObjectKey", new String[] { "en" });
       Assert.assertEquals("English", en_obj.readString());
 
       // test spaces in datapath
-      DataResource r3 = (DataResource) mManager.getResource(TEST_CONTEXT_NAME
-              + "myResourceWithSpaceInPathKey");
+      DataResource r3 = (DataResource) mManager
+              .getResource(TEST_CONTEXT_NAME + "myResourceWithSpaceInPathKey");
       URL expectedBaseUrl = new File(TEST_DATAPATH_WITH_SPACES).toURL();
       URL expectedUrl = new URL(expectedBaseUrl, TEST_FILE_IN_DATAPATH);
       Assert.assertEquals(expectedUrl, r3.getUrl());
@@ -221,6 +213,7 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testResolveAndValidateDependencies() throws Exception {
     try {
       // dependencies 1-4 are for the resource bindings created in setUp()
@@ -242,8 +235,9 @@ public class ResourceManager_implTest extends TestCase {
       ExternalResourceDependency dep6 = new ExternalResourceDependency_impl();
       dep6.setKey("org/apache/uima/resource/impl/ResourceInClasspath.txt");
 
-      mManager.resolveAndValidateResourceDependencies(new ExternalResourceDependency[] { dep1,
-          dep2, dep3, dep4, dep5, dep6 }, TEST_CONTEXT_NAME);
+      mManager.resolveAndValidateResourceDependencies(
+              new ExternalResourceDependency[] { dep1, dep2, dep3, dep4, dep5, dep6 },
+              TEST_CONTEXT_NAME);
 
       // at this point we should be able to look up dep6
       Object r = mManager.getResource(TEST_CONTEXT_NAME + dep6.getKey());
@@ -254,13 +248,14 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testOverrides() throws Exception {
     try {
       final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath();
 
       File descFile = JUnitExtension.getFile("ResourceManagerImplTest/ResourceTestAggregate.xml");
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(descFile));
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(descFile));
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(TEST_DATAPATH);
       UIMAFramework.produceAnalysisEngine(desc, resMgr, null);

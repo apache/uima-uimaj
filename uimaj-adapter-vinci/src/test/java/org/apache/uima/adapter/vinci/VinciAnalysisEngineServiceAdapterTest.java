@@ -19,74 +19,56 @@
 
 package org.apache.uima.adapter.vinci;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.adapter.vinci.VinciAnalysisEngineServiceAdapter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.URISpecifier;
+import org.junit.jupiter.api.Test;
 
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class VinciAnalysisEngineServiceAdapterTest.
  */
-public class VinciAnalysisEngineServiceAdapterTest extends TestCase {
-
-  /**
-   * Constructor for VinciAnalysisEngineServiceAdapterTest.
-   *
-   * @param arg0 the arg 0
-   */
-  public VinciAnalysisEngineServiceAdapterTest(String arg0) {
-    super(arg0);
-  }
+public class VinciAnalysisEngineServiceAdapterTest {
 
   /**
    * Test initialize.
    *
    * @throws ResourceInitializationException the resource initialization exception
    */
-  public void testInitialize() throws ResourceInitializationException {
-    // Don't want an actual network dependency so will test only with services that
-    // don't exist. The tests just make sure that the AnalysisEngineServiceAdapter.initialize
-    // method just returns false when passed an inappropriate specifier and throws an
-    // exception when passed an appropriate specifier.
+    @Test
+    public void testInitialize() throws ResourceInitializationException {
+      // Don't want an actual network dependency so will test only with services that
+      // don't exist. The tests just make sure that the AnalysisEngineServiceAdapter.initialize
+      // method just returns false when passed an inappropriate specifier and throws an
+      // exception when passed an appropriate specifier.
 
-    final String NON_EXISTENT_URI = "this.service.does.not.exit.at.least.i.hope.not";
-    URISpecifier uriSpec = UIMAFramework.getResourceSpecifierFactory().createURISpecifier();
-    uriSpec.setUri(NON_EXISTENT_URI);
+      final String NON_EXISTENT_URI = "this.service.does.not.exit.at.least.i.hope.not";
+      URISpecifier uriSpec = UIMAFramework.getResourceSpecifierFactory().createURISpecifier();
+      uriSpec.setUri(NON_EXISTENT_URI);
 
-    // test incorrect protocol
-    uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
-    VinciAnalysisEngineServiceAdapter adapter = new VinciAnalysisEngineServiceAdapter();
-    boolean result = adapter.initialize(uriSpec, null);
-    Assert.assertFalse(result);
+      // test incorrect protocol
+      uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+      VinciAnalysisEngineServiceAdapter adapter = new VinciAnalysisEngineServiceAdapter();
+      boolean result = adapter.initialize(uriSpec, null);
+      assertThat(result).isFalse();
 
-    // test correct protocol
-    adapter = new VinciAnalysisEngineServiceAdapter();
-    uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
-    uriSpec.setResourceType(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE);
-    ResourceInitializationException ex = null;
-    try {
-      adapter.initialize(uriSpec, null);
-    } catch (ResourceInitializationException e) {
-      ex = e;
+      // test correct protocol
+      VinciAnalysisEngineServiceAdapter adapter2 = new VinciAnalysisEngineServiceAdapter();
+      uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
+      uriSpec.setResourceType(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE);
+
+      assertThatExceptionOfType(ResourceInitializationException.class)
+              .isThrownBy(() -> adapter2.initialize(uriSpec, null));
+
+      // test correct protocol and no component type
+      uriSpec.setResourceType(null);
+      VinciAnalysisEngineServiceAdapter adapter1 = new VinciAnalysisEngineServiceAdapter();
+      assertThatExceptionOfType(ResourceInitializationException.class)
+              .isThrownBy(() -> adapter1.initialize(uriSpec, null));
     }
-    Assert.assertNotNull(ex);
-
-    // test correct protocol and no component type
-    uriSpec.setResourceType(null);
-    adapter = new VinciAnalysisEngineServiceAdapter();
-    ex = null;
-    try {
-      adapter.initialize(uriSpec, null);
-    } catch (ResourceInitializationException e) {
-      ex = e;
-    }
-    Assert.assertNotNull(ex);
-  }
-
 }

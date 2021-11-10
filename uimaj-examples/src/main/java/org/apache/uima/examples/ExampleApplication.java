@@ -19,7 +19,6 @@
 
 package org.apache.uima.examples;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 

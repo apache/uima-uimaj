@@ -39,7 +39,7 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class CasDefinition {
   private TypeSystemDescription typeSystemDescription;
-  
+
   private TypeSystemImpl typeSystemImpl;
 
   private TypePriorities typePriorities;
@@ -57,8 +57,8 @@ public class CasDefinition {
     this.resourceManager = aResourceManager;
   }
 
-  public CasDefinition(Collection<? extends ProcessingResourceMetaData> aMetaDataToMerge, ResourceManager aResourceManager)
-          throws ResourceInitializationException {
+  public CasDefinition(Collection<? extends ProcessingResourceMetaData> aMetaDataToMerge,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
     List<TypeSystemDescription> typeSystems = new ArrayList<>();
     List<TypePriorities> typePrioritiesList = new ArrayList<>();
@@ -159,20 +159,20 @@ public class CasDefinition {
       return null;
     }
   }
-  
+
   /**
-   * Constructs and returns a <code>ProcessingResourceMetaData</code> object
-   * that contains the type system, indexes, and type priorities definitions
-   * for the CAS.
+   * Constructs and returns a <code>ProcessingResourceMetaData</code> object that contains the type
+   * system, indexes, and type priorities definitions for the CAS.
    * 
-   * @return processing resource metadata object containing the 
-   *   relevant parts of the CAS definition
+   * @return processing resource metadata object containing the relevant parts of the CAS definition
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
-    ProcessingResourceMetaData md = UIMAFramework.getResourceSpecifierFactory().createProcessingResourceMetaData();
+    ProcessingResourceMetaData md = UIMAFramework.getResourceSpecifierFactory()
+            .createProcessingResourceMetaData();
     md.setTypeSystem(getTypeSystemDescription());
     md.setTypePriorities(getTypePriorities());
-    FsIndexCollection indColl = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection();
+    FsIndexCollection indColl = UIMAFramework.getResourceSpecifierFactory()
+            .createFsIndexCollection();
     indColl.setFsIndexes(getFsIndexDescriptions());
     md.setFsIndexCollection(indColl);
     return md;
@@ -186,7 +186,8 @@ public class CasDefinition {
   }
 
   /**
-   * @param typeSystemImpl the typeSystemImpl to set
+   * @param typeSystemImpl
+   *          the typeSystemImpl to set
    */
   public void setTypeSystemImpl(TypeSystemImpl typeSystemImpl) {
     this.typeSystemImpl = typeSystemImpl;

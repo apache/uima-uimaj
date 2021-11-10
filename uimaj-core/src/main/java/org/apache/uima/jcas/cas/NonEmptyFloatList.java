@@ -41,24 +41,27 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
 
   public static final String _FeatName_head = "head";
   public static final String _FeatName_tail = "tail";
-  
-//  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
-//  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
-  private final static CallSite _FC_head = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyFloatList.class, "head");
+
+  // public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+  // public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
+  private final static CallSite _FC_head = TypeSystemImpl
+          .createCallSiteForBuiltIn(NonEmptyFloatList.class, "head");
   private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
-  private final static CallSite _FC_tail = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyFloatList.class, "tail");
+  private final static CallSite _FC_tail = TypeSystemImpl
+          .createCallSiteForBuiltIn(NonEmptyFloatList.class, "tail");
   private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
-  
+
   /* local data */
-//  private float _F_head;
-//  private FloatList _F_tail;
-  
+  // private float _F_head;
+  // private FloatList _F_tail;
+
   // Never called. Disable default constructor
   protected NonEmptyFloatList() {
   }
@@ -68,10 +71,12 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public NonEmptyFloatList(TypeImpl t, CASImpl c) {
@@ -80,75 +85,98 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   /**
    * Generate a NonEmpty node with the specified head and tail
-   * @param jcas -
-   * @param v -
-   * @param tail -
+   * 
+   * @param jcas
+   *          -
+   * @param v
+   *          -
+   * @param tail
+   *          -
    */
   public NonEmptyFloatList(JCas jcas, float v, FloatList tail) {
     this(jcas);
     setHead(v);
     setTail(tail);
   }
-  
+
   /**
    * Generate a NonEmpty node with the specified head with the empty node as the tail
-   * @param jcas -
-   * @param v -
+   * 
+   * @param jcas
+   *          -
+   * @param v
+   *          -
    */
   public NonEmptyFloatList(JCas jcas, float v) {
     this(jcas, v, jcas.getCasImpl().emptyFloatList());
   }
-  
+
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public float getHead() { return _getFloatValueNc(wrapGetIntCatchException(_FH_head)); }
+  public float getHead() {
+    return _getFloatValueNc(wrapGetIntCatchException(_FH_head));
+  }
 
   /* setter for head * */
   public void setHead(float v) {
     this._setFloatValueNfc(wrapGetIntCatchException(_FH_head), v);
   }
 
-//  public void _setHeadNcNj(float v) { setFloatValueNcNj(_getFeat(wrapGetIntCatchException(_FH_head)), v); }
-  
+  // public void _setHeadNcNj(float v) {
+  // setFloatValueNcNj(_getFeat(wrapGetIntCatchException(_FH_head)), v); }
+
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FloatList getTail() { return (FloatList) _getFeatureValueNc(wrapGetIntCatchException(_FH_tail)); }
+  public FloatList getTail() {
+    return (FloatList) _getFeatureValueNc(wrapGetIntCatchException(_FH_tail));
+  }
 
   /* setter for tail * */
   public void setTail(FloatList v) {
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
-      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
-      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
+      /**
+       * Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list
+       * element in a different CAS {2}.
+       */
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView,
+              _casView);
     }
-    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); 
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v);
   }
 
-  public void setTail(CommonList v) { setTail((FloatList) v); }
-  
-  /* (non-Javadoc)
+  @Override
+  public void setTail(CommonList v) {
+    setTail((FloatList) v);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
    */
   @Override
   public String get_headAsString() {
-    return Float.toString(((NonEmptyFloatList)this).getHead());
+    return Float.toString(((NonEmptyFloatList) this).getHead());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.jcas.cas.CommonList#set_headAsString(java.lang.String)
    */
   @Override
   public void set_headFromString(String v) {
     setHead(Float.parseFloat(v));
   }
-  
+
   @Override
   public Iterator<Float> iterator() {
     return new Iterator<Float>() {
 
       FloatList node = NonEmptyFloatList.this;
-      
+
       @Override
       public boolean hasNext() {
         return node instanceof NonEmptyFloatList;
@@ -159,12 +187,12 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        NonEmptyFloatList nn = (NonEmptyFloatList)node; 
+        NonEmptyFloatList nn = (NonEmptyFloatList) node;
         Float element = nn.getHead();
         node = nn.getTail();
         return element;
       }
-      
+
     };
   }
 

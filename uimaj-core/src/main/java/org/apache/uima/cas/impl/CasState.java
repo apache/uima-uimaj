@@ -26,29 +26,38 @@ import java.lang.invoke.MethodType;
  * states the CAS can be in
  */
 public enum CasState {
-   UIMA_AS_WAIT_4_RESPONSE,   // when in this state, uima-as is awaiting response from a remote,
-                              // any attempt "release" this cas will throw an exception
-   READ_ONLY,              // multi-threaded access for reading allowed, no updating 
-   NO_ACCESS,              // no reading or writing (except by selected thread)
-   ;
-  
-  static final boolean return_false() { return false; }
-  static final boolean return_true() { return true; }
-  /** 
-   * @param thread the thread which is permitted to update the CAS
+  UIMA_AS_WAIT_4_RESPONSE, // when in this state, uima-as is awaiting response from a remote,
+                           // any attempt "release" this cas will throw an exception
+  READ_ONLY, // multi-threaded access for reading allowed, no updating
+  NO_ACCESS, // no reading or writing (except by selected thread)
+  ;
+
+  static final boolean return_false() {
+    return false;
+  }
+
+  static final boolean return_true() {
+    return true;
+  }
+
+  /**
+   * @param thread
+   *          the thread which is permitted to update the CAS
    * @return true if the thread == current thread, false otherwise to block access
    */
-  static final boolean isSameThread(Thread thread) { return Thread.currentThread() == thread; }
-  
+  static final boolean isSameThread(Thread thread) {
+    return Thread.currentThread() == thread;
+  }
+
   static final MethodHandle produce_one_thread_access_test(Thread thread) {
     MethodHandle mh;
     try {
-      mh = MethodHandles.lookup().findStatic(CasState.class, "isSameThread", MethodType.methodType(boolean.class, Thread.class));
+      mh = MethodHandles.lookup().findStatic(CasState.class, "isSameThread",
+              MethodType.methodType(boolean.class, Thread.class));
     } catch (NoSuchMethodException | IllegalAccessException e) {
       throw new RuntimeException(e);
     }
-    return mh.bindTo(thread);      
+    return mh.bindTo(thread);
   }
 
-  
 }

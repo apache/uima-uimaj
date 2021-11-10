@@ -33,11 +33,13 @@ import org.apache.uima.util.IteratorNvc;
 
 /**
  * support for collecting all FSs in a CAS
- *   -  over all views
- *   -  both indexed, and (optionally) reachable
+ * <ul>
+ * <li>over all views</li>
+ * <li>both indexed, and (optionally) reachable</li>
+ * </ul>
  */
 class AllFSs {
-  
+
   final CASImpl cas;
   final private MarkerImpl mark;
   final private PositiveIntSet foundFSs = new PositiveIntSet_impl(4096, 1, 4096);
@@ -45,42 +47,45 @@ class AllFSs {
   final private ArrayList<TOP> toBeScanned = new ArrayList<>();
   final private Predicate<TOP> includeFilter;
   final private CasTypeSystemMapper typeMapper;
-  
-  AllFSs(CASImpl cas, MarkerImpl mark, Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {
+
+  AllFSs(CASImpl cas, MarkerImpl mark, Predicate<TOP> includeFilter,
+          CasTypeSystemMapper typeMapper) {
     this.cas = cas;
     this.mark = mark;
     foundFSsBelowMark = (mark != null) ? new PositiveIntSet_impl(1024, 1, 1024) : null;
     this.includeFilter = includeFilter;
     this.typeMapper = typeMapper;
   }
-    
+
   PositiveIntSet getAllBelowMark() {
     return foundFSsBelowMark;
   }
-  
+
   PositiveIntSet getAllNew() {
     return foundFSs;
   }
-  
+
   ArrayList<TOP> getAllFSs() {
     return toBeScanned;
   }
-    
+
   ArrayList<TOP> getAllFSsSorted() {
     toBeScanned.sort(FeatureStructureImplC::compare);
     return toBeScanned;
   }
-  
+
   /**
    * simpler version, no mark info, no filter or type mapper
-   * @param cas -
+   * 
+   * @param cas
+   *          -
    */
   AllFSs(CASImpl cas) {
     this.cas = cas;
     this.mark = null;
     foundFSsBelowMark = null;
     this.includeFilter = null;
-    this.typeMapper = null; 
+    this.typeMapper = null;
   }
 
   private AllFSs getAllFSsAllViews_sofas() {
@@ -89,15 +94,14 @@ class AllFSs {
     return this;
   }
 
-  
   public AllFSs getAllFSsAllViews_sofas_reachable() {
     getAllFSsAllViews_sofas();
-    
+
     for (int i = 0; i < toBeScanned.size(); i++) {
       enqueueFeatures(toBeScanned.get(i));
     }
-    
-    // https://issues.apache.org/jira/browse/UIMA-5662  include kept fss if mode is set
+
+    // https://issues.apache.org/jira/browse/UIMA-5662 include kept fss if mode is set
     if (cas.isId2Fs()) {
       // add FSs that are in the CAS and held-on-to explicitly
       Id2FS table = cas.getId2FSs();
@@ -107,24 +111,24 @@ class AllFSs {
           enqueueFS(it.nextNvc());
         }
       }
-      
+
     }
     return this;
   }
-  
+
   private void getFSsForView(Collection<TOP> fss) {
     for (TOP fs : fss) {
       enqueueFS(fs);
     }
   }
-  
+
   private void enqueueFS(TOP fs) {
     if (null == fs || (includeFilter != null && !includeFilter.test(fs))) {
       return;
     }
 
     final int id = fs._id;
-    
+
     if (mark == null || mark.isNew(fs)) { // separately track items below the line
       if (!foundFSs.contains(id)) {
         foundFSs.add(id);
@@ -137,54 +141,53 @@ class AllFSs {
       }
     }
   }
-    
+
   private void enqueueFeatures(TOP fs) {
     if (fs instanceof FSArray) {
-      for (TOP item : ((FSArray)fs)._getTheArray()) {
+      for (TOP item : ((FSArray) fs)._getTheArray()) {
         enqueueFS(item);
       }
       return;
     }
-    
+
     // not an FS Array
     if (fs instanceof CommonArrayFS) {
-      return;  // no refs
+      return; // no refs
     }
-  
+
     final TypeImpl srcType = fs._getTypeImpl();
     if (srcType.getStaticMergedNonSofaFsRefs().length > 0) {
       if (fs instanceof UimaSerializableFSs) {
-        ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
+        ((UimaSerializableFSs) fs)._save_fsRefs_to_cas_data();
       }
       for (FeatureImpl srcFeat : srcType.getStaticMergedNonSofaFsRefs()) {
         if (typeMapper != null) {
           FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
           if (tgtFeat == null) {
-            continue;  // skip enqueue if not in target
+            continue; // skip enqueue if not in target
           }
         }
-        enqueueFS(fs._getFeatureValueNc(srcFeat)); 
+        enqueueFS(fs._getFeatureValueNc(srcFeat));
       }
     }
-    
-    
-//    
-//    if (srcType.hasRefFeature) {
-//      if (fs instanceof UimaSerializableFSs) {
-//        ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
-//      }
-//      for (FeatureImpl srcFeat : srcType.getStaticMergedRefFeatures()) {
-//        if (typeMapper != null) {
-//          FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
-//          if (tgtFeat == null) {
-//            continue;  // skip enqueue if not in target
-//          }
-//        } 
-//        if (srcFeat.getSlotKind() == SlotKind.Slot_HeapRef) {
-////        if (srcFeat.getRangeImpl().isRefType) {
-//          enqueueFS(fs._getFeatureValueNc(srcFeat));
-//        }
-//      }
-//    }
+
+    //
+    // if (srcType.hasRefFeature) {
+    // if (fs instanceof UimaSerializableFSs) {
+    // ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
+    // }
+    // for (FeatureImpl srcFeat : srcType.getStaticMergedRefFeatures()) {
+    // if (typeMapper != null) {
+    // FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
+    // if (tgtFeat == null) {
+    // continue; // skip enqueue if not in target
+    // }
+    // }
+    // if (srcFeat.getSlotKind() == SlotKind.Slot_HeapRef) {
+    //// if (srcFeat.getRangeImpl().isRefType) {
+    // enqueueFS(fs._getFeatureValueNc(srcFeat));
+    // }
+    // }
+    // }
   }
 }

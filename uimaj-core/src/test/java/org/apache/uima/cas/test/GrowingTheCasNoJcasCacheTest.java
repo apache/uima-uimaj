@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,57 +39,47 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class GrowingTheCasNoJcasCacheTest extends TestCase {
-  
+public class GrowingTheCasNoJcasCacheTest {
+
   private final static int REPETITIONS = 1;
 
   private AnalysisEngine ae = null;
 
   private JCas smallHeapCas = null;
 
-  public GrowingTheCasNoJcasCacheTest(String arg0) {
-    super(arg0);
-  }
-
+  @BeforeEach
   public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
-        .exists());
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+            descriptorFile.exists());
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
-      ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(
-          descriptorFile));
+      ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(descriptorFile));
       // Create a new properties object to hold the settings.
       Properties performanceTuningSettings = new Properties();
       // Set the initial CAS heap size.
-      performanceTuningSettings.setProperty(
-            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
-            "1000000");
+      performanceTuningSettings.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "1000000");
       // Disable JCas cache.
-      performanceTuningSettings.setProperty(
-            UIMAFramework.JCAS_CACHE_ENABLED, 
-            "false");
+      performanceTuningSettings.setProperty(UIMAFramework.JCAS_CACHE_ENABLED, "false");
       // Create a wrapper properties object that can
       // be passed to the framework.
       Map<String, Object> additionalParams = new HashMap<>();
       // Set the performance tuning properties as value to
       // the appropriate parameter.
-      additionalParams.put(
-            Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, 
-            performanceTuningSettings);
+      additionalParams.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, performanceTuningSettings);
       // Create the analysis engine with the parameters.
-      // The second, unused argument here is a custom 
+      // The second, unused argument here is a custom
       // resource manager.
-      this.ae = UIMAFramework.produceAnalysisEngine(
-          spec, null, additionalParams);
+      this.ae = UIMAFramework.produceAnalysisEngine(spec, null, additionalParams);
       this.smallHeapCas = this.ae.newJCas();
     } catch (IOException e) {
       e.printStackTrace();
@@ -102,6 +94,7 @@ public class GrowingTheCasNoJcasCacheTest extends TestCase {
 
   }
 
+  @AfterEach
   public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
@@ -109,6 +102,7 @@ public class GrowingTheCasNoJcasCacheTest extends TestCase {
     }
   }
 
+  @Test
   public void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
@@ -159,20 +153,16 @@ public class GrowingTheCasNoJcasCacheTest extends TestCase {
         // time = System.currentTimeMillis() - time;
         // System.out.println("Time for small CAS: " + new TimeSpan(time));
         assertTrue(this.getClass().toString() + ": number of sentences does not match",
-            numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
+                numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
         assertTrue(this.getClass().toString() + ": number of tokens does not match",
-            numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
+                numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
       } catch (AnalysisEngineProcessException e) {
         e.printStackTrace();
         assertTrue(false);
       }
     }
-    smallHeapCas = null;  // some junit runners hold onto instances of test classes after the test finishes
+    smallHeapCas = null; // some junit runners hold onto instances of test classes after the test
+                         // finishes
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(GrowingTheCasNoJcasCacheTest.class);
-  }
-
 }

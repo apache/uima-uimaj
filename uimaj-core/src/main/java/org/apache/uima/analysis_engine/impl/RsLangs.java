@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.apache.uima.cas.text.Language;
 
+//@formatter:off
 /**
  * A set of languages, each represented by a canonical string object
  * The set is stored without any subsumed elements
@@ -50,21 +51,22 @@ import org.apache.uima.cas.text.Language;
  * Languages kept in array list, to allow for expansion
  *   Languages not removed, only added (for a given tof)
  */
+//@formatter:on
 public class RsLangs {
-  
+
   private ArrayList<String> languages; // set of languages; null means x-unspecified
-  private boolean isShared = false;    // support copy on update for languages
-  
-  private RsLangs() {}
-  
+  private boolean isShared = false; // support copy on update for languages
+
+  private RsLangs() {
+  }
+
   // for instance used to represent x-unspec inside compiled forms, where null cant be used
   static RsLangs createSharableEmpty() {
     RsLangs rsl = new RsLangs();
     rsl.setShared();
     return rsl;
   }
-  
-  
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
@@ -83,11 +85,11 @@ public class RsLangs {
   static RsLangs createOrNull(String[] languages) {
     return replaceAll(null, languages);
   }
- 
+
   void setShared() {
     isShared = true;
   }
-  
+
   static RsLangs createOrNull(RsLangs rsl) {
     if (null == rsl || rsl.languages == null) {
       return null;
@@ -95,38 +97,41 @@ public class RsLangs {
     rsl.setShared();
     return rsl;
   }
-  
+
   // make a copy when needed
   private RsLangs(RsLangs original) {
     languages = (null == original.languages) ? null : new ArrayList<>(original.languages);
   }
-  
+
   static boolean isEmpty(RsLangs rsl) {
     return rsl == null || rsl.languages == null || rsl.languages.size() == 0;
   }
-  
+
   /**
    * 
-   * @param rsl may be null (means x-unspec, subsumes all)
+   * @param rsl
+   *          may be null (means x-unspec, subsumes all)
    * @param lang
    * @return true if rsl subsumes lang
    */
   static boolean subsumes(RsLangs rsl, String lang) {
     return subsumesCanonical(rsl, RsLang.getCanonicalLanguageString(lang));
   }
+
   /**
    * 
    * @param lang
    * @return true if any of the rsLangs subsumes the param lang
    */
 
-//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")
+  // @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")
   static boolean subsumesCanonical(RsLangs rsl, String lang) {
-    if (null == rsl || null == rsl.languages) {  // don't test for size() == 0 - that's used by replace to indicate empty, not x-unspec
-      return true;  // x-unspecified subsumes all
+    if (null == rsl || null == rsl.languages) { // don't test for size() == 0 - that's used by
+                                                // replace to indicate empty, not x-unspec
+      return true; // x-unspecified subsumes all
     }
     if (null == lang || lang == Language.UNSPECIFIED_LANGUAGE) {
-      return false;  // x-unspec not subsumed by anything (other than x-unspec)
+      return false; // x-unspec not subsumed by anything (other than x-unspec)
     }
     String baseLang = getBaseLanguage(lang);
     for (String rsLang : rsl.languages) {
@@ -136,11 +141,13 @@ public class RsLangs {
     }
     return false;
   }
-  
+
   /**
    * 
-   * @param rsl assumed to be not null, not x-unspec
-   * @param lang assumed to be not null, not x-unspec
+   * @param rsl
+   *          assumed to be not null, not x-unspec
+   * @param lang
+   *          assumed to be not null, not x-unspec
    * @param baseLang
    * @return true if any of the rsl languages is equal to the lang or the base lang
    */
@@ -152,15 +159,17 @@ public class RsLangs {
     }
     return false;
   }
-  
-//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")  
-  private static boolean subsumesCanonical(String containingLang, String langToTest, String langToTestBase) {
-    return containingLang == langToTest || containingLang == langToTestBase; 
+
+  // @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")
+  private static boolean subsumesCanonical(String containingLang, String langToTest,
+          String langToTestBase) {
+    return containingLang == langToTest || containingLang == langToTestBase;
   }
 
   /**
    * 
-   * @param language (must not be null)
+   * @param language
+   *          (must not be null)
    * @return the same == language or the base form of the language
    */
   private static String getBaseLanguage(String language) {
@@ -174,8 +183,10 @@ public class RsLangs {
 
   /**
    * 
-   * @param rsl could be null meaning current is x-unspecified
-   * @param langs null means x-unspecified
+   * @param rsl
+   *          could be null meaning current is x-unspecified
+   * @param langs
+   *          null means x-unspecified
    * @return null (meaning x-unspecified, or an instance of RsLangs
    */
   static RsLangs replaceAll(RsLangs rsl, String[] langs) {
@@ -186,40 +197,43 @@ public class RsLangs {
       if (rsl == null || rsl.isShared) {
         rsl = new RsLangs();
       }
-      rsl.languages = new ArrayList<>(0);  // special form means empty, not x-unspec
+      rsl.languages = new ArrayList<>(0); // special form means empty, not x-unspec
     }
     return addAll(rsl, langs);
   }
-  
+
   static RsLangs addAll(RsLangs rsl, String[] langs) {
-    if (null == langs || 
-        null == rsl || null == rsl.languages) {  // because x-unspec subsumes all
+    if (null == langs || null == rsl || null == rsl.languages) { // because x-unspec subsumes all
       return rsl;
     } else {
       for (String lang : langs) {
-        rsl = add(rsl, lang);      
+        rsl = add(rsl, lang);
       }
       return rsl;
-    }    
+    }
   }
-    
+
   static RsLangs addAll(RsLangs rsl, RsLangs rsLangs) {
-    if (null == rsLangs || null == rsLangs.languages ||
-        null == rsl || null == rsl.languages) {  // because x-unspec subsumes all
+    if (null == rsLangs || null == rsLangs.languages || null == rsl || null == rsl.languages) { // because
+                                                                                                // x-unspec
+                                                                                                // subsumes
+                                                                                                // all
       return rsl;
     }
     for (String lang : rsLangs.languages) {
-      rsl = add(rsl, lang);      
+      rsl = add(rsl, lang);
     }
     return rsl;
   }
 
   /**
-   * add language unless it's subsumed by existing one
-   * remove any languages the newly added one subsumes
-   * store x-unspec as null
-   * @param rsl - is not null and has non-null languages array (may be empty)
-   * @param lang - may be null or x-unspec
+   * add language unless it's subsumed by existing one remove any languages the newly added one
+   * subsumes store x-unspec as null
+   * 
+   * @param rsl
+   *          - is not null and has non-null languages array (may be empty)
+   * @param lang
+   *          - may be null or x-unspec
    */
   static RsLangs add(RsLangs rsl, String lang) {
     lang = RsLang.getCanonicalLanguageString(lang);
@@ -231,21 +245,22 @@ public class RsLangs {
       if (rsl.isShared) {
         rsl = new RsLangs(rsl);
       }
-      rsl.removeSubsumedLanguages(lang, baseLang);  // remove subsumed lang, but leave as empty list if all removed
+      rsl.removeSubsumedLanguages(lang, baseLang); // remove subsumed lang, but leave as empty list
+                                                   // if all removed
       rsl.languages.add(lang);
     }
     return rsl;
   }
-  
+
   /**
-   * Remove languages that are subsumed by the argument
-   * If all removed, keep as empty list
+   * Remove languages that are subsumed by the argument If all removed, keep as empty list
+   * 
    * @param canonicalLang
    */
   private void removeSubsumedLanguages(String canonicalLang, String baseLang) {
     languages.removeIf(s -> subsumesCanonical(s, canonicalLang, baseLang));
   }
-  
+
   /**
    * 
    * @param other
@@ -255,24 +270,24 @@ public class RsLangs {
     if (null == other) {
       return null;
     }
-        
+
     if (null == this.languages) { // means x-unspecified, so return the other
       return other;
     }
     if (null == other.languages) { // means x-unspecified, so return the first
       return this;
     }
-    
+
     RsLangs r = new RsLangs();
-    r.languages = new ArrayList<>(0);  // creates an empty, not null arraylist
-    
+    r.languages = new ArrayList<>(0); // creates an empty, not null arraylist
+
     for (String lang : this.languages) {
       if (subsumesCanonical(other, lang)) {
-        r = add(r, lang);                      // add langs in other that are subsumed by this
-      }      
+        r = add(r, lang); // add langs in other that are subsumed by this
+      }
     }
     for (String lang : other.languages) {
-      if (subsumesCanonical(this, lang)) {               // add langs in this that are subsumed by other 
+      if (subsumesCanonical(this, lang)) { // add langs in this that are subsumed by other
         r = add(r, lang);
       }
     }
@@ -281,27 +296,26 @@ public class RsLangs {
     }
     return r;
   }
-  
-  static String[] toArray(RsLangs rsl) {    
+
+  static String[] toArray(RsLangs rsl) {
     return (isEmpty(rsl)) ? null : rsl.languages.toArray(new String[rsl.languages.size()]);
   }
-  
+
   /**
-   * Must return the same hashcode regardless of the value of isShared, and
-   * treating the values as a set
+   * Must return the same hashcode regardless of the value of isShared, and treating the values as a
+   * set
    */
   @Override
   public int hashCode() {
     int result = 31;
     for (String lang : languages) {
-      result += lang.hashCode();  // non-standard, gives same answer regardless of order 
+      result += lang.hashCode(); // non-standard, gives same answer regardless of order
     }
     return result;
   }
 
   /**
-   * This must return true ignoring the value of isShared, and
-   * treating the lists as a set
+   * This must return true ignoring the value of isShared, and treating the lists as a set
    */
   @Override
   public boolean equals(Object obj) {
@@ -331,50 +345,4 @@ public class RsLangs {
     }
     return true;
   }
-  
-//  /**
-//   * also canonicalizes the language strings
-//   * @param languages
-//   * @return
-//   */
-//  private void canonicalizeRemoveDupsAndSubsumptions(String[] languages) {
-//    if (null == languages || languages.length == 0) {
-//      this.languages = null;
-//      return;
-//    }
-//    
-//    add
-//    
-//    // have 2 or more languages
-//  outer:
-//    for (int i = 0; i < languages.size(); i++) {
-//      String later = Language.normalize(languages.get(i));
-//      if (null == later || later.equals(Language.UNSPECIFIED_LANGUAGE)) {
-//        return null;
-//      }
-//      // compare against all earlier ones
-//      for (int j = 0; j < i; j++) {
-//        String earlier = languages.get(j);
-//        String earlierBase = getBaseLanguage(earlier);
-//        if (earlier.equals(later)) {
-//          languages.remove(i--);
-//          continue outer;
-//        }
-//        if (earlierBase.equals(later)) {   // later subsumes earlier
-//          languages.set(i, later);          
-//          languages.remove(i--);
-//          // recursion: handle multiple cases:
-//          //   replacing earlier with more general later could have it now 
-//          //   subsume others in between earlier and later... so need to rescan
-//          return removeDupsAndSubsumptions(languages);
-//        }
-//        if (earlier.equals(getBaseLanguage(later))) {  // earlier subsumes later
-//          languages.remove(i--);
-//          continue outer;          
-//        }
-//      }
-//    }
-//    return languages;
-//  }  
-
 }

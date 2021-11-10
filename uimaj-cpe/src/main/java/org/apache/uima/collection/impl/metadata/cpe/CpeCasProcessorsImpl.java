@@ -74,7 +74,6 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * Instantiates a new cpe cas processors impl.
    */
   public CpeCasProcessorsImpl() {
-    super();
   }
 
   /*

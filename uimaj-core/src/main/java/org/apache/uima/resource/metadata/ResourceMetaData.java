@@ -39,7 +39,7 @@ public interface ResourceMetaData extends MetaDataObject {
    * 
    * @return the UUID for this Resource
    */
-  public String getUUID();
+  String getUUID();
 
   /**
    * Sets the UUID (Universally Unique Identifier) for this Resource.
@@ -50,14 +50,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setUUID(String aUUID);
+  void setUUID(String aUUID);
 
   /**
    * Gets the name of this Resource.
    * 
    * @return the name of this Resource
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of this Resource.
@@ -68,14 +68,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the version number of this Resource.
    * 
    * @return the version number of this Resource, as a String
    */
-  public String getVersion();
+  String getVersion();
 
   /**
    * Sets the version number of this Resource.
@@ -86,14 +86,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setVersion(String aVersion);
+  void setVersion(String aVersion);
 
   /**
    * Gets the description of this Resource.
    * 
    * @return the description of this Resource
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Sets the description of this Resource.
@@ -104,14 +104,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
   /**
    * Gets the vendor of this Resource.
    * 
    * @return the vendor of this Resource, as a String
    */
-  public String getVendor();
+  String getVendor();
 
   /**
    * Sets the vendor of this Resource.
@@ -122,14 +122,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setVendor(String aVendor);
+  void setVendor(String aVendor);
 
   /**
    * Gets the copyright notice for this Resource.
    * 
    * @return the copyright notice for this Resource
    */
-  public String getCopyright();
+  String getCopyright();
 
   /**
    * Sets the copyright notice for this Resource.
@@ -140,14 +140,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setCopyright(String aCopyright);
+  void setCopyright(String aCopyright);
 
   /**
    * Gets the configuration parameter declarations for this Resource.
    * 
    * @return an object containing the configuration parameter declarations
    */
-  public ConfigurationParameterDeclarations getConfigurationParameterDeclarations();
+  ConfigurationParameterDeclarations getConfigurationParameterDeclarations();
 
   /**
    * Gets the configuration parameter declarations for this Resource.
@@ -155,14 +155,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * @param aDeclarations
    *          an object containing the configuration parameter declarations
    */
-  public void setConfigurationParameterDeclarations(ConfigurationParameterDeclarations aDeclarations);
+  void setConfigurationParameterDeclarations(ConfigurationParameterDeclarations aDeclarations);
 
   /**
    * Gets the configuration parameter settings for this Resource.
    * 
    * @return an object containing the settings for this Resource's configuration parameters.
    */
-  public ConfigurationParameterSettings getConfigurationParameterSettings();
+  ConfigurationParameterSettings getConfigurationParameterSettings();
 
   /**
    * Sets the configuration parameter settings for this Resource.
@@ -173,7 +173,7 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setConfigurationParameterSettings(ConfigurationParameterSettings aSettings);
+  void setConfigurationParameterSettings(ConfigurationParameterSettings aSettings);
 
   /**
    * Validates configuration parameter settings within this Resource MetaData, and throws an
@@ -187,7 +187,7 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings are invalid
    */
-  public void validateConfigurationParameterSettings() throws ResourceConfigurationException;
+  void validateConfigurationParameterSettings() throws ResourceConfigurationException;
 
   /**
    * Resolves any import declarations throughout this metadata. This base interface cannot contain
@@ -197,7 +197,7 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports() throws InvalidXMLException;
+  void resolveImports() throws InvalidXMLException;
 
   /**
    * Resolves any import declarations throughout this metadata. This base interface cannot contain
@@ -212,6 +212,6 @@ public interface ResourceMetaData extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
+  void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
 
 }

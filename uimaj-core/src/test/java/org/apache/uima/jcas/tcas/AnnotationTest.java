@@ -23,40 +23,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class AnnotationTest
-{
+public class AnnotationTest {
   private CAS cas;
-    
-  @Before
+
+  @BeforeEach
   public void setup() throws Exception {
-      cas = CasCreationUtils.createCas();
+    cas = CasCreationUtils.createCas();
   }
-    
+
   @Test
   public void thatEmptySpanIsTrimmedToEmptySpan() throws Exception {
     cas.setDocumentText("    ");
-    
+
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 2);
     ann.trim();
-    
+
     assertThat(ann)
-        .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-        .containsExactly(2, 2, "");
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(2, 2, "");
   }
 
   @Test
   public void thatSpanIsTrimmedToEmptySpanStartingAtOriginalStart() {
     cas.setDocumentText("    ");
-      
+
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 3);
     ann.trim();
-      
+
     assertThat(ann)
-        .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-        .containsExactly(2, 2, "");
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(2, 2, "");
   }
 
   @Test
@@ -67,139 +66,127 @@ public class AnnotationTest
     ann.trim();
 
     assertThat(ann)
-        .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-        .containsExactly(1, 3, "ab");
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(1, 3, "ab");
   }
 
-    @Test
-    public void thatInnerWhitespaceIsRemoved1()
-    {
-      cas.setDocumentText(" a b ");
+  @Test
+  public void thatInnerWhitespaceIsRemoved1() {
+    cas.setDocumentText(" a b ");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 2);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 2);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(1, 2, "a");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(1, 2, "a");
+  }
 
-    @Test
-    public void thatInnerWhitespaceIsRemoved2()
-    {
-      cas.setDocumentText(" a b ");
+  @Test
+  public void thatInnerWhitespaceIsRemoved2() {
+    cas.setDocumentText(" a b ");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 5);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 5);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(3, 4, "b");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(3, 4, "b");
+  }
 
-    @Test
-    public void testSingleCharacter()
-    {
-      cas.setDocumentText(".");
+  @Test
+  public void testSingleCharacter() {
+    cas.setDocumentText(".");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(0, 1, ".");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(0, 1, ".");
+  }
 
-    @Test
-    public void testLeadingWhitespace()
-    {
-      cas.setDocumentText(" \t\n\r.");
+  @Test
+  public void testLeadingWhitespace() {
+    cas.setDocumentText(" \t\n\r.");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(4, 5, ".");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(4, 5, ".");
+  }
 
-    @Test
-    public void testLeadingWhitespaceWithSurrogates()
-    {
-      cas.setDocumentText(" \t\n\r😀");
+  @Test
+  public void testLeadingWhitespaceWithSurrogates() {
+    cas.setDocumentText(" \t\n\r😀");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 6);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 6);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(4, 6, "😀");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(4, 6, "😀");
+  }
 
-    @Test
-    public void testTrailingWhitespace()
-    {
-      cas.setDocumentText(". \n\r\t");
+  @Test
+  public void testTrailingWhitespace() {
+    cas.setDocumentText(". \n\r\t");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(0, 1, ".");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(0, 1, ".");
+  }
 
-    @Test
-    public void testTrailingWhitespaceWithSurrogates()
-    {
-      cas.setDocumentText("😀 \n\r\t");
+  @Test
+  public void testTrailingWhitespaceWithSurrogates() {
+    cas.setDocumentText("😀 \n\r\t");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 6);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 6);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(0, 2, "😀");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(0, 2, "😀");
+  }
 
-    @Test
-    public void testLeadingTrailingWhitespace()
-    {
-      cas.setDocumentText(" \t\n\r. \n\r\t");
+  @Test
+  public void testLeadingTrailingWhitespace() {
+    cas.setDocumentText(" \t\n\r. \n\r\t");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd)
-          .containsExactly(4, 5);
-    }
+    assertThat(ann).extracting(AnnotationFS::getBegin, AnnotationFS::getEnd).containsExactly(4, 5);
+  }
 
-    @Test
-    public void testLeadingTrailingWhitespaceWithSurrogatesAndCustomPredicate()
-    {
-      // 𝪀 (U+1DA80) is the SIGNWRITING LOCATION-FLOORPLANE SPACE. It is not recognized by
-      // Character.isWhitespace(...), so we use a custom predicate to filter it out
-      cas.setDocumentText(" \t𝪀\n\r. \n𝪀\r\t");
+  @Test
+  public void testLeadingTrailingWhitespaceWithSurrogatesAndCustomPredicate() {
+    // 𝪀 (U+1DA80) is the SIGNWRITING LOCATION-FLOORPLANE SPACE. It is not recognized by
+    // Character.isWhitespace(...), so we use a custom predicate to filter it out
+    cas.setDocumentText(" \t𝪀\n\r. \n𝪀\r\t");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
-      ann.trim(codepoint -> Character.isWhitespace(codepoint) || 0x1DA80 == codepoint);
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
+    ann.trim(codepoint -> Character.isWhitespace(codepoint) || 0x1DA80 == codepoint);
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(6, 7, ".");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(6, 7, ".");
+  }
 
-    @Test
-    public void testBlankString()
-    {
-      cas.setDocumentText("   ");
+  @Test
+  public void testBlankString() {
+    cas.setDocumentText("   ");
 
-      AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 1, 2);
-      ann.trim();
+    AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 1, 2);
+    ann.trim();
 
-      assertThat(ann)
-          .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
-          .containsExactly(1, 1, "");
-    }
+    assertThat(ann)
+            .extracting(AnnotationFS::getBegin, AnnotationFS::getEnd, AnnotationFS::getCoveredText)
+            .containsExactly(1, 1, "");
+  }
 }

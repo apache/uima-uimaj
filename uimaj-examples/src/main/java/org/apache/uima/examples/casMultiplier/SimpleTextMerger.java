@@ -69,6 +69,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mAnnotationTypesToCopy = (String[]) aContext.getConfigParameterValue("AnnotationTypesToCopy");
@@ -79,6 +80,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    * 
    * @see JCasMultiplier_ImplBase#process(JCas)
    */
+  @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     // procure a new CAS if we don't have one already
     if (mMergedCas == null) {
@@ -141,6 +143,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return mReadyToOutput;
   }
@@ -150,6 +153,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     if (!mReadyToOutput) {
       throw new AnalysisEngineProcessException(MESSAGE_DIGEST, NO_NEXT_CAS, new Object[0]);

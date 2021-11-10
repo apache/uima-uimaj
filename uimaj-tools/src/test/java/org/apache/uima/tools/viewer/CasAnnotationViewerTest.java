@@ -18,12 +18,13 @@
  */
 package org.apache.uima.tools.viewer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
-
-import junit.framework.TestCase;
 
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
@@ -47,8 +48,10 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class CasAnnotationViewerTest extends TestCase {
+public class CasAnnotationViewerTest {
   CasAnnotationViewer viewer;
 
   private CAS cas;
@@ -87,7 +90,8 @@ public class CasAnnotationViewerTest extends TestCase {
 
   private Feature doubleArrayFeature;
 
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     viewer = new CasAnnotationViewer();
 
     CASMgr casMgr = CASFactory.createCAS();
@@ -158,7 +162,8 @@ public class CasAnnotationViewerTest extends TestCase {
 
   }
 
-  public void testAddAnnotationToTree() throws Exception {
+    @Test
+    public void testAddAnnotationToTree() throws Exception {
     try {
       // create an annotation
       createExampleFS(this.cas);
@@ -227,7 +232,8 @@ public class CasAnnotationViewerTest extends TestCase {
     }
   }
   
-  public void testAddAnnotationToTreeJCas() throws Exception {
+    @Test
+    public void testAddAnnotationToTreeJCas() throws Exception {
     this.cas.getJCas();
     testAddAnnotationToTree();
   }
