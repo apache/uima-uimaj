@@ -45,6 +45,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -55,6 +59,7 @@ import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
@@ -119,8 +124,8 @@ public class ImportResolverTest {
     List<String> entryPoints = asList("tsd0.xml", "tsd5.xml");
 
     List<String> files = new ArrayList<>();
-    try (Stream<Path> fs = Files.list(
-            Paths.get("src/test/resources/ImportResolverTest/complexImportScenario1"))) {
+    try (Stream<Path> fs = Files
+            .list(Paths.get("src/test/resources/ImportResolverTest/complexImportScenario1"))) {
       fs.filter(f -> entryPoints.contains(f.getFileName().toString())) //
               .map(Object::toString).sorted().forEach(files::add);
     }
@@ -151,8 +156,9 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatResolvingMultipleComplexImportScenariosWithSingleResourceManagerWorks()
+  public void thatMultiThreadedResolvingRandomComplexImportScenarioWithSingleResourceManagerWorks()
           throws Exception {
+    final int maxThreadCount = 10;
     final int maxTsCount = 10;
     final int maxPasses = 5;
     final int maxImportsPerPass = 3;
@@ -162,6 +168,7 @@ public class ImportResolverTest {
 
     log.info("Running {} incrementally growing import test scenarios. This may take a moment...",
             runs);
+    log.info("Max. parallel resolving threads : {}", maxThreadCount);
     log.info("Max. type systems               : {}", maxTsCount);
     log.info("Max. import generation passes   : {}", maxPasses);
     log.info("Max. imports generated per pass : {}", maxImportsPerPass);
@@ -171,6 +178,7 @@ public class ImportResolverTest {
     long typeSystemsProcessed = 0;
     long totalDurationAllRuns = 0;
     for (int i = 0; i < runs; i++) {
+      final int threadCount = ((i * maxThreadCount) / runs) + 1;
       final int tsCount = ((i * maxTsCount) / runs) + 1;
       final int passes = ((i * maxPasses) / runs) + 1;
       final int importsPerPass = ((i * maxImportsPerPass) / runs) + 1;
@@ -178,39 +186,55 @@ public class ImportResolverTest {
       final int featuresPerType = ((i * maxFeaturesPerType) / runs) + 1;
 
       log.debug(
-              "Run {}: TS: {}  types-per-TS: {}  features-per-type: {}  passes: {}  imports-per-pass: {}",
-              i + 1, tsCount, typesPerTypeSystem, featuresPerType, passes, importsPerPass);
+              "Run {}: Threads: {}  TS: {}  types-per-TS: {}  features-per-type: {}  "
+                      + "passes: {}  imports-per-pass: {}",
+              i + 1, threadCount, tsCount, typesPerTypeSystem, featuresPerType, passes,
+              importsPerPass);
 
       List<Entry<File, Set<TypeDescription>>> data = prepareComplexImportScenario(tsCount,
               typesPerTypeSystem, featuresPerType, passes, importsPerPass);
 
       long totalDurationThisRun = 0;
       ResourceManager resMgr = newDefaultResourceManager();
+     
+      List<ResolveImportsRunner> runners = new ArrayList<>();
       for (Entry<File, Set<TypeDescription>> e : data) {
-        TypeSystemDescription tsd = getXMLParser()
-                .parseTypeSystemDescription(new XMLInputSource(e.getKey()));
+        runners.add(new ResolveImportsRunner(resMgr, e.getKey(), e.getValue()));
+      }
 
-        long startTime = System.currentTimeMillis();
-        tsd.resolveImports(resMgr);
-        long duration = System.currentTimeMillis() - startTime;
-        totalDurationThisRun += duration;
+      List<ResolveImportsRunner> finishedRunners = new ArrayList<>();
+      ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+      for (Future<ResolveImportsRunner> runner : executorService.invokeAll(runners)) {
+        finishedRunners.add(runner.get());
+      }
 
-        String[] expectedUniqueTypeNames = e.getValue().stream() //
+      assertThat(executorService.shutdownNow()) //
+              .as("No remaining runners when shutting down the executor service") //
+              .isEmpty();
+
+      assertThat(finishedRunners) //
+              .as("All runners made it to the finishing line") //
+              .hasSameSizeAs(runners);
+      
+      for (ResolveImportsRunner runner : finishedRunners) {
+        totalDurationThisRun += runner.duration;
+
+        String[] expectedUniqueTypeNames = runner.expectedTypes.stream() //
                 .map(TypeDescription::getName) //
                 .sorted() //
                 .distinct() //
                 .toArray(String[]::new);
 
-        String[] actualUniqueTypeNames = Stream.of(tsd.getTypes()) //
+        String[] actualUniqueTypeNames = Stream.of(runner.descriptor.getTypes()) //
                 .map(TypeDescription::getName) //
                 .sorted() //
                 .distinct() //
                 .toArray(String[]::new);
-
-        log.debug("Types: {}  unique types: {} ({}ms)", tsd.getTypes().length,
-                actualUniqueTypeNames.length, duration);
-
-        assertThat(tsd.getTypes())
+        
+        log.debug("Types: {}  unique types: {} ({}ms)", runner.descriptor.getTypes().length,
+                actualUniqueTypeNames.length, runner.duration);
+      
+        assertThat(runner.descriptor.getTypes())
                 // Note that in the general case, there may still be duplicates if the same type is
                 // declared in more than one type system description. However, the scenario
                 // generator does not cover this case, so we can make this assertion here to check
@@ -218,11 +242,11 @@ public class ImportResolverTest {
                 .as("Deduplication of same type reachable through different paths")
                 .hasSameSizeAs(actualUniqueTypeNames);
         assertThat(actualUniqueTypeNames) //
-                .as("Mismatch in %s", e.getKey()) //
+                .as("Mismatch in %s", runner.descriptorFile) //
                 .containsExactly(expectedUniqueTypeNames);
-        assertThat(tsd.getTypes()) //
-                .as("Mismatch in %s", e.getKey()) //
-                .containsAll(e.getValue());
+        assertThat(runner.descriptor.getTypes()) //
+                .as("Mismatch in %s", runner.descriptorFile) //
+                .containsAll(runner.expectedTypes);
       }
 
       log.debug("Total time spent resolving imports in {} type systems: {}ms", data.size(),
@@ -233,6 +257,33 @@ public class ImportResolverTest {
 
     log.info("Average import resolving time in {} type systems: {}ms", typeSystemsProcessed,
             totalDurationAllRuns / (double) typeSystemsProcessed);
+  }
+
+  private class ResolveImportsRunner implements Callable<ResolveImportsRunner> {
+    private final ResourceManager resMgr;
+    private final File descriptorFile;
+    private final Set<TypeDescription> expectedTypes;
+
+    private TypeSystemDescription descriptor;
+    private long duration;
+
+    public ResolveImportsRunner(ResourceManager aResMgr, File aDescriptorFile,
+            Set<TypeDescription> aExpectedTypes) {
+      resMgr = aResMgr;
+      descriptorFile = aDescriptorFile;
+      expectedTypes = aExpectedTypes;
+    }
+
+    @Override
+    public ResolveImportsRunner call() throws InvalidXMLException, IOException {
+      descriptor = getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptorFile));
+
+      long startTime = System.currentTimeMillis();
+      descriptor.resolveImports(resMgr);
+      duration = System.currentTimeMillis() - startTime;
+
+      return this;
+    }
   }
 
   private List<Entry<File, Set<TypeDescription>>> prepareComplexImportScenario(int tsCount,
@@ -430,8 +481,12 @@ public class ImportResolverTest {
     typeSystemWithResolvedImports2.resolveImports(resMgr);
 
     assertThat(typeSystemWithResolvedImports.getTypes())
-            .as("Resolved imports in second type system are the same as in the first (cached)")
-            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
+            .as("Resolved types in second type system are equal to the ones the first")
             .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
+
+    assertThat(typeSystemWithResolvedImports.getTypes())
+            .as("Types are NOT the same as in the first because that could allow cache pollution")
+            .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
+            .doesNotContainAnyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
   }
 }

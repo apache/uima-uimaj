@@ -18,6 +18,8 @@
  */
 package org.apache.uima.resource.metadata.impl;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -111,7 +113,12 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
     resolveImports(wrapper, new HashSet<>(), collectedObjects, stack, resourceManager);
     stack.pop();
 
-    wrapper.setCollectibles(collectedObjects.values());
+    // Defensive copy to prevent cache pollution in case the caller makes changes to the by
+    // casting collectibles to their mutable implementation and making changes to them.
+    wrapper.setCollectibles(collectedObjects.values().stream() //
+            .map(c -> (COLLECTIBLE) c.clone()) //
+            .collect(toList()));
+    // wrapper.setCollectibles(collectedObjects.values());
     wrapper.clearImports();
   }
 
