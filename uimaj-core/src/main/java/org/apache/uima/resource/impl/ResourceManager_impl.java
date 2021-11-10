@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
@@ -38,6 +39,7 @@ import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
 import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper.StringPair;
 import org.apache.uima.internal.util.Class_TCCL;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.DataResource;
@@ -63,6 +65,7 @@ import org.apache.uima.util.XMLizable;
  * 
  */
 public class ResourceManager_impl implements ResourceManager {
+  private static final AtomicInteger IMPORT_URL_CACHE_WARNING_THROTTLE = new AtomicInteger();
 
   /**
    * Ties an External Resource instance to
@@ -222,7 +225,7 @@ public class ResourceManager_impl implements ResourceManager {
    * were created, so that these URLs are not re-parsed if the same URL is imported again.
    */
   private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<>());
-  
+
   /**
    * Creates a new <code>ResourceManager_impl</code>.
    */
@@ -856,6 +859,11 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Deprecated
   public Map<String, Set<String>> getImportUrlsCache() {
+    Misc.decreasingWithTrace(IMPORT_URL_CACHE_WARNING_THROTTLE,
+            "ResourceManager_impl.getImportUrlsCache() should not be called. It is no longer "
+                    + "filled during import resolving. The method will be removed in a future UIMA "
+                    + "version.",
+            UIMAFramework.getLogger());
     return importUrlsCache;
   }
   
