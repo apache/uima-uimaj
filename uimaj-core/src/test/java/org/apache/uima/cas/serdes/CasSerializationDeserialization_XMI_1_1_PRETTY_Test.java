@@ -23,6 +23,7 @@ import static org.apache.uima.cas.SerialFormat.XMI_1_1_PRETTY;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.CasLoadOptions.PRESERVE_ORIGINAL_TSI;
 import static org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite.DATA_XMI;
 import static org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode.NULL_STRINGS_AS_EMPTY;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
@@ -49,9 +50,9 @@ public class CasSerializationDeserialization_XMI_1_1_PRETTY_Test {
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
           new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
+                  (a, b) -> serdes(a, b, FORMAT, DEFAULT, PRESERVE_ORIGINAL_TSI)),
           new CasSerDesCycleConfiguration(FORMAT + " / LENIENT", //
-                  (a, b) -> serdes(a, b, FORMAT, LENIENT)));
+                  (a, b) -> serdes(a, b, FORMAT, LENIENT, PRESERVE_ORIGINAL_TSI)));
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
           new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //

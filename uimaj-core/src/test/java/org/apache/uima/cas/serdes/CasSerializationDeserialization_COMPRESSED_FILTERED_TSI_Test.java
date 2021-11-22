@@ -22,6 +22,7 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.CasLoadOptions.PRESERVE_ORIGINAL_TSI;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.REINIT;
@@ -47,7 +48,7 @@ public class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
           new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
+                  (a, b) -> serdes(a, b, FORMAT, DEFAULT, PRESERVE_ORIGINAL_TSI)),
           new CasSerDesCycleConfiguration(FORMAT + " / REINIT", //
                   (a, b) -> serdes(a, b, FORMAT, REINIT)));
 
