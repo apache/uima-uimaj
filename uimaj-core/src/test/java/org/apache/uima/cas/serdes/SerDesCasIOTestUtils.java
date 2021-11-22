@@ -35,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,6 +48,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.serdes.datasuites.CasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.ProgrammaticallyCreatedCasDataSuite;
 import org.apache.uima.cas.serdes.datasuites.XmiFileDataSuite;
@@ -196,7 +199,7 @@ public class SerDesCasIOTestUtils {
           CasLoadOptions... aOptions) throws IOException {
     // Deserialize the file into the buffer CAS
     try (InputStream casSource = Files.newInputStream(aSourceCasPath)) {
-      if (asList(aOptions).contains(CasLoadOptions.WITH_TSI)) {
+      if (asList(aOptions).contains(CasLoadOptions.PRESERVE_ORIGINAL_TSI)) {
         throw new NotImplementedException("Not implemented yet...");
         // try (InputStream tsiSource = Files.newInputStream(aSourceCasPath)) {
         // CasIOUtils.load(casSource, tsiSource, aBufferCas, aMode);
@@ -221,7 +224,11 @@ public class SerDesCasIOTestUtils {
     byte[] tsiBuffer;
     try (ByteArrayOutputStream casTarget = new ByteArrayOutputStream();
             ByteArrayOutputStream tsiTarget = new ByteArrayOutputStream()) {
-      CasIOUtils.save(aSourceCas, casTarget, tsiTarget, aFormat);
+      CasIOUtils.save(aSourceCas, casTarget, null, aFormat);
+      // CasIOUtils.save only saves TSI data to the TSI stream if it is not already included in the
+      // CAS stream (type system embedded). Thus, to ensure we always get the TSI info, we serialize
+      // it separately.
+      CasIOUtils.writeTypeSystem(aSourceCas, tsiTarget, true);
       casBuffer = casTarget.toByteArray();
       tsiBuffer = tsiTarget.toByteArray();
     }
@@ -236,11 +243,23 @@ public class SerDesCasIOTestUtils {
     // Deserialize the CAS
     try (ByteArrayInputStream casSource = new ByteArrayInputStream(casBuffer);
             ByteArrayInputStream tsiSource = new ByteArrayInputStream(tsiBuffer)) {
-      if (asList(aOptions).contains(CasLoadOptions.WITH_TSI)) {
-        CasIOUtils.load(casSource, tsiSource, aTargetCas, aMode);
-      } else {
-        CasIOUtils.load(casSource, null, aTargetCas, aMode);
+      if (asList(aOptions).contains(CasLoadOptions.PRESERVE_ORIGINAL_TSI)) {
+        ((CASImpl) aTargetCas).getBinaryCasSerDes()
+                .setupCasFromCasMgrSerializer(readCasManager(tsiSource));
       }
+      CasIOUtils.load(casSource, null, aTargetCas, aMode);
+    }
+  }
+
+  private static CASMgrSerializer readCasManager(InputStream tsiInputStream) throws IOException {
+    try {
+      if (null == tsiInputStream) {
+        return null;
+      }
+      ObjectInputStream is = new ObjectInputStream(tsiInputStream);
+      return (CASMgrSerializer) is.readObject();
+    } catch (ClassNotFoundException e) {
+      throw new IOException(e);
     }
   }
 
@@ -268,7 +287,12 @@ public class SerDesCasIOTestUtils {
   }
 
   public enum CasLoadOptions {
-    WITH_TSI
+    /**
+     * Preserves the type information of the original file and uses it when populating the target
+     * CAS during deserialization. This is particularly useful when testing formats which do not
+     * include type system information to ensure that no information is lost during deserialization.
+     */
+    PRESERVE_ORIGINAL_TSI
   }
 
   public static CAS createCasMaybeWithTypesystem(Path aContextFile)
