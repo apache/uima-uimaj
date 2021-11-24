@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.maven;
 
+import static org.apache.commons.lang.exception.ExceptionUtils.getRootCauseMessage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,20 +33,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.LoaderClassPath;
-import javassist.NotFoundException;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.MemberValue;
-import javassist.bytecode.annotation.StringMemberValue;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
@@ -70,6 +58,19 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.thoughtworks.qdox.model.JavaSource;
+
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.LoaderClassPath;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.MemberValue;
+import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * Enhance UIMA components with automatically generated uimaFIT annotations.
@@ -165,6 +166,13 @@ public class EnhanceMojo extends AbstractMojo {
   private String[] externalResourceNameConstantPrefixes = { "KEY_", "RES_" };
 
   /**
+   * Scope threshold to include. The default is "compile" (which implies compile, provided and
+   * system dependencies). Can also be changed to "test" (which implies all dependencies).
+   */
+  @Parameter(defaultValue = "compile", required = true)
+  private String includeScope;
+
+  /**
    * Start of a line containing a class name in the missing meta data report file
    */
   private static final String MARK_CLASS = "Class:";
@@ -174,12 +182,13 @@ public class EnhanceMojo extends AbstractMojo {
    */
   private static final String MARK_NO_MISSING_META_DATA = "No missing meta data was found.";
 
+  
+  @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
-
-    componentLoader = Util.getClassloader(project, getLog());
+    componentLoader = Util.getClassloader(project, getLog(), includeScope);
 
     // Set up class pool with all the project dependencies and the project classes themselves
     ClassPool classPool = new ClassPool(true);
@@ -242,7 +251,7 @@ public class EnhanceMojo extends AbstractMojo {
         ctClazz = classPool.get(clazzName);
       } catch (NotFoundException e) {
         throw new MojoExecutionException("Class [" + clazzName + "] not found in class pool: "
-                + ExceptionUtils.getRootCauseMessage(e), e);
+                + getRootCauseMessage(e), e);
       }
 
       // Get the source file
@@ -280,10 +289,10 @@ public class EnhanceMojo extends AbstractMojo {
         }
       } catch (IOException e) {
         throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be written: "
-                + ExceptionUtils.getRootCauseMessage(e), e);
+                + getRootCauseMessage(e), e);
       } catch (CannotCompileException e) {
         throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be compiled: "
-                + ExceptionUtils.getRootCauseMessage(e), e);
+                + getRootCauseMessage(e), e);
       }
     }
     

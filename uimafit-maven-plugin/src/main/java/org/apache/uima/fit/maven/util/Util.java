@@ -18,13 +18,19 @@
  */
 package org.apache.uima.fit.maven.util;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSet;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -40,6 +46,16 @@ import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaSource;
 
 public final class Util {
+
+  private static final Map<String, Set<String>> SCOPES; 
+  static {
+    SCOPES = new HashMap<>();
+    SCOPES.put("test", unmodifiableSet(new HashSet<>(asList("provided", "compile", "system", "runtime", "test"))));
+    SCOPES.put("runtime", unmodifiableSet(new HashSet<>(asList("provided", "compile", "system", "runtime"))));
+    SCOPES.put("compile", unmodifiableSet(new HashSet<>(asList("provided", "compile", "system"))));
+    SCOPES.put("provided", unmodifiableSet(new HashSet<>(asList("provided"))));
+    SCOPES.put("system", unmodifiableSet(new HashSet<>(asList("system"))));
+  }
 
   private Util() {
     // No instances
@@ -123,7 +139,7 @@ public final class Util {
    * Create a class loader which covers the classes compiled in the current project and all
    * dependencies.
    */
-  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog)
+  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog, String aIncludeScopeThreshold)
           throws MojoExecutionException {
     List<URL> urls = new ArrayList<URL>();
     try {
@@ -139,13 +155,28 @@ public final class Util {
       throw new MojoExecutionException("Unable to resolve dependencies: "
               + ExceptionUtils.getRootCauseMessage(e), e);
     }
-
+    
+    Set<String> scopes = SCOPES.get(aIncludeScopeThreshold);
+    if (scopes == null) {
+      throw new MojoExecutionException("Unsupported scope: " + aIncludeScopeThreshold);
+    }
+    
     for (Artifact dep : (Set<Artifact>) aProject.getDependencyArtifacts()) {
       try {
+        if (!scopes.contains(dep.getScope())) {
+          aLog.debug("Not generating classpath entry for out-of-scope artifact: " + dep.getGroupId()
+                  + ":" + dep.getArtifactId() + ":" + dep.getVersion() + "(" + dep.getScope()
+                  + ")");
+          continue;
+        }
+        
         if (dep.getFile() == null) {
+          aLog.debug("Not generating classpath entry for unresolved artifact: " + dep.getGroupId()
+                  + ":" + dep.getArtifactId() + ":" + dep.getVersion());
           // Unresolved file because it is in the wrong scope (e.g. test?)
           continue;
         }
+                
         aLog.debug("Classpath entry: " + dep.getGroupId() + ":" + dep.getArtifactId() + ":"
                 + dep.getVersion() + " -> " + dep.getFile());
         urls.add(dep.getFile().toURI().toURL());
