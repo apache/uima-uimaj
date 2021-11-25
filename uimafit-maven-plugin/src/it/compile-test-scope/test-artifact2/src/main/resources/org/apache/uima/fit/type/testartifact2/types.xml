@@ -18,17 +18,14 @@
 	under the License.
 -->
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <name>Test Types</name>
-  <description />
+  <name>Test Types 2</name>
+  <description></description>
   <version>1.0</version>
-  <vendor />
-  <imports>
-    <import name="org.apache.uima.fit.type.testartifact2.types" />
-  </imports>
+  <vendor/>
   <types>
     <typeDescription>
-      <name>org.apache.uima.fit.type.TestType</name>
-      <description />
+      <name>org.apache.uima.fit.type.TestType2</name>
+      <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
   </types>

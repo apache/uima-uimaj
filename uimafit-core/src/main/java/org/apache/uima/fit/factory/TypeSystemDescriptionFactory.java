@@ -120,15 +120,17 @@ public final class TypeSystemDescriptionFactory {
             XMLInputSource xmlInputType1 = new XMLInputSource(location);
             tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
             LogFactory.getLog(TypeSystemDescription.class)
-            .debug("Detected type system at [" + location + "]");
+              .debug("Detected type system at [" + location + "]");
           } catch (IOException e) {
             throw new ResourceInitializationException(e);
           } catch (InvalidXMLException e) {
             LogFactory.getLog(TypeSystemDescription.class)
-            .warn("[" + location + "] is not a type file. Ignoring.", e);
+              .warn("[" + location + "] is not a type file. Ignoring.", e);
           }
         }
 
+        LogFactory.getLog(TypeSystemDescription.class)
+          .trace("Merging type systems and resolving imports...");
         ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         tsd = mergeTypeSystems(tsdList, resMgr);
         typeDescriptorByClassloader.put(cl, tsd);

@@ -20,6 +20,7 @@ package org.apache.uima.fit.internal;
 
 import java.net.MalformedURLException;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
@@ -75,6 +76,8 @@ public class ResourceManagerFactory {
           // handle switching across more than one classloader.
           // This can be done since UIMA 2.9.0 and starts being handled in uimaFIT 2.3.0
           // See https://issues.apache.org/jira/browse/UIMA-5056
+          LogFactory.getLog(ResourceManagerFactory.class)
+            .trace("Using resource manager from active UIMA context");
           return ((UimaContextAdmin) activeContext).getResourceManager();
         }
 
@@ -83,10 +86,13 @@ public class ResourceManagerFactory {
         // This was the default behavior until uimaFIT 2.2.0.
         ResourceManager resMgr;
         if (Thread.currentThread().getContextClassLoader() != null) {
-          // If the context classloader is set, then we want the resource manager to fallb
-          // back to it. However, it may not reliably do that that unless we explictly pass
+          // If the context classloader is set, then we want the resource manager to fall
+          // back to it. However, it may not reliably do that that unless we explicitly pass
           // null here. See. UIMA-6239.
+          LogFactory.getLog(ResourceManagerFactory.class)
+            .trace("Detected thread context classloader: preparing resource manager to use it");
           resMgr = new ResourceManager_impl(null);
+          resMgr.setExtensionClassPath(ClassLoaderUtils.findClassloader(), "", true);
         }
         else {
           resMgr = UIMAFramework.newDefaultResourceManager();
@@ -102,6 +108,9 @@ public class ResourceManagerFactory {
                 (maj == 2 && (min < 10 || (min == 10 && rev < 3))) || // version < 2.10.3
                 (maj == 3 && ((min == 0 && rev < 1)));                // version < 3.0.1
         if (uimaCoreIgnoresContextClassloader) {
+          LogFactory.getLog(ResourceManagerFactory.class)
+            .trace("Detected UIMA version " + maj + "." + min + "." + rev + 
+                    " which ignores the thread context classloader, setting it explicitly");
           resMgr.setExtensionClassPath(ClassLoaderUtils.findClassloader(), "", true);
         }
 

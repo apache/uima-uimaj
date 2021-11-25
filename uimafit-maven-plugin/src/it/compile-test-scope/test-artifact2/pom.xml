@@ -28,13 +28,5 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>test-artifact</artifactId>
-  
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.uima.fit.maven.it</groupId>
-      <artifactId>test-artifact2</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
+  <artifactId>test-artifact2</artifactId>
 </project>

@@ -35,6 +35,7 @@
   
   <modules>
     <module>test-artifact</module>
+    <module>test-artifact2</module>
     <module>compile-artifact</module>
     <module>main-artifact</module>
     <module>main-artifact-plus-test-scope</module>
