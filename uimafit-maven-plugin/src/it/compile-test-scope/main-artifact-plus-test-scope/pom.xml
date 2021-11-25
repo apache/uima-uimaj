@@ -62,7 +62,7 @@
         <executions>
           <execution>
             <id>default</id>
-            <phase>process-classes</phase>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>enhance</goal>
               <goal>generate</goal>

@@ -64,6 +64,16 @@
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                                     
                 </typeDescription>
+                                
+                <typeDescription>
+                                        
+                    <name>org.apache.uima.fit.type.TestType2</name>
+                                        
+                    <description/>
+                                        
+                    <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+                </typeDescription>
                             
             </types>
                     

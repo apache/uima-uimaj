@@ -19,6 +19,8 @@
 package org.apache.uima.fit.maven;
 
 import static org.apache.commons.lang.exception.ExceptionUtils.getRootCauseMessage;
+import static org.apache.maven.plugins.annotations.LifecyclePhase.PROCESS_CLASSES;
+import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,10 +43,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
@@ -75,7 +75,7 @@ import javassist.bytecode.annotation.StringMemberValue;
 /**
  * Enhance UIMA components with automatically generated uimaFIT annotations.
  */
-@Mojo(name = "enhance", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE)
+@Mojo(name = "enhance", defaultPhase = PROCESS_CLASSES, requiresDependencyResolution = TEST, requiresDependencyCollection = TEST)
 public class EnhanceMojo extends AbstractMojo {
   @Component
   private MavenProject project;
