@@ -34,6 +34,8 @@ import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.util.InvalidXMLException;
 import org.xml.sax.SAXException;
 
@@ -41,11 +43,11 @@ public final class CpePipeline {
   private CpePipeline() {
     // No instances
   }
-  
+
   /**
-   * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline. This call uses
-   * a number of threads equal to the number of available processors (as reported by Java, so 
-   * usually boiling down to cores) minus 1 - minimum of 1.
+   * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline. This call uses a
+   * number of threads equal to the number of available processors (as reported by Java, so usually
+   * boiling down to cores) minus 1 - minimum of 1.
    * 
    * @param readerDesc
    *          The CollectionReader that loads the documents into the CAS.
@@ -96,23 +98,29 @@ public final class CpePipeline {
    *           referenced from the CPE descriptor
    * @throws CpeDescriptorException
    *           if there was a problem configuring the CPE descriptor
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if there was a problem initializing or running the CPE.
-   * @throws InvalidXMLException 
+   * @throws InvalidXMLException
    *           if there was a problem initializing or running the CPE.
-   * @throws AnalysisEngineProcessException 
+   * @throws AnalysisEngineProcessException
    *           if there was a problem running the CPE.
    */
   public static void runPipeline(final int parallelism,
           final CollectionReaderDescription readerDesc, final AnalysisEngineDescription... descs)
           throws SAXException, CpeDescriptorException, IOException, ResourceInitializationException,
           InvalidXMLException, AnalysisEngineProcessException {
-    // Create AAE
-    final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
+    AnalysisEngineDescription topLevelAnalysisEngine;
+
+    if (descs.length == 1 && !mayContainCasMultiplier(descs[0])) {
+      topLevelAnalysisEngine = descs[0];
+    } else {
+      topLevelAnalysisEngine = createEngineDescription(descs);
+      topLevelAnalysisEngine.getMetaData().setName("Top-level CPE Aggregate");
+    }
 
     CpeBuilder builder = new CpeBuilder();
     builder.setReader(readerDesc);
-    builder.setAnalysisEngine(aaeDesc);
+    builder.setAnalysisEngine(topLevelAnalysisEngine);
     builder.setMaxProcessingUnitThreadCount(parallelism);
 
     StatusCallbackListenerImpl status = new StatusCallbackListenerImpl();
@@ -132,6 +140,29 @@ public final class CpePipeline {
     if (status.exceptions.size() > 0) {
       throw new AnalysisEngineProcessException(status.exceptions.get(0));
     }
+  }
+  
+  private static boolean mayContainCasMultiplier(final AnalysisEngineDescription desc) {
+    if (desc.isPrimitive()) {
+      return desc.getAnalysisEngineMetaData().getOperationalProperties().isMultipleDeploymentAllowed();
+    }
+    
+    for (MetaDataObject mdo : desc.getDelegateAnalysisEngineSpecifiersWithImports().values()) {
+      if (mdo instanceof Import) {
+        // The imported delegate might be a CAS multiplier, but we cannot really tell without
+        // risking an exception. So let's just assume it does.
+        return true;
+      }
+      
+      if (mdo instanceof AnalysisEngineDescription) {
+        AnalysisEngineDescription aed = (AnalysisEngineDescription) mdo;
+        if (aed.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
   }
 
   private static class StatusCallbackListenerImpl implements StatusCallbackListener {
