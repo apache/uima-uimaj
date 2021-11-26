@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -123,7 +124,7 @@ public final class Util {
    * Create a class loader which covers the classes compiled in the current project and all
    * dependencies.
    */
-  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog)
+  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog, String aIncludeScopeThreshold)
           throws MojoExecutionException {
     List<URL> urls = new ArrayList<URL>();
     try {
@@ -139,13 +140,26 @@ public final class Util {
       throw new MojoExecutionException("Unable to resolve dependencies: "
               + ExceptionUtils.getRootCauseMessage(e), e);
     }
-
-    for (Artifact dep : (Set<Artifact>) aProject.getDependencyArtifacts()) {
+    
+    ScopeArtifactFilter filter = new ScopeArtifactFilter(aIncludeScopeThreshold);
+    
+    for (Artifact dep : (Set<Artifact>) aProject.getArtifacts()) {
       try {
+        if (!filter.include(dep)) {
+          aLog.debug("Not generating classpath entry for out-of-scope artifact: " + dep.getGroupId()
+                  + ":" + dep.getArtifactId() + ":" + dep.getVersion() + " (" + dep.getScope()
+                  + ")");
+          continue;
+        }
+        
         if (dep.getFile() == null) {
+          aLog.debug("Not generating classpath entry for unresolved artifact: " + dep.getGroupId()
+                  + ":" + dep.getArtifactId() + ":" + dep.getVersion()+ " (" + dep.getScope()
+                  + ")");
           // Unresolved file because it is in the wrong scope (e.g. test?)
           continue;
         }
+                
         aLog.debug("Classpath entry: " + dep.getGroupId() + ":" + dep.getArtifactId() + ":"
                 + dep.getVersion() + " -> " + dep.getFile());
         urls.add(dep.getFile().toURI().toURL());
