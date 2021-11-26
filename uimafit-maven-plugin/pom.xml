@@ -180,7 +180,7 @@
               <configuration>
                 <excludes combine.children="append">
                   <!-- These configuration files cannot bear a license header -->
-                  <exclude>src/it/with-typesystem-in-descriptors/src/main/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
+                  <exclude>src/it/**/META-INF/org.apache.uima.fit/types.txt</exclude>
                 </excludes>
               </configuration>
             </execution>
