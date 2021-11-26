@@ -21,7 +21,11 @@ package org.apache.uima.fit.util;
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
+import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
+import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
+import static org.apache.uima.cas.text.AnnotationPredicates.covering;
+import static org.apache.uima.cas.text.AnnotationPredicates.following;
+import static org.apache.uima.cas.text.AnnotationPredicates.preceding;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.AnnotationPredicateTestData.NON_ZERO_WIDTH_TEST_CASES;
 import static org.apache.uima.fit.util.AnnotationPredicateTestData.ZERO_WIDTH_TEST_CASES;
@@ -30,11 +34,6 @@ import static org.apache.uima.fit.util.AnnotationPredicateTestData.RelativePosit
 import static org.apache.uima.fit.util.AnnotationPredicateTestData.RelativePosition.COVERING;
 import static org.apache.uima.fit.util.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.fit.util.AnnotationPredicateTestData.RelativePosition.PRECEDING;
-import static org.apache.uima.fit.util.AnnotationPredicates.colocated;
-import static org.apache.uima.fit.util.AnnotationPredicates.coveredBy;
-import static org.apache.uima.fit.util.AnnotationPredicates.covering;
-import static org.apache.uima.fit.util.AnnotationPredicates.following;
-import static org.apache.uima.fit.util.AnnotationPredicates.preceding;
 import static org.apache.uima.fit.util.CasUtil.exists;
 import static org.apache.uima.fit.util.CasUtil.getAnnotationType;
 import static org.apache.uima.fit.util.CasUtil.getType;
@@ -247,7 +246,7 @@ public class CasUtilTest extends ComponentTestBase {
   public void thatSelectPrecedingBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
   {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> stream(cas.getAnnotationIndex(type).spliterator(), false)
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> preceding(candidate, context))
             .collect(toList()),
         (cas, type, context) -> selectPreceding(cas, type, context, MAX_VALUE));
@@ -266,7 +265,7 @@ public class CasUtilTest extends ComponentTestBase {
   public void thatSelectFollowingBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
   {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> stream(cas.getAnnotationIndex(type).spliterator(), false)
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> following(candidate, context))
             .collect(toList()),
         (cas, type, context) -> selectFollowing(cas, type, context, MAX_VALUE));
@@ -286,7 +285,7 @@ public class CasUtilTest extends ComponentTestBase {
   public void thatSelectCoveredBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
   {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> stream(cas.getAnnotationIndex(type).spliterator(), false)
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> coveredBy(candidate, context))
             .collect(toList()),
         (cas, type, context) -> selectCovered(cas, type, context));
@@ -306,7 +305,7 @@ public class CasUtilTest extends ComponentTestBase {
   public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
   {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> stream(cas.getAnnotationIndex(type).spliterator(), false)
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> covering(candidate, context))
             .collect(toList()),
         (cas, type, context) -> selectCovering(cas, type, context));
@@ -326,7 +325,7 @@ public class CasUtilTest extends ComponentTestBase {
   public void thatSelectAtBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
   {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> stream(cas.getAnnotationIndex(type).spliterator(), false)
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> colocated(candidate, context))
             .collect(toList()),
         (cas, type, context) -> selectAt(cas, type, context.getBegin(), context.getEnd()));

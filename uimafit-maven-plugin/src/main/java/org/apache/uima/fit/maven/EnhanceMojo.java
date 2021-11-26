@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.maven;
 
-import static org.apache.commons.lang.exception.ExceptionUtils.getRootCauseMessage;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.PROCESS_CLASSES;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
@@ -35,10 +35,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -182,7 +183,6 @@ public class EnhanceMojo extends AbstractMojo {
    */
   private static final String MARK_NO_MISSING_META_DATA = "No missing meta data was found.";
 
-  
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     // Get the compiled classes from this project
@@ -467,7 +467,7 @@ public class EnhanceMojo extends AbstractMojo {
       else if (ExternalResourceFactory.isExternalResourceField(field)) {
         type = "external resource";
         // Extract resource key from the uimaFIT annotation
-        pname = ExternalResourceFactory.createExternalResourceDependency(field).getKey();
+        pname = ExternalResourceFactory.createResourceDependency(field).getKey();
         // Extract JavaDoc for this resource from the source file
         pdesc = Util.getParameterDocumentation(aAST, field.getName(), 
                 resourceNameFields.get(pname));

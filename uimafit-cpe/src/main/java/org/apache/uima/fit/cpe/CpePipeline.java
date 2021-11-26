@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
@@ -34,10 +33,10 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.InvalidXMLException;
 import org.xml.sax.SAXException;
 
-/**
- */
 public final class CpePipeline {
   private CpePipeline() {
     // No instances
@@ -57,16 +56,23 @@ public final class CpePipeline {
    * @throws SAXException
    *           if there was a XML-related problem materializing the component descriptors that are
    *           referenced from the CPE descriptor
+   * @throws InvalidXMLException
+   *           if there was a XML-related problem materializing the component descriptors that are
+   *           referenced from the CPE descriptor
    * @throws IOException
    *           if there was a I/O-related problem materializing the component descriptors that are
    *           referenced from the CPE descriptor
    * @throws CpeDescriptorException
    *           if there was a problem configuring the CPE descriptor
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if there was a problem initializing or running the CPE.
-   */  public static void runPipeline(final CollectionReaderDescription readerDesc,
+   * @throws AnalysisEngineProcessException
+   *           if there was a problem initializing or running the CPE.
+   */
+  public static void runPipeline(final CollectionReaderDescription readerDesc,
           final AnalysisEngineDescription... descs)
-          throws UIMAException, SAXException, CpeDescriptorException, IOException {
+          throws SAXException, CpeDescriptorException, IOException, ResourceInitializationException,
+          InvalidXMLException, AnalysisEngineProcessException {
 
     runPipeline(Math.max(1, getRuntime().availableProcessors() - 1), readerDesc, descs);
   }
@@ -90,12 +96,17 @@ public final class CpePipeline {
    *           referenced from the CPE descriptor
    * @throws CpeDescriptorException
    *           if there was a problem configuring the CPE descriptor
-   * @throws UIMAException
+   * @throws ResourceInitializationException 
    *           if there was a problem initializing or running the CPE.
+   * @throws InvalidXMLException 
+   *           if there was a problem initializing or running the CPE.
+   * @throws AnalysisEngineProcessException 
+   *           if there was a problem running the CPE.
    */
   public static void runPipeline(final int parallelism,
           final CollectionReaderDescription readerDesc, final AnalysisEngineDescription... descs)
-          throws UIMAException, SAXException, CpeDescriptorException, IOException {
+          throws SAXException, CpeDescriptorException, IOException, ResourceInitializationException,
+          InvalidXMLException, AnalysisEngineProcessException {
     // Create AAE
     final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
 

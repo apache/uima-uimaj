@@ -22,7 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -70,10 +70,12 @@ public class SimplePipelineTest {
       initTypeSystemCalled = true;
     }
     
+    @Override
     public Progress[] getProgress() {
       return null;
     }
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       assertTrue("typeSystemInit() has not been called", initTypeSystemCalled);
       return this.current < this.size;
@@ -143,7 +145,7 @@ public class SimplePipelineTest {
     Reader.resource = null;
     Annotator.resource = null;
     
-    ExternalResourceDescription res = createExternalResourceDescription(DummySharedResource.class);
+    ExternalResourceDescription res = createResourceDescription(DummySharedResource.class);
     SimplePipeline.runPipeline(createReaderDescription(Reader.class, "resource", res),
             createEngineDescription(Annotator.class, "resource", res));
     

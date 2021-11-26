@@ -28,7 +28,6 @@ import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.descriptor.OperationalProperties;
-import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -38,16 +37,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 @OperationalProperties(outputsNewCases = true)
 public abstract class JCasCollectionReader_ImplBase extends CollectionReader_ImplBase {
-  private ExtendedLogger logger;
-
-  @Override
-  public ExtendedLogger getLogger() {
-    if (logger == null) {
-      logger = new ExtendedLogger(getUimaContext());
-    }
-    return logger;
-  }
-
   // This method should not be overwritten. Overwrite initialize(UimaContext) instead.
   @Override
   public final void initialize() throws ResourceInitializationException {
@@ -69,6 +58,7 @@ public abstract class JCasCollectionReader_ImplBase extends CollectionReader_Imp
   }
 
   // This method should not be overwritten. Overwrite getNext(JCas) instead.
+  @Override
   public final void getNext(final CAS cas) throws IOException, CollectionException {
     try {
       getNext(cas.getJCas());
@@ -89,6 +79,7 @@ public abstract class JCasCollectionReader_ImplBase extends CollectionReader_Imp
    */
   public abstract void getNext(JCas jCas) throws IOException, CollectionException;
 
+  @Override
   public void close() throws IOException {
     // Do nothing per default
   }

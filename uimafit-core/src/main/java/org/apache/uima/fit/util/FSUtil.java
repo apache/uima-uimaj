@@ -20,17 +20,17 @@ package org.apache.uima.fit.util;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.util.FSCollectionFactory.createArrayFS;
-import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArray;
-import static org.apache.uima.fit.util.FSCollectionFactory.createByteArray;
-import static org.apache.uima.fit.util.FSCollectionFactory.createDoubleArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createByteArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createDoubleArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createFSList;
-import static org.apache.uima.fit.util.FSCollectionFactory.createFloatArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createFloatArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createFloatList;
-import static org.apache.uima.fit.util.FSCollectionFactory.createIntArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createIntArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createIntegerList;
-import static org.apache.uima.fit.util.FSCollectionFactory.createLongArray;
-import static org.apache.uima.fit.util.FSCollectionFactory.createShortArray;
-import static org.apache.uima.fit.util.FSCollectionFactory.createStringArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createLongArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createShortArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createStringArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createStringList;
 
 import java.lang.reflect.Array;
@@ -55,6 +55,7 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.jcas.cas.TOP;
 
 public class FSUtil {
   private static Feature getMandatoryFeature(FeatureStructure aFS, String aFeature)
@@ -118,7 +119,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else {
-      aFS.setFeatureValue(feat, createBooleanArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createBooleanArrayFS(aFS.getCAS(), aValue));
     }
   }
 
@@ -132,7 +133,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else {
-      aFS.setFeatureValue(feat, createByteArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createByteArrayFS(aFS.getCAS(), aValue));
     }
   }
 
@@ -146,7 +147,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else {
-      aFS.setFeatureValue(feat, createDoubleArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createDoubleArrayFS(aFS.getCAS(), aValue));
     }
   }
 
@@ -160,7 +161,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else if (feat.getRange().isArray()) {
-      aFS.setFeatureValue(feat, createFloatArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createFloatArrayFS(aFS.getCAS(), aValue));
     }
     else {
       aFS.setFeatureValue(feat, createFloatList(aFS.getCAS(), aValue));
@@ -177,7 +178,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else if (feat.getRange().isArray()) {
-      aFS.setFeatureValue(feat, createIntArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createIntArrayFS(aFS.getCAS(), aValue));
     }
     else {
       aFS.setFeatureValue(feat, createIntegerList(aFS.getCAS(), aValue));
@@ -194,7 +195,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else {
-      aFS.setFeatureValue(feat, createLongArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createLongArrayFS(aFS.getCAS(), aValue));
     }
   }
 
@@ -208,7 +209,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else {
-      aFS.setFeatureValue(feat, createShortArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createShortArrayFS(aFS.getCAS(), aValue));
     }
   }
 
@@ -222,7 +223,7 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else if (feat.getRange().isArray()) {
-      aFS.setFeatureValue(feat, createStringArray(aFS.getCAS(), aValue));
+      aFS.setFeatureValue(feat, createStringArrayFS(aFS.getCAS(), aValue));
     }
     else {
       aFS.setFeatureValue(feat, createStringList(aFS.getCAS(), aValue));
@@ -238,7 +239,9 @@ public class FSUtil {
       aFS.setFeatureValue(feat, null);
     }
     else if (isListType(aFS.getCAS().getTypeSystem(), feat.getRange())) {
-      aFS.setFeatureValue(feat, createFSList(aFS.getCAS(), aValue));
+      TOP[] values = new TOP[aValue.length];
+      System.arraycopy(aValue, 0, values, 0, aValue.length);
+      aFS.setFeatureValue(feat, createFSList(aFS.getCAS(), values));
     }
     else {
       requireSingleValue(feat, aValue);
@@ -255,28 +258,28 @@ public class FSUtil {
     else if (feat.getRange().isArray()) {
       switch (feat.getRange().getName()) {
         case CAS.TYPE_NAME_BOOLEAN_ARRAY:
-          aFS.setFeatureValue(feat, createBooleanArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createBooleanArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_BYTE_ARRAY:
-          aFS.setFeatureValue(feat, createByteArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createByteArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_DOUBLE_ARRAY:
-          aFS.setFeatureValue(feat, createDoubleArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createDoubleArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_FLOAT_ARRAY:
-          aFS.setFeatureValue(feat, createFloatArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createFloatArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_INTEGER_ARRAY:
-          aFS.setFeatureValue(feat, createIntArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createIntArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_LONG_ARRAY:
-          aFS.setFeatureValue(feat, createLongArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createLongArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_SHORT_ARRAY:
-          aFS.setFeatureValue(feat, createShortArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createShortArrayFS(aFS.getCAS(), aValue));
           break;
         case CAS.TYPE_NAME_STRING_ARRAY:
-          aFS.setFeatureValue(feat, createStringArray(aFS.getCAS(), aValue));
+          aFS.setFeatureValue(feat, createStringArrayFS(aFS.getCAS(), aValue));
           break;
         default:
           aFS.setFeatureValue(feat, createArrayFS(aFS.getCAS(), aValue));

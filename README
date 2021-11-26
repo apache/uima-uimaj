@@ -1,5 +1,5 @@
 
-      Apache uimaFIT (TM) v2.5.0
+      Apache uimaFIT (TM) v3.2.0
       --------------------------
 
 
@@ -37,37 +37,45 @@ following list highlights some of the features uimaFIT provides:
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 
-What's New in 2.5.0
+What's New in 3.2.0
 -------------------
 
-uimaFIT 2.5.0 is a minor feature and bugfix release. On supported platforms, it should should serve
-as a drop-in replacement for previous uimaFIT 2.x versions.
+uimaFIT 3.2.0 is a feature and bugfix release. On supported platforms, it serves mostly as 
+a drop-in replacement for previous uimaFIT 3.x versions. However, the behavior of the various
+select methods was slightly adapted in edge cases to align with the update behavior of the UIMA Java
+SDK SelectFS API.  For details, please refer to the migration section in the documentation in the
+Apache UIMA Java SDK 3.2.0.
 
-Notable changes include:
+Notable changes in this release include:
 
- * Added support for PEARs in AnalysisEngineFactory
- * Added support for destroying auto-created resource managers if feasible
- * Added CasFactory
- * Added CasUtil.exists(...) method
- * Added support for Charset-typed parameters in components
- * Added ExternalResourceFactory.createResource(...) methods for instantiating resources
- * Added ability to set number of threads in CpePipeline.runPipeline(...)
- * Fixed FSUtil.getFeature(...) failing when called with Object.class on multi-valued features
- * Fixed issue with non-XML 1.0 characters in parameter values when running CPEs
- * Fixed JCasIterable.iterator() destroying the ResourceManager before it is even used
- * Fixed CollectionReaderFactory.createReaderDescription(...) not discovering type prios and indexes
- * Fixed issue causing component parameters to be used when initializing resources
- * Upgraded to UIMA 2.10.4
- * Upgraded to Spring 4.3.26
+#### New Features and improvements
 
+* [UIMA-6242] - uimaFIT Maven plugin should fail on error by default
+* [UIMA-6263] - CAS validation support
+* [UIMA-6270] - Add selectOverlapping to (J)CasUtil
+* [UIMA-6311] - Add generated resources output folder as resource folder
+* [UIMA-6312] - Better PEAR parameter support
+* [UIMA-6232] - Reduce overhead of createTypeSystemDescription() and friends
+
+#### Bugs fixed
+
+* [UIMA-6226] - uimaFIT maven plugin "generate" fails to import type systems from dependencies
+* [UIMA-6240] - Failure to resolve type system imports when generating descriptors
+* [UIMA-6275] - InitializableFactory is not smart enough to find a suitable classloader
+* [UIMA-6286] - select following finds zero-width annotation at reference end position
+* [UIMA-6292] - selectCovering is slow
+* [UIMA-6294] - SelectFS.at(annotation) does not return the correct result
+* [UIMA-6314] - Align preceding/following with predicate in UIMA core
+
+ 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
-  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12339544
+  https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.2.0uimaFIT
 
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.8 or higher, UIMA 2.10.4 or higher, and the Spring Framework 4.3.26 or higher.
+uimaFIT requires Java 1.8 or higher, UIMA 3.2.0 or higher, and the Spring Framework 4.3.30 or higher.
 
 
 Availability
@@ -84,7 +92,7 @@ add uimaFIT as a dependency to your pom.xml file with the following:
   <dependency>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-core</artifactId>
-    <version>2.5.0</version>
+    <version>3.2.0</version>
   </dependency>
 
 
@@ -98,11 +106,6 @@ uimafit-maven          - a Maven plugin to automatically enhance UIMA components
 uimafit-junit          - convenience code facilitating the implementation of UIMA/uimaFIT tests
                          in JUnit tests
 uimafit-assertj        - adds assertions for UIMA/uimaFIT types via the AssertJ framework
-uimafit-legacy-support - allows uimaFIT 2.x.0 to use uimaFIT 1.4.x meta data like Java annotations
-                         and META-INF/org.uimafit/types.txt files. Pipelines mixing uimaFIT 1.4.x
-                         and 2.x components MUST be created using the 2.x factories, because the
-                         1.4.x factories will NOT understand how to handle uimaFIT 2.x components
-                         or auto-configuration.
 uimafit-spring         - an experimental module serving as a proof-of-concept for the integration of
                          UIMA with the Spring Framework. It is currently not considered finished and
                          uses invasive reflection in order to patch the UIMA framework such that it

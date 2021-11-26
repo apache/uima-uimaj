@@ -30,32 +30,30 @@ import org.apache.uima.fit.type.Token;
 
 public final class CasInitializationUtils
 {
-    private static final long RANDOM_SEED = 12345l;
-
     private CasInitializationUtils()
     {
         // No instances
     }
 
-    public static void initRandomCas(CAS cas, int size)
-    {
+    public static void initRandomCas(CAS cas, int typeCount, int annotationCount, int maxAnnotationLength,
+        int approxDocLength, long seed) {
         cas.reset();
-        Random rnd = new Random(RANDOM_SEED);
+        Random rnd = new Random(seed);
         List<Type> types = new ArrayList<Type>();
         types.add(cas.getTypeSystem().getType(Token.class.getName()));
         types.add(cas.getTypeSystem().getType(Sentence.class.getName()));
 
         // Shuffle the types
-        for (int n = 0; n < 10; n++) {
+        for (int n = 0; n < typeCount; n++) {
             Type t = types.remove(rnd.nextInt(types.size()));
             types.add(t);
         }
 
         // Randomly generate annotations
-        for (int n = 0; n < size; n++) {
+        for (int n = 0; n < annotationCount; n++) {
             for (Type t : types) {
-                int begin = rnd.nextInt(100);
-                int end = begin + rnd.nextInt(30);
+                int begin = rnd.nextInt(approxDocLength);
+                int end = begin + rnd.nextInt(maxAnnotationLength);
                 cas.addFsToIndexes(cas.createAnnotation(t, begin, end));
             }
         }

@@ -176,7 +176,7 @@ Note that in the following example, we create only one external resource descrip
 Because we only use a single description, also only a single instance of the external resource is created and shared between the two engines. 
 [source,java]
 ----
-ExternalResourceDescription extDesc = createExternalResourceDescription(
+ExternalResourceDescription extDesc = createSharedResourceDescription(
   SharedModel.class, new File("somemodel.bin"));
 		
 // Binding external resource to each Annotator individually

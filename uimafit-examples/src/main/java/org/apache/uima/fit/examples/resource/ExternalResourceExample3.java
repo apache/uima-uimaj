@@ -21,7 +21,7 @@ package org.apache.uima.fit.examples.resource;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -73,9 +73,9 @@ public class ExternalResourceExample3 {
     AnalysisEngineDescription aed = createEngineDescription(
             Annotator2.class,
             Annotator2.RES_MODEL,
-            createExternalResourceDescription(ChainableResource.class,
+            createResourceDescription(ChainableResource.class,
                     ChainableResource.RES_CHAINED_RESOURCE,
-                    createExternalResourceDescription(ChainableResource.class)));
+                    createResourceDescription(ChainableResource.class)));
 
     // Check the external resource was injected
     AnalysisEngine ae = createEngine(aed);
