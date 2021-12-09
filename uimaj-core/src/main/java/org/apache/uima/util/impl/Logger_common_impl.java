@@ -22,8 +22,13 @@ package org.apache.uima.util.impl;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceManager;
@@ -90,10 +95,21 @@ public abstract class Logger_common_impl implements Logger {
   
   protected final int limit_common;
   private final boolean isLimited; // master switch tested first
+  private final AtomicInteger dontSetResourceManagerCount = new AtomicInteger();
 
   /**
    * ResourceManager whose extension ClassLoader will be used to locate the message digests. Null
    * will cause the ClassLoader to default to this.class.getClassLoader().
+   * 
+   * @Deprecated When a logger is used within UIMA, the resource manager is picked up from the
+   *             {@link UimaContextHolder} and if none is available, then the class loader set on
+   *             the {@link Thread#getContextClassLoader()} is used. Thus, setting a resource
+   *             manager for loading message localizations should not be required. Setting a
+   *             resource manager anyway can lead to resource being registered in the resource
+   *             manager to not be garbage collected in a timely manner. Also, the logger is shared
+   *             globally and in a multi-threaded/multi-classloader scenario, it is likely that
+   *             different threads overwrite each others logger resource manager making it likely
+   *             that in any given thread the wrong resource manager is used by the logger.
    */
   private ResourceManager mResourceManager = null;
   private boolean isAnnotatorLogger;
@@ -116,9 +132,7 @@ public abstract class Logger_common_impl implements Logger {
   }   
   
   /*********************************************
-   * Abstract methods 
-   * not in Uima Logger interface
-   * that must be implemented by subclasses
+   * Abstract methods not in UIMA Logger interface that must be implemented by subclasses
    *********************************************/
 
   /**
@@ -206,13 +220,27 @@ public abstract class Logger_common_impl implements Logger {
       return true;
     }
     switch(level.toInteger()) {
-    case Level.SEVERE_INT: if (SEVERE_COUNT >= limit_common) return false; SEVERE_COUNT++; return true; 
-    case Level.WARNING_INT: if (WARNING_COUNT >= limit_common) return false; WARNING_COUNT++; return true; 
-    case Level.INFO_INT: if (INFO_COUNT >= limit_common) return false; INFO_COUNT++; return true; 
-    case Level.CONFIG_INT: if (CONFIG_COUNT >= limit_common) return false; CONFIG_COUNT++; return true; 
-    case Level.FINE_INT: if (FINE_COUNT >= limit_common) return false; FINE_COUNT++; return true; 
-    case Level.FINER_INT: if (FINER_COUNT >= limit_common) return false; FINER_COUNT++; return true; 
-    case Level.FINEST_INT: if (FINEST_COUNT >= limit_common) return false; FINEST_COUNT++; return true; 
+    case Level.SEVERE_INT: if (SEVERE_COUNT >= limit_common) {
+      return false;
+    } SEVERE_COUNT++; return true; 
+    case Level.WARNING_INT: if (WARNING_COUNT >= limit_common) {
+      return false;
+    } WARNING_COUNT++; return true; 
+    case Level.INFO_INT: if (INFO_COUNT >= limit_common) {
+      return false;
+    } INFO_COUNT++; return true; 
+    case Level.CONFIG_INT: if (CONFIG_COUNT >= limit_common) {
+      return false;
+    } CONFIG_COUNT++; return true; 
+    case Level.FINE_INT: if (FINE_COUNT >= limit_common) {
+      return false;
+    } FINE_COUNT++; return true; 
+    case Level.FINER_INT: if (FINER_COUNT >= limit_common) {
+      return false;
+    } FINER_COUNT++; return true; 
+    case Level.FINEST_INT: if (FINEST_COUNT >= limit_common) {
+      return false;
+    } FINEST_COUNT++; return true; 
     }
     Misc.internalError();
     return false;
@@ -407,14 +435,13 @@ public abstract class Logger_common_impl implements Logger {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.util.Logger#setResourceManager(org.apache.uima.resource.ResourceManager)
-   */
+  @Deprecated
   @Override
   public void setResourceManager(ResourceManager resourceManager) {
     mResourceManager = resourceManager;
+    Misc.decreasingWithTrace(dontSetResourceManagerCount,
+            "Setting a resouce manager on a logger can lead to memory leaks and to the inability of locating message localizations in multi-classloader scenaros.",
+            UIMAFramework.getLogger());
   }
 
   /**
@@ -422,11 +449,22 @@ public abstract class Logger_common_impl implements Logger {
    * then message digests will be searched for using this.class.getClassLoader().
    */
   private ClassLoader getExtensionClassLoader() {
-    if (mResourceManager == null)
-      return null;
-    else
+    if (mResourceManager != null) {
       return mResourceManager.getExtensionClassLoader();
     }
+
+    UimaContext context = UimaContextHolder.getContext();
+    if (context != null) {
+      return ((UimaContextAdmin) context).getResourceManager().getExtensionClassLoader();
+    }
+
+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    if (contextClassLoader != null) {
+      return contextClassLoader;
+    }
+
+    return null;
+  }
  
   /*
    * (non-Javadoc)

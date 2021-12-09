@@ -26,7 +26,6 @@ import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
-import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -52,7 +51,6 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
-import org.slf4j.MDC;
 
 /**
  * Reference implementation of {@link AnalysisEngine}.
@@ -106,6 +104,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
@@ -240,15 +239,12 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
                   annotatorClassName, mDescription.getSourceUrlString() }, e);
     }
 
-    // Set Logger, to enable annotator-specific logging
-    UimaContextAdmin uimaContext = getUimaContextAdmin();
-    Logger logger = UIMAFramework.getLogger(annotatorClass);
-    logger.setResourceManager(this.getResourceManager());
-    uimaContext.setLogger(logger);
-
     // initialize AnalysisComponent
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
+      // Set Logger, to enable annotator-specific logging
+      getUimaContextAdmin().setLogger(UIMAFramework.getLogger(annotatorClass));
+
       callInitializeMethod(mAnalysisComponent, getUimaContext());
 //      mAnalysisComponent.initialize(getUimaContext());
       // set up the CAS pool for this AE (this won't do anything if mAnalysisComponent.getCasInstancesRequired() == 0)
@@ -266,6 +262,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     if (mAnalysisComponent != null) {
       withContextHolder(() -> mAnalysisComponent.destroy());
@@ -280,6 +277,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
@@ -292,6 +290,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see AnalysisEngine#processAndOutputNewCASes(CAS)
    */
+  @Override
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     enterProcess();
     try {
@@ -306,6 +305,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
   }
 
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     enterBatchProcessComplete();
     UimaContext prevContext = setContextHolder();  // for use by POJOs
@@ -317,6 +317,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
   }
 
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     enterCollectionProcessComplete();
     UimaContext prevContext = setContextHolder();  // for use by POJOs
@@ -422,10 +423,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     } catch (Exception e) {
       // log and rethrow exception
       logger.log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException)
+      if (e instanceof AnalysisEngineProcessException) {
         throw (AnalysisEngineProcessException) e;
-      else
+      } else {
         throw new AnalysisEngineProcessException(e);
+      }
     }
   }
 
@@ -541,10 +543,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     } catch (Exception e) {
       // log and rethrow exception
       getLogger().log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException)
+      if (e instanceof AnalysisEngineProcessException) {
         throw (AnalysisEngineProcessException) e;
-      else
+      } else {
         throw new AnalysisEngineProcessException(e);
+      }
     } finally {
       UimaContextHolder.setContext(prevContext);
     }
@@ -553,6 +556,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     // do base resource reconfiguration
     super.reconfigure();
@@ -591,6 +595,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      * 
      * @see org.apache.uima.core.CasIterator#hasNext()
      */
+    @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
       if (casAvailable) {
@@ -626,6 +631,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      * 
      * @see org.apache.uima.core.CasIterator#next(java.lang.Class)
      */
+    @Override
     public CAS next() throws AnalysisEngineProcessException {
       enterProcess();
       try {
@@ -659,6 +665,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      * 
      * @see org.apache.uima.analysis_engine.CasIterator#release()
      */
+    @Override
     public void release() {
       // nothing to do
     }

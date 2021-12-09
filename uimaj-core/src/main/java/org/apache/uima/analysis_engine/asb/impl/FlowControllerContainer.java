@@ -41,7 +41,6 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.impl.Util;
-import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -78,6 +77,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    *      
    * UIMA-5043 Set & restore the UimaContextHolder around calls to user code so it can be used to access the External Settings
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     UimaContext prevContext = setContextHolder();   // Get this early so the restore in correct
@@ -122,7 +122,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // Set Logger, to enable component-specific logging configuration
       UimaContextAdmin uimaContext = getUimaContextAdmin();
       Logger logger = UIMAFramework.getLogger(mFlowController.getClass());
-      logger.setResourceManager(this.getResourceManager());
       uimaContext.setLogger(logger);
       
       Logger classLogger = getLogger();
@@ -162,6 +161,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * 
    * @see java.lang.Object#finalize()
    */
+  @Override
   protected void finalize() throws Throwable {
     // unregister MBean from MBeanServer when GC occurs
     // NOTE: we don't want to do this in destroy() because all AEs in a CPE are
@@ -181,6 +181,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * 
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
@@ -197,6 +198,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * 
    * @see org.apache.uima.resource.Resource_ImplBase#destroy()
    */
+  @Override
   public void destroy() {
     withContextHolder(() -> mFlowController.destroy());
     super.destroy();
