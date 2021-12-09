@@ -309,7 +309,8 @@ public interface Logger extends org.slf4j.Logger {
    *             different threads overwrite each others logger resource manager making it likely
    *             that in any given thread the wrong resource manager is used by the logger.
    */
-  @Deprecated void setResourceManager(ResourceManager resourceManager);
+  @Deprecated
+  void setResourceManager(ResourceManager resourceManager);
 
   /**
    * Get an internationalized message from a resource bundle by key name, substituting the
