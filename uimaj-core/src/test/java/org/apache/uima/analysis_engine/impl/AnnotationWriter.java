@@ -38,7 +38,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.ProcessTrace;
 
-
 /**
  * The AnnotationWriter class writes specified annotations to an output file. The encoding of the
  * output file is UTF-8
@@ -60,6 +59,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @throws ResourceInitializationException
    *           if there is error in initializing the resources
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
 
     File testBaseDir = JUnitExtension.getFile("TextAnalysisEngineImplTest").getParentFile();
@@ -77,8 +77,10 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.CasConsumer_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
+   * @see
+   * org.apache.uima.collection.CasConsumer_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
     typeSystemInitCalled = true;
   }
@@ -94,10 +96,12 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(CAS)
    */
+  @Override
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // iterate and print annotations
-      FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation>getAnnotationIndex().iterator();
+      FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation> getAnnotationIndex()
+              .iterator();
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = typeIterator.get();
@@ -124,8 +128,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
-  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  @Override
+  public void batchProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
     // anything cumulatively
   }
@@ -141,8 +146,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    *           if there is an IO Error
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
-  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  @Override
+  public void collectionProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     if (this.fileWriter != null) {
       this.fileWriter.close();
     }
@@ -158,8 +164,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
-    //do nothing
+    // do nothing
   }
 
   /**
@@ -167,6 +174,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * 
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     if (this.fileWriter != null) {
       try {

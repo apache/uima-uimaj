@@ -38,7 +38,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @return an array containing {@link ConfigurationParameter} objects, each of which describes a
    *         configuration parameter for this Resource.
    */
-  public ConfigurationParameter[] getConfigurationParameters();
+  ConfigurationParameter[] getConfigurationParameters();
 
   /**
    * Sets the configuration parameters for this Resource. This sets the configuration parameters
@@ -52,7 +52,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setConfigurationParameters(ConfigurationParameter[] aParams);
+  void setConfigurationParameters(ConfigurationParameter[] aParams);
 
   /**
    * Adds a Configuration Parameter that is not in any group.
@@ -63,7 +63,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter);
+  void addConfigurationParameter(ConfigurationParameter aConfigurationParameter);
 
   /**
    * Removes an Configuration Parameter that is not in any group.
@@ -75,7 +75,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter);
+  void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter);
 
   /**
    * Gets the configuration parameter groups for this Resource.
@@ -83,7 +83,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @return an array containing {@link ConfigurationGroup} objects, each of which describes a
    *         configuration parameter group for this Resource.
    */
-  public ConfigurationGroup[] getConfigurationGroups();
+  ConfigurationGroup[] getConfigurationGroups();
 
   /**
    * Sets the configuration parameter groups for this Resource.
@@ -95,7 +95,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setConfigurationGroups(ConfigurationGroup[] aGroups);
+  void setConfigurationGroups(ConfigurationGroup[] aGroups);
 
   /**
    * Adds a Configuration Group.
@@ -106,7 +106,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void addConfigurationGroup(ConfigurationGroup aConfigurationGroup);
+  void addConfigurationGroup(ConfigurationGroup aConfigurationGroup);
 
   /**
    * Removes an Configuration Group
@@ -118,7 +118,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void removeConfigurationGroup(ConfigurationGroup aConfigurationGroup);
+  void removeConfigurationGroup(ConfigurationGroup aConfigurationGroup);
 
   /**
    * Gets the configuration parameters that are common to all groups. This property is only
@@ -127,7 +127,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @return an array containing {@link ConfigurationParameter} objects, each of which describes a
    *         parameter common to all groups.
    */
-  public ConfigurationParameter[] getCommonParameters();
+  ConfigurationParameter[] getCommonParameters();
 
   /**
    * Sets the configuration parameters that are common to all groups. This property is only
@@ -137,7 +137,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    *          an array containing {@link ConfigurationParameter} objects, each of which describes a
    *          parameter common to all groups.
    */
-  public void setCommonParameters(ConfigurationParameter[] aParams);
+  void setCommonParameters(ConfigurationParameter[] aParams);
 
   /**
    * Adds a Configuration Parameter that is common to all groups.
@@ -148,7 +148,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void addCommonParameter(ConfigurationParameter aConfigurationParameter);
+  void addCommonParameter(ConfigurationParameter aConfigurationParameter);
 
   /**
    * Removes an Configuration Parameter that is common to all groups.
@@ -160,7 +160,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void removeCommonParameter(ConfigurationParameter aConfigurationParameter);
+  void removeCommonParameter(ConfigurationParameter aConfigurationParameter);
 
   /**
    * Gets the name of the default configuration group. This must refer to the names of the
@@ -168,7 +168,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * 
    * @return the name of the default configuration group
    */
-  public String getDefaultGroupName();
+  String getDefaultGroupName();
 
   /**
    * Sets the name of the default configuration group. This must refer to the names of the
@@ -177,7 +177,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @param aGroupName
    *          the name of the default configuration group
    */
-  public void setDefaultGroupName(String aGroupName);
+  void setDefaultGroupName(String aGroupName);
 
   /**
    * Gets the configuration parameter search strategy. Valid values for this property are defined by
@@ -185,7 +185,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * 
    * @return the configuration parameter search strategy
    */
-  public String getSearchStrategy();
+  String getSearchStrategy();
 
   /**
    * Sets the configuration parameter search strategy. Valid values for this property are defined by
@@ -194,7 +194,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @param aStrategy
    *          the configuration parameter search strategy
    */
-  public void setSearchStrategy(String aStrategy);
+  void setSearchStrategy(String aStrategy);
 
   /**
    * Gets a configuration parameter.
@@ -206,7 +206,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * 
    * @return the specified parameter, <code>null</code> if it does not exist
    */
-  public ConfigurationParameter getConfigurationParameter(String aGroupName, String aParamName);
+  ConfigurationParameter getConfigurationParameter(String aGroupName, String aParamName);
 
   /**
    * Gets the declarations of a named configuration group. There may be more than one declaration
@@ -216,33 +216,32 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @param aGroupName
    *          the name of a group
    * 
-   * @return an array of ConfigurationGroup declarations having the name <code>aGroupName</code>.
-   *         If there are no such groups, an empty array is returned.
+   * @return an array of ConfigurationGroup declarations having the name <code>aGroupName</code>. If
+   *         there are no such groups, an empty array is returned.
    */
-  public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName);
+  ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName);
 
   /**
-   * A value for the <code>searchStrategy</code> property indicating that there is no fallback. If
-   * a request is made for the value of a parameter in a group and there is no such value in that
+   * A value for the <code>searchStrategy</code> property indicating that there is no fallback. If a
+   * request is made for the value of a parameter in a group and there is no such value in that
    * exact group, <code>null</code> will be returned.
    */
-  public static final String SEARCH_STRATEGY_NONE = "none";
+  String SEARCH_STRATEGY_NONE = "none";
 
   /**
    * A value for the <code>searchStrategy</code> property indicating that if there is no value
    * declared in a group, look in the {@link #getDefaultGroupName() default group}.
    */
-  public static final String SEARCH_STRATEGY_DEFAULT_FALLBACK = "default_fallback";
+  String SEARCH_STRATEGY_DEFAULT_FALLBACK = "default_fallback";
 
   /**
    * A value for the <code>searchStrategy</code> property that is useful when ISO language and
    * country codes are used as configuration group names. If there is no value declared in a group,
    * look in more general groups. The fallback sequence is
    * <code>lang-country-region -%gt; lang-country -%gt; 
-   * lang -%gt; default</code>. For example, if a
-   * request is made for the value of a parameter in the "en-GB" group and no such group exists, the
-   * value from the "en" group will be used instead.
+   * lang -%gt; default</code>. For example, if a request is made for the value of a parameter in
+   * the "en-GB" group and no such group exists, the value from the "en" group will be used instead.
    */
-  public static final String SEARCH_STRATEGY_LANGUAGE_FALLBACK = "language_fallback";
+  String SEARCH_STRATEGY_LANGUAGE_FALLBACK = "language_fallback";
 
 }

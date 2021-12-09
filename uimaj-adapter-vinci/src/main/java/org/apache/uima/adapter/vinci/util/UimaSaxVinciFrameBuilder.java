@@ -66,6 +66,7 @@ public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
    * @return the leaf content
    * @see SaxVinciFrameBuilder#getLeafContent(String, Attributes, StringBuffer)
    */
+  @Override
   protected String getLeafContent(String aFrameName, Attributes aAttributes,
           StringBuffer aContentBuf) {
     // supress documen text if requested

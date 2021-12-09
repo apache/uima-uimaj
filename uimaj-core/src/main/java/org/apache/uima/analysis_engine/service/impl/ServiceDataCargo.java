@@ -45,14 +45,14 @@ import org.apache.uima.util.ProcessTrace;
  * <code>ServiceDataCargo</code> and send that to the remote service.
  * <p>
  * A <code>ServiceDataCargo</code> can be unmarshalled into an existing
- * <code>AnalysisProcessData</code> by calling the {@link #unmarshalInto(AnalysisProcessData, boolean)}
- * method. Alternatively, the CAS state can be unmarshalled separately by calling the
- * {@link #unmarshalCas(CAS, boolean)} method.
+ * <code>AnalysisProcessData</code> by calling the
+ * {@link #unmarshalInto(AnalysisProcessData, boolean)} method. Alternatively, the CAS state can be
+ * unmarshalled separately by calling the {@link #unmarshalCas(CAS, boolean)} method.
  * 
  * 
  */
 public class ServiceDataCargo implements Serializable {
-  
+
   private static final long serialVersionUID = 2433836175315405277L;
 
   private CASCompleteSerializer mCasSer;
@@ -60,8 +60,8 @@ public class ServiceDataCargo implements Serializable {
   private ProcessTrace mProcessTrace;
 
   /**
-   * Creates a new <code>SerializableAnalysisProcessData</code> that contains information
-   * extracted from the specified <code>AnalysisProcessData</code>.
+   * Creates a new <code>SerializableAnalysisProcessData</code> that contains information extracted
+   * from the specified <code>AnalysisProcessData</code>.
    * 
    * @param aData
    *          the AnalysisProcessData to extract from
@@ -96,8 +96,10 @@ public class ServiceDataCargo implements Serializable {
    * 
    * @param aDataContainer
    *          the AnalysisProcessData to unmarshal into
-   * @param aReplaceCasTypeSystem -
-   * @throws CASException -
+   * @param aReplaceCasTypeSystem
+   *          -
+   * @throws CASException
+   *           -
    */
   public void unmarshalInto(AnalysisProcessData aDataContainer, boolean aReplaceCasTypeSystem)
           throws CASException {
@@ -110,11 +112,14 @@ public class ServiceDataCargo implements Serializable {
    * <code>CAS</code> instance. The data in the exsiting CAS will be replaced by the CAS data in
    * this object.
    * 
-   * @param aCas the CAS to unmarshal into
-   * @param aReplaceCasTypeSystem if true, assumes serialized data contains the type system
-   * @throws CASException passthru
+   * @param aCas
+   *          the CAS to unmarshal into
+   * @param aReplaceCasTypeSystem
+   *          if true, assumes serialized data contains the type system
+   * @throws CASException
+   *           passthru
    */
-   public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws CASException {
+  public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws CASException {
     CASMgr casMgr = (CASMgr) aCas;
     if (aReplaceCasTypeSystem) {
       Serialization.deserializeCASComplete(mCasSer, casMgr);
@@ -124,8 +129,8 @@ public class ServiceDataCargo implements Serializable {
   }
 
   /**
-   * Gets the ProcessTrace object from this <code>ServiceDataCargo</code>. This may return null,
-   * if no process trace is available. (For example, ProcessTrace data may often be returned from a
+   * Gets the ProcessTrace object from this <code>ServiceDataCargo</code>. This may return null, if
+   * no process trace is available. (For example, ProcessTrace data may often be returned from a
    * service but not passed to the service.)
    * 
    * @return the process trace

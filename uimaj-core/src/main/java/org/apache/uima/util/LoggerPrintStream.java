@@ -43,10 +43,12 @@ public class LoggerPrintStream extends PrintStream {
     this.level = level;
   }
 
+  @Override
   public void close() {
     flush();
   }
 
+  @Override
   public void flush() {
     if (buf.length() > 0) {
       logger.log(level, buf.toString());
@@ -54,88 +56,109 @@ public class LoggerPrintStream extends PrintStream {
     }
   }
 
+  @Override
   public void print(boolean b) {
     print("" + b);
   }
 
+  @Override
   public void print(char c) {
     print("" + c);
   }
 
+  @Override
   public void print(char[] s) {
     print(new String(s));
   }
 
+  @Override
   public void print(double d) {
     print("" + d);
   }
 
+  @Override
   public void print(float f) {
     print("" + f);
   }
 
+  @Override
   public void print(int i) {
     print("" + i);
   }
 
+  @Override
   public void print(long l) {
     print("" + l);
   }
 
+  @Override
   public void print(Object obj) {
     print("" + obj);
 
   }
 
+  @Override
   public void print(String s) {
     buf.append(s);
   }
 
+  @Override
   public void println() {
     flush();
   }
 
+  @Override
   public void println(boolean x) {
     println("" + x);
   }
 
+  @Override
   public void println(char x) {
     println("" + x);
   }
 
+  @Override
   public void println(char[] x) {
     println(new String(x));
   }
 
+  @Override
   public void println(double x) {
     println("" + x);
   }
 
+  @Override
   public void println(float x) {
     println("" + x);
   }
 
+  @Override
   public void println(int x) {
     println("" + x);
   }
 
+  @Override
   public void println(long x) {
     println("" + x);
   }
 
+  @Override
   public void println(Object x) {
     println("" + x);
   }
 
+  @Override
   public void println(String x) {
     buf.append(x);
     flush();
   }
 
+  @Override
   public void write(byte[] aBuf, int off, int len) {
     // raw bytes not supported
   }
 
+  @Override
   public void write(int b) {
     // raw bytes not supported
   }

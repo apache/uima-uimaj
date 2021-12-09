@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import java.util.Iterator;
@@ -26,9 +25,8 @@ import java.util.List;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 
-
 public class CasDataImpl implements CasData {
-  
+
   private static final long serialVersionUID = 400887901813129040L;
 
   private List<FeatureStructure> fsList = null;
@@ -45,6 +43,7 @@ public class CasDataImpl implements CasData {
    * 
    * @return an iterator over FeatureStructure list
    */
+  @Override
   public Iterator<FeatureStructure> getFeatureStructures() {
     return fsList.iterator();
   }
@@ -52,9 +51,10 @@ public class CasDataImpl implements CasData {
   /**
    * Adds a new FeatureStructure to the list
    * 
-   * @param aFS -
-   *          new FeatureStructure to be added
+   * @param aFS
+   *          - new FeatureStructure to be added
    */
+  @Override
   public void addFeatureStructure(FeatureStructure aFS) {
     fsList.add(aFS);
   }
@@ -62,15 +62,16 @@ public class CasDataImpl implements CasData {
   /**
    * Removes named FeatureStructure from the list
    * 
-   * @param aFS -
-   *          FeatureStructure to remove
+   * @param aFS
+   *          - FeatureStructure to remove
    */
+  @Override
   public void removeFeatureStructure(FeatureStructure aFS) {
     fsList.remove(aFS);
   }
 
+  @Override
   public String toString() {
     return fsList.toString();
   }
-
 }

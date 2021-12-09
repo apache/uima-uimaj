@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.uima.util.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Slf4jLogger_implCapturingTest {
 
@@ -36,7 +36,7 @@ public class Slf4jLogger_implCapturingTest {
 
   private Logger sut;
 
-  @Before
+  @BeforeEach
   public void setup() {
     sut = new Slf4jLogger_impl(null);
   }

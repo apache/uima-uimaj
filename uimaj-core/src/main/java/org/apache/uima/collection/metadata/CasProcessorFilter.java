@@ -27,10 +27,10 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * clause: where featurespec [ and featurespec2 ...]. The featurespec can be one of these four forms
  * and meanings:
  * <ul>
- * <li> Feature Process CAS if the Feature is present (e.g. where Person)
- * <li> Feature! Process CAS if the Feature is not present (e.g. where Person!)
- * <li> Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
- * <li> Feature!=value Process CAS if the Feature does not have this value (e.g. where Person!=Bush)
+ * <li>Feature Process CAS if the Feature is present (e.g. where Person)
+ * <li>Feature! Process CAS if the Feature is not present (e.g. where Person!)
+ * <li>Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
+ * <li>Feature!=value Process CAS if the Feature does not have this value (e.g. where Person!=Bush)
  * </ul>
  * 
  * The featurespecs are implicitly connected with and operators and precedence rules are currently
@@ -42,15 +42,15 @@ public interface CasProcessorFilter extends MetaDataObject {
   /**
    * Sets filter expression
    * 
-   * @param aFilterString -
-   *          expression
+   * @param aFilterString
+   *          - expression
    */
-  public void setFilterString(String aFilterString);
+  void setFilterString(String aFilterString);
 
   /**
    * Returns a filter expression as String
    * 
    * @return - filter expression
    */
-  public String getFilterString();
+  String getFilterString();
 }

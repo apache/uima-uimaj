@@ -54,7 +54,6 @@ public class ExpirationTimer extends Thread {
    * @param aCpm the a cpm
    */
   public ExpirationTimer(long aTimeout, HashMap aMap, String aKey, CPMEngine aCpm) {
-    super();
     timeOut = aTimeout;
     map = aMap;
     key = aKey;

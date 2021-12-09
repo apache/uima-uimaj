@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.ShortArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for Short Array
+ * V2 compatibility only The non-JCas cover class for Short Array
+ * 
  * @deprecated use ShortArray instead
  */
 @Deprecated
 public interface ShortArrayFSImpl extends ShortArrayFS {
-  
+
 }

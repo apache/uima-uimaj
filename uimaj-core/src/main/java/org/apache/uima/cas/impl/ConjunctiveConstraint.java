@@ -37,7 +37,6 @@ class ConjunctiveConstraint implements FSMatchConstraint {
   private FSMatchConstraint c2;
 
   private ConjunctiveConstraint() {
-    super();
   }
 
   /**
@@ -54,10 +53,12 @@ class ConjunctiveConstraint implements FSMatchConstraint {
     this.c2 = c2;
   }
 
+  @Override
   public boolean match(FeatureStructure fs) {
     return (this.c1.match(fs) && this.c2.match(fs));
   }
 
+  @Override
   public String toString() {
     return "(" + this.c1.toString() + " & " + this.c2.toString() + ")";
   }

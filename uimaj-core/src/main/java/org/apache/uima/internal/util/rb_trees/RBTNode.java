@@ -22,10 +22,9 @@ package org.apache.uima.internal.util.rb_trees;
 import org.apache.uima.internal.util.BinaryTree;
 
 /**
- * Node used in RedBlackTree, holds int Object pairs and links
- * Red-Black Tree node. Not for public use. Use the interface in RedBlackTree instead. This should
- * probably be an internal class to RedBlackTree, but it's easier to read in a seperate file. See
- * comments in RedBlackTree.
+ * Node used in RedBlackTree, holds int Object pairs and links Red-Black Tree node. Not for public
+ * use. Use the interface in RedBlackTree instead. This should probably be an internal class to
+ * RedBlackTree, but it's easier to read in a seperate file. See comments in RedBlackTree.
  * 
  */
 class RBTNode<T> {
@@ -95,8 +94,8 @@ class RBTNode<T> {
     return x;
   }
 
-  /** 
-   * Find the successor node to this. 
+  /**
+   * Find the successor node to this.
    */
   final RBTNode<T> successor() {
     RBTNode<T> x = this;
@@ -121,8 +120,8 @@ class RBTNode<T> {
     return y;
   }
 
-  /** 
-   * Insert a node into a tree. See CLR. 
+  /**
+   * Insert a node into a tree. See CLR.
    */
   static final <T> boolean insert(RedBlackTree<T> tree, RBTNode<T> x) {
     if (!treeInsert(tree, x)) {
@@ -284,8 +283,8 @@ class RBTNode<T> {
     }
   }
 
-  /** 
-   * From CLR. x must not be null. 
+  /**
+   * From CLR. x must not be null.
    */
   private static final <T> void deleteFixup(RedBlackTree<T> tree, RBTNode<T> x) {
     RBTNode<T> w;

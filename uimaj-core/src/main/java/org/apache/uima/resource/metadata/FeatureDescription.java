@@ -33,7 +33,7 @@ public interface FeatureDescription extends MetaDataObject {
    * 
    * @return the name of this Feature
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of this Feature.
@@ -41,14 +41,14 @@ public interface FeatureDescription extends MetaDataObject {
    * @param aName
    *          the name of this Feature
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the verbose description of this Feature.
    * 
    * @return the description of this Feature
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Sets the verbose description of this Feature.
@@ -56,14 +56,14 @@ public interface FeatureDescription extends MetaDataObject {
    * @param aDescription
    *          the description of this Feature
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
   /**
    * Gets the name of the range Type of this Feature.
    * 
    * @return the name of the range Type of this Feature
    */
-  public String getRangeTypeName();
+  String getRangeTypeName();
 
   /**
    * Sets the name of the range Type of this Feature.
@@ -71,7 +71,7 @@ public interface FeatureDescription extends MetaDataObject {
    * @param aTypeName
    *          the name of the range Type of this Feature
    */
-  public void setRangeTypeName(String aTypeName);
+  void setRangeTypeName(String aTypeName);
 
   /**
    * For a feature with a range type that is an array or list, gets the expected type of the
@@ -81,7 +81,7 @@ public interface FeatureDescription extends MetaDataObject {
    * 
    * @return the expected element type of an array or list feature, null if there is no restriction.
    */
-  public String getElementType();
+  String getElementType();
 
   /**
    * For a multi-valued (array or list) feature, sets the expected type of the elements of that
@@ -93,7 +93,7 @@ public interface FeatureDescription extends MetaDataObject {
    *          the expected element type of an array or list feature, null if there is no
    *          restriction.
    */
-  public void setElementType(String aElementType);
+  void setElementType(String aElementType);
 
   /**
    * For a feature with a range type that is an array or list, gets whether value of the feature may
@@ -114,7 +114,7 @@ public interface FeatureDescription extends MetaDataObject {
    * 
    * @return true if multiple references to an array or list are allowed, false if not.
    */
-  public Boolean getMultipleReferencesAllowed();
+  Boolean getMultipleReferencesAllowed();
 
   /**
    * For a feature with a range type that is an array or list, sets whether value of the feature may
@@ -136,5 +136,5 @@ public interface FeatureDescription extends MetaDataObject {
    * @param aAllowed
    *          true if multiple references to an array or list are allowed, false if not.
    */
-  public void setMultipleReferencesAllowed(Boolean aAllowed);
+  void setMultipleReferencesAllowed(Boolean aAllowed);
 }

@@ -39,8 +39,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  *             org.apache.uima.examples.XmlDetagger for an example.
  */
 @Deprecated
-public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplBase implements
-        CasInitializer {
+public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplBase
+        implements CasInitializer {
   /**
    * Called by the framework to initialize this CAS Initializer. Subclasses should NOT override this
    * method; instead they should override the zero-argument {@link #initialize()} method and access
@@ -50,6 +50,7 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CasInitializerDescription
@@ -78,6 +79,7 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
     // no default behavior
   }
@@ -85,6 +87,7 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
   /**
    * @see org.apache.uima.collection.CasConsumer#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
+  @Override
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
     // no default behavior
   }
@@ -92,6 +95,7 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
@@ -105,6 +109,7 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
    * 
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     super.reconfigure();
     destroy();

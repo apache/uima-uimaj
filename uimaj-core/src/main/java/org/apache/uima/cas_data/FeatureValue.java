@@ -41,5 +41,5 @@ public interface FeatureValue extends Serializable {
    * 
    * @return the feature value.
    */
-  public Object get();
+  Object get();
 }

@@ -49,7 +49,6 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
    * @param frame the frame
    */
   public TypeSystemFileOpenEventHandler(MainFrame frame) {
-    super();
     this.main = frame;
   }
 

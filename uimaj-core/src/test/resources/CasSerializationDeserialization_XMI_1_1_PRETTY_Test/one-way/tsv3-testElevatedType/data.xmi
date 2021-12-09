@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:pos="http:///de/tudarmstadt/ukp/dkpro/core/api/lexmorph/type/pos.ecore" xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type:DocumentMetaData xmi:id="2" sofa="1" begin="0" end="4" documentId="doc" isLastSegment="false"/>
+    <pos:POS_NOUN xmi:id="3" sofa="1" begin="0" end="4" PosValue="NN" coarseValue="NOUN"/>
+    <type2:Token xmi:id="4" sofa="1" begin="0" end="4" pos="3" order="0"/>
+    <type2:Sentence xmi:id="5" sofa="1" begin="0" end="4"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="John"/>
+    <cas:View sofa="1" members="2 3 4 5"/>
+</xmi:XMI>

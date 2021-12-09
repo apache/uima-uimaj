@@ -22,16 +22,17 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.Type;
 
 public class TypeImpl_list extends TypeImpl {
-  
+
   TypeImpl componentType;
-      
-  public TypeImpl_list(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
+
+  public TypeImpl_list(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype,
+          Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
     this.componentType = componentType;
-    }
-  
+  }
+
   public Type getCompoentType() {
     return componentType;
-  }    
-  
+  }
+
 }

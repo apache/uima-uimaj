@@ -62,7 +62,6 @@ public class CDEpropertyPage extends PropertyPage {
    * Instantiates a new CD eproperty page.
    */
   public CDEpropertyPage() {
-    super();
   }
 
   /**

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import java.util.Arrays;
@@ -37,8 +36,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Takes a CasData and generates XCAS SAX events.
- * 
- * 
  */
 public class CasDataToXCas {
   private String mDocumentTextTypeName = "uima.cpm.DocumentText";
@@ -63,7 +60,8 @@ public class CasDataToXCas {
   /**
    * Sets the name of the CASData FeatureStructure Type that stores the document text.
    * 
-   * @param aDocumentTextTypeName the document text type name
+   * @param aDocumentTextTypeName
+   *          the document text type name
    */
   public void setDocumentTextTypeName(String aDocumentTextTypeName) {
     mDocumentTextTypeName = aDocumentTextTypeName;
@@ -99,7 +97,8 @@ public class CasDataToXCas {
   }
 
   /**
-   * @param aIncludeAnnotationSpannedText -
+   * @param aIncludeAnnotationSpannedText
+   *          -
    */
   public void setIncludeAnnotationSpannedText(boolean aIncludeAnnotationSpannedText) {
     mIncludeAnnotationSpannedText = aIncludeAnnotationSpannedText;
@@ -108,7 +107,8 @@ public class CasDataToXCas {
   /**
    * Specifies names of types that will not be included in the XCAS
    * 
-   * @param aTypesToFilter -
+   * @param aTypesToFilter
+   *          -
    */
   public void setTypesToFilter(String[] aTypesToFilter) {
     mTypesToFilter = Arrays.asList(aTypesToFilter);
@@ -117,7 +117,8 @@ public class CasDataToXCas {
   /**
    * Sets the ContentHandler to receive the SAX events.
    * 
-   * @param aHandler -
+   * @param aHandler
+   *          -
    */
   public void setContentHandler(ContentHandler aHandler) {
     mHandler = aHandler;
@@ -332,5 +333,4 @@ public class CasDataToXCas {
   private static class DocTextHolder {
     char[] docText;
   }
-
 }

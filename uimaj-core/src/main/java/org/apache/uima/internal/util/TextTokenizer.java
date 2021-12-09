@@ -56,12 +56,12 @@ import org.apache.uima.util.impl.Constants;
  * whitespace and/or separator tokens are skipped.
  * 
  * <p>
- * A tokenizer provides a standard iterator interface similar to
- * {@link java.util.StringTokenizer StringTokenizer}. The validity of the iterator can be queried
- * with <code>hasNext()</code>, and the next token can be queried with <code>nextToken()</code>.
- * In addition, <code>getNextTokenType()</code> returns the type of the token as an integer. NB
- * that you need to call <code>getNextTokenType()</code> before calling <code>nextToken()</code>,
- * since calling <code>nextToken()</code> will advance the iterator.
+ * A tokenizer provides a standard iterator interface similar to {@link java.util.StringTokenizer
+ * StringTokenizer}. The validity of the iterator can be queried with <code>hasNext()</code>, and
+ * the next token can be queried with <code>nextToken()</code>. In addition,
+ * <code>getNextTokenType()</code> returns the type of the token as an integer. NB that you need to
+ * call <code>getNextTokenType()</code> before calling <code>nextToken()</code>, since calling
+ * <code>nextToken()</code> will advance the iterator.
  * 
  * 
  * @version $Id: TextTokenizer.java,v 1.1 2002/09/30 19:09:09 goetz Exp $
@@ -121,7 +121,9 @@ public class TextTokenizer {
 
   /**
    * Construct a tokenizer from a Java string.
-   * @param string - 
+   * 
+   * @param string
+   *          -
    * @pre string != null
    */
   public TextTokenizer(String string) {
@@ -130,7 +132,9 @@ public class TextTokenizer {
 
   /**
    * Set the flag for showing whitespace tokens.
-   * @param b -
+   * 
+   * @param b
+   *          -
    */
   public void setShowWhitespace(boolean b) {
     this.showWhitespace = b;
@@ -138,7 +142,9 @@ public class TextTokenizer {
 
   /**
    * Set the flag for showing separator tokens.
-   * @param b -
+   * 
+   * @param b
+   *          -
    */
   public void setShowSeparators(boolean b) {
     this.showSeparators = b;
@@ -146,7 +152,9 @@ public class TextTokenizer {
 
   /**
    * Set the set of sentence delimiters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void setEndOfSentenceChars(String chars) {
     if (chars == null) {
@@ -157,7 +165,9 @@ public class TextTokenizer {
 
   /**
    * Add to the set of sentence delimiters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void addToEndOfSentenceChars(String chars) {
     if (chars == null) {
@@ -168,7 +178,9 @@ public class TextTokenizer {
 
   /**
    * Set the set of separator characters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void setSeparators(String chars) {
     if (chars == null) {
@@ -179,7 +191,9 @@ public class TextTokenizer {
 
   /**
    * Add to the set of separator characters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void addSeparators(String chars) {
     if (chars == null) {
@@ -190,7 +204,9 @@ public class TextTokenizer {
 
   /**
    * Set the set of whitespace characters (in addition to the Unicode whitespace chars).
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void setWhitespaceChars(String chars) {
     if (chars == null) {
@@ -201,7 +217,9 @@ public class TextTokenizer {
 
   /**
    * Add to the set of whitespace characters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void addWhitespaceChars(String chars) {
     if (chars == null) {
@@ -212,7 +230,9 @@ public class TextTokenizer {
 
   /**
    * Set the set of word characters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void setWordChars(String chars) {
     if (chars == null) {
@@ -223,7 +243,9 @@ public class TextTokenizer {
 
   /**
    * Add to the set of word characters.
-   * @param chars -
+   * 
+   * @param chars
+   *          -
    */
   public void addWordChars(String chars) {
     if (chars == null) {
@@ -352,7 +374,9 @@ public class TextTokenizer {
 
   /**
    * Get the type of an individual character.
-   * @param c -
+   * 
+   * @param c
+   *          -
    * @return -
    */
   public int getCharType(char c) {

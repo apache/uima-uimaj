@@ -31,6 +31,7 @@ public class EmptyCasIterator implements CasIterator {
    * 
    * @see org.apache.uima.analysis_engine.CasIterator#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
@@ -40,6 +41,7 @@ public class EmptyCasIterator implements CasIterator {
    * 
    * @see org.apache.uima.analysis_engine.CasIterator#next()
    */
+  @Override
   public CAS next() throws AnalysisEngineProcessException {
     throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS, new Object[0]);
   }
@@ -49,6 +51,7 @@ public class EmptyCasIterator implements CasIterator {
    * 
    * @see org.apache.uima.analysis_engine.CasIterator#release()
    */
+  @Override
   public void release() {
     // nothing to do
   }

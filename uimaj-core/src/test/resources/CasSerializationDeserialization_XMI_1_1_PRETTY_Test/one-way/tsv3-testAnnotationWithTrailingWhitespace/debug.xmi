@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/ner/type.ecore" xmlns:type3="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type:DocumentMetaData xmi:id="2" sofa="1" begin="0" end="8" documentId="doc" isLastSegment="false"/>
+    <type3:Token xmi:id="3" sofa="1" begin="0" end="3" order="0"/>
+    <type3:Token xmi:id="4" sofa="1" begin="5" end="8" order="0"/>
+    <type3:Sentence xmi:id="5" sofa="1" begin="0" end="8"/>
+    <type2:NamedEntity xmi:id="6" sofa="1" begin="0" end="4"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="one  two"/>
+    <cas:View sofa="1" members="2 3 4 5 6"/>
+</xmi:XMI>

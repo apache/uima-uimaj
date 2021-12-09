@@ -22,9 +22,6 @@ package org.apache.uima.tools.pear.merger;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -36,6 +33,10 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * The <code>PearMergerTest</code> class provides JUnit test cases for the jedii_pear_merger
@@ -43,7 +44,7 @@ import org.apache.uima.util.XMLParser;
  * 'pearTests/pearMergerTests' folder.
  * 
  */
-public class PearMergerTest extends TestCase {
+public class PearMergerTest {
   // relative location of sample PEARs
   private static String TEST_FOLDER = "pearTests/pearMergerTests";
 
@@ -61,7 +62,8 @@ public class PearMergerTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     
     // create temporary working directory
     File tempFile = File.createTempFile("pear_merger_test_", "tmp");
@@ -75,7 +77,8 @@ public class PearMergerTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() throws Exception {
     if (_tempWorkingDir != null) {
       FileUtil.deleteDirectory(_tempWorkingDir);
     }
@@ -89,7 +92,8 @@ public class PearMergerTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testPearMerger() throws Exception {
+    @Test
+    public void testPearMerger() throws Exception {
     // check temporary working directory
     if (_tempWorkingDir == null)
       throw new FileNotFoundException("temp directory not found");

@@ -27,8 +27,8 @@ import java.io.UnsupportedEncodingException;
  * Allow a <code>PrintStream</code> to specify an encoding.
  * 
  * <p>
- * This functionality is provided out of the box by the Java 1.4 version of <code>PrintStream</code>.
- * This class is strictly for backwards compatibility.
+ * This functionality is provided out of the box by the Java 1.4 version of
+ * <code>PrintStream</code>. This class is strictly for backwards compatibility.
  * 
  */
 public class EncodedPrintStream extends PrintStream {
@@ -76,6 +76,7 @@ public class EncodedPrintStream extends PrintStream {
     super.write(bytes, 0, bytes.length);
   }
 
+  @Override
   public void print(char c) {
     try {
       writeBytes((new String(new char[] { c })).getBytes(encoding));
@@ -83,6 +84,7 @@ public class EncodedPrintStream extends PrintStream {
     }
   }
 
+  @Override
   public void print(char[] s) {
     try {
       writeBytes((new String(s)).getBytes(encoding));
@@ -90,6 +92,7 @@ public class EncodedPrintStream extends PrintStream {
     }
   }
 
+  @Override
   public void print(String s) {
     try {
       writeBytes(s.getBytes(encoding));
@@ -97,16 +100,19 @@ public class EncodedPrintStream extends PrintStream {
     }
   }
 
+  @Override
   public void println(char x) {
     print(x);
     println();
   }
 
+  @Override
   public void println(char[] x) {
     print(x);
     println();
   }
 
+  @Override
   public void println(String x) {
     print(x);
     println();

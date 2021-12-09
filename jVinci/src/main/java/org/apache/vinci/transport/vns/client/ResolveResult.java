@@ -44,6 +44,7 @@ public class ResolveResult extends Frame {
   public int priority = -1;
 
   static public TransportableFactory factory = new TransportableFactory() {
+    @Override
     public Transportable makeTransportable() {
       return new ResolveResult();
     }
@@ -192,6 +193,7 @@ public class ResolveResult extends Frame {
      * @pre key != null
      * @pre val != null
      */
+    @Override
     public void add(String key, FrameComponent val) {
       if (key.equals(VNSConstants.HOST_KEY)) {
         host = ((FrameLeaf) val).toString();
@@ -211,6 +213,7 @@ public class ResolveResult extends Frame {
    * @pre {@code ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val
    *      instanceof FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))}
    */
+  @Override
   public void add(String key, FrameComponent val) {
     if (key.equals(VNSConstants.SERVER_KEY)) {
       Debug.Assert(val instanceof ServiceLocator);
@@ -223,6 +226,7 @@ public class ResolveResult extends Frame {
   /**
    * Override the Frame createSubFrame method to create a ServiceLocator.
    */
+  @Override
   public Frame createSubFrame(String key, int capacity) {
     return new ServiceLocator();
   }

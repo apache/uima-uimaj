@@ -18,13 +18,12 @@
  */
 package org.apache.uima.collection.impl;
 
-import org.junit.Assert;
-
 import org.apache.uima.analysis_component.CasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.junit.Assert;
 
 /**
  * Test CAS Multiplier that asserts that input and output CAS type systems
@@ -36,6 +35,7 @@ public class TestCasMultiplier extends CasMultiplier_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_component.CasMultiplier_ImplBase#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     mInputCAS = aCAS;
   }
@@ -43,6 +43,7 @@ public class TestCasMultiplier extends CasMultiplier_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     CAS outputCas = getEmptyCAS();
     try {
@@ -59,6 +60,7 @@ public class TestCasMultiplier extends CasMultiplier_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     Assert.fail(); //should never get here
     return null;

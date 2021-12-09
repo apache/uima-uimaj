@@ -22,28 +22,18 @@ package org.apache.uima.cas_data.impl;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-
-public class CasDataToXCasTest extends TestCase {
-
-  /**
-   * Constructor for CasDataToXCasTest.
-   * 
-   * @param arg0
-   */
-  public CasDataToXCasTest(String arg0) {
-    super(arg0);
-  }
+public class CasDataToXCasTest {
 
   /*
    * Test for void generateXCas(CasData)
    */
+  @Test
   public void testGenerateXCasCasData() throws Exception {
     try {
       CasData casData = new CasDataImpl();
@@ -98,8 +88,9 @@ public class CasDataToXCasTest extends TestCase {
      * (non-Javadoc)
      * 
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
-     *      java.lang.String, org.xml.sax.Attributes)
+     * java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String arg0, String arg1, String arg2, Attributes arg3)
             throws SAXException {
       this.inElement = arg1;
@@ -116,6 +107,7 @@ public class CasDataToXCasTest extends TestCase {
      * 
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
       buf.append(arg0, arg1, arg2);
     }
@@ -124,8 +116,9 @@ public class CasDataToXCasTest extends TestCase {
      * (non-Javadoc)
      * 
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
-     *      java.lang.String)
+     * java.lang.String)
      */
+    @Override
     public void endElement(String arg0, String arg1, String arg2) throws SAXException {
       if (this.testElementName.equals(arg1)) {
         Assert.assertEquals("this should show up in XML content", buf.toString());

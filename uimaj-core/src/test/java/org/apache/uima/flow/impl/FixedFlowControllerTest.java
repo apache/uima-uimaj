@@ -48,15 +48,15 @@ import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FixedFlowControllerTest {
 
   private Map<String, AnalysisEngineMetaData> analysisEngineMetaDataMap;
   private FixedFlowController fixedFlowController;
-  
-  @Before
+
+  @BeforeEach
   public void setUp() throws Exception {
     analysisEngineMetaDataMap = new HashMap<>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
@@ -64,23 +64,21 @@ public class FixedFlowControllerTest {
     analysisEngineMetaDataMap.put("key1", delegateMd);
     analysisEngineMetaDataMap.put("key2", delegateMd);
     analysisEngineMetaDataMap.put("key3", delegateMd);
-    
+
     AnalysisEngineMetaData aggregateMd = new AnalysisEngineMetaData_impl();
     FixedFlow fixedFlow = new FixedFlow_impl();
-    fixedFlow.setFixedFlow(new String[]{"key1", "key2", "key3"});
+    fixedFlow.setFixedFlow(new String[] { "key1", "key2", "key3" });
     aggregateMd.setFlowConstraints(fixedFlow);
     OperationalProperties opProps = new OperationalProperties_impl();
     aggregateMd.setOperationalProperties(opProps);
-    
-    UimaContextAdmin rootContext = UIMAFramework.newUimaContext(
-            UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
-            UIMAFramework.newConfigurationManager());
+
+    UimaContextAdmin rootContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
     Map<String, String> aSofaMappings = Collections.emptyMap();
-    FlowControllerContext fcContext = new FlowControllerContext_impl(
-            rootContext, "_FlowController", aSofaMappings,
-            analysisEngineMetaDataMap, aggregateMd);
+    FlowControllerContext fcContext = new FlowControllerContext_impl(rootContext, "_FlowController",
+            aSofaMappings, analysisEngineMetaDataMap, aggregateMd);
     fixedFlowController = new FixedFlowController();
-    fixedFlowController.initialize(fcContext);    
+    fixedFlowController.initialize(fcContext);
   }
 
   @Test
@@ -89,160 +87,159 @@ public class FixedFlowControllerTest {
     CAS cas2 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow1 = fixedFlowController.computeFlow(cas1);
     Flow flow2 = fixedFlowController.computeFlow(cas2);
-    //two steps in flow 1
+    // two steps in flow 1
     Step step = flow1.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key1", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key1", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow1.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key2", ((SimpleStep)step).getAnalysisEngineKey());
-    
-    //one step in flow 2
+    assertEquals("key2", ((SimpleStep) step).getAnalysisEngineKey());
+
+    // one step in flow 2
     step = flow2.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key1", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key1", ((SimpleStep) step).getAnalysisEngineKey());
 
-    //third step in flow 1
+    // third step in flow 1
     step = flow1.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key3", ((SimpleStep) step).getAnalysisEngineKey());
 
-    //one step in flow 2
+    // one step in flow 2
     step = flow2.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key2", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key2", ((SimpleStep) step).getAnalysisEngineKey());
 
-    //finish flow 1
+    // finish flow 1
     step = flow1.next();
     assertTrue(step instanceof FinalStep);
-    
-    //finish flow 2
+
+    // finish flow 2
     step = flow2.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key3", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow2.next();
     assertTrue(step instanceof FinalStep);
   }
-  
+
   @Test
   public void testAddAnalysisEngines() throws Exception {
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow = fixedFlowController.computeFlow(cas);
-    //two steps in flow
+    // two steps in flow
     Step step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key1", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key1", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key2", ((SimpleStep)step).getAnalysisEngineKey());
-    
-    //now add two new AEs
-    //first update AE metadata map
+    assertEquals("key2", ((SimpleStep) step).getAnalysisEngineKey());
+
+    // now add two new AEs
+    // first update AE metadata map
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
     delegateMd.setOperationalProperties(new OperationalProperties_impl());
-    analysisEngineMetaDataMap.put("key4", delegateMd);    
-    analysisEngineMetaDataMap.put("key5", delegateMd);    
-    //then notify FC
+    analysisEngineMetaDataMap.put("key4", delegateMd);
+    analysisEngineMetaDataMap.put("key5", delegateMd);
+    // then notify FC
     List<String> newAeKeys = new ArrayList<>();
     newAeKeys.add("key4");
     newAeKeys.add("key5");
     fixedFlowController.addAnalysisEngines(newAeKeys);
-    
-    //finish flow
+
+    // finish flow
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key3", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key4", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key4", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key5", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key5", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof FinalStep);
-    
-    //test new flow
+
+    // test new flow
     flow = fixedFlowController.computeFlow(cas);
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key1", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key1", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key2", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key2", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key3", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key4", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key4", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key5", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key5", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof FinalStep);
   }
-  
+
   @Test
   public void testRemoveAnalysisEngines() throws Exception {
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow = fixedFlowController.computeFlow(cas);
-    //one step in flow
+    // one step in flow
     Step step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key1", ((SimpleStep)step).getAnalysisEngineKey());
-    
-    //remove "key2"
+    assertEquals("key1", ((SimpleStep) step).getAnalysisEngineKey());
+
+    // remove "key2"
     analysisEngineMetaDataMap.remove("key2");
     List<String> removedKeys = new ArrayList<>();
     removedKeys.add("key2");
     fixedFlowController.removeAnalysisEngines(removedKeys);
-    
-    //finish flow
+
+    // finish flow
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());    
+    assertEquals("key3", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof FinalStep);
-    
-    //test new flow
+
+    // test new flow
     flow = fixedFlowController.computeFlow(cas);
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key1", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key1", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof SimpleStep);
-    assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());
+    assertEquals("key3", ((SimpleStep) step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof FinalStep);
   }
 
   @Test
-  public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception
-  {
+  public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception {
     FlowControllerDescription desc1 = FixedFlowController.getDescription();
-    
-    FlowControllerDescription desc2 = getXMLParser().parseFlowControllerDescription(
-        new XMLInputSource("src/test/resources/FixedFlowControllerTest/FixedFlowController.xml"));
+
+    FlowControllerDescription desc2 = getXMLParser()
+            .parseFlowControllerDescription(new XMLInputSource(
+                    "src/test/resources/FixedFlowControllerTest/FixedFlowController.xml"));
 
     StringWriter desc1Writer = new StringWriter();
     desc1.toXML(desc1Writer);
-    
+
     StringWriter desc2Writer = new StringWriter();
     desc2.toXML(desc2Writer);
-    
+
     assertThat(desc2.toString()).isEqualTo(desc1.toString());
   }
 
   @Test
-  public void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception
-  {
+  public void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception {
     FlowControllerDescription desc1 = FixedFlowController.getDescription();
-    
+
     desc1.setImplementationName("otherImplementation");
     desc1.getMetaData().setName("otherName");
 
     FlowControllerDescription desc2 = FixedFlowController.getDescription();
-    
+
     assertThat(desc2.getImplementationName()).isEqualTo(FixedFlowController.class.getName());
     assertThat(desc2.getMetaData().getName()).isEqualTo("Fixed Flow Controller");
   }

@@ -35,16 +35,15 @@ import java.nio.charset.StandardCharsets;
  * Methods for working with Data during I/O
  */
 public class DataIO {
-  
-  
-  public static final Charset UTF8 = Charset.forName("UTF-8");  // use with String is a java 6, not 5, feature
+
+  public static final Charset UTF8 = Charset.forName("UTF-8"); // use with String is a java 6, not
+                                                               // 5, feature
   private static final int SIGNED_INT_VALUE_0x80 = 0x80;
   private static final int MASK_LOW_7 = 0x7f;
   private static final long MASK_LOW_7_LONG = 0x7fL;
- 
+
   private static ThreadLocal<CharsetDecoder> DECODER = new ThreadLocal<>();
-  
-  
+
   public static String decodeUTF8(ByteBuffer in, final int length) {
     // First try fast path - assume chars in 0-127
     fastPath: do {
@@ -54,7 +53,7 @@ public class DataIO {
         if (offset + length > backingArray.length) {
           break fastPath;
         }
-//        char[] ca = new char[length];
+        // char[] ca = new char[length];
         // string builder approach avoids copying the char array object
         StringBuilder sb = new StringBuilder(length);
         sb.setLength(length);
@@ -63,42 +62,45 @@ public class DataIO {
           if (b < 0) { // give up and do it the other way
             break fastPath;
           }
-          sb.setCharAt(i, (char)b);
+          sb.setCharAt(i, (char) b);
         }
-        ((Buffer)in).position(in.position() + length);
-        return sb.toString();  // doesn't copy the string char array
-      } 
+        ((Buffer) in).position(in.position() + length);
+        return sb.toString(); // doesn't copy the string char array
+      }
     } while (false); // not a real do loop - do only once
-  
+
     CharsetDecoder decoder = DECODER.get();
     if (null == decoder) {
-      decoder = UTF8.newDecoder()
-        .onMalformedInput(CodingErrorAction.REPLACE)
-        .onUnmappableCharacter(CodingErrorAction.REPLACE);
-      DECODER.set(decoder);       
+      decoder = UTF8.newDecoder().onMalformedInput(CodingErrorAction.REPLACE)
+              .onUnmappableCharacter(CodingErrorAction.REPLACE);
+      DECODER.set(decoder);
     }
     ByteBuffer partToDecode = in.slice();
-    ((Buffer)partToDecode).limit(length);
+    ((Buffer) partToDecode).limit(length);
     CharBuffer cb;
     try {
       cb = decoder.decode(partToDecode);
-      ((Buffer)in).position(in.position() + length);
+      ((Buffer) in).position(in.position() + length);
     } catch (CharacterCodingException e) {
       // should never happen
       throw new RuntimeException(e);
     }
     return cb.toString();
   }
-  
+
   /***************************************************************************************
    * For DataOutput, DataInput
    ***************************************************************************************/
   /**
    * Similar to writeUTF, but ok for strings &gt; 32K bytes long and better for strings &lt; 127
-   * string utf-8 length must be &le; Integer.MAX_VALUE - 1 
-   * @param string the string to write
-   * @param out the output sink
-   * @throws IOException passthru
+   * string utf-8 length must be &le; Integer.MAX_VALUE - 1
+   * 
+   * @param string
+   *          the string to write
+   * @param out
+   *          the output sink
+   * @throws IOException
+   *           passthru
    */
   public static void writeUTFv(String string, DataOutput out) throws IOException {
     if (null == string) {
@@ -107,12 +109,13 @@ public class DataIO {
     }
     byte[] bb = string.getBytes(StandardCharsets.UTF_8);
     if (bb.length > (Integer.MAX_VALUE - 1)) {
-      throw new RuntimeException(String.format("String UTF-8 representation too long, was %,d", bb.length));
+      throw new RuntimeException(
+              String.format("String UTF-8 representation too long, was %,d", bb.length));
     }
-    writeVnumber(out, bb.length + 1);  // 0 reserved for null
+    writeVnumber(out, bb.length + 1); // 0 reserved for null
     out.write(bb);
   }
-  
+
   public static String readUTFv(DataInput in) throws IOException {
     int length = readVnumber(in) - 1;
     if (-1 == length) {
@@ -120,7 +123,7 @@ public class DataIO {
     }
     byte[] bb = new byte[length];
     in.readFully(bb);
-//    return new String(bb, UTF8_FAST);
+    // return new String(bb, UTF8_FAST);
     return decodeUTF8(ByteBuffer.wrap(bb), length);
   }
 
@@ -130,52 +133,64 @@ public class DataIO {
     }
     byte[] bb = string.getBytes(StandardCharsets.UTF_8);
     if (bb.length > (Integer.MAX_VALUE - 1)) {
-      throw new RuntimeException(String.format("String UTF-8 representation too long, was %,d", bb.length));
+      throw new RuntimeException(
+              String.format("String UTF-8 representation too long, was %,d", bb.length));
     }
     int r = lengthVnumber(bb.length + 1);
     return r + bb.length;
   }
-  
+
   /**
    * DataOutputStream writeShort with checking of argument
-   * @param out the output sink
-   * @param v the value to write
-   * @throws IOException passthru
+   * 
+   * @param out
+   *          the output sink
+   * @param v
+   *          the value to write
+   * @throws IOException
+   *           passthru
    */
   public static void writeShort(DataOutput out, int v) throws IOException {
-    if (v > Short.MAX_VALUE ||
-        v < Short.MIN_VALUE) {  
-      throw new RuntimeException(String.format(
-          "Trying to write int %,d as a short but it doesn't fit", v));
+    if (v > Short.MAX_VALUE || v < Short.MIN_VALUE) {
+      throw new RuntimeException(
+              String.format("Trying to write int %,d as a short but it doesn't fit", v));
     }
     out.writeShort(v);
   }
- 
+
   /**
    * DataOutputStream writeByte with checking of argument
-   * @param out output sink 
-   * @param v the value to write
-   * @throws IOException passthru
+   * 
+   * @param out
+   *          output sink
+   * @param v
+   *          the value to write
+   * @throws IOException
+   *           passthru
    */
   public static void writeByte(DataOutput out, int v) throws IOException {
-    if (v > Byte.MAX_VALUE || 
-        v < Byte.MIN_VALUE) {
-      throw new RuntimeException(String.format(
-          "Trying to write int %,d as a byte but it doesn't fit", v));
+    if (v > Byte.MAX_VALUE || v < Byte.MIN_VALUE) {
+      throw new RuntimeException(
+              String.format("Trying to write int %,d as a byte but it doesn't fit", v));
     }
     out.write(v);
   }
 
   /**
-   * Write lower 8 bits 
-   * @param out output sink
-   * @param v the value to write
-   * @throws IOException passthru
+   * Write lower 8 bits
+   * 
+   * @param out
+   *          output sink
+   * @param v
+   *          the value to write
+   * @throws IOException
+   *           passthru
    */
   public static void writeUnsignedByte(DataOutput out, int v) throws IOException {
     out.write(v);
   }
 
+//@formatter:off
   /**
    * write a positive or negative number, optimized for fewer bytes near 0
    *   sign put in low order bit, rest of number converted to positive and shifted left 1
@@ -184,23 +199,24 @@ public class DataIO {
    * @param v the value to write
    * @throws IOException passthru
    */
+//@formatter:on
   // special handling for MIN_VALUE because
-  // Math.abs of it "fails".  We instead code it as
+  // Math.abs of it "fails". We instead code it as
   // "-0", a code point not otherwise in use
   public static void writeVPNnumber(DataOutput out, int v) throws IOException {
     if (v == Integer.MIN_VALUE) {
       writeVnumber(out, 1);
     } else {
       if (v < 0) {
-        writeVnumber(out, (((long)Math.abs(v)) << 1) | 1);
+        writeVnumber(out, (((long) Math.abs(v)) << 1) | 1);
       } else {
         writeVnumber(out, v << 1);
       }
     }
   }
- 
+
   // special handling for MIN_VALUE because
-  // Math.abs of it "fails".  We instead code it as
+  // Math.abs of it "fails". We instead code it as
   // "-0", a code point not otherwise in use
   public static void writeVPNnumber(DataOutput out, long v) throws IOException {
     if (v == Long.MIN_VALUE) {
@@ -213,22 +229,24 @@ public class DataIO {
       }
     }
   }
+
   // special handling for MIN_VALUE because
-  // Math.abs of it "fails".  We instead code it as
+  // Math.abs of it "fails". We instead code it as
   // "-0", a code point not otherwise in use
   public static int lengthVPNnumber(int v) {
     if (v == Integer.MIN_VALUE) {
       return 1;
     } else {
       if (v < 0) {
-        return lengthVnumber(((long)(Math.abs(v)) << 1));
+        return lengthVnumber(((long) (Math.abs(v)) << 1));
       } else {
         return lengthVnumber(v << 1);
       }
     }
   }
+
   // special handling for MIN_VALUE because
-  // Math.abs of it "fails".  We instead code it as
+  // Math.abs of it "fails". We instead code it as
   // "-0", a code point not otherwise in use
   public static int lengthVPNnumber(long v) {
     if (v == Long.MIN_VALUE) {
@@ -242,6 +260,7 @@ public class DataIO {
     }
   }
 
+//@formatter:off
   /**
    * Write a positive number with the fewest bytes possible
    * up to 127 written as a byte
@@ -249,18 +268,22 @@ public class DataIO {
    * 
    * Note: value treated as unsigned 32 bit int
    * 
-   * @param out output sink
-   * @param v the value to write
-   * @throws IOException passthru
+   * @param out
+   *          output sink
+   * @param v
+   *          the value to write
+   * @throws IOException
+   *           passthru
    */
+//@formatter:on
   public static void writeVnumber(final DataOutput out, final int v) throws IOException {
     if ((v >= 0) && v < 128) {
-      out.write(v);  // fast path
+      out.write(v); // fast path
     } else {
       writeVnumber1(out, v);
     }
   }
-  
+
   private static void writeVnumber1(final DataOutput out, int v) throws IOException {
     if (v < 0) {
       throw new RuntimeException("never happen");
@@ -275,7 +298,7 @@ public class DataIO {
       v = v >>> 7;
     }
   }
-  
+
   public static int lengthVnumber(int v) {
     int r = 1;
     for (int i = 0; i < 5; i++) {
@@ -290,12 +313,12 @@ public class DataIO {
 
   public static int readVnumber(final DataInput in) throws IOException {
     int raw = in.readUnsignedByte();
-    if (raw < 0x80) {   // fast path
+    if (raw < 0x80) { // fast path
       return raw;
     }
     int result = raw & MASK_LOW_7;
     int shift = 7;
-    
+
     for (int i = 1; i < 5; i++) {
       raw = in.readUnsignedByte();
       result |= (raw & MASK_LOW_7) << shift;
@@ -304,25 +327,28 @@ public class DataIO {
       }
       shift += 7;
     }
-    throw new IllegalStateException("Invalid input deserializing Vnumber");   
+    throw new IllegalStateException("Invalid input deserializing Vnumber");
   }
 
   /**
    * Write a positive long with the fewest bytes possible; up to 127 written as a byte, high order
    * bit on means get another byte.
    * 
-   * @param out output sink
-   * @param v the value to write is never negative
-   * @throws IOException passthru
+   * @param out
+   *          output sink
+   * @param v
+   *          the value to write is never negative
+   * @throws IOException
+   *           passthru
    */
   public static void writeVnumber(final DataOutput out, final long v) throws IOException {
     if ((v >= 0) && v < 128) {
-      out.write((int)v);  // fast path
+      out.write((int) v); // fast path
     } else {
       writeVnumber1(out, v);
     }
   }
-  
+
   private static void writeVnumber1(final DataOutput out, long v) throws IOException {
     if (v < 0) {
       throw new RuntimeException("never happen");
@@ -332,12 +358,12 @@ public class DataIO {
         out.write((int) v);
         return;
       }
-      int outByte = (int)(v & MASK_LOW_7_LONG);
+      int outByte = (int) (v & MASK_LOW_7_LONG);
       out.write(outByte | SIGNED_INT_VALUE_0x80);
       v = v >>> 7;
     }
   }
-  
+
   public static int lengthVnumber(long v) {
     int r = 1;
     for (int i = 0; i < 9; i++) {
@@ -350,10 +376,9 @@ public class DataIO {
     throw new RuntimeException("Never get here");
   }
 
-
   public static long readVlong(final DataInput in) throws IOException {
     long raw = in.readUnsignedByte();
-    if (raw < 0x80) {   // fast path
+    if (raw < 0x80) { // fast path
       return raw;
     }
 
@@ -369,12 +394,12 @@ public class DataIO {
     }
     throw new IllegalStateException("Invalid input deserializing Vlong");
   }
-  
+
   public static long readRestOfVlong(DataInput in, int firstByte) throws IOException {
     if (firstByte < 0x80) {
       return firstByte;
     }
-    long result = firstByte ^ 0x80;  // turn off high bit
+    long result = firstByte ^ 0x80; // turn off high bit
     int shift = 7;
     for (int i = 1; i < 9; i++) {
       long raw = in.readUnsignedByte();
@@ -385,7 +410,7 @@ public class DataIO {
       shift += 7;
     }
     throw new IllegalStateException("Invalid input deserializing Vlong");
-    
+
   }
 
   public static void writeByteArray(DataOutput out, byte[] v) throws IOException {
@@ -402,9 +427,13 @@ public class DataIO {
 
   /**
    * write array preceded by its length
-   * @param out output sink
-   * @param v the value to write
-   * @throws IOException passthru
+   * 
+   * @param out
+   *          output sink
+   * @param v
+   *          the value to write
+   * @throws IOException
+   *           passthru
    */
   public static void writeIntArray(DataOutput out, int[] v) throws IOException {
     writeVnumber(out, v.length);
@@ -412,7 +441,7 @@ public class DataIO {
       out.writeInt(vi);
     }
   }
-  
+
   public static int[] readIntArray(DataInput in) throws IOException {
     int size = readVnumber(in);
     int[] result = new int[size];
@@ -421,12 +450,16 @@ public class DataIO {
     }
     return result;
   }
-  
+
   /**
    * Write delta encoded value, for increasing values
-   * @param out output sink
-   * @param v the value to write
-   * @throws IOException passthru
+   * 
+   * @param out
+   *          output sink
+   * @param v
+   *          the value to write
+   * @throws IOException
+   *           passthru
    */
   public static void writeIntArrayDelta(DataOutput out, int[] v) throws IOException {
     writeVnumber(out, v.length);
@@ -436,7 +469,7 @@ public class DataIO {
       prev = vi;
     }
   }
-  
+
   public static int[] readIntArrayDelta(DataInput in) throws IOException {
     int size = readVnumber(in);
     int prev = 0;
@@ -451,18 +484,20 @@ public class DataIO {
   public static void writeLongArray(DataOutput out, long[] v) throws IOException {
     // java doesn't support arrays longer than Integer.MAX_VALUE, even on 64-bit platforms
     writeVnumber(out, v.length);
-    for (long vi : v)
+    for (long vi : v) {
       out.writeLong(vi);
+    }
   }
-  
+
   public static long[] readLongArray(DataInput in) throws IOException {
     int size = readVnumber(in);
     long[] v = new long[size];
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i) {
       v[i] = in.readLong();
+    }
     return v;
   }
-  
+
   public static void writeLongArrayDelta(DataOutput out, long[] v) throws IOException {
     // java doesn't support arrays longer than Integer.MAX_VALUE, even on 64-bit platforms
     writeVnumber(out, v.length);
@@ -472,24 +507,23 @@ public class DataIO {
       prev = vi;
     }
   }
-  
+
   public static long[] readLongArrayDelta(DataInput in) throws IOException {
     int size = readVnumber(in);
     long[] v = new long[size];
     long prev = 0;
-    for (int i=0; i<size; ++i) {
+    for (int i = 0; i < size; ++i) {
       v[i] = prev + readVlong(in);
       prev = v[i];
     }
     return v;
-  }  
-  
+  }
+
   public static int readUnsignedByte(DataInput in) throws IOException {
-    int r =  in.readUnsignedByte();
+    int r = in.readUnsignedByte();
     if (r < 0) {
       throw new IOException("Premature EOF");
     }
     return r;
   }
-  
 }

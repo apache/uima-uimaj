@@ -28,7 +28,6 @@ public class CharArraySpanMap {
 
   private static final class Entry {
     private Entry() {
-      super();
       this.start = 0;
       this.length = 0;
       this.value = null;
@@ -80,7 +79,6 @@ public class CharArraySpanMap {
    */
   @SuppressWarnings("unchecked")
   public CharArraySpanMap(int initialArraySize, int initialMapSize) {
-    super();
     if (initialArraySize < MIN_ARRAY_SIZE) {
       initialArraySize = MIN_ARRAY_SIZE;
     }

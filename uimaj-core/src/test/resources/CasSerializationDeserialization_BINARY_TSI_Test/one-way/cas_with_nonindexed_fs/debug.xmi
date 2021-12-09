@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <tcas:DocumentAnnotation xmi:id="5" sofa="1" begin="0" end="4" language="x-unspecified"/>
+    <type:TagsetDescription xmi:id="6" sofa="1" begin="0" end="4" tags="2 3 4"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="Test"/>
+    <type:TagDescription xmi:id="2" name="&lt;+ADJ&gt;"/>
+    <type:TagDescription xmi:id="3" name="&lt;+ADV&gt;"/>
+    <type:TagDescription xmi:id="4" name="&lt;+ART&gt;"/>
+    <cas:View sofa="1" members="5 6"/>
+</xmi:XMI>

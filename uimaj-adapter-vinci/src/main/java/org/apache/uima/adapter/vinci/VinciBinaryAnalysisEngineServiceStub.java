@@ -181,6 +181,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @throws ResourceServiceException the resource service exception
    * @see ResourceServiceStub#callGetMetaData()
    */
+  @Override
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
       // create Vinci Frame
@@ -236,6 +237,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
+  @Override
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     try {
       AFrame requestFrame = new AFrame();
@@ -272,6 +274,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callBatchProcessComplete()
    */
+  @Override
   public void callBatchProcessComplete() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
@@ -291,6 +294,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
+  @Override
   public void callCollectionProcessComplete() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
@@ -310,6 +314,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    *
    * @see ResourceServiceStub#destroy()
    */
+  @Override
   public void destroy() {
     mVinciClient.close();
   }

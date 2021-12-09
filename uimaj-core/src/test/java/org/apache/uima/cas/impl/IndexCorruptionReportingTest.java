@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -35,46 +37,45 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+public class IndexCorruptionReportingTest {
 
-public class IndexCorruptionReportingTest extends TestCase {
-  
   static {
     System.setProperty("uima.report_fs_update_corrupts_index", "true");
-//    System.setProperty("uima.disable_auto_protect_indexes", "false");
-//    System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
+    // System.setProperty("uima.disable_auto_protect_indexes", "false");
+    // System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
   }
-  
+
   private TypeSystemDescription typeSystemDescription;
-  
+
   private TypeSystem ts;
 
   private FsIndexDescription[] indexes;
-  
+
   private CASImpl cas;
 
   File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-  protected void setUp() throws Exception {
-    typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-        new XMLInputSource(typeSystemFile1));
+  @BeforeEach
+  public void setUp() throws Exception {
+    typeSystemDescription = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
-        .getFsIndexes();
-    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
+            .getFsIndexes();
+    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(),
+            indexes);
     ts = cas.getTypeSystem();
   }
-  
+
   private FsIndex_bag<TOP> cbi() {
     FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
     return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testReport() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 10);

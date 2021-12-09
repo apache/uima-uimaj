@@ -23,17 +23,19 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Interface for a comparable FSIterator. 
+ * Interface for a comparable FSIterator.
  * 
- * This allows two iterators to be compared with each other.  Two IntIterators are compared according to the
- * element that would be returned by the next call to next().
+ * This allows two iterators to be compared with each other. Two IntIterators are compared according
+ * to the element that would be returned by the next call to next().
  * 
- * The purpose of this is for keeping multiple iterators, one for each subtype of a type, in a sorted order,
- * when desiring to iterate over a type and its subtypes, in a combined merged order.
+ * The purpose of this is for keeping multiple iterators, one for each subtype of a type, in a
+ * sorted order, when desiring to iterate over a type and its subtypes, in a combined merged order.
  * 
- * The comparable part is only needed for iterators over Sorted indexes. Iterators over Bags and Sets have no ordering requirement.
+ * The comparable part is only needed for iterators over Sorted indexes. Iterators over Bags and
+ * Sets have no ordering requirement.
  * 
  */
-public interface ComparableFSIterator<F extends FeatureStructure> extends FSIterator<F>, Comparable<FSIterator<F>> {
+public interface ComparableFSIterator<F extends FeatureStructure>
+        extends FSIterator<F>, Comparable<FSIterator<F>> {
 
 }

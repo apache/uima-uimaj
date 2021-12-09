@@ -35,11 +35,11 @@ import org.slf4j.helpers.MessageFormatter;
 
 /**
  * UIMA Logging interface implementation for Java Logging Toolkit JSR-47 (JDK 1.4) JUL
- * Ignores Markers and MDC (not supported in the JUL
  * 
+ * Ignores Markers and MDC (not supported in the JUL)
  */
 public class JSR47Logger_impl extends Logger_common_impl {
-  
+
   final static private Object[] zeroLengthArray = new Object[0];
 
   /**
@@ -55,13 +55,11 @@ public class JSR47Logger_impl extends Logger_common_impl {
    */
   private JSR47Logger_impl(Class<?> component) {
     super(component);
-    
-    logger = java.util.logging.Logger.getLogger(
-        (component != null)
-          ? component.getName()
-          : "org.apache.uima");
+
+    logger = java.util.logging.Logger
+            .getLogger((component != null) ? component.getName() : "org.apache.uima");
   }
-  
+
   private JSR47Logger_impl(JSR47Logger_impl l, int limit) {
     super(l, limit);
     this.logger = l.logger;
@@ -78,7 +76,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   public static synchronized Logger getInstance(Class<?> component) {
     return new JSR47Logger_impl(component);
   }
-  
+
   public static synchronized Logger getInstance(JSR47Logger_impl l, int limit) {
     if (limit == Integer.MAX_VALUE) {
       return l;
@@ -94,7 +92,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   public static synchronized JSR47Logger_impl getInstance() {
     return new JSR47Logger_impl(null);
   }
-  
+
   @Override
   public JSR47Logger_impl getLimitedLogger(int limit) {
     if (limit == Integer.MAX_VALUE || limit == this.limit_common) {
@@ -164,19 +162,20 @@ public class JSR47Logger_impl extends Logger_common_impl {
    * 
    * Maps via marker values for UIMA_MARKER_CONFIG and UIMA_MARKER_FINEST
    * 
-   * SEVERE (highest value) -%gt; SEVERE<br> 
-   * WARNING -%gt; WARNING<br> 
+   * SEVERE (highest value) -%gt; SEVERE<br>
+   * WARNING -%gt; WARNING<br>
    * INFO -%gt; INFO <br>
    * CONFIG -%gt; CONFIG <br>
    * FINE -%gt; FINE<br>
    * FINER -%gt; FINER <br>
-   * FINEST (lowest value) -%gt; FINEST<br> 
+   * FINEST (lowest value) -%gt; FINEST<br>
    * OFF -%gt; OFF <br>
    * ALL -%gt; ALL<br>
    * 
    * @param level
    *          uima level
-   * @param m the marker
+   * @param m
+   *          the marker
    * 
    * @return Level - corresponding JSR47 level
    */
@@ -192,21 +191,19 @@ public class JSR47Logger_impl extends Logger_common_impl {
       case org.apache.uima.util.Level.WARNING_INT:
         return java.util.logging.Level.WARNING;
       case org.apache.uima.util.Level.INFO_INT:
-        return (m == UIMA_MARKER_CONFIG) 
-                 ? java.util.logging.Level.CONFIG
-                 : java.util.logging.Level.INFO;
+        return (m == UIMA_MARKER_CONFIG) ? java.util.logging.Level.CONFIG
+                : java.util.logging.Level.INFO;
       case org.apache.uima.util.Level.CONFIG_INT:
         return java.util.logging.Level.CONFIG;
       case org.apache.uima.util.Level.FINE_INT:
         return java.util.logging.Level.FINE;
       case org.apache.uima.util.Level.FINER_INT:
         // could be DEBUG with marker FINEST, DEBUG_INT == FINER_INT
-        return (m == UIMA_MARKER_FINEST)
-                 ? java.util.logging.Level.FINEST
-                 : java.util.logging.Level.FINER;
+        return (m == UIMA_MARKER_FINEST) ? java.util.logging.Level.FINEST
+                : java.util.logging.Level.FINER;
       case org.apache.uima.util.Level.FINEST_INT:
         return java.util.logging.Level.FINEST;
-          
+
       default: // for all other cases return Level.ALL
         return java.util.logging.Level.ALL;
     }
@@ -221,7 +218,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   public boolean isLoggable(Level level) {
     return logger.isLoggable(getJSR47Level(level, null));
   }
-  
+
   @Override
   public boolean isLoggable(Level level, Marker m) {
     return logger.isLoggable(getJSR47Level(level, m));
@@ -237,65 +234,65 @@ public class JSR47Logger_impl extends Logger_common_impl {
     logger.setLevel(getJSR47Level(level, null));
   }
 
-//  /**
-//   * Log the message at the specified level with the specified throwable if any.
-//   * This method creates a LogRecord and fills in caller date before calling
-//   * this instance's JDK14 logger.
-//   * 
-//   * See bug report #13 for more details.
-//   * 
-//   * @param level
-//   * @param msg
-//   * @param t
-//   */
-//  private void log(String callerFQCN, Level level, String msg, Throwable t) {
-//      // millis and thread are filled by the constructor
-//      LogRecord record = new LogRecord(level, msg);
-//      record.setLoggerName(getName());
-//      record.setThrown(t);
-//      // Note: parameters in record are not set because SLF4J only
-//      // supports a single formatting style
-//      fillCallerData(callerFQCN, record);
-//      logger.log(record);
-//  }
-  
+  // /**
+  // * Log the message at the specified level with the specified throwable if any.
+  // * This method creates a LogRecord and fills in caller date before calling
+  // * this instance's JDK14 logger.
+  // *
+  // * See bug report #13 for more details.
+  // *
+  // * @param level
+  // * @param msg
+  // * @param t
+  // */
+  // private void log(String callerFQCN, Level level, String msg, Throwable t) {
+  // // millis and thread are filled by the constructor
+  // LogRecord record = new LogRecord(level, msg);
+  // record.setLoggerName(getName());
+  // record.setThrown(t);
+  // // Note: parameters in record are not set because SLF4J only
+  // // supports a single formatting style
+  // fillCallerData(callerFQCN, record);
+  // logger.log(record);
+  // }
 
   @Override
-  public void log(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {    
+  public void log(Marker m, String aFqcn, Level level, String msg, Object[] args,
+          Throwable throwable) {
     if (isLoggable(level, m)) {
       log(m, aFqcn, level, MessageFormat.format(msg, args), throwable);
     }
   }
-  
+
   @Override
   public void log(Marker m, String aFqcn, Level level, String msg, Throwable throwable) {
-    if (isLoggable(level, m)) {    
+    if (isLoggable(level, m)) {
       LogRecord record = new LogRecord(getJSR47Level(level, m), msg);
       record.setLoggerName(getName());
       record.setThrown(throwable);
-      
+
       StackTraceElement[] elements = new Throwable().getStackTrace();
       StackTraceElement top = null;
-      
+
       boolean found = false;
-      
+
       for (int i = 0; i < elements.length; i++) {
         final String className = elements[i].getClassName();
         if (className.equals(aFqcn)) {
           if (found) {
-            continue;   // keep going until not found
+            continue; // keep going until not found
           } else {
             found = true;
             continue;
           }
         } else {
           if (found) {
-            top = elements[i];  
+            top = elements[i];
             break;
           }
-        } 
+        }
       }
-  
+
       if (top != null) {
         record.setSourceClassName(top.getClassName());
         record.setSourceMethodName(top.getMethodName() + "(" + top.getLineNumber() + ")");
@@ -304,13 +301,14 @@ public class JSR47Logger_impl extends Logger_common_impl {
     }
   }
 
-  
   @Override
-  public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
+  public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args,
+          Throwable throwable) {
     // this version of MessageFormatter does the {} style
-    log(m, aFqcn, level, MessageFormatter.format(msg, args).getMessage(), zeroLengthArray, throwable);
+    log(m, aFqcn, level, MessageFormatter.format(msg, args).getMessage(), zeroLengthArray,
+            throwable);
   }
-  
+
   @Override
   public String getName() {
     return logger.getName();
@@ -338,8 +336,8 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isInfoEnabled() {
-    return logger.isLoggable(java.util.logging.Level.INFO) ||
-           logger.isLoggable(java.util.logging.Level.CONFIG);
+    return logger.isLoggable(java.util.logging.Level.INFO)
+            || logger.isLoggable(java.util.logging.Level.CONFIG);
   }
 
   @Override
@@ -349,8 +347,8 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isTraceEnabled() {
-    return logger.isLoggable(java.util.logging.Level.FINER) ||
-        logger.isLoggable(java.util.logging.Level.FINEST);
+    return logger.isLoggable(java.util.logging.Level.FINER)
+            || logger.isLoggable(java.util.logging.Level.FINEST);
   }
 
   @Override
@@ -369,4 +367,3 @@ public class JSR47Logger_impl extends Logger_common_impl {
   }
 
 }
-

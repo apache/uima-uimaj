@@ -60,6 +60,7 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
    * 
    * @return the name
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -70,6 +71,7 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
    * @param aName
    *          a name
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -79,6 +81,7 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
    * 
    * @return the value
    */
+  @Override
   public Object getValue() {
     return mValue;
   }
@@ -89,15 +92,17 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
    * @param aValue
    *          a value
    */
+  @Override
   public void setValue(Object aValue) {
     mValue = aValue;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "nameValuePair",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("name"), new PropertyXmlInfo("value", false), });
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("nameValuePair",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("value", false), });
 }

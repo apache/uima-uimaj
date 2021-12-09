@@ -39,6 +39,7 @@ public class IndexRule_impl extends MetaDataObject_impl implements IndexRule {
    * 
    * @see org.apache.uima.search.IndexRule#getStyles()
    */
+  @Override
   public Style[] getStyles() {
     return mStyles;
   }
@@ -48,6 +49,7 @@ public class IndexRule_impl extends MetaDataObject_impl implements IndexRule {
    * 
    * @see org.apache.uima.search.IndexRule#setStyles(org.apache.uima.search.Style[])
    */
+  @Override
   public void setStyles(Style[] aStyles) {
     mStyles = (aStyles == null) ? new Style[0] : aStyles;
   }
@@ -57,6 +59,7 @@ public class IndexRule_impl extends MetaDataObject_impl implements IndexRule {
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

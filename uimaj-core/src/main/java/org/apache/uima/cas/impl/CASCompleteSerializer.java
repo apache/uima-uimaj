@@ -21,11 +21,13 @@ package org.apache.uima.cas.impl;
 
 import java.io.Serializable;
 
+// @formatter:off
 /**
  * This is a small object which contains 
  *   - CASMgrSerializer instance - a Java serializable form of the type system + index definitions
  *   - CASSerializer instance - a Java serializable form of the CAS including lists of which FSs are indexed  
  */
+// @formatter:on
 public class CASCompleteSerializer implements Serializable {
 
   static final long serialVersionUID = 6841574968081866308L;
@@ -38,7 +40,6 @@ public class CASCompleteSerializer implements Serializable {
    * Constructor for CASCompleteSerializer.
    */
   public CASCompleteSerializer() {
-    super();
   }
 
   public CASCompleteSerializer(CASImpl cas) {

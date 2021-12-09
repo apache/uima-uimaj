@@ -98,7 +98,7 @@ public class BrowserUtil {
     String url = (args.length > 0) ? args[0] : "http://apache.org";
     try {
       Process process = BrowserUtil.openUrlInDefaultBrowser(url);
-      if(process != null) {
+      if (process != null) {
         process.waitFor();
       }
     } catch (Exception e) {
@@ -118,10 +118,9 @@ public class BrowserUtil {
    * 
    * @param url
    *          The URL to open
-   * @return
-   *        Returns the process browser object or null if no browser could be found. 
-   *        On MacOs null is returned in any case.
-   *        
+   * @return Returns the process browser object or null if no browser could be found. On MacOs null
+   *         is returned in any case.
+   * 
    * @throws Exception
    *           If the available web browser does not run
    */
@@ -134,8 +133,8 @@ public class BrowserUtil {
       case WINDOWS_9x:
         // Add quotes around the URL to allow ampersands and other
         // special characters to work.
-        process = Runtime.getRuntime().exec(
-                new String[] { __browserLauncher[0], FIRST_WINDOWS_PARAMETER,
+        process = Runtime.getRuntime()
+                .exec(new String[] { __browserLauncher[0], FIRST_WINDOWS_PARAMETER,
                     SECOND_WINDOWS_PARAMETER, THIRD_WINDOWS_PARAMETER, '"' + url + '"' });
         // This avoids a memory leak on some versions of Java on
         // Windows. That's hinted at in
@@ -166,12 +165,12 @@ public class BrowserUtil {
               process = Runtime.getRuntime().exec(new String[] { __browserLauncher[i], url });
             }
           } catch (InterruptedException ie) {
-            throw new IOException("InterruptedException while launching browser: "
-                    + ie.getMessage());
+            throw new IOException(
+                    "InterruptedException while launching browser: " + ie.getMessage());
           }
         }
         // no browser found, return null
-        if(!browserAvailableBrowser) {
+        if (!browserAvailableBrowser) {
           process = null;
         }
         break;

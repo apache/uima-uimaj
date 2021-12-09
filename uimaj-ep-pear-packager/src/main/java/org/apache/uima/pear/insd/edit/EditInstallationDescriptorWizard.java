@@ -27,6 +27,8 @@ import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.PearPlugin;
 import org.apache.uima.pear.insd.edit.vars.VarVal;
 import org.apache.uima.pear.nature.ProjectCustomizer;
+import org.apache.uima.pear.tools.InstallationDescriptor;
+import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -34,9 +36,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWizard;
-import org.apache.uima.pear.tools.InstallationDescriptor;
-import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
 
 /**
@@ -70,7 +69,6 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
    *          An IProject with the UIMA Nature
    */
   public EditInstallationDescriptorWizard(IProject project) {
-    super();
     try {
       setWindowTitle("Edit PEAR Installation Descriptor");
       setDefaultPageImageDescriptor(PearPlugin.getImageDescriptor("editInsdWiz.gif"));
