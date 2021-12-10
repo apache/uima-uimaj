@@ -196,7 +196,7 @@ public class ImportResolverTest {
 
       long totalDurationThisRun = 0;
       ResourceManager resMgr = newDefaultResourceManager();
-     
+
       List<ResolveImportsRunner> runners = new ArrayList<>();
       for (Entry<File, Set<TypeDescription>> e : data) {
         runners.add(new ResolveImportsRunner(resMgr, e.getKey(), e.getValue()));
@@ -215,7 +215,7 @@ public class ImportResolverTest {
       assertThat(finishedRunners) //
               .as("All runners made it to the finishing line") //
               .hasSameSizeAs(runners);
-      
+
       for (ResolveImportsRunner runner : finishedRunners) {
         totalDurationThisRun += runner.duration;
 
@@ -230,10 +230,10 @@ public class ImportResolverTest {
                 .sorted() //
                 .distinct() //
                 .toArray(String[]::new);
-        
+
         log.debug("Types: {}  unique types: {} ({}ms)", runner.descriptor.getTypes().length,
                 actualUniqueTypeNames.length, runner.duration);
-      
+
         assertThat(runner.descriptor.getTypes())
                 // Note that in the general case, there may still be duplicates if the same type is
                 // declared in more than one type system description. However, the scenario

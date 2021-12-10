@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.util.function.Supplier;
 
 import org.apache.uima.UIMAException;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.resource.ResourceManager;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -298,7 +299,17 @@ public interface Logger extends org.slf4j.Logger {
    * @param resourceManager
    *          A resource manager instance whose extension ClassLoader (if any) will be used for
    *          message localization by this logger.
+   * @deprecated When a logger is used within UIMA, the resource manager is picked up from the
+   *             {@link UimaContextHolder} and if none is available, then the class loader set on
+   *             the {@link Thread#getContextClassLoader()} is used. Thus, setting a resource
+   *             manager for loading message localizations should not be required. Setting a
+   *             resource manager anyway can lead to resource being registered in the resource
+   *             manager to not be garbage collected in a timely manner. Also, the logger is shared
+   *             globally and in a multi-threaded/multi-classloader scenario, it is likely that
+   *             different threads overwrite each others logger resource manager making it likely
+   *             that in any given thread the wrong resource manager is used by the logger.
    */
+  @Deprecated
   void setResourceManager(ResourceManager resourceManager);
 
   /**

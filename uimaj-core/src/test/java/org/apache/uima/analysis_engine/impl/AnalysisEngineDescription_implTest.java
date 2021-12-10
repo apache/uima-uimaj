@@ -304,7 +304,6 @@ public class AnalysisEngineDescription_implTest {
     ResourceManager resourceManager = newDefaultResourceManager();
     ConfigurationManager configManager = newConfigurationManager();
     Logger logger = UIMAFramework.getLogger(this.getClass());
-    logger.setResourceManager(resourceManager);
 
     UimaContext uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
     final Map<String, Object> p = new HashMap<>();

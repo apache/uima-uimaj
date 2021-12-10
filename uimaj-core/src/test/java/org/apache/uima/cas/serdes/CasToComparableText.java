@@ -670,8 +670,7 @@ public class CasToComparableText {
           cur = cur.getFeatureValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
           i++;
         }
-      }
-      else {
+      } else {
         throw new IllegalStateException(
                 "Unsupported list type [" + aValue.getType().getName() + "]");
       }
