@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.annotator;
 
 import org.apache.uima.cas.TypeSystem;
@@ -44,8 +43,8 @@ public interface BaseAnnotator {
    * @throws AnnotatorConfigurationException
    *           if the configuration specified for this annotator is invalid.
    */
-  public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException;
+  void initialize(AnnotatorContext aContext)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException;
 
   /**
    * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
@@ -56,14 +55,15 @@ public interface BaseAnnotator {
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @param aTypeSystem the new type system
+   * @param aTypeSystem
+   *          the new type system
    * @throws AnnotatorInitializationException
    *           if the annotator cannot initialize itself.
    * @throws AnnotatorConfigurationException
    *           if the configuration specified for this annotator is invalid.
    */
-  public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException;
+  void typeSystemInit(TypeSystem aTypeSystem)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException;
 
   /**
    * Alerts this annotator that the values of its configuration parameters or external resources
@@ -78,12 +78,11 @@ public interface BaseAnnotator {
    * @throws AnnotatorInitializationException
    *           if the annotator fails to reinitialize itself based on the new configuration.
    */
-  public void reconfigure() throws AnnotatorConfigurationException,
-          AnnotatorInitializationException;
+  void reconfigure() throws AnnotatorConfigurationException, AnnotatorInitializationException;
 
   /**
    * Frees all resources held by this annotator. The Analysis Engine calls this method only once,
    * when it is finished using this annotator.
    */
-  public void destroy();
+  void destroy();
 }

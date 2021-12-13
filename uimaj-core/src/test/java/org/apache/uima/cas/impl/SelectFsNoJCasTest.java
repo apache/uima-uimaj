@@ -32,35 +32,37 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 // tests without initializing JCas
-public class SelectFsNoJCasTest  {
+public class SelectFsNoJCasTest {
 
   private static TypeSystemDescription typeSystemDescription;
-  
+
   static private CASImpl cas;
 
-  static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_token_sentence_no_jcas.xml"); 
-  
-  @BeforeClass
+  static File typeSystemFile1 = JUnitExtension
+          .getFile("ExampleCas/testTypeSystem_token_sentence_no_jcas.xml");
+
+  @BeforeAll
   public static void setUpClass() throws Exception {
-    typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-        new XMLInputSource(typeSystemFile1));
-    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);    
+    typeSystemDescription = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
+    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(),
+            null);
   }
-  
 
   @Test
   public void testOpsNeedingAnnotation() {
     Type type = cas.getTypeSystem().getType("x.y.z.SentenceNoJCas");
-    FeatureStructure s = cas.createAnnotation(type, 0,  4);
+    FeatureStructure s = cas.createAnnotation(type, 0, 4);
     cas.indexRepository.addFS(s);
-    
-    boolean b = cas.<Annotation>select(type).covering(1, 2).map(f ->f.getBegin()).findFirst().isPresent();
+
+    boolean b = cas.<Annotation> select(type).covering(1, 2).map(f -> f.getBegin()).findFirst()
+            .isPresent();
 
     assertTrue(b);
   }
-  
+
 }

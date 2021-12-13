@@ -29,7 +29,7 @@ public interface NameValuePair {
    * 
    * @return the name
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name.
@@ -37,14 +37,14 @@ public interface NameValuePair {
    * @param aName
    *          a name
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the value.
    * 
    * @return the value
    */
-  public Object getValue();
+  Object getValue();
 
   /**
    * Sets the value.
@@ -52,6 +52,6 @@ public interface NameValuePair {
    * @param aValue
    *          a value
    */
-  public void setValue(Object aValue);
+  void setValue(Object aValue);
 
 }

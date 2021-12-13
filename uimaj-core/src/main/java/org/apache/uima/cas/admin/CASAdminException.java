@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.UIMARuntimeException;
@@ -71,24 +70,26 @@ public class CASAdminException extends UIMARuntimeException {
    * defined on (super)type "{3}" with range "{4}".
    */
   public static final String DUPLICATE_FEATURE = "DUPLICATE_FEATURE";
-  
+
   /**
    * Trying to define type "{0}", but this type has already been defined as "{1}".
    */
   public static final String DUPLICATE_TYPE = "DUPLICATE_TYPE";
-  
+
   /**
-   * Tried to obtain a UIMA Array type for component "{0}", but no such array type is defined. 
+   * Tried to obtain a UIMA Array type for component "{0}", but no such array type is defined.
    */
   public static final String MISSING_ARRAY_TYPE_FOR_COMPONENT = "MISSING_ARRAY_TYPE_FOR_COMPONENT";
-  
+
   /**
-   * Can't define a Subtype of String "{0}" with the same name as an existing non String Subtype "{1}".
+   * Can't define a Subtype of String "{0}" with the same name as an existing non String Subtype
+   * "{1}".
    */
   public static final String STRING_SUBTYPE_REDEFINE_NAME_CONFLICT = "STRING_SUBTYPE_REDEFINE_NAME_CONFLICT";
- 
+
   /**
-   * Can't define a Subtype of String "{0}" with allowed Values "{1}", has the same name as an existing String Subtype with different allowed values "{2}".
+   * Can't define a Subtype of String "{0}" with allowed Values "{1}", has the same name as an
+   * existing String Subtype with different allowed values "{2}".
    */
   public static final String STRING_SUBTYPE_CONFLICTING_ALLOWED_VALUES = "STRING_SUBTYPE_CONFLICTING_ALLOWED_VALUES";
 
@@ -96,32 +97,34 @@ public class CASAdminException extends UIMARuntimeException {
    * uima.allow_duplicate_add_to_indexes is not supported in UIMA Version 3 and later
    */
   public static final String INDEX_DUPLICATES_NOT_SUPPORTED = "INDEX_DUPLICATES_NOT_SUPPORTED";
-  
+
   /**
    * Total number of UIMA types, {0}, exceeds the maximum of 32767.
    */
   public static final String TOO_MANY_TYPES = "TOO_MANY_TYPES";
-  
+
   private String resourceBundleName = DEFAULT_RESOURCE_BUNDLE_NAME;
-    
-  public CASAdminException(String aResourceBundleName, Throwable aCause, String aMessageKey, Object ... aArguments) {
+
+  public CASAdminException(String aResourceBundleName, Throwable aCause, String aMessageKey,
+          Object... aArguments) {
     super(aCause, aResourceBundleName, aMessageKey, aArguments);
   }
 
-  public CASAdminException(String aMessageKey, Object ... aArguments) {
+  public CASAdminException(String aMessageKey, Object... aArguments) {
     super(aMessageKey, aArguments);
   }
 
-  public CASAdminException(Throwable aCause, String aMessageKey, Object ... aArguments) {
+  public CASAdminException(Throwable aCause, String aMessageKey, Object... aArguments) {
     super(aCause, aMessageKey, aArguments);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.UIMARuntimeException#getResourceBundleName()
    */
   @Override
   public String getResourceBundleName() {
     return resourceBundleName;
   }
-
 }

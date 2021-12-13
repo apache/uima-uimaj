@@ -21,8 +21,6 @@ package org.apache.uima.cas_data.impl.vinci;
 
 import java.io.IOException;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.adapter.vinci.util.Constants;
 import org.apache.uima.adapter.vinci.util.SaxVinciFrameBuilder;
 import org.apache.uima.adapter.vinci.util.VinciSaxParser;
@@ -32,6 +30,7 @@ import org.apache.uima.cas_data.impl.CasDataToXCas;
 import org.apache.uima.cas_data.impl.CasDataUtils;
 import org.apache.uima.cas_data.impl.XCasToCasDataSaxHandler;
 import org.apache.vinci.transport.document.AFrame;
+import org.xml.sax.SAXException;
 
 
 /**

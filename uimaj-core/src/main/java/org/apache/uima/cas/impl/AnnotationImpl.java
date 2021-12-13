@@ -22,6 +22,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * For backwards compatibility with V2
+ * 
  * @deprecated use Annotation instead
  */
 @Deprecated

@@ -35,11 +35,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for DoubleArray */
-public final class DoubleArray extends TOP implements CommonPrimitiveArray<Double>, DoubleArrayFSImpl, Iterable<Double> {
+public final class DoubleArray extends TOP
+        implements CommonPrimitiveArray<Double>, DoubleArrayFSImpl, Iterable<Double> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_DOUBLE_ARRAY;
-  
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -60,7 +61,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
   }
 
   private final double[] theArray;
-  
+
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private DoubleArray() {
@@ -68,9 +69,12 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
   }
 
   /**
-   *  Make a new DoubleArray of given size
-   * @param jcas The JCas
-   * @param length the length of the array 
+   * Make a new DoubleArray of given size
+   * 
+   * @param jcas
+   *          The JCas
+   * @param length
+   *          the length of the array
    */
   public DoubleArray(JCas jcas, int length) {
     super(jcas);
@@ -79,26 +83,29 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
-    }     
+      _casView.adjustLastFsV2size_nonHeapStoredArrays();
+    }
   }
-  
+
   /**
-   * used by generator
-   * Make a new DoubleArray of given size
-   * @param c -
-   * @param t -
-   * @param length the length of the array in bytes
+   * used by generator Make a new DoubleArray of given size
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
+   * @param length
+   *          the length of the array in bytes
    */
   public DoubleArray(TypeImpl t, CASImpl c, int length) {
-    super(t, c);  
+    super(t, c);
     theArray = new double[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
-    }     
+      _casView.adjustLastFsV2size_nonHeapStoredArrays();
+    }
   }
 
   /**
@@ -169,39 +176,44 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
       theArray[i + destPos] = Double.parseDouble(src[i + srcPos]);
     }
   }
-  
+
   // internal use
   public double[] _getTheArray() {
     return theArray;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
     DoubleArray bv = (DoubleArray) v;
-    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    System.arraycopy(bv.theArray, 0, theArray, 0, theArray.length);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int,
+   * java.lang.String)
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
-    set(i, Double.parseDouble(v));    
+    set(i, Double.parseDouble(v));
   }
-  
+
   @Override
   public Spliterator.OfDouble spliterator() {
     return Arrays.spliterator(theArray);
   }
-  
+
   @Override
   public OfDouble iterator() {
     return new OfDouble() {
       int i = 0;
-      
+
       @Override
       public boolean hasNext() {
         return i < size();
@@ -222,17 +234,19 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
       }
     };
   }
-  
+
   /**
    * @return an DoubleStream over the elements of the array
    */
   public DoubleStream stream() {
     return Arrays.stream(theArray);
   }
-  
+
   /**
-   * @param jcas Which CAS to create the array in
-   * @param a the source for the array's initial values
+   * @param jcas
+   *          Which CAS to create the array in
+   * @param a
+   *          the source for the array's initial values
    * @return a newly created and populated array
    */
   public static DoubleArray create(JCas jcas, double[] a) {
@@ -242,8 +256,10 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
   }
 
   /**
-   * non boxing version 
-   * @param action -
+   * non boxing version
+   * 
+   * @param action
+   *          -
    */
   public void forEach(DoubleConsumer action) {
     for (double d : theArray) {
@@ -251,9 +267,9 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
     }
   }
 
-
   /**
-   * @param item the item to see if is in the array
+   * @param item
+   *          the item to see if is in the array
    * @return true if the item is in the array
    */
   public boolean contains(double item) {

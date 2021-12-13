@@ -60,6 +60,7 @@ public class EntityProcessStatusImpl implements EntityProcessStatus {
     isSkipped = aSkip;
   }
 
+  @Override
   public boolean isException() {
     if (failedList.size() > 0) {
       return true;
@@ -68,16 +69,19 @@ public class EntityProcessStatusImpl implements EntityProcessStatus {
     }
   }
 
+  @Override
   public String getStatusMessage() {
     if (failedList.size() > 0)
       return "failed";
     return "success";
   }
 
+  @Override
   public List getExceptions() {
     return exceptionList;
   }
 
+  @Override
   public List getFailedComponentNames() {
 
     return failedList;
@@ -94,6 +98,7 @@ public class EntityProcessStatusImpl implements EntityProcessStatus {
     resultHM.put(aEventName, aE);
   }
 
+  @Override
   public ProcessTrace getProcessTrace() {
     return prT;
   }
@@ -135,6 +140,7 @@ public class EntityProcessStatusImpl implements EntityProcessStatus {
    * 
    * @return true if an entity was skipped, false otherwise
    */
+  @Override
   public boolean isEntitySkipped() {
     return isSkipped;
   }

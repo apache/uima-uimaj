@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -64,14 +66,15 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for binary serialization and deserialization (no compression)
  * 
  */
-public class SerializationReinitTest extends TestCase {
+public class SerializationReinitTest {
 
   public static final String TOKEN_TYPE = "Token";
 
@@ -95,15 +98,15 @@ public class SerializationReinitTest extends TestCase {
   public static final String[] STR_1_VALS = { "test1", "test2" };
 
   public static final String OSTR_TYPE = "theType";
-  
+
   public static final String OSTR_TYPE_FEAT = "theString";
-  
+
   public static final String OBYTE_TYPE_FEAT = "theByte";
-  
+
   public static final String OSHORT_TYPE_FEAT = "theShort";
-  
+
   public static final String OBYTEA_TYPE_FEAT = "theByteArray";
-  
+
   public static final String OSHORTA_TYPE_FEAT = "theShortArray";
 
   public static final String OLONGA_TYPE_FEAT = "theLongArray";
@@ -133,45 +136,38 @@ public class SerializationReinitTest extends TestCase {
   private Type strSub1;
 
   private Type theTypeType;
-  
+
   private Feature theStringFeature;
-  
+
   private Feature theByteFeature;
-  
+
   private Feature theShortFeature;
-  
+
   private Feature theByteArrayFeature;
-  
+
   private Feature theShortArrayFeature;
-  
+
   private Feature theLongArrayFeature;
-  
+
   private Feature theLongFeature;
-  
+
   private FsIndexDescription[] indexes;
 
   private TypeSystemDescription typeSystem;
 
-
-  public SerializationReinitTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
+  @BeforeEach
   public void setUp() throws Exception {
-    
-    /**
+
+   // @formatter:off
+    /*
      * sets up two type systems:
      *   One defined via API calls, and set into the global var cas = casMgr
      *   One defined by parsing ExampleCas/testTypeSystem and setting
      *     typeSystem and indexes
      */
-    
-    super.setUp();
+   // @formatter:on
     casMgr = initCAS();
-    cas = (CASImpl)casMgr;
+    cas = (CASImpl) casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -186,24 +182,31 @@ public class SerializationReinitTest extends TestCase {
     strSub1 = ts.getType(STRING_SUBTYPE_1);
     assertTrue(strSub1 != null);
     theTypeType = ts.getType(OSTR_TYPE);
-    theStringFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSTR_TYPE_FEAT);
-    theByteFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OBYTE_TYPE_FEAT);
-    theByteArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OBYTEA_TYPE_FEAT);
-    theShortFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORT_TYPE_FEAT);
-    theShortArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORTA_TYPE_FEAT);
-    theLongFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONG_TYPE_FEAT);
-    theLongArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONGA_TYPE_FEAT);
- 
-  
+    theStringFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSTR_TYPE_FEAT);
+    theByteFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OBYTE_TYPE_FEAT);
+    theByteArrayFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OBYTEA_TYPE_FEAT);
+    theShortFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORT_TYPE_FEAT);
+    theShortArrayFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORTA_TYPE_FEAT);
+    theLongFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONG_TYPE_FEAT);
+    theLongArrayFeature = ts
+            .getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONGA_TYPE_FEAT);
+
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-    typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                new XMLInputSource(typeSystemFile));
+    typeSystem = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
-                .getFsIndexes();
+            .getFsIndexes();
   }
 
+  @AfterEach
   public void tearDown() {
     casMgr = null;
     cas = null;
@@ -261,7 +264,7 @@ public class SerializationReinitTest extends TestCase {
     tsa.addFeature(OSHORT_TYPE_FEAT, theTypeType, shortType);
     tsa.addFeature(OBYTEA_TYPE_FEAT, theTypeType, byteArrayType);
     tsa.addFeature(OSHORTA_TYPE_FEAT, theTypeType, shortArrayType);
-    tsa.addFeature(OLONGA_TYPE_FEAT,  theTypeType,  longArrayType);
+    tsa.addFeature(OLONGA_TYPE_FEAT, theTypeType, longArrayType);
     tsa.addFeature(OLONG_TYPE_FEAT, theTypeType, longType);
     // Commit the type system.
     ((CASImpl) aCas).commitTypeSystem();
@@ -283,6 +286,7 @@ public class SerializationReinitTest extends TestCase {
     return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
+  @Test
   public void testReset() {
     cas.reset();
     casMgr.enableReset(false);
@@ -319,8 +323,8 @@ public class SerializationReinitTest extends TestCase {
     int endOfSentenceCounter = 0;
     AnnotationFS tokenAnnot;
     while (tokenizer.isValid()) {
-      tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(), tokenizer
-              .getTokenEnd());
+      tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(),
+              tokenizer.getTokenEnd());
       tokenTypeCode = tokenizer.getTokenType();
       switch (tokenTypeCode) {
         case TextStringTokenizer.EOS: {
@@ -423,12 +427,14 @@ public class SerializationReinitTest extends TestCase {
     time = System.currentTimeMillis() - time;
     // System.out.println("Created " + endOfSentenceCounter + " sentences: " + new TimeSpan(time));
   }
-  
-  //?m (MULTILINE) makes $ match just before line terminator or end of input
-  private static final Pattern nlPattern = Pattern.compile("(?m)(.*?$)"); 
+
+  // ?m (MULTILINE) makes $ match just before line terminator or end of input
+  private static final Pattern nlPattern = Pattern.compile("(?m)(.*?$)");
+
   /**
    * Test driver.
    */
+  @Test
   public void testMain() throws Exception {
 
     // System.out.println("Setting up CAS.");
@@ -443,7 +449,7 @@ public class SerializationReinitTest extends TestCase {
     String moby = FileUtils.file2String(textFile);
     // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
-//    BufferedReader br = new BufferedReader(new StringReader(moby));
+    // BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
     List<String> docs = new ArrayList<>();
     Matcher m = nlPattern.matcher(moby);
@@ -456,14 +462,14 @@ public class SerializationReinitTest extends TestCase {
         buf.append(line + "\n");
       }
     }
-//    while ((line = br.readLine()) != null) {
-//      if (line.startsWith(".. <p")) {
-//        docs.add(buf.toString());
-//        buf = new StringBuffer();
-//      } else {
-//        buf.append(line + "\n");
-//      }
-//    }
+    // while ((line = br.readLine()) != null) {
+    // if (line.startsWith(".. <p")) {
+    // docs.add(buf.toString());
+    // buf = new StringBuffer();
+    // } else {
+    // buf.append(line + "\n");
+    // }
+    // }
     m.appendTail(buf);
     docs.add(buf.toString());
     buf = null;
@@ -522,10 +528,13 @@ public class SerializationReinitTest extends TestCase {
 
   }
 
-  /** Test basic blob serialization
+  /**
+   * Test basic blob serialization
    */
+  @Test
   public void testBlob() throws Exception {
 
+   // @formatter:off
     /*
      * Test that FS, indexes and strings work after repeated blob serialization
      * For each iteration, add two new FS, serialize and test all created so
@@ -533,189 +542,185 @@ public class SerializationReinitTest extends TestCase {
      * The second FS sets the string feature using lowlevel API => goes into stringheap 
      * 
      * Throw in tests of the byte, short and long heaps as well
-     * 
      */
-  String testString = "testString";
-  cas.reset();
-  LowLevelCAS ll_cas = cas.getLowLevelCAS();
-  FSIndexRepository ir = cas.getIndexRepository();
-  int ll_strfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theStringFeature);
-  int ll_bytefeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theByteFeature);
-  int ll_shortfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theShortFeature);
-  int ll_bytearrayfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theByteArrayFeature);
-  int ll_shortarrayfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theShortArrayFeature);
-  int ll_longfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theLongFeature);
-  
-  for (int cycle = 0; cycle < 10; cycle +=2 ) {
-    FeatureStructure newFS1 = cas.createFS(theTypeType); 
-    newFS1.setIntValue(startFeature, cycle);
-    newFS1.setIntValue(endFeature, cycle+1);
-    // set string using normal string feature create
-    newFS1.setStringValue(theStringFeature, testString);
-    newFS1.setByteValue(theByteFeature, (byte)cycle);
-    newFS1.setShortValue(theShortFeature, (short)cycle);
-    newFS1.setLongValue(theLongFeature, (long)cycle);
-    ByteArrayFS newBA1 = cas.createByteArrayFS(1); 
-    ShortArrayFS newSA1 = cas.createShortArrayFS(1); 
-    newBA1.set(0, (byte)cycle);
-    newSA1.set(0, (short)cycle);
-    newFS1.setFeatureValue(theByteArrayFeature, newBA1);
-    newFS1.setFeatureValue(theShortArrayFeature, newSA1);
-    ir.addFS(newFS1);
+   // @formatter:on
+    String testString = "testString";
+    cas.reset();
+    LowLevelCAS ll_cas = cas.getLowLevelCAS();
+    FSIndexRepository ir = cas.getIndexRepository();
+    int ll_strfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theStringFeature);
+    int ll_bytefeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theByteFeature);
+    int ll_shortfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theShortFeature);
+    int ll_bytearrayfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theByteArrayFeature);
+    int ll_shortarrayfeatcode = ll_cas.ll_getTypeSystem()
+            .ll_getCodeForFeature(theShortArrayFeature);
+    int ll_longfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theLongFeature);
 
-    FeatureStructure newFS2 = cas.createFS(theTypeType);
-    ByteArrayFS newBA2 = cas.createByteArrayFS(1);
-    ShortArrayFS newSA2 = cas.createShortArrayFS(1); 
-    newFS2.setIntValue(startFeature, cycle+1);
-    newFS2.setIntValue(endFeature, cycle+2);
-    ir.addFS(newFS2);
-    CASImpl ci = (CASImpl) cas;
-    ci.setId2FSsMaybeUnconditionally(newFS2, newBA2, newSA2);
-    // set string using lowlevel string create API
-    final int llfs2 = ll_cas.ll_getFSRef(newFS2);
-    final int llba2 = ll_cas.ll_getFSRef(newBA2);
-    final int llsa2 = ll_cas.ll_getFSRef(newSA2);
-    
-    ll_cas.ll_setCharBufferValue(llfs2, ll_strfeatcode,
-            testString.toCharArray(), 0, testString.length());
-    ll_cas.ll_setByteValue(llfs2, ll_bytefeatcode, (byte)(cycle+1));
-    ll_cas.ll_setShortValue(llfs2, ll_shortfeatcode, (short)(cycle+1));
-    ll_cas.ll_setLongValue(llfs2, ll_longfeatcode, (long)(cycle+1));
-    ll_cas.ll_setByteArrayValue(llba2, 0, (byte)(cycle+1));
-    ll_cas.ll_setShortArrayValue(llsa2, 0, (short)(cycle+1));
-    newFS2.setFeatureValue(theByteArrayFeature, newBA2);
-    newFS2.setFeatureValue(theShortArrayFeature, newSA2);
-    ir.addFS(newFS2);
+    for (int cycle = 0; cycle < 10; cycle += 2) {
+      FeatureStructure newFS1 = cas.createFS(theTypeType);
+      newFS1.setIntValue(startFeature, cycle);
+      newFS1.setIntValue(endFeature, cycle + 1);
+      // set string using normal string feature create
+      newFS1.setStringValue(theStringFeature, testString);
+      newFS1.setByteValue(theByteFeature, (byte) cycle);
+      newFS1.setShortValue(theShortFeature, (short) cycle);
+      newFS1.setLongValue(theLongFeature, (long) cycle);
+      ByteArrayFS newBA1 = cas.createByteArrayFS(1);
+      ShortArrayFS newSA1 = cas.createShortArrayFS(1);
+      newBA1.set(0, (byte) cycle);
+      newSA1.set(0, (short) cycle);
+      newFS1.setFeatureValue(theByteArrayFeature, newBA1);
+      newFS1.setFeatureValue(theShortArrayFeature, newSA1);
+      ir.addFS(newFS1);
 
-    ByteArrayOutputStream fos = new ByteArrayOutputStream();
-    Serialization.serializeCAS(cas, fos);
+      FeatureStructure newFS2 = cas.createFS(theTypeType);
+      ByteArrayFS newBA2 = cas.createByteArrayFS(1);
+      ShortArrayFS newSA2 = cas.createShortArrayFS(1);
+      newFS2.setIntValue(startFeature, cycle + 1);
+      newFS2.setIntValue(endFeature, cycle + 2);
+      ir.addFS(newFS2);
+      CASImpl ci = (CASImpl) cas;
+      ci.setId2FSsMaybeUnconditionally(newFS2, newBA2, newSA2);
+      // set string using lowlevel string create API
+      final int llfs2 = ll_cas.ll_getFSRef(newFS2);
+      final int llba2 = ll_cas.ll_getFSRef(newBA2);
+      final int llsa2 = ll_cas.ll_getFSRef(newSA2);
+
+      ll_cas.ll_setCharBufferValue(llfs2, ll_strfeatcode, testString.toCharArray(), 0,
+              testString.length());
+      ll_cas.ll_setByteValue(llfs2, ll_bytefeatcode, (byte) (cycle + 1));
+      ll_cas.ll_setShortValue(llfs2, ll_shortfeatcode, (short) (cycle + 1));
+      ll_cas.ll_setLongValue(llfs2, ll_longfeatcode, (long) (cycle + 1));
+      ll_cas.ll_setByteArrayValue(llba2, 0, (byte) (cycle + 1));
+      ll_cas.ll_setShortArrayValue(llsa2, 0, (short) (cycle + 1));
+      newFS2.setFeatureValue(theByteArrayFeature, newBA2);
+      newFS2.setFeatureValue(theShortArrayFeature, newSA2);
+      ir.addFS(newFS2);
+
+      ByteArrayOutputStream fos = new ByteArrayOutputStream();
+      Serialization.serializeCAS(cas, fos);
       cas.reset();
-    ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
-    Serialization.deserializeCAS(cas, fis);
+      ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
+      Serialization.deserializeCAS(cas, fis);
 
-    FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
-    FSIterator<AnnotationFS> iter = idx.iterator();
-    for (int tc = 0; tc < cycle + 1; tc++) {
-      FeatureStructure testFS = iter.get();
-      iter.moveToNext();
-      assertTrue(tc == testFS.getIntValue(startFeature));
-      assertTrue(testString.equals(testFS.getStringValue(theStringFeature)));
-      assertTrue(tc == testFS.getByteValue(theByteFeature));
-      assertTrue(tc == testFS.getShortValue(theShortFeature));
-      assertTrue(tc == testFS.getLongValue(theLongFeature));
-      ByteArrayFS ba = (ByteArrayFS)testFS.getFeatureValue(theByteArrayFeature);
-      assertTrue(tc == ba.get(0));
-      ShortArrayFS sa = (ShortArrayFS)testFS.getFeatureValue(theShortArrayFeature);
-      assertTrue(tc == sa.get(0));
+      FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
+      FSIterator<AnnotationFS> iter = idx.iterator();
+      for (int tc = 0; tc < cycle + 1; tc++) {
+        FeatureStructure testFS = iter.get();
+        iter.moveToNext();
+        assertTrue(tc == testFS.getIntValue(startFeature));
+        assertTrue(testString.equals(testFS.getStringValue(theStringFeature)));
+        assertTrue(tc == testFS.getByteValue(theByteFeature));
+        assertTrue(tc == testFS.getShortValue(theShortFeature));
+        assertTrue(tc == testFS.getLongValue(theLongFeature));
+        ByteArrayFS ba = (ByteArrayFS) testFS.getFeatureValue(theByteArrayFeature);
+        assertTrue(tc == ba.get(0));
+        ShortArrayFS sa = (ShortArrayFS) testFS.getFeatureValue(theShortArrayFeature);
+        assertTrue(tc == sa.get(0));
+      }
     }
-    }  
   }
 
+  @Test
   public void testDeltaBinaryShortLongArrayMods() throws Exception {
     CASImpl cas2 = (CASImpl) initCAS();
     CASImpl cas3 = (CASImpl) initCAS();
 
     // create short array and long array
-    FeatureStructure newFS1 = cas.createFS(theTypeType); 
-    ByteArrayFS newBA1 = cas.createByteArrayFS(1); 
-    ShortArrayFS newSA1 = cas.createShortArrayFS(1); 
+    FeatureStructure newFS1 = cas.createFS(theTypeType);
+    ByteArrayFS newBA1 = cas.createByteArrayFS(1);
+    ShortArrayFS newSA1 = cas.createShortArrayFS(1);
     LongArrayFS newLA1 = cas.createLongArrayFS(1);
-    newBA1.set(0, (byte)1);
-    newSA1.set(0, (short)2);
-    newLA1.set(0, (long)4);
+    newBA1.set(0, (byte) 1);
+    newSA1.set(0, (short) 2);
+    newLA1.set(0, (long) 4);
     newFS1.setFeatureValue(theByteArrayFeature, newBA1);
     newFS1.setFeatureValue(theShortArrayFeature, newSA1);
     newFS1.setFeatureValue(theLongArrayFeature, newLA1);
     cas.getIndexRepository().addFS(newFS1);
-        
-    //serialize binary, non compressed, not delta
+
+    // serialize binary, non compressed, not delta
     ByteArrayOutputStream fos = new ByteArrayOutputStream();
     Serialization.serializeCAS(cas, fos);
 
-    //deserialize into cas2
+    // deserialize into cas2
     ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
     Serialization.deserializeCAS(cas2, fis);
     CasComparer.assertEquals(cas, cas2);
 
-    //=======================================================================
-    //create Marker, add/modify fs and serialize in delta xmi format.
+    // =======================================================================
+    // create Marker, add/modify fs and serialize in delta xmi format.
     Marker marker = cas2.createMarker();
 
     // modify a value in the int arrays
     Iterator<AnnotationFS> typeIterator = cas2.getAnnotationIndex(theTypeType).iterator();
     assertTrue(typeIterator.hasNext());
     FeatureStructure fsWithArrays = typeIterator.next();
-    
-    ((ByteArrayFS)fsWithArrays.getFeatureValue(theByteArrayFeature)).set(0, (byte) 11);
-    ((ShortArrayFS)fsWithArrays.getFeatureValue(theShortArrayFeature)).set(0, (short) 22);
-    ((LongArrayFS)fsWithArrays.getFeatureValue(theLongArrayFeature)).set(0, (long) 44);
 
-    // serialize cas2 in delta format 
+    ((ByteArrayFS) fsWithArrays.getFeatureValue(theByteArrayFeature)).set(0, (byte) 11);
+    ((ShortArrayFS) fsWithArrays.getFeatureValue(theShortArrayFeature)).set(0, (short) 22);
+    ((LongArrayFS) fsWithArrays.getFeatureValue(theLongArrayFeature)).set(0, (long) 44);
+
+    // serialize cas2 in delta format
     ByteArrayOutputStream fosDelta = new ByteArrayOutputStream();
     Serialization.serializeCAS(cas2, fosDelta, marker);
-    
-    //======================================================================
-    //deserialize delta binary into cas1
+
+    // ======================================================================
+    // deserialize delta binary into cas1
     ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
     Serialization.deserializeCAS(cas, fisDelta);
-    
-    //======================================================================
-    //serialize complete cas and deserialize into cas3 and compare with cas1.
+
+    // ======================================================================
+    // serialize complete cas and deserialize into cas3 and compare with cas1.
     ByteArrayOutputStream fosFull = new ByteArrayOutputStream();
     Serialization.serializeCAS(cas2, fosFull);
     ByteArrayInputStream fisFull = new ByteArrayInputStream(fosFull.toByteArray());
     Serialization.deserializeCAS(cas3, fisFull);
-    CasComparer.assertEquals(cas, cas3); 
+    CasComparer.assertEquals(cas, cas3);
 
   }
-  
-  
+
   /**
-   * setup cas1, binary (not compressed) serialize to cas2
-   * modify cas2, binary (not compressed) delta serialize back into cas1 
+   * setup cas1, binary (not compressed) serialize to cas2 modify cas2, binary (not compressed)
+   * delta serialize back into cas1
    * 
    * serialize cas2 binary (not compressed) not delta into cas3, compare cas 1 and 3
    * 
    * @throws Exception
    */
+  @Test
   public void testDeltaBlobSerialization() throws Exception {
-   try {
-      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
-      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
-      CAS cas3 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
-      
-      Type personType = cas1.getTypeSystem().getType(
-      		"org.apache.uima.testTypeSystem.Person");
+    try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+      CAS cas3 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+
+      Type personType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
       Feature componentIdFeat = personType.getFeatureByBaseName("componentId");
       Feature confidenceFeat = personType.getFeatureByBaseName("confidence");
-      Type orgType = cas1.getTypeSystem().getType(
-			"org.apache.uima.testTypeSystem.Organization");
-      Type ownerType = cas1.getTypeSystem().getType(
-      						"org.apache.uima.testTypeSystem.Owner");
-      Type entityAnnotType = cas1.getTypeSystem().getType(
-		"org.apache.uima.testTypeSystem.EntityAnnotation");
+      Type orgType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Organization");
+      Type ownerType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Owner");
+      Type entityAnnotType = cas1.getTypeSystem()
+              .getType("org.apache.uima.testTypeSystem.EntityAnnotation");
       Feature mentionTypeFeat = entityAnnotType.getFeatureByBaseName("mentionType");
       Feature argsFeat = ownerType.getFeatureByBaseName("relationArgs");
-      Type relArgsType = cas1.getTypeSystem().getType(
-      						"org.apache.uima.testTypeSystem.BinaryRelationArgs");
+      Type relArgsType = cas1.getTypeSystem()
+              .getType("org.apache.uima.testTypeSystem.BinaryRelationArgs");
       Feature domainFeat = relArgsType.getFeatureByBaseName("domainValue");
       Feature rangeFeat = relArgsType.getFeatureByBaseName("rangeValue");
-      
+
       Type entityType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
       Feature classesFeat = entityType.getFeatureByBaseName("classes");
       Feature linksFeat = entityType.getFeatureByBaseName("links");
       Feature canonicalFormFeat = entityType.getFeatureByBaseName("canonicalForm");
-      
+
       Type nonEmptyFsListType = cas1.getTypeSystem().getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
       Type emptyFsListType = cas1.getTypeSystem().getType(CAS.TYPE_NAME_EMPTY_FS_LIST);
       Feature headFeat = nonEmptyFsListType.getFeatureByBaseName("head");
       Feature tailFeat = nonEmptyFsListType.getFeatureByBaseName("tail");
-      
-      //cas1
-      //initial set of feature structures 
+
+      // cas1
+      // initial set of feature structures
       // set document text for the initial view and create Annotations
       cas1.setDocumentText("This is a test document in the initial view");
       AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
@@ -727,16 +732,16 @@ public class SerializationReinitTest extends TestCase {
       AnnotationFS anAnnot4 = cas1.createAnnotation(cas1.getAnnotationType(), 15, 30);
       cas1.getIndexRepository().addFS(anAnnot4);
       FSIndex<AnnotationFS> tIndex = cas1.getAnnotationIndex();
-      assertTrue(tIndex.size() == 5); //doc annot plus 4 annots
-      
+      assertTrue(tIndex.size() == 5); // doc annot plus 4 annots
+
       FeatureStructure entityFS = cas1.createFS(entityType);
       cas1.getIndexRepository().addFS(entityFS);
-      
+
       StringArrayFS strArrayFS = cas1.createStringArrayFS(5);
       strArrayFS.set(0, "class1");
       entityFS.setFeatureValue(classesFeat, strArrayFS);
-      
-      //create listFS and set the link feature
+
+      // create listFS and set the link feature
       FeatureStructure emptyNode = cas1.createFS(emptyFsListType);
       FeatureStructure secondNode = cas1.createFS(nonEmptyFsListType);
       secondNode.setFeatureValue(headFeat, anAnnot2);
@@ -745,11 +750,11 @@ public class SerializationReinitTest extends TestCase {
       firstNode.setFeatureValue(headFeat, anAnnot1);
       firstNode.setFeatureValue(tailFeat, secondNode);
       entityFS.setFeatureValue(linksFeat, firstNode);
-            
+
       // create a view w/o setting document text
       CAS view1 = cas1.createView("View1");
-      
-      // create another view 
+
+      // create another view
       CAS preexistingView = cas1.createView("preexistingView");
       String preexistingViewText = "John Smith blah blah blah";
       preexistingView.setDocumentText(preexistingViewText);
@@ -758,100 +763,102 @@ public class SerializationReinitTest extends TestCase {
       AnnotationFS person2Annot = createPersonAnnot(preexistingView, 0, 5);
       AnnotationFS orgAnnot = preexistingView.createAnnotation(orgType, 16, 24);
       preexistingView.addFsToIndexes(orgAnnot);
-      
+
       AnnotationFS ownerAnnot = preexistingView.createAnnotation(ownerType, 0, 24);
       preexistingView.addFsToIndexes(ownerAnnot);
       FeatureStructure relArgs = cas1.createFS(relArgsType);
       relArgs.setFeatureValue(domainFeat, person1Annot);
       ownerAnnot.setFeatureValue(argsFeat, relArgs);
-      
-      //serialize binary, non compressed, not delta
+
+      // serialize binary, non compressed, not delta
       ByteArrayOutputStream fos = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas1, fos);
 
-      //deserialize into cas2
+      // deserialize into cas2
       ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
       Serialization.deserializeCAS(cas2, fis);
       CasComparer.assertEquals(cas1, cas2);
- 
-//      dumpDocAnnot(cas1);
-//      dumpDocAnnot(cas2);
 
-      //=======================================================================
-      //create Marker, add/modify fs and serialize in delta xmi format.
+      // dumpDocAnnot(cas1);
+      // dumpDocAnnot(cas2);
+
+      // =======================================================================
+      // create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
       FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
       CAS cas2preexistingView = cas2.getView("preexistingView");
       FSIndex<AnnotationFS> cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
       FSIndex<AnnotationFS> cas2orgIndex = cas2preexistingView.getAnnotationIndex(orgType);
       FSIndex<AnnotationFS> cas2ownerIndex = cas2preexistingView.getAnnotationIndex(ownerType);
-      
+
       // create an annotation and add to index
       AnnotationFS cas2anAnnot5 = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
       cas2.getIndexRepository().addFS(cas2anAnnot5);
       assertTrue(cas2tIndex.size() == 6); // prev annots and this new one
-      
+
       // set document text of View1
       CAS cas2view1 = cas2.getView("View1");
-//      dumpDocAnnot(cas2);
+      // dumpDocAnnot(cas2);
       cas2view1.setDocumentText("This is the View1 document.");
-//      dumpDocAnnot(cas2);
-      //create an annotation in View1
+      // dumpDocAnnot(cas2);
+      // create an annotation in View1
       AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
       cas2view1.getIndexRepository().addFS(cas2view1Annot);
       FSIndex<AnnotationFS> cas2view1Index = cas2view1.getAnnotationIndex();
-      assertTrue(cas2view1Index.size() == 2); //document annot and this annot
-     
-      //modify an existing annotation
+      assertTrue(cas2view1Index.size() == 2); // document annot and this annot
+
+      // modify an existing annotation
       Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
-      AnnotationFS docAnnot = tIndexIter.next(); //doc annot
+      AnnotationFS docAnnot = tIndexIter.next(); // doc annot
       AnnotationFS modAnnot1 = tIndexIter.next();
       AnnotationFS delAnnot = tIndexIter.next();
-      
-      //modify language feature
-      Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+
+      // modify language feature
+      Feature languageF = cas2.getDocumentAnnotation().getType()
+              .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
       docAnnot.setStringValue(languageF, "en");
-     
-      //index update - reindex
+
+      // index update - reindex
       cas2.getIndexRepository().removeFS(modAnnot1);
       Feature endF = cas2.getAnnotationType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END);
       modAnnot1.setIntValue(endF, 4);
       cas2.getIndexRepository().addFS(modAnnot1);
-      //index update - remove annotation from index 
+      // index update - remove annotation from index
       cas2.getIndexRepository().removeFS(delAnnot);
-  
-      //modify FS - string feature and FS feature.
-      Iterator<AnnotationFS> personIter = cas2personIndex.iterator();     
+
+      // modify FS - string feature and FS feature.
+      Iterator<AnnotationFS> personIter = cas2personIndex.iterator();
       AnnotationFS cas2person1 = personIter.next();
       AnnotationFS cas2person2 = personIter.next();
-      
+
       cas2person1.setFloatValue(confidenceFeat, (float) 99.99);
       cas2person1.setStringValue(mentionTypeFeat, "FULLNAME");
-      
+
       cas2person2.setStringValue(componentIdFeat, "delataCas2");
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
-      
+
       Iterator<AnnotationFS> orgIter = cas2orgIndex.iterator();
       AnnotationFS cas2orgAnnot = orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
-      
-      //modify FS feature
+
+      // modify FS feature
       Iterator<AnnotationFS> ownerIter = cas2ownerIndex.iterator();
       AnnotationFS cas2ownerAnnot = ownerIter.next();
       FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
       cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
-     
-    //Test modification of a nonshared multivalued feature.
-      //This should serialize the encompassing FS.
-      Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+
+      // Test modification of a nonshared multivalued feature.
+      // This should serialize the encompassing FS.
+      Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex")
+              .iterator();
       FeatureStructure cas2EntityFS = iter.next();
       StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
       cas2strarrayFS.set(1, "class2");
       cas2strarrayFS.set(2, "class3");
       cas2strarrayFS.set(3, "class4");
       cas2strarrayFS.set(4, "class5");
-           
-      //add to FSList 
+
+      // add to FSList
       FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
       FeatureStructure cas2secondNode = cas2linksFS.getFeatureValue(tailFeat);
       FeatureStructure cas2emptyNode = cas2secondNode.getFeatureValue(tailFeat);
@@ -859,206 +866,200 @@ public class SerializationReinitTest extends TestCase {
       cas2thirdNode.setFeatureValue(headFeat, cas2anAnnot5);
       cas2thirdNode.setFeatureValue(tailFeat, cas2emptyNode);
       cas2secondNode.setFeatureValue(tailFeat, cas2thirdNode);
-      
-      // serialize cas2 in delta format 
+
+      // serialize cas2 in delta format
       ByteArrayOutputStream fosDelta = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas2, fosDelta, marker);
-      
-      //======================================================================
-      //deserialize delta binary into cas1
+
+      // ======================================================================
+      // deserialize delta binary into cas1
       ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
       CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = false;
-      
-//      dumpDocAnnot(cas1);
-//      dumpDocAnnot(cas2);
+
+      // dumpDocAnnot(cas1);
+      // dumpDocAnnot(cas2);
 
       Serialization.deserializeCAS(cas1, fisDelta);
-//      dumpDocAnnot(cas1);
-//      CasComparer.assertEquals(cas1,  cas2);
-      
-      //======================================================================
-      //serialize complete cas and deserialize into cas3 and compare with cas1.
+      // dumpDocAnnot(cas1);
+      // CasComparer.assertEquals(cas1, cas2);
+
+      // ======================================================================
+      // serialize complete cas and deserialize into cas3 and compare with cas1.
       ByteArrayOutputStream fosFull = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas2, fosFull);
       ByteArrayInputStream fisFull = new ByteArrayInputStream(fosFull.toByteArray());
       Serialization.deserializeCAS(cas3, fisFull);
-      CasComparer.assertEquals(cas2,  cas3);
-      CasComparer.assertEquals(cas1, cas3); 
-      //System.out.println("CAS1 " + serialize(cas1, new XmiSerializationSharedData()));
-      //System.out.println("CAS2 " + serialize(cas2, new XmiSerializationSharedData()));
-	      
-	} catch (Exception e) {
-	      JUnitExtension.handleException(e);
-	}
+      CasComparer.assertEquals(cas2, cas3);
+      CasComparer.assertEquals(cas1, cas3);
+      // System.out.println("CAS1 " + serialize(cas1, new XmiSerializationSharedData()));
+      // System.out.println("CAS2 " + serialize(cas2, new XmiSerializationSharedData()));
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
   }
-  
+
+  @Test
   public void testDeltaBlobWithInvalidMarker() throws Exception {
     try {
-       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-               indexes);
-       boolean serfailed = false;
-       Marker mark1 = cas1.createMarker();
-//       Marker mark2 = cas1.createMarker();  // multiple markers not supported, tested in other test case
-       
-       cas1.reset();
-       
-       try {
-      	 ByteArrayOutputStream fos = new ByteArrayOutputStream();
-      	 Serialization.serializeCAS(cas1, fos, mark1);
-       } catch (CASRuntimeException e) {
-      	 serfailed = true;
-       }
-       assertTrue(serfailed);
-       
-//       serfailed = false;
-//       try {
-//      	 ByteArrayOutputStream fos = new ByteArrayOutputStream();
-//      	 Serialization.serializeCAS(cas1, fos, mark2);
-//       } catch (CASRuntimeException e) {
-//      	 serfailed = true;
-//       }
-//       assertTrue(serfailed);
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+      boolean serfailed = false;
+      Marker mark1 = cas1.createMarker();
+      // Marker mark2 = cas1.createMarker(); // multiple markers not supported, tested in other test
+      // case
+
+      cas1.reset();
+
+      try {
+        ByteArrayOutputStream fos = new ByteArrayOutputStream();
+        Serialization.serializeCAS(cas1, fos, mark1);
+      } catch (CASRuntimeException e) {
+        serfailed = true;
+      }
+      assertTrue(serfailed);
+
+      // serfailed = false;
+      // try {
+      // ByteArrayOutputStream fos = new ByteArrayOutputStream();
+      // Serialization.serializeCAS(cas1, fos, mark2);
+      // } catch (CASRuntimeException e) {
+      // serfailed = true;
+      // }
+      // assertTrue(serfailed);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
   private AnnotationFS createPersonAnnot(CAS cas, int begin, int end) {
-	Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
-	AnnotationFS person = cas.createAnnotation(personType, begin, end);
-	cas.addFsToIndexes(person);
-	return person;
-  }
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SerializationReinitTest.class);
+    Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
+    AnnotationFS person = cas.createAnnotation(personType, begin, end);
+    cas.addFsToIndexes(person);
+    return person;
   }
 
   /**
-   * Test setCAS().
-   * This test does nothing useful.  setCAS is a no-op
+   * Test setCAS(). This test does nothing useful. setCAS is a no-op
    */
-//  public void testSetCAS() throws Exception {
-//
-//    // Read the document into a String. 
-//    File textFile = JUnitExtension.getFile("data/moby.txt");
-//    String moby = FileUtils.file2String(textFile);
-//    // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
-//    String line;
-////    BufferedReader br = new BufferedReader(new StringReader(moby));
-//    StringBuffer buf = new StringBuffer(10000);
-//    List<String> docs = new ArrayList<String>();
-//    Matcher m = nlPattern.matcher(moby);
-//    while (m.find()) {
-//      line = m.group();
-//      if (line.startsWith(".. <p")) {
-//        docs.add(buf.toString());
-//        buf.setLength(0);
-//      } else {
-//        buf.append(line + "\n");
-//      }
-//    }
-//    
-////    while ((line = br.readLine()) != null) {
-////      if (line.startsWith(".. <p")) {
-////        docs.add(buf.toString());
-////        buf = new StringBuffer();
-////      } else {
-////        buf.append(line + "\n");
-////      }
-////    }
-////    docs.add(buf.toString());
-//    m.appendTail(buf);
-//    docs.add(buf.toString()); 
-//    buf = null;
-//
-//    final int numDocs = docs.size();
-//    final int max = 30;
-//    int docCount = 0;
-//    long overallTime = System.currentTimeMillis();
-//    int numTok, numSent;
-//    while (docCount < max) {
-//      for (int i = 0; i < numDocs && docCount < max; i++) {
-//        // System.out.println("Processing document: " + i);
-//        // Set document text in first CAS.
-//        cas.setDocumentText(docs.get(i));
-//
-//        tokenize();
-//        numTok = cas.getAnnotationIndex(tokenType).size();
-//        assertTrue(numTok > 0);
-//        // System.out.println(" Number of tokens: " + numTok);
-//
-//        // System.out.println("Serializing...");
-//        // CASMgr casMgr = CASFactory.createCAS();
-//        // casMgr.setCAS(cas);
-//        // cas = (CAS) casMgr.getCAS();
-//        /* setCAS is no longer used or implemented
-//         * You cannot use this method to set up a new cas with a copy of
-//         * the contents of another cas, including its indexes
-//        CASMgr realCasMgr = CASFactory.createCAS(cas.getTypeSystem());
-//        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-//        cas = ((CASImpl) realCasMgr).getCurrentView();
-//        casMgr = (CASMgr) cas;
-//        */
-//
-//        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-//
-//        createSentences();
-//        numSent = cas.getAnnotationIndex(sentenceType).size();
-//        assertTrue(numSent > 0);
-//        // System.out.println(" Number of sentences: " + numSent);
-//
-//        // System.out.println("Serializing...");
-//        // casMgr = CASFactory.createCAS();
-//        // casMgr.setCAS(cas);
-//        // cas = (CAS) casMgr.getCAS();
-//        /* setCAS is no longer used or implemented
-//         * You cannot use this method to set up a new cas with a copy of
-//         * the contents of another cas, including its indexes
-//        realCasMgr = CASFactory.createCAS();
-//        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-//        cas = ((CASImpl) realCasMgr).getCurrentView();
-//        casMgr = (CASMgr) cas;
-//        */
-//
-//        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-//        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-//
-//        // System.out.println("Serializing...");
-//        // casMgr = CASFactory.createCAS();
-//        // casMgr.setCAS(cas);
-//        // cas = (CAS) casMgr.getCAS();
-//        /* setCAS is no longer used or implemented
-//         * You cannot use this method to set up a new cas with a copy of
-//         * the contents of another cas, including its indexes
-//        realCasMgr = CASFactory.createCAS();
-//        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-//        cas = ((CASImpl) realCasMgr).getCurrentView();
-//        casMgr = (CASMgr) cas;
-//        */
-//
-//        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-//        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-//        // System.out.println(" Verify: " + numTok + " tokens, " + numSent + " sentences.");
-//
-//        casMgr.reset();
-//
-//        ++docCount;
-//      }
-//      // System.out.println("Number of documents processed: " + docCount);
-//    }
-//    overallTime = System.currentTimeMillis() - overallTime;
-//    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
-//
-//  }
+  // public void testSetCAS() throws Exception {
+  //
+  // // Read the document into a String.
+  // File textFile = JUnitExtension.getFile("data/moby.txt");
+  // String moby = FileUtils.file2String(textFile);
+  // // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
+  // String line;
+  //// BufferedReader br = new BufferedReader(new StringReader(moby));
+  // StringBuffer buf = new StringBuffer(10000);
+  // List<String> docs = new ArrayList<String>();
+  // Matcher m = nlPattern.matcher(moby);
+  // while (m.find()) {
+  // line = m.group();
+  // if (line.startsWith(".. <p")) {
+  // docs.add(buf.toString());
+  // buf.setLength(0);
+  // } else {
+  // buf.append(line + "\n");
+  // }
+  // }
+  //
+  //// while ((line = br.readLine()) != null) {
+  //// if (line.startsWith(".. <p")) {
+  //// docs.add(buf.toString());
+  //// buf = new StringBuffer();
+  //// } else {
+  //// buf.append(line + "\n");
+  //// }
+  //// }
+  //// docs.add(buf.toString());
+  // m.appendTail(buf);
+  // docs.add(buf.toString());
+  // buf = null;
+  //
+  // final int numDocs = docs.size();
+  // final int max = 30;
+  // int docCount = 0;
+  // long overallTime = System.currentTimeMillis();
+  // int numTok, numSent;
+  // while (docCount < max) {
+  // for (int i = 0; i < numDocs && docCount < max; i++) {
+  // // System.out.println("Processing document: " + i);
+  // // Set document text in first CAS.
+  // cas.setDocumentText(docs.get(i));
+  //
+  // tokenize();
+  // numTok = cas.getAnnotationIndex(tokenType).size();
+  // assertTrue(numTok > 0);
+  // // System.out.println(" Number of tokens: " + numTok);
+  //
+  // // System.out.println("Serializing...");
+  // // CASMgr casMgr = CASFactory.createCAS();
+  // // casMgr.setCAS(cas);
+  // // cas = (CAS) casMgr.getCAS();
+  // /* setCAS is no longer used or implemented
+  // * You cannot use this method to set up a new cas with a copy of
+  // * the contents of another cas, including its indexes
+  // CASMgr realCasMgr = CASFactory.createCAS(cas.getTypeSystem());
+  // realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+  // cas = ((CASImpl) realCasMgr).getCurrentView();
+  // casMgr = (CASMgr) cas;
+  // */
+  //
+  // assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+  //
+  // createSentences();
+  // numSent = cas.getAnnotationIndex(sentenceType).size();
+  // assertTrue(numSent > 0);
+  // // System.out.println(" Number of sentences: " + numSent);
+  //
+  // // System.out.println("Serializing...");
+  // // casMgr = CASFactory.createCAS();
+  // // casMgr.setCAS(cas);
+  // // cas = (CAS) casMgr.getCAS();
+  // /* setCAS is no longer used or implemented
+  // * You cannot use this method to set up a new cas with a copy of
+  // * the contents of another cas, including its indexes
+  // realCasMgr = CASFactory.createCAS();
+  // realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+  // cas = ((CASImpl) realCasMgr).getCurrentView();
+  // casMgr = (CASMgr) cas;
+  // */
+  //
+  // assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+  // assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
+  //
+  // // System.out.println("Serializing...");
+  // // casMgr = CASFactory.createCAS();
+  // // casMgr.setCAS(cas);
+  // // cas = (CAS) casMgr.getCAS();
+  // /* setCAS is no longer used or implemented
+  // * You cannot use this method to set up a new cas with a copy of
+  // * the contents of another cas, including its indexes
+  // realCasMgr = CASFactory.createCAS();
+  // realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+  // cas = ((CASImpl) realCasMgr).getCurrentView();
+  // casMgr = (CASMgr) cas;
+  // */
+  //
+  // assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+  // assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
+  // // System.out.println(" Verify: " + numTok + " tokens, " + numSent + " sentences.");
+  //
+  // casMgr.reset();
+  //
+  // ++docCount;
+  // }
+  // // System.out.println("Number of documents processed: " + docCount);
+  // }
+  // overallTime = System.currentTimeMillis() - overallTime;
+  // // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
+  //
+  // }
   void dumpDocAnnot(CAS cas) {
     CASImpl c = (CASImpl) cas;
     c.forAllViews(view -> {
       Annotation a = view.getDocumentAnnotationNoCreate();
-      System.out.format(
-          "docA for view %s : %s%n",
-          view.getViewName(),
-          ((a == null) ? "null" : a));
-      });
+      System.out.format("docA for view %s : %s%n", view.getViewName(), ((a == null) ? "null" : a));
+    });
     System.out.println("");
   }
 }

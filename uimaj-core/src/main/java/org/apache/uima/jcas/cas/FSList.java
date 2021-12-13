@@ -20,9 +20,7 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -33,58 +31,64 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.apache.uima.jcas.JCas;
-import org.xml.sax.SAXException;
 
 /**
  * 
- *  T extends TOP, v2 already mandated TOP for set/get
- * @param <T> the type of the elements in the list
+ * T extends TOP, v2 already mandated TOP for set/get
+ * 
+ * @param <T>
+ *          the type of the elements in the list
  */
 public abstract class FSList<T extends TOP> extends TOP implements CommonList, Iterable<T> {
- 
-	// for removed markers
-	protected FSList() {// Disable default constructor
-	  super();
-	}
 
-	public FSList(JCas jcas) {
-		super(jcas);
-	}
+  // for removed markers
+  protected FSList() {// Disable default constructor
+
+  }
+
+  public FSList(JCas jcas) {
+    super(jcas);
+  }
 
   /**
-  * used by generator
-  * Make a new AnnotationBase
-  * @param c -
-  * @param t -
-  */
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
+   */
 
-   public FSList(TypeImpl t, CASImpl c) {
-     super(t, c);
-   }
-	
-   public T getNthElement(int i) {
-     FSList<T> node = (FSList<T>) getNthNode(i);
-     if (node instanceof EmptyFSList) {
-       throw new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END, Integer.toString(i));
-     }
-     return ((NonEmptyFSList<T>)node).getHead();
-   } 
-   
-  public NonEmptyFSList<T> createNonEmptyNode() {
-   return new NonEmptyFSList<>(this._casView.getJCasImpl());
+  public FSList(TypeImpl t, CASImpl c) {
+    super(t, c);
   }
-  
+
+  public T getNthElement(int i) {
+    FSList<T> node = (FSList<T>) getNthNode(i);
+    if (node instanceof EmptyFSList) {
+      throw new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END, Integer.toString(i));
+    }
+    return ((NonEmptyFSList<T>) node).getHead();
+  }
+
+  @Override
+  public NonEmptyFSList<T> createNonEmptyNode() {
+    return new NonEmptyFSList<>(this._casView.getJCasImpl());
+  }
+
+  @Override
   public NonEmptyFSList<T> pushNode() {
     NonEmptyFSList<T> n = createNonEmptyNode();
     n.setTail(this);
     return n;
   }
-    
+
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select() {
@@ -92,9 +96,12 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   }
 
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this type
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this type
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(Type filterByType) {
@@ -102,62 +109,80 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   }
 
   /**
-   * Treat an FSArray as a source for SelectFSs.  
-   * @param filterByType only includes elements of this JCas class
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this JCas class
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(Class<U> filterByType) {
     return new SelectFSs_impl<>(this).type(filterByType);
   }
-  
+
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this JCas class's type
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this JCas class's type
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(int filterByType) {
     return new SelectFSs_impl<>(this).type(filterByType);
   }
-  
+
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this type (fully qualifined type name)
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this type (fully qualifined type name)
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(String filterByType) {
     return new SelectFSs_impl<>(this).type(filterByType);
   }
-  
+
   /**
    * Create an FSList from an existing array of Feature Structures
-   * @param jcas the JCas to use
-   * @param a the array of Feature Structures to populate the list with
-   * @param <U> the type of FeatureStructures being stored in the FSList being created
-   * @param <E> the type of the array argument
+   * 
+   * @param jcas
+   *          the JCas to use
+   * @param a
+   *          the array of Feature Structures to populate the list with
+   * @param <U>
+   *          the type of FeatureStructures being stored in the FSList being created
+   * @param <E>
+   *          the type of the array argument
    * @return an FSList, with the elements from the array
    */
   public static <U extends TOP, E extends FeatureStructure> FSList<U> create(JCas jcas, E[] a) {
-    FSList<U> fsl = jcas.getCasImpl().emptyFSList();   
+    FSList<U> fsl = jcas.getCasImpl().emptyFSList();
     for (int i = a.length - 1; i >= 0; i--) {
       fsl = fsl.push((U) a[i]);
-    }   
+    }
     return fsl;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Iterable#iterator()
    */
   @Override
   public Iterator<T> iterator() {
-    return Collections.<T>emptyIterator();  // overridden by NonEmptyFSList
+    return Collections.<T> emptyIterator(); // overridden by NonEmptyFSList
   }
-    
+
   /**
    * pushes item onto front of this list
-   * @param item the item to push onto the list
+   * 
+   * @param item
+   *          the item to push onto the list
    * @return the new list, with this item as the head value of the first element
    */
   public NonEmptyFSList<T> push(T item) {
@@ -170,12 +195,12 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   public Stream<T> stream() {
     return (Stream<T>) StreamSupport.stream(spliterator(), false);
   }
-  
+
   @Override
   public EmptyFSList emptyList() {
     return this._casView.emptyFSList();
   }
- 
+
   public boolean contains(T v) {
     FSList<T> node = this;
     while (node instanceof NonEmptyFSList) {

@@ -41,6 +41,7 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
+  @Override
   public final Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
@@ -50,6 +51,7 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * time. Returns a default value of 1, which will be sufficient for most CAS Multipliers. Only if
    * there is a clear need should this be overridden to return something greater than 1.
    */
+  @Override
   public int getCasInstancesRequired() {
     return 1;
   }
@@ -57,24 +59,26 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
+   * @see
+   * org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof CAS) {
       checkTypeSystemChange((CAS) aCAS);
       process((CAS) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
-                  aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { CAS.class, aCAS.getClass() });
     }
   }
 
   /**
    * This method should be overriden by subclasses. Inputs a CAS to the AnalysisComponent. The
    * AnalysisComponent "owns" this CAS until such time as {@link #hasNext()} is called and returns
-   * false, or until the <code>process</code> method is called again (see
-   * {@link AnalysisComponent} for details).
+   * false, or until the <code>process</code> method is called again (see {@link AnalysisComponent}
+   * for details).
    * 
    * @param aCAS
    *          A CAS that this AnalysisComponent should process.
@@ -85,15 +89,16 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
   public abstract void process(CAS aCAS) throws AnalysisEngineProcessException;
 
   /**
-   * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
-   * from PrimitiveAnalysisEngine_impl which-calls CasMultiplier_ImplBase.process which-calls checkTypeSystemChange
-   * and will call it again whenever the CAS TypeSystem changes.
+   * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this from
+   * PrimitiveAnalysisEngine_impl which-calls CasMultiplier_ImplBase.process which-calls
+   * checkTypeSystemChange and will call it again whenever the CAS TypeSystem changes.
    * <p>
    * In this method, the Annotator should use the {@link TypeSystem} to resolve the names of Type
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @param aTypeSystem the new type system to use as input to your initialization
+   * @param aTypeSystem
+   *          the new type system to use as input to your initialization
    * @throws AnalysisEngineProcessException
    *           if the provided type system is missing types or features required by this annotator
    */
@@ -122,5 +127,4 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
       mLastTypeSystem = typeSystem;
     }
   }
-
 }

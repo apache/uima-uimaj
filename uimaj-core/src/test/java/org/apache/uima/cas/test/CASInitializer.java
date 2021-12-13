@@ -40,28 +40,37 @@ public class CASInitializer {
 
   public static CAS initCas(AnnotatorInitializer init, Consumer<TypeSystemImpl> reinitTypeSystem) {
     // Create an initial CASMgr from the factory.
-//    long startTime = System.nanoTime();
+    // long startTime = System.nanoTime();
     CASMgr casMgr0 = CASFactory.createCAS();
     CASMgr casMgr = null;
     try {
       // this call does nothing: because 2nd arg is null
       CasCreationUtils.setupTypeSystem(casMgr0, (TypeSystemDescription) null);
+
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
+
       // Next not needed, type system is already uncommitted
-//      ((TypeSystemImpl) tsa).setCommitted(false);
+      // ((TypeSystemImpl) tsa).setCommitted(false);
       // do the type system tests
       init.initTypeSystem(tsa);
+
       // Commit the type system.
       ((CASImpl) casMgr0).commitTypeSystem();
+
+      // Due to typesystem consolidation, committing might cause the actual type system in the CAS
+      // to be replaced by an already cached version. In case this happens, we maybe have to reinit
+      // the types known on the outsidei via the reinitTypeSystem callback
       if (null != reinitTypeSystem) {
         reinitTypeSystem.accept(((CASImpl) casMgr0).getTypeSystemImpl());
       }
 
+      // Create another CAS with the potentially consolidated type system (but why?!)
       casMgr = CASFactory.createCAS(casMgr0.getTypeSystemMgr());
 
       // Create the Base indexes.
       casMgr.initCASIndexes();
+
       // Commit the index repository.
       FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
       init.initIndexes(irm, casMgr.getTypeSystemMgr());
@@ -72,11 +81,10 @@ public class CASInitializer {
       throw new RuntimeException(e);
     }
 
-//    System.out.format("Debug SerDesTest6 setup time: %d micros%n", 
-//    (System.nanoTime() - startTime)/1000L);
+    // System.out.format("Debug SerDesTest6 setup time: %d micros%n",
+    // (System.nanoTime() - startTime)/1000L);
 
     // Create the default text Sofa and return CAS view
     return casMgr.getCAS().getCurrentView();
   }
-
 }

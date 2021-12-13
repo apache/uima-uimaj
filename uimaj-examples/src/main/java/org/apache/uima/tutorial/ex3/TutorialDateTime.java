@@ -108,12 +108,14 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
   // function pointers for new instances
   static final Maker dateAnnotationMaker = new Maker() {
+    @Override
     Annotation newAnnotation(JCas jcas, int start, int end) {
       return new DateAnnot(jcas, start, end);
     }
   };
 
   static final Maker timeAnnotationMaker = new Maker() {
+    @Override
     Annotation newAnnotation(JCas jcas, int start, int end) {
       return new TimeAnnot(jcas, start, end);
     }
@@ -128,6 +130,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
    * The ResultSpecification controls what gets produced. For example, to only produce
    * DateAnnotations, change the descriptor for this component to specify it outputs only that type.
    */
+  @Override
   public void process(JCas aJCas) {
     jcas = aJCas;
     input = jcas.getDocumentText();

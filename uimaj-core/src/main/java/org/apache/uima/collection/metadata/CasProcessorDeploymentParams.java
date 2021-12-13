@@ -16,35 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.metadata;
 
 /**
  * An object that contains all
  * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instances. Provides the
  * means to add, get, and delete deployment parameters.
- * 
- * 
  */
 public interface CasProcessorDeploymentParams {
   /**
    * Adds new {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} param
    * 
-   * @param aParam -
-   *          parameter to add
+   * @param aParam
+   *          - parameter to add
    */
-  public void add(CasProcessorDeploymentParam aParam);
+  void add(CasProcessorDeploymentParam aParam);
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instance
    * identified by aParamName.
    * 
-   * @param aParamName -
-   *          name of the parameter to get
+   * @param aParamName
+   *          - name of the parameter to get
    * @return - instance of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException;
+  CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException;
 
   /**
    * Returns all instances of
@@ -53,15 +51,16 @@ public interface CasProcessorDeploymentParams {
    * @return - array of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    *         instances
    */
-  public CasProcessorDeploymentParam[] getAll();
+  CasProcessorDeploymentParam[] getAll();
 
   /**
    * Deletes named instance of
    * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    * 
-   * @param aParam -
-   *          parameter to remove
-   * @throws CpeDescriptorException tbd
+   * @param aParam
+   *          - parameter to remove
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
+  void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
 }

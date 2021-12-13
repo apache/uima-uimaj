@@ -32,11 +32,11 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 
 import junit.framework.TestCase;
 
-public class CASTestSetup  implements AnnotatorInitializer {
+public class CASTestSetup implements AnnotatorInitializer {
 
   // Type system constants.
   public static final String TOKEN_TYPE = "Token";
-  
+
   public static final String PHRASE_TYPE = "Phrase";
 
   public static final String TOKEN_TYPE_FEAT = "type";
@@ -47,13 +47,13 @@ public class CASTestSetup  implements AnnotatorInitializer {
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
   public static final String WORD_TYPE = "Word";
-  
+
   public static final String ARRAYFSWITHSUBTYPE_TYPE = "ArrayFsWithSubtype";
-  
+
   public static final String ARRAYFSWITHSUBTYPE_TYPE_FEAT = "subArrayOfAnnot";
-  
-  public static final String ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q = ARRAYFSWITHSUBTYPE_TYPE + TypeSystem.FEATURE_SEPARATOR
-          + ARRAYFSWITHSUBTYPE_TYPE_FEAT;
+
+  public static final String ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q = ARRAYFSWITHSUBTYPE_TYPE
+          + TypeSystem.FEATURE_SEPARATOR + ARRAYFSWITHSUBTYPE_TYPE_FEAT;
 
   public static final String SEP_TYPE = "Separator";
 
@@ -77,9 +77,12 @@ public class CASTestSetup  implements AnnotatorInitializer {
   public static final String TOKEN_DOUBLE_FEAT = "tokenDoubleFeat";
   public static final String TOKEN_LONG_FEAT = "tokenLongFeat";
 
-  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_FLOAT_FEAT;
-  public static final String TOKEN_DOUBLE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_DOUBLE_FEAT;
-  public static final String TOKEN_LONG_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_LONG_FEAT;
+  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+          + TOKEN_FLOAT_FEAT;
+  public static final String TOKEN_DOUBLE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+          + TOKEN_DOUBLE_FEAT;
+  public static final String TOKEN_LONG_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+          + TOKEN_LONG_FEAT;
 
   public static final String LEMMA_LIST_FEAT = "lemmaList";
 
@@ -118,13 +121,13 @@ public class CASTestSetup  implements AnnotatorInitializer {
    * Constructor for CASTestSetup.
    */
   public CASTestSetup() {
-    super();
   }
 
   /**
    * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
    */
-  
+
+  //@formatter:off
   /* Types:
    * TOP
    *   token_type_type 
@@ -141,6 +144,8 @@ public class CASTestSetup  implements AnnotatorInitializer {
    *     Group2
    *   Lang_pair [LANG1(Group1), LANG2(Group2), DESCR_FEAT(string)  
    */
+  //@formatter:on
+  @Override
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
@@ -161,7 +166,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     tsm.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     tsm.addFeature(TOKEN_FLOAT_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_FLOAT));
     tsm.addFeature(TOKEN_DOUBLE_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_DOUBLE));
-    tsm.addFeature(TOKEN_LONG_FEAT, tokenType,  tsm.getType(CAS.TYPE_NAME_LONG));
+    tsm.addFeature(TOKEN_LONG_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_LONG));
     // Add a type that inherits from IntArray.
     // tsm.addType(INT_ARRAY_SUB, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
     // tsm.addFeature(
@@ -170,8 +175,8 @@ public class CASTestSetup  implements AnnotatorInitializer {
     // tsm.getType(CAS.TYPE_NAME_STRING));
     tsm.addFeature(LEMMA_FEAT, tokenType, stringType);
     tsm.addFeature(SENT_LEN_FEAT, tsm.getType(SENT_TYPE), tsm.getType(CAS.TYPE_NAME_INTEGER));
-    tsm.addFeature(LEMMA_LIST_FEAT, tsm.getType(TOKEN_TYPE), tsm
-            .getType(CAS.TYPE_NAME_STRING_ARRAY));
+    tsm.addFeature(LEMMA_LIST_FEAT, tsm.getType(TOKEN_TYPE),
+            tsm.getType(CAS.TYPE_NAME_STRING_ARRAY));
     Type group1 = tsm.addStringSubtype(GROUP_1, GROUP_1_LANGUAGES);
     Type group2 = tsm.addStringSubtype(GROUP_2, GROUP_2_LANGUAGES);
     Type langPair = tsm.addType(LANG_PAIR, topType);
@@ -210,6 +215,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     return comp;
   }
 
+  @Override
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator compNoTypeOrder = makeComp(irm, ts);
     FSIndexComparator comp = makeComp(irm, ts);

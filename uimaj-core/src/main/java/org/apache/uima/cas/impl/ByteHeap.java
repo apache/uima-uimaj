@@ -36,18 +36,22 @@ final class ByteHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
-  final void initMemory() {
+  @Override
+  void initMemory() {
     this.heap = new byte[this.heapBaseSize];
   }
-  
-  final void initMemory(int size) {
+
+  @Override
+  void initMemory(int size) {
     this.heap = new byte[size];
   }
 
-  final int getCapacity() {
+  @Override
+  int getCapacity() {
     return this.heap.length;
   }
 
+  @Override
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
       return;
@@ -58,6 +62,7 @@ final class ByteHeap extends CommonAuxHeap {
     heap = new_array;
   }
 
+  @Override
   void resetToZeros() {
     Arrays.fill(this.heap, 0, this.heapPos, (byte) NULL);
   }
@@ -77,25 +82,25 @@ final class ByteHeap extends CommonAuxHeap {
     heap[pos] = val;
     return pos;
   }
-  
+
   int addByteArray(byte[] val) {
     int pos = reserve(val.length);
     System.arraycopy(val, 0, heap, pos, val.length);
     return pos;
   }
-  
+
   int addBooleanArray(boolean[] val) {
     int pos = reserve(val.length);
     int i = pos;
     for (boolean v : val) {
-      heap[i++] = v ? (byte)1 : (byte)0;
+      heap[i++] = v ? (byte) 1 : (byte) 0;
     }
-    return pos;   
+    return pos;
   }
 
-  int addBooleanArrayNoStore(boolean[] val) {  // for compress4 
+  int addBooleanArrayNoStore(boolean[] val) { // for compress4
     int pos = reserve(val.length);
-    return pos;   
+    return pos;
   }
 
   protected void reinit(byte[] byteHeap) {
@@ -106,7 +111,7 @@ final class ByteHeap extends CommonAuxHeap {
     System.arraycopy(byteHeap, 0, heap, 0, argLength);
     this.heapPos = argLength;
   }
-  
+
   public byte[] toArray() {
     byte[] r = new byte[heapPos];
     System.arraycopy(heap, 0, r, 0, heapPos);

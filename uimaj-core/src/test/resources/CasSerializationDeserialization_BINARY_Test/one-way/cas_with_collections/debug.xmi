@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:cassis="http:///cassis.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <tcas:DocumentAnnotation xmi:id="17" sofa="16" begin="0" end="47" language="x-unspecified"/>
+    <cas:StringArray xmi:id="2">
+        <elements>A</elements>
+        <elements>B</elements>
+        <elements>C</elements>
+    </cas:StringArray>
+    <cas:StringArray xmi:id="1">
+        <elements>LNC</elements>
+        <elements>MTH</elements>
+        <elements>SNOMEDCT_US</elements>
+    </cas:StringArray>
+    <cas:StringArray xmi:id="10">
+        <elements>aaiguewilz</elements>
+        <elements>orarzvmgty</elements>
+        <elements>mkshhvglpk</elements>
+        <elements>ffvdpcdvbx</elements>
+        <elements>jsqcoqzpxb</elements>
+    </cas:StringArray>
+    <cassis:Group xmi:id="18" sofa="16" begin="0" end="0" shorts="1 2 3" integers="1 2 3" longs="1 2 3" booleans="true false" bytes="42DB3064" floats="1.0 2.0 3.0" doubles="1.0 2.0 3.0" fses="0 3 4">
+        <strings>A</strings>
+        <strings>B</strings>
+        <strings>C</strings>
+    </cassis:Group>
+    <cassis:Group xmi:id="28" sofa="16" begin="0" end="0" shorts="" integers="" longs="" booleans="" bytes="" floats="" doubles="" fses=""/>
+    <cassis:Group xmi:id="37" sofa="16" begin="0" end="0"/>
+    <cas:FSArray xmi:id="3" elements="17 1 2 18"/>
+    <cas:FSArray xmi:id="4" elements="2 0 0 17"/>
+    <cas:NonEmptyFSList xmi:id="6" tail="7" head="18"/>
+    <cas:NonEmptyFSList xmi:id="5" tail="6" head="2"/>
+    <cas:EmptyFSList xmi:id="7"/>
+    <cas:FloatArray xmi:id="8" elements="0.7275637 0.054665208 0.6832234 0.0479393"/>
+    <cas:IntegerArray xmi:id="9" elements="1325939940 -248792245 1190043011 -1255373459 -1436456258 392236186"/>
+    <cas:BooleanArray xmi:id="11" elements="false true false"/>
+    <cas:ByteArray xmi:id="12" elements="42DB3064"/>
+    <cas:ShortArray xmi:id="13" elements="1929 13467 15132 15893"/>
+    <cas:LongArray xmi:id="14" elements="2516571677013944794"/>
+    <cas:DoubleArray xmi:id="15" elements="0.4362829094329638 0.6487936445670887 0.6959691863162578"/>
+    <cas:Sofa xmi:id="16" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="Joe waited for the train . The train was late ."/>
+    <cas:View sofa="16" members="17 2 1 10 18 28 37 3 4 6 5 7 8 9 11 12 13 14 15"/>
+</xmi:XMI>

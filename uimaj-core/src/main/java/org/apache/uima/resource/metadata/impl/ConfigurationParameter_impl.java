@@ -38,8 +38,8 @@ import org.w3c.dom.NodeList;
  * 
  */
 
-public class ConfigurationParameter_impl extends MetaDataObject_impl implements
-        ConfigurationParameter {
+public class ConfigurationParameter_impl extends MetaDataObject_impl
+        implements ConfigurationParameter {
 
   static final long serialVersionUID = 4234432343384779535L;
 
@@ -70,6 +70,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -77,6 +78,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setName(String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -84,6 +86,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getExternalOverrideName()
    */
+  @Override
   public String getExternalOverrideName() {
     return mExternalOverrideName;
   }
@@ -91,6 +94,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setExternalOverrideName(String)
    */
+  @Override
   public void setExternalOverrideName(String aExternalOverrideName) {
     mExternalOverrideName = aExternalOverrideName;
   }
@@ -98,6 +102,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getDescription()
    */
+  @Override
   public String getDescription() {
     return mDescription;
   }
@@ -105,6 +110,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setDescription(String)
    */
+  @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
@@ -112,6 +118,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#getType()
    */
+  @Override
   public String getType() {
     return mType;
   }
@@ -119,12 +126,13 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setType(String)
    */
+  @Override
   public void setType(String aType) throws UIMA_IllegalArgumentException {
     // check to make sure value is legal
     if (!isValidDataTypeName(aType)) {
       throw new UIMA_IllegalArgumentException(
-              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] { aType,
-                  "type" });
+              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+              new Object[] { aType, "type" });
     }
     mType = aType;
   }
@@ -132,6 +140,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#isMultiValued()
    */
+  @Override
   public boolean isMultiValued() {
     return mMultiValued;
   }
@@ -139,6 +148,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setMultiValued(boolean)
    */
+  @Override
   public void setMultiValued(boolean aMultiValued) {
     mMultiValued = aMultiValued;
   }
@@ -146,6 +156,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#isMandatory()
    */
+  @Override
   public boolean isMandatory() {
     return mMandatory;
   }
@@ -153,6 +164,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /**
    * @see ConfigurationParameter#setMandatory(boolean)
    */
+  @Override
   public void setMandatory(boolean aMandatory) {
     mMandatory = aMandatory;
   }
@@ -175,6 +187,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#getOverrides()
    */
+  @Override
   public String[] getOverrides() {
     return mOverrides.clone();
   }
@@ -184,6 +197,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#setOverrides(java.lang.String[])
    */
+  @Override
   public void setOverrides(String[] aOverrides) {
     if (aOverrides == null)
       mOverrides = Constants.EMPTY_STRING_ARRAY;
@@ -196,6 +210,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#addOverride(java.lang.String)
    */
+  @Override
   public void addOverride(String aOverride) {
     String[] current = getOverrides();
     String[] newArr = new String[current.length + 1];
@@ -209,6 +224,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#removeOverride(java.lang.String)
    */
+  @Override
   public void removeOverride(String aOverride) {
     String[] current = getOverrides();
     for (int i = 0; i < current.length; i++) {
@@ -236,8 +252,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    *          true if and only if the configuration parameter is multi-valued. If true,
    *          <code>aClass</code> is expected to be an array.
    * 
-   * @return true if and only if an object of class <code>aClass</code> can be legally assigned to
-   *         a parameter described by <code>aTypeName</code> and <code>aMultiValued</code>.
+   * @return true if and only if an object of class <code>aClass</code> can be legally assigned to a
+   *         parameter described by <code>aTypeName</code> and <code>aMultiValued</code>.
    */
   public static boolean typeMatch(Class aClass, String aTypeName, boolean aMultiValued) {
     if (aMultiValued) {
@@ -264,8 +280,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
   /**
    * Determines whether the given String is a valid name for a data type. Valid data type names are
-   * legal arguments to the {@link #setType(String)} method, and are defined by the TYPE constants on
-   * the {@link ConfigurationParameter} interface.
+   * legal arguments to the {@link #setType(String)} method, and are defined by the TYPE constants
+   * on the {@link ConfigurationParameter} interface.
    * 
    * @param aTypeName
    *          an Object to test
@@ -293,6 +309,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * @param aOptions
    *          option settings
    */
+  @Override
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
           Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
           throws InvalidXMLException {
@@ -316,8 +333,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
             valueList.add(elemText);
           } else
             // element type does not match
-            throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
-                aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
+            throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
+                    new Object[] { aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
         }
       }
       // set property
@@ -330,14 +347,15 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-              new PropertyXmlInfo("externalOverrideName"),
-              new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
-              new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationParameter",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("externalOverrideName"), new PropertyXmlInfo("description"),
+              new PropertyXmlInfo("type"), new PropertyXmlInfo("multiValued"),
+              new PropertyXmlInfo("mandatory"),
               new PropertyXmlInfo("overrides", "overrides", true, "parameter"), });
 }

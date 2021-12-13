@@ -31,19 +31,21 @@ public interface CasProcessorExecArg extends MetaDataObject {
   /**
    * Sets argument value.
    * 
-   * @param aArgValue -
-   *          value as string
+   * @param aArgValue
+   *          - value as string
    * 
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public void setArgValue(String aArgValue) throws CpeDescriptorException;
+  void setArgValue(String aArgValue) throws CpeDescriptorException;
 
   /**
    * Returns argument value
    * 
    * @return - String
    * 
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
-  public String getArgValue() throws CpeDescriptorException;
+  String getArgValue() throws CpeDescriptorException;
 }

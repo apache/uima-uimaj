@@ -24,8 +24,8 @@ import java.io.Serializable;
 import org.apache.uima.util.XMLizable;
 
 /**
- * An indexing style. A set of indexing styles make up a {@link IndexRule}, which is then applied
- * to an {@link IndexBuildItem} in order to assign indexing behavior to an annotation type.
+ * An indexing style. A set of indexing styles make up a {@link IndexRule}, which is then applied to
+ * an {@link IndexBuildItem} in order to assign indexing behavior to an annotation type.
  * <p>
  * We support an open-ended schema for styles. Each style has a {@link #getName() name} and zero or
  * more {@link #getAttributes()}, where each attribute has a name and a value. Any given indexer
@@ -42,8 +42,8 @@ import org.apache.uima.util.XMLizable;
  * be indexed.</li>
  * </ul>
  * </li>
- * <li><b>Breaking</b> - the indexer should record a sentence boundary before and after the span
- * of this annotation.
+ * <li><b>Breaking</b> - the indexer should record a sentence boundary before and after the span of
+ * this annotation.
  * <ul>
  * <li>no attributes defined</li>
  * </ul>
@@ -60,7 +60,7 @@ import org.apache.uima.util.XMLizable;
  * values for both <i>nameFeature</i> and <i>fixedName</i>.</li>
  * </ul>
  * An annotation style can also have {@link #getAttributeMappings() attribute mappings}, which
- * specify which how the features (properties) of the annotation should be indexed. </li>
+ * specify which how the features (properties) of the annotation should be indexed.</li>
  * </ul>
  * This object implements the {@link XMLizable} interface and can be parsed from an XML
  * representation.
@@ -71,22 +71,22 @@ public interface Style extends XMLizable, Serializable {
 
   /**
    * Gets the name of this style. See the class comment for a list of defined style names.
-   * Implementations must make sure that all names are {@link String#intern()}ed so that they can
-   * be compared with the == operator.
+   * Implementations must make sure that all names are {@link String#intern()}ed so that they can be
+   * compared with the == operator.
    * 
    * @return the name of this style
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of this style. See the class comment for a list of defined style names.
-   * Implementations must make sure that all names are {@link String#intern()}ed so that they can
-   * be compared with the == operator.
+   * Implementations must make sure that all names are {@link String#intern()}ed so that they can be
+   * compared with the == operator.
    * 
    * @param aName
    *          the name of this style
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the <code>Attribute</code>s for this style. See the class comment for a list of defined
@@ -94,7 +94,7 @@ public interface Style extends XMLizable, Serializable {
    * 
    * @return the attributes for this style.
    */
-  public Attribute[] getAttributes();
+  Attribute[] getAttributes();
 
   /**
    * Sets the <code>Attribute</code>s for this style. See the class comment for a list of defined
@@ -103,7 +103,7 @@ public interface Style extends XMLizable, Serializable {
    * @param aAttributes
    *          the attributes for this style.
    */
-  public void setAttributes(Attribute[] aAttributes);
+  void setAttributes(Attribute[] aAttributes);
 
   /**
    * Gets the value of an attribute with the given name.
@@ -114,7 +114,7 @@ public interface Style extends XMLizable, Serializable {
    * @return the value of the named attribute, null if there is no such attribute declared on this
    *         style
    */
-  public String getAttribute(String aName);
+  String getAttribute(String aName);
 
   /**
    * Gets the mappings that specify which features (properties) of the annotation should be indexed,
@@ -123,29 +123,30 @@ public interface Style extends XMLizable, Serializable {
    * @return an array of objects that each specify a mapping from a CAS feature name to the name
    *         under which this feature should be recorded in the index.
    */
-  public Mapping[] getAttributeMappings();
+  Mapping[] getAttributeMappings();
 
   /**
    * Sets the mappings that specify which features (properties) of the annotation should be indexed,
    * and under which names.
    * 
-   * @param aMappings an array of objects that each specify a mapping from a CAS feature name to the
-   *       name under which this feature should be recorded in the index.
+   * @param aMappings
+   *          an array of objects that each specify a mapping from a CAS feature name to the name
+   *          under which this feature should be recorded in the index.
    */
-  public void setAttributeMappings(Mapping[] aMappings);
+  void setAttributeMappings(Mapping[] aMappings);
 
   /**
    * Constant for the name of the Term style.
    */
-  public static final String TERM = "Term";
+  String TERM = "Term";
 
   /**
    * Constant for the name of the Breaking style.
    */
-  public static final String BREAKING = "Breaking";
+  String BREAKING = "Breaking";
 
   /**
    * Constant for the name of the Annotation style.
    */
-  public static final String ANNOTATION = "Annotation";
+  String ANNOTATION = "Annotation";
 }

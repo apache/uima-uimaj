@@ -63,9 +63,9 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -75,13 +75,13 @@ public class ImportResolverTest {
 
   private XMLParser xmlParser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
@@ -196,7 +196,7 @@ public class ImportResolverTest {
 
       long totalDurationThisRun = 0;
       ResourceManager resMgr = newDefaultResourceManager();
-     
+
       List<ResolveImportsRunner> runners = new ArrayList<>();
       for (Entry<File, Set<TypeDescription>> e : data) {
         runners.add(new ResolveImportsRunner(resMgr, e.getKey(), e.getValue()));
@@ -215,7 +215,7 @@ public class ImportResolverTest {
       assertThat(finishedRunners) //
               .as("All runners made it to the finishing line") //
               .hasSameSizeAs(runners);
-      
+
       for (ResolveImportsRunner runner : finishedRunners) {
         totalDurationThisRun += runner.duration;
 
@@ -230,10 +230,10 @@ public class ImportResolverTest {
                 .sorted() //
                 .distinct() //
                 .toArray(String[]::new);
-        
+
         log.debug("Types: {}  unique types: {} ({}ms)", runner.descriptor.getTypes().length,
                 actualUniqueTypeNames.length, runner.duration);
-      
+
         assertThat(runner.descriptor.getTypes())
                 // Note that in the general case, there may still be duplicates if the same type is
                 // declared in more than one type system description. However, the scenario

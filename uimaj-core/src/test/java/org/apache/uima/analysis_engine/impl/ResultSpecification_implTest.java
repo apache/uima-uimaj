@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -39,36 +40,24 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-
-public class ResultSpecification_implTest extends TestCase {
+public class ResultSpecification_implTest {
 
   private TypeOrFeature[] mTypesAndFeatures;
 
   private Capability[] capabilities;
-  
+
   private Capability cap4;
 
   private List<String[]> languages;
 
   private TypeOrFeature t1, t2, f1;
-  
-  /**
-   * Constructor for ResultSpecification_implTest.
-   * 
-   * @param arg0
-   */
-  public ResultSpecification_implTest(String arg0) {
-    super(arg0);
-  }
 
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       // create array of types and features for use in testing
       t1 = new TypeOrFeature_impl();
@@ -126,6 +115,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddCapabilities() throws Exception {
     try {
       // create ResultSpecification with capabilities
@@ -142,10 +132,10 @@ public class ResultSpecification_implTest extends TestCase {
       for (int i = 0; i < result.length; i++) {
         Assert.assertEquals(mTypesAndFeatures[i], result[i]);
       }
-      
+
       // test defaulting - if no language, should be x-unspecified
       resultSpecLanguage = new ResultSpecification_impl();
-      resultSpecLanguage.addCapabilities(new Capability[] {cap4});
+      resultSpecLanguage.addCapabilities(new Capability[] { cap4 });
       assertTrue(resultSpecLanguage.containsFeature("FakeType:FakeFeature"));
       assertTrue(resultSpecLanguage.containsFeature("FakeType:FakeFeature", "en"));
     } catch (Exception e) {
@@ -153,30 +143,32 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddCapabilitiesWithoutLanguage() throws Exception {
-     try {
-       
-        TypeOrFeature t4 = new TypeOrFeature_impl();
-        t4.setType(true);
-        t4.setName("AnotherFakeType");
-        t4.setAllAnnotatorFeatures(false);
+    try {
 
-        // capability 4 - using t4 but now language
-        Capability cap4 = new Capability_impl();
-        TypeOrFeature[] tofs4 = { t4 };
-        cap4.setOutputs(tofs4);
+      TypeOrFeature t4 = new TypeOrFeature_impl();
+      t4.setType(true);
+      t4.setName("AnotherFakeType");
+      t4.setAllAnnotatorFeatures(false);
 
-        // create ResultSpecification with capabilities
-       ResultSpecification_impl resultSpec = new ResultSpecification_impl();
-       // add capabilities to the result spec
-       resultSpec.addCapabilities(new Capability[] { cap4 });
+      // capability 4 - using t4 but now language
+      Capability cap4 = new Capability_impl();
+      TypeOrFeature[] tofs4 = { t4 };
+      cap4.setOutputs(tofs4);
 
-       assertTrue(resultSpec.containsType("AnotherFakeType"));
-     } catch (Exception e) {
-       JUnitExtension.handleException(e);
-     }
-   }
+      // create ResultSpecification with capabilities
+      ResultSpecification_impl resultSpec = new ResultSpecification_impl();
+      // add capabilities to the result spec
+      resultSpec.addCapabilities(new Capability[] { cap4 });
 
+      assertTrue(resultSpec.containsType("AnotherFakeType"));
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  @Test
   public void testSetResultTypesAndFeatures() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -196,6 +188,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testSetResultTypesAndFeaturesWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -219,6 +212,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddResultTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -239,6 +233,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddResultTypeOrFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -272,6 +267,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddResultType() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -294,6 +290,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddResultTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -331,6 +328,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddResultFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -352,6 +350,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testAddResultFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -374,6 +373,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testContainsType() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -389,6 +389,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testContainsTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -406,6 +407,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testContainsFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -422,6 +424,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testContainsFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -442,6 +445,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testRemoveTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -464,6 +468,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testCompile() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -492,13 +497,15 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl"));  // unknown features are there, if the type says allFeats
+      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there,
+                                                                      // if the type says allFeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
+  @Test
   public void testCompileWithCapabilities() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -521,7 +528,7 @@ public class ResultSpecification_implTest extends TestCase {
       // check
       Assert.assertFalse(rs.containsType("FakeType"));
       Assert.assertTrue(rs.containsType("FakeType", "en"));
-      Assert.assertTrue(rs.containsType("FakeType", "en-us"));      
+      Assert.assertTrue(rs.containsType("FakeType", "en-us"));
       Assert.assertTrue(rs.containsType("FakeType", "EN_US"));
       Assert.assertFalse(rs.containsType("NotThere"));
       Assert.assertTrue(rs.containsType("AnotherType"));
@@ -531,7 +538,8 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there if type says allfeats
+      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there
+                                                                      // if type says allfeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsType("SubType"));
@@ -541,6 +549,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testXmlization() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
@@ -555,8 +564,8 @@ public class ResultSpecification_implTest extends TestCase {
 
       // parse object back from XML
       InputStream is = new ByteArrayInputStream(rsXml.getBytes(encoding));
-      ResultSpecification newRS = UIMAFramework.getXMLParser().parseResultSpecification(
-              new XMLInputSource(is, null));
+      ResultSpecification newRS = UIMAFramework.getXMLParser()
+              .parseResultSpecification(new XMLInputSource(is, null));
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();
       Arrays.sort(tofs);
       newRS.setResultTypesAndFeatures(tofs);
@@ -566,6 +575,7 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testClone() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();

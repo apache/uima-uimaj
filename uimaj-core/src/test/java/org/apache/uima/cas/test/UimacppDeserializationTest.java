@@ -19,25 +19,18 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for UimacppDeserializationTest.java goes here.
  * 
  */
-public class UimacppDeserializationTest extends TestCase {
-
-  /**
-   * Constructor for UimacppDeserializationTest.
-   * 
-   * @param arg0
-   */
-  public UimacppDeserializationTest(String arg0) {
-    super(arg0);
-  }
-
+public class UimacppDeserializationTest {
   // Test case does not work: need serialized TAF form
   // keep a null test here to avoid having suite complain there are no tests here
+  @Test
   public void testNothing() {
     assertTrue(true);
   }
@@ -45,8 +38,8 @@ public class UimacppDeserializationTest extends TestCase {
   /*
    * public void testDeserialization() { // Get file handle to serialized CAS. File dataDir = new
    * File(TestPropertyReader.getJUnitTestBasePath()); assertTrue(dataDir.exists());
-   * assertTrue(dataDir.isDirectory()); File serializedForm = new File(dataDir, "cascomplete.ser"); //
-   * Deserialize ObjectInputStream ois = null; CASCompleteSerializer ser = null; try { ois = new
+   * assertTrue(dataDir.isDirectory()); File serializedForm = new File(dataDir, "cascomplete.ser");
+   * // Deserialize ObjectInputStream ois = null; CASCompleteSerializer ser = null; try { ois = new
    * ObjectInputStream(new FileInputStream(serializedForm)); ser = (CASCompleteSerializer)
    * ois.readObject(); ois.close(); } catch (IOException e) { e.printStackTrace();
    * assertTrue(false); } catch (ClassNotFoundException e) { assertTrue(false); } CAS cas = null;
@@ -59,8 +52,8 @@ public class UimacppDeserializationTest extends TestCase {
    * 
    * TypeSystem ts = cas.getTypeSystem(); Type ttDocType = ts.getType("uima.tt.DocumentAnnotation");
    * assertTrue(ttDocType != null); Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-   * assertTrue(annotType != null); assertTrue(ts.subsumes(annotType, ttDocType)); Feature beginFeat =
-   * ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+   * assertTrue(annotType != null); assertTrue(ts.subsumes(annotType, ttDocType)); Feature beginFeat
+   * = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
    * assertTrue(ttDocType.getAppropriateFeatures().contains(beginFeat)); Vector feats =
    * ttDocType.getAppropriateFeatures(); System.out.println("Features defined for " +
    * ttDocType.getName()); for (int i = 0; i < feats.size(); i++) { System.out.println(" " +
@@ -69,10 +62,10 @@ public class UimacppDeserializationTest extends TestCase {
    * FSIndex annotationIndex = cas.getAnnotationIndex(); assertTrue(annotationIndex != null);
    * System.out.println( "Number of annotations in index: " + annotationIndex.size()); Feature
    * markupFeat = cas.getTypeSystem().getFeatureByFullName(
-   * "uima.tt.DocStructureAnnotation:markupTag"); System.out.println("Annotations: "); FSIterator it =
-   * annotationIndex.iterator(); AnnotationFS annot; for (it.moveToFirst(); it.isValid();
-   * it.moveToNext()) { annot = (AnnotationFS) it.get(); System.out.println( annot.getType() + ": " +
-   * annot.getBegin() + " - " + annot.getEnd() + ": " + annot.getCoveredText()); }
+   * "uima.tt.DocStructureAnnotation:markupTag"); System.out.println("Annotations: "); FSIterator it
+   * = annotationIndex.iterator(); AnnotationFS annot; for (it.moveToFirst(); it.isValid();
+   * it.moveToNext()) { annot = (AnnotationFS) it.get(); System.out.println( annot.getType() + ": "
+   * + annot.getBegin() + " - " + annot.getEnd() + ": " + annot.getCoveredText()); }
    * 
    * FSIndexRepository ir = cas.getIndexRepository(); Iterator labelIt = ir.getLabels();
    * System.out.println("Index labels: "); while (labelIt.hasNext()) { System.out.println(" " +
@@ -83,13 +76,9 @@ public class UimacppDeserializationTest extends TestCase {
    * System.out.println("Features defined for docType: "); for (int i = 0; i < featVector.size();
    * i++) { System.out.println(" " + ((Feature)featVector.get(i)).getShortName()); }
    * assertTrue(docIndex != null); it = docIndex.iterator(); for (it.moveToFirst(); it.isValid();
-   * it.moveToNext()) { annot = (AnnotationFS) it.get(); System.out.println( annot.getType() + ": " +
-   * annot.getBegin() + " - " + annot.getEnd()); System.out.println(" " + annot.getCoveredText()); } //
-   * String text = null; // try { // text = cas.getDocumentText(); // } catch (CASException e) { //
-   * assertTrue(false); // } // assertTrue(text != null); }
+   * it.moveToNext()) { annot = (AnnotationFS) it.get(); System.out.println( annot.getType() + ": "
+   * + annot.getBegin() + " - " + annot.getEnd()); System.out.println(" " + annot.getCoveredText());
+   * } // String text = null; // try { // text = cas.getDocumentText(); // } catch (CASException e)
+   * { // assertTrue(false); // } // assertTrue(text != null); }
    */
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(UimacppDeserializationTest.class);
-  }
-
 }

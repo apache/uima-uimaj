@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.uima.resource.ResourceConfigurationException;
 
+//@formatter:off
 /**
  * A <code>Settings</code> object holds the properties used for external parameter overrides.
  * 
@@ -37,72 +38,76 @@ import org.apache.uima.resource.ResourceConfigurationException;
  *  - '\' can be used in values to escape '$' '{' '[' ',' ']' 
  *   
  * @author burn
- * 
  */
-
+//@formatter:on
 public interface Settings {
-  
-  /**
-   * Load properties from an input stream.  
-   * Existing properties are not changed and a warning is logged if the new value is different.
-   * May be called multiple times, so effective search is in load order.
-   * Arrays are enclosed in [] and the elements may be separated by <code>,</code> or new-line, so 
-   *   can span multiple lines without using a final \ 
-   * 
-   * @param in - Stream holding properties
-   * @throws IOException if name characters illegal
-   */
-  public void load(InputStream in) throws IOException;
 
   /**
-   * Load properties from the comma-separated list of files specified in the system property 
-   *   UimaExternalOverrides
-   * Files are loaded in order --- so in descending priority.
+   * Load properties from an input stream. Existing properties are not changed and a warning is
+   * logged if the new value is different. May be called multiple times, so effective search is in
+   * load order. Arrays are enclosed in [] and the elements may be separated by <code>,</code> or
+   * new-line, so can span multiple lines without using a final \
    * 
-   * @throws ResourceConfigurationException wraps IOException
+   * @param in
+   *          - Stream holding properties
+   * @throws IOException
+   *           if name characters illegal
    */
-  public void loadSystemDefaults() throws ResourceConfigurationException;
+  void load(InputStream in) throws IOException;
 
   /**
-   * Look up the value for a property.
-   * Perform one substitution pass on ${key} substrings replacing them with the value for key.
-   * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
-   * If the key variable has not been defined, an exception is thrown.
-   * To avoid evaluation and get ${key} in the output escape the $ or {
-   * Arrays are returned as a comma-separated string, e.g. "[elem1,elem2]" 
-   * Note: escape characters are not removed as they may affect array separators. 
+   * Load properties from the comma-separated list of files specified in the system property
+   * UimaExternalOverrides Files are loaded in order --- so in descending priority.
    * 
-   * @param name - name to look up
-   * @return     - value of property
-   * @throws ResourceConfigurationException if the value references an undefined property
+   * @throws ResourceConfigurationException
+   *           wraps IOException
    */
-  public String lookUp(String name) throws ResourceConfigurationException;
+  void loadSystemDefaults() throws ResourceConfigurationException;
+
+  /**
+   * Look up the value for a property. Perform one substitution pass on ${key} substrings replacing
+   * them with the value for key. Recursively evaluate the value to be substituted. NOTE: infinite
+   * loops not detected! If the key variable has not been defined, an exception is thrown. To avoid
+   * evaluation and get ${key} in the output escape the $ or { Arrays are returned as a
+   * comma-separated string, e.g. "[elem1,elem2]"
+   * 
+   * Note: escape characters are not removed as they may affect array separators.
+   * 
+   * @param name
+   *          - name to look up
+   * @return - value of property
+   * @throws ResourceConfigurationException
+   *           if the value references an undefined property
+   */
+  String lookUp(String name) throws ResourceConfigurationException;
 
   /**
    * Return a set of keys of all properties loaded
    * 
    * @return - set of strings
    */
-  public Set<String> getKeys();
+  Set<String> getKeys();
 
   /**
    * Get the value of an external override setting.
    * 
-   * @param name - the name of the parameter
-   * @return     - the value found in the settings file(s), or null if missing.
-   * @throws ResourceConfigurationException 
-   *                 if the value references an undefined property, or the value is an array
+   * @param name
+   *          - the name of the parameter
+   * @return - the value found in the settings file(s), or null if missing.
+   * @throws ResourceConfigurationException
+   *           if the value references an undefined property, or the value is an array
    */
   String getSetting(String name) throws ResourceConfigurationException;
-  
+
   /**
-  * Get the array of values for an external override setting.
-  * 
-  * @param name  - the name of the parameter
-  * @return      - an array of values found in the settings file(s), or null if missing.
-  * @throws ResourceConfigurationException 
-  *                  if the value references an undefined property, or the value is not an array
-  */
-  public String[] getSettingArray(String name) throws ResourceConfigurationException;
-  
+   * Get the array of values for an external override setting.
+   * 
+   * @param name
+   *          - the name of the parameter
+   * @return - an array of values found in the settings file(s), or null if missing.
+   * @throws ResourceConfigurationException
+   *           if the value references an undefined property, or the value is not an array
+   */
+  String[] getSettingArray(String name) throws ResourceConfigurationException;
+
 }

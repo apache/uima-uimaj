@@ -19,6 +19,9 @@
 
 package org.apache.uima.internal.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -38,30 +41,17 @@ import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-
-public class AnalysisEnginePoolTest extends TestCase {
+public class AnalysisEnginePoolTest {
 
   private TypeSystem mLastTypeSystem;
 
-  /**
-   * Constructor for MultithreadableAnalysisEngine_implTest.
-   * 
-   * @param arg0
-   */
-  public AnalysisEnginePoolTest(String arg0) throws java.io.FileNotFoundException {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-      super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
@@ -72,13 +62,14 @@ public class AnalysisEnginePoolTest extends TestCase {
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
-      Capability[] caps = new Capability[] {cap};
+      Capability[] caps = new Capability[] { cap };
       mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
+  @Test
   public void testGetAnalysisEngineMetaData() throws Exception {
     AnalysisEnginePool pool = null;
     try {
@@ -97,6 +88,7 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
+  @Test
   public void testProcess() throws Exception {
     try {
       // test simple primitive MultithreadableTextAnalysisEngine
@@ -123,27 +115,28 @@ public class AnalysisEnginePoolTest extends TestCase {
         threads[i] = new ProcessThread(pool, i);
         threads[i].start();
       }
-      
+
       MultiThreadUtils.kickOffThreads(threads);
-      
+
       MultiThreadUtils.waitForAllReady(threads);
 
       for (int i = 0; i < NUM_THREADS; i++) {
         Throwable failure = threads[i].getFailure();
         if (failure != null) {
           if (failure instanceof Exception) {
-            throw (Exception)failure;
+            throw (Exception) failure;
           } else {
             fail(failure.getMessage());
           }
         }
-      }     
-      
-      //Check TestAnnotator fields only at the very end of processing,
-      //we can't test from the threads themsleves since the state of
-      //these fields is nondeterministic during the multithreaded processing.
+      }
+
+      // Check TestAnnotator fields only at the very end of processing,
+      // we can't test from the threads themsleves since the state of
+      // these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
-      ResultSpecification resultSpec = new ResultSpecification_impl(TestAnnotator.getLastResultSpec().getTypeSystem());
+      ResultSpecification resultSpec = new ResultSpecification_impl(
+              TestAnnotator.getLastResultSpec().getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
 
@@ -151,10 +144,10 @@ public class AnalysisEnginePoolTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-    
-   
+
   }
 
+  @Test
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
@@ -184,7 +177,7 @@ public class AnalysisEnginePoolTest extends TestCase {
         tae.setConfigParameterValue("StringParam", "Test2");
         tae.reconfigure();
 
-        //test again
+        // test again
         assertEquals("Test2", TestAnnotator.stringParamValue);
 
         // check pool metadata
@@ -198,14 +191,7 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  /**
-   * Auxilliary method used by testProcess()
-   * 
-   * @param aTaeDesc
-   *          description of TextAnalysisEngine to test
-   */
-  protected void _testProcess(AnalysisEnginePool aPool, int i)
-          throws UIMAException {
+  protected void _testProcess(AnalysisEnginePool aPool, int i) throws UIMAException {
     AnalysisEngine tae = aPool.getAnalysisEngine(0);
     try {
       // Test each form of the process method. When TestAnnotator executes, it
@@ -237,6 +223,7 @@ public class AnalysisEnginePoolTest extends TestCase {
       mId = aId;
     }
 
+    @Override
     public void run() {
       while (true) {
         try {
@@ -248,13 +235,13 @@ public class AnalysisEnginePoolTest extends TestCase {
           // System.out.println("thread finished");
         } catch (Throwable t) {
           t.printStackTrace();
-          //can't cause unit test to fail by throwing exception from thread.
-          //record the failure and the main thread will check for it later.
+          // can't cause unit test to fail by throwing exception from thread.
+          // record the failure and the main thread will check for it later.
           mFailure = t;
         }
       }
     }
-    
+
     public synchronized Throwable getFailure() {
       return mFailure;
     }
@@ -264,7 +251,7 @@ public class AnalysisEnginePoolTest extends TestCase {
     AnalysisEnginePool mPool;
 
     boolean mIsAggregate;
-    
+
     Throwable mFailure = null;
   }
 

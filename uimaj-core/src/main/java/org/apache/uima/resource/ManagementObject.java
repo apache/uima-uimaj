@@ -19,19 +19,19 @@
 package org.apache.uima.resource;
 
 /**
- * Base interface for objects that expose a monitoring and management interface to a 
- * UIMA component or some part of the UIMA framework.
+ * Base interface for objects that expose a monitoring and management interface to a UIMA component
+ * or some part of the UIMA framework.
  * <p>
  * In this implementation, objects implementing this interface will always be JMX-compatible MBeans
- * that you can register with an MBeanServer. For information on JMX see <a
- * href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html">
+ * that you can register with an MBeanServer. For information on JMX see
+ * <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html">
  * http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html</a>
  */
 public interface ManagementObject {
   /**
-   * Gets a valid JMX MBean name that is unique among all ManagementObjects in this
-   * JVM. (Technically, it is unique only among ManagementObjects objects loaded by the same
-   * ClassLoader, which is whatever ClassLoader was used to load the UIMA Framework classes.)
+   * Gets a valid JMX MBean name that is unique among all ManagementObjects in this JVM.
+   * (Technically, it is unique only among ManagementObjects objects loaded by the same ClassLoader,
+   * which is whatever ClassLoader was used to load the UIMA Framework classes.)
    * <p>
    * If you are running with JRE 1.5, this is the name used to register this object with the
    * platform MBeanServer.

@@ -221,6 +221,7 @@ public interface TypeSystemDescription extends MetaDataObject {
    * @deprecated Method is deprecated because it should only be used internally. Scheduled for
    *             removal in UIMA 4.0.
    */
-  @Deprecated void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
+  @Deprecated
+  void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException;
 }

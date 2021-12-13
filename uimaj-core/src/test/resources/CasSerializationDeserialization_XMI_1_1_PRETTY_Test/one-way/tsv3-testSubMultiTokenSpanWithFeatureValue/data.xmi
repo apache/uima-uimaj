@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/metadata/type.ecore" xmlns:type2="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmlns:custom="http:///webanno/custom.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <type:DocumentMetaData xmi:id="2" sofa="1" begin="0" end="20" documentId="doc" isLastSegment="false"/>
+    <type2:Token xmi:id="3" sofa="1" begin="0" end="6" order="0"/>
+    <type2:Token xmi:id="4" sofa="1" begin="7" end="13" order="0"/>
+    <type2:Token xmi:id="5" sofa="1" begin="14" end="20" order="0"/>
+    <type2:Sentence xmi:id="6" sofa="1" begin="0" end="20"/>
+    <custom:Span xmi:id="7" sofa="1" begin="0" end="13" value="2"/>
+    <custom:Span xmi:id="8" sofa="1" begin="0" end="10" value="7"/>
+    <custom:Span xmi:id="9" sofa="1" begin="0" end="6" value="1"/>
+    <custom:Span xmi:id="10" sofa="1" begin="3" end="17" value="9"/>
+    <custom:Span xmi:id="11" sofa="1" begin="3" end="13" value="6"/>
+    <custom:Span xmi:id="12" sofa="1" begin="3" end="10" value="8"/>
+    <custom:Span xmi:id="13" sofa="1" begin="7" end="11" value="4"/>
+    <custom:Span xmi:id="14" sofa="1" begin="7" end="7" value="11"/>
+    <custom:Span xmi:id="15" sofa="1" begin="9" end="13" value="5"/>
+    <custom:Span xmi:id="16" sofa="1" begin="9" end="11" value="3"/>
+    <custom:Span xmi:id="17" sofa="1" begin="10" end="10" value="10"/>
+    <custom:Span xmi:id="18" sofa="1" begin="13" end="13" value="12"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="aaaaaa bbbbbb cccccc"/>
+    <cas:View sofa="1" members="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18"/>
+</xmi:XMI>

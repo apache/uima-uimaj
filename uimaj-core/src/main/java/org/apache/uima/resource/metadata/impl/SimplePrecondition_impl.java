@@ -55,6 +55,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see Precondition#getPreconditionType()
    */
+  @Override
   public String getPreconditionType() {
     return PRECONDITION_TYPE;
   }
@@ -62,6 +63,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#getDefault()
    */
+  @Override
   public boolean getDefault() {
     return mDefault;
   }
@@ -69,6 +71,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#getFeatureName()
    */
+  @Override
   public String getFeatureName() {
     return mFeatureName;
   }
@@ -76,6 +79,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#getFsIndexName()
    */
+  @Override
   public String getFsIndexName() {
     return mFsIndexName;
   }
@@ -83,6 +87,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#getFsMatchConstraint()
    */
+  @Override
   public FSMatchConstraint getFsMatchConstraint() {
     return mFsMatchConstraint;
   }
@@ -90,6 +95,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setDefault(boolean)
    */
+  @Override
   public void setDefault(boolean aDefault) {
     mDefault = aDefault;
   }
@@ -97,6 +103,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
    */
+  @Override
   public void setFeatureName(String aFeatureName) {
     mFeatureName = aFeatureName;
   }
@@ -104,6 +111,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
    */
+  @Override
   public void setFsIndexName(String aIndexName) {
     mFsIndexName = aIndexName;
   }
@@ -111,6 +119,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
    */
+  @Override
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     mFsMatchConstraint = aConstraint;
 
@@ -119,6 +128,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see org.apache.uima.resource.metadata.Precondition#evaluate(org.apache.uima.cas.CAS)
    */
+  @Override
   public boolean evaluate(CAS aCAS) {
     return false;
   }
@@ -126,6 +136,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see SimplePrecondition#getComparisonValue()
    */
+  @Override
   public Object getComparisonValue() {
     return mComparisonValue;
   }
@@ -133,6 +144,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see SimplePrecondition#setComparisonValue(Object)
    */
+  @Override
   public void setComparisonValue(Object aValue) {
     mComparisonValue = aValue;
   }
@@ -140,6 +152,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see SimplePrecondition#getPredicate()
    */
+  @Override
   public String getPredicate() {
     return mPredicate;
   }
@@ -147,20 +160,21 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   /**
    * @see SimplePrecondition#setPredicate(String)
    */
+  @Override
   public void setPredicate(String aPredicate) {
     // check to make sure value is legal
     if (!isValidPredicateName(aPredicate)) {
       throw new UIMA_IllegalArgumentException(
-              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                  aPredicate, "predicate" });
+              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+              new Object[] { aPredicate, "predicate" });
     }
     mPredicate = aPredicate;
   }
 
   /**
    * Determines whether the given String is a valid name a predicate defined by this class. Valid
-   * predicate names are legal arguments to the {@link #setPredicate(String)} method, and are defined
-   * by constants on the {@link SimplePrecondition} interface.
+   * predicate names are legal arguments to the {@link #setPredicate(String)} method, and are
+   * defined by constants on the {@link SimplePrecondition} interface.
    * 
    * @param aName
    *          an Object to test
@@ -172,12 +186,13 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     return EQUAL.equals(aName) || ELEMENT_OF.equals(aName) || LANGUAGE_SUBSUMED.equals(aName);
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "simplePrecondition",
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("simplePrecondition",
           new PropertyXmlInfo[] { new PropertyXmlInfo("featureDescription", null),
-              new PropertyXmlInfo("comparisonValue"), new PropertyXmlInfo("predicate", "predicate") });
+              new PropertyXmlInfo("comparisonValue"),
+              new PropertyXmlInfo("predicate", "predicate") });
 }

@@ -28,25 +28,26 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
-public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements LowLevelIterator<T>, Comparator<FeatureStructure> {
+public class FsIterator_subtypes_snapshot<T extends FeatureStructure>
+        implements LowLevelIterator<T>, Comparator<FeatureStructure> {
 
-//  final private FsIndex_flat<T> flatIndex;  // a newly created one, just for this iterator
-  final private T[] snapshot;  // local for ref speed
-  private int pos = 0; 
+  // final private FsIndex_flat<T> flatIndex; // a newly created one, just for this iterator
+  final private T[] snapshot; // local for ref speed
+  private int pos = 0;
   /** support for alternative source iterating, where there is no order */
   final private boolean is_unordered;
   final private LowLevelIndex<T> indexForComparator;
-  
+
   final private boolean isNotUimaIndexSource;
-  
+
   final private Comparator<TOP> comparatorMaybeNoTypeWithoutId;
-    
-//  public FsIterator_subtypes_snapshot(FsIndex_flat<T> flatIndex) {
-//    this(flatIndex, false);
-//  }
-  
-  public FsIterator_subtypes_snapshot(FsIndex_flat<T> flatIndex, 
-                                      Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
+
+  // public FsIterator_subtypes_snapshot(FsIndex_flat<T> flatIndex) {
+  // this(flatIndex, false);
+  // }
+
+  public FsIterator_subtypes_snapshot(FsIndex_flat<T> flatIndex,
+          Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
     this.indexForComparator = flatIndex;
     this.snapshot = (T[]) flatIndex.getFlatArray();
     this.is_unordered = flatIndex.getIndexingStrategy() != FSIndex.SORTED_INDEX;
@@ -54,30 +55,33 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     this.isNotUimaIndexSource = false;
   }
 
-  
   /**
-   * Alternative source iterator, 1st arg is different (not an "index", just an array)  
-   *   - altSources are unordered, and NoType is ignored
-   *   - also supports backwards iterators, these are ordered  (Maybe fix this in the future - this is not necessarily required)
-   *      
+   * Alternative source iterator, 1st arg is different (not an "index", just an array) - altSources
+   * are unordered, and NoType is ignored - also supports backwards iterators, these are ordered
+   * (Maybe fix this in the future - this is not necessarily required)
    * 
-   * @param snapshot -
-   * @param index -
-   * @param is_unordered - mark as unordered
-   * @param comparatorMaybeNoTypeWithoutId -
+   * 
+   * @param snapshot
+   *          -
+   * @param index
+   *          -
+   * @param is_unordered
+   *          - mark as unordered
+   * @param comparatorMaybeNoTypeWithoutId
+   *          -
    */
-  public FsIterator_subtypes_snapshot(T[] snapshot, 
-                                      LowLevelIndex<T> index, 
-                                      boolean is_unordered,
-                                      Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
+  public FsIterator_subtypes_snapshot(T[] snapshot, LowLevelIndex<T> index, boolean is_unordered,
+          Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
     this.indexForComparator = index;
     this.snapshot = snapshot;
     this.is_unordered = is_unordered;
     this.comparatorMaybeNoTypeWithoutId = comparatorMaybeNoTypeWithoutId;
     this.isNotUimaIndexSource = true;
   }
-    
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#isValid()
    */
   @Override
@@ -85,7 +89,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     return (0 <= pos) && (pos < snapshot.length);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#get()
    */
   @Override
@@ -96,7 +102,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     throw new NoSuchElementException();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#get()
    */
   @Override
@@ -104,7 +112,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     return snapshot[pos];
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToNext()
    */
   @Override
@@ -119,7 +129,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     pos++;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToPrevious()
    */
   @Override
@@ -128,13 +140,15 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
       pos--;
     }
   }
-  
+
   @Override
   public void moveToPreviousNvc() {
     pos--;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToFirst()
    */
   @Override
@@ -142,7 +156,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     pos = 0;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToLast()
    */
   @Override
@@ -150,14 +166,16 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     pos = snapshot.length - 1;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
     if (is_unordered) {
       int i = 0;
-      while ((i < snapshot.length) && compare(snapshot[i],  fs) != 0) {
+      while ((i < snapshot.length) && compare(snapshot[i], fs) != 0) {
         i++;
       }
       pos = i;
@@ -165,16 +183,16 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
       int c = Arrays.binarySearch(snapshot, 0, snapshot.length, fs, this);
       if (c < 0) {
         // was not found, c is (-(insertion point) - 1)
-        //    insertion point      c                pos
-        //         0               -1                0
-        //         1               -2                1
-        //       size - 1       -(size - 1) - 1     size - 1
-        //        size           -size - 1          size (invalid)
-        pos = (-c) - 1;   
+        // insertion point c pos
+        // 0 -1 0
+        // 1 -2 1
+        // size - 1 -(size - 1) - 1 size - 1
+        // size -size - 1 size (invalid)
+        pos = (-c) - 1;
       } else {
-        // found an equal.  need to move to leftmost
+        // found an equal. need to move to leftmost
         c--;
-        while ((c >= 0) && compare(snapshot[c],  fs) == 0) {
+        while ((c >= 0) && compare(snapshot[c], fs) == 0) {
           c--;
         }
         pos = c + 1;
@@ -182,67 +200,71 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     }
   }
 
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
-//   */
-//  @Override
-//  public void moveToExactNoReinit(FeatureStructure fs) {
-////    if (is_unordered) {
-//      int i = 0;
-//      while ((i < snapshot.length) && snapshot[i] != fs) {
-//        i++;
-//      }
-//      pos = i;
-////    } else {
-////      // next doesn't work, the snapshot is not sorted by the comparator
-//////      pos = Arrays.binarySearch(snapshot, fs);
-////      if ()
-////    }
-//  }
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
+  // */
+  // @Override
+  // public void moveToExactNoReinit(FeatureStructure fs) {
+  //// if (is_unordered) {
+  // int i = 0;
+  // while ((i < snapshot.length) && snapshot[i] != fs) {
+  // i++;
+  // }
+  // pos = i;
+  //// } else {
+  //// // next doesn't work, the snapshot is not sorted by the comparator
+  ////// pos = Arrays.binarySearch(snapshot, fs);
+  //// if ()
+  //// }
+  // }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   @Override
   public FSIterator<T> copy() {
-    FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<>(
-        this.snapshot,
-        this.indexForComparator,
-        this.is_unordered,
-        this.comparatorMaybeNoTypeWithoutId);
+    FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<>(this.snapshot,
+            this.indexForComparator, this.is_unordered, this.comparatorMaybeNoTypeWithoutId);
     it.pos = pos;
     return it;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
    */
   @Override
   public int ll_indexSizeMaybeNotCurrent() {
     return snapshot.length;
   }
-  
+
   @Override
   public int ll_maxAnnotSpan() {
-    return indexForComparator.ll_maxAnnotSpan();   
+    return indexForComparator.ll_maxAnnotSpan();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_getIndex()
    */
   @Override
   public LowLevelIndex<T> ll_getIndex() {
     return indexForComparator;
   }
-  
+
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return (null == comparatorMaybeNoTypeWithoutId) 
-        ? Integer.compare(fs1._id(), fs2._id())
-        : comparatorMaybeNoTypeWithoutId.compare((TOP)fs1, (TOP)fs2);
+    return (null == comparatorMaybeNoTypeWithoutId) ? Integer.compare(fs1._id(), fs2._id())
+            : comparatorMaybeNoTypeWithoutId.compare((TOP) fs1, (TOP) fs2);
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
    */
   @Override
@@ -255,13 +277,12 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     return false;
   }
 
-
   @Override
   public Comparator<TOP> getComparator() {
     return comparatorMaybeNoTypeWithoutId;
-  } 
-  
-  @Override 
+  }
+
+  @Override
   public int size() {
     return snapshot.length;
   }

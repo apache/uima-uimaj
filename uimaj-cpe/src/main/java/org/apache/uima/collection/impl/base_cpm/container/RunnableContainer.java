@@ -31,12 +31,12 @@ public interface RunnableContainer extends Runnable {
    * Starts the container
    * 
    */
-  public void start();
+  void start();
 
   /**
    * Stops the container
    * 
    */
-  public void stop();
+  void stop();
 
 }
