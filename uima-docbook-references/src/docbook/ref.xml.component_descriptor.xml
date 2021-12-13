@@ -2090,6 +2090,16 @@ if (uimaContext != null) {
 			will be null if <literal>getUimaContext</literal> is not invoked by an annotator or flow
 			controller on the same thread or a child thread.
             </para>
+            <para>
+            Since UIMA 3.2.1, the context is stored in the InheritableThreadLocal as a weak reference.
+            This ensures that any long-running threads spawned while the context is set do not 
+            prevent garbage-collection of the context when the context is destroyed. If a child
+            thread should really retain a strong reference to the context, it should obtain the
+            context and store it in a field or in another ThreadLocal variable. For backwards
+            compatibility, the old behavior of using a strong reference by default can be enabled
+            by setting the system property <literal>uima.context_holder_reference_type</literal>
+            to <literal>STRONG</literal>.
+            </para>
           </section>
 
           <section id="&tp;aes.other_uses_for_external_configuration_parameters">
