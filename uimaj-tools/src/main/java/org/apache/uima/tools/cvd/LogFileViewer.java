@@ -67,7 +67,6 @@ public class LogFileViewer extends JFrame {
 	 * @throws java.awt.HeadlessException the java.awt. headless exception
 	 */
 	public LogFileViewer() {
-		super();
 	}
 
 	/**

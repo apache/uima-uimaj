@@ -36,22 +36,22 @@ import java.util.List;
 
 public class ProcessUtil {
   /**
-   * The <code>StdStreamListener</code> interface defines 2 methods that should be implemented by
-   * a standard stream listener to get console messages ('stderr' and 'stdout' streams) printed by
+   * The <code>StdStreamListener</code> interface defines 2 methods that should be implemented by a
+   * standard stream listener to get console messages ('stderr' and 'stdout' streams) printed by
    * selected process.
    * 
    */
-  public static interface StdStreamListener {
-    public void errMsgPrinted(String errMsg);
+  public interface StdStreamListener {
+    void errMsgPrinted(String errMsg);
 
-    public void outMsgPrinted(String outMsg);
+    void outMsgPrinted(String outMsg);
   } // end of StdStreamListener
 
   /**
-   * The <code>ProcessUtil.Runner</code> class allows collecting, printing and distributing
-   * console output (stdout and stderr) of the specified <code>Process</code> without blocking the
-   * caller. It allows adding standard stream listeners to receive messages printed to the console
-   * by selected process.
+   * The <code>ProcessUtil.Runner</code> class allows collecting, printing and distributing console
+   * output (stdout and stderr) of the specified <code>Process</code> without blocking the caller.
+   * It allows adding standard stream listeners to receive messages printed to the console by
+   * selected process.
    * 
    */
   public static class Runner implements Runnable {
@@ -81,8 +81,7 @@ public class ProcessUtil {
     private List<StdStreamListener> _listeners = new ArrayList<>();
 
     /**
-     * Constructor that takes a given <code>Process</code> object and assigns default process
-     * name.
+     * Constructor that takes a given <code>Process</code> object and assigns default process name.
      * 
      * @param aProcess
      *          The given <code>Process</code> object.
@@ -104,9 +103,9 @@ public class ProcessUtil {
     }
 
     /**
-     * Constructor that takes a given <code>Process</code> object, a given process name, and a
-     * given <code>boolean</code> flag that enables/disables console printing. If the given
-     * process name is <code>null</code>, the default process name is assigned.
+     * Constructor that takes a given <code>Process</code> object, a given process name, and a given
+     * <code>boolean</code> flag that enables/disables console printing. If the given process name
+     * is <code>null</code>, the default process name is assigned.
      * 
      * @param aProcess
      *          The given <code>Process</code> object.
@@ -131,8 +130,8 @@ public class ProcessUtil {
     }
 
     /**
-     * Adds a given object, implementing the <code>StdStreamListener</code> interface to the list
-     * of standard stream listeners. Sends to the new listener previously printed standard error and
+     * Adds a given object, implementing the <code>StdStreamListener</code> interface to the list of
+     * standard stream listeners. Sends to the new listener previously printed standard error and
      * standard output messages.
      * 
      * @param listener
@@ -188,9 +187,10 @@ public class ProcessUtil {
     }
 
     /**
-     * Implements the <code>Runnable.run()</code> method, collecting and printing standard output
-     * or standard error messages during the process execution.
+     * Implements the <code>Runnable.run()</code> method, collecting and printing standard output or
+     * standard error messages during the process execution.
      */
+    @Override
     public void run() {
       String threadName = Thread.currentThread().getName();
       String threadId = threadName.substring(0, 3);
@@ -198,9 +198,9 @@ public class ProcessUtil {
       PrintWriter writer = null;
       try {
         // create appropriate standard stream reader
-        reader = (threadId.equals("ERR")) ? new BufferedReader(new InputStreamReader(_process
-                .getErrorStream())) : new BufferedReader(new InputStreamReader(_process
-                .getInputStream()));
+        reader = (threadId.equals("ERR"))
+                ? new BufferedReader(new InputStreamReader(_process.getErrorStream()))
+                : new BufferedReader(new InputStreamReader(_process.getInputStream()));
         // create appropriate string writer
         StringWriter sWriter = (threadId.equals("ERR")) ? _stdErr : _stdOut;
         writer = new PrintWriter(sWriter);
@@ -289,8 +289,8 @@ public class ProcessUtil {
      * 
      * @param timeout
      *          The given timeout value (ms).
-     * @return Process exit code or <code>Integer.MAX_VALUE</code>, if the process has not
-     *         finished yet.
+     * @return Process exit code or <code>Integer.MAX_VALUE</code>, if the process has not finished
+     *         yet.
      */
     public int waitFor(long timeout) {
       synchronized (this) {

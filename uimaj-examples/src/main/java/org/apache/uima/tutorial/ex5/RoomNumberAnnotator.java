@@ -44,6 +44,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see AnalysisComponent#initialize(UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter values
@@ -65,6 +66,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
    */
+  @Override
   public void process(JCas aJCas) {
     // get document text
     String docText = aJCas.getDocumentText();

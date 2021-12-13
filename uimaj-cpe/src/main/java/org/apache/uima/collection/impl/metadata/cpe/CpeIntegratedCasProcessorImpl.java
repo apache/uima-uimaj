@@ -38,7 +38,6 @@ public class CpeIntegratedCasProcessorImpl extends CasProcessorCpeObject impleme
   public CpeIntegratedCasProcessorImpl()
 
   {
-    super();
     try {
       addDefaults();
       super.setDeployment("integrated");

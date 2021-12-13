@@ -19,14 +19,6 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
-
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileLanguageResourceSpecifier;
 import org.apache.uima.resource.FileResourceSpecifier;
@@ -34,6 +26,13 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ExtnlResBindSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 
 
 /**

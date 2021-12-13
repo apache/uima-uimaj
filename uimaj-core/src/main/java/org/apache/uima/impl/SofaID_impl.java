@@ -56,6 +56,7 @@ public class SofaID_impl implements SofaID {
    * 
    * @see org.apache.uima.SofaID#setAbsoluteSofaName(java.lang.String)
    */
+  @Override
   public void setSofaID(String aSofaID) {
     mSofaID = aSofaID;
   }
@@ -65,6 +66,7 @@ public class SofaID_impl implements SofaID {
    * 
    * @see org.apache.uima.SofaID#getAbsoluteSofaName()
    */
+  @Override
   public String getSofaID() {
     return mSofaID;
   }
@@ -74,6 +76,7 @@ public class SofaID_impl implements SofaID {
    * 
    * @see org.apache.uima.SofaID#setComponentSofaName(java.lang.String)
    */
+  @Override
   public void setComponentSofaName(String aSofaName) {
     mComponentSofaName = aSofaName;
   }
@@ -83,6 +86,7 @@ public class SofaID_impl implements SofaID {
    * 
    * @see org.apache.uima.SofaID#getComponentSofaName()
    */
+  @Override
   public String getComponentSofaName() {
     return mComponentSofaName;
   }

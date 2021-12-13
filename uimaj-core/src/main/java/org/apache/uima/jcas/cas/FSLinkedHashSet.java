@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-   
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
@@ -107,5 +107,3 @@ public class FSLinkedHashSet <T extends TOP> extends FSHashSet<T> {
   }
    
 }
-
-    

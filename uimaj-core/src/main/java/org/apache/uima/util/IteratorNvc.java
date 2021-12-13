@@ -23,7 +23,8 @@ import java.util.Iterator;
 /**
  * An Iterator with an extra method nextNvc, which skips the validity check
  *
- * @param <E> the class of the element being returned
+ * @param <E>
+ *          the class of the element being returned
  */
 public interface IteratorNvc<E> extends Iterator<E> {
   /**

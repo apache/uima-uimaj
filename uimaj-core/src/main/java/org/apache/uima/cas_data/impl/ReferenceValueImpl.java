@@ -16,17 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import org.apache.uima.cas_data.ReferenceValue;
 
-/**
- * 
- * 
- */
 public class ReferenceValueImpl implements ReferenceValue {
-  
+
   private static final long serialVersionUID = -2890705944833477494L;
 
   private String mTargetId;
@@ -40,6 +35,7 @@ public class ReferenceValueImpl implements ReferenceValue {
    * 
    * @see org.apache.uima.cas_data.ReferenceValue#getTargetId()
    */
+  @Override
   public String getTargetId() {
     return mTargetId;
   }
@@ -49,6 +45,7 @@ public class ReferenceValueImpl implements ReferenceValue {
    * 
    * @see org.apache.uima.cas_data.ReferenceValue#setTargetId(java.lang.String)
    */
+  @Override
   public void setTargetId(String aId) {
     mTargetId = aId;
   }
@@ -58,10 +55,12 @@ public class ReferenceValueImpl implements ReferenceValue {
    * 
    * @see org.apache.uima.cas_data.FeatureValue#get()
    */
+  @Override
   public Object get() {
     return mTargetId;
   }
 
+  @Override
   public String toString() {
     return mTargetId;
   }

@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
-   
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:26:22 EDT 2017 */
 
 package org.apache.uima.testTypeSystem_arrays;
@@ -159,5 +157,3 @@ public class OfShorts extends Annotation {
     ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_f1Shorts)))).set(i, v);
   }  
   }
-
-    

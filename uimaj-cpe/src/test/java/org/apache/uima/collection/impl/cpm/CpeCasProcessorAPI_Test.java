@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeCasProcessors;
@@ -30,6 +30,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 import org.apache.uima.collection.metadata.CpeTimer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * this TestCase is testing the cpm API concerning the setting of CasProcessors
@@ -44,7 +46,7 @@ import org.apache.uima.collection.metadata.CpeTimer;
  * values or something else. The parameters are only set to be comparable for unit testing.
  * 
  */
-public class CpeCasProcessorAPI_Test extends TestCase {
+public class CpeCasProcessorAPI_Test {
 
   private static final String confLocation = "c://cpm/conf/";
 
@@ -55,7 +57,8 @@ public class CpeCasProcessorAPI_Test extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     // Creates the Cpe Descriptor
     cpe = CpeDescriptorFactory.produceDescriptor();
     // Create CollectionReader and associate it with the descriptor
@@ -130,7 +133,8 @@ public class CpeCasProcessorAPI_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAddRemoteCasProcessor() throws Exception {
+    @Test
+    public void testAddRemoteCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
     CpeRemoteCasProcessor remoteProcessor = CpeDescriptorFactory
@@ -170,7 +174,8 @@ public class CpeCasProcessorAPI_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAddLocalCasProcessor() throws Exception {
+    @Test
+    public void testAddLocalCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
     // Create Detag CasProcessor
@@ -214,7 +219,8 @@ public class CpeCasProcessorAPI_Test extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAddIntegratedCasProcessor() throws Exception {
+    @Test
+    public void testAddIntegratedCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
     CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory

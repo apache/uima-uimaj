@@ -174,8 +174,8 @@ public class StringUtil {
    * @return If the given string argument occurs as a substring, ignoring case, within the given
    *         string object at a starting index no smaller than <code>fromIndex</code>, then the
    *         index of the first character of the first such substring is returned; if it does not
-   *         occur as a substring starting at <code>fromIndex</code> or beyond, <code>-1</code>
-   *         is returned.
+   *         occur as a substring starting at <code>fromIndex</code> or beyond, <code>-1</code> is
+   *         returned.
    * @param mainStr
    *          The given string object.
    * @param argStr

@@ -19,6 +19,12 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
+import org.apache.uima.analysis_engine.TypeOrFeature;
+import org.apache.uima.resource.ResourceCreationSpecifier;
+import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.metadata.Capability;
+import org.apache.uima.taeconfigurator.CDEpropertyPage;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -29,13 +35,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.analysis_engine.TypeOrFeature;
-import org.apache.uima.resource.ResourceCreationSpecifier;
-import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.metadata.Capability;
-import org.apache.uima.taeconfigurator.CDEpropertyPage;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 
 /**

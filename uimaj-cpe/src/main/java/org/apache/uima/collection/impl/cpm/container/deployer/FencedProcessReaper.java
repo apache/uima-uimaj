@@ -30,7 +30,6 @@ public class FencedProcessReaper {
 
   
   public FencedProcessReaper() {
-    super();
 
   }
 

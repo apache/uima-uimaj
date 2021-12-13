@@ -20,17 +20,15 @@
 package org.apache.uima.internal.util;
 
 import java.util.BitSet;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.util.impl.Constants;
 
 /**
- * A set of non-zero positive ints.  
- *   
- * This is better (size) than IntHashSet unless
- *   the expected max int to be contained is &gt; size of the set * 100
- *   or you need to store negative ints
- *   
+ * A set of non-zero positive ints.
+ * 
+ * This is better (size) than IntHashSet unless the expected max int to be contained is &gt; size of
+ * the set * 100 or you need to store negative ints
+ * 
  * This impl is for use in a single thread case only
  * 
  * This impl supports offset, to let this bit set store items in a range n &rarr; n + small number
@@ -39,47 +37,49 @@ import org.apache.uima.util.impl.Constants;
  * 
  */
 public class IntBitSet implements PositiveIntSet {
-    
+
   private final BitSet set;
-  
-  private int size = 0;  // tracked here to avoid slow counting of cardinality
-  
+
+  private int size = 0; // tracked here to avoid slow counting of cardinality
+
   private final int offset;
-  
-//  /**
-//   * Sets the lowest int value that can be kept; trying to add a lower one throws an error
-//   * <ul>
-//   *   <li>Allows for a more compact representation, potentially</li>
-//   *   <li>only can be set if the size is 0</li>
-//   * </ul>
-//   * @param offset - the lowest value that can be kept in the set. 0 is allowed.
-//   */
-//  public void setOffset(int offset) {
-//    if (size != 0) {
-//      throw new IllegalStateException("Cannot set offset unless set is empty");
-//    }
-//    if (offset < 0) {
-//      throw new IllegalArgumentException("Offset must be 0 or a positive int, was " + offset);
-//    }
-//    this.offset = offset;
-//  }
+
+  // /**
+  // * Sets the lowest int value that can be kept; trying to add a lower one throws an error
+  // * <ul>
+  // * <li>Allows for a more compact representation, potentially</li>
+  // * <li>only can be set if the size is 0</li>
+  // * </ul>
+  // * @param offset - the lowest value that can be kept in the set. 0 is allowed.
+  // */
+  // public void setOffset(int offset) {
+  // if (size != 0) {
+  // throw new IllegalStateException("Cannot set offset unless set is empty");
+  // }
+  // if (offset < 0) {
+  // throw new IllegalArgumentException("Offset must be 0 or a positive int, was " + offset);
+  // }
+  // this.offset = offset;
+  // }
   /**
    * @return the current offset
    */
   public int getOffset() {
     return offset;
   }
-  
+
   /**
    * Construct an IntBitSet capable of holding ints from 0 to 63, (perhaps plus an offset)
    */
   public IntBitSet() {
-    this(63);  // in current java impls, this is the minimum 1 long int is allocated  
+    this(63); // in current java impls, this is the minimum 1 long int is allocated
   }
-    
+
   /**
    * Construct an IntBitSet capable of holding ints from 0 to maxInt (perhaps plus an offset)
-   * @param maxInt the biggest int (perhaps plus an offset) that can be held without growing the space
+   * 
+   * @param maxInt
+   *          the biggest int (perhaps plus an offset) that can be held without growing the space
    */
   public IntBitSet(int maxInt) {
     this(maxInt, 0);
@@ -89,61 +89,63 @@ public class IntBitSet implements PositiveIntSet {
     set = new BitSet(Math.max(1, maxAdjKey));
     this.offset = offset;
     if (IS_TRACE_MODE_SWITCH) {
-      System.out.println("TRACE_MODE new IntBitSet, maxAdjKey = " + maxAdjKey + ", offset= " + offset);
+      System.out.println(
+              "TRACE_MODE new IntBitSet, maxAdjKey = " + maxAdjKey + ", offset= " + offset);
     }
   }
-  
+
   /**
-   * empty the IntBitSet.
-   * keeps the offset
+   * empty the IntBitSet. keeps the offset
    */
   @Override
   public void clear() {
     set.clear();
     size = 0;
   }
-   
+
   /**
    * 
-   * @param key - the integer (not adjusted for offset)
+   * @param key
+   *          - the integer (not adjusted for offset)
    * @return -
    */
   @Override
   public boolean contains(int key) {
-    return (key == 0) ? false : 
-           (key - offset < 0) ? false :
-           set.get(key - offset);
+    return (key == 0) ? false : (key - offset < 0) ? false : set.get(key - offset);
   }
- 
 
   @Override
   public int find(int element) {
     return contains(element) ? element - offset : -1;
   }
+
   /**
    * 
-   * @param original_key - the int to add to the set
+   * @param original_key
+   *          - the int to add to the set
    * @return true if this set did not already contain the specified element
    */
   @Override
   public boolean add(int original_key) {
     if (original_key < offset) {
-      throw new IllegalArgumentException("key " + original_key + " must be greater than or equal to the offset: " + offset);
+      throw new IllegalArgumentException(
+              "key " + original_key + " must be greater than or equal to the offset: " + offset);
     }
-    
+
     final int adjKey = original_key - offset;
     final boolean prev = set.get(adjKey);
     set.set(adjKey);
     if (!prev) {
-      size ++;
+      size++;
       return true;
     }
     return false;
   }
-  
+
   /**
    * 
-   * @param original_key -
+   * @param original_key
+   *          -
    * @return true if this key was removed, false if not present
    */
   @Override
@@ -154,8 +156,8 @@ public class IntBitSet implements PositiveIntSet {
     }
     final boolean prev = set.get(adjKey);
     if (prev) {
-      set.clear(adjKey);  // avoid clearing which may expand bit set, if not present
-      size --;
+      set.clear(adjKey); // avoid clearing which may expand bit set, if not present
+      size--;
       return true;
     }
     return false;
@@ -167,74 +169,77 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public int size() {
-    return size;    // bit set cardinality() is slow
+    return size; // bit set cardinality() is slow
   }
-  
+
   public int getSpaceUsed_in_bits_no_overhead() {
     return set.size();
   }
-   
+
   /**
    * 
    * @return space used in 32 bit words
    */
   public int getSpaceUsed_in_words_no_overhead() {
-    return getSpaceUsed_in_bits_no_overhead() >> 5;  // divide by 32
+    return getSpaceUsed_in_bits_no_overhead() >> 5; // divide by 32
   }
-  
+
   /**
    * 
-   * @return largest int in the set
-   * If the set has no members, 0 is returned
+   * @return largest int in the set If the set has no members, 0 is returned
    */
   public int getLargestMenber() {
     return set.length() - 1 + offset;
   }
-  
+
   @Override
   public int get(int position) {
-    assert(set.get(position));
+    assert (set.get(position));
     return position + offset;
   }
-  
+
   private class IntBitSetIterator implements IntListIterator {
 
     /**
-     * This is the bit set position which is -1 (if invalid) or
-     *   the position in the bit set of the key - offset
-     *   
-     *   If the offset is not 0, then the position != key
+     * This is the bit set position which is -1 (if invalid) or the position in the bit set of the
+     * key - offset
+     * 
+     * If the offset is not 0, then the position != key
      */
     protected int curKey = set.nextSetBit(0);
 
-    protected IntBitSetIterator() {}
+    protected IntBitSetIterator() {
+    }
 
+    @Override
     public final boolean hasNext() {
       return (curKey >= 0);
     }
-    
+
     @Override
     public final int nextNvc() {
       final int r = curKey;
       curKey = set.nextSetBit(curKey + 1);
-      return r + offset;      
+      return r + offset;
     }
 
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
+    @Override
     public boolean hasPrevious() {
       throw new UnsupportedOperationException();
     }
- 
+
     @Override
     public int previousNvc() {
       throw new UnsupportedOperationException();
     }
-    
+
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */
+    @Override
     public void moveToEnd() {
       throw new UnsupportedOperationException();
     }
@@ -242,6 +247,7 @@ public class IntBitSet implements PositiveIntSet {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToStart()
      */
+    @Override
     public void moveToStart() {
       curKey = set.nextSetBit(0);
     }
@@ -270,12 +276,12 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int moveToPrevious(int position) {
-    return (position < 0) ? position : set.previousSetBit(position - 1);  
+    return (position < 0) ? position : set.previousSetBit(position - 1);
   }
 
   /**
-   * This impl depends on position always pointing to a valid (== non 0) 
-   * element of the set, when it should be valid 
+   * This impl depends on position always pointing to a valid (== non 0) element of the set, when it
+   * should be valid
    */
   @Override
   public boolean isValid(int position) {
@@ -308,7 +314,9 @@ public class IntBitSet implements PositiveIntSet {
     return r;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

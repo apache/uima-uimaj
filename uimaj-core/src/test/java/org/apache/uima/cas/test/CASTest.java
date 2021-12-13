@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
@@ -26,28 +29,21 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationIndex;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for CASTest.java goes here.
  * 
  */
-public class CASTest extends TestCase {
+public class CASTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for CASTest.
-   * 
-   * @param arg0
-   */
-  public CASTest(String arg0) {
-    super(arg0);
-  }
-
+  @BeforeEach
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -57,15 +53,18 @@ public class CASTest extends TestCase {
     }
   }
 
+  @AfterEach
   public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
+  @Test
   public void testGetTypeSystem() {
     assertTrue(this.cas.getTypeSystem() != null);
   }
-  
+
+  @Test
   public void testGetAnnotationIndex() {
     AnnotationIndex index = this.cas.getAnnotationIndex();
     assertNotNull(index);
@@ -79,6 +78,7 @@ public class CASTest extends TestCase {
     assertTrue(caughtException);
   }
 
+  @Test
   public void testCreateFS() {
     // Can create FS of type "Top"
     assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
@@ -107,7 +107,7 @@ public class CASTest extends TestCase {
     final int arraySize = 1000000;
     // Make sure that the structure we're trying to create is actually larger
     // than the page size we're testing with.
-//    assertTrue(arraySize > Heap.DEFAULT_SIZE);
+    // assertTrue(arraySize > Heap.DEFAULT_SIZE);
     IntArrayFS array = null;
     try {
       array = this.cas.createIntArrayFS(arraySize);
@@ -130,43 +130,9 @@ public class CASTest extends TestCase {
     // assertTrue(caughtExc);
   }
 
+  @Test
   public void testCreateCAS() {
     TypeSystemMgr tsm = CASFactory.createTypeSystem();
     tsm.commit();
   }
-
-  public void testCreateArrayFS() {
-    // Has its own test class.
-  }
-
-  public void testCreateIntArrayFS() {
-    // Has its own test class.
-  }
-
-  public void testCreateStringArrayFS() {
-    // Has its own test class.
-  }
-
-  // public void testCreateFilteredIterator() {
-  // }
-  //
-  // public void testCommitFS() {
-  // }
-  //
-  // public void testGetConstraintFactory() {
-  // }
-  //
-  // public void testCreateFeaturePath() {
-  // }
-  //
-  // public void testGetIndexRepository() {
-  // }
-  //
-  // public void testFs2listIterator() {
-  // }
-  //
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(CASTest.class);
-  }
-
 }

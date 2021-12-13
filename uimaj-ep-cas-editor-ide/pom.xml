@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -137,8 +137,8 @@
     
     <!-- Test dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="parent child"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="2" _ref_sofa="1" begin="0" end="12" language="x-unspecified"/>
+    <cassis.Parent _indexed="1" _id="3" _ref_sofa="1" begin="0" end="6" parentFeature="parent feature"/>
+    <cassis.Child _indexed="1" _id="4" _ref_sofa="1" begin="7" end="12" parentFeature="parent feature" childFeature="child feature"/>
+    <cassis.GrandChild _indexed="1" _id="5" _ref_sofa="1" begin="7" end="12"/>
+    <cassis.GrandGrandChild _indexed="1" _id="6" _ref_sofa="1" begin="7" end="12"/>
+    <cassis.GrandGrandGrandChild _indexed="1" _id="7" _ref_sofa="1" begin="7" end="12"/>
+</CAS>

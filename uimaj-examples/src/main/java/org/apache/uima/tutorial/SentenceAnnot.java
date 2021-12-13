@@ -18,12 +18,11 @@
  */
 package org.apache.uima.tutorial;
 
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
 /**
@@ -56,6 +55,7 @@ public class SentenceAnnot extends Annotation {
      * @return the type index ID
      * @generated 
      */
+    @Override
     public int getTypeIndexID() {
         return typeIndexID;
     }

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import java.util.Map;
@@ -35,13 +34,11 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
  *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
  *             org.apache.uima.examples.XmlDetagger for an example.
- * 
  */
 @Deprecated
-public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_ImplBase implements
-        CasDataInitializer {
+public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_ImplBase
+        implements CasDataInitializer {
   public CasDataInitializer_ImplBase() {
-    super();
   }
 
   /**
@@ -53,6 +50,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CasInitializerDescription
@@ -91,8 +89,8 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    * 
    * @see org.apache.uima.collection.base_cpm.CasDataInitializer#getCasInitializerMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getCasInitializerMetaData() {
     return getProcessingResourceMetaData();
   }
-
 }

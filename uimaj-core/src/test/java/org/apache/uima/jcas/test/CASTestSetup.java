@@ -106,33 +106,32 @@ public class CASTestSetup implements AnnotatorInitializer {
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
 
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
-  
+
   public static final String INTEGER_ARRAY_LIST = "org.apache.uima.jcas.cas.IntegerArrayList";
 
   public static final String FS_ARRAY_LIST = "org.apache.uima.jcas.cas.FSArrayList";
 
   public static final String FS_HASH_SET = "org.apache.uima.jcas.cas.FSHashSet";
-  
+
   public static final String FS_LINKED_HASH_SET = "org.apache.uima.jcas.cas.FSLinkedHashSet";
-  
+
   public static final String INT_2_FS = "org.apache.uima.jcas.cas.Int2FS";
 
   /**
    * Constructor for CASTestSetup.
    */
   public CASTestSetup() {
-    super();
     bad = 0;
   }
 
   public CASTestSetup(int bad) {
-    super();
     this.bad = bad;
   }
 
   /**
    * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
    */
+  @Override
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type topType = tsm.getTopType();
@@ -192,7 +191,7 @@ public class CASTestSetup implements AnnotatorInitializer {
     tsm.addFeature("plainDouble", typeRoot, typeDouble);
     tsm.addFeature("plainLong", typeRoot, typeLong);
     tsm.addFeature("plainString", typeRoot, typeString);
-//    tsm.addFeature("plainRef", typeRoot, typeRef);
+    // tsm.addFeature("plainRef", typeRoot, typeRef);
     tsm.addFeature("plainRef", typeRoot, typeRoot);
 
     if (bad != BAD_MISSING_TYPE_IN_CAS)
@@ -203,8 +202,8 @@ public class CASTestSetup implements AnnotatorInitializer {
     if (bad != BAD_MISSING_FEATURE_IN_CAS)
       tsm.addFeature("missingThisOne", typeMissingFeat, typeFloat);
 
-    tsm.addFeature("changedFType", typeMissingFeat, (bad != BAD_CHANGED_FEATURE_TYPE) ? typeString
-            : typeFloat);
+    tsm.addFeature("changedFType", typeMissingFeat,
+            (bad != BAD_CHANGED_FEATURE_TYPE) ? typeString : typeFloat);
 
     Type abstractType = tsm.addType("aa.AbstractType", topType);
     tsm.addFeature("abstractInt", abstractType, typeInteger);
@@ -232,7 +231,7 @@ public class CASTestSetup implements AnnotatorInitializer {
       exc = true;
     }
     TestCase.assertTrue(exc);
-    
+
     // add IntegerArrayList type, FSHashSet, FSArrayList
     Type integerArrayListType = tsm.addType(INTEGER_ARRAY_LIST, topType);
     tsm.addFeature("intArray", integerArrayListType, typeArrayInt);
@@ -243,9 +242,10 @@ public class CASTestSetup implements AnnotatorInitializer {
     Type fsLinkedHashSetType = tsm.addType(FS_LINKED_HASH_SET, fsHashSetType);
     Type int2FSType = tsm.addType(INT_2_FS, topType);
     tsm.addFeature("fsArray", int2FSType, typeArrayRef);
-    tsm.addFeature("intArray",  int2FSType,  typeArrayInt);     
+    tsm.addFeature("intArray", int2FSType, typeArrayInt);
   }
 
+  @Override
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);

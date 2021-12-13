@@ -21,6 +21,8 @@ package org.apache.uima.util.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -39,29 +41,18 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.XMLReader;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-public class XMLParser_implTest extends TestCase {
+public class XMLParser_implTest {
 
   private XMLParser mXmlParser;
 
-  /**
-   * Constructor for XMLParser_implTest.
-   * 
-   * @param arg0
-   */
-  public XMLParser_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     mXmlParser = UIMAFramework.getXMLParser();
 
     // Enable schema validation. Note that this will enable schema validation
@@ -70,16 +61,16 @@ public class XMLParser_implTest extends TestCase {
     // schema validation will be enabled for the whole suite.
     mXmlParser.enableSchemaValidation(true);
   }
-  
+
   /*
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @AfterEach
+  public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-
+  @Test
   public void testParse() throws Exception {
     try {
       // JTalentAndStringMatch.xml contains imports,
@@ -96,8 +87,8 @@ public class XMLParser_implTest extends TestCase {
               .parse(new XMLInputSource(manuallyExpanded));
       Assert.assertNotNull(desc1);
       Assert.assertNotNull(desc2);
-      Assert.assertEquals(desc1.getDelegateAnalysisEngineSpecifiers(), desc2
-              .getDelegateAnalysisEngineSpecifiers());
+      Assert.assertEquals(desc1.getDelegateAnalysisEngineSpecifiers(),
+              desc2.getDelegateAnalysisEngineSpecifiers());
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     } finally {
@@ -105,19 +96,21 @@ public class XMLParser_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testParseXMLInputSourceParseOptions() throws Exception {
     try {
       // test for env var refs
       File envVarRefTest = JUnitExtension.getFile("XmlParserTest/EnvVarRefTest.xml");
       System.setProperty("uima.test.var1", "foo");
       System.setProperty("uima.test.var2", "bar");
-      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(true, true));
+      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(envVarRefTest),
+                      new XMLParser.ParsingOptions(true, true));
       Assert.assertEquals("foo-bar", taeDesc.getMetaData().getName());
 
       // parse with env var ref expansion disabled
-      taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(envVarRefTest),
-              new XMLParser.ParsingOptions(false));
+      taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(false));
       Assert.assertEquals(
               "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
               taeDesc.getMetaData().getName());
@@ -129,42 +122,45 @@ public class XMLParser_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testParseResourceSpecifier() throws Exception {
     try {
-      //can't run this test under Sun Java 1.4 with no Xerces installed, as
-      //it doesn't support schema validation.  The following is a test for that.
+      // can't run this test under Sun Java 1.4 with no Xerces installed, as
+      // it doesn't support schema validation. The following is a test for that.
       SAXParserFactory factory = SAXParserFactory.newInstance();
       SAXParser parser = factory.newSAXParser();
       XMLReader reader = parser.getXMLReader();
       try {
-        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", "test");
-      }
-      catch(Exception e) {
-        System.err.println("Skipping XMLParser_implTest.testParseResourceSpecifier() because installed XML parser doesn't support schema validation.");
+        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+                "test");
+      } catch (Exception e) {
+        System.err.println(
+                "Skipping XMLParser_implTest.testParseResourceSpecifier() because installed XML parser doesn't support schema validation.");
         return;
       }
-      
-      //test schema validation
+
+      // test schema validation
       File invalid = JUnitExtension.getFile("XmlParserTest/NotConformingToSchema.xml");
       try {
         mXmlParser.parseResourceSpecifier(new XMLInputSource(invalid));
         fail();
-      }
-      catch (InvalidXMLException e) {        
-        //do nothing
+      } catch (InvalidXMLException e) {
+        // do nothing
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
-  
+
+  @Test
   public void testParseFlowControllerDescription() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("TextAnalysisEngineImplTest/FlowControllerForErrorTest.xml"));
     FlowControllerDescription desc = mXmlParser.parseFlowControllerDescription(in);
     assertEquals("Flow Controller for Error Test", desc.getMetaData().getName());
   }
-  
+
+  @Test
   public void testParseURISpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestUriSpecifier.xml"));
@@ -177,9 +173,10 @@ public class XMLParser_implTest extends TestCase {
     assertEquals("VNS_HOST", params[0].getName());
     assertEquals("some.internet.ip.name-or-address", params[0].getValue());
     assertEquals("VNS_PORT", params[1].getName());
-    assertEquals("9000", params[1].getValue());    
+    assertEquals("9000", params[1].getValue());
   }
-  
+
+  @Test
   public void testParseCustomResourceSpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestCustomResourceSpecifier.xml"));
@@ -190,21 +187,22 @@ public class XMLParser_implTest extends TestCase {
     assertEquals("param1", params[0].getName());
     assertEquals("val1", params[0].getValue());
     assertEquals("param2", params[1].getName());
-    assertEquals("val2", params[1].getValue());  
+    assertEquals("val2", params[1].getValue());
   }
-  
+
+  @Test
   public void testParsePearSpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
     PearSpecifier pearSpec = this.mXmlParser.parsePearSpecifier(in);
     assertEquals("/home/user/uimaApp/installedPears/testpear", pearSpec.getPearPath());
-    
-    assertThat(pearSpec.getParameters())
-        .extracting(Parameter::getName, Parameter::getValue)
-        .containsExactly(tuple("legacyParam1", "legacyVal1"), tuple("legacyParam2", "legacyVal2"));
+
+    assertThat(pearSpec.getParameters()).extracting(Parameter::getName, Parameter::getValue)
+            .containsExactly(tuple("legacyParam1", "legacyVal1"),
+                    tuple("legacyParam2", "legacyVal2"));
 
     assertThat(pearSpec.getPearParameters())
-        .extracting(NameValuePair::getName, NameValuePair::getValue)
-        .containsExactly(tuple("param1", "stringVal1"), tuple("param2", true));
+            .extracting(NameValuePair::getName, NameValuePair::getValue)
+            .containsExactly(tuple("param1", "stringVal1"), tuple("param2", true));
   }
 }

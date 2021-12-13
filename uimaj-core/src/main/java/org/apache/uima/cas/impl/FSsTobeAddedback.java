@@ -29,7 +29,7 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.AutoCloseableNoException;
 
-
+//@formatter:off
 /**
  * Record information on what was removed, from which view, and (optionally) how many times.
  * 
@@ -41,36 +41,37 @@ import org.apache.uima.util.AutoCloseableNoException;
  *      a) without count
  *      b) with count   
  */
+//@formatter:on
 abstract class FSsTobeAddedback implements AutoCloseableNoException {
-  
+
   final static boolean SHOW = false;
   final static AtomicInteger removes = new AtomicInteger(0);
-  
+
   /**
-   * does an add back if needed 
+   * does an add back if needed
    */
   @Override
-  public void close() { 
-  	addback();
-  	((FSsTobeAddedbackMultiple) this).cas.dropProtectIndexesLevel();
+  public void close() {
+    addback();
+    ((FSsTobeAddedbackMultiple) this).cas.dropProtectIndexesLevel();
   }
 
   protected void logPart(FSIndexRepository view) {
     System.out.format("%,d tobeReindexed: view: %s", removes.incrementAndGet(), view);
   }
-  
+
   protected void log(FSIndexRepositoryImpl view, int count) {
     if (SHOW) {
       logPart(view);
       System.out.format(",  count = %d%n", count);
     }
   }
-  
+
   private void logPart(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
     log(view);
     System.out.format(",  fs_id = %,d", fs._id);
   }
-  
+
   protected void log(FeatureStructureImplC fs, FSIndexRepositoryImpl view, int count) {
     if (SHOW) {
       log(fs, view);
@@ -84,37 +85,49 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
       System.out.println();
     }
   }
-  
+
   protected void log(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
     if (SHOW) {
       logPart(fs, view);
       System.out.println();
     }
   }
-  
-  void recordRemove(FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
-  void recordRemove(FSIndexRepositoryImpl view, int count)             {
+
+  void recordRemove(FSIndexRepositoryImpl view) {
+    throw new UnsupportedOperationException();
+  }
+
+  void recordRemove(FSIndexRepositoryImpl view, int count) {
     if (count == 1) {
       recordRemove(view);
     } else {
       throw new UnsupportedOperationException();
     }
   }
-  void recordRemove(TOP fs, FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
+
+  void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
+    throw new UnsupportedOperationException();
+  }
+
   void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
     if (count == 1) {
       recordRemove(fs, view);
-    } else { 
+    } else {
       throw new UnsupportedOperationException();
     }
   }
-  
+
+//@formatter:off
   /**
    * add back all the FSs that were removed in a protect block
    *   -- for "Multiple" subclass
    */
-  void addback()       {throw new UnsupportedOperationException();}  // is overridden in one subclass, throws in other
-  
+//@formatter:on
+  void addback() {
+    throw new UnsupportedOperationException();
+  } // is overridden in one subclass, throws in other
+
+//@formatter:off
   /**
    * add back the single FS that was removed due to 
    *   -  automatic protection or 
@@ -122,7 +135,11 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
    *   -  updating document annotation
    *   -- for "Single" subclass
    */
-  void addback(TOP fs) {throw new UnsupportedOperationException();}  // is overridden in one subclass, throws in other
+//@formatter:on
+  void addback(TOP fs) {
+    throw new UnsupportedOperationException();
+  } // is overridden in one subclass, throws in other
+
   abstract void clear();
 
   /**
@@ -134,13 +151,13 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
      * list of views where the FS was removed; used when adding the fs back
      */
     final List<FSIndexRepositoryImpl> views = new ArrayList<>();
-    
+
     @Override
     void recordRemove(FSIndexRepositoryImpl view) {
       log(view);
       views.add(view);
     }
-    
+
     /**
      * in single, the fs is ignored
      */
@@ -148,7 +165,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       recordRemove(view);
     }
-    
+
     @Override
     void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
       if (count != 1) {
@@ -156,8 +173,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
       }
       recordRemove(view);
     }
-          
-    
+
     @Override
     void addback(TOP fs) {
       /**
@@ -166,48 +182,48 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
       for (FSIndexRepositoryImpl ir : views) {
         ir.addback(fs);
       }
-      clear();  // clear the viewlist
+      clear(); // clear the viewlist
     }
-    
+
     @Override
     void clear() {
-      views.clear();     
-//      if (SHOW) removes.set(0);
+      views.clear();
+      // if (SHOW) removes.set(0);
     }
   }
-  
+
   /**
-   * Version of this class used for protect blocks - where multiple FSs may be removed.
-   *   - records the fs along with the list of views where it was removed.
+   * Version of this class used for protect blocks - where multiple FSs may be removed. - records
+   * the fs along with the list of views where it was removed.
    *
    */
   static class FSsTobeAddedbackMultiple extends FSsTobeAddedback {
-  
+
     /**
-     * For each FS, the list of views where it was removed. 
+     * For each FS, the list of views where it was removed.
      */
     final Map<TOP, List<?>> fss2views = new HashMap<>();
-    
+
     /**
      * An arbitrary cas view or base cas
      */
     final CASImpl cas;
-    
+
     FSsTobeAddedbackMultiple(CASImpl cas) {
       this.cas = cas;
     }
-    
+
     @Override
     void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       log(fs, view);
       @SuppressWarnings("unchecked")
       List<FSIndexRepositoryImpl> irList = (List<FSIndexRepositoryImpl>) fss2views.get(fs);
       if (null == irList) {
-        fss2views.put(fs,  irList = new ArrayList<>());
+        fss2views.put(fs, irList = new ArrayList<>());
       }
       irList.add(view);
     }
-          
+
     @Override
     void addback() {
       for (Entry<TOP, List<?>> e : fss2views.entrySet()) {
@@ -219,30 +235,31 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
         }
       }
       clear();
-//      cas.dropProtectIndexesLevel();  // all callers of addback do what's needed, don't do it here 6/2020 MIS
+      // cas.dropProtectIndexesLevel(); // all callers of addback do what's needed, don't do it here
+      // 6/2020 MIS
     }
-    
+
     @Override
     void clear() {
       fss2views.clear(); // clears all the list of views for all feature structures
-//      if (SHOW) removes.set(0);
+      // if (SHOW) removes.set(0);
     }
   }
-    
+
   /**
    * @return an impl of this class
    */
   public static FSsTobeAddedback createSingle() {
     return new FSsTobeAddedbackSingle();
   }
-  
+
   /**
    * 
-   * @param cas the view where the protect block was set up
+   * @param cas
+   *          the view where the protect block was set up
    * @return an instance for recording removes of multiple FSs
    */
   public static FSsTobeAddedback createMultiple(CASImpl cas) {
     return new FSsTobeAddedbackMultiple(cas);
   }
 }
-

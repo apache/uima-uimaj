@@ -31,12 +31,12 @@ public interface ReferenceArrayFS extends FeatureStructure {
    * 
    * @return the size
    */
-  public int size();
+  int size();
 
   /**
    * Gets the IDs of the target feature structures.
    * 
    * @return string array containing feature structure IDs
    */
-  public String[] getIdRefArray();
+  String[] getIdRefArray();
 }

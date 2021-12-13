@@ -27,7 +27,7 @@ import org.apache.uima.util.UimaTimer;
  * 
  */
 public class JavaTimer implements UimaTimer {
-  
+
   private static final long serialVersionUID = 4644107369628471363L;
 
   private long start = 0;
@@ -35,34 +35,41 @@ public class JavaTimer implements UimaTimer {
   private long end = 0;
 
   // starts the timer
+  @Override
   public long startIt() {
     start = System.currentTimeMillis();
     return start;
   }
 
   // ends the timer
+  @Override
   public long stopIt() {
     end = System.currentTimeMillis();
     return end;
   }
 
+  @Override
   public int getResolution() {
     return 10;
   }
 
   // returns duration (in ms) between start() and end() calls
+  @Override
   public long getDuration() {
     return (end - start);
   }
 
+  @Override
   public long getTimeInSecs() {
     return (getTime() / 1000);
   }
 
+  @Override
   public long getTimeInMillis() {
     return getTime();
   }
 
+  @Override
   public long getTimeInMicros() {
     return System.currentTimeMillis() * 1000;
   }

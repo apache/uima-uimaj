@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:cas="http:///uima/cas.ecore" xmlns:type="http:///de/tudarmstadt/ukp/dkpro/core/api/segmentation/type.ecore" xmlns:custom="http:///custom.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <tcas:DocumentAnnotation xmi:id="2" sofa="1" begin="0" end="58" language="x-unspecified"/>
+    <type:Sentence xmi:id="3" sofa="1" begin="0" end="11"/>
+    <type:Sentence xmi:id="4" sofa="1" begin="12" end="21"/>
+    <type:Sentence xmi:id="5" sofa="1" begin="22" end="44"/>
+    <type:Sentence xmi:id="6" sofa="1" begin="45" end="58"/>
+    <type:Token xmi:id="7" sofa="1" begin="0" end="2"/>
+    <type:Token xmi:id="8" sofa="1" begin="3" end="5"/>
+    <type:Token xmi:id="9" sofa="1" begin="6" end="8"/>
+    <type:Token xmi:id="10" sofa="1" begin="9" end="11"/>
+    <type:Token xmi:id="11" sofa="1" begin="12" end="16"/>
+    <type:Token xmi:id="12" sofa="1" begin="17" end="21"/>
+    <type:Token xmi:id="13" sofa="1" begin="22" end="23"/>
+    <type:Token xmi:id="14" sofa="1" begin="24" end="28"/>
+    <type:Token xmi:id="15" sofa="1" begin="29" end="31"/>
+    <type:Token xmi:id="16" sofa="1" begin="32" end="38"/>
+    <type:Token xmi:id="17" sofa="1" begin="39" end="44"/>
+    <type:Token xmi:id="18" sofa="1" begin="45" end="47"/>
+    <type:Token xmi:id="19" sofa="1" begin="48" end="52"/>
+    <type:Token xmi:id="20" sofa="1" begin="53" end="58"/>
+    <custom:Span xmi:id="21" sofa="1" begin="6" end="11" label="&#129321; &#129392;"/>
+    <custom:Span xmi:id="22" sofa="1" begin="24" end="28" label="&#128207;"/>
+    <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="&#128512; &#128513; &#129321; &#129392;&#10;&#128678;&#127385; &#128720;&#128708;&#10;A line of normal text.&#10;&#129396; &#128696;⚔️ &#128692;‍♀️"/>
+    <cas:View sofa="1" members="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22"/>
+</xmi:XMI>

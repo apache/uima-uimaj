@@ -45,7 +45,6 @@ public class LoadRecentTextFileEventHandler implements ActionListener {
    * @param fileName the file name
    */
   public LoadRecentTextFileEventHandler(MainFrame frame, String fileName) {
-    super();
     this.main = frame;
     this.fileName = fileName;
   }

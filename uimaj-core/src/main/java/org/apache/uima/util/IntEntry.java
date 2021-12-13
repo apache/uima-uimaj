@@ -19,27 +19,28 @@
 package org.apache.uima.util;
 
 /**
- * like Entry&lt;k, v&gt; except the k is an int. 
+ * like Entry&lt;k, v&gt; except the k is an int.
  *
- * @param <T> the type of the value
+ * @param <T>
+ *          the type of the value
  */
 public class IntEntry<T> {
   private int key;
   private T value;
-  
+
   public IntEntry(int i, T v) {
     this.key = i;
     this.value = v;
   }
-  
+
   /**
    * 
-   * @return the key 
+   * @return the key
    */
   public int getKey() {
     return key;
   }
-  
+
   /**
    * 
    * @return the Value
@@ -48,7 +49,9 @@ public class IntEntry<T> {
     return value;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -60,7 +63,9 @@ public class IntEntry<T> {
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
@@ -81,5 +86,5 @@ public class IntEntry<T> {
       return false;
     return true;
   }
-  
+
 }

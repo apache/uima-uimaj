@@ -19,6 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -38,17 +41,16 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.TestResourceInterface;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-
-public class AnnotatorContext_implTest extends TestCase {
+public class AnnotatorContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
-  protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension.getFile(
-          "ResourceTest/spaces in dir name").getPath();
+  protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension
+          .getFile("ResourceTest/spaces in dir name").getPath();
 
   private AnnotatorContext mAC1;
 
@@ -60,25 +62,17 @@ public class AnnotatorContext_implTest extends TestCase {
 
   private AnnotatorContext mAC5;
 
-  /**
-   * Constructor for AnnotatorContext_implTest.
-   * 
-   * @param arg0
-   */
-  public AnnotatorContext_implTest(String arg0) {
-    super(arg0);
-  }
-
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-      super.setUp();
       // create primitive analysis engine with configuration groups
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      XMLInputSource in = new XMLInputSource(
+              JUnitExtension.getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in);
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
       Map<String, Object> map = new HashMap<>();
@@ -93,7 +87,8 @@ public class AnnotatorContext_implTest extends TestCase {
       // create aggregate analysis engine with configuration parameter overrides
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AggregateTaeWithConfigParamOverrides.xml"));
-      AnalysisEngineDescription aggDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in2);
+      AnalysisEngineDescription aggDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in2);
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggDesc, map);
       // get the primitive TAE
@@ -103,9 +98,10 @@ public class AnnotatorContext_implTest extends TestCase {
       mAC2 = new AnnotatorContext_impl(primTae.getUimaContextAdmin());
 
       // create primitive analysis engine for resource testing
-      XMLInputSource in3 = new XMLInputSource(JUnitExtension
-              .getFile("AnnotatorContextTest/ResourceTestAnnotator.xml"));
-      AnalysisEngineDescription resTestDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in3);
+      XMLInputSource in3 = new XMLInputSource(
+              JUnitExtension.getFile("AnnotatorContextTest/ResourceTestAnnotator.xml"));
+      AnalysisEngineDescription resTestDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in3);
       PrimitiveAnalysisEngine_impl resTestTae = new PrimitiveAnalysisEngine_impl();
       resTestTae.initialize(resTestDesc, map);
       // this should include an annotator context
@@ -114,7 +110,8 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive TAE with configuration groups and default fallback
       XMLInputSource in4 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithDefaultFallbackConfiguration.xml"));
-      AnalysisEngineDescription desc4 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in4);
+      AnalysisEngineDescription desc4 = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in4);
       PrimitiveAnalysisEngine_impl tae4 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
       tae4.initialize(desc4, null);
@@ -124,7 +121,8 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive TAE with configuration parameters (no groups)
       XMLInputSource in5 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationParameters.xml"));
-      AnalysisEngineDescription desc5 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in5);
+      AnalysisEngineDescription desc5 = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in5);
       PrimitiveAnalysisEngine_impl tae5 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
       tae5.initialize(desc5, null);
@@ -138,6 +136,7 @@ public class AnnotatorContext_implTest extends TestCase {
   /*
    * Test for Object getConfigParameterValue(String)
    */
+  @Test
   public void testGetConfigParameterValueString() throws Exception {
     try {
       // this method should get parameter values from the default "en" group
@@ -186,6 +185,7 @@ public class AnnotatorContext_implTest extends TestCase {
   /*
    * Test for Object getConfigParameterValue(String, String)
    */
+  @Test
   public void testGetConfigParameterValueStringString() throws Exception {
     try {
       // en-US group
@@ -279,6 +279,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetConfigurationGroupNames() {
     String[] names = mAC1.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
@@ -294,6 +295,7 @@ public class AnnotatorContext_implTest extends TestCase {
     Assert.assertEquals(0, names.length);
   }
 
+  @Test
   public void testGetConfigParameterNames() {
     String[] names = mAC5.getConfigParameterNames();
     Assert.assertEquals(6, names.length);
@@ -309,6 +311,7 @@ public class AnnotatorContext_implTest extends TestCase {
     Assert.assertEquals(0, names.length);
   }
 
+  @Test
   public void testGetConfigParameterNamesString() {
     String[] names = mAC1.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
@@ -327,6 +330,7 @@ public class AnnotatorContext_implTest extends TestCase {
     Assert.assertEquals(0, names.length);
   }
 
+  @Test
   public void testGetResourceObjectString() throws Exception {
     try {
       // custom object
@@ -364,6 +368,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -418,6 +423,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -472,6 +478,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -527,6 +534,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -574,6 +582,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceObjectStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -636,11 +645,12 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceAsStreamStringStringArray() throws Exception {
     try {
       // standard data resource
-      InputStream strm = mAC3
-              .getResourceAsStream("TestFileLanguageResource", new String[] { "en" });
+      InputStream strm = mAC3.getResourceAsStream("TestFileLanguageResource",
+              new String[] { "en" });
       Assert.assertNotNull(strm);
 
       InputStream strm2 = mAC3.getResourceAsStream("TestFileLanguageResource",
@@ -695,6 +705,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceURLStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -751,6 +762,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceURIStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -807,6 +819,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetResourceFilePathStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -863,6 +876,7 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetDataPath() throws Exception {
     try {
       Assert.assertEquals(TEST_DATAPATH, mAC1.getDataPath());

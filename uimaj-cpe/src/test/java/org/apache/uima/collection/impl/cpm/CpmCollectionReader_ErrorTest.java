@@ -19,10 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.Iterator;
-
-import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -38,6 +38,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
 import org.apache.uima.util.Level;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test CollectionReader Error Handling<br>
@@ -65,7 +67,7 @@ import org.apache.uima.util.Level;
  * @see org.apache.uima.collection.impl.cpm.CpmAE_ErrorTest
  * @see org.apache.uima.collection.impl.cpm.CpmCasConsumer_ErrorTest
  */
-public class CpmCollectionReader_ErrorTest extends TestCase {
+public class CpmCollectionReader_ErrorTest {
 
    private static final String FS = System.getProperties().getProperty(
          "file.separator");
@@ -92,7 +94,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetNextWithOutOfMemoryError() throws Exception {
+    @Test
+    public void testGetNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 5; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -132,7 +135,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetNextWithCollectionException() throws Exception {
+    @Test
+    public void testGetNextWithCollectionException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 2; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -168,7 +172,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetNextWithIOException() throws Exception {
+    @Test
+    public void testGetNextWithIOException() throws Exception {
       int TIMEOUT = 10; // seconds, till the test is aborted
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
@@ -223,7 +228,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetNextWithNullPointerException() throws Exception {
+    @Test
+    public void testGetNextWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 2; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -260,7 +266,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testHasNextWithOutOfMemoryError() throws Exception {
+    @Test
+    public void testHasNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 4; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -295,7 +302,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testHasNextWithNullPointerException() throws Exception {
+    @Test
+    public void testHasNextWithNullPointerException() throws Exception {
       int TIMEOUT = 20; // seconds, till the test is aborted
       int documentCount = 30; // number of documents processed
       int exceptionSequence = 4; // the sequence in which errors are produced
@@ -347,7 +355,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testInitializeWithResourceInitializationException()
+    @Test
+    public void testInitializeWithResourceInitializationException()
          throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 1; // the sequence in which errors are produced
@@ -401,7 +410,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testInitializeWithNullPointerException() throws Exception {
+    @Test
+    public void testInitializeWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 1; // the sequence in which errors are produced
       boolean exceptionThrown = false; // flag, if the expected exception was
@@ -450,7 +460,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testInitializeWithOutOfMemoryError() throws Exception {
+    @Test
+    public void testInitializeWithOutOfMemoryError() throws Exception {
       boolean outOfMemoryError = false;
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 1; // the sequence in which errors are produced
@@ -499,7 +510,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetProgressWithIOException() throws Exception {
+    @Test
+    public void testGetProgressWithIOException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -540,7 +552,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetProcessWithOutOfMemoryError() throws Exception {
+    @Test
+    public void testGetProcessWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -581,7 +594,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * 
     * @throws Exception -
     */
-   public void testGetProgressWithNullPointerException() throws Exception {
+    @Test
+    public void testGetProgressWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
       ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -650,19 +664,13 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
    // // that's it.
    // }
 
-   /**
-    * @see junit.framework.TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
       FunctionErrorStore.resetCount();
 //      System.gc();
 //      System.gc();
    }
 
-   /**
-    * @param listener
-    */
    private void checkForOutOfMemoryError(
          CollectionReaderStatusCallbackListener listener) {
       assertEquals("The indication failed, that an error was thrown.", true,
@@ -764,6 +772,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       /**
        * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
        */
+      @Override
       public void aborted() {
          super.aborted();
          // System.out.println("abort was called.");
@@ -777,6 +786,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
        * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
        *      org.apache.uima.collection.EntityProcessStatus)
        */
+      @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
          super.entityProcessComplete(aCas, aStatus);
          // check for a failure in processing...

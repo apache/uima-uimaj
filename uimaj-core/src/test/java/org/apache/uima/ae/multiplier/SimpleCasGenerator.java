@@ -63,15 +63,15 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
   private String text;
 
   long docCount = 0;
-  
+
   public static String lastDocument;
 
   public static ResultSpecification lastResultSpec;
-  
+
   public static synchronized String getLastDocument() {
-    return lastDocument;  
+    return lastDocument;
   }
-  
+
   public static synchronized ResultSpecification getLastResultSpec() {
     return lastResultSpec;
   }
@@ -82,6 +82,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * @seeorg.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.
    * UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     lastDocument = null;
@@ -94,7 +95,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
       File file = null;
       try {
         URL url = this.getClass().getClassLoader().getResource(filename);
-//        System.out.println("************ File::::" + url.getPath());
+        // System.out.println("************ File::::" + url.getPath());
         // open input stream to file
         file = new File((null == url) ? filename : url.getPath());
       } catch (Exception e) {
@@ -122,6 +123,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * 
    * @see JCasMultiplier_ImplBase#process(JCas)
    */
+  @Override
   public void process(CAS aCas) throws AnalysisEngineProcessException {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.
@@ -136,6 +138,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return this.mCount < this.nToGen;
   }
@@ -145,6 +148,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
 
     CAS cas = getEmptyCAS();

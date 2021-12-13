@@ -141,6 +141,7 @@ public class VinciContext {
   private LinkedHashMap vnsCache = new LinkedHashMap(16, .75f, true) {
     private static final long serialVersionUID = 7138871637782205744L;
 
+    @Override
     protected boolean removeEldestEntry(Map.Entry e) {
       return size() > vnsCacheSize;
     }

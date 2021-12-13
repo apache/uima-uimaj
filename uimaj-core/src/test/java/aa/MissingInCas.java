@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-   
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package aa;
@@ -106,5 +105,3 @@ public class MissingInCas extends TOP {
   private void readObject() {/*default - does nothing empty block */}
      
 }
-
-    

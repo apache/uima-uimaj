@@ -24,11 +24,15 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class Int2IntHashMapTest extends TestCase {
+public class Int2IntHashMapTest {
   
-  public void testIterator() {
+    @Test
+    public void testIterator() {
     Int2IntHashMap ia = new Int2IntHashMap();
     Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
     for (Integer i : vs) {
@@ -68,7 +72,8 @@ public class Int2IntHashMapTest extends TestCase {
     
   }
   
-  public void testFastLookup() {
+    @Test
+    public void testFastLookup() {
     Int2IntHashMap ia = new Int2IntHashMap();
     Random r = new Random();
     Set<Integer> keys = new HashSet<Integer>(1000);

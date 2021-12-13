@@ -29,32 +29,15 @@ import java.util.Collections;
 
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DataResource_impl class.
  * 
  */
-public class DataResource_implTest extends TestCase {
-
-  /**
-   * Constructor for DataResource_implTest.
-   * 
-   * @param arg0
-   */
-  public DataResource_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
+public class DataResource_implTest {
+  @Test
   public void testInitialize() throws Exception {
     try {
       // create a FileResourceSpecifier
@@ -90,6 +73,7 @@ public class DataResource_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetInputStream() throws Exception {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)
@@ -108,7 +92,8 @@ public class DataResource_implTest extends TestCase {
 
       // try to get an input stream and read from the file
       InputStream inStr = dr.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, StandardCharsets.UTF_8));
+      BufferedReader bufRdr = new BufferedReader(
+              new InputStreamReader(inStr, StandardCharsets.UTF_8));
       String result = bufRdr.readLine();
       inStr.close();
 

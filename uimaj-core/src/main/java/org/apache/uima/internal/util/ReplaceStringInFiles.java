@@ -40,6 +40,7 @@ public class ReplaceStringInFiles {
       this.ext = extension;
     }
 
+    @Override
     public boolean accept(File file) {
       return (file.isFile() && file.getName().endsWith(this.ext));
     }
@@ -48,6 +49,7 @@ public class ReplaceStringInFiles {
 
   private static class DirFileFilter implements FileFilter {
 
+    @Override
     public boolean accept(File file) {
       return file.isDirectory();
     }
@@ -68,8 +70,10 @@ public class ReplaceStringInFiles {
    *          The given string object.
    * @param argStr
    *          The given string argument.
-   * @param start -
-   * @param caseSensitive -
+   * @param start
+   *          -
+   * @param caseSensitive
+   *          -
    * @return If the given string argument occurs as a substring, ignoring case, within the given
    *         string object, then the index of the first character of the first such substring is
    *         returned; if it does not occur as a substring, <code>-1</code> is returned.
@@ -86,8 +90,7 @@ public class ReplaceStringInFiles {
   }
 
   /**
-   * Replace occurrences of <code>toReplace</code> in <code>text</code> by
-   * <code>replacement.</code>
+   * Replace occurrences of <code>toReplace</code> in <code>text</code> by <code>replacement.</code>
    * 
    * @param text
    *          The text where the replacement should happen.
@@ -98,7 +101,8 @@ public class ReplaceStringInFiles {
    * @param res
    *          The result object, containing the result string and the number of times replacement
    *          happened.
-   * @param caseSensitive -         
+   * @param caseSensitive
+   *          -
    */
   public static final void replaceStringInString(String text, String toReplace, String replacement,
           ReplacementResult res, boolean caseSensitive) {
@@ -128,7 +132,8 @@ public class ReplaceStringInFiles {
    *          String which should be replaced.
    * @param replacement
    *          String it should be replaced with.
-   * @param caseSensitive -         
+   * @param caseSensitive
+   *          -
    * @throws IOException
    *           Whenever anything goes wrong reading or writing a file.
    */
@@ -183,12 +188,13 @@ public class ReplaceStringInFiles {
    * Replace a certain string with other strings in files. Example usage:<br>
    * <code>java org.apache.uima.util.ReplaceStringInFile /home/tom/stuff .prop $ROOT$ /home/tom/root</code>
    * 
-   * @param args dir, extension toreplace replacement [-ignorecase]
+   * @param args
+   *          dir, extension toreplace replacement [-ignorecase]
    */
   public static void main(String[] args) {
     if (args.length != 4 && args.length != 5) {
-      System.out
-              .println("Usage: java org.apache.uima.util.ReplaceStringInFile <Dir> <Extension> <ToReplace> <Replacement> [-ignorecase]");
+      System.out.println(
+              "Usage: java org.apache.uima.util.ReplaceStringInFile <Dir> <Extension> <ToReplace> <Replacement> [-ignorecase]");
       System.exit(1);
     }
     try {

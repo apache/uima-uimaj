@@ -28,7 +28,6 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorContextException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase;
-
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -69,6 +68,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.JTextAnnotator#process(org.apache.uima.jcas.impl.JCas,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
+  @Override
   public void process(JCas aJCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // count the calls...
     FunctionErrorStore.increaseAnnotatorProcessCount();
@@ -83,6 +83,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
    */
+  @Override
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
           AnnotatorConfigurationException {
     super.initialize(aContext);
@@ -125,6 +126,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#reconfigure()
    */
+  @Override
   public void reconfigure() throws AnnotatorConfigurationException,
           AnnotatorInitializationException {
     super.reconfigure();

@@ -39,9 +39,9 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.nio.file.CopyOption;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -78,6 +78,7 @@ public class FileUtil {
      *           if the arguments' types prevent them from being compared by this
      *           <code>Comparator</code>.
      */
+    @Override
     public int compare(File o1, File o2) throws ClassCastException {
       long t1 = o1.lastModified();
       long t2 = o2.lastModified();
@@ -88,9 +89,9 @@ public class FileUtil {
      * @param obj
      *          The reference object with which to compare.
      * @return <code>true</code> only if the specified object is also a
-     *         <code>FileTimeComparator</code>, and it imposes the same ordering as this
-     *         comparator.
+     *         <code>FileTimeComparator</code>, and it imposes the same ordering as this comparator.
      */
+    @Override
     public boolean equals(Object obj) {
       return (obj instanceof FileTimeComparator);
     }
@@ -125,9 +126,9 @@ public class FileUtil {
     /**
      * @param file
      *          The given file to be tested.
-     * @return <code>true</code> if the given file should be accepted, <code>false</code>
-     *         otherwise.
+     * @return <code>true</code> if the given file should be accepted, <code>false</code> otherwise.
      */
+    @Override
     public boolean accept(File file) {
       boolean dirAccepted = true;
       boolean extAccepted = true;
@@ -163,9 +164,9 @@ public class FileUtil {
     /**
      * @param file
      *          The given file to be tested.
-     * @return <code>true</code> if the given file should be accepted, <code>false</code>
-     *         otherwise.
+     * @return <code>true</code> if the given file should be accepted, <code>false</code> otherwise.
      */
+    @Override
     public boolean accept(File file) {
       String filePath = file.getAbsolutePath().replace('\\', '/');
       if (filePath.endsWith(_fileName)) {
@@ -204,8 +205,8 @@ public class FileUtil {
     }
 
     /**
-     * Create instance of the <code>ExtFileFilter</code> class for a given filename extension. If
-     * a given <code>boolean</code> flag is <code>true</code>, this filename filter is case
+     * Create instance of the <code>ExtFileFilter</code> class for a given filename extension. If a
+     * given <code>boolean</code> flag is <code>true</code>, this filename filter is case
      * insensitive, otherwise it's case sensitive. If the given filename extension does not start
      * from the '.' character, adds this character at the beginning.
      * 
@@ -231,6 +232,7 @@ public class FileUtil {
      * @return <code>true</code>, if the given file should be included in the list,
      *         <code>false</code> otherwise.
      */
+    @Override
     public boolean accept(File dir, String name) {
       String fileName = _ignoreCase ? name.toLowerCase() : name;
       return fileName.endsWith(_fileExt);
@@ -239,8 +241,8 @@ public class FileUtil {
 
   /**
    * Deletes all files and subdirectories in a given directory. In case of unsuccessful deletion,
-   * calls the <code>deleteOnExit()</code> method to request that files and subdirs are deleted
-   * when the JVM terminates.
+   * calls the <code>deleteOnExit()</code> method to request that files and subdirs are deleted when
+   * the JVM terminates.
    * 
    * @param directory
    *          The given directory to be cleaned-up.
@@ -389,7 +391,8 @@ public class FileUtil {
   @Deprecated
   public static boolean copyFile(File source, File destination) throws IOException {
     try (BufferedInputStream iStream = new BufferedInputStream(new FileInputStream(source));
-         BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
+            BufferedOutputStream oStream = new BufferedOutputStream(
+                    new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
       int bCount = 0;
       while ((bCount = iStream.read(block)) > 0) {
@@ -410,12 +413,14 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
-   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}
+   * @deprecated use Java 7 for this see
+   *             {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}
    */
   @Deprecated
   public static boolean copyFile(URL sourceUrl, File destination) throws IOException {
     try (BufferedInputStream iStream = new BufferedInputStream(sourceUrl.openStream());
-         BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
+            BufferedOutputStream oStream = new BufferedOutputStream(
+                    new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
       int bCount = 0;
       while ((bCount = iStream.read(block)) > 0) {
@@ -430,8 +435,8 @@ public class FileUtil {
    * 
    * @param rootDir
    *          The given root directory.
-   * @return <code>Collection</code> of <code>File</code> objects, representing subdirectories
-   *         in the given root directory and all its subdirectories.
+   * @return <code>Collection</code> of <code>File</code> objects, representing subdirectories in
+   *         the given root directory and all its subdirectories.
    * 
    * @throws java.io.IOException
    *           If any I/O exception occurs.
@@ -441,12 +446,12 @@ public class FileUtil {
   }
 
   /**
-   * Creates list of subdirectories in a given root directory. If a given <code>boolean</code>
-   * flag is <code>true</code>, all the subdirectories of the given root directory are also
-   * scanned, otherwise only subdirectories in the given root directory are included.
+   * Creates list of subdirectories in a given root directory. If a given <code>boolean</code> flag
+   * is <code>true</code>, all the subdirectories of the given root directory are also scanned,
+   * otherwise only subdirectories in the given root directory are included.
    * 
-   * @return <code>Collection</code> of <code>File</code> objects, representing subdirectories
-   *         in the given root directory.
+   * @return <code>Collection</code> of <code>File</code> objects, representing subdirectories in
+   *         the given root directory.
    * @param rootDir
    *          The given root directory.
    * @param includeSubdirs
@@ -457,7 +462,8 @@ public class FileUtil {
    * @exception java.io.IOException
    *              If any I/O exception occurs.
    */
-  public static Collection<File> createDirList(File rootDir, boolean includeSubdirs) throws IOException {
+  public static Collection<File> createDirList(File rootDir, boolean includeSubdirs)
+          throws IOException {
     ArrayList<File> listOfDirs = new ArrayList<>();
     File[] allDirFiles = rootDir.listFiles();
     if (allDirFiles == null)
@@ -480,8 +486,8 @@ public class FileUtil {
    * 
    * @param archive
    *          The input archive (JAR) file.
-   * @return <code>Collection</code> of <code>File</code> objects, representing directories in
-   *         the given archive file.
+   * @return <code>Collection</code> of <code>File</code> objects, representing directories in the
+   *         given archive file.
    * @throws IOException
    *           If any I/O exception occurs.
    */
@@ -515,8 +521,8 @@ public class FileUtil {
   /**
    * Creates list of files in a given directory, including all its subdirectories.
    * 
-   * @return <code>Collection</code> of <code>File</code> objects in the given directory,
-   *         including all its subdirectories.
+   * @return <code>Collection</code> of <code>File</code> objects in the given directory, including
+   *         all its subdirectories.
    * @param filesDir
    *          The given directory.
    * 
@@ -529,8 +535,8 @@ public class FileUtil {
 
   /**
    * Creates list of files in a given directory. If a given <code>boolean</code> flag is
-   * <code>true</code>, all the sub-directories of the given directory are also scanned,
-   * otherwise only files in the given directory are included.
+   * <code>true</code>, all the sub-directories of the given directory are also scanned, otherwise
+   * only files in the given directory are included.
    * 
    * @return <code>Collection</code> of <code>File</code> objects in the given directory.
    * @param filesDir
@@ -543,7 +549,8 @@ public class FileUtil {
    * @exception java.io.IOException
    *              If any I/O exception occurs.
    */
-  public static Collection<File> createFileList(File filesDir, boolean includeSubdirs) throws IOException {
+  public static Collection<File> createFileList(File filesDir, boolean includeSubdirs)
+          throws IOException {
     ArrayList<File> listOfFiles = new ArrayList<>();
     File[] allDirFiles = filesDir.listFiles();
     if (allDirFiles == null)
@@ -564,8 +571,8 @@ public class FileUtil {
    * 
    * @param archive
    *          The input archive (JAR) file.
-   * @return <code>Collection</code> of <code>File</code> objects, representing files in the
-   *         given archive file.
+   * @return <code>Collection</code> of <code>File</code> objects, representing files in the given
+   *         archive file.
    * @throws IOException
    *           If any I/O exception occurs.
    */
@@ -619,9 +626,9 @@ public class FileUtil {
 
   /**
    * Deletes a given directory, including all its subdirectories and files. Returns
-   * <code>true</code> if the deletion was successful, otherwise returns <code>false</code>. In
-   * case of unsuccessful deletion, calls <code>deleteOnExit()</code> method to request that files
-   * and subdirs be deleted when the virtual machine terminates.
+   * <code>true</code> if the deletion was successful, otherwise returns <code>false</code>. In case
+   * of unsuccessful deletion, calls <code>deleteOnExit()</code> method to request that files and
+   * subdirs be deleted when the virtual machine terminates.
    * 
    * @param dir
    *          The given directory to be deleted.
@@ -736,8 +743,10 @@ public class FileUtil {
         File dir = file.getParentFile();
         if (!dir.exists() && !dir.mkdirs())
           throw new IOException("could not create directory " + dir.getAbsolutePath());
-        try (BufferedInputStream iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
-             BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(file))) {
+        try (BufferedInputStream iStream = new BufferedInputStream(
+                jarFile.getInputStream(jarEntry));
+                BufferedOutputStream oStream = new BufferedOutputStream(
+                        new FileOutputStream(file))) {
           int bCount = 0;
           while ((bCount = iStream.read(block)) > 0) {
             totalBytes += bCount;
@@ -838,16 +847,15 @@ public class FileUtil {
 
   /**
    * Makes and attempt to identify possible UTF signature (BOM) in a given sequence of bytes.
-   * Returns the identified UTF signature name or <code>null</code>, if the signature could not
-   * be identified. For more on UTF and its signatures see <a
-   * href="http://www.unicode.org/faq/utf_bom.html" target="_blank"> FAQ - UTF and BOM</a>.
+   * Returns the identified UTF signature name or <code>null</code>, if the signature could not be
+   * identified. For more on UTF and its signatures see
+   * <a href="http://www.unicode.org/faq/utf_bom.html" target="_blank"> FAQ - UTF and BOM</a>.
    * 
    * @param prefix
    *          The given sequence of bytes to analyze.
    * @param length
    *          The length of the given sequence of bytes.
-   * @return The UTF signature name or <code>null</code>, if the signature could not be
-   *         identified.
+   * @return The UTF signature name or <code>null</code>, if the signature could not be identified.
    */
   public static String identifyUtfSignature(int[] prefix, int length) {
     String utfSignature = null;
@@ -964,12 +972,14 @@ public class FileUtil {
    * @return The array of non-empty strings loaded from the given text file.
    * @throws IOException
    *           If any I/O exception occurred.
-   * @deprecated use Java 7 method for this see {@link java.nio.file.Files#readAllLines(Path, Charset)}
+   * @deprecated use Java 7 method for this see
+   *             {@link java.nio.file.Files#readAllLines(Path, Charset)}
    */
   @Deprecated
   public static String[] loadListOfStrings(File textFile) throws IOException {
     String[] outputArray;
-    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile)))) {
+    try (BufferedReader iStream = new BufferedReader(
+            new InputStreamReader(new FileInputStream(textFile)))) {
       outputArray = loadListOfStrings(iStream);
     }
     return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
@@ -989,7 +999,8 @@ public class FileUtil {
     // See https://issues.apache.org/jira/browse/UIMA-1746
     urlConnection.setUseCaches(false);
     String[] outputArray;
-    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
+    try (BufferedReader iStream = new BufferedReader(
+            new InputStreamReader(urlConnection.getInputStream()))) {
       outputArray = loadListOfStrings(iStream);
     }
     return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
@@ -1002,8 +1013,8 @@ public class FileUtil {
    *          The given properties file path in the JAR file.
    * @param jarFile
    *          The given JAR file.
-   * @return <code>Properties</code> object containing loaded properties, or <code>null</code>,
-   *         if the properties file was not found in the given JAR file.
+   * @return <code>Properties</code> object containing loaded properties, or <code>null</code>, if
+   *         the properties file was not found in the given JAR file.
    * @throws IOException
    *           If any I/O exception occurred.
    */
@@ -1062,8 +1073,8 @@ public class FileUtil {
    * @throws IOException
    *           If any I/O exception occurs.
    * @deprecated use main file util for this, see
-   *             {@link org.apache.uima.util.FileUtils#file2String(File)} 
-   *             if using the default charset is OK
+   *             {@link org.apache.uima.util.FileUtils#file2String(File)} if using the default
+   *             charset is OK
    */
   @Deprecated
   public static String loadTextFile(File textFile) throws IOException {
@@ -1085,12 +1096,13 @@ public class FileUtil {
    * @throws IOException
    *           If any I/O exception occurs.
    * @deprecated use main file util for this, see
-   *             {@link org.apache.uima.util.FileUtils#file2String(File, String)}
-   *             if using the default Charset is OK
+   *             {@link org.apache.uima.util.FileUtils#file2String(File, String)} if using the
+   *             default Charset is OK
    */
   @Deprecated
   public static String loadTextFile(File textFile, String encoding) throws IOException {
-    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), encoding))) {
+    try (BufferedReader iStream = new BufferedReader(
+            new InputStreamReader(new FileInputStream(textFile), encoding))) {
       return loadTextFile(iStream);
     }
   }
@@ -1107,7 +1119,7 @@ public class FileUtil {
   public static String loadTextFile(URL textFileURL) throws IOException {
     URLConnection urlConnection = textFileURL.openConnection();
     // See https://issues.apache.org/jira/browse/UIMA-1746
-    urlConnection.setUseCaches(false);    
+    urlConnection.setUseCaches(false);
     return loadTextFile(urlConnection);
   }
 
@@ -1123,7 +1135,8 @@ public class FileUtil {
   public static String loadTextFile(URLConnection urlConnection) throws IOException {
     // See https://issues.apache.org/jira/browse/UIMA-1746
     urlConnection.setUseCaches(false);
-    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
+    try (BufferedReader iStream = new BufferedReader(
+            new InputStreamReader(urlConnection.getInputStream()))) {
       return loadTextFile(iStream);
     }
   }
@@ -1135,8 +1148,8 @@ public class FileUtil {
    *          The specified text file path inside the JAR file.
    * @param jarFile
    *          The given JAR file.
-   * @return The content of the text specified file, or <code>null</code>, if the text file was
-   *         not found in the given JAR file.
+   * @return The content of the text specified file, or <code>null</code>, if the text file was not
+   *         found in the given JAR file.
    * @throws IOException
    *           If any I/O exception occurs.
    */
@@ -1145,7 +1158,8 @@ public class FileUtil {
     String name = filePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
-      try (BufferedReader iStream = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)))) {
+      try (BufferedReader iStream = new BufferedReader(
+              new InputStreamReader(jarFile.getInputStream(jarEntry)))) {
         content = loadTextFile(iStream);
       }
     }
@@ -1202,9 +1216,9 @@ public class FileUtil {
   }
 
   /**
-   * Replaces all occurrences of a given regular expression with a given string in a given text file.
-   * Supports only 1 file encoding - ASCII - for all general text files. Supports 2 encodings -
-   * UTF-8 (ASCII) and UTF-16 for XML files.
+   * Replaces all occurrences of a given regular expression with a given string in a given text
+   * file. Supports only 1 file encoding - ASCII - for all general text files. Supports 2 encodings
+   * - UTF-8 (ASCII) and UTF-16 for XML files.
    * 
    * @param textFile
    *          The given text file.
@@ -1350,8 +1364,8 @@ public class FileUtil {
   /**
    * Zips the contents of a given directory to a given ZIP output stream. Paths of file entries in
    * the ZIP stream are taken relatively to a given reference directory. If the reference directory
-   * is <code>null</code>, the file paths are taken relatively to the given directory to be
-   * zipped. The method allows to specify the list of files (or dirs) that should not be zipped.
+   * is <code>null</code>, the file paths are taken relatively to the given directory to be zipped.
+   * The method allows to specify the list of files (or dirs) that should not be zipped.
    * 
    * @param dir2zip
    *          The given directory to be zipped.
@@ -1391,8 +1405,9 @@ public class FileUtil {
           // open input stream
           iStream = new FileInputStream(entry);
           // put ZipEntry for the file
-          String zipEntryName = (referenceDir != null) ? getRelativePath(referenceDir, entry
-                  .getAbsolutePath()) : getRelativePath(dir2zip, entry.getAbsolutePath());
+          String zipEntryName = (referenceDir != null)
+                  ? getRelativePath(referenceDir, entry.getAbsolutePath())
+                  : getRelativePath(dir2zip, entry.getAbsolutePath());
           ZipEntry zipEntry = new ZipEntry(zipEntryName);
           zoStream.putNextEntry(zipEntry);
           // read input stream and write to output stream
@@ -1428,8 +1443,8 @@ public class FileUtil {
     // construct zipped file path
     String zipFileName = file2zip.getName();
     int extIndex = zipFileName.lastIndexOf('.');
-    zipFileName = (extIndex >= 0) ? zipFileName.substring(0, extIndex) + ".zip" : zipFileName
-            + ".zip";
+    zipFileName = (extIndex >= 0) ? zipFileName.substring(0, extIndex) + ".zip"
+            : zipFileName + ".zip";
     File zipFile = new File(file2zip.getParentFile(), zipFileName);
     return zipFile(file2zip, zipFile);
   }

@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
-   
+// @formatter:off
 /* Apache UIMA v3 - First created by JCasGen Sun Oct 08 20:01:40 EDT 2017 */
 
 package org.apache.uima.cas.test;
@@ -141,5 +139,3 @@ public class StringSubtypeAnnotation extends Annotation {
   }    
     
   }
-
-    

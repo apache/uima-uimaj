@@ -39,6 +39,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
   String[] mSequence;
 
+  @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
@@ -50,6 +51,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
+  @Override
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     FixedFlowObject ffo = new FixedFlowObject(aCAS, 0);
     ffo.setCas(aCAS);
@@ -66,7 +68,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      * 
      * @param cas
      *          aCAS
-     *          
+     * 
      * @param startStep
      *          index of mSequence to start at
      */
@@ -80,6 +82,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.Flow#next()
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       // drop any segment whose document text is "DROP"
       if ("DROP".equals(getCas().getCurrentView().getDocumentText())) {
@@ -104,7 +107,9 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
-    public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+    @Override
+    public Flow newCasProduced(CAS newCas, String producedBy)
+            throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       wasSegmented = true;
       // start the new segment CAS from the next node after the Segmenter that produced it

@@ -22,21 +22,23 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Extra class for V2 compatibility only
- * Methods here downcast to FeatureStructureImplC
+ * Extra class for V2 compatibility only Methods here downcast to FeatureStructureImplC
  * 
  * Methods here - only those not in v2's FeatureStructure
+ * 
  * @deprecated use TOP instead
  */
 @Deprecated
 public interface FeatureStructureImpl extends FeatureStructure {
-  
+
   String toString(int indent);
 
   void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames);
+
   void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames);
-  
+
   void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames, String s);
+
   void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames, String s);
-  
+
 }

@@ -38,6 +38,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnotator {
 
+  @Override
   public void process(CAS aCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     CAS engTcas, germTcas;
 

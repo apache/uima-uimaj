@@ -19,6 +19,7 @@
 
 package org.apache.uima.taeconfigurator.wizards;
 
+import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -40,8 +41,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
 
 /**

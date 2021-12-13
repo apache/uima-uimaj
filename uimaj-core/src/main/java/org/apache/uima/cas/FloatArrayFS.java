@@ -21,8 +21,8 @@ package org.apache.uima.cas;
 
 /**
  * Interface for CAS float arrays. To create a float array object, use
- * {@link org.apache.uima.cas.CAS#createFloatArrayFS CAS.createFloatArrayFS()}
- * or new FloatArray(aJCas, length)
+ * {@link org.apache.uima.cas.CAS#createFloatArrayFS CAS.createFloatArrayFS()} or new
+ * FloatArray(aJCas, length)
  * 
  * 
  */
@@ -30,7 +30,9 @@ public interface FloatArrayFS extends CommonArrayFS<Float> {
 
   /**
    * Get the element at position <code>index</code>.
-   * @param index the index
+   * 
+   * @param index
+   *          the index
    * @return The element.
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>index</code> is out of bounds.
@@ -64,7 +66,7 @@ public interface FloatArrayFS extends CommonArrayFS<Float> {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
-  void copyToArray(int srcOffset, float[] dest, int destOffset, int length) 
+  void copyToArray(int srcOffset, float[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
 
   /**
@@ -79,7 +81,7 @@ public interface FloatArrayFS extends CommonArrayFS<Float> {
    * @param length
    *          The number of elements to copy.
    */
-  void copyFromArray(float[] src, int srcOffset, int destOffset, int length) 
+  void copyFromArray(float[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
 
   /**
