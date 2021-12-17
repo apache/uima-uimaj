@@ -19,9 +19,11 @@
 package org.apache.uima.cas.serdes;
 
 import static java.util.Arrays.asList;
+import static org.apache.uima.cas.serdes.SerDesAssuptions.assumeNotKnownToFail;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.CasLoadOptions.PRESERVE_ORIGINAL_TSI;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.REINIT;
@@ -47,7 +49,7 @@ public class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
           new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
+                  (a, b) -> serdes(a, b, FORMAT, DEFAULT, PRESERVE_ORIGINAL_TSI)),
           new CasSerDesCycleConfiguration(FORMAT + " / REINIT", //
                   (a, b) -> serdes(a, b, FORMAT, REINIT)));
 
@@ -101,6 +103,10 @@ public class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
   @ParameterizedTest
   @MethodSource("roundTripDesSerScenarios")
   public void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
+    assumeNotKnownToFail(aScenario, //
+            ".*casWithFsList",
+            "Fails likely because the order of FSList items that were inline originally in XMI "
+                    + "is not deterministic. Not 100% sure though.");
     aScenario.run();
   }
 

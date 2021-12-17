@@ -69,6 +69,15 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private static final String FEATURE_BASE_NAME_AKOF_BYTE_ARRAY = "akofAByte";
   private static final String FEATURE_BASE_NAME_AKOF_BOOLEAN_ARRAY = "akofABoolean";
   private static final String FEATURE_BASE_NAME_AKOF_STRING_ARRAY = "akofAStr";
+  private static final String FEATURE_BASE_NAME_AKOF_INT_LIST = "akofLInt";
+  private static final String FEATURE_BASE_NAME_AKOF_FS_LIST = "akofLFs";
+  private static final String FEATURE_BASE_NAME_AKOF_FLOAT_LIST = "akofLFloat";
+  // private static final String FEATURE_BASE_NAME_AKOF_DOUBLE_LIST = "akofLDouble";
+  // private static final String FEATURE_BASE_NAME_AKOF_LONG_LIST = "akofLLong";
+  // private static final String FEATURE_BASE_NAME_AKOF_SHORT_LIST = "akofLShort";
+  // private static final String FEATURE_BASE_NAME_AKOF_BYTE_LIST = "akofLByte";
+  // private static final String FEATURE_BASE_NAME_AKOF_BOOLEAN_LIST = "akofLBoolean";
+  private static final String FEATURE_BASE_NAME_AKOF_STRING_LIST = "akofLStr";
 
   private static final String[] STRING_VALUES = { "abc", "abcdef", null, "", "ghijklm", "a", "b" };
   private static final byte[] BYTE_VALUES = { 1, 0, -1, Byte.MAX_VALUE, Byte.MIN_VALUE, 9, -9 };
@@ -117,6 +126,15 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private Feature akofAboolean;
   private Feature akofAstring;
   private Feature akofAfs;
+  private Feature akofLint;
+  private Feature akofLfloat;
+  // private Feature akofLdouble;
+  // private Feature akofLlong;
+  // private Feature akofLshort;
+  // private Feature akofLbyte;
+  // private Feature akofLboolean;
+  private Feature akofLstring;
+  private Feature akofLfs;
 
   private CASImpl cas;
   private AtomicInteger aint;
@@ -160,6 +178,16 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     akofTD.addFeature(FEATURE_BASE_NAME_AKOF_BOOLEAN_ARRAY, null, CAS.TYPE_NAME_BOOLEAN_ARRAY);
     akofTD.addFeature(FEATURE_BASE_NAME_AKOF_STRING_ARRAY, null, CAS.TYPE_NAME_STRING_ARRAY);
 
+    akofTD.addFeature(FEATURE_BASE_NAME_AKOF_INT_LIST, null, CAS.TYPE_NAME_INTEGER_LIST);
+    akofTD.addFeature(FEATURE_BASE_NAME_AKOF_FLOAT_LIST, null, CAS.TYPE_NAME_FLOAT_LIST);
+    // akofTD.addFeature(FEATURE_BASE_NAME_AKOF_DOUBLE_LIST, null, CAS.TYPE_NAME_DOUBLE_LIST);
+    // akofTD.addFeature(FEATURE_BASE_NAME_AKOF_LONG_LIST, null, CAS.TYPE_NAME_LONG_LIST);
+    // akofTD.addFeature(FEATURE_BASE_NAME_AKOF_SHORT_LIST, null, CAS.TYPE_NAME_SHORT_LIST);
+    // akofTD.addFeature(FEATURE_BASE_NAME_AKOF_BYTE_LIST, null, CAS.TYPE_NAME_BYTE_LIST);
+    // akofTD.addFeature(FEATURE_BASE_NAME_AKOF_BOOLEAN_LIST, null, CAS.TYPE_NAME_BOOLEAN_LIST);
+    akofTD.addFeature(FEATURE_BASE_NAME_AKOF_STRING_LIST, null, CAS.TYPE_NAME_STRING_LIST);
+    akofTD.addFeature(FEATURE_BASE_NAME_AKOF_FS_LIST, null, CAS.TYPE_NAME_FS_LIST);
+
     return tsd;
   }
 
@@ -189,6 +217,15 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     akofAboolean = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_BOOLEAN_ARRAY);
     akofAstring = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_STRING_ARRAY);
     akofAfs = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_FS_ARRAY);
+    akofLint = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_INT_LIST);
+    akofLfloat = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_FLOAT_LIST);
+    // akofLdouble = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_DOUBLE_LIST);
+    // akofLlong = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_LONG_LIST);
+    // akofLshort = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_SHORT_LIST);
+    // akofLbyte = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_BYTE_LIST);
+    // akofLboolean = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_BOOLEAN_LIST);
+    akofLstring = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_STRING_LIST);
+    akofLfs = akof.getFeatureByBaseName(FEATURE_BASE_NAME_AKOF_FS_LIST);
 
     makeRandomFss();
 
@@ -211,6 +248,9 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     for (FeatureStructure fs : lfss) {
       fs.setFeatureValue(akofFs, lfss.get(rnd.nextInt(lfss.size())));
       ((ArrayFS) fs.getFeatureValue(akofAfs)).set(0, lfss.get(rnd.nextInt(lfss.size())));
+
+      fs.setFeatureValue(akofLfs,
+              fs.getCAS().emptyFSList().push((TOP) lfss.get(rnd.nextInt(lfss.size()))));
     }
   }
 
@@ -242,6 +282,10 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     fs.setFeatureValue(akofAbyte, randomByteA(rnd));
     fs.setFeatureValue(akofAboolean, maybeKeep(cas.createBooleanArrayFS(2)));
     fs.setFeatureValue(akofAstring, randomStringA(rnd));
+
+    fs.setFeatureValue(akofLfloat, cas.emptyFloatList().push(rnd.nextFloat()));
+    fs.setFeatureValue(akofLint, cas.emptyIntegerList().push(rnd.nextInt()));
+    fs.setFeatureValue(akofLstring, cas.emptyStringList().push(randomString(rnd)));
 
     if (isKeep) {
       ((TOP) fs).addToIndexes();

@@ -26,7 +26,6 @@ import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
-import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -239,15 +238,12 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
               new Object[] { annotatorClassName, mDescription.getSourceUrlString() }, e);
     }
 
-    // Set Logger, to enable annotator-specific logging
-    UimaContextAdmin uimaContext = getUimaContextAdmin();
-    Logger logger = UIMAFramework.getLogger(annotatorClass);
-    logger.setResourceManager(this.getResourceManager());
-    uimaContext.setLogger(logger);
-
     // initialize AnalysisComponent
     UimaContext prevContext = setContextHolder(); // for use by POJOs
     try {
+      // Set Logger, to enable annotator-specific logging
+      getUimaContextAdmin().setLogger(UIMAFramework.getLogger(annotatorClass));
+
       callInitializeMethod(mAnalysisComponent, getUimaContext());
       // mAnalysisComponent.initialize(getUimaContext());
       // set up the CAS pool for this AE (this won't do anything if
@@ -435,10 +431,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     } catch (Exception e) {
       // log and rethrow exception
       logger.log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException)
+      if (e instanceof AnalysisEngineProcessException) {
         throw (AnalysisEngineProcessException) e;
-      else
+      } else {
         throw new AnalysisEngineProcessException(e);
+      }
     }
   }
 
@@ -558,10 +555,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     } catch (Exception e) {
       // log and rethrow exception
       getLogger().log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException)
+      if (e instanceof AnalysisEngineProcessException) {
         throw (AnalysisEngineProcessException) e;
-      else
+      } else {
         throw new AnalysisEngineProcessException(e);
+      }
     } finally {
       UimaContextHolder.setContext(prevContext);
     }

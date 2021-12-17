@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView"/>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="6" _ref_tail="5" _ref_head="3"/>
+    <FsListHolder _indexed="1" _id="7" _ref_fsList="9"/>
+    <FsListHolderMR _indexed="1" _id="10" _ref_fsList="12"/>
+    <IntListHolder _indexed="1" _id="13" _ref_intList="16"/>
+    <IntListHolderMR _indexed="1" _id="17" _ref_intList="19"/>
+    <FloatListHolder _indexed="1" _id="20" _ref_floatList="29"/>
+    <FloatListHolderMR _indexed="1" _id="30" _ref_floatList="38"/>
+    <StringListHolder _indexed="1" _id="39" _ref_stringList="42"/>
+    <StringListHolderMR _indexed="1" _id="43" _ref_stringList="45"/>
+    <uima.cas.NonEmptyStringList _id="44" _ref_tail="40" head="blah"/>
+    <uima.cas.NonEmptyStringList _id="45" _ref_tail="44" head="blub"/>
+    <uima.cas.EmptyStringList _id="40"/>
+    <uima.cas.NonEmptyStringList _id="41" _ref_tail="40" head="blah"/>
+    <uima.cas.NonEmptyStringList _id="42" _ref_tail="41" head="blub"/>
+    <uima.cas.NonEmptyFloatList _id="31" _ref_tail="21" head="-1.0"/>
+    <uima.cas.NonEmptyFloatList _id="32" _ref_tail="31" head="0.0"/>
+    <uima.cas.NonEmptyFloatList _id="33" _ref_tail="32" head="1.0"/>
+    <uima.cas.NonEmptyFloatList _id="34" _ref_tail="33" head="NaN"/>
+    <uima.cas.NonEmptyFloatList _id="35" _ref_tail="34" head="-Infinity"/>
+    <uima.cas.NonEmptyFloatList _id="36" _ref_tail="35" head="Infinity"/>
+    <uima.cas.NonEmptyFloatList _id="37" _ref_tail="36" head="1.4E-45"/>
+    <uima.cas.NonEmptyFloatList _id="38" _ref_tail="37" head="3.4028235E38"/>
+    <uima.cas.EmptyFloatList _id="21"/>
+    <uima.cas.NonEmptyFloatList _id="22" _ref_tail="21" head="-1.0"/>
+    <uima.cas.NonEmptyFloatList _id="23" _ref_tail="22" head="0.0"/>
+    <uima.cas.NonEmptyFloatList _id="24" _ref_tail="23" head="1.0"/>
+    <uima.cas.NonEmptyFloatList _id="25" _ref_tail="24" head="NaN"/>
+    <uima.cas.NonEmptyFloatList _id="26" _ref_tail="25" head="-Infinity"/>
+    <uima.cas.NonEmptyFloatList _id="27" _ref_tail="26" head="Infinity"/>
+    <uima.cas.NonEmptyFloatList _id="28" _ref_tail="27" head="1.4E-45"/>
+    <uima.cas.NonEmptyFloatList _id="29" _ref_tail="28" head="3.4028235E38"/>
+    <uima.cas.NonEmptyIntegerList _id="18" _ref_tail="14" head="1"/>
+    <uima.cas.NonEmptyIntegerList _id="19" _ref_tail="18" head="2"/>
+    <uima.cas.EmptyIntegerList _id="14"/>
+    <uima.cas.NonEmptyIntegerList _id="15" _ref_tail="14" head="1"/>
+    <uima.cas.NonEmptyIntegerList _id="16" _ref_tail="15" head="2"/>
+    <uima.cas.NonEmptyFSList _id="11" _ref_tail="4" _ref_head="2"/>
+    <uima.cas.NonEmptyFSList _id="12" _ref_tail="11" _ref_head="3"/>
+    <uima.cas.NonEmptyFSList _id="8" _ref_tail="4" _ref_head="2"/>
+    <uima.cas.NonEmptyFSList _id="9" _ref_tail="8" _ref_head="3"/>
+    <uima.tcas.Annotation _id="3" _ref_sofa="1" begin="1" end="2"/>
+    <uima.tcas.Annotation _id="2" _ref_sofa="1" begin="0" end="1"/>
+    <uima.cas.EmptyFSList _id="4"/>
+    <uima.cas.NonEmptyFSList _id="5" _ref_tail="4" _ref_head="2"/>
+</CAS>

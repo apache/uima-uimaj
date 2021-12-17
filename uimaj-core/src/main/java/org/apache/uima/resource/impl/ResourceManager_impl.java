@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
@@ -38,6 +39,7 @@ import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
 import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper.StringPair;
 import org.apache.uima.internal.util.Class_TCCL;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.DataResource;
@@ -63,6 +65,7 @@ import org.apache.uima.util.XMLizable;
  * 
  */
 public class ResourceManager_impl implements ResourceManager {
+  private static final AtomicInteger IMPORT_URL_CACHE_WARNING_THROTTLE = new AtomicInteger();
 
  // @formatter:off
   /**
@@ -867,7 +870,20 @@ public class ResourceManager_impl implements ResourceManager {
     return importCache;
   }
 
+  /**
+   * Was used during import resolving until UIMA 3.2.0. Is no longer used since since import
+   * resolving has been migrated to the
+   * {@code org.apache.uima.resource.metadata.impl.ImportResolver}.
+   * 
+   * @deprecated No longer used. Scheduled for removal in UIMA 4.0.
+   */
+  @Deprecated
   public Map<String, Set<String>> getImportUrlsCache() {
+    Misc.decreasingWithTrace(IMPORT_URL_CACHE_WARNING_THROTTLE,
+            "ResourceManager_impl.getImportUrlsCache() should not be called. It is no longer "
+                    + "filled during import resolving. The method will be removed in a future UIMA "
+                    + "version.",
+            UIMAFramework.getLogger());
     return importUrlsCache;
   }
 

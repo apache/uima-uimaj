@@ -53,7 +53,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class UimaContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");

@@ -103,7 +103,7 @@ under the License.
         the following URL in the "Work with" box and press enter:
         <itemizedlist>
           <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site/</code> or</listitem>
-          <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site-uv3/</code>.</listitem>
+          <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site-v3/</code>.</listitem>
         </itemizedlist>
         Choose the 2nd if you are working with core UIMA Java SDK at version 3 or later.
        .</para>

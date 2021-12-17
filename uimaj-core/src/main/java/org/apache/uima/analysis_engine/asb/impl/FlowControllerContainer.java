@@ -121,7 +121,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // Set Logger, to enable component-specific logging configuration
       UimaContextAdmin uimaContext = getUimaContextAdmin();
       Logger logger = UIMAFramework.getLogger(mFlowController.getClass());
-      logger.setResourceManager(this.getResourceManager());
       uimaContext.setLogger(logger);
 
       Logger classLogger = getLogger();

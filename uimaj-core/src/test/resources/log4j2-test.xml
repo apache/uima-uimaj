@@ -21,11 +21,7 @@
 <Configuration status="WARN">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <!-- this pattern includes caller stack info 
-      <PatternLayout pattern="%l %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-      -->
-      <!-- this next pattern is more like V2 -->
-      <PatternLayout pattern="%d{MMM dd, yyyy HH:mm:ss} %C %M (%L)\n%level: %msg%n"/>  
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level{length=5} %logger{1} - %msg%n" />
     </Console>
   </Appenders>
   <Loggers>

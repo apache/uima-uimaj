@@ -90,8 +90,8 @@ public abstract class Resource_ImplBase implements Resource {
     if (aAdditionalParams != null) {
       mUimaContextAdmin = (UimaContextAdmin) aAdditionalParams.get(PARAM_UIMA_CONTEXT);
     }
-    if (mUimaContextAdmin == null) {// no, we have to create one
 
+    if (mUimaContextAdmin == null) { // no, we have to create one
       // skip this part if initializing an external resource
       // https://issues.apache.org/jira/browse/UIMA-5153
       if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier)
@@ -109,7 +109,6 @@ public abstract class Resource_ImplBase implements Resource {
         // get a Logger for this class and set its ResourceManager so that
         // UIMA extension ClassLoader is used to locate message digests.
         Logger logger = UIMAFramework.getLogger(this.getClass());
-        logger.setResourceManager(resMgr);
 
         ConfigurationManager configMgr = null;
         if (aAdditionalParams != null) {
@@ -135,7 +134,6 @@ public abstract class Resource_ImplBase implements Resource {
       // get a Logger for this class and set its ResourceManager so that
       // UIMA extension ClassLoader is used to locate message digests.
       Logger logger = UIMAFramework.getLogger(this.getClass());
-      logger.setResourceManager(mUimaContextAdmin.getResourceManager());
       mUimaContextAdmin.setLogger(logger);
     }
 

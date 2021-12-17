@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.impl.cpm.engine;
 
 import java.io.File;
@@ -25,12 +24,16 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.adapter.vinci.util.Descriptor;
@@ -88,7 +91,6 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-
 /**
  * Responsible for creating and initializing processing threads. This instance manages the lifecycle
  * of the CPE components. It exposes API for plugging in components programmatically instead of
@@ -97,12 +99,9 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * those components to form a pipeline from source to sink. The Collection Reader feeds Processing
  * Threads containing Analysis Engines, and Analysis Engines feed results of analysis to Cas
  * Consumers.
- * 
- * 
- * 
  */
 public class CPMEngine extends Thread {
-  
+
   /** The Constant MAX_WAIT_ON_QUEUE. */
   private static final int MAX_WAIT_ON_QUEUE = 400;
 
@@ -117,7 +116,7 @@ public class CPMEngine extends Thread {
 
   /** The lock for pause. */
   // Used internally for synchronization
-  public final Object lockForPause = new Object();  
+  public final Object lockForPause = new Object();
 
   /** The collection reader. */
   // CollectionReader to be used by this CPM
@@ -125,15 +124,15 @@ public class CPMEngine extends Thread {
 
   // Flag indicating if the CPM should pause
   // Accesses to this flag (read and write) must
-  //   be done while holding the "lockForPause" lock
-  //   via synch
+  // be done while holding the "lockForPause" lock
+  // via synch
   /** The pause. */
-  //  @GuardedBy(lockForPause)
+  // @GuardedBy(lockForPause)
   protected boolean pause = false;
 
   // Flag indicating if this CPM is running or not
   /** The is running. */
-  // Marked volatile because it is set and read on different threads without synchronization 
+  // Marked volatile because it is set and read on different threads without synchronization
   protected volatile boolean isRunning = false;
 
   // Flag indicating if this CPM has been stopped
@@ -310,15 +309,16 @@ public class CPMEngine extends Thread {
    * Initializes Collection Processing Engine. Assigns this thread and all processing threads
    * created by this component to a common Thread Group.
    *
-   * @param aThreadGroup -
-   *          contains all CPM related threads
-   * @param aCpeFactory -
-   *          CPE factory object responsible for parsing cpe descriptor and creating components
-   * @param aProcTr -
-   *          instance of the ProcessTrace where the CPM accumulates stats
-   * @param aCheckpointData -
-   *          checkpoint object facillitating restart from the last known point
-   * @throws Exception the exception
+   * @param aThreadGroup
+   *          - contains all CPM related threads
+   * @param aCpeFactory
+   *          - CPE factory object responsible for parsing cpe descriptor and creating components
+   * @param aProcTr
+   *          - instance of the ProcessTrace where the CPM accumulates stats
+   * @param aCheckpointData
+   *          - checkpoint object facillitating restart from the last known point
+   * @throws Exception
+   *           the exception
    */
   public CPMEngine(CPMThreadGroup aThreadGroup, CPEFactory aCpeFactory, ProcessTrace aProcTr,
           CheckpointData aCheckpointData) throws Exception {
@@ -339,14 +339,13 @@ public class CPMEngine extends Thread {
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_multi_threaded_mode__CONFIG",
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_multi_threaded_mode__CONFIG",
                 new Object[] { Thread.currentThread().getName() });
       }
     }
     checkpointData = aCheckpointData;
     // enProcSt = new EntityProcessStatusImpl(procTr);
-    CPEFactory factory = this.cpeFactory;
+    CPEFactory factory = cpeFactory;
     if (factory != null) {
       CpeDescription desc = factory.getCpeDescriptor();
       if (desc != null) {
@@ -384,7 +383,8 @@ public class CPMEngine extends Thread {
    * Returns number of processing threads.
    *
    * @return - number of processing threads
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException
+   *           -
    */
   public int getThreadCount() throws ResourceConfigurationException {
     return cpeFactory.getProcessingUnitThreadCount();
@@ -393,8 +393,8 @@ public class CPMEngine extends Thread {
   /**
    * Plugs in a map where the engine stores perfomance info at runtime.
    *
-   * @param aMap -
-   *          map for runtime stats and totals
+   * @param aMap
+   *          - map for runtime stats and totals
    */
   public void setStats(Map aMap) {
     stats = aMap;
@@ -412,8 +412,8 @@ public class CPMEngine extends Thread {
   /**
    * Sets a global flag to indicate to the CPM that it should pause whenever exception occurs.
    *
-   * @param aPause -
-   *          true if pause is requested on exception, false otherwise
+   * @param aPause
+   *          - true if pause is requested on exception, false otherwise
    */
   public void setPauseOnException(boolean aPause) {
     pauseOnException = aPause;
@@ -433,7 +433,7 @@ public class CPMEngine extends Thread {
    * CollectionReader. Every processing pipeline thread will read its entities from this input
    * queue. The CollectionReader is decoupled from the consumer of entities, and continuously
    * replenishes the input queue.
-   * 
+   *
    * @param aInputQueueSize
    *          the size of the batch.
    */
@@ -445,7 +445,7 @@ public class CPMEngine extends Thread {
    * Defines the size of outputQueue. The queue stores this many entities enqueued by every
    * processing pipeline thread.The results of analysis are dumped into this queue for consumer
    * thread to consume its contents.
-   * 
+   *
    * @param aOutputQueueSize
    *          the size of the batch.
    */
@@ -455,7 +455,7 @@ public class CPMEngine extends Thread {
 
   /**
    * Defines the size of Cas Pool.
-   * 
+   *
    * @param aPoolSize
    *          the size of the Cas pool.
    */
@@ -474,7 +474,7 @@ public class CPMEngine extends Thread {
 
   /**
    * Defines number of threads executing the processing pipeline concurrently.
-   * 
+   *
    * @param aConcurrentThreadSize
    *          the size of the batch.
    */
@@ -485,15 +485,17 @@ public class CPMEngine extends Thread {
   /**
    * Adds the status callback listener.
    *
-   * @param aListener the a listener
+   * @param aListener
+   *          the a listener
    */
   /*
    * (non-Javadoc)
-   * 
-   * @see org.apache.uima.collection.base_cpm.BaseCPM#addStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
+   *
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#addStatusCallbackListener(org.apache.uima.
+   * collection.base_cpm.BaseStatusCallbackListener)
    */
   public void addStatusCallbackListener(BaseStatusCallbackListener aListener) {
-    if ( aListener != null ) {
+    if (aListener != null) {
       statusCbL.add(aListener);
     }
   }
@@ -510,8 +512,8 @@ public class CPMEngine extends Thread {
   /**
    * Unregisters given listener from the CPM.
    *
-   * @param aListener -
-   *          instance of {@link BaseStatusCallbackListener} to unregister
+   * @param aListener
+   *          - instance of {@link BaseStatusCallbackListener} to unregister
    */
   public void removeStatusCallbackListener(BaseStatusCallbackListener aListener) {
     statusCbL.remove(aListener);
@@ -528,71 +530,45 @@ public class CPMEngine extends Thread {
 
   /**
    * Dumps some internal state of the CPE. Used for debugging.
-   * 
+   *
    */
   private void dumpState() {
     try {
       if (cpeFactory.getCPEConfig() != null
               && cpeFactory.getCPEConfig().getDeployment().equalsIgnoreCase(SINGLE_THREADED_MODE)) {
-        UIMAFramework.getLogger(this.getClass())
-                .logrb(
-                        Level.INFO,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cr_state__INFO",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(this.readerState) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cr_state__INFO",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(readerState) });
 
         for (int i = 0; processingUnits != null && i < processingUnits.length; i++) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.INFO,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_show_pu_state__INFO",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_pu_state__INFO",
                   new Object[] { Thread.currentThread().getName(), String.valueOf(i),
                       String.valueOf(processingUnits[i].threadState) });
         }
         if (casConsumerPU != null) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.INFO,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_show_cc_state__INFO",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cc_state__INFO",
                   new Object[] { Thread.currentThread().getName(),
                       String.valueOf(casConsumerPU.threadState) });
         }
 
       } else {
         if (producer != null) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.INFO,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_show_cr_state__INFO",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cr_state__INFO",
                   new Object[] { Thread.currentThread().getName(),
                       String.valueOf(producer.threadState) });
         }
         for (int i = 0; processingUnits != null && i < processingUnits.length; i++) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.INFO,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_show_pu_state__INFO",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_pu_state__INFO",
                   new Object[] { Thread.currentThread().getName(), String.valueOf(i),
                       String.valueOf(processingUnits[i].threadState) });
         }
         if (casConsumerPU != null) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.INFO,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_show_cc_state__INFO",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cc_state__INFO",
                   new Object[] { Thread.currentThread().getName(),
                       String.valueOf(casConsumerPU.threadState) });
         }
@@ -605,7 +581,7 @@ public class CPMEngine extends Thread {
   /**
    * Kill CPM the hard way. None of the entities in the queues will be processed. This methof simply
    * empties all queues and at the end adds EOFToken to the work queue so that all threads go away.
-   * 
+   *
    */
   public void killIt() {
     isRunning = false;
@@ -641,9 +617,9 @@ public class CPMEngine extends Thread {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_terminate_pipelines__INFO",
               new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
-//      synchronized (workQueue) { // redundant - enqueue call above does this
-//        workQueue.notifyAll();
-//      }
+      // synchronized (workQueue) { // redundant - enqueue call above does this
+      // workQueue.notifyAll();
+      // }
     }
 
   }
@@ -652,7 +628,7 @@ public class CPMEngine extends Thread {
    * Returns if the CPE was killed hard. Soft kill allows the CPE to finish processing all
    * in-transit CASes. Hard kill causes the CPM to stop processing and to throw away all unprocessed
    * CASes from its queues.
-   * 
+   *
    * @return true if the CPE was killed hard
    */
   public boolean isHardKilled() {
@@ -662,7 +638,7 @@ public class CPMEngine extends Thread {
   /**
    * Asynch stop.
    *
-   * @deprecated 
+   * @deprecated
    */
   @Deprecated
   public void asynchStop() {
@@ -683,8 +659,7 @@ public class CPMEngine extends Thread {
         if (!isRunning) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_already_stopped__FINEST",
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_already_stopped__FINEST",
                     new Object[] { Thread.currentThread().getName() });
           }
           // Already stopped
@@ -707,12 +682,8 @@ public class CPMEngine extends Thread {
           // When all queues are empty we are done.
           int cc = workQueue.getCurrentSize();
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_consuming_queue__FINEST",
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_consuming_queue__FINEST",
                     new Object[] { Thread.currentThread().getName(), workQueue.getName(),
                         String.valueOf(cc) });
           }
@@ -721,11 +692,8 @@ public class CPMEngine extends Thread {
             if (System.getProperty("DEBUG") != null) {
               if (cc < workQueue.getCurrentSize()) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                  UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                          this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                           "UIMA_CPM_wait_consuming_queue__FINEST",
                           new Object[] { Thread.currentThread().getName(), workQueue.getName(),
                               String.valueOf(workQueue.getCurrentSize()) });
@@ -735,23 +703,16 @@ public class CPMEngine extends Thread {
             }
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_consuming_queue__FINEST",
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_consuming_queue__FINEST",
                     new Object[] { Thread.currentThread().getName(), workQueue.getName(),
                         String.valueOf(outputQueue.getCurrentSize()) });
           }
           while (outputQueue.getCurrentSize() > 0) {
             sleep(MAX_WAIT_ON_QUEUE);
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_wait_consuming_queue__FINEST",
                       new Object[] { Thread.currentThread().getName(), workQueue.getName(),
                           String.valueOf(outputQueue.getCurrentSize()) });
@@ -803,116 +764,81 @@ public class CPMEngine extends Thread {
       // Already stopped
       return;
     }
-//    try {
-      // Change global status
-      isRunning = false;
-      // terminate this thread if the thread has been previously suspended
-      synchronized (lockForPause) {
-        if (pause) {
-          pause = false;
-          lockForPause.notifyAll();
-        }
+    // try {
+    // Change global status
+    isRunning = false;
+    // terminate this thread if the thread has been previously suspended
+    synchronized (lockForPause) {
+      if (pause) {
+        pause = false;
+        lockForPause.notifyAll();
       }
-      // Let processing threads finish their work by emptying all queues. Even during a hard
-      // stop we should try to clean things up as best as we can. First empty process queue or work
-      // queue, dump result of analysis into output queue and let the consumers process that.
-      // When all queues are empty we are done.
-      
-      // The logic below (now commented out) has a race condition - 
-      //   The workQueue / outputQueue can become (temporarily) empty, but then 
-      //      can be filled with the eof token
-      //     But this code proceeds to stop all the CAS processors, 
-      //      which results in a hang because the pool isn't empty and the process thread waits for 
-      //      an available cas processor forever.
-      
-      //   Fix is to not kill the cas processors.  Just let them finish normally.  The artifact producer
-      //     will stop sending new CASes and send through an eof token, which causes normal shutdown to
-      //     occur for all the threads.
-
-      /*
-      if (workQueue != null) {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_consuming_queue__FINEST",
-                  new Object[] { Thread.currentThread().getName(), workQueue.getName(),
-                      String.valueOf(workQueue.getCurrentSize()) });
-
-        }
-        int cc = workQueue.getCurrentSize();
-        while (workQueue.getCurrentSize() > 0) {
-          sleep(MAX_WAIT_ON_QUEUE);
-          if (System.getProperty("DEBUG") != null) {
-            if (cc < workQueue.getCurrentSize()) {
-              if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_wait_consuming_queue__FINEST",
-                        new Object[] { Thread.currentThread().getName(), workQueue.getName(),
-                            String.valueOf(workQueue.getCurrentSize()) });
-
-              }
-              cc = workQueue.getCurrentSize();
-            }
-          }
-        }
-      }
-      if (outputQueue != null) {
-        while (outputQueue.getCurrentSize() > 0) {
-          sleep(MAX_WAIT_ON_QUEUE);
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_wait_consuming_queue__FINEST",
-                    new Object[] { Thread.currentThread().getName(), outputQueue.getName(),
-                        String.valueOf(outputQueue.getCurrentSize()) });
-          }
-        }
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_done_consuming_queue__FINEST",
-                  new Object[] { Thread.currentThread().getName() });
-        }
-      }
-
-      for (int i = 0; processingUnits != null && i < processingUnits.length
-              && processingUnits[i] != null; i++) {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_processors__FINEST",
-                  new Object[] { Thread.currentThread().getName(), String.valueOf(i) });
-        }
-        processingUnits[i].stopCasProcessors(false);
-      }
-    
-    } catch (Exception e) {
-      if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
-        e.printStackTrace();
-      }
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-              new Object[] { Thread.currentThread().getName(), e.getMessage() });
     }
-    */
+    // Let processing threads finish their work by emptying all queues. Even during a hard
+    // stop we should try to clean things up as best as we can. First empty process queue or work
+    // queue, dump result of analysis into output queue and let the consumers process that.
+    // When all queues are empty we are done.
+
+    // The logic below (now commented out) has a race condition -
+    // The workQueue / outputQueue can become (temporarily) empty, but then
+    // can be filled with the eof token
+    // But this code proceeds to stop all the CAS processors,
+    // which results in a hang because the pool isn't empty and the process thread waits for
+    // an available cas processor forever.
+
+    // Fix is to not kill the cas processors. Just let them finish normally. The artifact producer
+    // will stop sending new CASes and send through an eof token, which causes normal shutdown to
+    // occur for all the threads.
+
+    /*
+     * if (workQueue != null) { if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+     * UIMAFramework.getLogger(this.getClass()).logrb( Level.FINEST, this.getClass().getName(),
+     * "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_consuming_queue__FINEST", new Object[]
+     * { Thread.currentThread().getName(), workQueue.getName(),
+     * String.valueOf(workQueue.getCurrentSize()) });
+     * 
+     * } int cc = workQueue.getCurrentSize(); while (workQueue.getCurrentSize() > 0) {
+     * sleep(MAX_WAIT_ON_QUEUE); if (System.getProperty("DEBUG") != null) { if (cc <
+     * workQueue.getCurrentSize()) { if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+     * UIMAFramework.getLogger(this.getClass()).logrb( Level.FINEST, this.getClass().getName(),
+     * "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wait_consuming_queue__FINEST", new
+     * Object[] { Thread.currentThread().getName(), workQueue.getName(),
+     * String.valueOf(workQueue.getCurrentSize()) });
+     * 
+     * } cc = workQueue.getCurrentSize(); } } } } if (outputQueue != null) { while
+     * (outputQueue.getCurrentSize() > 0) { sleep(MAX_WAIT_ON_QUEUE); if
+     * (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+     * UIMAFramework.getLogger(this.getClass()).logrb( Level.FINEST, this.getClass().getName(),
+     * "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wait_consuming_queue__FINEST", new
+     * Object[] { Thread.currentThread().getName(), outputQueue.getName(),
+     * String.valueOf(outputQueue.getCurrentSize()) }); } } if
+     * (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+     * UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+     * "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_done_consuming_queue__FINEST", new
+     * Object[] { Thread.currentThread().getName() }); } }
+     * 
+     * for (int i = 0; processingUnits != null && i < processingUnits.length && processingUnits[i]
+     * != null; i++) { if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+     * UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+     * "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_processors__FINEST", new Object[]
+     * { Thread.currentThread().getName(), String.valueOf(i) }); }
+     * processingUnits[i].stopCasProcessors(false); }
+     * 
+     * } catch (Exception e) { if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
+     * e.printStackTrace(); } UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER,
+     * this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+     * "UIMA_CPM_exception__FINER", new Object[] { Thread.currentThread().getName(), e.getMessage()
+     * }); }
+     */
   }
 
   /**
    * Returns index to a CasProcessor with a given name in a given List.
    *
-   * @param aDeployList -
-   *          List of CasConsumers to be searched
-   * @param aName -
-   *          name of the CasConsumer we want to find
+   * @param aDeployList
+   *          - List of CasConsumers to be searched
+   * @param aName
+   *          - name of the CasConsumer we want to find
    * @return 0 - if a CasConsumer is not found in a list, else returns a position in the list where
    *         the CasConsumer can found
    */
@@ -932,8 +858,10 @@ public class CPMEngine extends Thread {
   /**
    * Find the position in the list of the Cas Processor with a given name.
    *
-   * @param aName the a name
-   * @param aList the a list
+   * @param aName
+   *          the a name
+   * @param aList
+   *          the a list
    * @return the position in the list of the Cas Processor with a given name
    */
   private int getPositionInListIfExists(String aName, List aList) {
@@ -953,16 +881,17 @@ public class CPMEngine extends Thread {
 
   /**
    * Parses Cas Processor descriptor and checks if it is parallelizable.
-   * 
-   * @param aDescPath -
-   *          fully qualified path to a CP descriptor
-   * @param aCpName -
-   *          name of the CP
-   * @param isConsumer -
-   *          true if the CP is a Cas Consumer, false otherwise
+   *
+   * @param aDescPath
+   *          - fully qualified path to a CP descriptor
+   * @param aCpName
+   *          - name of the CP
+   * @param isConsumer
+   *          - true if the CP is a Cas Consumer, false otherwise
    * @return - true if CP is parallelizable, false otherwise
-   * 
-   * @throws Exception -
+   *
+   * @throws Exception
+   *           -
    */
   private boolean isMultipleDeploymentAllowed(String aDescPath, String aCpName, boolean isConsumer)
           throws Exception {
@@ -992,14 +921,15 @@ public class CPMEngine extends Thread {
    * Determines if a given Cas Processor is parallelizable. Remote Cas Processors are by default
    * parallelizable. For integrated and managed the CPM consults Cas Processor's descriptor to
    * determine if it is parallelizable.
-   * 
-   * @param aProcessor -
-   *          Cas Processor being checked
-   * @param aCpName -
-   *          name of the CP
+   *
+   * @param aProcessor
+   *          - Cas Processor being checked
+   * @param aCpName
+   *          - name of the CP
    * @return - true if CP is parallelizable, false otherwise
-   * 
-   * @throws Exception -
+   *
+   * @throws Exception
+   *           -
    */
   public boolean isParallizable(CasProcessor aProcessor, String aCpName) throws Exception {
     boolean isConsumer = false;
@@ -1041,11 +971,11 @@ public class CPMEngine extends Thread {
       // From the client service descriptor extract the actual Cas Processor descriptor
       String aResourceSpecifierPath = descriptor.getResourceSpecifierPath();
       // Determine if this Cas Processor is parallelizable
-      boolean is = isMultipleDeploymentAllowed(aResourceSpecifierPath, casProcessorCPEConfig
-              .getName(), isConsumer);
+      boolean is = isMultipleDeploymentAllowed(aResourceSpecifierPath,
+              casProcessorCPEConfig.getName(), isConsumer);
       return is;
-    } else if (Constants.DEPLOYMENT_INTEGRATED.equalsIgnoreCase(casProcessorCPEConfig
-            .getDeployment())) {
+    } else if (Constants.DEPLOYMENT_INTEGRATED
+            .equalsIgnoreCase(casProcessorCPEConfig.getDeployment())) {
       // If OperationalProperties are not defined use defaults based on CasProcessor type
       if (aProcessor.getProcessingResourceMetaData().getOperationalProperties() == null) {
         if (isConsumer) {
@@ -1064,13 +994,14 @@ public class CPMEngine extends Thread {
   /**
    * Adds Cas Processor to a single-threaded pipeline. This pipeline is fed by the output queue and
    * typicall contains Cas Consumers. AEs can alos be part of this pipeline.
-   * 
-   * @param aProcessor -
-   *          Cas Processor to add to single-threaded pipeline
-   * @param aCpName -
-   *          name of the Cas Processor
-   * 
-   * @throws Exception -
+   *
+   * @param aProcessor
+   *          - Cas Processor to add to single-threaded pipeline
+   * @param aCpName
+   *          - name of the Cas Processor
+   *
+   * @throws Exception
+   *           -
    */
   private void addCasConsumer(CasProcessor aProcessor, String aCpName) throws Exception {
     if (consumers.containsKey(aCpName)) {
@@ -1106,13 +1037,14 @@ public class CPMEngine extends Thread {
    * that the CP is in parallelizable pipeline does not mean that there will be instance per
    * pipeline of CP. Its allowed to have a single instance, shareable CP running in multi-threaded
    * pipeline.
-   * 
-   * @param aProcessor -
-   *          CP to add to parallelizable pipeline
-   * @param aCpName -
-   *          name of the CP
-   * 
-   * @throws Exception -
+   *
+   * @param aProcessor
+   *          - CP to add to parallelizable pipeline
+   * @param aCpName
+   *          - name of the CP
+   *
+   * @throws Exception
+   *           -
    */
   private void addParallizableCasProcessor(CasProcessor aProcessor, String aCpName)
           throws Exception {
@@ -1153,8 +1085,9 @@ public class CPMEngine extends Thread {
    * Processors are moved to a parallelizable pipeline. If the non-parallelizable CP is in the
    * parallelizable pipeline there simply will be a single instance of it that will be shared by all
    * processing threads.
-   * 
-   * @throws Exception -
+   *
+   * @throws Exception
+   *           -
    */
   private void classifyCasProcessors() throws Exception {
     boolean allowReorder = true;
@@ -1203,8 +1136,10 @@ public class CPMEngine extends Thread {
    * Adds a CASProcessor to the processing pipeline. If a CasProcessor already exists and its
    * status=DISABLED this method will re-enable the CasProcesser.
    *
-   * @param aCasProcessor          CASProcessor to be added to the processing pipeline
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aCasProcessor
+   *          CASProcessor to be added to the processing pipeline
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
 
@@ -1233,10 +1168,12 @@ public class CPMEngine extends Thread {
   /**
    * Adds a CASProcessor to the processing pipeline at a given place in the processing pipeline.
    *
-   * @param aCasProcessor          CASProcessor to be added to the processing pipeline
-   * @param aIndex -
-   *          insertion point for a given CasProcessor
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aCasProcessor
+   *          CASProcessor to be added to the processing pipeline
+   * @param aIndex
+   *          - insertion point for a given CasProcessor
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException {
@@ -1246,8 +1183,8 @@ public class CPMEngine extends Thread {
   /**
    * Removes a CASProcessor from the processing pipeline.
    *
-   * @param aCasProcessorIndex -
-   *          CasProcessor position in processing pipeline
+   * @param aCasProcessorIndex
+   *          - CasProcessor position in processing pipeline
    */
   public void removeCasProcessor(int aCasProcessorIndex) {
     if (aCasProcessorIndex < 0 || aCasProcessorIndex >= annotatorList.size()) {
@@ -1259,7 +1196,8 @@ public class CPMEngine extends Thread {
   /**
    * Disable a CASProcessor in the processing pipeline.
    *
-   * @param aCasProcessorIndex          CASProcessor to be added to the processing pipeline
+   * @param aCasProcessorIndex
+   *          CASProcessor to be added to the processing pipeline
    */
   public void disableCasProcessor(int aCasProcessorIndex) {
     if (aCasProcessorIndex < 0 || aCasProcessorIndex > annotatorList.size()) {
@@ -1279,7 +1217,8 @@ public class CPMEngine extends Thread {
   /**
    * Disable a CASProcessor in the processing pipeline.
    *
-   * @param aCasProcessorName          CASProcessor to be added to the processing pipeline
+   * @param aCasProcessorName
+   *          CASProcessor to be added to the processing pipeline
    */
   public void disableCasProcessor(String aCasProcessorName) {
     for (int i = 0; i < annotatorList.size(); i++) {
@@ -1298,7 +1237,8 @@ public class CPMEngine extends Thread {
   /**
    * Disable a CASProcessor in the processing pipeline.
    *
-   * @param aCasProcessorName          CASProcessor to be added to the processing pipeline
+   * @param aCasProcessorName
+   *          CASProcessor to be added to the processing pipeline
    */
   public void enableCasProcessor(String aCasProcessorName) {
     for (int i = 0; i < annotatorList.size(); i++) {
@@ -1377,7 +1317,8 @@ public class CPMEngine extends Thread {
   /**
    * Deploys all Cas Consumers.
    *
-   * @throws AbortCPMException -
+   * @throws AbortCPMException
+   *           -
    */
   private void deployConsumers() throws AbortCPMException {
 
@@ -1396,7 +1337,7 @@ public class CPMEngine extends Thread {
           // Get a deployer for this type of CasProcessor. The type of deployer is determined from
           // the
           // CPE Configuration. Specifically from the deployment model for this CasProcessor.
-          //	 
+          //
           CpeCasProcessor casProcessorType = (CpeCasProcessor) cpeFactory.casProcessorConfigMap
                   .get(name);
           deployer = DeployFactory.getDeployer(cpeFactory, casProcessorType, pca);
@@ -1414,8 +1355,10 @@ public class CPMEngine extends Thread {
   /**
    * Deploys CasProcessor and associates it with a {@link ProcessingContainer}.
    *
-   * @param aProcessingContainer the a processing container
-   * @throws Exception the exception
+   * @param aProcessingContainer
+   *          the a processing container
+   * @throws Exception
+   *           the exception
    */
   public void redeployAnalysisEngine(ProcessingContainer aProcessingContainer) throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1430,8 +1373,9 @@ public class CPMEngine extends Thread {
   /**
    * Deploys All Analysis Engines. Analysis Engines run in a replicated processing units seperate
    * from Cas Consumers.
-   * 
-   * @throws AbortCPMException -
+   *
+   * @throws AbortCPMException
+   *           -
    */
   private void deployAnalysisEngines() throws AbortCPMException {
     // When restoring the CPM from a checkpoint, its processing pipeline must be restored
@@ -1463,7 +1407,7 @@ public class CPMEngine extends Thread {
           // the
           // CPE Configuration. Specifically from the deployment model for this CasProcessor. The
           // first
-          //	 
+          //
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_lookup_cp__FINEST",
@@ -1501,11 +1445,11 @@ public class CPMEngine extends Thread {
                       "UIMA_CPM_cp_deployment_mode_not_defined__SEVERE",
                       new Object[] { Thread.currentThread().getName(), name });
             }
-            throw new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_Exception_invalid_deployment__WARNING", new Object[] {
-                        Thread.currentThread().getName(), name,
-                        casProcessorCPEConfig.getDeployment() }));
+            throw new Exception(
+                    CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                            "UIMA_CPM_Exception_invalid_deployment__WARNING",
+                            new Object[] { Thread.currentThread().getName(), name,
+                                casProcessorCPEConfig.getDeployment() }));
           }
 
           deployer = DeployFactory.getDeployer(cpeFactory, casProcessorCPEConfig, pca);
@@ -1529,7 +1473,8 @@ public class CPMEngine extends Thread {
    * Starts CASProcessor containers one a time. During this phase the container deploys a TAE as
    * local,remote, or integrated CasProcessor.
    *
-   * @throws AbortCPMException the abort CPM exception
+   * @throws AbortCPMException
+   *           the abort CPM exception
    */
   public void deployCasProcessors() throws AbortCPMException {
     try {
@@ -1552,10 +1497,10 @@ public class CPMEngine extends Thread {
   /**
    * Restores named events from the checkpoint.
    *
-   * @param component -
-   *          component name to restore named event for
-   * @param aEvType -
-   *          event to restore
+   * @param component
+   *          - component name to restore named event for
+   * @param aEvType
+   *          - event to restore
    */
   private void restoreFromCheckpoint(String component, String aEvType) {
     if (checkpointData == null) {
@@ -1578,12 +1523,14 @@ public class CPMEngine extends Thread {
   /**
    * Copy given component events.
    *
-   * @param aEvType -
-   *          event type
-   * @param aList -
-   *          list of events to copy
-   * @param aPTr -
-   * @throws IOException -
+   * @param aEvType
+   *          - event type
+   * @param aList
+   *          - list of events to copy
+   * @param aPTr
+   *          -
+   * @throws IOException
+   *           -
    */
   private void copyComponentEvents(String aEvType, List aList, ProcessTrace aPTr)
           throws IOException {
@@ -1656,21 +1603,22 @@ public class CPMEngine extends Thread {
   /**
    * Sets CollectionReader to use during processing.
    *
-   * @param aCollectionReader          aCollectionReader
+   * @param aCollectionReader
+   *          aCollectionReader
    */
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
-    if ( collectionReader != null ) {
+    if (collectionReader != null) {
       if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
               .getParameterValue("fetchSize") != null) {
         try {
           readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
-              .getConfigurationParameterSettings().getParameterValue("fetchSize");
+                  .getConfigurationParameterSettings().getParameterValue("fetchSize");
         } catch (NumberFormatException nfe) {
           readerFetchSize = 1; // restore default
         }
       }
-      if (checkpointData != null && checkpointData.getSynchPoint() != null ) {
+      if (checkpointData != null && checkpointData.getSynchPoint() != null) {
         try {
           if (collectionReader instanceof RecoverableCollectionReader) {
             // Let the CollectionReader do the synchronization to the last known (good) read point
@@ -1690,7 +1638,8 @@ public class CPMEngine extends Thread {
   /**
    * Defines the size of the batch.
    *
-   * @param aNumToProcess the new num to process
+   * @param aNumToProcess
+   *          the new num to process
    */
 
   public void setNumToProcess(long aNumToProcess) {
@@ -1718,10 +1667,11 @@ public class CPMEngine extends Thread {
   /**
    * Instantiate custom Processing Pipeline.
    *
-   * @param aClassName -
-   *          name of a class that extends ProcessingUnit
+   * @param aClassName
+   *          - name of a class that extends ProcessingUnit
    * @return - an instance of the ProcessingUnit
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private ProcessingUnit producePU(String aClassName) throws Exception {
     Class currentClass = Class.forName(aClassName);
@@ -1742,10 +1692,11 @@ public class CPMEngine extends Thread {
   /**
    * Instantiate custom Output Queue.
    *
-   * @param aQueueSize -
-   *          max size of the queue
+   * @param aQueueSize
+   *          - max size of the queue
    * @return - new instance of the output queue
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private BoundedWorkQueue createOutputQueue(int aQueueSize) throws Exception {
     // Get the class that implements the queue
@@ -1756,7 +1707,7 @@ public class CPMEngine extends Thread {
         Class[] args = new Class[] { int.class, String.class, CPMEngine.class };
         Class cpClass = Class.forName(outputQueueClass);
         Constructor constructor = cpClass.getConstructor(args);
-        Object[] oArgs = new Object[] {aQueueSize, "Sequenced Output Queue", this };
+        Object[] oArgs = new Object[] { aQueueSize, "Sequenced Output Queue", this };
         outputQueue = (BoundedWorkQueue) constructor.newInstance(oArgs);
       }
     } else {
@@ -1769,13 +1720,13 @@ public class CPMEngine extends Thread {
   /**
    * Notify listeners of a given exception.
    *
-   * @param e -
-   *          en exception to be sent to listeners
+   * @param e
+   *          - en exception to be sent to listeners
    */
   private void notifyListenersWithException(Exception e) {
     UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, e.getMessage(), e);
 
-    ArrayList statusCbL = this.getCallbackListeners();
+    ArrayList statusCbL = getCallbackListeners();
     EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr, true);
     // e is the actual exception.
     enProcSt.addEventStatus("CPM", "Failed", e);
@@ -1799,9 +1750,9 @@ public class CPMEngine extends Thread {
    * the CPM needs to terminate. Since pipelines are prematurely killed, there are artifacts (CASes)
    * in the work queue. These must be removed from the work queue and disposed of (released) back to
    * the CAS pool so that the Collection Reader thread properly exits.
-   * 
-   * @param aPipelineThreadName -
-   *          name of the pipeline thread exiting from its run() method
+   *
+   * @param aPipelineThreadName
+   *          - name of the pipeline thread exiting from its run() method
    */
   public synchronized void pipelineKilled(String aPipelineThreadName) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1854,7 +1805,7 @@ public class CPMEngine extends Thread {
    * thread. It is only instantiated if there Cas Consumers in the pipeline 3) Processing Threads -
    * one or more processing threads, configured identically, that are performing analysis How many
    * threads are started depends on configuration in CPE descriptor
-   * 
+   *
    * All threads started here are placed in a ThreadGroup. This provides a catch-all mechanism for
    * errors that may occur in the CPM. If error is thrown, the ThreadGroup is notified. The
    * ThreadGroup than notifies all registers listeners to give an application a chance to report the
@@ -1863,7 +1814,7 @@ public class CPMEngine extends Thread {
    * control otherwise a memory leak occurs. Even those threads that are not started must be cleaned
    * as they end up in the ThreadGroup when instantiated. The code uses number of state variables to
    * make decisions during cleanup.
-   * 
+   *
    */
   @Override
   public void run() {
@@ -1893,19 +1844,8 @@ public class CPMEngine extends Thread {
         // Fix for memory leak. CPMThreadGroup must be
         // destroyed, but not until AFTER all threads that it
         // owns, including this one, have ended. - Adam
-        final ThreadGroup group = this.getThreadGroup();
-        Thread threadGroupDestroyer = new Thread(group.getParent(), "threadGroupDestroyer") {
-          @Override
-          public void run() {
-            while (group.activeCount() > 0) {
-              try {
-                Thread.sleep(100);
-              } catch (InterruptedException e) {
-              }
-            }
-            group.destroy();
-          }
-        };
+        final ThreadGroup group = getThreadGroup();
+        Thread threadGroupDestroyer = new ThreadGroupDestroyer(group);
         threadGroupDestroyer.start();
       }
     }
@@ -1925,7 +1865,7 @@ public class CPMEngine extends Thread {
       if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
               .getParameterValue("fetchSize") != null) {
         readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
-            .getConfigurationParameterSettings().getParameterValue("fetchSize");
+                .getConfigurationParameterSettings().getParameterValue("fetchSize");
       }
       if (System.getProperty("DEBUG_CONTROL") != null) {
         startDebugControlThread();
@@ -1956,8 +1896,8 @@ public class CPMEngine extends Thread {
             // need a LOT of
             // memory to handle this. So for WF limit the pool size to something more reasonable
             if (poolSize > 100) {
-              System.err
-                      .println("CPMEngine.run()-CAS PoolSize exceeds hard limit(100). Redefining size to 60.");
+              System.err.println(
+                      "CPMEngine.run()-CAS PoolSize exceeds hard limit(100). Redefining size to 60.");
               UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_redefine_pool_size__CONFIG",
@@ -1972,7 +1912,7 @@ public class CPMEngine extends Thread {
                     "UIMA_CPM_show_cas_pool_size__CONFIG",
                     new Object[] { Thread.currentThread().getName(), String.valueOf(poolSize) });
           }
-          casPool = new CPECasPool(poolSize, cpeFactory.getResourceManager().getCasManager(), 
+          casPool = new CPECasPool(poolSize, cpeFactory.getResourceManager().getCasManager(),
                   mPerformanceTuningSettings);
           callTypeSystemInit();
 
@@ -2025,7 +1965,7 @@ public class CPMEngine extends Thread {
       // collect stats in shared instance
       producer.setCPMStatTable(stats);
 
-      //	
+      //
       for (int j = 0; j < statusCbL.size(); j++) {
         BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
         if (statCL != null) {
@@ -2079,12 +2019,8 @@ public class CPMEngine extends Thread {
         consumerThreadStarted = true;
       }
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.CONFIG,
-                this.getClass().getName(),
-                "initialize",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_create_pus__CONFIG",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_create_pus__CONFIG",
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(workQueue.getCurrentSize()) });
       }
@@ -2178,14 +2114,10 @@ public class CPMEngine extends Thread {
         }
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "initialize",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_pipeline_impl_class__FINEST",
-                  new Object[] { Thread.currentThread().getName(),
-                      processingUnits[i].getClass().getName() });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_pipeline_impl_class__FINEST", new Object[] {
+                      Thread.currentThread().getName(), processingUnits[i].getClass().getName() });
         }
         // Add tracing instance so that performance and stats are globally aggregated for all
         // processing pipelines
@@ -2251,31 +2183,22 @@ public class CPMEngine extends Thread {
       producer.join();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_cr_thread_completed__FINEST",
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cr_thread_completed__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
 
       // Join each of the Processing Threads and wait for them to finish
       for (int i = 0; i < concurrentThreadCount; i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_join_pu__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_join_pu__FINEST",
                   new Object[] { Thread.currentThread().getName(), processingUnits[i].getName(),
                       String.valueOf(i) });
         }
         processingUnits[i].join();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_join_pu_complete__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_join_pu_complete__FINEST",
                   new Object[] { Thread.currentThread().getName(), processingUnits[i].getName(),
                       String.valueOf(i) });
         }
@@ -2303,9 +2226,9 @@ public class CPMEngine extends Thread {
                     "UIMA_CPM_done_placed_eof_in_queue__FINEST",
                     new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
           }
-//          synchronized (outputQueue) { // redundant, the above enqueue does this
-//            outputQueue.notifyAll();
-//          }
+          // synchronized (outputQueue) { // redundant, the above enqueue does this
+          // outputQueue.notifyAll();
+          // }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -2330,20 +2253,15 @@ public class CPMEngine extends Thread {
         casConsumerPU.join();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_join_cc_completed__FINEST",
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_join_cc_completed__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
       }
       consumerCompleted = true;
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_cc_completed__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cc_completed__FINEST",
                 new Object[] { Thread.currentThread().getName(), workQueue.getName(),
                     String.valueOf(workQueue.getCurrentSize()) });
       }
@@ -2351,23 +2269,16 @@ public class CPMEngine extends Thread {
 
       while (!empty && outputQueue != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_pus_completed__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pus_completed__FINEST",
                   new Object[] { Thread.currentThread().getName(), outputQueue.getName(),
                       String.valueOf(outputQueue.getCurrentSize()) });
         }
         synchronized (outputQueue) {
           if (outputQueue.getCurrentSize() == 0) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_pus_completed__FINEST",
                       new Object[] { Thread.currentThread().getName(), outputQueue.getName(),
                           String.valueOf(outputQueue.getCurrentSize()) });
@@ -2376,12 +2287,8 @@ public class CPMEngine extends Thread {
           }
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_consuming_queue__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_consuming_queue__FINEST",
                   new Object[] { Thread.currentThread().getName(), outputQueue.getName(),
                       String.valueOf(outputQueue.getCurrentSize()) });
         }
@@ -2490,13 +2397,9 @@ public class CPMEngine extends Thread {
           // Cleanup Processing Threads
           for (int i = 0; processingUnits != null && i < concurrentThreadCount; i++) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_join_pu__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_join_pu__FINEST", new Object[] { Thread.currentThread().getName(),
                           processingUnits[i].getName(), String.valueOf(i) });
             }
             if (processingUnits[i] != null) {
@@ -2514,11 +2417,8 @@ public class CPMEngine extends Thread {
               try {
                 processingUnits[i].join();
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                  UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                          this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                           "UIMA_CPM_join_pu_complete__FINEST",
                           new Object[] { Thread.currentThread().getName(),
                               processingUnits[i].getName(), String.valueOf(i) });
@@ -2568,9 +2468,9 @@ public class CPMEngine extends Thread {
                     "UIMA_CPM_done_placed_eof_in_queue__FINEST",
                     new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
           }
-//          synchronized (outputQueue) { // redundant - the above enqueue does this
-//            outputQueue.notifyAll();
-//          }
+          // synchronized (outputQueue) { // redundant - the above enqueue does this
+          // outputQueue.notifyAll();
+          // }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -2599,47 +2499,9 @@ public class CPMEngine extends Thread {
       // Fix for memory leak. CPMThreadGroup must be
       // destroyed, but not until AFTER all threads that it
       // owns, including this one, have ended. - Adam
-      final ThreadGroup group = this.getThreadGroup();
-      Thread threadGroupDestroyer = new Thread(group.getParent(), "threadGroupDestroyer") {
-        @Override
-        public void run() {
-          Thread[] threads;
-          while (group.activeCount() > 0) {
-            try {
-              Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
-            threads = new Thread[group.activeCount()];
-            group.enumerate(threads);
-            showThreads(threads);
-          }
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_destroy_thread_group__FINEST",
-                    new Object[] { Thread.currentThread().getName() });
-          }
-
-          group.destroy();
-        }
-
-        private void showThreads(Thread[] aThreadList) {
-          for (int i = 0; aThreadList != null && i < aThreadList.length; i++) {
-            if (aThreadList[i] != null && UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_thread__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                          aThreadList[i].getName() });
-            }
-          }
-        }
-      };
+      final ThreadGroup group = getThreadGroup();
+      Thread threadGroupDestroyer = new ThreadGroupDestroyer(group);
       threadGroupDestroyer.start();
-
     }
   }
 
@@ -2654,8 +2516,7 @@ public class CPMEngine extends Thread {
       eofToken[0] = new EOFToken();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_placed_eof_in_queue__FINEST",
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_placed_eof_in_queue__FINEST",
                 new Object[] { Thread.currentThread().getName(), workQueue.getName() });
       }
       workQueue.enqueue(eofToken);
@@ -2665,9 +2526,9 @@ public class CPMEngine extends Thread {
                 "UIMA_CPM_done_placed_eof_in_queue__FINEST",
                 new Object[] { Thread.currentThread().getName(), workQueue.getName() });
       }
-//      synchronized (workQueue) { // redundant - the above enqueue does this
-//        workQueue.notifyAll();
-//      }
+      // synchronized (workQueue) { // redundant - the above enqueue does this
+      // workQueue.notifyAll();
+      // }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -2687,10 +2548,11 @@ public class CPMEngine extends Thread {
   /**
    * Return timer to measure performace of the cpm. The timer can optionally be configured in the
    * CPE descriptor. If none defined, the method returns default timer.
-   * 
+   *
    * @return - customer timer or JavaTimer (default)
-   * 
-   * @throws Exception -
+   *
+   * @throws Exception
+   *           -
    */
   private UimaTimer getTimer() throws Exception {
     String uimaTimerClass = cpeFactory.getCPEConfig().getCpeTimer().get();
@@ -2708,8 +2570,8 @@ public class CPMEngine extends Thread {
   public void cleanup() {
     try {
       if (processingUnits != null) {
-        for (int i = 0; i < this.processingUnits.length; i++) {
-          this.processingUnits[i].cleanup();
+        for (int i = 0; i < processingUnits.length; i++) {
+          processingUnits[i].cleanup();
         }
       }
 
@@ -2718,61 +2580,61 @@ public class CPMEngine extends Thread {
       }
 
       if (casConsumerPU != null) {
-        this.casConsumerPU.cleanup();
+        casConsumerPU.cleanup();
       }
-      this.casConsumerPU = null;
+      casConsumerPU = null;
 
       if (collectionReader != null) {
-        this.collectionReader.close();
+        collectionReader.close();
       }
-      this.collectionReader = null;
+      collectionReader = null;
 
       if (producer != null) {
-        this.producer.cleanup();
+        producer.cleanup();
       }
-      this.producer = null;
+      producer = null;
 
       if (consumerDeployList != null) {
-        this.consumerDeployList.clear();
+        consumerDeployList.clear();
       }
-      this.consumerDeployList = null;
+      consumerDeployList = null;
 
       if (analysisEngines != null) {
-        this.analysisEngines.clear();
+        analysisEngines.clear();
       }
-      this.analysisEngines = null;
+      analysisEngines = null;
 
       if (annotatorDeployList != null) {
-        this.annotatorDeployList.clear();
+        annotatorDeployList.clear();
       }
-      this.annotatorDeployList = null;
+      annotatorDeployList = null;
 
       if (annotatorList != null) {
-        this.annotatorList.clear();
+        annotatorList.clear();
       }
-      this.annotatorList = null;
+      annotatorList = null;
 
       if (consumerList != null) {
-        this.consumerList.clear();
+        consumerList.clear();
       }
-      this.consumerList = null;
+      consumerList = null;
 
       if (consumers != null) {
-        this.consumers.clear();
+        consumers.clear();
       }
-      this.consumers = null;
+      consumers = null;
 
-      this.processingUnits = null;
-      this.casprocessorList = null;
+      processingUnits = null;
+      casprocessorList = null;
       // this.enProcSt = null;
-      this.stats = null;
-      this.statusCbL = null;
+      stats = null;
+      statusCbL = null;
       // this.tcas = null;
-      this.casPool = null;
+      casPool = null;
       // this.restoredProcTr = null;
-      this.checkpointData = null;
-      this.procTr = null;
-      this.cpeFactory = null;
+      checkpointData = null;
+      procTr = null;
+      cpeFactory = null;
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
@@ -2784,11 +2646,12 @@ public class CPMEngine extends Thread {
   /**
    * Registers Type Systems of all components with the CasManager.
    *
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   private void registerTypeSystemsWithCasManager() throws Exception {
-    CasManager manager= this.cpeFactory.getResourceManager().getCasManager();
-    
+    CasManager manager = cpeFactory.getResourceManager().getCasManager();
+
     ProcessingResourceMetaData crMetaData = collectionReader.getProcessingResourceMetaData();
     if (crMetaData != null) {
       manager.addMetaData(crMetaData);
@@ -2819,22 +2682,22 @@ public class CPMEngine extends Thread {
       CasProcessor processor = container.getCasProcessor();
       try {
         if (processor instanceof AnalysisEngineImplBase) {
-          //Integrated AEs already have added their metadata to the CasManager during
-          //their initialization, so we don't need to do it again.
-          //(Exception: when running from "old" CPM interface - where AEs are created outside 
-          // and passed in, the AE may not share a ResourceManager with the CPE.  In that case
+          // Integrated AEs already have added their metadata to the CasManager during
+          // their initialization, so we don't need to do it again.
+          // (Exception: when running from "old" CPM interface - where AEs are created outside
+          // and passed in, the AE may not share a ResourceManager with the CPE. In that case
           // we DO need to register its metadata.)
-          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager()) {
+          if (((AnalysisEngine) processor).getResourceManager() == cpeFactory
+                  .getResourceManager()) {
             continue;
-          }        
+          }
         }
         ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
-  
+
         if (md != null) {
           manager.addMetaData(md);
         }
-      }
-      finally {
+      } finally {
         container.releaseCasProcessor(processor);
       }
     }
@@ -2854,20 +2717,20 @@ public class CPMEngine extends Thread {
       CasProcessor processor = container.getCasProcessor();
       try {
         if (processor instanceof AnalysisEngineImplBase) {
-          //(Exception: when running from "old" CPM interface - where AEs are created outside 
-          // and passed in, the AE may not share a ResourceManager with the CPE.  In that case
+          // (Exception: when running from "old" CPM interface - where AEs are created outside
+          // and passed in, the AE may not share a ResourceManager with the CPE. In that case
           // we DO need to register its metadata.)
-          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager()) {
+          if (((AnalysisEngine) processor).getResourceManager() == cpeFactory
+                  .getResourceManager()) {
             continue;
-          }         
+          }
         }
         ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
-  
+
         if (md != null) {
           manager.addMetaData(md);
         }
-      }
-      finally {
+      } finally {
         container.releaseCasProcessor(processor);
       }
     }
@@ -2876,7 +2739,8 @@ public class CPMEngine extends Thread {
   /**
    * Call typeSystemInit method on each component.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void callTypeSystemInit() throws ResourceInitializationException {
 
@@ -2920,17 +2784,19 @@ public class CPMEngine extends Thread {
       throw new ResourceInitializationException(e);
     } finally {
       casPool.releaseCas(cas);
-//      synchronized (casPool) { // redundant, the above releaseCas call does this
-//        casPool.notifyAll();
-//      }
+      // synchronized (casPool) { // redundant, the above releaseCas call does this
+      // casPool.notifyAll();
+      // }
     }
   }
 
   /**
    * Stops All Cas Processors and optionally changes the status according to kill flag.
    *
-   * @param kill - true if CPE has been stopped before completing normally
-   * @throws CasProcessorDeploymentException the cas processor deployment exception
+   * @param kill
+   *          - true if CPE has been stopped before completing normally
+   * @throws CasProcessorDeploymentException
+   *           the cas processor deployment exception
    */
 
   public void stopCasProcessors(boolean kill) throws CasProcessorDeploymentException {
@@ -2944,12 +2810,8 @@ public class CPMEngine extends Thread {
       ProcessingContainer container = (ProcessingContainer) annotatorList.get(i);
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_show_container_time__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_container_time__FINEST",
                 new Object[] { Thread.currentThread().getName(), container.getName(),
                     String.valueOf(container.getTotalTime()) });
       }
@@ -3003,7 +2865,8 @@ public class CPMEngine extends Thread {
   /**
    * Gets the stat for container.
    *
-   * @param aContainer the a container
+   * @param aContainer
+   *          the a container
    * @return the stat for container
    */
   private HashMap getStatForContainer(ProcessingContainer aContainer) {
@@ -3017,9 +2880,12 @@ public class CPMEngine extends Thread {
   /**
    * Save stat.
    *
-   * @param aStatLabel the a stat label
-   * @param aStatValue the a stat value
-   * @param aContainer the a container
+   * @param aStatLabel
+   *          the a stat label
+   * @param aStatValue
+   *          the a stat value
+   * @param aContainer
+   *          the a container
    */
   private void saveStat(String aStatLabel, String aStatValue, ProcessingContainer aContainer) {
 
@@ -3033,7 +2899,8 @@ public class CPMEngine extends Thread {
   /**
    * Check if the CASProcessor status is available for processing.
    *
-   * @param aStatus the a status
+   * @param aStatus
+   *          the a status
    * @return true, if is processor ready
    */
   private boolean isProcessorReady(int aStatus) {
@@ -3047,7 +2914,8 @@ public class CPMEngine extends Thread {
   /**
    * Invalidate CA ses.
    *
-   * @param aCASList the a CAS list
+   * @param aCASList
+   *          the a CAS list
    */
   public void invalidateCASes(CAS[] aCASList) {
     if (producer != null) {
@@ -3066,18 +2934,18 @@ public class CPMEngine extends Thread {
 
   /**
    * Releases given cases back to pool.
-   * 
-   * @param aCASList -
-   *          cas list to release
+   *
+   * @param aCASList
+   *          - cas list to release
    */
   public void releaseCASes(CAS[] aCASList) {
     for (int i = 0; i < aCASList.length; i++) {
       if (aCASList[i] != null) {
         // aCASList[i].reset();
         casPool.releaseCas(aCASList[i]);
-//        synchronized (casPool) {  // redundant - the above releaseCas call does this
-//          casPool.notifyAll();
-//        }
+        // synchronized (casPool) { // redundant - the above releaseCas call does this
+        // casPool.notifyAll();
+        // }
 
       } else {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -3092,10 +2960,10 @@ public class CPMEngine extends Thread {
   /**
    * Overrides the default performance tuning settings for this CPE. This affects things such as CAS
    * sizing parameters.
-   * 
+   *
    * @param aPerformanceTuningSettings
    *          the new settings
-   * 
+   *
    * @see UIMAFramework#getDefaultPerformanceTuningProperties()
    */
   public void setPerformanceTuningSettings(Properties aPerformanceTuningSettings) {
@@ -3114,7 +2982,8 @@ public class CPMEngine extends Thread {
   /**
    * Sets the process controller adapter.
    *
-   * @param aPca the new process controller adapter
+   * @param aPca
+   *          the new process controller adapter
    */
   public void setProcessControllerAdapter(ProcessControllerAdapter aPca) {
     pca = aPca;
@@ -3124,7 +2993,8 @@ public class CPMEngine extends Thread {
    * Gets the cpe config.
    *
    * @return the cpe config
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   /*
    * Return CPE Configuration params. Limit access to classes in the same package
@@ -3138,7 +3008,8 @@ public class CPMEngine extends Thread {
    * all ProcessingUnits have shut down, we put an EOFToken on the output queue so that The CAS
    * Consumers will also shut down. -Adam
    *
-   * @param unit the unit
+   * @param unit
+   *          the unit
    */
   synchronized void processingUnitShutdown(ProcessingUnit unit) {
     activeProcessingUnits--;
@@ -3147,15 +3018,15 @@ public class CPMEngine extends Thread {
       eofToken[0] = new EOFToken();
 
       outputQueue.enqueue(eofToken);
-//      synchronized (outputQueue) { // redundant - the above enqueue call does this
-//        outputQueue.notifyAll();
-//      }
-     
+      // synchronized (outputQueue) { // redundant - the above enqueue call does this
+      // outputQueue.notifyAll();
+      // }
+
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-            "UIMA_CPM_done_placed_eof_in_queue__FINEST",
-            new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_done_placed_eof_in_queue__FINEST",
+                new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
       }
     }
 
@@ -3173,8 +3044,10 @@ public class CPMEngine extends Thread {
   /**
    * Gets the cas with SOFA.
    *
-   * @param entity the entity
-   * @param pTrTemp the tr temp
+   * @param entity
+   *          the entity
+   * @param pTrTemp
+   *          the tr temp
    * @return the cas with SOFA
    */
   private Object getCasWithSOFA(Object entity, ProcessTrace pTrTemp) {
@@ -3194,29 +3067,24 @@ public class CPMEngine extends Thread {
           casList = (CAS[]) entity;
         } else {
           readerState = 1001;
-          while (this.isRunning && (casList[0] = casPool.getCas(0)) == null)
-           {
-            ; // intentionally empty while loop
+          while (isRunning && (casList[0] = casPool.getCas(0)) == null) {
+            // intentionally empty while loop
           }
           entity = casList;
         }
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_call_get_cas_returns_null_FINEST",
-                  new Object[] { Thread.currentThread().getName(),
-                      String.valueOf((casList[0] == null)) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_call_get_cas_returns_null_FINEST", new Object[] {
+                      Thread.currentThread().getName(), String.valueOf((casList[0] == null)) });
         }
-        if (this.isRunning() == false) {
+        if (isRunning() == false) {
           readerState = 1009;
           casPool.releaseCas(casList[0]);
-//          synchronized (casPool) { // redundant - the above releaseCas call does this
-//            casPool.notifyAll();
-//          }
+          // synchronized (casPool) { // redundant - the above releaseCas call does this
+          // casPool.notifyAll();
+          // }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -3228,8 +3096,7 @@ public class CPMEngine extends Thread {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_got_cas_from_pool__FINEST",
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_cas_from_pool__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
 
@@ -3326,11 +3193,13 @@ public class CPMEngine extends Thread {
   /**
    * Initialize the CPE.
    *
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private void bootstrapCPE() throws Exception {
     registerTypeSystemsWithCasManager();
-    casPool = new CPECasPool(getPoolSize(), cpeFactory.getResourceManager().getCasManager(), mPerformanceTuningSettings);
+    casPool = new CPECasPool(getPoolSize(), cpeFactory.getResourceManager().getCasManager(),
+            mPerformanceTuningSettings);
     callTypeSystemInit();
 
     setupProcessingPipeline();
@@ -3340,7 +3209,8 @@ public class CPMEngine extends Thread {
   /**
    * Setup single threaded pipeline.
    *
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private void setupProcessingPipeline() throws Exception {
     // activeProcessingUnits = 1;
@@ -3364,7 +3234,8 @@ public class CPMEngine extends Thread {
   /**
    * Setup Cas Consumer pipeline as single threaded.
    *
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private void setupConsumerPipeline() throws Exception {
     if (consumerList != null && consumerList.size() > 0) {
@@ -3401,8 +3272,8 @@ public class CPMEngine extends Thread {
   /**
    * Determines if a given CAS should be skipped.
    *
-   * @param entity -
-   *          container for CAS
+   * @param entity
+   *          - container for CAS
    * @return true if a given CAS should be skipped
    */
   private boolean skipDroppedDocument(Object[] entity) {
@@ -3417,8 +3288,9 @@ public class CPMEngine extends Thread {
 
   /**
    * Runs the CPE in a single thread without queues.
-   * 
-   * @throws Exception -
+   *
+   * @throws Exception
+   *           -
    */
   public void runSingleThreaded() throws Exception {
     Object entity = null;
@@ -3465,8 +3337,8 @@ public class CPMEngine extends Thread {
         }
 
         if (entity instanceof CAS[] && skipDroppedDocument((Object[]) entity)) {
-          notifyListeners(CAS_PROCESSED_MSG, (Object[]) entity, pTrTemp, new SkipCasException(
-                  "Skipping Document Due To Dropped Cas in a Sequence"));
+          notifyListeners(CAS_PROCESSED_MSG, (Object[]) entity, pTrTemp,
+                  new SkipCasException("Skipping Document Due To Dropped Cas in a Sequence"));
           releaseCASes((CAS[]) entity);
           continue;
         } else {
@@ -3523,8 +3395,8 @@ public class CPMEngine extends Thread {
   /**
    * Determines if the CPM processed all documents.
    *
-   * @param entityCount -
-   *          number of documents processed so far
+   * @param entityCount
+   *          - number of documents processed so far
    * @return true if all documents processed, false otherwise
    */
   private boolean endOfProcessingReached(long entityCount) {
@@ -3542,12 +3414,12 @@ public class CPMEngine extends Thread {
   /**
    * Handle given exception.
    *
-   * @param t -
-   *          exception to handle
-   * @param entity -
-   *          CAS container
-   * @param aPTrace -
-   *          process trace
+   * @param t
+   *          - exception to handle
+   * @param entity
+   *          - CAS container
+   * @param aPTrace
+   *          - process trace
    */
   private void handleException(Throwable t, Object[] entity, ProcessTrace aPTrace) {
     t.printStackTrace();
@@ -3561,9 +3433,12 @@ public class CPMEngine extends Thread {
   /**
    * Notify listeners.
    *
-   * @param aMsgType the a msg type
-   * @param entity the entity
-   * @param aPTrace the a P trace
+   * @param aMsgType
+   *          the a msg type
+   * @param entity
+   *          the entity
+   * @param aPTrace
+   *          the a P trace
    */
   private void notifyListeners(int aMsgType, Object[] entity, ProcessTrace aPTrace) {
     notifyListeners(aMsgType, entity, aPTrace, null);
@@ -3572,10 +3447,14 @@ public class CPMEngine extends Thread {
   /**
    * Notify listeners.
    *
-   * @param aMsgType the a msg type
-   * @param entity the entity
-   * @param aPTrace the a P trace
-   * @param t the t
+   * @param aMsgType
+   *          the a msg type
+   * @param entity
+   *          the entity
+   * @param aPTrace
+   *          the a P trace
+   * @param t
+   *          the t
    */
   private void notifyListeners(int aMsgType, Object[] entity, ProcessTrace aPTrace, Throwable t) {
     // Add Callback Listeners
@@ -3595,8 +3474,9 @@ public class CPMEngine extends Thread {
               eps.addEventStatus("Process", "Failed", t);
             }
             if (entity[i] != null && entity[i] instanceof CAS) {
-              callEntityProcessCompleteWithCAS((StatusCallbackListener)statCL, (CAS)entity[i], eps);
-//              ((StatusCallbackListener) statCL).entityProcessComplete((CAS) entity[i], eps);
+              callEntityProcessCompleteWithCAS((StatusCallbackListener) statCL, (CAS) entity[i],
+                      eps);
+              // ((StatusCallbackListener) statCL).entityProcessComplete((CAS) entity[i], eps);
             } else {
               ((StatusCallbackListener) statCL).entityProcessComplete(null, eps);
             }
@@ -3609,30 +3489,36 @@ public class CPMEngine extends Thread {
 
   /**
    * Internal use only, public for crss package access. switches class loaders and locks cas
-   * @param statCL status call back listener
-   * @param cas cas
-   * @param eps entity process status
+   * 
+   * @param statCL
+   *          status call back listener
+   * @param cas
+   *          cas
+   * @param eps
+   *          entity process status
    */
-  public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas, EntityProcessStatus eps) {
-    if ( statCL != null ) {
+  public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas,
+          EntityProcessStatus eps) {
+    if (statCL != null) {
       try {
         if (null != cas) {
-          ((CASImpl)cas).switchClassLoaderLockCas(statCL);
+          ((CASImpl) cas).switchClassLoaderLockCas(statCL);
         }
         statCL.entityProcessComplete(cas, eps);
       } finally {
         if (null != cas) {
-          ((CASImpl)cas).restoreClassLoaderUnlockCas();
+          ((CASImpl) cas).restoreClassLoaderUnlockCas();
         }
       }
     }
-  }  
-  
+  }
+
   /**
    * Gets the process trace.
    *
    * @return the process trace
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   private ProcessTrace getProcessTrace() throws Exception {
     ProcessTrace pT = null;
@@ -3643,29 +3529,29 @@ public class CPMEngine extends Thread {
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_use_custom_timer__FINEST",
                 new Object[] { Thread.currentThread().getName(), uTimer.getClass().getName() });
       }
-      pT = new ProcessTrace_impl(uTimer, this.getPerformanceTuningSettings());
+      pT = new ProcessTrace_impl(uTimer, getPerformanceTuningSettings());
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_use_default_timer__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
-      pT = new ProcessTrace_impl(this.getPerformanceTuningSettings());
+      pT = new ProcessTrace_impl(getPerformanceTuningSettings());
     }
     return pT;
   }
 
   /**
    * Stop and cleanup single-threaded CPE.
-   * 
+   *
    */
   private void tearDownCPE() {
     nonThreadedProcessingUnit.stopCasProcessors(false);
     nonThreadedCasConsumerProcessingUnit.stopCasProcessors(false);
-    this.nonThreadedProcessingUnit.cleanup();
-    this.nonThreadedCasConsumerProcessingUnit.cleanup();
+    nonThreadedProcessingUnit.cleanup();
+    nonThreadedCasConsumerProcessingUnit.cleanup();
   }
-  
+
   /**
    * Wait for cpm to resume if paused.
    */
@@ -3673,7 +3559,7 @@ public class CPMEngine extends Thread {
     synchronized (lockForPause) {
       // Pause this thread if CPM has been paused
       while (pause) {
-//        threadState = 2016;  thread state is not kept here, only in the ProcessingUnit
+        // threadState = 2016; thread state is not kept here, only in the ProcessingUnit
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_pp__FINEST",
@@ -3694,4 +3580,74 @@ public class CPMEngine extends Thread {
     }
   }
 
+  private static class ThreadGroupDestroyer extends Thread {
+    private Set<Thread> foreignThreadsBlockingShutdown = new LinkedHashSet<>();
+
+    private final ThreadGroup group;
+
+    private final AtomicInteger count = new AtomicInteger();
+
+    public ThreadGroupDestroyer(ThreadGroup aGroup) {
+      super(aGroup.getParent(), "threadGroupDestroyer");
+
+      group = aGroup;
+
+    }
+
+    @Override
+    public void run() {
+
+      while (group.activeCount() > 0) {
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
+        Thread[] threads = new Thread[group.activeCount()];
+        group.enumerate(threads);
+        showThreads(threads, foreignThreadsBlockingShutdown, count);
+      }
+
+      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_destroy_thread_group__FINEST",
+                new Object[] { Thread.currentThread().getName() });
+      }
+
+      group.destroy();
+    }
+
+    private void showThreads(Thread[] aThreadList, Set<Thread> foreignThreadsBlockingShutdown,
+            AtomicInteger count) {
+      count.incrementAndGet();
+
+      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+        for (int i = 0; aThreadList != null && i < aThreadList.length; i++) {
+          if (aThreadList[i] != null) {
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_thread__FINEST",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+                        aThreadList[i].getName() });
+          }
+        }
+      }
+
+      if (count.get() % 5 == 0) {
+        for (Thread thread : aThreadList) {
+          Set<Thread> nonUimaThreads = new HashSet<>();
+          if (!(thread instanceof ProcessingUnit) && !(thread instanceof ArtifactProducer)
+                  && !foreignThreadsBlockingShutdown.contains(thread)) {
+            nonUimaThreads.add(thread);
+          }
+
+          if (nonUimaThreads.size() == aThreadList.length) {
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unknown_thread__WARNING",
+                    new Object[] { thread.getName() });
+            foreignThreadsBlockingShutdown.add(thread);
+          }
+        }
+      }
+    }
+  }
 }

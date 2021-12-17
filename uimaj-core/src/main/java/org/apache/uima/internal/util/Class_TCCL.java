@@ -73,11 +73,6 @@ public class Class_TCCL {
 
     if (cl == null) {
       cl = get_parent_cl();
-      Thread.currentThread().getContextClassLoader();
-    }
-
-    if (cl == null) {
-      cl = Class_TCCL.class.getClassLoader(); // this class's classloader
     }
 
     return cl;
