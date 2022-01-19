@@ -88,13 +88,6 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Start the thread.
-   */
-  public void start() {
-    new Thread(this).start();
-  }
-
-  /**
    * Stops the checkpoint thread.
    */
   public void stop() {
