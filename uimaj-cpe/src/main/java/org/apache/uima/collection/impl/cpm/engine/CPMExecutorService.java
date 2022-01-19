@@ -25,11 +25,14 @@ import static org.apache.uima.util.Level.FINER;
 import static org.apache.uima.util.Level.SEVERE;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.base_cpm.BaseStatusCallbackListener;
@@ -96,8 +99,8 @@ public class CPMExecutorService extends ThreadPoolExecutor {
     }
     try {
       // Notify listeners
-      for (int i = 0; callbackListeners != null && i < callbackListeners.size(); i++) {
-        notifyListener((BaseStatusCallbackListener) callbackListeners.get(i), throwable);
+      for (BaseStatusCallbackListener cbl : callbackListeners) {
+        notifyListener(cbl, throwable);
       }
 
     } catch (Throwable tr) {
@@ -130,5 +133,46 @@ public class CPMExecutorService extends ThreadPoolExecutor {
   public void cleanup() {
     callbackListeners = null;
     procTr = null;
+  }
+
+  @Override
+  protected <T> RunnableFuture<T> newTaskFor(Callable<T> aCallable) {
+    return new CpmFutureTask<T>(aCallable);
+  }
+
+  @Override
+  protected <T> RunnableFuture<T> newTaskFor(Runnable aRunnable, T aValue) {
+    return new CpmFutureTask<T>(aRunnable, aValue);
+  }
+
+  private class CpmFutureTask<T> extends FutureTask<T> {
+    public CpmFutureTask(Callable<T> aCallable) {
+      super(aCallable);
+    }
+
+    public CpmFutureTask(Runnable aRunnable, T aResult) {
+      super(aRunnable, aResult);
+    }
+
+    @Override
+    public T get() throws InterruptedException, ExecutionException {
+      try {
+        return super.get();
+      } catch (ExecutionException e) {
+        afterExecute(null, e.getCause());
+        return null;
+      }
+    }
+
+    @Override
+    public T get(long aTimeout, TimeUnit aUnit)
+            throws InterruptedException, ExecutionException, TimeoutException {
+      try {
+        return super.get(aTimeout, aUnit);
+      } catch (ExecutionException e) {
+        afterExecute(null, e.getCause());
+        return null;
+      }
+    }
   }
 }
