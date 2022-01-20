@@ -34,9 +34,8 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
-
-public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
-        TestResourceInterface {
+public class TestResourceInterface_impl extends Resource_ImplBase
+        implements SharedResourceObject, TestResourceInterface {
   private String mString;
 
   /**
@@ -54,15 +53,15 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
     } catch (IOException e) {
       throw new ResourceInitializationException(e);
     } finally {
-      if ( inStr != null ) {
+      if (inStr != null) {
         try {
           inStr.close();
-        } catch( Exception e) {
+        } catch (Exception e) {
           System.out.println("CPE.load() - Unable to close Input Stream");
         }
       }
     }
-    
+
   }
 
   /**

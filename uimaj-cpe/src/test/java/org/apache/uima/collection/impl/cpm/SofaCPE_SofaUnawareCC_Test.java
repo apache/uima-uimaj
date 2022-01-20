@@ -53,12 +53,13 @@ public class SofaCPE_SofaUnawareCC_Test {
 
   Throwable firstFailure;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaCPE_SofaUnawareCC.xml");
     // Use the specifier file to determine where the specifiers live.
-    System.setProperty("CPM_HOME", cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
+    System.setProperty("CPM_HOME",
+            cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
     cpeDesc = UIMAFramework.getXMLParser()
             .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
     // instantiate a cpe
@@ -69,17 +70,17 @@ public class SofaCPE_SofaUnawareCC_Test {
     firstFailure = null;
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     cpeDesc = null;
     cpe = null;
     cpeSpecifierFile = null;
-//    System.gc();
-//    System.gc();
+    // System.gc();
+    // System.gc();
   }
 
-    @Test
-    public void testProcess() throws Throwable {
+  @Test
+  public void testProcess() throws Throwable {
     // System.out.println("method testProcess");
     try {
       cpe.process();

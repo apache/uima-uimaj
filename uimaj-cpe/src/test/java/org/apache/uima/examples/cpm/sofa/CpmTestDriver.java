@@ -42,8 +42,8 @@ public class CpmTestDriver {
   public static void main(String[] args) {
     try {
       // read in the cpe descriptor
-      CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-              new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
+      CpeDescription cpeDesc = UIMAFramework.getXMLParser()
+              .parseCpeDescription(new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
       // instantiate a cpe
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
               null);

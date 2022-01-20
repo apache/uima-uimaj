@@ -42,12 +42,12 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for CPE descriptor.
    */
-    @Test
-    public void testCpeDescriptor() throws Exception {
+  @Test
+  public void testCpeDescriptor() throws Exception {
     File cpeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CPE_DESC_NAME);
     if (!cpeDescFile.isFile())
       throw new FileNotFoundException("CPE descriptor not found");
-    Assert.assertTrue(UIMAUtil.CPE_CONFIGURATION_CTG.equals(UIMAUtil
-            .identifyUimaComponentCategory(cpeDescFile)));
+    Assert.assertTrue(UIMAUtil.CPE_CONFIGURATION_CTG
+            .equals(UIMAUtil.identifyUimaComponentCategory(cpeDescFile)));
   }
 }

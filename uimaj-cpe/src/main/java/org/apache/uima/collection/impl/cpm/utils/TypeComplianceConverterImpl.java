@@ -19,7 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-
 /**
  * Component providing conversion service. It replaces all occurances of provided String patterns
  * with provided replacement String.
@@ -31,12 +30,12 @@ public class TypeComplianceConverterImpl {
   /**
    * Converts occurance of patterns in a sourceString with provided replacement String.
    * 
-   * @param aSourceString -
-   *          String to convert
-   * @param aPattern -
-   *          pattern for matching
-   * @param aReplaceString -
-   *          replacement String for aPattern
+   * @param aSourceString
+   *          - String to convert
+   * @param aPattern
+   *          - pattern for matching
+   * @param aReplaceString
+   *          - replacement String for aPattern
    * @return - converted String
    */
   public static String replace(String aSourceString, String aPattern, String aReplaceString) {
@@ -61,14 +60,15 @@ public class TypeComplianceConverterImpl {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
-    System.out.println(TypeComplianceConverterImpl.replace("Detag_colon_DetagContent", "_colon_",
-            ":"));
+    System.out.println(
+            TypeComplianceConverterImpl.replace("Detag_colon_DetagContent", "_colon_", ":"));
     System.out.println(TypeComplianceConverterImpl.replace("Detag:DetagContent", ":", "_colon_"));
-    System.out.println(TypeComplianceConverterImpl
-            .replace("Detag_dash_DetagContent", "_dash_", "-"));
+    System.out
+            .println(TypeComplianceConverterImpl.replace("Detag_dash_DetagContent", "_dash_", "-"));
     System.out.println(TypeComplianceConverterImpl.replace("Detag-DetagContent", "-", "_dash_"));
   }
 

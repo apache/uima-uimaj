@@ -21,11 +21,9 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.CAS;
 
-
 public class CasTestUtil {
 
   public static int getHeapSize(CAS aCAS) {
     return ((CASImpl) aCAS).getInitialHeapSize();
   }
 }
-

@@ -26,13 +26,14 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.junit.Assert;
 
 /**
- * Test CAS Multiplier that asserts that input and output CAS type systems
- * are identical.
+ * Test CAS Multiplier that asserts that input and output CAS type systems are identical.
  */
 public class TestCasMultiplier extends CasMultiplier_ImplBase {
   private CAS mInputCAS;
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.CasMultiplier_ImplBase#process(org.apache.uima.cas.CAS)
    */
   @Override
@@ -40,29 +41,33 @@ public class TestCasMultiplier extends CasMultiplier_ImplBase {
     mInputCAS = aCAS;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
   @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     CAS outputCas = getEmptyCAS();
     try {
-      Assert.assertTrue(((TypeSystemImpl)mInputCAS.getTypeSystem()).getLargestTypeCode() ==
-        ((TypeSystemImpl)outputCas.getTypeSystem()).getLargestTypeCode());
+      Assert.assertTrue(((TypeSystemImpl) mInputCAS.getTypeSystem())
+              .getLargestTypeCode() == ((TypeSystemImpl) outputCas.getTypeSystem())
+                      .getLargestTypeCode());
       Assert.assertTrue(mInputCAS.getTypeSystem() == outputCas.getTypeSystem());
-    }
-    finally {
+    } finally {
       outputCas.release();
     }
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
   @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
-    Assert.fail(); //should never get here
+    Assert.fail(); // should never get here
     return null;
   }
 

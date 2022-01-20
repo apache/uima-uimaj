@@ -141,23 +141,16 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
     if (aCas == null) {
       for (int i = 0; i < aStatus.getFailedComponentNames().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_failed_component__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_failed_component__FINEST",
                   new Object[] { Thread.currentThread().getName(),
                       ((String) aStatus.getFailedComponentNames().get(i)) });
         }
       }
       for (int i = 0; i < aStatus.getExceptions().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_component_exception__FINEST",
                   new Object[] { Thread.currentThread().getName(),
                       (aStatus.getExceptions().get(i)).toString() });

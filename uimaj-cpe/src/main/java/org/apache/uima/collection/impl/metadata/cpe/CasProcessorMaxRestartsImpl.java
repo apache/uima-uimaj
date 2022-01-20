@@ -29,13 +29,12 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorMaxRestartsImpl.
  */
-public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
-        CasProcessorMaxRestarts {
-  
+public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl
+        implements CasProcessorMaxRestarts {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 2863741219504239020L;
 
@@ -106,7 +105,8 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   /**
    * Sets the value.
    *
-   * @param string the new value
+   * @param string
+   *          the new value
    */
   public void setValue(String string) {
     value = string;
@@ -115,10 +115,14 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -150,13 +154,15 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
     attrs.addAttribute("", "action", "action", "CDATA", String.valueOf(getAction()));
     attrs.addAttribute("", "value", "value", "CDATA", getValue());
     if (getWaitTimeBetweenRetries() != 0) {
-      attrs.addAttribute("", "waitTimeBetweenRetries", "waitTimeBetweenRetries", "CDATA", String
-              .valueOf(getWaitTimeBetweenRetries()));
+      attrs.addAttribute("", "waitTimeBetweenRetries", "waitTimeBetweenRetries", "CDATA",
+              String.valueOf(getWaitTimeBetweenRetries()));
     }
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -165,8 +171,8 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "maxConsecutiveRestarts", new PropertyXmlInfo[0]);
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("maxConsecutiveRestarts",
+          new PropertyXmlInfo[0]);
 
   /**
    * Gets the wait time between retries.
@@ -181,7 +187,8 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   /**
    * Sets the wait time between retries.
    *
-   * @param i the new wait time between retries
+   * @param i
+   *          the new wait time between retries
    */
   @Override
   public void setWaitTimeBetweenRetries(int i) {

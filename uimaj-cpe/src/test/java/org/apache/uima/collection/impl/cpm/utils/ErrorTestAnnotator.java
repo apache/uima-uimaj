@@ -32,7 +32,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-
 public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
 
   // Parameter fields in the xml
@@ -65,11 +64,13 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.JTextAnnotator#process(org.apache.uima.jcas.impl.JCas,
-   *      org.apache.uima.analysis_engine.ResultSpecification)
+   * @see
+   * org.apache.uima.analysis_engine.annotator.JTextAnnotator#process(org.apache.uima.jcas.impl.
+   * JCas, org.apache.uima.analysis_engine.ResultSpecification)
    */
   @Override
-  public void process(JCas aJCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+  public void process(JCas aJCas, ResultSpecification aResultSpec)
+          throws AnnotatorProcessException {
     // count the calls...
     FunctionErrorStore.increaseAnnotatorProcessCount();
     logger.log(LOG_LEVEL, "process was called");
@@ -81,11 +82,12 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
+   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.
+   * analysis_engine.annotator.AnnotatorContext)
    */
   @Override
-  public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException {
+  public void initialize(AnnotatorContext aContext)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException {
     super.initialize(aContext);
     try {
       // set logger
@@ -127,8 +129,8 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#reconfigure()
    */
   @Override
-  public void reconfigure() throws AnnotatorConfigurationException,
-          AnnotatorInitializationException {
+  public void reconfigure()
+          throws AnnotatorConfigurationException, AnnotatorInitializationException {
     super.reconfigure();
     logger.log(LOG_LEVEL, "reconfigure was called");
     if (errorConfig.containsKey(FUNC_RECONFIGURE_KEY)) {

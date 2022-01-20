@@ -29,12 +29,11 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class OutputQueue_impl.
  */
 public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -3001016349004832820L;
 
@@ -47,10 +46,14 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   /**
    * Overridden to read "queueClass" and "dequeueTimeout" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -74,13 +77,15 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    attrs.addAttribute("", "dequeueTimeout", "dequeueTimeout", "CDATA", String
-            .valueOf(getDequeueTimeout()));
+    attrs.addAttribute("", "dequeueTimeout", "dequeueTimeout", "CDATA",
+            String.valueOf(getDequeueTimeout()));
     attrs.addAttribute("", "queueClass", "queueClass", "CDATA", String.valueOf(getQueueClass()));
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -115,7 +120,8 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   /**
    * Sets the dequeue timeout.
    *
-   * @param i the new dequeue timeout
+   * @param i
+   *          the new dequeue timeout
    */
   @Override
   public void setDequeueTimeout(int i) {
@@ -125,7 +131,8 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   /**
    * Sets the queue class.
    *
-   * @param string the new queue class
+   * @param string
+   *          the new queue class
    */
   @Override
   public void setQueueClass(String string) {

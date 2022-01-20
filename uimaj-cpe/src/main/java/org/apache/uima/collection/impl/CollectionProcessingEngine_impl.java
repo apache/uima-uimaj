@@ -36,7 +36,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.Progress;
 
-
 public class CollectionProcessingEngine_impl implements CollectionProcessingEngine {
   /**
    * CPM instance that handles the processing
@@ -46,8 +45,9 @@ public class CollectionProcessingEngine_impl implements CollectionProcessingEngi
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.CollectionProcessingEngine#initialize(org.apache.uima.collection.metadata.cpeDescription,
-   *      java.util.Map)
+   * @see
+   * org.apache.uima.collection.CollectionProcessingEngine#initialize(org.apache.uima.collection.
+   * metadata.cpeDescription, java.util.Map)
    */
   @Override
   public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
@@ -59,12 +59,12 @@ public class CollectionProcessingEngine_impl implements CollectionProcessingEngi
     }
 
     // get the ResourceManager (if any) supplied in the aAdditionalParams map
-    ResourceManager resMgr = aAdditionalParams == null ? null : (ResourceManager) aAdditionalParams
-            .get(Resource.PARAM_RESOURCE_MANAGER);
+    ResourceManager resMgr = aAdditionalParams == null ? null
+            : (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
 
     // get performance tuning settings (if any) supplied in the aAdditionalParams map
-    Properties perfSettings = aAdditionalParams == null ? null : (Properties) aAdditionalParams
-            .get(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS);
+    Properties perfSettings = aAdditionalParams == null ? null
+            : (Properties) aAdditionalParams.get(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS);
 
     // get ProcessControllerAdapter responsible for launching fenced services
     ProcessControllerAdapter pca = aAdditionalParams == null ? null
@@ -86,7 +86,9 @@ public class CollectionProcessingEngine_impl implements CollectionProcessingEngi
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.CollectionProcessingEngine#addStatusCallbackListener(org.apache.uima.collection.StatusCallbackListener)
+   * @see
+   * org.apache.uima.collection.CollectionProcessingEngine#addStatusCallbackListener(org.apache.uima
+   * .collection.StatusCallbackListener)
    */
   @Override
   public void addStatusCallbackListener(StatusCallbackListener aListener) {
@@ -96,7 +98,9 @@ public class CollectionProcessingEngine_impl implements CollectionProcessingEngi
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.CollectionProcessingEngine#removeStatusCallbackListener(org.apache.uima.collection.StatusCallbackListener)
+   * @see
+   * org.apache.uima.collection.CollectionProcessingEngine#removeStatusCallbackListener(org.apache.
+   * uima.collection.StatusCallbackListener)
    */
   @Override
   public void removeStatusCallbackListener(StatusCallbackListener aListener) {

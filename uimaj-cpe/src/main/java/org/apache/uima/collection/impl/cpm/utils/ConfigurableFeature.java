@@ -21,12 +21,11 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import java.util.ArrayList;
 
-
 /**
  * The Class ConfigurableFeature.
  */
 public class ConfigurableFeature {
-  
+
   /** The value. */
   private ValuePair value;
 
@@ -36,8 +35,10 @@ public class ConfigurableFeature {
   /**
    * Instantiates a new configurable feature.
    *
-   * @param oldV the old V
-   * @param newV the new V
+   * @param oldV
+   *          the old V
+   * @param newV
+   *          the new V
    */
   public ConfigurableFeature(String oldV, String newV) {
     value = new ValuePair(oldV, newV);
@@ -64,7 +65,8 @@ public class ConfigurableFeature {
   /**
    * Adds the attribute.
    *
-   * @param value the value
+   * @param value
+   *          the value
    */
   public void addAttribute(ValuePair value) {
     attributeList.add(value);
@@ -73,7 +75,8 @@ public class ConfigurableFeature {
   /**
    * Adds the attributes.
    *
-   * @param attList the att list
+   * @param attList
+   *          the att list
    */
   public void addAttributes(ArrayList attList) {
     attributeList = attList;
@@ -82,7 +85,8 @@ public class ConfigurableFeature {
   /**
    * Gets the old attribute value.
    *
-   * @param index the index
+   * @param index
+   *          the index
    * @return the old attribute value
    */
   public String getOldAttributeValue(int index) {
@@ -95,7 +99,8 @@ public class ConfigurableFeature {
   /**
    * Gets the old attribute value.
    *
-   * @param key the key
+   * @param key
+   *          the key
    * @return the old attribute value
    */
   public String getOldAttributeValue(String key) {
@@ -110,7 +115,8 @@ public class ConfigurableFeature {
   /**
    * Gets the new attribute value.
    *
-   * @param index the index
+   * @param index
+   *          the index
    * @return the new attribute value
    */
   public String getNewAttributeValue(int index) {
@@ -123,7 +129,8 @@ public class ConfigurableFeature {
   /**
    * Gets the new attribute value.
    *
-   * @param key the key
+   * @param key
+   *          the key
    * @return the new attribute value
    */
   public String getNewAttributeValue(String key) {
