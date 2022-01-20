@@ -34,8 +34,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Base interface for implementing a Container object responsible for managing Cas Processor
  * instances at runtime. Aggregates stats and totals and helps with error recovery.
  */
-public abstract class ProcessingContainer extends Resource_ImplBase implements
-        ConfigurableResource, CasProcessorController {
+public abstract class ProcessingContainer extends Resource_ImplBase
+        implements ConfigurableResource, CasProcessorController {
   public abstract boolean processCas(Object[] aCas);
 
   public abstract void releaseCasProcessor(CasProcessor aCasProcessor);

@@ -42,12 +42,11 @@ import org.apache.uima.util.UimaTimer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 /**
  * The Class CPMUtils.
  */
 public class CPMUtils {
-  
+
   /** The Constant CPM_LOG_RESOURCE_BUNDLE. */
   public static final String CPM_LOG_RESOURCE_BUNDLE = "org.apache.uima.collection.impl.cpm.cpm_messages";
 
@@ -57,14 +56,16 @@ public class CPMUtils {
   /**
    * Currently, this returns initialized array of Strings.
    * 
-   * @param aKeyDropMapFile -
-   *          a file containing a list of features that should be removed from CAS being sent to Cas
-   *          Processor. Currently not used.
+   * @param aKeyDropMapFile
+   *          - a file containing a list of features that should be removed from CAS being sent to
+   *          Cas Processor. Currently not used.
    * 
    * @return - Array of empty Strings
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException
+   *           -
    */
-  public static String[] getKeys2Drop(String aKeyDropMapFile) throws ResourceConfigurationException {
+  public static String[] getKeys2Drop(String aKeyDropMapFile)
+          throws ResourceConfigurationException {
     return new String[] { "", "" };
 
   }
@@ -72,7 +73,8 @@ public class CPMUtils {
   /**
    * Sets the timer.
    *
-   * @param aTimer the new timer
+   * @param aTimer
+   *          the new timer
    */
   public static void setTimer(UimaTimer aTimer) {
     timer = aTimer;
@@ -90,12 +92,16 @@ public class CPMUtils {
   /**
    * Convert to absolute path.
    *
-   * @param aSystemVar the a system var
-   * @param aExpr the a expr
-   * @param aPathToConvert the a path to convert
+   * @param aSystemVar
+   *          the a system var
+   * @param aExpr
+   *          the a expr
+   * @param aPathToConvert
+   *          the a path to convert
    * @return absolute path
    */
-  public static String convertToAbsolutePath(String aSystemVar, String aExpr, String aPathToConvert) {
+  public static String convertToAbsolutePath(String aSystemVar, String aExpr,
+          String aPathToConvert) {
     if (aPathToConvert == null || aSystemVar == null || !aPathToConvert.startsWith(aExpr)) {
       return aPathToConvert;
     }
@@ -106,9 +112,11 @@ public class CPMUtils {
    * Return timer to measure performace of the cpm. The timer can optionally be configured in the
    * CPE descriptor. If none defined, the method returns default timer.
    *
-   * @param aTimerClass the a timer class
+   * @param aTimerClass
+   *          the a timer class
    * @return - customer timer or JavaTimer (default)
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   public static UimaTimer getTimer(String aTimerClass) throws Exception {
     if (aTimerClass != null) {
@@ -122,10 +130,10 @@ public class CPMUtils {
   /**
    * Returns the total duration of a given event.
    *
-   * @param aPT -
-   *          Event container
-   * @param eventName -
-   *          name of the event for which the time is needed
+   * @param aPT
+   *          - Event container
+   * @param eventName
+   *          - name of the event for which the time is needed
    * @return - total duration of an event
    */
   public synchronized static long extractTime(ProcessTrace aPT, String eventName) {
@@ -153,8 +161,8 @@ public class CPMUtils {
   /**
    * Dumps all events in the process trace object.
    *
-   * @param aPTr -
-   *          event container
+   * @param aPTr
+   *          - event container
    */
   public static void dumpEvents(ProcessTrace aPTr) {
     List aList = aPTr.getEvents();
@@ -163,8 +171,7 @@ public class CPMUtils {
       String aEvType = prEvent.getType();
       if (System.getProperty("DEBUG_EVENTS") != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(CPMUtils.class).log(
-                  Level.FINEST,
+          UIMAFramework.getLogger(CPMUtils.class).log(Level.FINEST,
                   "Returning Report With Event::" + aEvType + " For Component:::"
                           + prEvent.getComponentName() + " Duration:::"
                           + prEvent.getDurationExcludingSubEvents());
@@ -178,7 +185,8 @@ public class CPMUtils {
    * Finds an occurance of the ##CPM_HOME in a value parameter and returns it with an expanded form
    * (ie.c:/cpm/...) based on the env variable CPM_HOME.
    *
-   * @param value the value
+   * @param value
+   *          the value
    * @return the string
    */
   public static String scrubThePath(String value) {
@@ -195,9 +203,11 @@ public class CPMUtils {
   /**
    * Finds a node with a given path and returns its textual value.
    *
-   * @param aNode the a node
+   * @param aNode
+   *          the a node
    * @return textual value of a node indicated in the XPath path
-   * @exception Exception the exception
+   * @exception Exception
+   *              the exception
    */
   private static String extractText(Node aNode) throws Exception {
     String text = null;
@@ -217,9 +227,11 @@ public class CPMUtils {
   /**
    * Gets the configurable feature.
    *
-   * @param entityNode the entity node
+   * @param entityNode
+   *          the entity node
    * @return a configurable feature
-   * @throws ConfigurationException -
+   * @throws ConfigurationException
+   *           -
    */
   private static ConfigurableFeature getConfigurableFeature(Node entityNode)
           throws ConfigurationException // SITHException
@@ -255,8 +267,8 @@ public class CPMUtils {
   /**
    * Returns text associated with TEXT_NODE element.
    *
-   * @param aList -
-   *          list of elements
+   * @param aList
+   *          - list of elements
    * @return - Text
    */
   private static String getTextValue(NodeList aList) {
@@ -272,9 +284,11 @@ public class CPMUtils {
   /**
    * Gets the features.
    *
-   * @param attributesNode the attributes node
+   * @param attributesNode
+   *          the attributes node
    * @return a list of features
-   * @throws ConfigurationException -
+   * @throws ConfigurationException
+   *           -
    */
   private static ArrayList getFeatures(Node attributesNode) throws ConfigurationException {
     ArrayList attributeList = new ArrayList();
@@ -316,15 +330,17 @@ public class CPMUtils {
   /**
    * Find deploy directory.
    *
-   * @param aServiceName the a service name
+   * @param aServiceName
+   *          the a service name
    * @return the deploy directory
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   public static File findDeployDirectory(String aServiceName) throws Exception {
     if (aServiceName == null) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_EXP_service_not_defined__WARNING", new Object[] {
-                  Thread.currentThread().getName(), "NULL" }));
+              "UIMA_CPM_EXP_service_not_defined__WARNING",
+              new Object[] { Thread.currentThread().getName(), "NULL" }));
     }
 
     File[] dirList = getDirectories();
@@ -352,7 +368,8 @@ public class CPMUtils {
    * Gets the directories.
    *
    * @return an array of directories
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private static File[] getDirectories() throws Exception {
     String rootPath = System.getProperty("CPM_HOME");
@@ -362,8 +379,8 @@ public class CPMUtils {
     File rootDir = new File(rootPath, appRoot);
     if (rootDir.isDirectory() == false) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_EXP_not_directory__WARNING", new Object[] {
-                  Thread.currentThread().getName(), appRoot }));
+              "UIMA_CPM_EXP_not_directory__WARNING",
+              new Object[] { Thread.currentThread().getName(), appRoot }));
     }
     String[] list = rootDir.list();
     String currentFile;
@@ -371,8 +388,8 @@ public class CPMUtils {
     File aFile = null;
     for (int i = 0; i < list.length; i++) {
       currentFile = list[i];
-      aFile = new File(rootDir.getAbsolutePath() + System.getProperty("file.separator")
-              + currentFile);
+      aFile = new File(
+              rootDir.getAbsolutePath() + System.getProperty("file.separator") + currentFile);
       if (aFile.isDirectory()) {
         dirList.add(aFile);
       }
@@ -386,11 +403,15 @@ public class CPMUtils {
   /**
    * Gets the feature as int.
    *
-   * @param aCas the a cas
-   * @param aFeature the a feature
-   * @param aName the a name
+   * @param aCas
+   *          the a cas
+   * @param aFeature
+   *          the a feature
+   * @param aName
+   *          the a name
    * @return the feature as int
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   public static int getFeatureAsInt(CAS aCas, Feature aFeature, String aName) throws Exception {
     Feature seqNo2 = aFeature.getRange().getFeatureByBaseName(aName);
@@ -402,14 +423,15 @@ public class CPMUtils {
   /**
    * Returns a value associated with a given feature.
    *
-   * @param aCas -
-   *          Cas containing data to extract
-   * @param aFeature -
-   *          feature to locate in the CAS
-   * @param aName -
-   *          name of the feature
+   * @param aCas
+   *          - Cas containing data to extract
+   * @param aFeature
+   *          - feature to locate in the CAS
+   * @param aName
+   *          - name of the feature
    * @return - value as String
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   public static String getFeatureAsString(CAS aCas, Feature aFeature, String aName)
           throws Exception {
@@ -423,13 +445,13 @@ public class CPMUtils {
   /**
    * Extract metadata associated with chunk from a given CAS.
    * 
-   * @param aCas -
-   *          Cas to extract chunk metadata from
+   * @param aCas
+   *          - Cas to extract chunk metadata from
    * @return - chunk metadata
    */
   public static synchronized ChunkMetadata getChunkMetadata(CAS aCas) {
-    Feature feat = aCas.getTypeSystem().getFeatureByFullName(
-            "uima.tcas.DocumentAnnotation:esDocumentMetaData");
+    Feature feat = aCas.getTypeSystem()
+            .getFeatureByFullName("uima.tcas.DocumentAnnotation:esDocumentMetaData");
     if (feat != null) {
       try {
         int sequenceNo = getFeatureAsInt(aCas, feat, ChunkMetadata.SEQUENCE); // "sequenceNumber");
@@ -438,8 +460,7 @@ public class CPMUtils {
         String throttleID = getFeatureAsString(aCas, feat, ChunkMetadata.THROTTLEID); // "isCompleted");
         String url = getFeatureAsString(aCas, feat, ChunkMetadata.DOCUMENTURL); // "isCompleted");
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(CPMUtils.class).log(
-                  Level.FINEST,
+          UIMAFramework.getLogger(CPMUtils.class).log(Level.FINEST,
                   Thread.currentThread().getName() + "===========================>SeqNo::"
                           + sequenceNo + " docId::" + docId + " isComplete::" + isCompleted
                           + " ThrottleID:" + throttleID + " Document URL:" + url);

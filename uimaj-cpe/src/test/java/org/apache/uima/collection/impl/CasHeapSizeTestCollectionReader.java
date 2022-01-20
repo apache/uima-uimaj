@@ -44,9 +44,9 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
   @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     int actualHeapSize = CasTestUtil.getHeapSize(aCAS);
-  
-    // in v3 the actualHeap is always 500,000, so this test always miscompares  
-//    Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
+
+    // in v3 the actualHeap is always 500,000, so this test always miscompares
+    // Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
     numChecks--;
 
     // populate with doc to avoid error

@@ -46,29 +46,30 @@ public class CasPoolTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   /**
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
-
 
   /**
    * Create multiple processors which have to process multiple documents
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testCasPool() throws Exception {
+  @Test
+  public void testCasPool() throws Exception {
     // process 100 documents and multiple threads
     int documentCount = 100;
     int threadCount = 5;
@@ -79,6 +80,7 @@ public class CasPoolTest {
     // create and register a status callback listener
     TestStatusCallbackListener listener = new TestStatusCallbackListener() {
       TypeSystem sts = null;
+
       @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
         super.entityProcessComplete(aCas, aStatus);
@@ -87,7 +89,7 @@ public class CasPoolTest {
         } else {
           Assert.assertTrue(sts == aCas.getTypeSystem());
         }
-      }      
+      }
     };
     cpe.addStatusCallbackListener(listener);
 
@@ -100,14 +102,14 @@ public class CasPoolTest {
     }
 
     // check if CasConsumer was called
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
@@ -126,11 +128,12 @@ public class CasPoolTest {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCollectionReader.xml").getAbsolutePath();
-      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
-      String casConsumerBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCasConsumer.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);

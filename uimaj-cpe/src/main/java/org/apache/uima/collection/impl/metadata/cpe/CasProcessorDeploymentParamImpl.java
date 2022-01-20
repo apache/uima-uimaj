@@ -26,13 +26,12 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorDeploymentParamImpl.
  */
-public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl implements
-        CasProcessorDeploymentParam {
-  
+public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl
+        implements CasProcessorDeploymentParam {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8950620301535742630L;
 
@@ -54,9 +53,12 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
   /**
    * Instantiates a new cas processor deployment param impl.
    *
-   * @param aName the a name
-   * @param aValue the a value
-   * @param aType the a type
+   * @param aName
+   *          the a name
+   * @param aValue
+   *          the a value
+   * @param aType
+   *          the a type
    */
   public CasProcessorDeploymentParamImpl(String aName, String aValue, String aType) {
     name = aName;
@@ -64,8 +66,12 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
     type = aType;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterName(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterName(java.lang.
+   * String)
    */
   @Override
   public void setParameterName(String aParamName) throws CpeDescriptorException {
@@ -82,9 +88,12 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
     return name;
   }
 
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterValue(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterValue(java.lang.
+   * String)
    */
   @Override
   public void setParameterValue(String aParamValue) throws CpeDescriptorException {
@@ -104,15 +113,18 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterType(java.lang.String)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterType(java.lang.
+   * String)
    */
   @Override
   public void setParameterType(String aParamType) throws CpeDescriptorException {
     type = aParamType;
   }
 
-  
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#getParameterType()
    */
   @Override
@@ -141,7 +153,9 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override

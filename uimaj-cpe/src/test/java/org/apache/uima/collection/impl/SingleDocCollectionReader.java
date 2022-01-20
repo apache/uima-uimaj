@@ -42,10 +42,10 @@ public class SingleDocCollectionReader extends CollectionReader_ImplBase {
    */
   @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
-    assert(!done);
+    assert (!done);
 
     aCAS.setDocumentText("This is a test");
-    
+
     done = true;
   }
 

@@ -35,19 +35,18 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
-
 /**
  * Runing in a seperate thread creates a checkpoint file at predefined intervals.
  * 
  */
 public class Checkpoint implements Runnable {
-  
+
   /** The file name. */
   private String fileName = null;
 
   /** The stop. */
-  private volatile boolean stop = false;  // volatile may be buggy in some JVMs apparently
-                                          // consider changing to use synch
+  private volatile boolean stop = false; // volatile may be buggy in some JVMs apparently
+                                         // consider changing to use synch
 
   /** The checkpoint frequency. */
   private long checkpointFrequency = 3000;
@@ -55,7 +54,7 @@ public class Checkpoint implements Runnable {
   /**
    * The pause.
    *
-   * @GuardedBy(lockForPause) 
+   * @GuardedBy(lockForPause)
    */
   private boolean pause = false;
 
@@ -73,9 +72,12 @@ public class Checkpoint implements Runnable {
    * Initialize the checkpoint with a reference to controlling cpe, the file where the checkpoint is
    * to be stored, and the frequency of checkpoints.
    *
-   * @param aCpm the a cpm
-   * @param aFilename the a filename
-   * @param aCheckpointFrequency the a checkpoint frequency
+   * @param aCpm
+   *          the a cpm
+   * @param aFilename
+   *          the a filename
+   * @param aCheckpointFrequency
+   *          the a checkpoint frequency
    */
   public Checkpoint(BaseCPMImpl aCpm, String aFilename, long aCheckpointFrequency) {
     fileName = aFilename;
@@ -197,7 +199,7 @@ public class Checkpoint implements Runnable {
       ObjectOutputStream s = null;
 
       try (FileOutputStream out = new FileOutputStream(fileName);
-           FileOutputStream synchPointOut = new FileOutputStream(synchPointFileName)) {
+              FileOutputStream synchPointOut = new FileOutputStream(synchPointFileName)) {
         s = new ObjectOutputStream(out);
         SynchPoint synchPoint = cpm.getSynchPoint();
 
@@ -207,17 +209,17 @@ public class Checkpoint implements Runnable {
           if (synchPoint != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                    this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
-                    new Object[] {Thread.currentThread().getName()});
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             targetToSave = new CheckpointData(pTrace, synchPoint);
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                    this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_checkpoint_with_pt__FINEST",
-                    new Object[] {Thread.currentThread().getName()});
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_checkpoint_with_pt__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             targetToSave = new CheckpointData(pTrace);
           }
@@ -233,9 +235,9 @@ public class Checkpoint implements Runnable {
         }
       } catch (Exception e) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_exception_when_checkpointing__FINEST",
-              new Object[] {Thread.currentThread().getName(), e.getMessage()});
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_exception_when_checkpointing__FINEST",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
 
     } catch (Exception e) {
@@ -249,8 +251,8 @@ public class Checkpoint implements Runnable {
   /**
    * Renames previous checkpoint file.
    * 
-   * @param aFilename -
-   *          checkpoint file to rename
+   * @param aFilename
+   *          - checkpoint file to rename
    */
   public void rename(String aFilename) {
     File currentFile = new File(aFilename);
@@ -261,7 +263,8 @@ public class Checkpoint implements Runnable {
   /**
    * Prints the stats.
    *
-   * @param prT the pr T
+   * @param prT
+   *          the pr T
    */
   public static void printStats(ProcessTrace prT) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -307,10 +310,8 @@ public class Checkpoint implements Runnable {
       totDur = prEvent.getDuration();
       subEveList = prEvent.getSubEvents();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(Checkpoint.class).log(
-                Level.FINEST,
-                tabS + "COMPONENT : " + compNameS + "\tTYPE : " + typeS + "\tDescription : "
-                        + prEvent.getDescription());
+        UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST, tabS + "COMPONENT : "
+                + compNameS + "\tTYPE : " + typeS + "\tDescription : " + prEvent.getDescription());
         UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
                 tabS + "TOTAL_TIME : " + totDur + "\tTIME_EXCLUDING_SUBEVENTS : " + dur);
       }
@@ -340,7 +341,8 @@ public class Checkpoint implements Runnable {
    * Retrieves the checkpoint from the filesystem.
    * 
    * @return - desirialized object containing recovery information.
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public synchronized Object restoreFromCheckpoint() throws IOException {
     ObjectInputStream stream = null;

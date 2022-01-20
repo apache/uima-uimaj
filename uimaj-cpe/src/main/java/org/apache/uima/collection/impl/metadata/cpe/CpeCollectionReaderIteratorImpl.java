@@ -31,13 +31,12 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-
 /**
  * The Class CpeCollectionReaderIteratorImpl.
  */
-public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl implements
-        CpeCollectionReaderIterator {
-  
+public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl
+        implements CpeCollectionReaderIterator {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -9208074797482603808L;
 
@@ -66,14 +65,17 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   /**
    * Sets the descriptor.
    *
-   * @param descriptor the new descriptor
+   * @param descriptor
+   *          the new descriptor
    */
   @Override
   public void setDescriptor(CpeComponentDescriptor descriptor) {
     this.descriptor = descriptor;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -104,10 +106,12 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   /**
    * Sets the configuration parameter settings.
    *
-   * @param settings the new configuration parameter settings
+   * @param settings
+   *          the new configuration parameter settings
    */
   @Override
-  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings) {
+  public void setConfigurationParameterSettings(
+          CasProcessorConfigurationParameterSettings settings) {
     configurationParameterSettings = settings;
     if (settings != null && settings.getParameterSettings() != null) {
       int length = settings.getParameterSettings().length;
@@ -116,8 +120,8 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
                 .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
-          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
-                  .getParameterSettings()[i].getValue());
+          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(),
+                  settings.getParameterSettings()[i].getValue());
         }
         configParameterSettings.setParameterSettings(nvp);
       }
@@ -149,7 +153,8 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   /**
    * Sets the config parameter settings.
    *
-   * @param settings the new config parameter settings
+   * @param settings
+   *          the new config parameter settings
    */
   public void setConfigParameterSettings(ConfigurationParameterSettings settings) {
     configParameterSettings = settings;
@@ -172,7 +177,8 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   /**
    * Sets the sofa name mappings.
    *
-   * @param mappings the new sofa name mappings
+   * @param mappings
+   *          the new sofa name mappings
    */
   @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {

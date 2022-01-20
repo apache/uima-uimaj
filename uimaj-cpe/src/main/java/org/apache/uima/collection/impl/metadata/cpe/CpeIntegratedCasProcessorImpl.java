@@ -22,13 +22,12 @@ package org.apache.uima.collection.impl.metadata.cpe;
 import org.apache.uima.collection.metadata.CasProcessorDeploymentParams;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 
-
 /**
  * The Class CpeIntegratedCasProcessorImpl.
  */
-public class CpeIntegratedCasProcessorImpl extends CasProcessorCpeObject implements
-        CpeIntegratedCasProcessor {
-  
+public class CpeIntegratedCasProcessorImpl extends CasProcessorCpeObject
+        implements CpeIntegratedCasProcessor {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6076012896926381047L;
 
@@ -47,7 +46,9 @@ public class CpeIntegratedCasProcessorImpl extends CasProcessorCpeObject impleme
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.metadata.cpe.CasProcessorCpeObject#addDefaults()
    */
   @Override

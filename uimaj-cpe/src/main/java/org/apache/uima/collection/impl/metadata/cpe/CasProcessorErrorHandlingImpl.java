@@ -27,12 +27,11 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-
 /**
  * The Class CasProcessorErrorHandlingImpl.
  */
-public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implements
-        CasProcessorErrorHandling {
+public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl
+        implements CasProcessorErrorHandling {
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1677062861920690715L;
@@ -55,7 +54,9 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implement
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setMaxConsecutiveRestarts(org.apache.uima.collection.metadata.CasProcessorMaxRestarts)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorErrorHandling#setMaxConsecutiveRestarts(org.
+   * apache.uima.collection.metadata.CasProcessorMaxRestarts)
    */
   @Override
   public void setMaxConsecutiveRestarts(CasProcessorMaxRestarts aCasPRestarts) {
@@ -75,7 +76,9 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implement
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setErrorRateThreshold(org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorErrorHandling#setErrorRateThreshold(org.apache.
+   * uima.collection.metadata.CasProcessorErrorRateThreshold)
    */
   @Override
   public void setErrorRateThreshold(CasProcessorErrorRateThreshold aCasPErrorThreshold) {
@@ -95,7 +98,8 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implement
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setTimeout(org.apache.uima.collection.metadata.CasProcessorTimeout)
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setTimeout(org.apache.uima.
+   * collection.metadata.CasProcessorTimeout)
    */
   @Override
   public void setTimeout(CasProcessorTimeout aTimeout) {
@@ -112,7 +116,9 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implement
     return timeout;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override

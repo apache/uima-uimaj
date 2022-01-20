@@ -38,13 +38,12 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorDeploymentParamsImpl.
  */
-public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implements
-        CasProcessorDeploymentParams {
-  
+public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl
+        implements CasProcessorDeploymentParams {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 4871710283477856271L;
 
@@ -60,7 +59,9 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#add(org.apache.uima.collection.metadata.CasProcessorDeploymentParam)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorDeploymentParams#add(org.apache.uima.collection
+   * .metadata.CasProcessorDeploymentParam)
    */
   @Override
   public void add(CasProcessorDeploymentParam aParam) {
@@ -97,7 +98,8 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#remove(org.apache.uima.collection.metadata.CasProcessorDeploymentParam)
+   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#remove(org.apache.uima.
+   * collection.metadata.CasProcessorDeploymentParam)
    */
   @Override
   public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException {
@@ -111,10 +113,14 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -141,8 +147,12 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler,
+   * boolean)
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
@@ -172,7 +182,9 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
     aContentHandler.endElement(inf.namespace, inf.elementTagName, inf.elementTagName);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override

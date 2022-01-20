@@ -28,7 +28,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-
 public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
 
   // Parameter fields in the xml
@@ -59,7 +58,8 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
+   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.
+   * analysis_engine.annotator.AnnotatorContext)
    */
   @Override
   public void initialize() throws ResourceInitializationException {
@@ -79,8 +79,8 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
         errorExceptionName = errorException;
       }
       // add the error object to the corresponding HashMap Entry
-      addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
-              errorFunction));
+      addError(errorFunction,
+              new FunctionErrorStore(errorExceptionName, errorCountName, errorFunction));
     }
     logger.log(LOG_LEVEL, "initialize() was called");
     if (errorConfig.containsKey(FUNC_INITIALIZE_KEY)) {
