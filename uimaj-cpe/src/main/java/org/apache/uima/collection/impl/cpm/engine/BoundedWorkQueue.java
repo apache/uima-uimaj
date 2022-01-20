@@ -19,12 +19,17 @@
 
 package org.apache.uima.collection.impl.cpm.engine;
 
+import static java.lang.System.currentTimeMillis;
+
+import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 
 /**
  * Implementation of a Bounded Queue, a queue with a fixed number of slots. Used primarily to feed
@@ -39,12 +44,13 @@ import org.apache.uima.util.Level;
  * 
  */
 public class BoundedWorkQueue {
+  private static final Logger LOG = UIMAFramework.getLogger(MethodHandles.lookup().lookupClass());
 
   /** The queue max size. */
   protected final int queueMaxSize;
 
   /** The queue. */
-  protected LinkedList queue = new LinkedList();
+  protected List<Object> queue = new LinkedList<>();
 
   /** The number elements in queue. */
   protected int numberElementsInQueue = 0;
@@ -118,11 +124,12 @@ public class BoundedWorkQueue {
    */
   public synchronized void enqueue(Object anObject) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_entering_queue__FINEST",
+      LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_entering_queue__FINEST",
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
+
     // If the queue is full, just wait until someone dequeues something from the queue
     try {
       // Make an exception and allow EOFToken placement beyond the end of queue. Dont wait here. We
@@ -132,8 +139,8 @@ public class BoundedWorkQueue {
         // Block if the queue is full AND the CPE is running
         while (numberElementsInQueue == queueMaxSize && (cpm == null || cpm.isRunning())) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_full__FINEST",
+            LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_full__FINEST",
                     new Object[] { Thread.currentThread().getName(), queueName,
                         String.valueOf(numberElementsInQueue) });
           }
@@ -144,21 +151,24 @@ public class BoundedWorkQueue {
     }
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_adding_cas_to_queue__FINEST",
+      LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_adding_cas_to_queue__FINEST",
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
-    // Appeand the object to the queue
+
+    // Append the object to the queue
     queue.add(anObject);
     // increment number of items in the queue
     numberElementsInQueue++;
+
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cas_in_queue__FINEST",
+      LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cas_in_queue__FINEST",
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
+
     notifyAll();
   }
 
@@ -169,8 +179,8 @@ public class BoundedWorkQueue {
    */
   public synchronized Object dequeue() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_enter_dequeue__FINEST",
+      LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_enter_dequeue__FINEST",
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
@@ -184,21 +194,21 @@ public class BoundedWorkQueue {
     numberElementsInQueue--;
     if (returnedObject instanceof Object[]) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cas_dequeued__FINEST",
+        LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cas_dequeued__FINEST",
                 new Object[] { Thread.currentThread().getName(), queueName,
                     String.valueOf(((Object[]) returnedObject).length) });
       }
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_no_cas_dequeued__FINEST",
+        LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_no_cas_dequeued__FINEST",
                 new Object[] { Thread.currentThread().getName(), queueName });
       }
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_from_dequeue__FINEST",
+      LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_from_dequeue__FINEST",
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
@@ -217,6 +227,10 @@ public class BoundedWorkQueue {
    */
   public synchronized Object dequeue(long aTimeout) {
     Object resource = dequeue();
+    if (resource != null) {
+      return resource;
+    }
+
     // next 5 lines commented out - was old method of waiting. -- Jan 2008 MIS
     // changes include waiting a little (WAIT_TIMEOUT) if !cpm.isRunning, to prevent
     // 100% CPU utilization while waiting for existing processes to finish
@@ -227,36 +241,37 @@ public class BoundedWorkQueue {
     // long timeExpire = (0 == aTimeout)? Long.MAX_VALUE : (System.currentTimeMillis() + aTimeout +
     // 1);
     // long timeLeft = timeExpire - System.currentTimeMillis();
-    if (resource == null) {
-      try {
-        // add 1 millisecond to expire time to account for "rounding" issues
-        long timeNow = System.currentTimeMillis();
-        long timeExpire = (!cpm.isRunning()) ? timeNow + WAIT_TIMEOUT : // a value to avoid 100% cpu
-                ((0 == aTimeout) ? Long.MAX_VALUE : timeNow + aTimeout + 1);
-        long timeLeft = timeExpire - timeNow;
-        while (timeLeft > 0) {
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
-                    new Object[] { Thread.currentThread().getName(), queueName });
-          }
-          this.wait(timeLeft); // timeLeft is always > 0
-          resource = dequeue();
-          if (null != resource) {
-            return resource;
-          }
-          timeLeft = timeExpire - System.currentTimeMillis();
+    try {
+      // add 1 millisecond to expire time to account for "rounding" issues
+      long timeNow = currentTimeMillis();
+      long timeExpire = (!cpm.isRunning()) ? timeNow + WAIT_TIMEOUT : // a value to avoid 100% CPU
+              ((0 == aTimeout) ? Long.MAX_VALUE : timeNow + aTimeout + 1);
+      long timeLeft = timeExpire - timeNow;
+      while (timeLeft > 0) {
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
+                  new Object[] { Thread.currentThread().getName(), queueName });
         }
-      } catch (InterruptedException e) {
+        this.wait(timeLeft); // timeLeft is always > 0
+        resource = dequeue();
+        if (null != resource) {
+          LOG.trace("[{}] Waited for {}ms", queueName, timeNow - currentTimeMillis());
+          return resource;
+        }
+        timeLeft = timeExpire - currentTimeMillis();
       }
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_notified__FINEST",
-                new Object[] { Thread.currentThread().getName(), queueName,
-                    String.valueOf(numberElementsInQueue) });
-      }
-      resource = dequeue();
+    } catch (InterruptedException e) {
     }
+
+    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+      LOG.logrb(Level.FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_notified__FINEST",
+              new Object[] { Thread.currentThread().getName(), queueName,
+                  String.valueOf(numberElementsInQueue) });
+    }
+
+    resource = dequeue();
     return resource;
   }
 

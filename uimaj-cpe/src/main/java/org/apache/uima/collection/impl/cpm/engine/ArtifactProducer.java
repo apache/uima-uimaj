@@ -63,7 +63,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  * 
  */
-public class ArtifactProducer extends Thread {
+public class ArtifactProducer implements Runnable {
 
   /** The thread state. */
   public int threadState = 0;

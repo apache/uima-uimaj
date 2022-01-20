@@ -90,15 +90,15 @@ import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
 /**
- * Responsible for creating and initializing processing threads. This instance manages the lifecycle
- * of the CPE components. It exposes API for plugging in components programmatically instead of
- * declaratively. Running in its own thread, this components creates seperate Processing Pipelines
- * for Analysis Engines and Cas Consumers, launches configured CollectionReader and attaches all of
- * those components to form a pipeline from source to sink. The Collection Reader feeds Processing
- * Threads containing Analysis Engines, and Analysis Engines feed results of analysis to Cas
- * Consumers.
+ * Responsible for creating and initializing processing threads. This instance manages the
+ * life-cycle of the CPE components. It exposes API for plugging in components programmatically
+ * instead of declaratively. Running in its own thread, this components creates separate Processing
+ * Pipelines for Analysis Engines and CAS Consumers, launches configured CollectionReader and
+ * attaches all of those components to form a pipeline from source to sink. The Collection Reader
+ * feeds Processing Threads containing Analysis Engines, and Analysis Engines feed results of
+ * analysis to CAS Consumers.
  */
-public class CPMEngine extends Thread {
+public class CPMEngine implements Runnable {
 
   /** The Constant MAX_WAIT_ON_QUEUE. */
   private static final int MAX_WAIT_ON_QUEUE = 400;
@@ -3266,9 +3266,7 @@ public class CPMEngine extends Thread {
         // Use default Timer
         nonThreadedCasConsumerProcessingUnit.setUimaTimer(new JavaTimer());
       }
-
     }
-
   }
 
   /**
@@ -3490,12 +3488,12 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Internal use only, public for crss package access. switches class loaders and locks cas
+   * Internal use only, public for cross package access. switches class loaders and locks cas
    * 
    * @param statCL
    *          status call back listener
    * @param cas
-   *          cas
+   *          CAS
    * @param eps
    *          entity process status
    */
@@ -3555,7 +3553,7 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Wait for cpm to resume if paused.
+   * Wait for CPM to resume if paused.
    */
   private void waitForCpmToResumeIfPaused() {
     synchronized (lockForPause) {
@@ -3581,75 +3579,4 @@ public class CPMEngine extends Thread {
       }
     }
   }
-
-  // private static class ThreadGroupDestroyer extends Thread {
-  // private Set<Thread> foreignThreadsBlockingShutdown = new LinkedHashSet<>();
-  //
-  // private final ThreadGroup group;
-  //
-  // private final AtomicInteger count = new AtomicInteger();
-  //
-  // public ThreadGroupDestroyer(ThreadGroup aGroup) {
-  // super(aGroup.getParent(), "threadGroupDestroyer");
-  //
-  // group = aGroup;
-  //
-  // }
-  //
-  // @Override
-  // public void run() {
-  //
-  // while (group.activeCount() > 0) {
-  // try {
-  // Thread.sleep(100);
-  // } catch (InterruptedException e) {
-  // }
-  // Thread[] threads = new Thread[group.activeCount()];
-  // group.enumerate(threads);
-  // showThreads(threads, foreignThreadsBlockingShutdown, count);
-  // }
-  //
-  // if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-  // UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-  // "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-  // "UIMA_CPM_destroy_thread_group__FINEST",
-  // new Object[] { Thread.currentThread().getName() });
-  // }
-  //
-  // group.destroy();
-  // }
-  //
-  // private void showThreads(Thread[] aThreadList, Set<Thread> foreignThreadsBlockingShutdown,
-  // AtomicInteger count) {
-  // count.incrementAndGet();
-  //
-  // if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-  // for (int i = 0; aThreadList != null && i < aThreadList.length; i++) {
-  // if (aThreadList[i] != null) {
-  // UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-  // "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_thread__FINEST",
-  // new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-  // aThreadList[i].getName() });
-  // }
-  // }
-  // }
-  //
-  // if (count.get() % 5 == 0) {
-  // for (Thread thread : aThreadList) {
-  // Set<Thread> nonUimaThreads = new HashSet<>();
-  // if (!(thread instanceof ProcessingUnit) && !(thread instanceof ArtifactProducer)
-  // && !foreignThreadsBlockingShutdown.contains(thread)) {
-  // nonUimaThreads.add(thread);
-  // }
-  //
-  // if (nonUimaThreads.size() == aThreadList.length) {
-  // UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-  // "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unknown_thread__WARNING",
-  // new Object[] { thread.getName() });
-  // foreignThreadsBlockingShutdown.add(thread);
-  // }
-  // }
-  // }
-  // }
-  // }
 }
