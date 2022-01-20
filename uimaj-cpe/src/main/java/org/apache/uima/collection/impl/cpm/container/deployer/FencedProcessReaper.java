@@ -28,7 +28,6 @@ import org.apache.uima.util.Level;
  */
 public class FencedProcessReaper {
 
-  
   public FencedProcessReaper() {
 
   }
@@ -36,8 +35,8 @@ public class FencedProcessReaper {
   /**
    * When running on linux this method kill a process identified by a given PID.
    * 
-   * @param aPid -
-   *          process id to kill
+   * @param aPid
+   *          - process id to kill
    */
   public void killProcess(String aPid) {
     try {

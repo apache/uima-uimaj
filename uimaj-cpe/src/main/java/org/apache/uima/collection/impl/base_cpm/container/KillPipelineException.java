@@ -23,7 +23,6 @@ public class KillPipelineException extends Exception {
 
   private static final long serialVersionUID = -4105689778536046179L;
 
-  
   public KillPipelineException(String msg) {
     super(msg);
   }

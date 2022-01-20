@@ -21,7 +21,6 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import org.apache.uima.util.UimaTimer;
 
-
 /**
  * The Interface Timer.
  *
@@ -30,7 +29,7 @@ import org.apache.uima.util.UimaTimer;
 
 @Deprecated
 public interface Timer {
-  
+
   /**
    * Start.
    */

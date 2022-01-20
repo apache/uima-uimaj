@@ -45,25 +45,26 @@ public class CpmProcessingTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
   /**
    * Create a single processor which have to work on only on document
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testCasConsumerProcessingSingleThreadSingleDocument() throws Exception {
+  @Test
+  public void testCasConsumerProcessingSingleThreadSingleDocument() throws Exception {
     // process only a single document and a single thread
     int documentCount = 1;
     int threadCount = 1;
@@ -84,24 +85,25 @@ public class CpmProcessingTest {
     }
 
     // check if CasConsumer was called
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
   /**
    * Create a single processor which have to process multiple documents
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
+  @Test
+  public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
     // process 100 documents and a single thread
     int documentCount = 100;
     int threadCount = 1;
@@ -122,24 +124,25 @@ public class CpmProcessingTest {
     }
 
     // check if CasConsumer was called
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
   /**
    * Create multiple processors which have to process only one single document!
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
+  @Test
+  public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
     // process only a single document and multiple threads
     int documentCount = 1;
     int threadCount = 5;
@@ -160,24 +163,25 @@ public class CpmProcessingTest {
     }
 
     // check if CasConsumer was called
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
   /**
    * Create multiple processors which have to process multiple documents
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
+  @Test
+  public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
     // process 100 documents and multiple threads
     int documentCount = 100;
     int threadCount = 5;
@@ -198,14 +202,14 @@ public class CpmProcessingTest {
     }
 
     // check if CasConsumer was called
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
@@ -224,11 +228,12 @@ public class CpmProcessingTest {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCollectionReader.xml").getAbsolutePath();
-      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
-      String casConsumerBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCasConsumer.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);

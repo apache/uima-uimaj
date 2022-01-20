@@ -29,7 +29,6 @@ import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 
-
 /**
  * This component catches uncaught errors in the CPM. All critical threads in the CPM are part of
  * this ThreadGroup. If OutOfMemory Error is thrown this component is notified by the JVM and its
@@ -37,7 +36,7 @@ import org.apache.uima.util.ProcessTrace;
  * 
  */
 public class CPMThreadGroup extends ThreadGroup {
-  
+
   /** The callback listeners. */
   private ArrayList callbackListeners = null;
 
@@ -47,7 +46,8 @@ public class CPMThreadGroup extends ThreadGroup {
   /**
    * Instantiates a new CPM thread group.
    *
-   * @param name the name
+   * @param name
+   *          the name
    */
   public CPMThreadGroup(String name) {
     super(name);
@@ -56,10 +56,10 @@ public class CPMThreadGroup extends ThreadGroup {
   /**
    * Instantiates a new CPM thread group.
    *
-   * @param parent -
-   *          parent thread group
-   * @param name -
-   *          name of this thread group
+   * @param parent
+   *          - parent thread group
+   * @param name
+   *          - name of this thread group
    */
   public CPMThreadGroup(ThreadGroup parent, String name) {
     super(parent, name);
@@ -68,8 +68,8 @@ public class CPMThreadGroup extends ThreadGroup {
   /**
    * Sets listeners to be used in notifications.
    *
-   * @param aListenerList -
-   *          list of registered listners
+   * @param aListenerList
+   *          - list of registered listners
    */
   public void setListeners(ArrayList aListenerList) {
     callbackListeners = aListenerList;
@@ -78,13 +78,16 @@ public class CPMThreadGroup extends ThreadGroup {
   /**
    * Sets the process trace.
    *
-   * @param aProcessTrace the new process trace
+   * @param aProcessTrace
+   *          the new process trace
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     procTr = aProcessTrace;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.ThreadGroup#uncaughtException(java.lang.Thread, java.lang.Throwable)
    */
   @Override
@@ -116,8 +119,10 @@ public class CPMThreadGroup extends ThreadGroup {
   /**
    * Notify listener.
    *
-   * @param aStatCL the a stat CL
-   * @param e the e
+   * @param aStatCL
+   *          the a stat CL
+   * @param e
+   *          the e
    */
   private void notifyListener(BaseStatusCallbackListener aStatCL, Throwable e) {
     EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr);
