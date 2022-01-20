@@ -1054,7 +1054,7 @@ public class CPMEngine extends Thread {
    */
   private void addParallizableCasProcessor(CasProcessor aProcessor, String aCpName)
           throws Exception {
-    UIMAFramework.getLogger(this.getClass()).log(Level.CONFIG, " Adding New Annotator:" + aCpName);
+    UIMAFramework.getLogger(this.getClass()).log(Level.CONFIG, "Adding new annotator:" + aCpName);
     if (analysisEngines.containsKey(aCpName)) {
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
