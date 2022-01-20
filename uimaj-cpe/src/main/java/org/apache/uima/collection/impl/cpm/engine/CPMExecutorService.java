@@ -19,6 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.engine;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.uima.UIMAFramework.getLogger;
 import static org.apache.uima.collection.impl.cpm.utils.CPMUtils.CPM_LOG_RESOURCE_BUNDLE;
 import static org.apache.uima.util.Level.FINER;
@@ -41,8 +42,8 @@ import org.apache.uima.util.ProcessTrace;
 
 /**
  * This component catches uncaught errors in the CPM. All critical threads in the CPM are part of
- * this ThreadGroup. If OutOfMemory Error is thrown this component is notified by the JVM and its
- * job is to notify registered listeners.
+ * this executor service. If OutOfMemory Error is thrown this component is notified by the JVM and
+ * its job is to notify registered listeners.
  */
 public class CPMExecutorService extends ThreadPoolExecutor {
 
@@ -51,7 +52,7 @@ public class CPMExecutorService extends ThreadPoolExecutor {
   private ProcessTrace procTr = null;
 
   public CPMExecutorService() {
-    super(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+    super(0, Integer.MAX_VALUE, 60L, SECONDS, new SynchronousQueue<Runnable>());
   }
 
   /**

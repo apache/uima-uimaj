@@ -325,7 +325,6 @@ public class CPMEngine extends Thread {
    */
   public CPMEngine(CPMExecutorService aExecutorService, CPEFactory aCpeFactory,
           ProcessTrace aProcTr, CheckpointData aCheckpointData) throws Exception {
-    setName("CPMEngine Thread");
     executorService = aExecutorService;
     cpeFactory = aCpeFactory;
     // Accumulate trace info in provided ProcessTrace instance
@@ -1825,6 +1824,8 @@ public class CPMEngine extends Thread {
    */
   @Override
   public void run() {
+    Thread.currentThread().setName("CPMEngine Thread");
+
     boolean consumerCompleted = false;
     boolean isStarted = false; // Indicates if all threads have been started
 
@@ -1985,7 +1986,6 @@ public class CPMEngine extends Thread {
       // input queue and there is an exception BEFORE Processing Units starts. This may lead
       // to a hang, because the CR is waiting on the CAS Pool and no-one consumes the Input Queue.
       // Name the thread
-      producer.setName("[CollectionReader Thread]::");
 
       // Create Cas Consumer Thread
       if (consumerList != null && consumerList.size() > 0) {
