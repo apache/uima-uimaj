@@ -299,6 +299,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     reportErrors();
   }
 
+  static int clToType2JCasSize() {
+    return cl_to_type2JCas.size();
+  }
+
   private static void loadBuiltins(TypeImpl ti, ClassLoader cl, Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync) {
     String typeName = ti.getName();
     
@@ -1383,7 +1387,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     for (FsGenerator3 v : r) {
       if (v != null)
         return false;
-    }
+      }
     return true;
   }
 
@@ -1465,6 +1469,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
   
+  /**
+   * For internal use only!
+   */
+  public static void unregister_jcci_classloader(ClassLoader cl) {
+    synchronized (cl_to_type2JCas) {
+      cl_to_type2JCas.remove(cl);
+    }
+  }
+
   static Map<String, JCasClassInfo> get_className_to_jcci(ClassLoader cl, boolean is_pear) {
     synchronized (cl_to_type2JCas) {
       // This was used before switching from the normal synchronized map to the weak map
