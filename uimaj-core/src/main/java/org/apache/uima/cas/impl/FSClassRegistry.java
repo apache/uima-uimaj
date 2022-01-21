@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 
 import java.lang.invoke.CallSite;
@@ -34,11 +35,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -110,7 +112,14 @@ import org.apache.uima.util.Logger;
  */
 
 public abstract class FSClassRegistry { // abstract to prevent instantiating; this class only has static methods
+  static final String RECORD_JCAS_CLASSLOADERS = "uima.record_jcas_classloaders";
+  static final boolean IS_RECORD_JCAS_CLASSLOADERS = Misc
+          .getNoValueSystemProperty(RECORD_JCAS_CLASSLOADERS);
 
+  static final String LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN = "uima.log_jcas_classloaders_on_shutdown";
+  static final boolean IS_LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN = Misc
+          .getNoValueSystemProperty(LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN);
+    
 //  private static final boolean IS_TRACE_AUGMENT_TS = false;
 //  private static final boolean IS_TIME_AUGMENT_FEATURES = false;
   /* ========================================================= */
@@ -171,6 +180,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * synchronizes on the map object.
    */
   private static final WeakIdentityMap<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = WeakIdentityMap.newHashMap();  // identity: key is classloader
+  private static final WeakIdentityMap<ClassLoader, StackTraceElement[]> cl_to_type2JCasStacks;
   
 //  private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas = Collections.synchronizedMap(new IdentityHashMap<>()); // identity: key is classloader
 
@@ -297,6 +307,18 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     MutableCallSite.syncAll(sync);
 
     reportErrors();
+
+    if (IS_LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN || IS_RECORD_JCAS_CLASSLOADERS) {
+      cl_to_type2JCasStacks = WeakIdentityMap.newHashMap();
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+          log_registered_classloaders(Level.WARN);
+        }
+      });
+    } else {
+      cl_to_type2JCasStacks = null;
+    }
   }
 
   static int clToType2JCasSize() {
@@ -1475,7 +1497,70 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   public static void unregister_jcci_classloader(ClassLoader cl) {
     synchronized (cl_to_type2JCas) {
       cl_to_type2JCas.remove(cl);
+      if (cl_to_type2JCasStacks != null) {
+        cl_to_type2JCasStacks.remove(cl);
+      }
     }
+  }
+
+  /**
+   * For internal use only!
+   */
+  public static void log_registered_classloaders(Level aLogLevel) {
+    Logger log = UIMAFramework.getLogger(lookup().lookupClass());
+    if (cl_to_type2JCasStacks == null) {
+      log.warn(
+              "log_registered_classloaders called but classLoader registration stack logging "
+                      + "is not turned on. Define the system property [{}] to enable it.",
+              LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN);
+      return;
+    }
+
+    Map<ClassLoader, StackTraceElement[]> clToLog = new LinkedHashMap<>();
+    synchronized (cl_to_type2JCas) {
+      Iterator<ClassLoader> i = cl_to_type2JCas.keyIterator();
+      while (i.hasNext()) {
+        ClassLoader cl = i.next();
+        if (cl == TypeSystemImpl.staticTsi.getClass().getClassLoader()) {
+          // This is usually the default/system classloader and is registered when the
+          // TypeSystemImpl class is statically intialized. It is not interesting for leak
+          // detection.
+          continue;
+        }
+        StackTraceElement[] stack = cl_to_type2JCasStacks.get(cl);
+        if (stack == null) {
+          continue;
+        }
+        clToLog.put(cl, stack);
+      }
+    }
+
+    if (clToLog.isEmpty()) {
+      log.log(aLogLevel, "No classloaders except the system classloader registered.");
+      return;
+    }
+
+    StringBuilder buf = new StringBuilder();
+
+    if (aLogLevel.isGreaterOrEqual(Level.WARN)) {
+      buf.append("On shutdown, there were still " + clToLog.size()
+              + " classloaders registered in the FSClassRegistry. Not destroying "
+              + "ResourceManagers after usage can cause memory leaks.");
+    } else {
+      buf.append(
+              "There are " + clToLog.size() + " classloaders registered in the FSClassRegistry:");
+    }
+
+    int i = 1;
+    for (Entry<ClassLoader, StackTraceElement[]> e : clToLog.entrySet()) {
+      buf.append("[" + i + "] " + e.getKey() + " registered through:\n");
+      for (StackTraceElement s : e.getValue()) {
+        buf.append("    " + s + "\n");
+      }
+      i++;
+    }
+
+    log.log(aLogLevel, buf.toString());
   }
 
   static Map<String, JCasClassInfo> get_className_to_jcci(ClassLoader cl, boolean is_pear) {
@@ -1490,6 +1575,9 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       if (cl_to_jcci == null) {
         cl_to_jcci = new HashMap<>();
         cl_to_type2JCas.put(cl, cl_to_jcci);
+        if (cl_to_type2JCasStacks != null) {
+          cl_to_type2JCasStacks.put(cl, new RuntimeException().getStackTrace());
+        }
       }
       return cl_to_jcci;
     }
