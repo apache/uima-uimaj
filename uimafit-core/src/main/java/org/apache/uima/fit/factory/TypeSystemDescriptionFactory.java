@@ -130,6 +130,7 @@ public final class TypeSystemDescriptionFactory {
           }
         }
 
+        LOG.trace("Merging type systems and resolving imports...");
         ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         tsd = mergeTypeSystems(tsdList, resMgr);
         typeDescriptorByClassloader.put(cl, tsd);

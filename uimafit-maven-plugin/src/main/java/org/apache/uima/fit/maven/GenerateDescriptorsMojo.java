@@ -18,6 +18,11 @@
  */
 package org.apache.uima.fit.maven;
 
+import static org.apache.maven.plugins.annotations.LifecyclePhase.PROCESS_CLASSES;
+import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,15 +37,11 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.maven.util.Util;
 import org.apache.uima.resource.ResourceCreationSpecifier;
@@ -55,7 +56,7 @@ import org.xml.sax.SAXException;
 /**
  * Generate descriptor files for uimaFIT-based UIMA components.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE)
+@Mojo(name = "generate", defaultPhase = PROCESS_CLASSES, requiresDependencyResolution = TEST, requiresDependencyCollection = TEST)
 public class GenerateDescriptorsMojo extends AbstractMojo {
   @Component
   private MavenProject project;
@@ -106,6 +107,13 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   @Parameter(defaultValue = "NONE")
   private TypeSystemSerialization addTypeSystemDescriptions;
 
+  /**
+   * Scope threshold to include. The default is "compile" (which implies compile, provided and
+   * system dependencies). Can also be changed to "test" (which implies all dependencies).
+   */
+  @Parameter(defaultValue = "compile", required = true)
+  private String includeScope;
+
   @Override
   public void execute() throws MojoExecutionException {
     // add the generated sources to the build
@@ -118,7 +126,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
 
-    componentLoader = Util.getClassloader(project, getLog());
+    componentLoader = Util.getClassloader(project, getLog(), includeScope);
 
     // List of components that is later written to META-INF/org.apache.uima.fit/components.txt
     StringBuilder componentsManifest = new StringBuilder();
@@ -145,13 +153,12 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         ProcessingResourceMetaData metadata = null;
         switch (Util.getType(componentLoader, clazz)) {
           case ANALYSIS_ENGINE:
-            AnalysisEngineDescription aeDesc = AnalysisEngineFactory.createEngineDescription(clazz);
+            AnalysisEngineDescription aeDesc = createEngineDescription(clazz);
             metadata = aeDesc.getAnalysisEngineMetaData();
             desc = aeDesc;
             break;
           case COLLECTION_READER:
-            CollectionReaderDescription crDesc = CollectionReaderFactory
-                    .createReaderDescription(clazz);
+            CollectionReaderDescription crDesc = createReaderDescription(clazz);
             metadata = crDesc.getCollectionReaderMetaData();
             desc = crDesc;
           default:
