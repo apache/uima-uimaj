@@ -24,12 +24,22 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.Level;
+import org.junit.Before;
 import org.junit.Test;
 
 public class FSClassRegistryTest {
+  @Before
+  public void setup() {
+    System.setProperty(FSClassRegistry.RECORD_JCAS_CLASSLOADERS, "true");
+  }
+
   @Test
   public void thatCreatingResourceManagersWithExtensionClassloaderDoesNotFillUpCache()
           throws Exception {
+    // Needed to get the type system code initialized before we call clToType2JCasSize();
+    CasCreationUtils.createCas();
+    int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
     for (int i = 0; i < 5; i++) {
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setExtensionClassLoader(getClass().getClassLoader(), true);
@@ -39,20 +49,20 @@ public class FSClassRegistryTest {
       assertThat(cl.getResource(FSClassRegistryTest.class.getName().replace(".", "/") + ".class")) //
               .isNotNull();
 
-      assertThat(FSClassRegistry.clToType2JCasSize()) //
-              .as("System classloader + UIMAClassLoader") //
-              .isEqualTo(2);
+      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart + 1,
+              "Only initial classloaders + the one owned by our ResourceManager");
 
       resMgr.destroy();
 
-      assertThat(FSClassRegistry.clToType2JCasSize()) //
-              .as("System classloader only") //
-              .isEqualTo(1);
+      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart, "Only initial classloaders");
     }
   }
 
   @Test
   public void thatCreatingResourceManagersWithExtensionPathDoesNotFillUpCache() throws Exception {
+    // Needed to get the type system code initialized before we call clToType2JCasSize();
+    CasCreationUtils.createCas();
+    int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
     for (int i = 0; i < 5; i++) {
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setExtensionClassPath("src/test/java", true);
@@ -62,15 +72,22 @@ public class FSClassRegistryTest {
       assertThat(cl.getResource(FSClassRegistryTest.class.getName().replace(".", "/") + ".java")) //
               .isNotNull();
 
-      assertThat(FSClassRegistry.clToType2JCasSize()) //
-              .as("System classloader + UIMAClassLoader") //
-              .isEqualTo(2);
+      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart + 1,
+              "Only initial classloaders + the one owned by our ResourceManager");
 
       resMgr.destroy();
 
-      assertThat(FSClassRegistry.clToType2JCasSize()) //
-              .as("System classloader only") //
-              .isEqualTo(1);
+      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart, "Only initial classloaders");
     }
+  }
+
+  private void assertRegisteredClassLoaders(int aExpectedCount, String aDescription) {
+    if (FSClassRegistry.clToType2JCasSize() > aExpectedCount) {
+      FSClassRegistry.log_registered_classloaders(Level.INFO);
+    }
+
+    assertThat(FSClassRegistry.clToType2JCasSize()) //
+            .as(aDescription) //
+            .isEqualTo(aExpectedCount);
   }
 }
