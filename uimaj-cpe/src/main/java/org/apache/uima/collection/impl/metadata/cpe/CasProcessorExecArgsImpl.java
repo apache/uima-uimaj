@@ -25,12 +25,11 @@ import org.apache.uima.collection.metadata.CasProcessorExecArg;
 import org.apache.uima.collection.metadata.CasProcessorExecArgs;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 
-
 /**
  * The Class CasProcessorExecArgsImpl.
  */
 public class CasProcessorExecArgsImpl implements CasProcessorExecArgs {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -719956786158518508L;
 
@@ -46,7 +45,8 @@ public class CasProcessorExecArgsImpl implements CasProcessorExecArgs {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#add(org.apache.uima.collection.metadata.CASProcessorExecArg)
+   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#add(org.apache.uima.collection.
+   * metadata.CASProcessorExecArg)
    */
   @Override
   public void add(CasProcessorExecArg aArg) {
@@ -81,7 +81,9 @@ public class CasProcessorExecArgsImpl implements CasProcessorExecArgs {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#remove(org.apache.uima.collection.metadata.CASProcessorExecArg)
+   * @see
+   * org.apache.uima.collection.metadata.CASProcessorExecArgs#remove(org.apache.uima.collection.
+   * metadata.CASProcessorExecArg)
    */
   @Override
   public void remove(int aIndex) {

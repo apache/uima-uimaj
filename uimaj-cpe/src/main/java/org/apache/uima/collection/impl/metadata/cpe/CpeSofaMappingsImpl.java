@@ -37,19 +37,20 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CpeSofaMappingsImpl.
  */
 public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaMappings {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -4193487704594409253L;
 
   /** The sofa name mappings. */
   private ArrayList sofaNameMappings = new ArrayList();
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -60,10 +61,14 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -89,8 +94,12 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler,
+   * boolean)
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
@@ -138,7 +147,8 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   /**
    * Sets the sofa name mappings.
    *
-   * @param sofaMappings the new sofa name mappings
+   * @param sofaMappings
+   *          the new sofa name mappings
    */
   @Override
   public void setSofaNameMappings(CpeSofaMapping[] sofaMappings) {

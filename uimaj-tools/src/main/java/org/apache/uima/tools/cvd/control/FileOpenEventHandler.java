@@ -43,7 +43,6 @@ public class FileOpenEventHandler implements ActionListener {
    * @param frame the frame
    */
   public FileOpenEventHandler(MainFrame frame) {
-    super();
     this.main = frame;
   }
 

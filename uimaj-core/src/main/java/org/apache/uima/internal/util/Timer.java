@@ -37,7 +37,6 @@ public final class Timer {
    * {@link #start() start()} explicitly.
    */
   public Timer() {
-    super();
     this.time = 0;
     this.start = 0;
     this.isRunning = false;

@@ -16,33 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 
 /**
- * This interface is implemented by JCas classes that need to be called by the 
- * framework when a serialization is about to happen.
+ * This interface is implemented by JCas classes that need to be called by the framework when a
+ * serialization is about to happen.
  */
 public interface UimaSerializable {
   /**
-   * This method is called by the framework before serialization of an instance of this 
-   * JCas class.
-   * The implementation should save whatever data is needed into Features of this JCas class
-   * that can be serialized by UIMA. 
+   * This method is called by the framework before serialization of an instance of this JCas class.
+   * The implementation should save whatever data is needed into Features of this JCas class that
+   * can be serialized by UIMA.
    */
-  void _save_to_cas_data();  
-  
+  void _save_to_cas_data();
+
   void _init_from_cas_data();
 
   FeatureStructureImplC _superClone();
-  
-  default void _reset_cas_data() {}  // just for efficiency 
-  
+
+  default void _reset_cas_data() {
+  } // just for efficiency
+
   default FeatureStructureImplC clone() {
     _save_to_cas_data();
-    FeatureStructureImplC r =  _superClone();
+    FeatureStructureImplC r = _superClone();
     _reset_cas_data();
     ((UimaSerializable) r)._init_from_cas_data();
     return r;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// @formatter:off
 package org.apache.uima.cas.test;
 
 import org.apache.uima.cas.impl.CASImpl;
@@ -88,5 +88,3 @@ public class Level_4 extends Level_3 {
   private void readObject() {/*default - does nothing empty block */}
   
 }
-
-    

@@ -19,6 +19,10 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
@@ -26,32 +30,32 @@ import java.util.Set;
 
 import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+public class Int2IntRBTTest {
 
-public class Int2IntRBTTest extends TestCase {
-  
+  @Test
   public void testexpand() {
     Int2IntRBT ia = new Int2IntRBT();
-    
+
     int shiftpoint = 1 + (1 << 30);
-    shiftpoint = 1040;  // bigger than 1024, to get 1 realloc
-    shiftpoint = 6291500;  // bigger than the first observed outof bounds
-    
+    shiftpoint = 1040; // bigger than 1024, to get 1 realloc
+    shiftpoint = 6291500; // bigger than the first observed outof bounds
+
     for (int i = 1; i < shiftpoint; i++) {
       try {
-      ia.put(i,  i * 8);
+        ia.put(i, i * 8);
       } catch (ArrayIndexOutOfBoundsException e) {
         System.err.format("%,d%n", i);
         throw e;
       }
     }
   }
-  
-  
+
+  @Test
   public void testIterator() {
     Int2IntRBT ia = new Int2IntRBT();
-    Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
+    Integer[] vs = new Integer[] { 2, 2, 5, 1, 6, 7, 3, 4 };
     for (Integer i : vs) {
       ia.put(i, i * 2);
     }
@@ -59,21 +63,21 @@ public class Int2IntRBTTest extends TestCase {
     int i = 0;
     IntListIterator itl = ia.keyIterator();
 
-    while(itl.hasNext()){
-      r[i++] = itl.nextNvc();  
+    while (itl.hasNext()) {
+      r[i++] = itl.nextNvc();
     }
     assertEquals(i, vs.length - 1);
-    assertTrue(Arrays.equals(r, new Integer[] {1, 2, 3, 4, 5, 6, 7, null}));
+    assertTrue(Arrays.equals(r, new Integer[] { 1, 2, 3, 4, 5, 6, 7, null }));
 
     i = 0;
     for (IntKeyValueIterator it = ia.keyValueIterator(); it.isValid(); it.inc()) {
-      r[i++] = it.getValue();  
-//      System.out.format("key: %d   value: %d%n", it.get(), it.getValue());
+      r[i++] = it.getValue();
+      // System.out.format("key: %d value: %d%n", it.get(), it.getValue());
     }
-    assertTrue(Arrays.equals(r, new Integer[] {2, 4, 6, 8, 10, 12, 14, null} ));
-    
+    assertTrue(Arrays.equals(r, new Integer[] { 2, 4, 6, 8, 10, 12, 14, null }));
+
     i = 0;
-    
+
     IntKeyValueIterator it = ia.keyValueIterator();
     assertTrue(it.isValid());
     it.dec();
@@ -84,23 +88,24 @@ public class Int2IntRBTTest extends TestCase {
     assertTrue(it.isValid());
     it.inc();
     assertFalse(it.isValid());
-//    it.dec();  // causes infinite loop
-//    assertFalse(it.isValid());
-    
+    // it.dec(); // causes infinite loop
+    // assertFalse(it.isValid());
+
   }
-  
+
+  @Test
   public void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
     Set<Integer> keys = new HashSet<>(1000);
-    
+
     for (int i = 0; i < 1000; i++) {
       int k = r.nextInt(1000);
       keys.add(k);
-      ia.put(k, 10000+k);
+      ia.put(k, 10000 + k);
     }
-    
-    for (int k : keys) {     
+
+    for (int k : keys) {
       assertEquals(10000 + k, ia.getMostlyClose(k));
     }
   }

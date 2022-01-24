@@ -30,7 +30,7 @@ public interface ReferenceValue extends FeatureValue {
    * 
    * @return The ID of the target FeatureStructure
    */
-  public String getTargetId();
+  String getTargetId();
 
   /**
    * Sets the ID of the target FeatureStructure.
@@ -38,5 +38,5 @@ public interface ReferenceValue extends FeatureValue {
    * @param aId
    *          The ID of the target FeatureStructure
    */
-  public void setTargetId(String aId);
+  void setTargetId(String aId);
 }

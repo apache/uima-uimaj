@@ -43,7 +43,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     super(null, null, aResourceManager);
   }
 
-  
+  @Override
   public AnalysisEngine getAnalysisEngine() {
     if (super.getCasProcessors()[0] != null) {
       try {
@@ -58,7 +58,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     return null;
   }
 
-  
+  @Override
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
           throws ResourceConfigurationException {
     if (super.getCasProcessors().length > 0
@@ -70,7 +70,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     }
   }
 
-  
+  @Override
   public CasConsumer[] getCasConsumers() {
     if (consumers != null) {
       return consumers;
@@ -87,36 +87,36 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     return consumers;
   }
 
-  
+  @Override
   public void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException {
     super.addCasProcessor(aCasConsumer);
 
   }
 
-  
+  @Override
   public void removeCasConsumer(CasConsumer aCasConsumer) {
     super.removeCasProcessor(aCasConsumer);
 
   }
 
-  
+  @Override
   public void addStatusCallbackListener(StatusCallbackListener aListener) {
     super.addStatusCallbackListener(aListener);
 
   }
 
-  
+  @Override
   public void removeStatusCallbackListener(StatusCallbackListener aListener) {
     super.removeStatusCallbackListener(aListener);
   }
 
-  
+  @Override
   public void process(CollectionReader aCollectionReader) throws ResourceInitializationException {
     super.process(aCollectionReader);
 
   }
 
-  
+  @Override
   public void process(CollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException {
     super.process(aCollectionReader, aBatchSize);

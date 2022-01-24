@@ -16,19 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import java.lang.reflect.Array;
 
 import org.apache.uima.cas_data.PrimitiveArrayFS;
 
-/**
- * 
- * 
- */
 public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements PrimitiveArrayFS {
-  
+
   private static final long serialVersionUID = -2050313181387759103L;
 
   private Object mArrayObject;
@@ -50,6 +45,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
    * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#size()
    */
+  @Override
   public int size() {
     return Array.getLength(mArrayObject);
   }
@@ -59,6 +55,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
    * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toIntArray()
    */
+  @Override
   public int[] toIntArray() {
     if (mArrayObject instanceof int[]) {
       return (int[]) mArrayObject;
@@ -72,6 +69,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
    * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toFloatArray()
    */
+  @Override
   public float[] toFloatArray() {
     if (mArrayObject instanceof float[]) {
       return (float[]) mArrayObject;
@@ -85,6 +83,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
    * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toStringArray()
    */
+  @Override
   public String[] toStringArray() {
     if (mArrayObject instanceof String[]) {
       return (String[]) mArrayObject;
@@ -104,10 +103,12 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
    * 
    * @see org.apache.uima.cas_data.FeatureValue#get()
    */
+  @Override
   public Object get() {
     return mArrayObject;
   }
 
+  @Override
   public String toString() {
     String[] strArray = toStringArray();
     StringBuffer buf = new StringBuffer();
@@ -125,5 +126,4 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
     buf.append("]\n");
     return buf.toString();
   }
-
 }

@@ -38,13 +38,12 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorExecutableImpl.
  */
-public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
-        CasProcessorExecutable {
-  
+public class CasProcessorExecutableImpl extends MetaDataObject_impl
+        implements CasProcessorExecutable {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6897788743141912586L;
 
@@ -69,12 +68,15 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Sets the CAS processor exec args.
    *
-   * @param aArgs the new CAS processor exec args
+   * @param aArgs
+   *          the new CAS processor exec args
    */
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorExecutable#setCASProcessorExecArgs(org.apache.uima.collection.metadata.CASProcessorExecArgs)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorExecutable#setCASProcessorExecArgs(org.apache.
+   * uima.collection.metadata.CASProcessorExecArgs)
    */
   public void setCASProcessorExecArgs(CasProcessorExecArgs aArgs) {
     args = aArgs;
@@ -94,8 +96,12 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
     return args;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CasProcessorExecutable#addCasProcessorExecArg(org.apache.uima.collection.metadata.CasProcessorExecArg)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorExecutable#addCasProcessorExecArg(org.apache.
+   * uima.collection.metadata.CasProcessorExecArg)
    */
   @Override
   public void addCasProcessorExecArg(CasProcessorExecArg aArg) {
@@ -105,13 +111,16 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Adds the cas processor runtime env param.
    *
-   * @param aParam the a param
+   * @param aParam
+   *          the a param
    */
   public void addCasProcessorRuntimeEnvParam(CasProcessorRuntimeEnvParam aParam) {
     envs.add(aParam);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CasProcessorExecutable#getCasProcessorExecArg(int)
    */
   @Override
@@ -124,7 +133,9 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CasProcessorExecutable#getAllCasProcessorExecArgs()
    */
   @Override
@@ -132,7 +143,9 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
     return args.getAll();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CasProcessorExecutable#removeCasProcessorExecArg(int)
    */
   @Override
@@ -162,7 +175,8 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Sets the dir.
    *
-   * @param string the new dir
+   * @param string
+   *          the new dir
    */
   public void setDir(String string) {
     dir = string;
@@ -171,7 +185,8 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Sets the executable.
    *
-   * @param string the new executable
+   * @param string
+   *          the new executable
    */
   @Override
   public void setExecutable(String string) {
@@ -190,7 +205,8 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Sets the args.
    *
-   * @param aargs the new args
+   * @param aargs
+   *          the new args
    */
   protected void setArgs(CasProcessorExecArg[] aargs) {
     for (int i = 0; aargs != null && i < aargs.length; i++) {
@@ -201,10 +217,14 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -226,8 +246,8 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
           args.add(arg);
         } else if ("env".equals(node.getNodeName())) {
           // assumes all children are CasProcessor elements
-          CasProcessorRuntimeEnvParam env = (CasProcessorRuntimeEnvParam) aParser.buildObject(
-                  (Element) node, aOptions);
+          CasProcessorRuntimeEnvParam env = (CasProcessorRuntimeEnvParam) aParser
+                  .buildObject((Element) node, aOptions);
           envs.add(env);
         }
       }
@@ -235,8 +255,12 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler,
+   * boolean)
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
@@ -287,7 +311,9 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -312,7 +338,8 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /**
    * Sets the envs.
    *
-   * @param params the new envs
+   * @param params
+   *          the new envs
    */
   @Override
   public void setEnvs(ArrayList params) {

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <types>
+        <typeDescription>
+            <name>de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagDescription</name>
+            <description/>
+            <supertypeName>uima.cas.TOP</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>name</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagsetDescription</name>
+            <description/>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>tags</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+                    <elementType>de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagDescription</elementType>
+                </featureDescription>
+            </features>
+        </typeDescription>
+    </types>
+</typeSystemDescription>

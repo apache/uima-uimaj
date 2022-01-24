@@ -30,6 +30,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+
 /**
  * Note: This class is not used by the framework itself.
  */

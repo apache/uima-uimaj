@@ -93,6 +93,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
     keyList = new String[] { FUNC_INITIALIZE_KEY, FUNC_GETPROCESS_KEY, FUNC_CLOSE_KEY,
         FUNC_GETNEXT_KEY, FUNC_HASNEXT_KEY };
@@ -114,8 +115,8 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
       }
       System.out.println("adding error!");
       // add the error object to the corresponding HashMap Entry
-      addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
-              errorFunction));
+      addError(errorFunction,
+              new FunctionErrorStore(errorExceptionName, errorCountName, errorFunction));
     }
 
     logger.log(LOG_LEVEL, "initialize() was called");
@@ -127,6 +128,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.application_library.DocumentReader#hasNext()
    */
+  @Override
   public boolean hasNext() {
     logger.log(LOG_LEVEL, "getNext(CAS) was called");
     if (errorConfig.containsKey(FUNC_HASNEXT_KEY)) {
@@ -138,6 +140,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     documentsCounted++;
     FunctionErrorStore.increaseCollectionReaderGetNextCount();
@@ -150,6 +153,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
     logger.log(LOG_LEVEL, "close() was called");
     if (errorConfig.containsKey(FUNC_CLOSE_KEY)) {
@@ -160,6 +164,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     logger.log(LOG_LEVEL, "getProgress() was called");
     if (errorConfig.containsKey(FUNC_GETPROCESS_KEY)) {

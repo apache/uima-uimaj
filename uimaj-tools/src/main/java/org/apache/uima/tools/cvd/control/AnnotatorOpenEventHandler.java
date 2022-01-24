@@ -42,7 +42,6 @@ public class AnnotatorOpenEventHandler implements ActionListener {
    * @param frame the frame
    */
   public AnnotatorOpenEventHandler(MainFrame frame) {
-    super();
     this.main = frame;
   }
 

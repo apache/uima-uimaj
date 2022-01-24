@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 public class TypePriorities_impl extends MetaDataObject_impl implements TypePriorities {
 
   static final long serialVersionUID = -4773863151055424438L;
-  
+
   private volatile String mName;
 
   private volatile String mVersion;
@@ -50,10 +50,11 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   private volatile Import[] mImports = Import.EMPTY_IMPORTS;
 
-  // not final or volatile because clone() copies a ref to shared value, and we need that value to be a new instance
+  // not final or volatile because clone() copies a ref to shared value, and we need that value to
+  // be a new instance
   // Threading: all access synchronized except initial creation during cloning
   private List<TypePriorityList> mPriorityLists = new ArrayList<>();
-  
+
   /**
    * @see ResourceMetaData#getName()
    */
@@ -139,8 +140,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see TypePriorities#getPriorityLists()
-   * synchronized to prevent concurrent mod exceptions
+   * @see TypePriorities#getPriorityLists() synchronized to prevent concurrent mod exceptions
    */
   @Override
   public TypePriorityList[] getPriorityLists() {
@@ -152,13 +152,12 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see TypePriorities#setPriorityLists(TypePriorityList[])
-   * could be called by thread doing resolve imports,
-   * while another thread was iterating over them
+   * @see TypePriorities#setPriorityLists(TypePriorityList[]) could be called by thread doing
+   *      resolve imports, while another thread was iterating over them
    */
   @Override
   public void setPriorityLists(TypePriorityList[] aPriorityLists) {
-    synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014      
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014
       mPriorityLists.clear();
       for (int i = 0; i < aPriorityLists.length; i++) {
         mPriorityLists.add(aPriorityLists[i]);
@@ -171,7 +170,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   @Override
   public void addPriorityList(TypePriorityList aPriorityList) {
-    synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014 
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014
       mPriorityLists.add(aPriorityList);
     }
   }
@@ -209,7 +208,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   @Override
-  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+  public synchronized void resolveImports(ResourceManager aResourceManager)
+          throws InvalidXMLException {
     resolveImports(null, aResourceManager);
   }
 
@@ -229,7 +229,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    *      java.lang.String)
    */
   @Override
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
+          throws SAXException {
     if ("priorityLists".equals(aPropInfo.propertyName)) {
       // call writeArrayPropertyAsElement directly, which will not generate the
       // <priorityLists> tag
@@ -249,7 +250,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
     clone.mPriorityLists = new ArrayList<>();
     final List<TypePriorityList> origPriorityLists = mPriorityLists;
-    synchronized (origPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
+    // saw concurrent mod exceptions while iterating on this 3/2014
+    synchronized (origPriorityLists) {
       for (TypePriorityList priList : origPriorityLists) {
         clone.addPriorityList((TypePriorityList) priList.clone());
       }
@@ -262,9 +264,10 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
-    return new XmlizationInfo("typePriorities", new PropertyXmlInfo[] {
-        new PropertyXmlInfo("name", true), new PropertyXmlInfo("description", true),
-        new PropertyXmlInfo("version", true), new PropertyXmlInfo("vendor", true),
-        new PropertyXmlInfo("imports", true), new PropertyXmlInfo("priorityLists", true) });
+    return new XmlizationInfo("typePriorities",
+            new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
+                new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
+                new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),
+                new PropertyXmlInfo("priorityLists", true) });
   }
 }

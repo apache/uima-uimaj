@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="6" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="Joe waited for the train . The train was late ."/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="7" _ref_sofa="6" begin="0" end="47" language="x-unspecified"/>
+    <uima.cas.StringArray _indexed="1" _id="1" size="0"/>
+    <cassis.Group _indexed="1" _id="8" _ref_sofa="6" begin="0" end="0"/>
+    <uima.cas.FSArray _indexed="1" _id="2" size="0"/>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="3" _ref_tail="4" _ref_head="1"/>
+    <uima.cas.NonEmptyFSList _indexed="1" _id="4" _ref_tail="5" _ref_head="8"/>
+    <uima.cas.EmptyFSList _indexed="1" _id="5"/>
+</CAS>

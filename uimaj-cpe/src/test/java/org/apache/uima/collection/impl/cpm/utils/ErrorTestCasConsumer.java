@@ -23,12 +23,10 @@ import java.util.HashMap;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasConsumer_ImplBase;
-
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
-
 
 public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
 
@@ -60,8 +58,10 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
+   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.
+   * analysis_engine.annotator.AnnotatorContext)
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
     keyList = new String[] { FUNC_INITIALIZE_KEY, FUNC_PROCESSCAS_KEY, FUNC_RECONFIGURE_KEY };
     errorConfig = new HashMap();
@@ -79,8 +79,8 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
         errorExceptionName = errorException;
       }
       // add the error object to the corresponding HashMap Entry
-      addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
-              errorFunction));
+      addError(errorFunction,
+              new FunctionErrorStore(errorExceptionName, errorCountName, errorFunction));
     }
     logger.log(LOG_LEVEL, "initialize() was called");
     if (errorConfig.containsKey(FUNC_INITIALIZE_KEY)) {
@@ -93,6 +93,7 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     logger.log(LOG_LEVEL, "processCas() was called");
     FunctionErrorStore.increaseCasConsumerProcessCount();

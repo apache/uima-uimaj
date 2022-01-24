@@ -32,7 +32,6 @@ import org.apache.uima.collection.impl.cpm.utils.ChunkMetadata;
 import org.apache.uima.collection.impl.cpm.utils.ExpirationTimer;
 import org.apache.uima.util.Level;
 
-
 /**
  * This component extends the Bound Queue by guaranteeing delivery of CASes in sequential order.
  * Large documents may be split into smaller chunks and and each is processed asynchronously. Since
@@ -44,7 +43,7 @@ import org.apache.uima.util.Level;
  * chunk. If the timer goes off, the entire document ( and all its CASes) are invalidated.
  */
 public class SequencedQueue extends BoundedWorkQueue {
-  
+
   /** The chunk state. */
   private boolean chunkState = false; // if a CAS is part of a larger sequence
 
@@ -60,12 +59,12 @@ public class SequencedQueue extends BoundedWorkQueue {
   /**
    * Initialize this queue.
    *
-   * @param aQueueSize -
-   *          the size of the queue
-   * @param aQueueName -
-   *          the name of the queue
-   * @param aCpmEngine -
-   *          reference to the CPE
+   * @param aQueueSize
+   *          - the size of the queue
+   * @param aQueueName
+   *          - the name of the queue
+   * @param aCpmEngine
+   *          - reference to the CPE
    */
   public SequencedQueue(int aQueueSize, String aQueueName, CPMEngine aCpmEngine) {
     super(aQueueSize, aQueueName, aCpmEngine);
@@ -75,12 +74,14 @@ public class SequencedQueue extends BoundedWorkQueue {
   /**
    * Sequence timed out.
    *
-   * @param achunkMetadata the achunk metadata
+   * @param achunkMetadata
+   *          the achunk metadata
    * @return true if it timed out
    */
   private boolean sequenceTimedOut(ChunkMetadata achunkMetadata) {
 
-    boolean returnVal = (achunkMetadata != null && timedOutDocs.get(achunkMetadata.getDocId()) != null);
+    boolean returnVal = (achunkMetadata != null
+            && timedOutDocs.get(achunkMetadata.getDocId()) != null);
     return returnVal;
   }
 
@@ -88,11 +89,11 @@ public class SequencedQueue extends BoundedWorkQueue {
    * Returns a CAS that belong to a timedout chunk sequence. It wraps the CAS in QueueEntity and
    * indicates that the CAS arrived late.
    * 
-   * This must be called while holding the class lock (e.g. via synch on the calling methods
-   * within this class).
+   * This must be called while holding the class lock (e.g. via synch on the calling methods within
+   * this class).
    * 
-   * @param aQueueIndex -
-   *          position in queue from the CAS should be extracted
+   * @param aQueueIndex
+   *          - position in queue from the CAS should be extracted
    * 
    * @return QueueEntity containing CAS that arrived late
    */
@@ -144,14 +145,10 @@ public class SequencedQueue extends BoundedWorkQueue {
     int chunkSequence = nextChunkMetadata.getSequence() + 1;
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_expected_chunk_sequenece__FINEST",
-              new Object[] { Thread.currentThread().getName(), getName(),
-                  String.valueOf(chunkSequence) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_expected_chunk_sequenece__FINEST", new Object[] {
+                  Thread.currentThread().getName(), getName(), String.valueOf(chunkSequence) });
     }
     try {
       // This does not remove the object from the queue
@@ -174,8 +171,8 @@ public class SequencedQueue extends BoundedWorkQueue {
         if (anObject instanceof WorkUnit && ((WorkUnit) anObject).get() instanceof CAS[]) {
           // Create metadata from the CAS. This convenience object is used internally and keeps
           // track of the last chunks sequence processed here
-          ChunkMetadata chunkMetadata = CPMUtils.getChunkMetadata(((CAS[]) ((WorkUnit) anObject)
-                  .get())[0]);
+          ChunkMetadata chunkMetadata = CPMUtils
+                  .getChunkMetadata(((CAS[]) ((WorkUnit) anObject).get())[0]);
           // Chunking is not strictly required. In such cases the sequence metadata will not be in
           // the CAS and thus there is no ChunkMetaData
           if (chunkMetadata == null) {
@@ -200,11 +197,8 @@ public class SequencedQueue extends BoundedWorkQueue {
           // if the current CAS is part of a larger chunk sequence.
           if (chunkMetadata.isOneOfMany() && sequenceTimedOut(chunkMetadata)) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_sequence_timed_out__FINEST",
                       new Object[] { Thread.currentThread().getName(), getName(),
                           String.valueOf(chunkMetadata.getSequence()) });
@@ -220,11 +214,8 @@ public class SequencedQueue extends BoundedWorkQueue {
           // been "chopped" up into smaller chunks.
           if (chunkState) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_in_chunk_state__FINEST",
                       new Object[] { Thread.currentThread().getName(), getName(),
                           nextChunkMetadata.getDocId(), chunkMetadata.getDocId(),
@@ -282,11 +273,8 @@ public class SequencedQueue extends BoundedWorkQueue {
               chunkState = true;
               if (chunkMetadata.getSequence() == chunkSequence) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                  UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                          this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                           "UIMA_CPM_in_chunk_state__FINEST",
                           new Object[] { Thread.currentThread().getName(), getName(),
                               nextChunkMetadata.getDocId(), chunkMetadata.getDocId(),
@@ -296,11 +284,8 @@ public class SequencedQueue extends BoundedWorkQueue {
 
                 if (sequenceTimedOut(chunkMetadata)) {
                   if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                    UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                            this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                             "UIMA_CPM_sequence_timed_out__FINEST",
                             new Object[] { Thread.currentThread().getName(), getName(),
                                 String.valueOf(chunkMetadata.getSequence()) });
@@ -330,14 +315,10 @@ public class SequencedQueue extends BoundedWorkQueue {
             }
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_not_cas__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          anObject.getClass().getName() });
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_not_cas__FINEST", new Object[] { Thread.currentThread().getName(),
+                          getName(), anObject.getClass().getName() });
             }
             break;
           }
@@ -365,14 +346,10 @@ public class SequencedQueue extends BoundedWorkQueue {
     if (queueIndex == queueSize) {
       if (chunkSequence > 0) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_expecte_seq_not_found__FINEST",
-                  new Object[] { Thread.currentThread().getName(), getName(),
-                      String.valueOf(queue.size()) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_expecte_seq_not_found__FINEST", new Object[] {
+                      Thread.currentThread().getName(), getName(), String.valueOf(queue.size()) });
         }
         // Reset expected sequence to the same number. The caller most likely will sleep for awhile
         // and retry. During the retry we need to
@@ -381,14 +358,10 @@ public class SequencedQueue extends BoundedWorkQueue {
                 false);
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_expecte_seq_not_found__FINEST",
-                new Object[] { Thread.currentThread().getName(), getName(),
-                    String.valueOf(queue.size()) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_expecte_seq_not_found__FINEST", new Object[] {
+                    Thread.currentThread().getName(), getName(), String.valueOf(queue.size()) });
       }
       // Return null to indicate the expected CAS was not found. It is the responsibility of the
       // caller to wait and invoke this method again.
@@ -402,14 +375,10 @@ public class SequencedQueue extends BoundedWorkQueue {
     numberElementsInQueue--;
     notifyAll();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_show_queue_capacity__FINEST",
-              new Object[] { Thread.currentThread().getName(), getName(),
-                  String.valueOf(queueSize), String.valueOf(numberElementsInQueue) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_queue_capacity__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(), String.valueOf(queueSize),
+                  String.valueOf(numberElementsInQueue) });
     }
     return anObject;
   }
@@ -418,8 +387,8 @@ public class SequencedQueue extends BoundedWorkQueue {
    * Returns an object from the queue. It will wait for the object to show up in the queue until a
    * given timer expires.
    * 
-   * @param aTimeout -
-   *          max millis to wait for an object
+   * @param aTimeout
+   *          - max millis to wait for an object
    * 
    * @return - Object from the queue, or null if time out
    */
@@ -427,9 +396,9 @@ public class SequencedQueue extends BoundedWorkQueue {
   public synchronized Object dequeue(long aTimeout) {
     Object resource = null;
     long startTime = System.currentTimeMillis();
-    // add 1 for rounding issues.  Should really add the smallest incr unit, which might be
-    //   > 1...  Java docs say it could be 10...
-    long expireTime = (aTimeout == 0)? Long.MAX_VALUE : startTime + aTimeout + 1;
+    // add 1 for rounding issues. Should really add the smallest incr unit, which might be
+    // > 1... Java docs say it could be 10...
+    long expireTime = (aTimeout == 0) ? Long.MAX_VALUE : startTime + aTimeout + 1;
     while ((resource = dequeue()) == null) {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -464,30 +433,22 @@ public class SequencedQueue extends BoundedWorkQueue {
           doNotifyListeners(null, enProcSt);
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_chunk_didnt_arrive__FINEST",
-                  new Object[] { Thread.currentThread().getName(), getName(),
-                      String.valueOf(aTimeout) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_chunk_didnt_arrive__FINEST", new Object[] {
+                      Thread.currentThread().getName(), getName(), String.valueOf(aTimeout) });
         }
         chunkState = false;
         nextChunkMetadata = new ChunkMetadata("", 0, false);
         // Timeout
         return null;
-      }
-      else break;
+      } else
+        break;
     }
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_return_chunk__FINEST",
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_chunk__FINEST",
               new Object[] { Thread.currentThread().getName(), getName(),
                   String.valueOf(queueMaxSize), String.valueOf(numberElementsInQueue) });
     }
@@ -495,8 +456,12 @@ public class SequencedQueue extends BoundedWorkQueue {
     return resource;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.impl.cpm.engine.BoundedWorkQueue#invalidate(org.apache.uima.cas.CAS[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.impl.cpm.engine.BoundedWorkQueue#invalidate(org.apache.uima.cas.CAS[
+   * ])
    */
   @Override
   public synchronized void invalidate(CAS[] aCasObjectList) {
@@ -519,8 +484,10 @@ public class SequencedQueue extends BoundedWorkQueue {
   /**
    * Adds the doc to timed out docs.
    *
-   * @param aLifespan the a lifespan
-   * @param aDocId the a doc id
+   * @param aLifespan
+   *          the a lifespan
+   * @param aDocId
+   *          the a doc id
    */
   private void addDocToTimedOutDocs(int aLifespan, String aDocId) {
     // The expected chunk sequence did not arrive within given window. Create a timer
@@ -539,20 +506,20 @@ public class SequencedQueue extends BoundedWorkQueue {
    * Notifies all configured listeners. Makes sure that appropriate type of Cas is sent to the
    * listener. Conversions take place to ensure compatibility.
    * 
-   * @param aCas -
-   *          Cas to pass to listener
-   * @param aEntityProcStatus -
-   *          status object containing exceptions and trace info
+   * @param aCas
+   *          - Cas to pass to listener
+   * @param aEntityProcStatus
+   *          - status object containing exceptions and trace info
    */
   protected void doNotifyListeners(Object aCas, EntityProcessStatus aEntityProcStatus) {
     // Notify Listener that the entity has been processed
-    CAS casObjectCopy = (CAS)aCas;
+    CAS casObjectCopy = (CAS) aCas;
     // Notify ALL listeners
     for (int j = 0; j < statusCbL.size(); j++) {
       StatusCallbackListener statCL = (StatusCallbackListener) statusCbL.get(j);
       CPMEngine.callEntityProcessCompleteWithCAS(statCL, casObjectCopy, aEntityProcStatus);
-//      ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
-//              aEntityProcStatus);
+      // ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
+      // aEntityProcStatus);
     }
 
   }

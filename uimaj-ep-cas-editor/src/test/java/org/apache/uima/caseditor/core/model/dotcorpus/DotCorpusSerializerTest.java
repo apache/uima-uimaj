@@ -19,7 +19,7 @@
 
 package org.apache.uima.caseditor.core.model.dotcorpus;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Color;
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,7 @@ import java.io.InputStream;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This is the test for the {@link DotCorpusSerializer} class.
@@ -42,8 +42,8 @@ public class DotCorpusSerializerTest {
    *
    * @throws CoreException -
    */
-  @Test
-  public void testSerializeAndCreate() throws CoreException {
+    @Test
+    public void testSerializeAndCreate() throws CoreException {
     DotCorpus original = new DotCorpus();
     original.setTypeSystemFilename("typesystem");
     original.addCasProcessorFolder("uima processor folder");
@@ -57,6 +57,6 @@ public class DotCorpusSerializerTest {
 
     DotCorpus recreated = DotCorpusSerializer.parseDotCorpus(in);
 
-    assertEquals(original, recreated);
+    assertThat(original).isEqualTo(recreated);
   }
 }

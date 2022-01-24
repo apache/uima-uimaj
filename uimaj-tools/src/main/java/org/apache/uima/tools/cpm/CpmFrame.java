@@ -43,8 +43,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import org.apache.uima.tools.images.Images;
-import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 import org.apache.uima.tools.util.gui.AboutDialog;
+import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 
 
 /**

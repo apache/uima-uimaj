@@ -49,6 +49,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#isType()
    */
+  @Override
   public boolean isType() {
     return mType;
   }
@@ -56,6 +57,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#setType(boolean)
    */
+  @Override
   public void setType(boolean aType) {
     mType = aType;
   }
@@ -63,6 +65,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#getName()
    */
+  @Override
   public String getName() {
     return mName;
   }
@@ -70,6 +73,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#setName(java.lang.String)
    */
+  @Override
   public void setName(String aName) {
     mName = aName;
   }
@@ -77,6 +81,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#isAllAnnotatorFeatures()
    */
+  @Override
   public boolean isAllAnnotatorFeatures() {
     return mAllAnnotatorFeatures;
   }
@@ -84,6 +89,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#setAllAnnotatorFeatures(boolean)
    */
+  @Override
   public void setAllAnnotatorFeatures(boolean aAllAnnotatorFeatures) {
     mAllAnnotatorFeatures = aAllAnnotatorFeatures;
   }
@@ -94,6 +100,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // element tag determines whether this is a type or a feature
@@ -115,10 +122,11 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    * 
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     if (null == serialContext.get()) {
-      getSerialContext(aContentHandler);  
+      getSerialContext(aContentHandler);
       try {
         toXMLinner(aWriteDefaultNamespaceAttribute);
       } finally {
@@ -128,12 +136,11 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
       toXMLinner(aWriteDefaultNamespaceAttribute);
     }
   }
-    
-  public void toXMLinner(boolean aWriteDefaultNamespaceAttribute)
-      throws SAXException {    
+
+  public void toXMLinner(boolean aWriteDefaultNamespaceAttribute) throws SAXException {
     SerialContext sc = serialContext.get();
     Serializer serializer = sc.serializer;
-    
+
     String namespace = getXmlizationInfo().namespace;
 
     if (isType()) {
@@ -145,34 +152,34 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
         AttributesImpl attrs = new AttributesImpl();
         attrs.addAttribute("", "allAnnotatorFeatures", "allAnnotatorFeatures", "", "true");
         serializer.outputStartElement(node, namespace, "type", "type", attrs);
-//        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
+        // aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
       } else {
         serializer.outputStartElement(node, namespace, "type", "type", new AttributesImpl());
-//        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
-//                new AttributesImpl());
+        // aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
+        // new AttributesImpl());
       }
       // write type name here
       serializer.writeSimpleValue(getName());
 
       serializer.outputEndElement(node, namespace, "type", "type");
-//      aContentHandler.endElement(getXmlizationInfo().namespace, "type", "type");
+      // aContentHandler.endElement(getXmlizationInfo().namespace, "type", "type");
     } else // feature
     {
       Node node = serializer.findMatchingSubElement("feature");
-      serializer.outputStartElement(node, namespace, "feature", "feature",
-          new AttributesImpl());
-//      aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
-//              new AttributesImpl());
+      serializer.outputStartElement(node, namespace, "feature", "feature", new AttributesImpl());
+      // aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
+      // new AttributesImpl());
 
       serializer.writeSimpleValue(getName());
       serializer.outputEndElement(node, namespace, "feature", "feature");
-//      aContentHandler.endElement(getXmlizationInfo().namespace, "feature", "feature");
+      // aContentHandler.endElement(getXmlizationInfo().namespace, "feature", "feature");
     }
   }
 
   /**
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
+  @Override
   public int compareTo(TypeOrFeature obj) {
     if (this == obj)
       return 0;
@@ -185,6 +192,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);
     // this object has custom XMLization routines

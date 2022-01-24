@@ -49,7 +49,6 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-
 /**
  * Component responsible for continuously filling a work queue with bundles containing Cas'es. The
  * queue is shared with a Processing Pipeline that consumes bundles of Cas. As soon as the the
@@ -65,7 +64,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  */
 public class ArtifactProducer extends Thread {
-  
+
   /** The thread state. */
   public int threadState = 0;
 
@@ -123,7 +122,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Instantiates and initializes this instance.
    *
-   * @param acpm the acpm
+   * @param acpm
+   *          the acpm
    */
   public ArtifactProducer(CPMEngine acpm) {
     cpm = acpm;
@@ -135,10 +135,10 @@ public class ArtifactProducer extends Thread {
   /**
    * Construct instance of this class with a reference to the cpe engine and a pool of cas'es.
    * 
-   * @param acpm -
-   *          reference to the cpe
-   * @param aPool -
-   *          pool of cases
+   * @param acpm
+   *          - reference to the cpe
+   * @param aPool
+   *          - pool of cases
    */
   public ArtifactProducer(CPMEngine acpm, CPECasPool aPool) {
     cpm = acpm;
@@ -160,8 +160,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Plug in Custom Timer to time events.
    *
-   * @param aTimer -
-   *          custom timer
+   * @param aTimer
+   *          - custom timer
    */
   public void setUimaTimer(UimaTimer aTimer) {
     timer = aTimer;
@@ -170,7 +170,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Sets the process trace.
    *
-   * @param aProcTrace the new process trace
+   * @param aProcTrace
+   *          the new process trace
    */
   public void setProcessTrace(ProcessTrace aProcTrace) {
     globalSharedProcessTrace = aProcTrace;
@@ -208,8 +209,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Assign total number of entities to process.
    *
-   * @param aNumToProcess -
-   *          number of entities to read from the Collection Reader
+   * @param aNumToProcess
+   *          - number of entities to read from the Collection Reader
    */
   public void setNumEntitiesToProcess(long aNumToProcess) {
     maxToProcess = aNumToProcess;
@@ -218,8 +219,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Assign CollectionReader to be used for reading.
    *
-   * @param aCollectionReader -
-   *          collection reader as source of data
+   * @param aCollectionReader
+   *          - collection reader as source of data
    */
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
@@ -228,15 +229,15 @@ public class ArtifactProducer extends Thread {
       // Determines how many at a time this Collection Reader will return
       // for each fetch
       readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
-          .getConfigurationParameterSettings().getParameterValue("fetchSize");
+              .getConfigurationParameterSettings().getParameterValue("fetchSize");
     }
   }
 
   /**
    * Assigns a queue where the artifacts produced by this component will be deposited.
    *
-   * @param aQueue -
-   *          queue for the artifacts this class is producing
+   * @param aQueue
+   *          - queue for the artifacts this class is producing
    */
   public void setWorkQueue(BoundedWorkQueue aQueue) {
     workQueue = aQueue;
@@ -246,7 +247,8 @@ public class ArtifactProducer extends Thread {
    * Add table that will contain statistics gathered while reading entities from a Collection This
    * table is used for non-uima reports.
    *
-   * @param aStatTable the new CPM stat table
+   * @param aStatTable
+   *          the new CPM stat table
    */
   public void setCPMStatTable(Map aStatTable) {
     cpmStatTable = aStatTable;
@@ -276,7 +278,8 @@ public class ArtifactProducer extends Thread {
    * optimizing processing. When pipelines start up there are already entities in the work queue to
    * process.
    *
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   public void fillQueue() throws Exception {
     // Create an array holding CAS'es. Configuration of the Reader may
@@ -309,14 +312,10 @@ public class ArtifactProducer extends Thread {
           // determines how many entities to return for each fetch.
           casObjectList = readNext(readerFetchSize);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_enqueue_cas_bundle__FINEST",
-                    new Object[] { Thread.currentThread().getName(),
-                        String.valueOf(casObjectList.length) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_enqueue_cas_bundle__FINEST", new Object[] {
+                        Thread.currentThread().getName(), String.valueOf(casObjectList.length) });
           }
           // Count number of entities fetched so far
           entityCount += casObjectList.length;
@@ -337,11 +336,8 @@ public class ArtifactProducer extends Thread {
         Progress[] progress = collectionReader.getProgress();
         if (progress != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_show_cr_progress__FINEST",
                     new Object[] { Thread.currentThread().getName(),
                         String.valueOf(progress[0].getCompleted()) });
@@ -359,9 +355,9 @@ public class ArtifactProducer extends Thread {
             notifyListeners((CAS) casObjectList[i], e);
             casPool.releaseCas(casList[i]);
             casList[i] = null;
-//            synchronized (casPool) {  // removed - redundant, because done as part of releaseCas
-//              casPool.notifyAll();
-//            }
+            // synchronized (casPool) { // removed - redundant, because done as part of releaseCas
+            // casPool.notifyAll();
+            // }
 
           } else {
             notifyListeners(null, e);
@@ -378,13 +374,15 @@ public class ArtifactProducer extends Thread {
    * Reads next set of entities from the CollectionReader. This method may return more than one Cas
    * at a time.
    *
-   * @param fetchSize the fetch size
+   * @param fetchSize
+   *          the fetch size
    * @return - The Object returned from the method depends on the type of the CollectionReader.
    *         Either CASData[] or CASObject[] initialized with document metadata and content is
    *         returned. If the CollectionReader has no more entities (EOF), null is returned.
-   * @throws IOException -
-   *           error while reading corpus
-   * @throws CollectionException -
+   * @throws IOException
+   *           - error while reading corpus
+   * @throws CollectionException
+   *           -
    * @parma fetchSize - number of entities the CollectionReader should return for each fetch. It is
    *        hint as the Collection Reader ultimately decides how many to return.
    */
@@ -423,14 +421,10 @@ public class ArtifactProducer extends Thread {
           ; // intentionally empty while loop
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_cr_check_cas_for_null__FINEST",
-                  new Object[] { Thread.currentThread().getName(),
-                      String.valueOf((casList[i] == null)) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_cr_check_cas_for_null__FINEST", new Object[] {
+                      Thread.currentThread().getName(), String.valueOf((casList[i] == null)) });
         }
         if (cpm.isRunning() == false) {
           // CPM is in shutdown stage. No need to enqueue additional
@@ -444,9 +438,9 @@ public class ArtifactProducer extends Thread {
           for (int listCounter = 0; casList != null && casList[i] != null
                   && listCounter < casList.length; listCounter++) {
             casPool.releaseCas(casList[listCounter]);
-//            synchronized (casPool) { // redundant - releaseCas call does this
-//              casPool.notifyAll();
-//            }
+            // synchronized (casPool) { // redundant - releaseCas call does this
+            // casPool.notifyAll();
+            // }
           }
           if (cpmStatTable != null) {
             Progress[] progress = collectionReader.getProgress();
@@ -477,8 +471,8 @@ public class ArtifactProducer extends Thread {
         casList[i].reset();
 
         // If Collection Reader and CAS Initilaizer do not declare any
-        // output SofAs, must be passed the default view (meaning whatever's 
-        //mapped to _InitialView) for backward compatiblity
+        // output SofAs, must be passed the default view (meaning whatever's
+        // mapped to _InitialView) for backward compatiblity
         Capability[] capabilities;
         CasInitializer casIni = ((CollectionReader) collectionReader).getCasInitializer();
         if (casIni != null)
@@ -509,9 +503,9 @@ public class ArtifactProducer extends Thread {
             String absSofaName = context.getComponentInfo().mapToSofaID(CAS.NAME_DEFAULT_SOFA);
             if (!CAS.NAME_DEFAULT_SOFA.equals(absSofaName)) {
               casList[i].createView(CAS.NAME_DEFAULT_SOFA);
-            }            
+            }
             CAS view = casList[i].getView(CAS.NAME_DEFAULT_SOFA);
-            
+
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -613,12 +607,12 @@ public class ArtifactProducer extends Thread {
         success = true;
       } finally {
         if (!success) {
-          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                  "Process", "failure");
+          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(), "Process",
+                  "failure");
 
         } else {
-          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                  "Process", "success");
+          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(), "Process",
+                  "success");
 
         }
         synchronized (globalSharedProcessTrace) {
@@ -680,8 +674,7 @@ public class ArtifactProducer extends Thread {
       placeEOFToken();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_eof_marker_enqueued__FINEST",
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_eof_marker_enqueued__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
       return;
@@ -725,18 +718,17 @@ public class ArtifactProducer extends Thread {
         threadState = 1004; // Entering hasNext()
 
         // start the CR event
-        localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                "Process", "");
+        localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(), "Process",
+                "");
         crEventCompleted = false;
         if (collectionReader.hasNext()) {
-          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                  "Process", "success");
+          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(), "Process",
+                  "success");
           crEventCompleted = true;
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_get_cas_from_cr__FINEST",
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_get_cas_from_cr__FINEST",
                     new Object[] { Thread.currentThread().getName() });
           }
           casObjectList = readNext(readerFetchSize);
@@ -747,14 +739,15 @@ public class ArtifactProducer extends Thread {
                 ChunkMetadata meta = CPMUtils.getChunkMetadata((CAS) casObjectList[i]);
                 if (meta != null) {
                   if (timedoutDocs.containsKey(meta.getDocId())) {
-                    notifyListeners(casList[i], new ResourceProcessException(new SkipCasException(
-                            "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId()
-                                    + " Sequence:" + meta.getSequence())));
+                    notifyListeners(casList[i],
+                            new ResourceProcessException(new SkipCasException(
+                                    "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId()
+                                            + " Sequence:" + meta.getSequence())));
 
                     casPool.releaseCas((CAS) casObjectList[i]);
-//                    synchronized (casPool) {  // redundant, releaseCas call does this
-//                      casPool.notifyAll();
-//                    }
+                    // synchronized (casPool) { // redundant, releaseCas call does this
+                    // casPool.notifyAll();
+                    // }
                     releasedCas = true;
                   }
                 }
@@ -764,14 +757,10 @@ public class ArtifactProducer extends Thread {
               }
             }
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_place_cas_in_queue__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(casObjectList.length) });
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_place_cas_in_queue__FINEST", new Object[] {
+                          Thread.currentThread().getName(), String.valueOf(casObjectList.length) });
             }
             // Prevent processing of new CASes if the CPM has been
             // killed hard. Allow processing of CASes
@@ -782,17 +771,14 @@ public class ArtifactProducer extends Thread {
                     || (cpm.isRunning() == false && cpm.isHardKilled() == false)) {
               threadState = 1005; // Entering enqueue
               workQueue.enqueue(casObjectList);
-//              synchronized (workQueue) { // redundant, enqueue does this
-//                workQueue.notifyAll();
-//              }
+              // synchronized (workQueue) { // redundant, enqueue does this
+              // workQueue.notifyAll();
+              // }
               threadState = 1006; // Done Entering enqueue
               entityCount += casObjectList.length;
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                        this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                         "UIMA_CPM_placed_cas_in_queue__FINEST",
                         new Object[] { Thread.currentThread().getName(),
                             String.valueOf(casObjectList.length) });
@@ -838,8 +824,8 @@ public class ArtifactProducer extends Thread {
       } catch (Exception e) {
         // The following conditional is true if hasNext() has failed
         if (!crEventCompleted) {
-          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                  "Process", "failure");
+          localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(), "Process",
+                  "failure");
         }
         // e.printStackTrace();
         // changed from FINER to WARNING: https://issues.apache.org/jira/browse/UIMA-2440
@@ -859,9 +845,9 @@ public class ArtifactProducer extends Thread {
               notifyListeners(casList[i], e);
               casPool.releaseCas(casList[i]);
               casList[i] = null;
-//              synchronized (casPool) { // redundant, releaseCas does this
-//                casPool.notifyAll();
-//              }
+              // synchronized (casPool) { // redundant, releaseCas does this
+              // casPool.notifyAll();
+              // }
 
             } else {
               notifyListeners(null, e);
@@ -906,20 +892,21 @@ public class ArtifactProducer extends Thread {
   /**
    * Notify registered callback listeners of a given exception.
    *
-   * @param aCas the a cas
-   * @param anException -
-   *          exception to propagate to callback listeners
+   * @param aCas
+   *          the a cas
+   * @param anException
+   *          - exception to propagate to callback listeners
    */
   private void notifyListeners(CAS aCas, Exception anException) {
     for (int i = 0; callbackListeners != null && i < callbackListeners.size(); i++) {
       StatusCallbackListener statCL = (StatusCallbackListener) callbackListeners.get(i);
-      if ( statCL != null ) {
+      if (statCL != null) {
         ProcessTrace prTrace = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());
         EntityProcessStatusImpl aEntityProcStatus = new EntityProcessStatusImpl(prTrace);
         aEntityProcStatus.addEventStatus("Collection Reader Failure", "failed", anException);
         // Notify the listener that the Cas has been processed
         CPMEngine.callEntityProcessCompleteWithCAS(statCL, aCas, aEntityProcStatus);
-//        statCL.entityProcessComplete(aCas, aEntityProcStatus);
+        // statCL.entityProcessComplete(aCas, aEntityProcStatus);
       }
     }
   }
@@ -953,9 +940,9 @@ public class ArtifactProducer extends Thread {
                 new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
 
       }
-//      synchronized (workQueue) { // redundant, the enqueue call above does this
-//        workQueue.notifyAll();
-//      }
+      // synchronized (workQueue) { // redundant, the enqueue call above does this
+      // workQueue.notifyAll();
+      // }
     } catch (Exception e) {
       e.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
@@ -983,7 +970,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Invalidate.
    *
-   * @param aCasList the a cas list
+   * @param aCasList
+   *          the a cas list
    */
   public void invalidate(CAS[] aCasList) {
     for (int i = 0; aCasList != null && i < aCasList.length && aCasList[i] != null; i++) {

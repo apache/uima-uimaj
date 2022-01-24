@@ -27,8 +27,8 @@ import org.apache.uima.util.InvalidXMLException;
 
 /**
  * Description of a collection of CAS feature structure indexes. This implements
- * <code>MetaDataObject</code>, which implements {@link org.apache.uima.util.XMLizable}, so it
- * can be serialized to and deserialized from an XML element.
+ * <code>MetaDataObject</code>, which implements {@link org.apache.uima.util.XMLizable}, so it can
+ * be serialized to and deserialized from an XML element.
  * <p>
  * FS Index Collections can declare that they {@link #getImports() import} other FS Index
  * Collections. At runtime, these imports will be resolved to create a single logical FS Index
@@ -39,9 +39,9 @@ import org.apache.uima.util.InvalidXMLException;
  * automatically when a CAS is created using a FsIndexCollection.
  * <p>
  * FS Index Collections can optionally be assigned a {@link #getName() name},
- * {@link #getDescription() description}, {@link #getVendor() vendor}, and
- * {@link #getVersion() version}. It is recommended that these properties be set on any FS Index
- * Collection that is meant to be shared by (imported by) multiple components.
+ * {@link #getDescription() description}, {@link #getVendor() vendor}, and {@link #getVersion()
+ * version}. It is recommended that these properties be set on any FS Index Collection that is meant
+ * to be shared by (imported by) multiple components.
  * 
  * 
  */

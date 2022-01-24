@@ -21,6 +21,8 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
 import java.text.MessageFormat;
 
+import org.apache.uima.taeconfigurator.CDEpropertyPage;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -33,9 +35,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.taeconfigurator.CDEpropertyPage;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 
 /**

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="&#128512; &#128513; &#129321; &#129392;&#10;&#128678;&#127385; &#128720;&#128708;&#10;A line of normal text.&#10;&#129396; &#128696;⚔️ &#128692;‍♀️"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="2" _ref_sofa="1" begin="0" end="58" language="x-unspecified"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="3" _ref_sofa="1" begin="0" end="11"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="4" _ref_sofa="1" begin="12" end="21"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="5" _ref_sofa="1" begin="22" end="44"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="6" _ref_sofa="1" begin="45" end="58"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="7" _ref_sofa="1" begin="0" end="2"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="8" _ref_sofa="1" begin="3" end="5"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="9" _ref_sofa="1" begin="6" end="8"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="10" _ref_sofa="1" begin="9" end="11"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="11" _ref_sofa="1" begin="12" end="16"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="12" _ref_sofa="1" begin="17" end="21"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="13" _ref_sofa="1" begin="22" end="23"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="14" _ref_sofa="1" begin="24" end="28"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="15" _ref_sofa="1" begin="29" end="31"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="16" _ref_sofa="1" begin="32" end="38"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="17" _ref_sofa="1" begin="39" end="44"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="18" _ref_sofa="1" begin="45" end="47"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="19" _ref_sofa="1" begin="48" end="52"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="20" _ref_sofa="1" begin="53" end="58"/>
+    <custom.Span _indexed="1" _id="21" _ref_sofa="1" begin="6" end="11" label="&#129321; &#129392;"/>
+    <custom.Span _indexed="1" _id="22" _ref_sofa="1" begin="24" end="28" label="&#128207;"/>
+</CAS>

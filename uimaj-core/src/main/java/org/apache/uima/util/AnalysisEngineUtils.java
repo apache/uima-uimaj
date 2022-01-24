@@ -62,7 +62,7 @@ public class AnalysisEngineUtils {
 
     FSTypeConstraint constraint = ConstraintFactory.instance().createTypeConstraint();
 
-    for (String typeName  : outputTypes) {
+    for (String typeName : outputTypes) {
       // add type to constraint
       constraint.add(typeName);
     }

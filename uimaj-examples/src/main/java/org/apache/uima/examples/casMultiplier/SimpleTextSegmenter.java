@@ -48,6 +48,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mSegmentSize = (Integer) aContext.getConfigParameterValue("SegmentSize");
@@ -58,6 +59,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see JCasMultiplier_ImplBase#process(JCas)
    */
+  @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     mDoc = aJCas.getDocumentText();
     mPos = 0;
@@ -77,6 +79,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return mPos < mDoc.length();
   }
@@ -86,6 +89,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     int breakAt = mPos + mSegmentSize;
     if (breakAt > mDoc.length())

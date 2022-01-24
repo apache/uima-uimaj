@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
-public class MetaDataObjectSerializer_json implements MetaDataObject_impl.Serializer  {
-  
+public class MetaDataObjectSerializer_json implements MetaDataObject_impl.Serializer {
+
   final private JsonContentHandlerJacksonWrapper jch;
   final private JsonGenerator jg;
   final private boolean isFormattedOutput;
@@ -44,95 +44,104 @@ public class MetaDataObjectSerializer_json implements MetaDataObject_impl.Serial
     jg = jch.getJsonGenerator();
     isFormattedOutput = jch.isFormattedOutput();
   }
- 
+
   @Override
-  public void outputStartElement(Node node, String nameSpace, String localName, String qName, Attributes attributes) throws SAXException {
-   jch.startElement(null, null, qName, attributes); 
+  public void outputStartElement(Node node, String nameSpace, String localName, String qName,
+          Attributes attributes) throws SAXException {
+    jch.startElement(null, null, qName, attributes);
   }
-  
+
   @Override
-  public void outputEndElement(Node node, String aNamespace, String localname, String qname) throws SAXException {
+  public void outputEndElement(Node node, String aNamespace, String localname, String qname)
+          throws SAXException {
     jch.endElement(null, localname, qname);
   }
 
-  
   @Override
-  public void outputStartElementForArrayElement(Node node, String nameSpace, String localName, String qName, Attributes attributes) throws SAXException {}
- 
-  @Override
-  public void outputEndElementForArrayElement(Node node, String aNamespace, String localname, String qname) throws SAXException {}
+  public void outputStartElementForArrayElement(Node node, String nameSpace, String localName,
+          String qName, Attributes attributes) throws SAXException {
+  }
 
   @Override
-  public void saveAndAddNodeStore(Node infoset) {}
+  public void outputEndElementForArrayElement(Node node, String aNamespace, String localname,
+          String qname) throws SAXException {
+  }
 
   @Override
-  public void deleteNodeStore() {}
-  
+  public void saveAndAddNodeStore(Node infoset) {
+  }
+
+  @Override
+  public void deleteNodeStore() {
+  }
+
   @Override
   public boolean indentChildElements(XmlizationInfo info, MetaDataObject_impl mdo) {
     return isFormattedOutput && hasXMLizableChild(info.propertyInfo, mdo);
   }
-  
+
   @Override
   public void insertNl() {
     jch.writeNlJustBeforeNext();
   }
-  
+
   @Override
   public boolean shouldBeSkipped(PropertyXmlInfo propInfo, Object val, MetaDataObject_impl mdo) {
-    return mdo.valueIsNullOrEmptyArray(val);   
+    return mdo.valueIsNullOrEmptyArray(val);
   }
-  
+
   @Override
   public boolean startElementProperty() {
-    return false;  // the start is done later for JSON in case omitted.
+    return false; // the start is done later for JSON in case omitted.
   }
-  
+
   @Override
-  public void addNodeStore() {};
-  
+  public void addNodeStore() {
+  };
+
   @Override
   public void writeDelayedStart(String name) throws SAXException {
     jgWriteFieldName(name);
   }
-  
+
   @Override
   public void writeSimpleValue(Object val) throws SAXException {
     writePrimitiveJsonValue(val, jg);
   }
-    
+
   @Override
   public boolean shouldEncloseInArrayElement(Class propClass) {
-    return false;   
+    return false;
   }
-  
+
   @Override
   public boolean isArrayHasIndentableElements(Object array) {
     Object firstElement = Array.get(array, 0);
-    return  !(firstElement instanceof AllowedValue) && (firstElement instanceof XMLizable);
+    return !(firstElement instanceof AllowedValue) && (firstElement instanceof XMLizable);
   }
-  
+
   @Override
   public void maybeStartArraySymbol() throws SAXException {
     jgWriteStartArray();
   }
-  
+
   @Override
   public void maybeEndArraySymbol() throws SAXException {
     jgWriteEndArray();
   }
-  
+
   @Override
   /*
-   * (non-Javadoc)
-   * write {"type" : "value}
+   * (non-Javadoc) write {"type" : "value}
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl.Serializer#writeSimpleValueWithTag(java.lang.String, java.lang.Object, org.w3c.dom.Node)
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl.Serializer#writeSimpleValueWithTag(
+   * java.lang.String, java.lang.Object, org.w3c.dom.Node)
    */
   public void writeSimpleValueWithTag(String className, Object o, Node node) throws SAXException {
     jgWriteStartObject();
-    jgWriteFieldName(className);    
-    String valStr = (String)o;
+    jgWriteFieldName(className);
+    String valStr = (String) o;
     jgWriteString(valStr);
     jgWriteEndObject();
   }
@@ -141,63 +150,89 @@ public class MetaDataObjectSerializer_json implements MetaDataObject_impl.Serial
     for (PropertyXmlInfo pi : ia) {
       Object val = mdo.getAttributeValue(pi.propertyName);
       if (val != null && val instanceof XMLizable) {
-        return true;        
+        return true;
       }
     }
     return false;
   }
-  
+
   private void jgWriteFieldName(String name) throws SAXException {
-    try {jg.writeFieldName(name);} catch (IOException e) {throw new SAXException(e);}
+    try {
+      jg.writeFieldName(name);
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
   }
 
   private void jgWriteStartArray() throws SAXException {
-    try {jg.writeStartArray();} catch (IOException e) {throw new SAXException(e);}
+    try {
+      jg.writeStartArray();
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
   }
 
   private void jgWriteEndArray() throws SAXException {
-    try {jg.writeEndArray();} catch (IOException e) {throw new SAXException(e);}
+    try {
+      jg.writeEndArray();
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
   }
 
   private void jgWriteString(String s) throws SAXException {
-    try {jg.writeString(s);} catch (IOException e) {throw new SAXException(e);}
+    try {
+      jg.writeString(s);
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
   }
-  
+
   private void jgWriteStartObject() throws SAXException {
-    try {jg.writeStartObject();} catch (IOException e) {throw new SAXException(e);}
+    try {
+      jg.writeStartObject();
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
   }
 
   private void jgWriteEndObject() throws SAXException {
-    try {jg.writeEndObject();} catch (IOException e) {throw new SAXException(e);}
+    try {
+      jg.writeEndObject();
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
   }
-
 
   private static void writePrimitiveJsonValue(Object val, JsonGenerator jg) throws SAXException {
     try {
-    if (val instanceof Boolean)
-      jg.writeBoolean((Boolean) val);
-    else if (val instanceof Integer)
-      jg.writeNumber((Integer) val);
-    else if (val instanceof Long)
-      jg.writeNumber((Long) val);
-    else if (val instanceof Short)
-      jg.writeNumber((Short) val);
-    else if (val instanceof Byte)
-      jg.writeNumber((Byte) val);
-    else if (val instanceof Float)
-      jg.writeNumber((Float) val);
-    else if (val instanceof Double)
-      jg.writeNumber((Double) val);
-    else if (val instanceof String)
-      jg.writeString((String) val);
-    else
-      throw new RuntimeException("unhandled value type");
+      if (val instanceof Boolean) {
+        jg.writeBoolean((Boolean) val);
+      } else if (val instanceof Integer) {
+        jg.writeNumber((Integer) val);
+      } else if (val instanceof Long) {
+        jg.writeNumber((Long) val);
+      } else if (val instanceof Short) {
+        jg.writeNumber((Short) val);
+      } else if (val instanceof Byte) {
+        jg.writeNumber((Byte) val);
+      } else if (val instanceof Float) {
+        jg.writeNumber((Float) val);
+      } else if (val instanceof Double) {
+        jg.writeNumber((Double) val);
+      } else if (val instanceof String) {
+        jg.writeString((String) val);
+      } else {
+        throw new RuntimeException("unhandled value type");
+      }
     } catch (IOException e) {
       throw new SAXException(e);
     }
   }
 
   @Override
-  public Node findMatchingSubElement(String elementName) {return null;}
+  public Node findMatchingSubElement(String elementName) {
+    return null;
+  }
 
 }

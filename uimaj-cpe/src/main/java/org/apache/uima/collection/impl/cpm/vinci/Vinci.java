@@ -33,12 +33,11 @@ import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.document.AFrame;
 
-
 /**
  * The Class Vinci.
  */
 public class Vinci {
-  
+
   /** The Constant VNS_HOST. */
   public static final String VNS_HOST = "VNS_HOST";
 
@@ -50,7 +49,9 @@ public class Vinci {
    */
   public static class AFFactory implements TransportableFactory {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.vinci.transport.TransportableFactory#makeTransportable()
      */
     @Override
@@ -71,8 +72,8 @@ public class Vinci {
   /**
    * Creates and populates an error frame.
    * 
-   * @param errorMsg -
-   *          error message to place in the error frame
+   * @param errorMsg
+   *          - error message to place in the error frame
    * 
    * @return {@link org.apache.vinci.transport.VinciFrame} instance containing error
    */
@@ -86,13 +87,17 @@ public class Vinci {
    * Package the {@link org.apache.vinci.transport.VinciFrame} containing result of the requested
    * operation into a Vinci Data frame.
    * 
-   * @param conn the connection
-   * @param requestFrame {@link org.apache.vinci.transport.VinciFrame}
-   *          containing result of thsi service operation 
+   * @param conn
+   *          the connection
+   * @param requestFrame
+   *          {@link org.apache.vinci.transport.VinciFrame} containing result of thsi service
+   *          operation
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-  public static AFrame replyWithAnalysis(BaseClient conn, VinciFrame requestFrame) throws Exception {
+  public static AFrame replyWithAnalysis(BaseClient conn, VinciFrame requestFrame)
+          throws Exception {
     AFFactory af = new AFFactory();
     return (AFrame) conn.sendAndReceive(requestFrame, af);
   }
@@ -101,11 +106,14 @@ public class Vinci {
    * Package the {@link org.apache.vinci.transport.VinciFrame} containing result of the requested
    * operation into a Vinci Data frame.
    *
-   * @param conn the connection
-   * @param requestFrame {@link org.apache.vinci.transport.VinciFrame}
-   *          containing result of thsi service operation
+   * @param conn
+   *          the connection
+   * @param requestFrame
+   *          {@link org.apache.vinci.transport.VinciFrame} containing result of thsi service
+   *          operation
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   public static AFrame replyWithAnalysis(VinciClient conn, VinciFrame requestFrame)
           throws Exception {
@@ -116,8 +124,10 @@ public class Vinci {
   /**
    * Produce A frame.
    *
-   * @param cmd the cmd
-   * @param content the content
+   * @param cmd
+   *          the cmd
+   * @param content
+   *          the content
    * @return the a frame
    */
   public static AFrame produceAFrame(String cmd, String content) {
@@ -137,19 +147,20 @@ public class Vinci {
   /**
    * Extract KEYS as string.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    * @return the string
    */
   public static String extractKEYSAsString(AFrame frame) {
     String keys = "";
     if (frame == null) {
-        return keys;
+      return keys;
     }
 
     String frameAsString = frame.toXML();
     if (frameAsString.indexOf("KEYS") > -1 && frameAsString.indexOf("</KEYS>") > -1) {
-      keys = frameAsString.substring(frameAsString.indexOf("KEYS") + 5, frameAsString
-              .indexOf("</KEYS>"));
+      keys = frameAsString.substring(frameAsString.indexOf("KEYS") + 5,
+              frameAsString.indexOf("</KEYS>"));
     }
     return keys;
   }
@@ -157,8 +168,10 @@ public class Vinci {
   /**
    * Gets the feature value by type.
    *
-   * @param aCAS the a CAS
-   * @param featureName the feature name
+   * @param aCAS
+   *          the a CAS
+   * @param featureName
+   *          the feature name
    * @return the feature value by type
    */
   public static String getFeatureValueByType(CasData aCAS, String featureName) {
@@ -181,7 +194,8 @@ public class Vinci {
   /**
    * Gets the content from DATA cas.
    *
-   * @param aCas the a cas
+   * @param aCas
+   *          the a cas
    * @return the content from DATA cas
    */
   public static String getContentFromDATACas(CasData aCas) {
@@ -191,7 +205,7 @@ public class Vinci {
       if (org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG.equals(fs.getType())) {
         return ((PrimitiveValue) fs
                 .getFeatureValue(org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE))
-                .toString();
+                        .toString();
       }
     }
     return "";
@@ -200,7 +214,8 @@ public class Vinci {
   /**
    * Returns a content from a given VinciFrame.
    *
-   * @param aFrame the a frame
+   * @param aFrame
+   *          the a frame
    * @return the string
    */
   public static String stripVinciFrame(VinciFrame aFrame) {

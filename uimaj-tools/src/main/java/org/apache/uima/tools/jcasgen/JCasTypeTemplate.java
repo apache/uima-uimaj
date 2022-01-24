@@ -20,11 +20,13 @@
 package org.apache.uima.tools.jcasgen;
 
 import java.util.Iterator;
-import org.apache.uima.resource.metadata.TypeDescription;
+
 import org.apache.uima.resource.metadata.FeatureDescription;
+import org.apache.uima.resource.metadata.TypeDescription;
 
 public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
+  @Override
   public String generate(Object argument) {
     StringBuilder stringBuilder = new StringBuilder();
 

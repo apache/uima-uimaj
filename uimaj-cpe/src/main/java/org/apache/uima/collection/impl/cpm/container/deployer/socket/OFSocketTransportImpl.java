@@ -33,18 +33,15 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
-
 /**
  * The Class OFSocketTransportImpl.
  */
 public class OFSocketTransportImpl implements SocketTransport {
 
-  
   /**
    * Instantiates a new OF socket transport impl.
    */
   public OFSocketTransportImpl() {
-    super();
 
   }
 
@@ -62,8 +59,9 @@ public class OFSocketTransportImpl implements SocketTransport {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#connect(java.net.URL,
-   *      long)
+   * @see
+   * org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#connect(java.net.
+   * URL, long)
    */
   @Override
   public Socket connect(URL aURI, long aTimeout) throws SocketException {
@@ -83,8 +81,9 @@ public class OFSocketTransportImpl implements SocketTransport {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#invoke(java.net.Socket,
-   *      org.apache.uima.cas.CAS)
+   * @see
+   * org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#invoke(java.net.
+   * Socket, org.apache.uima.cas.CAS)
    */
   @Override
   public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException {
@@ -94,8 +93,9 @@ public class OFSocketTransportImpl implements SocketTransport {
 
     try {
       if (aSocket.isClosed()) {
-        aSocket = connect(new URL("http", aSocket.getInetAddress().getHostName(),
-                aSocket.getPort(), ""), 100000);
+        aSocket = connect(
+                new URL("http", aSocket.getInetAddress().getHostName(), aSocket.getPort(), ""),
+                100000);
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
@@ -147,7 +147,8 @@ public class OFSocketTransportImpl implements SocketTransport {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#getProcessingResourceMetaData()
+   * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#
+   * getProcessingResourceMetaData()
    */
   @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)

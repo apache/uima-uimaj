@@ -31,7 +31,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-
 public class FunctionErrorStore {
 
   private static final String LS = System.getProperties().getProperty("line.separator");
@@ -87,8 +86,8 @@ public class FunctionErrorStore {
   }
 
   // exceptions from JTextAnnotator_ImplBase.initialize and JTextAnnotator_ImplBase.reconfigure
-  public synchronized void methodeCalled2() throws AnnotatorConfigurationException,
-          AnnotatorInitializationException {
+  public synchronized void methodeCalled2()
+          throws AnnotatorConfigurationException, AnnotatorInitializationException {
     functionCounted++;
 
     if (functionCounted >= functionCounter) {
@@ -329,9 +328,8 @@ public class FunctionErrorStore {
     StringBuffer sb = new StringBuffer();
     sb.append("All counted Exceptions: " + allCountedExceptions + LS);
     sb.append("CollectionReader instances: " + collectionReaderCount + LS);
-    sb
-            .append("CollectionReader 'getNext'-methode call count: "
-                    + collectionReaderGetNextCount + LS);
+    sb.append(
+            "CollectionReader 'getNext'-methode call count: " + collectionReaderGetNextCount + LS);
     sb.append("Annotator instances: " + annotatorCount + LS);
     sb.append("Annotator 'process'-methode call count: " + annotatorProcessCount + LS);
     sb.append("CasConsumer instances: " + casConsumerCount + LS);

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="He loves her .&#10;She loves him not ."/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData _indexed="1" _id="2" _ref_sofa="1" begin="0" end="34" documentId="doc" isLastSegment="false"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="3" _ref_sofa="1" begin="0" end="2" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="4" _ref_sofa="1" begin="3" end="8" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="5" _ref_sofa="1" begin="9" end="12" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="6" _ref_sofa="1" begin="13" end="14" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="7" _ref_sofa="1" begin="15" end="18" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="8" _ref_sofa="1" begin="19" end="24" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="9" _ref_sofa="1" begin="25" end="28" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="10" _ref_sofa="1" begin="29" end="32" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="11" _ref_sofa="1" begin="33" end="34" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="12" _ref_sofa="1" begin="0" end="14"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="13" _ref_sofa="1" begin="15" end="34"/>
+    <webanno.custom.Span _indexed="1" _id="14" _ref_sofa="1" begin="0" end="34" value="PERSON"/>
+</CAS>

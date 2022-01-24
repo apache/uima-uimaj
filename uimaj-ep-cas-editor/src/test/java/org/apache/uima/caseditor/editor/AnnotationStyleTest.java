@@ -19,11 +19,11 @@
 
 package org.apache.uima.caseditor.editor;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Color;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for the {@link AnnotationStyle} class.
@@ -32,28 +32,29 @@ public class AnnotationStyleTest {
   /**
    * Tests the {@link AnnotationStyle#equals(Object)} method.
    */
-  @Test
-  public void testEquals() {
+    @Test
+    public void testEquals() {
     AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
     AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
-    assertEquals(a, b);
+    assertThat(a).isEqualTo(b);
   }
 
   /**
    * Test the {@link AnnotationStyle#hashCode()} method.
    *
    */
-  public void testHashCode() {
+    @Test
+    public void testHashCode() {
     AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
     AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
-    assertEquals(a.hashCode(), b.hashCode());
+    assertThat(a.hashCode()).isEqualTo(b.hashCode());
   }
 }

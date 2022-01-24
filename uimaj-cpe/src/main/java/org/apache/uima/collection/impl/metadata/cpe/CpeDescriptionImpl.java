@@ -38,12 +38,11 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 
-
 /**
  * The Class CpeDescriptionImpl.
  */
 public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescription {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8068920415609241198L;
 
@@ -63,16 +62,17 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
    * Instantiates a new cpe description impl.
    */
   public CpeDescriptionImpl() {
-    super();
   }
 
   /**
    * Instantiates a new cpe description impl.
    *
-   * @param aInput the a input
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aInput
+   *          the a input
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    */
-  /* 
+  /*
    * This is needed for XMLParser.parseCpeDesription() to work. Typically users should use
    * CpeDescriptorFactory.produceDescriptor() instead. - APL
    */
@@ -115,8 +115,11 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#addCollectionReader(org.apache.uima.collection.metadata.CpeCollectionReader)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeDescription#addCollectionReader(org.apache.uima.
+   * collection.metadata.CpeCollectionReader)
    */
   @Override
   public void addCollectionReader(CpeCollectionReader aCollectionReader)
@@ -124,7 +127,9 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
     collectionReader = aCollectionReader;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#addCollectionReader(java.lang.String)
    */
   @Override
@@ -141,14 +146,16 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   /**
    * Adds the cas initializer.
    *
-   * @param aInitializerDescriptorPath the a initializer descriptor path
+   * @param aInitializerDescriptorPath
+   *          the a initializer descriptor path
    * @return the cpe collection reader cas initializer
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
   @Override
   @Deprecated
-public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
+  public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
           throws CpeDescriptorException {
     if (collectionReader == null) {
       collectionReader = CpeDescriptorFactory.produceCollectionReader();
@@ -157,13 +164,15 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
       collectionReader.setCasInitializer(CpeDescriptorFactory
               .produceCollectionReaderCasInitializer(aInitializerDescriptorPath, this));
     } else {
-      collectionReader.getCasInitializer().getDescriptor().getInclude().set(
-              aInitializerDescriptorPath);
+      collectionReader.getCasInitializer().getDescriptor().getInclude()
+              .set(aInitializerDescriptorPath);
     }
     return collectionReader.getCasInitializer();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#getAllCollectionCollectionReaders()
    */
   @Override
@@ -176,22 +185,29 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     return readers;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#setAllCollectionCollectionReaders(org.apache.uima.collection.metadata.CpeCollectionReader[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CpeDescription#setAllCollectionCollectionReaders(org.apache
+   * .uima.collection.metadata.CpeCollectionReader[])
    */
   @Override
   public void setAllCollectionCollectionReaders(CpeCollectionReader[] areaders)
           throws CpeDescriptorException {
     if (areaders == null || areaders.length == 0) {
       collectionReader = null;
-    }
-    else {
+    } else {
       collectionReader = areaders[0];
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#setResourceManagerConfiguration(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CpeDescription#setResourceManagerConfiguration(java.lang.
+   * String)
    */
   @Override
   public void setResourceManagerConfiguration(String aResMgrConfPagth) {
@@ -200,8 +216,11 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#setCpeResourceManagerConfiguration(org.apache.uima.collection.metadata.CpeResourceManagerConfiguration)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeDescription#setCpeResourceManagerConfiguration(org.
+   * apache.uima.collection.metadata.CpeResourceManagerConfiguration)
    */
   @Override
   public void setCpeResourceManagerConfiguration(CpeResourceManagerConfiguration aResMgrConfPagth) {
@@ -220,9 +239,11 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
   /**
    * Sets the input queue size.
    *
-   * @param aSize the new input queue size
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @deprecated 
+   * @param aSize
+   *          the new input queue size
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -233,7 +254,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     casProcessors.setInputQueueSize(aSize);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#setProcessingUnitThreadCount(int)
    */
   @Override
@@ -247,9 +270,11 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
   /**
    * Sets the output queue size.
    *
-   * @param aSize the new output queue size
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @deprecated 
+   * @param aSize
+   *          the new output queue size
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -260,15 +285,20 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     casProcessors.setOutputQueueSize(aSize);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#setCpeCasProcessors(org.apache.uima.collection.metadata.CpeCasProcessors)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeDescription#setCpeCasProcessors(org.apache.uima.
+   * collection.metadata.CpeCasProcessors)
    */
   @Override
   public void setCpeCasProcessors(CpeCasProcessors aCasProcessors) {
     casProcessors = aCasProcessors;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#getCpeCasProcessors()
    */
   @Override
@@ -276,8 +306,12 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     return casProcessors;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#addCasProcessor(org.apache.uima.collection.metadata.CpeCasProcessor)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CpeDescription#addCasProcessor(org.apache.uima.collection.
+   * metadata.CpeCasProcessor)
    */
   @Override
   public void addCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException {
@@ -287,8 +321,11 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     casProcessors.addCpeCasProcessor(aCasProcessor);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#addCasProcessor(int, org.apache.uima.collection.metadata.CpeCasProcessor)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeDescription#addCasProcessor(int,
+   * org.apache.uima.collection.metadata.CpeCasProcessor)
    */
   @Override
   public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
@@ -301,15 +338,20 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeDescription#setCpeConfiguration(org.apache.uima.collection.metadata.CpeConfiguration)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeDescription#setCpeConfiguration(org.apache.uima.
+   * collection.metadata.CpeConfiguration)
    */
   @Override
   public void setCpeConfiguration(CpeConfiguration aConfiguration) {
     cpeConfiguration = aConfiguration;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#getCpeConfiguration()
    */
   @Override
@@ -320,7 +362,8 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
   /**
    * Sets the cpe config.
    *
-   * @param aConfiguration the new cpe config
+   * @param aConfiguration
+   *          the new cpe config
    */
   public void setCpeConfig(CpeConfiguration aConfiguration) {
     cpeConfiguration = aConfiguration;
@@ -330,13 +373,16 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
    * Gets the cpe config.
    *
    * @return the cpe config
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public CpeConfiguration getCpeConfig() throws CpeDescriptorException {
     return cpeConfiguration;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#setCheckpoint(java.lang.String, int)
    */
   @Override
@@ -351,7 +397,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#setDeployment(java.lang.String)
    */
   @Override
@@ -365,7 +413,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#setNumToProcess(long)
    */
   @Override
@@ -379,7 +429,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#setStartingEntityId(java.lang.String)
    */
   @Override
@@ -393,7 +445,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#setTimer(java.lang.String)
    */
   @Override
@@ -407,7 +461,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeDescription#getResourceManagerConfiguration()
    */
   @Override
@@ -418,9 +474,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#readUnknownPropertyValueFromXMLElement(org.w3c.dom.Element,
-   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions,
-   *      java.util.List)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#
+   * readUnknownPropertyValueFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser,
+   * org.apache.uima.util.XMLParser.ParsingOptions, java.util.List)
    */
   @Override
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
@@ -429,13 +485,14 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
       resourceMgrConfig = new CpeResourceManagerConfigurationImpl();
       resourceMgrConfig.buildFromXMLElement(aElement, aParser, aOptions);
     } else {
-      super
-              .readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions,
-                      aKnownPropertyNames);
+      super.readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions,
+              aKnownPropertyNames);
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -446,8 +503,7 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCollectionCollectionReaders", null),
-              new PropertyXmlInfo("cpeCasProcessors", null),
-              new PropertyXmlInfo("cpeConfig", null),
+              new PropertyXmlInfo("cpeCasProcessors", null), new PropertyXmlInfo("cpeConfig", null),
               new PropertyXmlInfo("cpeResourceManagerConfiguration", null),
 
           });

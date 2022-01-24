@@ -35,7 +35,6 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.VinciServableAdapter;
 import org.apache.vinci.transport.VinciServer;
 
-
 /**
  * 
  * LOCAL Vinci Naming Service. Used by locally deployed TAEs. Locally, meaning TAEs running on the
@@ -45,7 +44,7 @@ import org.apache.vinci.transport.VinciServer;
  */
 
 public class LocalVNS extends VinciServableAdapter implements Runnable {
-  
+
   /** The onport. */
   private int onport;
 
@@ -73,13 +72,14 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   /**
    * Instantiates Local Vinci Naming Service.
    *
-   * @param aStartPort -
-   *          a starting port # for clients (services)
-   * @param aEndPort -
-   *          an ending port # for clients( services)
-   * @param aVNSPort -
-   *          port on which this VNS will listen on
-   * @throws PortUnreachableException the port unreachable exception
+   * @param aStartPort
+   *          - a starting port # for clients (services)
+   * @param aEndPort
+   *          - an ending port # for clients( services)
+   * @param aVNSPort
+   *          - port on which this VNS will listen on
+   * @throws PortUnreachableException
+   *           the port unreachable exception
    */
   public LocalVNS(String aStartPort, String aEndPort, String aVNSPort)
           throws PortUnreachableException {
@@ -134,14 +134,15 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * port is tested first for availability. If it is not available the next port is tested, until
    * one is found to be available.
    * 
-   * @param aStartPort -
-   *          starting port number used
-   * @param aEndPort -
-   *          end port number. Together with StartPort defines the range of ports (port pool)
-   * @param aVNSPort -
-   *          port on which this VNS will listen for requests
+   * @param aStartPort
+   *          - starting port number used
+   * @param aEndPort
+   *          - end port number. Together with StartPort defines the range of ports (port pool)
+   * @param aVNSPort
+   *          - port on which this VNS will listen for requests
    * 
-   * @throws PortUnreachableException unreachable port after retries
+   * @throws PortUnreachableException
+   *           unreachable port after retries
    */
   public LocalVNS(int aStartPort, int aEndPort, int aVNSPort) throws PortUnreachableException {
     startport = aStartPort;
@@ -182,8 +183,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   /**
    * Associates a port pool with instance of VNS.
    * 
-   * @param pQueue -
-   *          queue where allocated ports will be added
+   * @param pQueue
+   *          - queue where allocated ports will be added
    */
   public synchronized void setConnectionPool(BoundedWorkQueue pQueue) {
     portQueue = pQueue;
@@ -193,7 +194,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * Determines if a given port is free. It establishes a short lived connection to the port and if
    * successful returns false.
    *
-   * @param port number to check
+   * @param port
+   *          number to check
    * @return true, if is available
    */
   public boolean isAvailable(int port) {
@@ -236,7 +238,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * 
    * @return - free port
    * 
-   * @throws PortUnreachableException can't get port in configured range
+   * @throws PortUnreachableException
+   *           can't get port in configured range
    */
   public synchronized int getPort() throws PortUnreachableException {
     boolean portAvailable = false;
@@ -257,9 +260,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       // In case ports are not available break out of the loop having tried 4 times
       // to acquire any of the ports in configured range
       if (retryCount > 3) {
-        throw new PortUnreachableException(
-                "Unable to aquire any of the ports in configured range:[" + startport + ".."
-                        + maxport + "]");
+        throw new PortUnreachableException("Unable to aquire any of the ports in configured range:["
+                + startport + ".." + maxport + "]");
       }
     }
     return onport;
@@ -270,9 +272,11 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * "serveon" request to VNS and waits for assigned port. The VNS looks up its cahce of ports and
    * returns to the service one that has not yest allocated.
    *
-   * @param in the in
+   * @param in
+   *          the in
    * @return the transportable
-   * @throws ServiceException the service exception
+   * @throws ServiceException
+   *           the service exception
    */
   @Override
   public synchronized Transportable eval(Transportable in) throws ServiceException {
@@ -334,15 +338,14 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         if (publicVNSHost == null || publicVNSHost.trim().length() == 0 || publicVNSPort == null
                 || publicVNSPort.trim().length() == 0) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
-                    this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_unknown_vns_command__WARNING",
                     new Object[] { Thread.currentThread().getName() });
           }
           VinciFrame rtn = new VinciFrame();
-          rtn
-                  .fadd("vinci:EXCEPTION",
-                          "CPM Reply:Public VNS not known. Verify CPMs startup param include -DVNS_HOST and -DVNS_PORT");
+          rtn.fadd("vinci:EXCEPTION",
+                  "CPM Reply:Public VNS not known. Verify CPMs startup param include -DVNS_HOST and -DVNS_PORT");
           return rtn;
         }
         int pvnsPort = -1;
@@ -350,8 +353,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
           pvnsPort = Integer.parseInt(publicVNSPort);
         } catch (NumberFormatException e) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
-                    this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_unknown_vns_command__WARNING",
                     new Object[] { Thread.currentThread().getName() });
           }
@@ -398,8 +401,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         server.shutdownServing();
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_vns_stopped_serving__INFO",
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_stopped_serving__INFO",
                   new Object[] { Thread.currentThread().getName() });
         }
       }
@@ -409,7 +411,9 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#finalize()
    */
   @Override
@@ -437,8 +441,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_launching_local_vns__INFO",
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_launching_local_vns__INFO",
                   new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
         }
         server = new VinciServer(this);

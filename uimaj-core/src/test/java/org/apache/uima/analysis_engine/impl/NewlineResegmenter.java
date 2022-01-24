@@ -28,7 +28,6 @@ import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-
 public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   JCas mCurrentInputCas;
 
@@ -49,6 +48,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
+  @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     mCurrentInputCas = aJCas;
     mDoc = aJCas.getDocumentText();
@@ -60,6 +60,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return mHasNext;
   }
@@ -69,6 +70,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     // we should already have a JCas ready to return
     JCas toReturn = mJCases[mActiveJCas];
@@ -93,6 +95,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.JCasSegmenter_ImplBase#getCasInstancesRequired()
    */
+  @Override
   public int getCasInstancesRequired() {
     return 2;
   }
@@ -139,8 +142,8 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   }
 
   private String getCasSourceUri(JCas jcas) {
-    Iterator<Annotation> iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-            .iterator();
+    Iterator<Annotation> iter = jcas.getJFSIndexRepository()
+            .getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (iter.hasNext()) {
       SourceDocumentInformation sdi = (SourceDocumentInformation) iter.next();
       return sdi.getUri();

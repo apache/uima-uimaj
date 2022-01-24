@@ -22,12 +22,12 @@ package org.apache.uima.resource;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasConsumer_ImplBase;
 
-
 public class TestCasConsumer extends CasConsumer_ImplBase {
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
+  @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     // empty method
 

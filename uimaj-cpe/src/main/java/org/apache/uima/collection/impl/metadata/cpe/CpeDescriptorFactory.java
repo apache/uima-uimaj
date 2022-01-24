@@ -56,7 +56,6 @@ import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * Factory class for creating CpeDescriptors and their constituent objects.
  * 
@@ -118,7 +117,8 @@ public class CpeDescriptorFactory {
       throw new InvalidXMLException(e);
     }
 
-    throw new InvalidXMLException(new Exception("Unexpected Object Type Produced By the XMLParser"));
+    throw new InvalidXMLException(
+            new Exception("Unexpected Object Type Produced By the XMLParser"));
   }
 
   /**
@@ -139,10 +139,13 @@ public class CpeDescriptorFactory {
   /**
    * Produce collection reader.
    *
-   * @param aCollectionReaderDescriptorPath a path to the collection reader descriptor
-   * @param aDescriptor the descriptor to associate the collection reader with
+   * @param aCollectionReaderDescriptorPath
+   *          a path to the collection reader descriptor
+   * @param aDescriptor
+   *          the descriptor to associate the collection reader with
    * @return the CPE Collection Reader
-   * @throws CpeDescriptorException if there is a failure
+   * @throws CpeDescriptorException
+   *           if there is a failure
    */
   public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath,
           CpeDescription aDescriptor) throws CpeDescriptorException {
@@ -162,9 +165,11 @@ public class CpeDescriptorFactory {
   /**
    * Produce collection reader.
    *
-   * @param aCollectionReaderDescriptorPath the a collection reader descriptor path
+   * @param aCollectionReaderDescriptorPath
+   *          the a collection reader descriptor path
    * @return the cpe collection reader
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath)
           throws CpeDescriptorException {
@@ -177,7 +182,8 @@ public class CpeDescriptorFactory {
    * Produce collection reader.
    *
    * @return the cpe collection reader
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeCollectionReader produceCollectionReader() throws CpeDescriptorException {
     CpeCollectionReader colR = new CpeCollectionReaderImpl();
@@ -188,9 +194,11 @@ public class CpeDescriptorFactory {
   /**
    * Produce collection reader iterator.
    *
-   * @param aPath the a path
+   * @param aPath
+   *          the a path
    * @return the cpe collection reader iterator
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeCollectionReaderIterator produceCollectionReaderIterator(String aPath)
           throws CpeDescriptorException {
@@ -202,14 +210,17 @@ public class CpeDescriptorFactory {
   /**
    * Produce collection reader cas initializer.
    *
-   * @param aPath don't use
-   * @param aDescriptor don't use
+   * @param aPath
+   *          don't use
+   * @param aDescriptor
+   *          don't use
    * @return a CPE Collection Reader CAS Initializer
-   * @throws CpeDescriptorException passed thru
+   * @throws CpeDescriptorException
+   *           passed thru
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
   @Deprecated
-public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+  public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
           String aPath, CpeDescription aDescriptor) throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
@@ -222,12 +233,13 @@ public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitia
   /**
    * Produce collection reader cas initializer.
    *
-   * @param aInitializerDescriptorPath path to the initializer descriptor
+   * @param aInitializerDescriptorPath
+   *          path to the initializer descriptor
    * @return CPE Collection Reader CAS Initializer
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
   @Deprecated
-protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+  protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
           String aInitializerDescriptorPath) {
     try {
       return produceCollectionReaderCasInitializer(aInitializerDescriptorPath, null);
@@ -240,7 +252,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce component descriptor.
    *
-   * @param aPath The path to the the CPE component Descriptor
+   * @param aPath
+   *          The path to the the CPE component Descriptor
    * @return the CPE Component Description
    */
   public static CpeComponentDescriptor produceComponentDescriptor(String aPath) {
@@ -255,9 +268,11 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce cpe configuration.
    *
-   * @param aDescriptor CPE descriptor to use
+   * @param aDescriptor
+   *          CPE descriptor to use
    * @return the Cpe Configuration
-   * @throws CpeDescriptorException if it fails
+   * @throws CpeDescriptorException
+   *           if it fails
    */
   public static CpeConfiguration produceCpeConfiguration(CpeDescription aDescriptor)
           throws CpeDescriptorException {
@@ -273,7 +288,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
    * Produce cpe configuration.
    *
    * @return the cpe configuration
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeConfiguration produceCpeConfiguration() throws CpeDescriptorException {
     return new CpeConfigurationImpl();
@@ -319,9 +335,11 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce cas processors.
    *
-   * @param aDescriptor to use to produce the CPE CAS Processors
+   * @param aDescriptor
+   *          to use to produce the CPE CAS Processors
    * @return Cpe CAS Processors
-   * @throws CpeDescriptorException if an error occurs
+   * @throws CpeDescriptorException
+   *           if an error occurs
    */
   public static CpeCasProcessors produceCasProcessors(CpeDescription aDescriptor)
           throws CpeDescriptorException {
@@ -337,7 +355,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
    * Produce cas processors.
    *
    * @return the cpe cas processors
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeCasProcessors produceCasProcessors() throws CpeDescriptorException {
     return new CpeCasProcessorsImpl();
@@ -346,12 +365,17 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce cas processors.
    *
-   * @param aInputQSize the input queue size
-   * @param aOutputQSize the output queue size
-   * @param aPuCount the number of processing units
-   * @param aDescriptor the CPE descriptor
+   * @param aInputQSize
+   *          the input queue size
+   * @param aOutputQSize
+   *          the output queue size
+   * @param aPuCount
+   *          the number of processing units
+   * @param aDescriptor
+   *          the CPE descriptor
    * @return CPE CAS Processors
-   * @throws CpeDescriptorException if an error occurs
+   * @throws CpeDescriptorException
+   *           if an error occurs
    */
   public static CpeCasProcessors produceCasProcessors(int aInputQSize, int aOutputQSize,
           int aPuCount, CpeDescription aDescriptor) throws CpeDescriptorException {
@@ -369,7 +393,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce cas processor.
    *
-   * @param aName the a name
+   * @param aName
+   *          the a name
    * @return the cpe integrated cas processor
    */
   // Default deployment=integrated
@@ -386,10 +411,13 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce local cas processor.
    *
-   * @param aName the processor name
-   * @param aSoFa the processor SofA
+   * @param aName
+   *          the processor name
+   * @param aSoFa
+   *          the processor SofA
    * @return CPE Local CAS Processor
-   * @throws CpeDescriptorException if an error occurs
+   * @throws CpeDescriptorException
+   *           if an error occurs
    */
   public static CpeLocalCasProcessor produceLocalCasProcessor(String aName, String aSoFa)
           throws CpeDescriptorException {
@@ -402,9 +430,11 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce remote cas processor.
    *
-   * @param aName the processor name
+   * @param aName
+   *          the processor name
    * @return CPE Remote CAS Processor
-   * @throws CpeDescriptorException if an error occurs
+   * @throws CpeDescriptorException
+   *           if an error occurs
    */
   public static CpeRemoteCasProcessor produceRemoteCasProcessor(String aName)
           throws CpeDescriptorException {
@@ -416,7 +446,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce cpe timer.
    *
-   * @param aTimerClass the a timer class
+   * @param aTimerClass
+   *          the a timer class
    * @return the cpe timer
    */
   public static CpeTimer produceCpeTimer(String aTimerClass) {
@@ -426,10 +457,13 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce resource manager configuration.
    *
-   * @param aResourceMgrConfigurationPath the a resource mgr configuration path
-   * @param aDescriptor the a descriptor
+   * @param aResourceMgrConfigurationPath
+   *          the a resource mgr configuration path
+   * @param aDescriptor
+   *          the a descriptor
    * @return the cpe resource manager configuration
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
           String aResourceMgrConfigurationPath, CpeDescription aDescriptor)
@@ -437,7 +471,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
     }
-    CpeResourceManagerConfiguration resMgr = produceResourceManagerConfiguration(aResourceMgrConfigurationPath);
+    CpeResourceManagerConfiguration resMgr = produceResourceManagerConfiguration(
+            aResourceMgrConfigurationPath);
     aDescriptor.setCpeResourceManagerConfiguration(resMgr);
     return resMgr;
   }
@@ -445,9 +480,11 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce resource manager configuration.
    *
-   * @param aResourceMgrConfigurationPath the a resource mgr configuration path
+   * @param aResourceMgrConfigurationPath
+   *          the a resource mgr configuration path
    * @return the cpe resource manager configuration
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
           String aResourceMgrConfigurationPath) throws CpeDescriptorException {
@@ -486,7 +523,8 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   /**
    * Produce cas processor filter.
    *
-   * @param aFilter the filter string
+   * @param aFilter
+   *          the filter string
    * @return a CAS Processor Filter
    */
   public static CasProcessorFilter produceCasProcessorFilter(String aFilter) {
@@ -530,7 +568,7 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   public static CasProcessorExecArg produceCasProcessorExecArg() {
     return new CasProcessorExecArgImpl();
   }
- 
+
   /**
    * Produce cas processor executable.
    *
@@ -575,7 +613,7 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
   public static CpeSofaMapping produceSofaMapping() {
     return new CpeSofaMappingImpl();
   }
-  
+
   /**
    * Produce sofa mappings.
    *

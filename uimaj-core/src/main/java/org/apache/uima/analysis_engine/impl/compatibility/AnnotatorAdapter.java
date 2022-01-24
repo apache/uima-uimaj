@@ -70,8 +70,10 @@ public class AnnotatorAdapter implements AnalysisComponent {
    *          metadata for the annotator. Needed to compute ResultSpecification.
    * @param aAdditionalParams
    *          parameters passed to AE's initialize method. Used to allow containing Aggregate to
-   *          influence ResultSpecification, for backwards compatibility with CapabilityLanguageFlow.
-   * @throws ResourceInitializationException if the component is sofa-aware
+   *          influence ResultSpecification, for backwards compatibility with
+   *          CapabilityLanguageFlow.
+   * @throws ResourceInitializationException
+   *           if the component is sofa-aware
    */
   public AnnotatorAdapter(BaseAnnotator aAnnotator, AnalysisEngineMetaData aMetaData,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
@@ -83,8 +85,8 @@ public class AnnotatorAdapter implements AnalysisComponent {
     if (aMetaData.isSofaAware()
             && (mAnnotator instanceof TextAnnotator || mAnnotator instanceof JTextAnnotator)) {
       throw new ResourceInitializationException(
-              ResourceInitializationException.TEXT_ANNOTATOR_CANNOT_BE_SOFA_AWARE, new Object[] {
-                  aMetaData.getName(),
+              ResourceInitializationException.TEXT_ANNOTATOR_CANNOT_BE_SOFA_AWARE,
+              new Object[] { aMetaData.getName(),
                   (mAnnotator instanceof TextAnnotator) ? "TextAnnotator" : "JTextAnnotator",
                   aMetaData.getSourceUrlString() });
     }
@@ -102,6 +104,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
+  @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     try {
       // wrap UimaContext in AnnotatorContext
@@ -114,6 +117,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
     }
   }
 
+  @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mDefaultResultSpecification = aResultSpec;
     mLanguageToResultSpecMap = new HashMap<>();
@@ -124,11 +128,12 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
+  @Override
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (!mCasInterface.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { mCasInterface,
-                  aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { mCasInterface, aCAS.getClass() });
     }
 
     // check if type system changed; if so, notify Annotator
@@ -170,7 +175,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
       } else {
         // special case: if annotator lists no outputs for this language, call it
         // with the actual result spec, set up by language.
-     
+
         // An earlier version of this comment erroneously asserted
         // "call for all possible outputs.
         // This is mainly for backwards compatibility,
@@ -187,15 +192,18 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * Checks it the type system of the given CAS is different from the last type system this
    * component was operating on. If it is different, calls the typeSystemInit method on the
    * component.
-   * @param aCAS -
-   * @throws AnalysisEngineProcessException - 
+   * 
+   * @param aCAS
+   *          -
+   * @throws AnalysisEngineProcessException
+   *           -
    */
   public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
     try {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
-      } else // CAS 
+      } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
       }
@@ -215,6 +223,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     // v1.x annotators cannot implement batchProcessComplete
   }
@@ -224,6 +233,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     // v1.x annotators cannot implement collectionProcessComplete
   }
@@ -233,6 +243,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#destroy()
    */
+  @Override
   public void destroy() {
     mAnnotator.destroy();
   }
@@ -242,6 +253,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.core.AnalysisComponent#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     try {
       mAnnotator.reconfigure();
@@ -257,6 +269,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
+  @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
@@ -266,10 +279,11 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
+  @Override
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                AnnotatorAdapter.class, "next" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
+            new Object[] { AnnotatorAdapter.class, "next" });
   }
 
   /**
@@ -277,6 +291,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @return the CAS interface required by this annotator
    */
+  @Override
   public Class<? extends AbstractCas> getRequiredCasInterface() {
     return mCasInterface;
   }
@@ -285,8 +300,10 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
+   * 
    * @return the number of instances required
    */
+  @Override
   public int getCasInstancesRequired() {
     return 0;
   }

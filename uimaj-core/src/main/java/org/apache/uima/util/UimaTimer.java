@@ -33,47 +33,47 @@ public interface UimaTimer extends java.io.Serializable {
    * 
    * @return the current time in milliseconds
    */
-  public long startIt();
+  long startIt();
 
   /**
    * Stops the timer.
    * 
    * @return the current time in milliseconds
    */
-  public long stopIt();
+  long stopIt();
 
   /**
    * Gets the time between the last call to stopIt() and the last call to startIt().
    * 
    * @return the duration in milliseconds
    */
-  public long getDuration();
+  long getDuration();
 
   /**
    * Gets the current time in seconds.
    * 
    * @return the current time in seconds
    */
-  public long getTimeInSecs();
+  long getTimeInSecs();
 
   /**
    * Gets the current time in milliseconds.
    * 
    * @return the current time in milliseconds
    */
-  public long getTimeInMillis();
+  long getTimeInMillis();
 
   /**
    * Gets the current time in microseconds.
    * 
    * @return the current time in microseconds
    */
-  public long getTimeInMicros();
+  long getTimeInMicros();
 
   /**
    * Gets the timer resolution in milliseconds.
    * 
    * @return the timer resolution in milliseconds
    */
-  public int getResolution();
+  int getResolution();
 }

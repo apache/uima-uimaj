@@ -19,7 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,11 +51,14 @@ public class NonJavaApplication extends RunnableApplication {
    * Sets up command line used to launch Cas Processor in a seperate process. Combines environment
    * variables setup in the CPE descriptor with a System environment variables.
    * 
-   * @param aCasProcessorConfiguration -
-   *          access to Cas Processor configuration
-   * @param aCasProcessor -
-   * @throws ResourceConfigurationException passthru
+   * @param aCasProcessorConfiguration
+   *          - access to Cas Processor configuration
+   * @param aCasProcessor
+   *          -
+   * @throws ResourceConfigurationException
+   *           passthru
    */
+  @Override
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);
@@ -71,19 +73,19 @@ public class NonJavaApplication extends RunnableApplication {
   /**
    * Returns final command line as array of Strings.
    * 
-   * @param aCasProcessorConfiguration -
-   *          Cas Processor configuration
-   * @param argList -
-   *          arguments configured for the CasProcessor in cpe descriptor
-   * @param aExecutable -
-   *          name of the program to launch
+   * @param aCasProcessorConfiguration
+   *          - Cas Processor configuration
+   * @param argList
+   *          - arguments configured for the CasProcessor in cpe descriptor
+   * @param aExecutable
+   *          - name of the program to launch
    * @return - command line as array of Strings
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException
+   *           -
    */
   protected String[] addApplicationCmdLineArguments(
-          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 
-      throws ResourceConfigurationException
-  {
+          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable)
+          throws ResourceConfigurationException {
     ArrayList cmdArgs = new ArrayList();
     cmdArgs.add(aExecutable);
 

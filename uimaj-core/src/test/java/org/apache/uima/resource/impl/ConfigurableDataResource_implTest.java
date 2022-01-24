@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URI;
 import java.util.Collections;
 
@@ -29,31 +31,15 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameterDeclarations
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DataResource_impl class.
  * 
  */
-public class ConfigurableDataResource_implTest extends TestCase {
+public class ConfigurableDataResource_implTest {
 
-  /**
-   * Constructor for DataResource_implTest.
-   * 
-   * @param arg0
-   */
-  public ConfigurableDataResource_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
+  @Test
   public void testInitialize() throws Exception {
     try {
       // create a ConfigurableDataResourceSpecifier

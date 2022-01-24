@@ -21,12 +21,11 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import java.util.ArrayList;
 
-
 /**
  * The Class FeatureMap.
  */
 public class FeatureMap {
-  
+
   /** The entities. */
   ArrayList entities = null;
 
@@ -40,7 +39,8 @@ public class FeatureMap {
   /**
    * Adds the.
    *
-   * @param entity the entity
+   * @param entity
+   *          the entity
    */
   public void add(ConfigurableFeature entity) {
     entities.add(entity);
@@ -49,7 +49,8 @@ public class FeatureMap {
   /**
    * Gets the.
    *
-   * @param index the index
+   * @param index
+   *          the index
    * @return the configurable feature
    */
   public ConfigurableFeature get(int index) {
@@ -63,7 +64,8 @@ public class FeatureMap {
   /**
    * Gets the.
    *
-   * @param key the key
+   * @param key
+   *          the key
    * @return the configurable feature
    */
   public ConfigurableFeature get(String key) {
@@ -77,7 +79,8 @@ public class FeatureMap {
   /**
    * Contains.
    *
-   * @param key the key
+   * @param key
+   *          the key
    * @return true, if successful
    */
   public boolean contains(String key) {

@@ -74,13 +74,13 @@ public class ResourceInitializationException extends UIMAException {
   public static final String ANNOTATOR_INITIALIZATION_FAILED = "annotator_initialization_failed";
 
   /**
-   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with 
+   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with
    * incompatible range types {1} and {2}. (Descriptor: {3})"
    */
   public static final String INCOMPATIBLE_RANGE_TYPES = "incompatible_range_types";
 
   /**
-   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with 
+   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with
    * incompatible element range types {1} and {2}. (Descriptor: {3})."
    */
   public static final String INCOMPATIBLE_ELEMENT_RANGE_TYPES = "incompatible_element_range_types";
@@ -92,17 +92,17 @@ public class ResourceInitializationException extends UIMAException {
   public static final String INCOMPATIBLE_SUPERTYPES = "incompatible_supertypes";
 
   /**
-   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with 
+   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with
    * incompatible multipleReferencesAllowed specifications. (Descriptor: {1})"
    */
   public static final String INCOMPATIBLE_MULTI_REFS = "incompatible_multi_refs";
 
   /**
-   * Message key for a standard UIMA exception message: The String subtype {0} is declared twice, 
-   * with different sets of allowed values: {1} and {2}.  (Descriptor: {3})
+   * Message key for a standard UIMA exception message: The String subtype {0} is declared twice,
+   * with different sets of allowed values: {1} and {2}. (Descriptor: {3})
    */
   public static final String ALLOWED_VALUES_NOT_IDENTICAL = "string_allowed_values_not_the_same";
-  
+
   /**
    * Message key for a standard UIMA exception message: "Undefined type "{0}", referenced in feature
    * "{1}" declared on type "{2}"."
@@ -256,8 +256,8 @@ public class ResourceInitializationException extends UIMAException {
 
   /**
    * Message key for a standard UIMA exception message: Configuration parameter "{0}" in aggregate
-   * Analysis Engine "{1}" does not declare any overrides.  Implicit overrides are no longer supported. 
-   * (Descriptor: {2})
+   * Analysis Engine "{1}" does not declare any overrides. Implicit overrides are no longer
+   * supported. (Descriptor: {2})
    */
   public static final String INVALID_PARAM_OVERRIDE_NO_OVERRIDES = "invalid_param_override_no_overrides";
 
@@ -415,7 +415,8 @@ public class ResourceInitializationException extends UIMAException {
 
   /**
    * Message key for a standard UIMA exception message: "The aggregate AnalysisEngine "{0}" declared
-   * an empty &lt;flowController/&gt; element. You must specify an import or a flowControllerDescription."
+   * an empty &lt;flowController/&gt; element. You must specify an import or a
+   * flowControllerDescription."
    */
   public static final String EMPTY_FLOW_CONTROLLER_DECLARATION = "empty_flow_controller_declaration";
 
@@ -435,64 +436,63 @@ public class ResourceInitializationException extends UIMAException {
 
   /**
    * Message key for a standard UIMA exception message: "The CasCreationUtils.createCas method was
-   * passed a collection containing an object of class {0}, which is not supported.  Refer to the
+   * passed a collection containing an object of class {0}, which is not supported. Refer to the
    * Javadoc for a list of types accepted by this method."
    */
   public static final String UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS = "unsupported_object_type_in_create_cas";
 
   /**
-   * Message key for a standard UIMA exception message: "Sofa mappings were specified for the remote Analysis
-   * Engine {0}.  Sofa mappings are not currently supported for remote Analysis Engines.  A workaround is
-   * to wrap the remotely deployed AE in an Aggregate (on the remote side), and specify Sofa mappings in that
-   * aggregate."
+   * Message key for a standard UIMA exception message: "Sofa mappings were specified for the remote
+   * Analysis Engine {0}. Sofa mappings are not currently supported for remote Analysis Engines. A
+   * workaround is to wrap the remotely deployed AE in an Aggregate (on the remote side), and
+   * specify Sofa mappings in that aggregate."
    */
   public static final String SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE = "sofa_mapping_not_supported_for_remote";
 
   /**
-   * Message key for a standard UIMA exception message: The descriptor for Aggregate Analysis Engine "{0}" 
-   * specified an invalid flow.  The key "{1}" was used in the flow but is not defined as a key in the
-   * &lt;delegateAnalysisEngineSpecifiers&gt; element of the descriptor.
+   * Message key for a standard UIMA exception message: The descriptor for Aggregate Analysis Engine
+   * "{0}" specified an invalid flow. The key "{1}" was used in the flow but is not defined as a key
+   * in the &lt;delegateAnalysisEngineSpecifiers&gt; element of the descriptor.
    */
   public static final String UNDEFINED_KEY_IN_FLOW = "undefined_key_in_flow";
 
   /**
-   * Message key for a standard UIMA exception message: The value "{0}" is an invalid value for
-   * the FixedFlowController's "ActionAfterCasMultiplier" configuration parameter.  Valid values
-   * are "continue", "stop", "drop", and "dropIfNewCasProduced".
+   * Message key for a standard UIMA exception message: The value "{0}" is an invalid value for the
+   * FixedFlowController's "ActionAfterCasMultiplier" configuration parameter. Valid values are
+   * "continue", "stop", "drop", and "dropIfNewCasProduced".
    */
   public static final String INVALID_ACTION_AFTER_CAS_MULTIPLIER = "invalid_action_after_cas_multiplier";
 
   /**
-   * Message key for a standard UIMA exception message: The Flow Controller "{0}" requires a flow constraints
-   * element of type "{1}" in the aggregate descriptor
+   * Message key for a standard UIMA exception message: The Flow Controller "{0}" requires a flow
+   * constraints element of type "{1}" in the aggregate descriptor
    */
   public static final String FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS = "flow_controller_requires_flow_constraints";
 
   /**
-   * Message key for a standard UIMA exception message: The aggregate "{0}" references a non-existent delegate
-   * "{1}" in it's Flow Controller's flow constraints
+   * Message key for a standard UIMA exception message: The aggregate "{0}" references a
+   * non-existent delegate "{1}" in it's Flow Controller's flow constraints
    */
   public static final String FLOW_CONTROLLER_MISSING_DELEGATE = "flow_controller_missing_delegate";
 
   /**
-   * Message key for a standard UIMA exception message: 
-   * Unexpected Exception thrown when initializing Custom Resource "{0}" from descriptor "{1}". 
+   * Message key for a standard UIMA exception message: Unexpected Exception thrown when
+   * initializing Custom Resource "{0}" from descriptor "{1}".
    */
   public static final String EXCEPTION_WHEN_INITIALIZING_CUSTOM_RESOURCE = "exception_when_initializing_custom_resource";
 
   /**
-   * Message key for a standard UIMA exception message: 
-   * Unexpected Throwable or Error thrown when initializing Custom Resource "{0}" from descriptor "{1}". 
+   * Message key for a standard UIMA exception message: Unexpected Throwable or Error thrown when
+   * initializing Custom Resource "{0}" from descriptor "{1}".
    */
   public static final String THROWABLE_WHEN_INITIALIZING_CUSTOM_RESOURCE = "throwable_when_initializing_custom_resource";
-  
+
   public static final String REDEFINING_BUILTIN_TYPE = "redefining_builtin_type";
 
   /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {
-    super();
   }
 
   /**
@@ -513,8 +513,8 @@ public class ResourceInitializationException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -532,8 +532,8 @@ public class ResourceInitializationException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -550,8 +550,8 @@ public class ResourceInitializationException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -566,15 +566,16 @@ public class ResourceInitializationException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
    * @param aCause
    *          the original exception that caused this exception to be thrown, if any
    */
-  public ResourceInitializationException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+  public ResourceInitializationException(String aMessageKey, Object[] aArguments,
+          Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }
 }

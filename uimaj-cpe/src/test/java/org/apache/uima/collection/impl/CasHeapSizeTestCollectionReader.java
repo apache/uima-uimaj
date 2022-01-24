@@ -21,8 +21,6 @@ package org.apache.uima.collection.impl;
 
 import java.io.IOException;
 
-import org.junit.Assert;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CasTestUtil;
 import org.apache.uima.collection.CollectionException;
@@ -43,11 +41,12 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     int actualHeapSize = CasTestUtil.getHeapSize(aCAS);
-  
-    // in v3 the actualHeap is always 500,000, so this test always miscompares  
-//    Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
+
+    // in v3 the actualHeap is always 500,000, so this test always miscompares
+    // Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
     numChecks--;
 
     // populate with doc to avoid error
@@ -59,6 +58,7 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
   }
 
@@ -67,6 +67,7 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     return null;
   }
@@ -76,6 +77,7 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
+  @Override
   public boolean hasNext() throws IOException, CollectionException {
     return numChecks > 0;
   }

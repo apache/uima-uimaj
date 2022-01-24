@@ -19,8 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.impl.cpm.utils.DescriptorMakeUtil;
@@ -30,18 +28,18 @@ import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class CpmStopTest extends TestCase {
+public class CpmStopTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
+  @Test
   public void testCpmStopSingleThread() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
@@ -68,6 +66,7 @@ public class CpmStopTest extends TestCase {
     }
   }
 
+  @Test
   public void testCpmStopMultipleThreads() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 5;
@@ -94,6 +93,7 @@ public class CpmStopTest extends TestCase {
     }
   }
 
+  @Test
   public void testCpmStopSlowAnnotator() throws Exception {
     int documentCount = 1000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
@@ -120,6 +120,7 @@ public class CpmStopTest extends TestCase {
     }
   }
 
+  @Test
   public void testCpmStopImmediate() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
@@ -158,11 +159,12 @@ public class CpmStopTest extends TestCase {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
-    String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
-            + "ErrorTestCollectionReader.xml").getAbsolutePath();
-    String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
-    String casConsumerBase = JUnitExtension.getFile("CpmTests" + separator
-            + "ErrorTestCasConsumer.xml").getAbsolutePath();
+    String colReaderBase = JUnitExtension
+            .getFile("CpmTests" + separator + "ErrorTestCollectionReader.xml").getAbsolutePath();
+    String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml")
+            .getAbsolutePath();
+    String casConsumerBase = JUnitExtension
+            .getFile("CpmTests" + separator + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
     // created needed descriptors
     String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -185,7 +187,8 @@ public class CpmStopTest extends TestCase {
     if (useSlowAnnotator) {
       CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
               .produceCasProcessor("SlowAnnotator");
-      slowProcessor.setDescriptor(JUnitExtension.getFile("CpmTests" + separator + "SlowAnnotator.xml").getAbsolutePath());
+      slowProcessor.setDescriptor(JUnitExtension
+              .getFile("CpmTests" + separator + "SlowAnnotator.xml").getAbsolutePath());
       cpeDesc.addCasProcessor(slowProcessor);
     }
 

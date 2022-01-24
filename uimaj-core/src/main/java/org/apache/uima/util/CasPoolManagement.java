@@ -20,28 +20,29 @@ package org.apache.uima.util;
 
 import org.apache.uima.resource.ManagementObject;
 
-
 /**
  * Management interface to a {@link CasPool}.
  */
 public interface CasPoolManagement extends ManagementObject {
-  
+
   /**
    * Get the total size of the CAS Pool.
+   * 
    * @return the pool size
    */
-  public int getPoolSize();
-  
+  int getPoolSize();
+
   /**
    * Get the number of CAS instances currently available in the pool.
+   * 
    * @return the number of available CAS instances
    */
-  public int getAvailableInstances();
-  
-//  /**
-//   * Get the average time, in milliseconds, that getCas() requests on
-//   * the pool have to wait for a CAS to become available
-//   * @return average wait time in milliseconds
-//   */
-//  public int getAverageWaitTime();
+  int getAvailableInstances();
+
+  // /**
+  // * Get the average time, in milliseconds, that getCas() requests on
+  // * the pool have to wait for a CAS to become available
+  // * @return average wait time in milliseconds
+  // */
+  // public int getAverageWaitTime();
 }

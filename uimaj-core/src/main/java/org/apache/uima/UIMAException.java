@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima;
 
 import java.util.Locale;
@@ -37,8 +36,6 @@ import java.util.Locale;
  * exception message. Any name may be used. If the name is omitted, the resource bundle identified
  * by {@link #STANDARD_MESSAGE_CATALOG} will be used. This contains the standard UIMA exception
  * messages.
- * 
- * 
  */
 public class UIMAException extends Exception implements I18nExceptionI {
 
@@ -51,10 +48,9 @@ public class UIMAException extends Exception implements I18nExceptionI {
   public static final String STANDARD_MESSAGE_CATALOG = "org.apache.uima.UIMAException_Messages";
 
   /**
-   * The base name of the resource bundle in which the message for this
-   * exception is located.
+   * The base name of the resource bundle in which the message for this exception is located.
    */
-  private String mResourceBundleName = STANDARD_MESSAGE_CATALOG;  // use a default
+  private String mResourceBundleName = STANDARD_MESSAGE_CATALOG; // use a default
 
   /**
    * An identifier that maps to the message for this exception.
@@ -63,8 +59,8 @@ public class UIMAException extends Exception implements I18nExceptionI {
 
   /**
    * The arguments to this exception's message, if any. This allows an
-   * <code>InternationalizedException</code> to have a compound message, made
-   * up of multiple parts that are concatenated in a language-neutral way.
+   * <code>InternationalizedException</code> to have a compound message, made up of multiple parts
+   * that are concatenated in a language-neutral way.
    */
   private Object[] mArguments;
 
@@ -77,7 +73,6 @@ public class UIMAException extends Exception implements I18nExceptionI {
    * Creates a new exception with a null message.
    */
   public UIMAException() {
-    super();
   }
 
   /**
@@ -90,9 +85,9 @@ public class UIMAException extends Exception implements I18nExceptionI {
     super(aCause);
     mCause = aCause;
     if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
-      I18nExceptionI cause = (I18nExceptionI)aCause;
+      I18nExceptionI cause = (I18nExceptionI) aCause;
       mMessageKey = cause.getMessageKey();
-      mArguments  = cause.getArguments();
+      mArguments = cause.getArguments();
     }
   }
 
@@ -104,13 +99,13 @@ public class UIMAException extends Exception implements I18nExceptionI {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
    */
-  public UIMAException(String aResourceBundleName, String aMessageKey, Object ... aArguments) {
+  public UIMAException(String aResourceBundleName, String aMessageKey, Object... aArguments) {
     this(aResourceBundleName, aMessageKey, aArguments, null);
   }
 
@@ -122,8 +117,8 @@ public class UIMAException extends Exception implements I18nExceptionI {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -144,8 +139,8 @@ public class UIMAException extends Exception implements I18nExceptionI {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -160,8 +155,8 @@ public class UIMAException extends Exception implements I18nExceptionI {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -171,74 +166,78 @@ public class UIMAException extends Exception implements I18nExceptionI {
   public UIMAException(String aMessageKey, Object[] aArguments, Throwable aCause) {
     this(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments, aCause);
   }
-  
+
   /**
    * Gets the cause of this Exception.
    * 
-   * @return the Throwable that caused this Exception to occur, if any. Returns
-   *         <code>null</code> if there is no such cause.
+   * @return the Throwable that caused this Exception to occur, if any. Returns <code>null</code> if
+   *         there is no such cause.
    */
+  @Override
   public Throwable getCause() {
-     return mCause;
+    return mCause;
   }
 
+  @Override
   public synchronized Throwable initCause(Throwable cause) {
-     mCause = cause;
-     return this;
+    mCause = cause;
+    return this;
   }
-  
+
   /**
-   * Gets the base name of the resource bundle in which the message for this
-   * exception is located.
+   * Gets the base name of the resource bundle in which the message for this exception is located.
    * 
-   * @return the resource bundle base name. May return <code>null</code> if
+   * @return the resource bundle base name. May return <code>null</code> if this exception has no
+   *         message.
+   */
+  @Override
+  public String getResourceBundleName() {
+    return mResourceBundleName;
+  }
+
+  /**
+   * Gets the identifier for this exception's message. This identifier can be looked up in this
+   * exception's {@link java.util.ResourceBundle ResourceBundle} to get the locale-specific message
+   * for this exception.
+   * 
+   * @return the resource identifier for this exception's message. May return <code>null</code> if
    *         this exception has no message.
    */
-  public String getResourceBundleName() {
-     return mResourceBundleName;
-  }
-
-  /**
-   * Gets the identifier for this exception's message. This identifier can be
-   * looked up in this exception's
-   * {@link java.util.ResourceBundle ResourceBundle} to get the locale-specific
-   * message for this exception.
-   * 
-   * @return the resource identifier for this exception's message. May return
-   *         <code>null</code> if this exception has no message.
-   */
+  @Override
   public String getMessageKey() {
-     return mMessageKey;
+    return mMessageKey;
   }
 
   /**
    * Gets the arguments to this exception's message. Arguments allow a
-   * <code>InternationalizedException</code> to have a compound message, made
-   * up of multiple parts that are concatenated in a language-neutral way.
+   * <code>InternationalizedException</code> to have a compound message, made up of multiple parts
+   * that are concatenated in a language-neutral way.
    * 
    * @return the arguments to this exception's message.
    */
+  @Override
   public Object[] getArguments() {
-     if (mArguments == null)
-        return new Object[0];
-     return mArguments.clone();
+    if (mArguments == null) {
+      return new Object[0];
+    }
+    return mArguments.clone();
   }
 
   /**
-   * @return The message of the exception. Useful for including the text in
-   *         another exception.
+   * @return The message of the exception. Useful for including the text in another exception.
    */
+  @Override
   public String getMessage() {
     return getLocalizedMessage(Locale.ENGLISH);
   }
 
   /**
-   * Gets the localized detail message for this exception. This uses the default
-   * Locale for this JVM. A Locale may be specified using
-   * {@link #getLocalizedMessage(Locale)}.
+   * Gets the localized detail message for this exception. This uses the default Locale for this
+   * JVM. A Locale may be specified using {@link #getLocalizedMessage(Locale)}.
    * 
    * @return this exception's detail message, localized for the default Locale.
    */
+  @Override
   public String getLocalizedMessage() {
     return getLocalizedMessage(Locale.getDefault());
   }

@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
@@ -29,14 +28,13 @@ import org.apache.uima.jcas.cas.TOP;
 /**
  * Wraps FSIterator<T>, runs it backwards
  */
-class FsIterator_backwards<T extends FeatureStructure>  
-          implements LowLevelIterator<T> {
-  
+class FsIterator_backwards<T extends FeatureStructure> implements LowLevelIterator<T> {
+
   final private LowLevelIterator<T> it; // not just for single-type iterators
-    
+
   FsIterator_backwards(FSIterator<T> iterator) {
     this.it = (LowLevelIterator<T>) iterator;
-    it.moveToLast();  // will act like move to first
+    it.moveToLast(); // will act like move to first
   }
 
   @Override
@@ -48,7 +46,7 @@ class FsIterator_backwards<T extends FeatureStructure>
   public int ll_maxAnnotSpan() {
     return it.ll_maxAnnotSpan();
   }
-  
+
   @Override
   public LowLevelIndex<T> ll_getIndex() {
     return it.ll_getIndex();
@@ -86,10 +84,10 @@ class FsIterator_backwards<T extends FeatureStructure>
 
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    it.moveToNoReinit(fs);  // moves to left most of equal, or one greater
+    it.moveToNoReinit(fs); // moves to left most of equal, or one greater
     Comparator<TOP> comparatorMaybeNoTypeWithoutID = it.getComparator();
     if (isValid()) {
-      if (comparatorMaybeNoTypeWithoutID.compare((TOP) get(), (TOP)fs) == 0) {
+      if (comparatorMaybeNoTypeWithoutID.compare((TOP) get(), (TOP) fs) == 0) {
         // move to right most
         while (true) {
           it.moveToNextNvc();
@@ -107,22 +105,24 @@ class FsIterator_backwards<T extends FeatureStructure>
         it.moveToPreviousNvc();
       }
     } else {
-      // moved to one past the end.  Backwards: would be at the (backwards) first position
+      // moved to one past the end. Backwards: would be at the (backwards) first position
       it.moveToLastNoReinit();
     }
   }
 
-//  @Override
-//  public void moveToExactNoReinit(FeatureStructure fs) {
-//    it.moveToExactNoReinit(fs); 
-//  }
+  // @Override
+  // public void moveToExactNoReinit(FeatureStructure fs) {
+  // it.moveToExactNoReinit(fs);
+  // }
 
   @Override
   public FSIterator<T> copy() {
     return new FsIterator_backwards<>(it.copy());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
    */
   @Override

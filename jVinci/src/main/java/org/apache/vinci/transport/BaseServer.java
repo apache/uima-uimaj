@@ -77,7 +77,6 @@ public class BaseServer {
     private final int which;
 
     PooledThread(int which) {
-      super();
       this.which = which;
       socket = null;
       run_me = null;
@@ -88,6 +87,7 @@ public class BaseServer {
       return which;
     }
 
+    @Override
     public void run() {
       try {
         while (isServing) {
@@ -265,6 +265,7 @@ public class BaseServer {
   public void startServing(int port) throws IOException {
     configureServerSocket(port);
     new Thread(new Runnable() {
+      @Override
       public void run() {
         shutdown = false;
         isServing = true;

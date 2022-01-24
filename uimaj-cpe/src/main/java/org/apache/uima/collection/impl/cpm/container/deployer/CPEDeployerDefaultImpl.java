@@ -46,12 +46,11 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 
-
 /**
  * Implements {@link CasProcessorDeployer}. Used to instantiate integrated Cas Processor.
  */
 public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
-  
+
   /** The cas processor pool. */
   private ServiceProxyPool casProcessorPool = null;
 
@@ -64,8 +63,8 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
   /**
    * Initializes this instance with a reference to the CPE configuration.
    *
-   * @param aCpeFactory -
-   *          reference to CPE configuration
+   * @param aCpeFactory
+   *          - reference to CPE configuration
    */
   public CPEDeployerDefaultImpl(CPEFactory aCpeFactory) {
     cpeFactory = aCpeFactory;
@@ -77,11 +76,15 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
    *
-   * @param aCasProcessorList - list containing instantiated Cas Processors
-   * @param aEngine the CPM engine
-   * @param redeploy - true when redeploying failed Cas Processor
+   * @param aCasProcessorList
+   *          - list containing instantiated Cas Processors
+   * @param aEngine
+   *          the CPM engine
+   * @param redeploy
+   *          - true when redeploying failed Cas Processor
    * @return - ProcessingContainer containing pool of CasProcessors
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {
@@ -95,11 +98,15 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
    *
-   * @param aCasProcessorList - list containing instantiated Cas Processors
-   * @param redeploy - true when redeploying failed Cas Processor
+   * @param aCasProcessorList
+   *          - list containing instantiated Cas Processors
+   * @param redeploy
+   *          - true when redeploying failed Cas Processor
    * @return - ProcessingContainer containing pool of CasProcessors
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
+  @Override
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException {
     String name = null;
@@ -133,14 +140,12 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
           }
           casProcessorPool = new ServiceProxyPool();
           // Instantiate an object that encapsulates CasProcessor configuration
-          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(cpeCasProcessor, cpeFactory.getResourceManager());
+          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(cpeCasProcessor,
+                  cpeFactory.getResourceManager());
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "initialize",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_cp_checkpoint__FINEST",
                     new Object[] { Thread.currentThread().getName(),
                         String.valueOf(casProcessorConfig.getBatchSize()) });// Checkpoint().getBatch())});
@@ -165,9 +170,9 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
                       "UIMA_CPM_cp_no_name__SEVERE",
                       new Object[] { Thread.currentThread().getName() });
             }
-            throw new ResourceConfigurationException(
-                    InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING, new Object[] { "name",
-                        "casProcessor" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+            throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+                    new Object[] { "name", "casProcessor" },
+                    new Exception(CpmLocalizedMessage.getLocalizedMessage(
                             CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                             "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
                             new Object[] { Thread.currentThread().getName(), "n/a", "name",
@@ -179,11 +184,11 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
           casProcessorConfig = processingContainer.getCasProcessorConfiguration();
           if (casProcessorConfig == null) {
             throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                    new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
-                            CpmLocalizedMessage.getLocalizedMessage(
-                                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                    "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
-                                    new Object[] { Thread.currentThread().getName() })));
+                    new Object[] { "<casProcessor>", "<casProcessors>" },
+                    new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                            "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
+                            new Object[] { Thread.currentThread().getName() })));
           }
         }
         // Add CasProcess to the instance pool
@@ -211,10 +216,12 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * Deploys integrated Cas Processor using configuration available in a given Container. This
    * routine is called when the CasProcessor fails and needs to be restarted.
    *
-   * @param aProcessingContainer -
-   *          container managing Cas Processor
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aProcessingContainer
+   *          - container managing Cas Processor
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
+  @Override
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException {
     try {
@@ -242,10 +249,11 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
   /**
    * Creates an instance of integrated Cas Processor from a given descriptor.
    *
-   * @param aDescriptor -
-   *          Cas Processor descriptor
+   * @param aDescriptor
+   *          - Cas Processor descriptor
    * @return - instantiated CasProcessor
-   * @throws ResourceConfigurationException wraps Exception
+   * @throws ResourceConfigurationException
+   *           wraps Exception
    */
   private CasProcessor produceIntegratedCasProcessor(URL aDescriptor)
           throws ResourceConfigurationException {
@@ -255,19 +263,20 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
         ResourceSpecifier resourceSpecifier = cpeFactory.getSpecifier(aDescriptor);
 
         if (resourceSpecifier instanceof AnalysisEngineDescription) {
-          casProcessor = UIMAFramework.produceAnalysisEngine(resourceSpecifier, this.cpeFactory
-                  .getResourceManager(), null);
+          casProcessor = UIMAFramework.produceAnalysisEngine(resourceSpecifier,
+                  this.cpeFactory.getResourceManager(), null);
           // casProcessor.
         } else if (resourceSpecifier instanceof CasConsumerDescription) {
-          if (cpeFactory.isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier, aDescriptor.toString())) {
+          if (cpeFactory.isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier,
+                  aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_producing_cas_consumer__FINEST",
                       new Object[] { Thread.currentThread().getName() });
             }
-            casProcessor = UIMAFramework.produceCasConsumer(resourceSpecifier, this.cpeFactory
-                    .getResourceManager(), null);
+            casProcessor = UIMAFramework.produceCasConsumer(resourceSpecifier,
+                    this.cpeFactory.getResourceManager(), null);
           } else if (cpeFactory.isDefinitionInstanceOf(CasProcessor.class, resourceSpecifier,
                   aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -284,7 +293,8 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
         // Check if CasProcesser has been instantiated
         if (casProcessor == null) {
           throw new ResourceConfigurationException(ResourceServiceException.RESOURCE_UNAVAILABLE,
-                  new Object[] {}, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                  new Object[] {},
+                  new Exception(CpmLocalizedMessage.getLocalizedMessage(
                           CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                           "UIMA_CPM_EXP_instantiation_exception__WARNING", new Object[] {
                               Thread.currentThread().getName(), "Integrated Cas Processor" })));
@@ -295,19 +305,23 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
     } catch (Exception e) {
       e.printStackTrace();
       throw new ResourceConfigurationException(ResourceServiceException.RESOURCE_UNAVAILABLE,
-              new Object[] {}, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_instantiation_exception__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "Integrated Cas Processor" })));
+              new Object[] {},
+              new Exception(
+                      CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                              "UIMA_CPM_EXP_instantiation_exception__WARNING", new Object[] {
+                                  Thread.currentThread().getName(), "Integrated Cas Processor" })));
     }
     return casProcessor;
 
   }
 
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
    */
+  @Override
   public void undeploy() throws CasProcessorDeploymentException {
 
   }
@@ -317,6 +331,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * 
    * @see org.apache.uima.collection.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
    */
+  @Override
   public void undeploy(URL aURL) throws CasProcessorDeploymentException {
   }
 

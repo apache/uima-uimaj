@@ -18,6 +18,10 @@
  */
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -31,47 +35,46 @@ import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
+//@formatter:off
 /**
  * Check these use cases:
  *   1) two identical index definitions, with different names: merged?
  *   2) two index definitions with the same kind and comparator, but different starting types - subindexes merged?
- * 
- *
  */
-public class IndexRepositoryMergingTest extends TestCase {
+//@formatter:on
+public class IndexRepositoryMergingTest {
 
   CASImpl cas;
 
   TypeSystemImpl typeSystem;
 
   FSIndexRepositoryImpl ir;
-  
+
   TypeImpl annotSubtype;
- 
 
   /*
    * (non-Javadoc)
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     cas = (CASImpl) CASFactory.createCAS();
-    
+
     TypeSystemImpl ts = this.typeSystem = cas.getTypeSystemImpl();
     annotSubtype = ts.addType("annotSubtype", ts.annotType);
     ts.addFeature("x", annotSubtype, ts.intType);
-    cas.commitTypeSystem();  // also creates the initial indexrepository
+    cas.commitTypeSystem(); // also creates the initial indexrepository
     // handle type system reuse
     ts = this.typeSystem = cas.getTypeSystemImpl();
     annotSubtype = ts.getType("annotSubtype");
-    
-    cas.initCASIndexes();  // requires committed type system
-    
-    
-    ir = (FSIndexRepositoryImpl) this.cas.getIndexRepositoryMgr(); 
+
+    cas.initCASIndexes(); // requires committed type system
+
+    ir = (FSIndexRepositoryImpl) this.cas.getIndexRepositoryMgr();
     FSIndexComparator comp = ir.createComparator();
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
@@ -81,34 +84,36 @@ public class IndexRepositoryMergingTest extends TestCase {
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     LinearTypeOrderBuilder tob = ir.createTypeSortOrder();
     try {
-//      tob.add(new String[] { CAS.TYPE_NAME_ANNOTATION, "annotSubtype",   });  // is equal to annotationIndex
-      tob.add(new String[] { "annotSubtype", CAS.TYPE_NAME_ANNOTATION  });  // is !equal AnnotationIndex
+      // tob.add(new String[] { CAS.TYPE_NAME_ANNOTATION, "annotSubtype", }); // is equal to
+      // annotationIndex
+      tob.add(new String[] { "annotSubtype", CAS.TYPE_NAME_ANNOTATION }); // is !equal
+                                                                          // AnnotationIndex
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
-      TestCase.assertTrue(false);
+      assertTrue(false);
     }
-    ir.createIndex(comp, "Annot Index");  // should not be the same as the built-in one due to different type order
-    ir.createIndex(comp, "Annot Index2");  // should not be the same as the built-in one due to different type order
-    FSIndexComparatorImpl comp2 = ((FSIndexComparatorImpl)comp).copy();
+    ir.createIndex(comp, "Annot Index"); // should not be the same as the built-in one due to
+                                         // different type order
+    ir.createIndex(comp, "Annot Index2"); // should not be the same as the built-in one due to
+                                          // different type order
+    FSIndexComparatorImpl comp2 = ((FSIndexComparatorImpl) comp).copy();
     comp2.setType(annotSubtype);
-    ir.createIndex(comp2, "Annot Index Subtype");  // should not be the same as the built-in one due to different type order
+    ir.createIndex(comp2, "Annot Index Subtype"); // should not be the same as the built-in one due
+                                                  // to different type order
     ir.commit();
   }
 
-  public void tearDown() {
-  }
-  
-
+  @Test
   public void testIndexes() {
     FSIndex<Annotation> ix1 = ir.getIndex("Annot Index");
     FSIndex<Annotation> ix2 = ir.getIndex("Annot Index2");
     FSIndex<Annotation> ix3 = ir.getIndex("Annot Index", annotSubtype);
     FSIndex<Annotation> ix4 = ir.getIndex("Annot Index Subtype");
-    
+
     assertEquals(ix1, ix2);
     assertFalse(ix1.equals(cas.getAnnotationIndex()));
     assertFalse(ix1.equals(ix3));
     assertEquals(ix3, ix4);
   }
-  
+
 }

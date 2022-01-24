@@ -18,6 +18,11 @@
  */
 package org.apache.uima.util.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
@@ -26,20 +31,21 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * UIMA Logging Test
  */
-public class Log4jLogger_implTest extends TestCase {
+public class Log4jLogger_implTest {
 
-  @Override
+  @BeforeEach
   public void setUp() throws Exception {
     // BasicConfigurator.configure();
   }
 
-  @Override
+  @AfterEach
   public void tearDown() throws Exception {
     // BasicConfigurator.resetConfiguration();
   }
@@ -58,6 +64,7 @@ public class Log4jLogger_implTest extends TestCase {
   // logLevels.put("ALL", Level.ALL);
   // }
 
+  @Test
   public void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = Log4jLogger_impl.getInstance(this.getClass());
@@ -76,6 +83,7 @@ public class Log4jLogger_implTest extends TestCase {
             "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
   }
 
+  @Test
   public void testIsLoggable() throws Exception {
     // create logger
     org.apache.uima.util.Logger uimaLogger = null;
@@ -174,6 +182,7 @@ public class Log4jLogger_implTest extends TestCase {
     classLogger.setLevel(defaultLogLevel);
   }
 
+  @Test
   public void testMessageLogMethods() throws Exception {
     try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
       org.apache.uima.util.Logger tempLogger = null;
@@ -245,6 +254,7 @@ public class Log4jLogger_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testMessageKeyLogMethods() throws Exception {
     final int[] nbrcalls = new int[1];
     nbrcalls[0] = 0;
@@ -357,6 +367,7 @@ public class Log4jLogger_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testLoggerFromUIMAFramework() {
     org.apache.uima.util.Logger logger = UIMAFramework.getLogger(this.getClass());
 

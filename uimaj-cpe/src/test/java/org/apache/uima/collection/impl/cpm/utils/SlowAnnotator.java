@@ -24,16 +24,18 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 
-
 public class SlowAnnotator extends JTextAnnotator_ImplBase {
 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.JTextAnnotator#process(org.apache.uima.jcas.impl.JCas,
-   *      org.apache.uima.analysis_engine.ResultSpecification)
+   * @see
+   * org.apache.uima.analysis_engine.annotator.JTextAnnotator#process(org.apache.uima.jcas.impl.
+   * JCas, org.apache.uima.analysis_engine.ResultSpecification)
    */
-  public void process(JCas aJCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+  @Override
+  public void process(JCas aJCas, ResultSpecification aResultSpec)
+          throws AnnotatorProcessException {
     // waste some time
     fibonacci(35);
   }

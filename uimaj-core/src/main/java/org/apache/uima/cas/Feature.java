@@ -23,10 +23,10 @@ package org.apache.uima.cas;
  * The interface that describes features in the type system.
  * 
  * <p>
- * <a id="names">Feature short or base names</a> are <a href="./Type.html#identifiers"> type
- * system identifiers</a>. The (fully) qualified name of a feature is the <a
- * href="./Type.html#names">name</a> of the type it is defined on, followed by a colon, followed by
- * the its short name. For example, the qualified name of the Annotation begin feature is
+ * <a id="names">Feature short or base names</a> are <a href="./Type.html#identifiers"> type system
+ * identifiers</a>. The (fully) qualified name of a feature is the
+ * <a href="./Type.html#names">name</a> of the type it is defined on, followed by a colon, followed
+ * by the its short name. For example, the qualified name of the Annotation begin feature is
  * <code>uima.tcas.Annotation:begin</code>.
  * 
  * 
@@ -34,16 +34,14 @@ package org.apache.uima.cas;
 public interface Feature extends Comparable<Feature> {
 
   /**
-   * Get the domain type for this feature. The domain is the 
-   * type which defines this feature.
+   * Get the domain type for this feature. The domain is the type which defines this feature.
    * 
    * @return The domain type. This can not be <code>null</code>.
    */
   Type getDomain();
 
   /**
-   * Get the range type for this feature. The range defines
-   * the type of the feature value.
+   * Get the range type for this feature. The range defines the type of the feature value.
    * 
    * @return The range type. This can not be <code>null</code>.
    */
@@ -64,15 +62,15 @@ public interface Feature extends Comparable<Feature> {
   String getShortName();
 
   /**
-   * Checks if there can be multiple references to values of this feature.  This is only 
-   * meaningful for array-valued or list-values features.
+   * Checks if there can be multiple references to values of this feature. This is only meaningful
+   * for array-valued or list-values features.
    * <p>
-   * If this is false it indicates that this feature has exclusive ownership of the
-   * array or list, so changes to the array or list are localized. If this is true it indicates
-   * that the array or list may be shared, so changes to it may affect other objects in the CAS. 
-   *  
+   * If this is false it indicates that this feature has exclusive ownership of the array or list,
+   * so changes to the array or list are localized. If this is true it indicates that the array or
+   * list may be shared, so changes to it may affect other objects in the CAS.
+   * 
    * @return <code>true</code> iff the value type of this feature is an array or list and has been
-   *    declared to allow multiple references.
+   *         declared to allow multiple references.
    */
   boolean isMultipleReferencesAllowed();
 
