@@ -32,13 +32,18 @@ public class FSClassRegistryTest {
   @Before
   public void setup() {
     System.setProperty(FSClassRegistry.RECORD_JCAS_CLASSLOADERS, "true");
+
+    // Calls to FSClassRegistry will fail unless the static initializer block in TypeSystemImpl
+    // has previously been triggered! During normal UIMA operations, this should not happen,
+    // in particular because FSClassRegistry is not really part of the public UIMA API -
+    // but in the minimal setup here, we need to make sure TypeSystemImpl has been initialized
+    // first.
+    new TypeSystemImpl();
   }
 
   @Test
   public void thatCreatingResourceManagersWithExtensionClassloaderDoesNotFillUpCache()
           throws Exception {
-    // Needed to get the type system code initialized before we call clToType2JCasSize();
-    CasCreationUtils.createCas();
     int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
     for (int i = 0; i < 5; i++) {
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
@@ -60,8 +65,6 @@ public class FSClassRegistryTest {
 
   @Test
   public void thatCreatingResourceManagersWithExtensionPathDoesNotFillUpCache() throws Exception {
-    // Needed to get the type system code initialized before we call clToType2JCasSize();
-    CasCreationUtils.createCas();
     int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
     for (int i = 0; i < 5; i++) {
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
