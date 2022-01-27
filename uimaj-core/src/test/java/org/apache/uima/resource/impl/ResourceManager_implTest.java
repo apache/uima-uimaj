@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -37,8 +39,8 @@ import org.apache.uima.resource.metadata.impl.ExternalResourceBinding_impl;
 import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 
@@ -71,6 +73,7 @@ public class ResourceManager_implTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
+  @Override
   protected void setUp() throws Exception {
     try {
       super.setUp();
@@ -155,6 +158,7 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
+  @Override
   public void tearDown() {
     mManager = null;
   }
@@ -270,5 +274,13 @@ public class ResourceManager_implTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+  }
+
+  public void testCreateWithExtensionClassloaderAndDestroy() throws Exception {
+    assertThatCode(() -> {
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      resMgr.setExtensionClassLoader(getClass().getClassLoader(), false);
+      resMgr.destroy();
+    }).doesNotThrowAnyException();
   }
 }
