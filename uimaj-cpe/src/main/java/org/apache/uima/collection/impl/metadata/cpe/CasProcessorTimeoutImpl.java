@@ -29,12 +29,11 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorTimeoutImpl.
  */
 public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasProcessorTimeout {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8276573951395652039L;
 
@@ -73,10 +72,14 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   /**
    * Overridden to read "max" and "default" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -103,7 +106,9 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -125,7 +130,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   }
 
   /**
-   *  PROTECTED METHODS USED BY THE PARSER.
+   * PROTECTED METHODS USED BY THE PARSER.
    *
    * @return the max
    */
@@ -148,7 +153,8 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   /**
    * Sets the default timeout.
    *
-   * @param string the new default timeout
+   * @param string
+   *          the new default timeout
    */
   public void setDefaultTimeout(String string) {
     defaultTimeout = string;
@@ -157,7 +163,8 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   /**
    * Sets the max.
    *
-   * @param string the new max
+   * @param string
+   *          the new max
    */
   public void setMax(String string) {
     max = string;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="Test"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="5" _ref_sofa="1" begin="0" end="4" language="x-unspecified"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagsetDescription _indexed="1" _id="6" _ref_sofa="1" begin="0" end="4" _ref_tags="7"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagDescription _id="4" name="&lt;+ART&gt;"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagDescription _id="3" name="&lt;+ADV&gt;"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.TagDescription _id="2" name="&lt;+ADJ&gt;"/>
+    <uima.cas.FSArray _id="7" size="3">
+        <i>2</i>
+        <i>3</i>
+        <i>4</i>
+    </uima.cas.FSArray>
+</CAS>

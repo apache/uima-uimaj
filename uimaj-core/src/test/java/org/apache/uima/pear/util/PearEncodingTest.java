@@ -22,16 +22,16 @@ package org.apache.uima.pear.util;
 import java.io.File;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Pear encoding tests
  * 
  */
-public class PearEncodingTest extends TestCase {
+public class PearEncodingTest {
 
+  @Test
   public void testUTF8NoSignature() throws Exception {
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF8_no_signature.xml");
@@ -44,13 +44,14 @@ public class PearEncodingTest extends TestCase {
     Assert.assertTrue(encoding.equals("UTF-8"));
   }
 
+  @Test
   public void testUTF8WithSignature() throws Exception {
-	// cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
+    // cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
     String javaVendor = System.getProperty("java.vendor");
-    if( javaVendor.startsWith("Sun") ) {
-        String javaVersion = System.getProperty("java.version");
-        if( javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4") )
-            return;
+    if (javaVendor.startsWith("Sun")) {
+      String javaVersion = System.getProperty("java.version");
+      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4"))
+        return;
     }
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF8_with_signature.xml");
@@ -63,10 +64,11 @@ public class PearEncodingTest extends TestCase {
     Assert.assertTrue(encoding.equals("UTF-8"));
   }
 
+  @Test
   public void testUTF16NoSignature() throws Exception {
-    
-    //NOTE: this test fails when using SUN JVM 1.4.2_12
-    
+
+    // NOTE: this test fails when using SUN JVM 1.4.2_12
+
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF16_no_signature.xml");
     // get encoding
@@ -78,13 +80,14 @@ public class PearEncodingTest extends TestCase {
     Assert.assertTrue(encoding.equals("UTF-16LE"));
   }
 
+  @Test
   public void testUTF16WithSignature() throws Exception {
     // cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
     String javaVendor = System.getProperty("java.vendor");
-    if( javaVendor.startsWith("Sun") ) {
-        String javaVersion = System.getProperty("java.version");
-        if( javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4") )
-            return;
+    if (javaVendor.startsWith("Sun")) {
+      String javaVersion = System.getProperty("java.version");
+      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4"))
+        return;
     }
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF16_with_signature.xml");

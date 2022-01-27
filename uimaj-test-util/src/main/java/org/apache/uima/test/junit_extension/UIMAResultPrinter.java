@@ -70,6 +70,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printHeader(long)
    */
+  @Override
   protected void printHeader(long runTime) {
     getWriter().println();
     getWriter().println();
@@ -79,6 +80,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printErrors(junit.framework.TestResult)
    */
+  @Override
   protected void printErrors(TestResult result) {
     printDefects(result.errors(), result.errorCount(), "error");
   }
@@ -86,6 +88,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printFailures(junit.framework.TestResult)
    */
+  @Override
   protected void printFailures(TestResult result) {
     printDefects(result.failures(), result.failureCount(), "failure");
   }
@@ -93,6 +96,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printDefects(java.util.Enumeration, int, java.lang.String)
    */
+  @Override
   protected void printDefects(Enumeration booBoos, int count, String type) {
     if (count == 0)
       return;
@@ -108,6 +112,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printDefect(junit.framework.TestFailure, int)
    */
+  @Override
   public void printDefect(TestFailure booBoo, int count) { // only public for testing purposes
     printDefectHeader(booBoo, count);
     printDefectTrace(booBoo);
@@ -116,6 +121,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printDefectHeader(junit.framework.TestFailure, int)
    */
+  @Override
   protected void printDefectHeader(TestFailure booBoo, int count) {
     // I feel like making this a println, then adding a line giving the throwable a chance to print
     // something
@@ -126,6 +132,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printDefectTrace(junit.framework.TestFailure)
    */
+  @Override
   protected void printDefectTrace(TestFailure booBoo) {
     getWriter().print(BaseTestRunner.getFilteredTrace(booBoo.trace()));
   }
@@ -133,6 +140,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#printFooter(junit.framework.TestResult)
    */
+  @Override
   protected void printFooter(TestResult result) {
     if (result.wasSuccessful()) {
       getWriter().println();
@@ -153,6 +161,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * Returns the formatted string of the elapsed time. Duplicated from BaseTestRunner. Fix it.
    */
+  @Override
   protected String elapsedTimeAsString(long runTime) {
     return NumberFormat.getInstance().format((double) runTime / 1000);
   }
@@ -160,6 +169,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.textui.ResultPrinter#getWriter()
    */
+  @Override
   public PrintStream getWriter() {
     return this.fWriter;
   }
@@ -167,6 +177,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.framework.TestListener#addError(Test, Throwable)
    */
+  @Override
   public void addError(Test test, Throwable t) {
     getWriter().print("error");
     this.currentTestSuccess = false;
@@ -189,6 +200,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.framework.TestListener#addFailure(Test, AssertionFailedError)
    */
+  @Override
   public void addFailure(Test test, AssertionFailedError t) {
     getWriter().print("failure");
     this.currentTestSuccess = false;
@@ -210,6 +222,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.framework.TestListener#endTest(Test)
    */
+  @Override
   public void endTest(Test test) {
     if (this.currentTestSuccess == false)
       this.currentTestSuccess = true;
@@ -220,6 +233,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   /**
    * @see junit.framework.TestListener#startTest(Test)
    */
+  @Override
   public void startTest(Test test) {
     this.testCounter++;
     String name = test.toString();

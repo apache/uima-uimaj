@@ -31,8 +31,9 @@ public class TestCasInitializer extends CasInitializer_ImplBase {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.collection.CasInitializer#initializeCas(java.lang.Object,
-   *      org.apache.uima.cas.CAS)
+   * org.apache.uima.cas.CAS)
    */
+  @Override
   public void initializeCas(Object aObj, CAS aCAS) throws CollectionException, IOException {
 
   }

@@ -32,7 +32,7 @@ import org.apache.uima.util.InvalidXMLException;
 public class FsIndexCollection_impl extends MetaDataObject_impl implements FsIndexCollection {
 
   private static final long serialVersionUID = -7687383527183197102L;
-  
+
   private static final FsIndexDescription[] EMPTY_FS_INDEX_DESCRIPTION_ARRAY = new FsIndexDescription[0];
 
   private String mName;
@@ -125,7 +125,9 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
+   * @see
+   * org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.
+   * metadata.Import[])
    */
   @Override
   public void setImports(Import[] aImports) {
@@ -153,7 +155,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.FsIndexCollection#setFsIndexes(org.apache.uima.resource.metadata.FsIndexDescription[])
+   * @see org.apache.uima.resource.metadata.FsIndexCollection#setFsIndexes(org.apache.uima.resource.
+   * metadata.FsIndexDescription[])
    */
   @Override
   public void setFsIndexes(FsIndexDescription[] aFSIndexes) {
@@ -199,7 +202,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   @Override
-  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+  public synchronized void resolveImports(ResourceManager aResourceManager)
+          throws InvalidXMLException {
     resolveImports(null, aResourceManager);
   }
 

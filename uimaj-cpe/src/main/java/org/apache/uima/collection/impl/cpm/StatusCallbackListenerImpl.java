@@ -44,6 +44,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
    */
+  @Override
   public void initializationComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
@@ -58,6 +59,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
    * 
    */
+  @Override
   public synchronized void batchProcessComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -71,6 +73,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
    */
+  @Override
   public synchronized void collectionProcessComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -84,6 +87,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
    */
+  @Override
   public synchronized void paused() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -97,6 +101,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
    */
+  @Override
   public synchronized void resumed() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -110,6 +115,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    * 
    * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
    */
+  @Override
   public void aborted() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -128,29 +134,23 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
    *          EntityProcessStatus that holds the status of all the events for aEntity
    */
 
+  @Override
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     // if there is an error above the individual document level,
     // an entityProcessStatus is created with a null value for entity
     if (aCas == null) {
       for (int i = 0; i < aStatus.getFailedComponentNames().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_failed_component__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_failed_component__FINEST",
                   new Object[] { Thread.currentThread().getName(),
                       ((String) aStatus.getFailedComponentNames().get(i)) });
         }
       }
       for (int i = 0; i < aStatus.getExceptions().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_component_exception__FINEST",
                   new Object[] { Thread.currentThread().getName(),
                       (aStatus.getExceptions().get(i)).toString() });

@@ -39,29 +39,26 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Level;
 
 /**
- * The common (among all index kinds - set, sorted, bag) info for an index over
- * 1 type (excluding subtypes)
+ * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding
+ * subtypes)
  * 
- * SubClasses FsIndex_bag, FsIndex_flat, FsIndex_set_sorted, define the actual
- * index repository for each kind.
+ * SubClasses FsIndex_bag, FsIndex_flat, FsIndex_set_sorted, define the actual index repository for
+ * each kind.
  * 
  * @param <T>
- *          the Java cover class type for this index, passed along to (wrapped)
- *          iterators producing Java cover classes
+ *          the Java cover class type for this index, passed along to (wrapped) iterators producing
+ *          Java cover classes
  */
-public abstract class FsIndex_singletype<T extends FeatureStructure> 
-    extends AbstractCollection<T>
-    implements Comparator<FeatureStructure>, LowLevelIndex<T> {
+public abstract class FsIndex_singletype<T extends FeatureStructure> extends AbstractCollection<T>
+        implements Comparator<FeatureStructure>, LowLevelIndex<T> {
 
-  private final static String[] indexTypes = new String[] {
-      "Sorted", "Set", "Bag", "DefaultBag" };
+  private final static String[] indexTypes = new String[] { "Sorted", "Set", "Bag", "DefaultBag" };
 
   /**
-   * shares equal FSIndexComparatorImpl comparatorForIndexSpecs objects updates
-   * and accesses are synchronized
+   * shares equal FSIndexComparatorImpl comparatorForIndexSpecs objects updates and accesses are
+   * synchronized
    */
   private final static WeakHashMap<FSIndexComparatorImpl, WeakReference<FSIndexComparatorImpl>> comparatorCache = new WeakHashMap<>();
 
@@ -73,9 +70,9 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
   // A reference to the low-level CAS.
   final protected CASImpl casImpl;
-  
+
   // comparators are over TOP since it's allowed to compare
-  //   items with types in the superchain of T (up to TOP)
+  // items with types in the superchain of T (up to TOP)
   /**
    * comparator for an index, passed in as an argument to the constructor
    */
@@ -90,22 +87,22 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   final protected Comparator<TOP> comparatorNoTypeWithID;
 
   /**
-   * comparator (without id) (ignoring typeorder) - used within one type - used
-   * for iterator operations where the type is requested to be ignored
+   * comparator (without id) (ignoring typeorder) - used within one type - used for iterator
+   * operations where the type is requested to be ignored
    */
   final protected Comparator<TOP> comparatorNoTypeWithoutID;
 
   public final boolean isAnnotIdx;
 
   /***********
-   * Info about Index Comparator (not used for bag *********** Index into these
-   * arrays is the key number (indexes can have multiple keys)
+   * Info about Index Comparator (not used for bag *********** Index into these arrays is the key
+   * number (indexes can have multiple keys)
    **********************************************************************/
   // For each key, the int code of the type of that key.
   final private Object[] keys; // either a FeatImpl or a LinearTypeOrder;
 
   final private int[] keyTypeCodes;
-  // For each key, the comparison to use. 
+  // For each key, the comparison to use.
   final private boolean[] isReverse; // true = reverse, false = standard
 
   // /** true if one of the keys is the linear type order key */
@@ -118,13 +115,12 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   final private int typeCode;
 
   /**
-   * common copy on write instance or null; starts out as null Iterator creation
-   * initializes (if null). A subsequent Modification to index, if this is not
-   * null: call cow.makeCopy(); set wr_cow = null do the modification index
-   * clear/flush - set to null;
+   * common copy on write instance or null; starts out as null Iterator creation initializes (if
+   * null). A subsequent Modification to index, if this is not null: call cow.makeCopy(); set wr_cow
+   * = null do the modification index clear/flush - set to null;
    * 
-   * Weak ref so that after iterator is GC'd, and no ref's exist, this becomes
-   * null, so that future mods no longer need to do extra work.
+   * Weak ref so that after iterator is GC'd, and no ref's exist, this becomes null, so that future
+   * mods no longer need to do extra work.
    */
   protected WeakReference<CopyOnWriteIndexPart<T>> wr_cow = null;
 
@@ -161,8 +157,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    *          -
    */
   protected FsIndex_singletype(CASImpl cas, Type type, int indexType,
-      FSIndexComparator comparatorForIndexSpecs) {
-    super();
+          FSIndexComparator comparatorForIndexSpecs) {
     this.indexType = indexType;
     this.casImpl = cas;
     this.type = (TypeImpl) type;
@@ -189,8 +184,8 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     for (int i = 0; i < nKeys; i++) {
       int keyType = comparatorForIndexSpecs.getKeyType(i);
       final Object k = (keyType == FSIndexComparator.FEATURE_KEY)
-          ? (FeatureImpl) this.comparatorForIndexSpecs.getKeyFeature(i)
-          : this.comparatorForIndexSpecs.getKeyTypeOrder(i);
+              ? (FeatureImpl) this.comparatorForIndexSpecs.getKeyFeature(i)
+              : this.comparatorForIndexSpecs.getKeyTypeOrder(i);
       keys[i] = k;
       if (k instanceof FeatureImpl) {
         keyTypeCodes[i] = ((TypeImpl) ((FeatureImpl) k).getRange()).getCode();
@@ -200,60 +195,60 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
         // hasEmptyLinearTypeOrderKey = ((LinearTypeOrder)k).isEmptyTypeOrder();
       }
       isReverse[i] = this.comparatorForIndexSpecs
-          .getKeyComparator(i) == FSIndexComparator.REVERSE_STANDARD_COMPARE;
+              .getKeyComparator(i) == FSIndexComparator.REVERSE_STANDARD_COMPARE;
     }
 
     FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
 
     if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
       comparatorWithID = ir.getAnnotationFsComparator(FSComparators.WITH_ID,
-          FSComparators.WITH_TYPE_ORDER);
+              FSComparators.WITH_TYPE_ORDER);
       comparatorWithoutID = ir.getAnnotationFsComparator(FSComparators.WITHOUT_ID,
-          FSComparators.WITH_TYPE_ORDER);
+              FSComparators.WITH_TYPE_ORDER);
       comparatorNoTypeWithID = ir.getAnnotationFsComparator(FSComparators.WITH_ID,
-          FSComparators.WITHOUT_TYPE_ORDER);
+              FSComparators.WITHOUT_TYPE_ORDER);
       comparatorNoTypeWithoutID = ir.getAnnotationFsComparator(FSComparators.WITHOUT_ID,
-          FSComparators.WITHOUT_TYPE_ORDER);
+              FSComparators.WITHOUT_TYPE_ORDER);
       isAnnotIdx = true;
     } else {
-      // NOT ANNOTATION INDEX      
+      // NOT ANNOTATION INDEX
       isAnnotIdx = false;
 
       if (indexType == BAG_INDEX) {
-        comparatorNoTypeWithID = comparatorNoTypeWithoutID = comparatorWithID = comparatorWithoutID = 
-            (o1, o2) -> ((FsIndex_bag)this).compare(o1, o2);
+        comparatorNoTypeWithID = comparatorNoTypeWithoutID = comparatorWithID = comparatorWithoutID = (
+                o1, o2) -> ((FsIndex_bag) this).compare(o1, o2);
       } else {
         comparatorWithoutID = (o1, o2) -> compare(o1, o2, IS_TYPE_ORDER);
-  
+
         comparatorWithID = (indexType == FSIndex.SORTED_INDEX) ? (o1, o2) -> {
-  
+
           final int c = compare(o1, o2, IS_TYPE_ORDER);
           // augment normal comparator with one that compares IDs if everything
           // else equal
           return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;
         }
-  
-            : comparatorWithoutID;
-  
+
+                : comparatorWithoutID;
+
         comparatorNoTypeWithoutID = (o1, o2) -> compare(o1, o2, !IS_TYPE_ORDER);
-  
+
         comparatorNoTypeWithID = (indexType == FSIndex.SORTED_INDEX) ? (o1, o2) -> {
-  
+
           final int c = compare(o1, o2, !IS_TYPE_ORDER);
           // augment normal comparator with one that compares IDs if everything
           // else equal
           return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;
         }
-  
-            : comparatorWithID;
+
+                : comparatorWithID;
       }
     }
 
   }
 
   /**
-   * Adding FS to an index. not in upper interfaces because it's internal use
-   * only - called via addToIndexes etc.
+   * Adding FS to an index. not in upper interfaces because it's internal use only - called via
+   * addToIndexes etc.
    * 
    * @param fs
    *          the fs to be added
@@ -275,11 +270,10 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
   /**
    * @param fs
-   *          - the Feature Structure to be removed. Only this exact Feature
-   *          Structure is removed (this is a stronger test than, for example,
-   *          what moveTo(fs) does, where the fs in that case is used as a
-   *          template). It is not an error if this exact Feature Structure is
-   *          not in an index.
+   *          - the Feature Structure to be removed. Only this exact Feature Structure is removed
+   *          (this is a stronger test than, for example, what moveTo(fs) does, where the fs in that
+   *          case is used as a template). It is not an error if this exact Feature Structure is not
+   *          in an index.
    * @return true if something was removed, false if not found
    */
   abstract boolean deleteFS(T fs);
@@ -363,8 +357,8 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     FeatureStructureImplC fs2 = (FeatureStructureImplC) afs2;
 
     /**
-     * for each key defined by this index: if Feature: Switch by type: float,
-     * get the value: fs1.getXXX, compare
+     * for each key defined by this index: if Feature: Switch by type: float, get the value:
+     * fs1.getXXX, compare
      */
     int i = -1;
     for (Object key : keys) {
@@ -377,33 +371,33 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
           result = Misc.compareStrings(fs1._getStringValueNc(fi), fs2._getStringValueNc(fi));
         } else {
           switch (keyTypeCodes[i]) {
-          case TypeSystemConstants.booleanTypeCode:
-            result = Integer.compare(fs1._getBooleanValueNc(fi) ? 1 : 0,
-                fs2._getBooleanValueNc(fi) ? 1 : 0);
-            break;
-          case TypeSystemConstants.byteTypeCode:
-            result = Integer.compare(fs1._getByteValueNc(fi), fs2._getByteValueNc(fi));
-            break;
-          case TypeSystemConstants.shortTypeCode:
-            result = Integer.compare(fs1._getShortValueNc(fi), fs2._getShortValueNc(fi));
-            break;
-          case TypeSystemConstants.intTypeCode:
-            result = Integer.compare(fs1._getIntValueNc(fi), fs2._getIntValueNc(fi));
-            break;
-          case TypeSystemConstants.longTypeCode:
-            result = Long.compare(fs1._getLongValueNc(fi), fs2._getLongValueNc(fi));
-            break;
-          case TypeSystemConstants.floatTypeCode:
-            result = Float.compare(fs1._getFloatValueNc(fi), fs2._getFloatValueNc(fi));
-            break;
-          case TypeSystemConstants.doubleTypeCode:
-            result = Double.compare(fs1._getDoubleValueNc(fi), fs2._getDoubleValueNc(fi));
-            break;
-          // next is compared above before the switch
-          // case TypeSystemConstants.stringTypeCode:
-          // result = Misc.compareStrings(fs1.getStringValueNc(fi),
-          // fs2.getStringValueNc(fi));
-          // break;
+            case TypeSystemConstants.booleanTypeCode:
+              result = Integer.compare(fs1._getBooleanValueNc(fi) ? 1 : 0,
+                      fs2._getBooleanValueNc(fi) ? 1 : 0);
+              break;
+            case TypeSystemConstants.byteTypeCode:
+              result = Integer.compare(fs1._getByteValueNc(fi), fs2._getByteValueNc(fi));
+              break;
+            case TypeSystemConstants.shortTypeCode:
+              result = Integer.compare(fs1._getShortValueNc(fi), fs2._getShortValueNc(fi));
+              break;
+            case TypeSystemConstants.intTypeCode:
+              result = Integer.compare(fs1._getIntValueNc(fi), fs2._getIntValueNc(fi));
+              break;
+            case TypeSystemConstants.longTypeCode:
+              result = Long.compare(fs1._getLongValueNc(fi), fs2._getLongValueNc(fi));
+              break;
+            case TypeSystemConstants.floatTypeCode:
+              result = Float.compare(fs1._getFloatValueNc(fi), fs2._getFloatValueNc(fi));
+              break;
+            case TypeSystemConstants.doubleTypeCode:
+              result = Double.compare(fs1._getDoubleValueNc(fi), fs2._getDoubleValueNc(fi));
+              break;
+            // next is compared above before the switch
+            // case TypeSystemConstants.stringTypeCode:
+            // result = Misc.compareStrings(fs1.getStringValueNc(fi),
+            // fs2.getStringValueNc(fi));
+            // break;
           } // end of switch
         }
       } else { // is type order compare
@@ -428,7 +422,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     final int prime = 31;
     int result = 1;
     result = prime * result
-        + ((comparatorForIndexSpecs == null) ? 0 : comparatorForIndexSpecs.hashCode());
+            + ((comparatorForIndexSpecs == null) ? 0 : comparatorForIndexSpecs.hashCode());
     return result;
   }
 
@@ -473,8 +467,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   // }
 
   /**
-   * For serialization: get all the items in this index and bulk add to an
-   * List&lt;T&gt;
+   * For serialization: get all the items in this index and bulk add to an List&lt;T&gt;
    * 
    * @param v
    *          the set of items to add
@@ -508,16 +501,15 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     return indexType == FSIndex.SET_INDEX || indexType == FSIndex.SORTED_INDEX;
   }
 
+  @Override
   public boolean isSorted() {
     return indexType == FSIndex.SORTED_INDEX;
   }
 
   /**
-   * Differs from flush in that it manipulates flags in the FSs to indicate
-   * removed.
-   * This can only be done if we can guarantee the FS is not indexed **in any view**.
-   * We do that by only resetting if it is a subtype of annotation base, which is guaranteed
-   *   to be indexed only in 1 view.
+   * Differs from flush in that it manipulates flags in the FSs to indicate removed. This can only
+   * be done if we can guarantee the FS is not indexed **in any view**. We do that by only resetting
+   * if it is a subtype of annotation base, which is guaranteed to be indexed only in 1 view.
    * 
    */
   void removeAll() {
@@ -552,8 +544,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   }
 
   /**
-   * @return the copy-on-write wrapper for an index part if it exists for this
-   *         index, or null
+   * @return the copy-on-write wrapper for an index part if it exists for this index, or null
    */
   public CopyOnWriteIndexPart<T> getCopyOnWriteIndexPart() {
     return (wr_cow == null) ? null : wr_cow.get();
@@ -562,8 +553,8 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   protected abstract CopyOnWriteIndexPart<T> createCopyOnWriteIndexPart();
 
   /**
-   * Called just before modifying an index if wr_cow has a value, tell that
-   * value to create a preserving copy of the index part, and set wr_cow to null
+   * Called just before modifying an index if wr_cow has a value, tell that value to create a
+   * preserving copy of the index part, and set wr_cow to null
    */
   protected void maybeCopy() {
     if (wr_cow != null) {
@@ -577,37 +568,40 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
   @Override
   public void flush() {
-//   maybeCopy(); // https://issues.apache.org/jira/browse/UIMA-5687
+    // maybeCopy(); // https://issues.apache.org/jira/browse/UIMA-5687
     wr_cow = null;
     // casImpl.indexRepository.isUsedChanged = true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
    */
   /**
-   * This is required to avoid compilation error (but not in Eclipse) due to 
-   * ambiguous interface inheritance from both FeatureStructure and Comparator
+   * This is required to avoid compilation error (but not in Eclipse) due to ambiguous interface
+   * inheritance from both FeatureStructure and Comparator
    */
   @Override
   public abstract int compare(FeatureStructure o1, FeatureStructure o2);
-  
+
   private static final AtomicInteger strictTypeSourceCheckMessageCount = new AtomicInteger(0);
-  
+
   protected final void assertFsTypeMatchesIndexType(FeatureStructure fs, String operation) {
-    TypeImpl fsType = ((TOP)fs)._getTypeImpl();
+    TypeImpl fsType = ((TOP) fs)._getTypeImpl();
     if (fsType != this.type) {
       String message = String.format(
               "%s operation using a feature structure of type [%s](%d) from type system [%s] on index using "
-              + "different type system [%s] is not supported.", operation,
-              fsType.getName(), fsType.getCode(), format("<%,d>", identityHashCode(fsType.getTypeSystem())), 
+                      + "different type system [%s] is not supported.",
+              operation, fsType.getName(), fsType.getCode(),
+              format("<%,d>", identityHashCode(fsType.getTypeSystem())),
               format("<%,d>", identityHashCode(this.type.getTypeSystem())));
-    
+
       if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
         throw new IllegalArgumentException(message);
-      }
-      else {
-        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message, UIMAFramework.getLogger());
+      } else {
+        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message,
+                UIMAFramework.getLogger());
       }
     }
   }

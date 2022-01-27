@@ -56,7 +56,6 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
    * Constructor.
    */
   public GeneratePearFileAction() {
-    super();
   }
 
   /**

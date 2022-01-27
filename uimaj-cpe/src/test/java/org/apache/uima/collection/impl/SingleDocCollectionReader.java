@@ -40,11 +40,12 @@ public class SingleDocCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
-    assert(!done);
+    assert (!done);
 
     aCAS.setDocumentText("This is a test");
-    
+
     done = true;
   }
 
@@ -53,6 +54,7 @@ public class SingleDocCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
   }
 
@@ -61,6 +63,7 @@ public class SingleDocCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     return null;
   }
@@ -70,6 +73,7 @@ public class SingleDocCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
+  @Override
   public boolean hasNext() throws IOException, CollectionException {
     return !done;
   }

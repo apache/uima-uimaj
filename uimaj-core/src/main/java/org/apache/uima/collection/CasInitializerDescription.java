@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import org.apache.uima.resource.ResourceCreationSpecifier;
@@ -38,5 +37,5 @@ public interface CasInitializerDescription extends ResourceCreationSpecifier {
    * @return the <code>ProcessingResourceMetaData</code> object containing the CasInitializer's
    *         metadata. This object can be modified.
    */
-  public ProcessingResourceMetaData getCasInitializerMetaData();
+  ProcessingResourceMetaData getCasInitializerMetaData();
 }

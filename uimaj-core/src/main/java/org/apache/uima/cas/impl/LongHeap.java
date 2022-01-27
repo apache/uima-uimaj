@@ -36,18 +36,22 @@ final class LongHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
-  final void initMemory() {
+  @Override
+  void initMemory() {
     this.heap = new long[this.heapBaseSize];
   }
-  
-  final void initMemory(int size) {
+
+  @Override
+  void initMemory(int size) {
     this.heap = new long[size];
   }
 
-  final int getCapacity() {
+  @Override
+  int getCapacity() {
     return this.heap.length;
   }
-  
+
+  @Override
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
       return;
@@ -58,6 +62,7 @@ final class LongHeap extends CommonAuxHeap {
     heap = new_array;
   }
 
+  @Override
   void resetToZeros() {
     Arrays.fill(this.heap, 0, this.heapPos, NULL);
   }
@@ -77,22 +82,21 @@ final class LongHeap extends CommonAuxHeap {
     heap[pos] = val;
     return pos;
   }
-  
+
   int addLongArray(long[] val) {
     int pos = reserve(val.length);
     System.arraycopy(val, 0, heap, pos, val.length);
     return pos;
   }
-  
+
   int addDoubleArray(double[] val) {
     int pos = reserve(val.length);
     int i = pos;
     for (double d : val) {
       heap[i++] = CASImpl.double2long(d);
     }
-    return pos;    
+    return pos;
   }
-
 
   protected void reinit(long[] longHeap) {
     int argLength = longHeap.length;

@@ -19,6 +19,10 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -49,36 +53,23 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+public class MultiprocessingAnalysisEngine_implTest {
 
-public class MultiprocessingAnalysisEngine_implTest extends TestCase {
-  
-  private final static boolean doSleeps = true;  // running w/ dosleeps = false should show 100% cpu
-  
+  private final static boolean doSleeps = true; // running w/ dosleeps = false should show 100% cpu
+
   private AnalysisEngineDescription mSimpleDesc;
 
   private AnalysisEngineDescription mAggDesc;
 
   public volatile TypeSystem mLastTypeSystem;
 
-  /**
-   * Constructor for MultiprocessingAnalysisEngine_implTest.
-   * 
-   * @param arg0
-   */
-  public MultiprocessingAnalysisEngine_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-      super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
@@ -93,8 +84,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
-      Capability[] caps = new Capability[] {cap};
-       mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      Capability[] caps = new Capability[] { cap };
+      mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
 
       mAggDesc = new AnalysisEngineDescription_impl();
       mAggDesc.setPrimitive(false);
@@ -109,6 +100,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testInitialize() throws Exception {
     try {
       // initialize MultiprocesingTextAnalysisEngine
@@ -140,6 +132,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testGetAnalysisEngineMetaData() throws Exception {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
@@ -154,6 +147,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testNewCAS() throws Exception {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
@@ -191,7 +185,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  
+  @Test
   public void testProcess() throws Exception {
     try {
       // test simple primitive MultiprocessingTextAnalysisEngine
@@ -208,47 +202,48 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
        * 
        * The goal is to run multiple AE's together at the same time, and repeat this.
        * 
-       * The threads the AE's run on are created and started, once, ahead of time, since that takes a while.
-       * When they start their run() method executes a wait on a waitnotify object; and they sit until
-       * notified.
+       * The threads the AE's run on are created and started, once, ahead of time, since that takes
+       * a while. When they start their run() method executes a wait on a waitnotify object; and
+       * they sit until notified.
        * 
-       * At the beginning, all threads are notified quickly, and start running their individual test(s).
+       * At the beginning, all threads are notified quickly, and start running their individual
+       * test(s).
        * 
-       *   When the test is finished, the thread goes back into the wait4go state.
-       *   
+       * When the test is finished, the thread goes back into the wait4go state.
+       * 
        */
       MultiprocessingAnalysisEngine_impl ae = new MultiprocessingAnalysisEngine_impl();
       Map<String, Object> params = new HashMap<>();
       params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, 8);
       ae.initialize(mAggDesc, params);
-      
+
       final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
-      Random random = new Random();      
+      Random random = new Random();
 
       for (int i = 0; i < NUM_THREADS; i++) {
         threads[i] = new ProcessThread(ae);
         threads[i].start();
       }
-      
+
       for (int repetitions = 0; repetitions < 4; repetitions++) {
-        
+
         MultiThreadUtils.kickOffThreads(threads);
-        
+
         // wait for all threads to finish and check if they got exceptions
         MultiThreadUtils.waitForAllReady(threads);
-        
+
         for (ProcessThread pt : threads) {
-//          try {
-//            threads[i].join();
-//          } catch (InterruptedException ie) {
-//            System.err.println("got unexpected Interrupted exception " + ie);
-//          }
-//          if (threads[i].isAlive()) {
-//            System.err.println("timeout waiting for thread to complete " + i);
-//            fail("timeout waiting for thread to complete " + i);
-//          }
-          
+          // try {
+          // threads[i].join();
+          // } catch (InterruptedException ie) {
+          // System.err.println("got unexpected Interrupted exception " + ie);
+          // }
+          // if (threads[i].isAlive()) {
+          // System.err.println("timeout waiting for thread to complete " + i);
+          // fail("timeout waiting for thread to complete " + i);
+          // }
+
           Throwable failure = pt.getFailure();
           if (failure != null) {
             if (failure instanceof Exception) {
@@ -259,10 +254,10 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
           }
         }
       }
-      
-      //Check TestAnnotator fields only at the very end of processing,
-      //we can't test from the threads themselves since the state of
-      //these fields is nondeterministic during the multithreaded processing.
+
+      // Check TestAnnotator fields only at the very end of processing,
+      // we can't test from the threads themselves since the state of
+      // these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
       ResultSpecification lastResultSpec = TestAnnotator.getLastResultSpec();
       ResultSpecification resultSpec = new ResultSpecification_impl(lastResultSpec.getTypeSystem());
@@ -274,37 +269,36 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testProcessManyCM() throws Exception {
-    //get Resource Specifier from XML file
+    // get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleCasGenerator.xml");
-    ResourceSpecifier specifier = 
-        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+    ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
     for (int i = 0; i < 10; i++) {
       processMany(specifier);
     }
   }
-  
+
+  @Test
   public void testProcessManyAgg() throws Exception {
-    //get Resource Specifier from XML file
+    // get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
-    ResourceSpecifier specifier = 
-        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+    ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
     for (int i = 0; i < 10; i++) {
       processMany(specifier);
     }
   }
-  
+
   // rename to run this in a loop
   public void tstLoopProcessManyAgg() throws Exception {
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
-    ResourceSpecifier specifier = 
-        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-    Misc.timeLoops("ProcessManyAgg", 1000, () -> processMany(specifier));   
+    ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+    Misc.timeLoops("ProcessManyAgg", 1000, () -> processMany(specifier));
   }
-  
+
   final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
-  final int NUM_INSTANCES = (int)(NUM_THREADS * .7);
-         
+  final int NUM_INSTANCES = (int) (NUM_THREADS * .7);
+
   public void processMany(ResourceSpecifier specifier) throws Exception {
     try {
 
@@ -313,20 +307,20 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Map<String, Object> params = new HashMap<>();
       params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, NUM_INSTANCES);
 
-      ae.initialize(specifier , params);
-      
+      ae.initialize(specifier, params);
+
       ProcessThreadMany[] threads = new ProcessThreadMany[NUM_THREADS];
       for (int i = 0; i < NUM_THREADS; i++) {
         threads[i] = new ProcessThreadMany(ae);
         threads[i].start();
       }
-      
+
       MultiThreadUtils.kickOffThreads(threads);
-        
-        // wait for all threads to finish and check if they got exceptions
+
+      // wait for all threads to finish and check if they got exceptions
       MultiThreadUtils.waitForAllReady(threads);
 
-      for (ProcessThreadMany ptm : threads) { 
+      for (ProcessThreadMany ptm : threads) {
 
         Throwable failure = ptm.getFailure();
         if (failure != null) {
@@ -337,10 +331,10 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
           }
         }
       }
-          
-      //Check TestAnnotator fields only at the very end of processing,
-      //we can't test from the threads themselves since the state of
-      //these fields is nondeterministic during the multithreaded processing.
+
+      // Check TestAnnotator fields only at the very end of processing,
+      // we can't test from the threads themselves since the state of
+      // these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", SimpleCasGenerator.getLastDocument());
       ResultSpecification lastResultSpec = SimpleCasGenerator.getLastResultSpec();
       ResultSpecification resultSpec = new ResultSpecification_impl(lastResultSpec.getTypeSystem());
@@ -352,6 +346,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
@@ -396,9 +391,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
-      p2.setOverrides(new String[] {"Test/StringParam"});
-      aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
-              new ConfigurationParameter[] { p2 });
+      p2.setOverrides(new String[] { "Test/StringParam" });
+      aggDesc.getMetaData().getConfigurationParameterDeclarations()
+              .setConfigurationParameters(new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
       // instantiate TextAnalysisEngine
@@ -457,17 +452,18 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     assertEquals(resultSpec, TestAnnotator.lastResultSpec);
     tcas.reset();
   }
-  
+
   class ProcessThread extends ThreadM {
-    
+
     Throwable mFailure = null;
-    
+
     AnalysisEngine mAE;
-    
+
     ProcessThread(AnalysisEngine aAE) {
       mAE = aAE;
     }
 
+    @Override
     public void run() {
       Random r = new Random();
       while (true) {
@@ -475,43 +471,43 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         if (!MultiThreadUtils.wait4go(this)) { // wait for go signal after all threads are setup.
           break; // time to terminate
         }
-        
+
         try {
-  
+
           // Test each form of the process method. When TestAnnotator executes, it
           // stores in static fields the document text and the ResultSpecification.
-          // We use thse to make sure the information propogates correctly to the 
+          // We use thse to make sure the information propogates correctly to the
           // annotator. (However, we can't check these until after the threads are
           // finished, as their state is nondeterministic during multithreaded
           // processing.)
-  
+
           // process(CAS)
           CAS tcas = mAE.newCAS();
-//          for (int i = 0; i < 1000; i++) {  // uncomment to debug
-            mLastTypeSystem = tcas.getTypeSystem();
-            tcas.setDocumentText("new test");
-            mAE.process(tcas);
-  //          System.out.println("Debug finished processing a cas");
-            if (doSleeps) 
-              Thread.sleep(0, r.nextInt(1000));  // 0 to 1 microseconds
-            tcas.reset();
-    
-            // process(CAS,ResultSpecification)
-            ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
-            resultSpec.addResultType("NamedEntity", true);
-    
-            tcas.setDocumentText("testing...");
-            if (doSleeps) 
-              Thread.sleep(0, r.nextInt(1000));  // 0 to 1 microseconds
-            mAE.process(tcas, resultSpec);
-            if (doSleeps) 
-              Thread.sleep(0, r.nextInt(1000));  // 0 to 1 microseconds
-            tcas.reset();
-//          }
+          // for (int i = 0; i < 1000; i++) { // uncomment to debug
+          mLastTypeSystem = tcas.getTypeSystem();
+          tcas.setDocumentText("new test");
+          mAE.process(tcas);
+          // System.out.println("Debug finished processing a cas");
+          if (doSleeps)
+            Thread.sleep(0, r.nextInt(1000)); // 0 to 1 microseconds
+          tcas.reset();
+
+          // process(CAS,ResultSpecification)
+          ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
+          resultSpec.addResultType("NamedEntity", true);
+
+          tcas.setDocumentText("testing...");
+          if (doSleeps)
+            Thread.sleep(0, r.nextInt(1000)); // 0 to 1 microseconds
+          mAE.process(tcas, resultSpec);
+          if (doSleeps)
+            Thread.sleep(0, r.nextInt(1000)); // 0 to 1 microseconds
+          tcas.reset();
+          // }
         } catch (Throwable t) {
           t.printStackTrace();
-          //can't cause unit test to fail by throwing exception from thread.
-          //record the failure and the main thread will check for it later.
+          // can't cause unit test to fail by throwing exception from thread.
+          // record the failure and the main thread will check for it later.
           mFailure = t;
         }
       }
@@ -520,65 +516,67 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     public synchronized Throwable getFailure() {
       return mFailure;
     }
-    
+
     public void resetFailure() {
       mFailure = null;
     }
   }
-  
+
   class ProcessThreadMany extends ProcessThread {
-    
+
     ProcessThreadMany(AnalysisEngine aAE) {
       super(aAE);
     }
 
+    @Override
     public void run() {
-      
+
       while (true) {
-       
+
         if (!MultiThreadUtils.wait4go(this)) {
           break;
         }
 
         try {
-          
+
           Random r = new Random();
-  
+
           // Test each form of the process method. When TestAnnotator executes, it
           // stores in static fields the document text and the ResultSpecification.
-          // We use thse to make sure the information propagates correctly to the 
+          // We use thse to make sure the information propagates correctly to the
           // annotator. (However, we can't check these until after the threads are
           // finished, as their state is nondeterministic during multithreaded
           // processing.)
-  
+
           // process(CAS)
           for (int i = 0; i < 5; i++) {
             CAS tcas = mAE.newCAS();
             mLastTypeSystem = tcas.getTypeSystem();
             tcas.setDocumentText("new test");
             mAE.process(tcas);
-            Thread.sleep(0, r.nextInt(1000));  // between 0 and 1 microseconds
+            Thread.sleep(0, r.nextInt(1000)); // between 0 and 1 microseconds
             tcas.reset();
-    
+
             // process(CAS,ResultSpecification)
             ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
             resultSpec.addResultType("NamedEntity", true);
-    
+
             tcas.setDocumentText("testing...");
-            Thread.sleep(0, r.nextInt(1000));  // between 0 and 1 microseconds
+            Thread.sleep(0, r.nextInt(1000)); // between 0 and 1 microseconds
             mAE.process(tcas, resultSpec);
-            Thread.sleep(0, r.nextInt(1000));  // between 0 and 1 microseconds
+            Thread.sleep(0, r.nextInt(1000)); // between 0 and 1 microseconds
             tcas.reset();
           }
         } catch (Throwable t) {
           t.printStackTrace();
-          //can't cause unit test to fail by throwing exception from thread.
-          //record the failure and the main thread will check for it later.
+          // can't cause unit test to fail by throwing exception from thread.
+          // record the failure and the main thread will check for it later.
           mFailure = t;
         }
       }
     }
 
+    @Override
     public synchronized Throwable getFailure() {
       return mFailure;
     }

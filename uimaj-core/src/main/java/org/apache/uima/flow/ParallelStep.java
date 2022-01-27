@@ -31,15 +31,15 @@ import java.util.Collections;
  * method will be called again to determine the next destination for the CAS.
  */
 public class ParallelStep extends Step {
-  
+
   private Collection<String> mKeys;
-  
+
   /**
    * Creates a new ParallelStep
    * 
    * @param aAnalysisEngineKeys
-   *          A Collection of Strings, where each String is the key of an Analysis Engine to which the CAS
-   *          should be routed. Each String must bee one of the keys in the FlowController's
+   *          A Collection of Strings, where each String is the key of an Analysis Engine to which
+   *          the CAS should be routed. Each String must bee one of the keys in the FlowController's
    *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
   public ParallelStep(Collection<String> aAnalysisEngineKeys) {
@@ -49,8 +49,8 @@ public class ParallelStep extends Step {
   /**
    * Gets the keys of the Analysis Engines to which the CAS should be routed.
    * 
-   * @return an unmodifiable Collection of Strings, where each String is the key of an Analysis Engine to 
-   *         which the CAS should be routed.
+   * @return an unmodifiable Collection of Strings, where each String is the key of an Analysis
+   *         Engine to which the CAS should be routed.
    */
   public Collection<String> getAnalysisEngineKeys() {
     return mKeys;
@@ -61,9 +61,10 @@ public class ParallelStep extends Step {
    * a user's Flow implementation can (but is not required to) reuse the same ParallelStep object
    * multiple times.
    * 
-   * @param aKeys A Collection of Strings, where each String is the key of an Analysis Engine to which the CAS
-   *         should be routed. Each String must bee one of the keys in the FlowController's
-   *         {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
+   * @param aKeys
+   *          A Collection of Strings, where each String is the key of an Analysis Engine to which
+   *          the CAS should be routed. Each String must bee one of the keys in the FlowController's
+   *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
   public void setAnalysisEngineKeys(Collection<String> aKeys) {
     mKeys = Collections.unmodifiableCollection(aKeys);

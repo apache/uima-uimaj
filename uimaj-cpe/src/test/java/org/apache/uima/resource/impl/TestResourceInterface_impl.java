@@ -31,18 +31,17 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 import org.apache.uima.resource.SharedResourceObject;
-import org.apache.uima.resource.impl.TestResourceInterface;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
-
-public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
-        TestResourceInterface {
+public class TestResourceInterface_impl extends Resource_ImplBase
+        implements SharedResourceObject, TestResourceInterface {
   private String mString;
 
   /**
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
+  @Override
   public void load(DataResource aData) throws ResourceInitializationException {
     InputStream inStr = null;
     try {
@@ -54,20 +53,21 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
     } catch (IOException e) {
       throw new ResourceInitializationException(e);
     } finally {
-      if ( inStr != null ) {
+      if (inStr != null) {
         try {
           inStr.close();
-        } catch( Exception e) {
+        } catch (Exception e) {
           System.out.println("CPE.load() - Unable to close Input Stream");
         }
       }
     }
-    
+
   }
 
   /**
    * @see org.apache.uima.resource.impl.TestResourceInterface#readString()
    */
+  @Override
   public String readString() {
     return mString;
   }
@@ -75,12 +75,14 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return null;
   }
@@ -88,6 +90,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     return true;

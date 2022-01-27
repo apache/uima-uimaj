@@ -21,12 +21,12 @@ package org.apache.uima.internal.util;
 import java.util.function.IntConsumer;
 
 /**
- * An set of non-zero integers, ability to iterate over them (possibly in a sorted way),
- * with O(1) operations for adding, removing, and testing for contains.   
+ * An set of non-zero integers, ability to iterate over them (possibly in a sorted way), with O(1)
+ * operations for adding, removing, and testing for contains.
  */
 public interface PositiveIntSet {
 
-  static final boolean IS_TRACE_MODE_SWITCH = false;  // for debugging
+  boolean IS_TRACE_MODE_SWITCH = false; // for debugging
 
   /**
    * remove all members of the set
@@ -34,26 +34,32 @@ public interface PositiveIntSet {
   void clear();
 
   /**
-   * @param key -
+   * @param key
+   *          -
    * @return true if key is in the set
    */
   boolean contains(int key);
 
   /**
    * 
-   * @param key -
+   * @param key
+   *          -
    * @return true if this set did not already contain the specified element
    */
   boolean add(int key);
 
   /**
    * add all elements in this set to the IntVector v as a bulk operation
-   * @param v - to be added to
+   * 
+   * @param v
+   *          - to be added to
    */
   void bulkAddTo(IntVector v);
+
   /**
    * 
-   * @param key -
+   * @param key
+   *          -
    * @return true if the set had this element before the remove
    */
   boolean remove(int key);
@@ -62,68 +68,83 @@ public interface PositiveIntSet {
    * @return number of elements in the set
    */
   int size();
-  
+
   /**
    * @return the set as an arbitrarily ordered int array
    */
   int[] toIntArray();
+
   /**
    * @return an iterator (may be ordered or unordered) over the members of the set
    */
   IntListIterator iterator();
-  
+
   /**
-   * @param element an item which may be in the set
-   * @return -1 if the item is not in the set, or a position value that can be used with iterators to start at that item.
+   * @param element
+   *          an item which may be in the set
+   * @return -1 if the item is not in the set, or a position value that can be used with iterators
+   *         to start at that item.
    */
   int find(int element);
 
   /**
-   * For FSBagIndex low level iterator use
-   *   DOESN"T WORK WITH INCREMENTING position VALUES
-   * @param position - get the element at this position.  This is for iterator use only, and is not related to any key
+   * For FSBagIndex low level iterator use DOESN"T WORK WITH INCREMENTING position VALUES
+   * 
+   * @param position
+   *          - get the element at this position. This is for iterator use only, and is not related
+   *          to any key
    * @return the element
    */
   int get(int position);
-  
+
   /**
    * For FSBagIndex low level iterator use
+   * 
    * @return the position of the first element, or -1;
    */
   int moveToFirst();
-  
+
   /**
    * For FSBagIndex low level iterator use
+   * 
    * @return the position of the last element, or -1;
    */
   int moveToLast();
-  
+
   /**
    * For FSBagIndex low level iterator use
-   * @param position -
+   * 
+   * @param position
+   *          -
    * @return the position of the next element, or -1;
    */
   int moveToNext(int position);
-  
+
   /**
    * For FSBagIndex low level iterator use
-   * @param position -
+   * 
+   * @param position
+   *          -
    * @return the position of the next element, or -1;
    */
   int moveToPrevious(int position);
 
   /**
    * For FSBagIndex low level iterator use
-   * @param position -
+   * 
+   * @param position
+   *          -
    * @return true if the position is between the first and last element inclusive.
    */
   boolean isValid(int position);
-  
+
   /**
    * Iterate over the positive int set in sort order, and run the consumer on each value
-   * @param v the consumer to run
+   * 
+   * @param v
+   *          the consumer to run
    */
-  
+
   default void forAllInts(IntConsumer v) {
     IntListIterator it = iterator();
     while (it.hasNext()) {

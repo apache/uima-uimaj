@@ -28,12 +28,11 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-
 /**
  * The Class CpeConfigurationImpl.
  */
 public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConfiguration {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1153815602567127240L;
 
@@ -101,7 +100,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     return (int) num2Process;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#setStartingEntityId(java.lang.String)
    */
   @Override
@@ -122,7 +123,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeConfiguration#setCheckpoint(org.apache.uima.collection.metadata.CpeCheckpoint)
+   * @see
+   * org.apache.uima.collection.metadata.CpeConfiguration#setCheckpoint(org.apache.uima.collection.
+   * metadata.CpeCheckpoint)
    */
   @Override
   public void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException {
@@ -152,7 +155,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeConfiguration#setCpeTimer(org.apache.uima.collection.metadata.CpeTimer)
+   * @see
+   * org.apache.uima.collection.metadata.CpeConfiguration#setCpeTimer(org.apache.uima.collection.
+   * metadata.CpeTimer)
    */
   @Override
   public void setCpeTimer(CpeTimer aTimer) {
@@ -206,7 +211,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     return startAt;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getTimerImpl()
    */
   @Override
@@ -217,7 +224,8 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /**
    * Sets the deploy as.
    *
-   * @param string the new deploy as
+   * @param string
+   *          the new deploy as
    */
   public void setDeployAs(String string) {
     deployAs = string;
@@ -226,7 +234,8 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /**
    * Sets the num to process.
    *
-   * @param l the new num to process
+   * @param l
+   *          the new num to process
    */
   public void setNumToProcess(long l) {
     num2Process = l;
@@ -235,7 +244,8 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /**
    * Sets the start at.
    *
-   * @param aStartAt the new start at
+   * @param aStartAt
+   *          the new start at
    */
   public void setStartAt(String aStartAt) {
 
@@ -245,13 +255,16 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /**
    * Sets the timer impl.
    *
-   * @param string the new timer impl
+   * @param string
+   *          the new timer impl
    */
   public void setTimerImpl(String string) {
     timerImpl = string;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getOutputQueue()
    */
   @Override
@@ -259,7 +272,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     return outputQueue;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeConfiguration#getMaxTimeToWait()
    */
   @Override
@@ -273,13 +288,16 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   /**
    * Sets the output queue.
    *
-   * @param queue the new output queue
+   * @param queue
+   *          the new output queue
    */
   public void setOutputQueue(OutputQueue queue) {
     outputQueue = queue;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override

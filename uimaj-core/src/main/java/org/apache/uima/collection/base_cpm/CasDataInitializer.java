@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import java.io.IOException;
@@ -30,10 +29,10 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * A component that takes an Object (for text analysis applications, this will often be a String)
  * and creates a {@link CasData}.
  * <p>
- * An example of a <code>CasDataInitializer</code> would be a component that takes an HTML
- * document and populates a CasData with the plain (detagged) text as well as document structure
- * annotations that were inferred from the locations of certain HTML tags (paragraphs and headings,
- * for example).
+ * An example of a <code>CasDataInitializer</code> would be a component that takes an HTML document
+ * and populates a CasData with the plain (detagged) text as well as document structure annotations
+ * that were inferred from the locations of certain HTML tags (paragraphs and headings, for
+ * example).
  * 
  * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
  *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
@@ -54,12 +53,12 @@ public interface CasDataInitializer extends ConfigurableResource {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public CasData initializeCas(Object aObj) throws CollectionException, IOException;
+  CasData initializeCas(Object aObj) throws CollectionException, IOException;
 
   /**
    * Gets the metadata that describes this <code>CasDataInitializer</code>.
    * 
    * @return an object containing all metadata for this CasDataInitializer
    */
-  public ProcessingResourceMetaData getCasInitializerMetaData();
+  ProcessingResourceMetaData getCasInitializerMetaData();
 }

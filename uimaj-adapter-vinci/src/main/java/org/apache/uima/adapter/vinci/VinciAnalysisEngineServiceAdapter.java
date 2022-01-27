@@ -44,6 +44,7 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
    * @throws ResourceInitializationException the resource initialization exception
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a URISpecifier

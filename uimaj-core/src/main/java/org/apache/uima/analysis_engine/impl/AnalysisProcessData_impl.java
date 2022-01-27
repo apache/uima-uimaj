@@ -49,8 +49,11 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
   /**
    * Creates a new AnalysisProcessData_impl from exsiting {@link CAS}. and {@link ProcessTrace}
    * objects.
-   * @param aCAS -
-   * @param aTrace -
+   * 
+   * @param aCAS
+   *          -
+   * @param aTrace
+   *          -
    */
   public AnalysisProcessData_impl(CAS aCAS, ProcessTrace aTrace) {
     mCAS = aCAS;
@@ -58,10 +61,11 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
   }
 
   /**
-   * Creates a new AnalysisProcessData_impl from an exsiting {@link CAS}. A new
-   * {@link ProcessTrace} will be created.
+   * Creates a new AnalysisProcessData_impl from an exsiting {@link CAS}. A new {@link ProcessTrace}
+   * will be created.
    * 
-   * @param aCAS -
+   * @param aCAS
+   *          -
    * @param aPerformanceTuningSettings
    *          performance tuning settings used to configure ProcessTrace.
    */
@@ -73,6 +77,7 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
   /**
    * @see org.apache.uima.analysis_engine.AnalysisProcessData#getCAS()
    */
+  @Override
   public CAS getCAS() {
     return mCAS;
   }
@@ -81,13 +86,16 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
    * @see org.apache.uima.analysis_engine.AnalysisProcessData#getProcessTrace()
    * @return -
    */
+  @Override
   public ProcessTrace getProcessTrace() {
     return mProcessTrace;
   }
 
   /**
    * Sets the ProcessTrace object. This is not available through the AnalysisProcessData interface.
-   * @param aProcessTrace -
+   * 
+   * @param aProcessTrace
+   *          -
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;

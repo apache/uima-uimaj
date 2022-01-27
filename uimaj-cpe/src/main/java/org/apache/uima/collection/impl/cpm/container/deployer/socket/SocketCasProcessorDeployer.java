@@ -42,7 +42,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
-
 /**
  * Reference implementation of the {@link CasProcessorDeployer} component responsible for launch and
  * termination of the fenced CasProcessor. It uses a plug-in {@link ProcessControllerAdapter} object
@@ -50,7 +49,7 @@ import org.apache.uima.util.Level;
  * 
  */
 public class SocketCasProcessorDeployer implements CasProcessorDeployer {
-  
+
   /** The cpe factory. */
   private CPEFactory cpeFactory = null;
 
@@ -62,12 +61,13 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
   /** The controller. */
   private ProcessControllerAdapter controller = null;
 
-  
   /**
    * Instantiates a new socket cas processor deployer.
    *
-   * @param aController the a controller
-   * @param aCpeFactory the a cpe factory
+   * @param aController
+   *          the a controller
+   * @param aCpeFactory
+   *          the a cpe factory
    */
   public SocketCasProcessorDeployer(ProcessControllerAdapter aController, CPEFactory aCpeFactory) {
     controller = aController;
@@ -77,7 +77,8 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Instantiates a new socket cas processor deployer.
    *
-   * @param aController the a controller
+   * @param aController
+   *          the a controller
    */
   public SocketCasProcessorDeployer(ProcessControllerAdapter aController) {
     controller = aController;
@@ -89,11 +90,15 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
    *
-   * @param aCasProcessorList - list containing instantiated Cas Processors
-   * @param aEngine the a engine
-   * @param redeploy - true when redeploying failed Cas Processor
+   * @param aCasProcessorList
+   *          - list containing instantiated Cas Processors
+   * @param aEngine
+   *          the a engine
+   * @param redeploy
+   *          - true when redeploying failed Cas Processor
    * @return - ProcessingContainer containing pool of CasProcessors
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {
@@ -103,10 +108,13 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Uses ProcessControllerAdapter instance to launch fenced CasProcessor.
    *
-   * @param aCasProcessorList the a cas processor list
-   * @param redeploy the redeploy
+   * @param aCasProcessorList
+   *          the a cas processor list
+   * @param redeploy
+   *          the redeploy
    * @return the processing container
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   @Override
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
@@ -152,7 +160,8 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           // through
           // getCasProcessor() and releaseProcessor() methods.
           // Create CasProcess Configuration holding info defined in the CPE descriptor
-          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType, cpeFactory.getResourceManager());
+          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType,
+                  cpeFactory.getResourceManager());
 
           // Associate CasProcessor configuration from CPE descriptor with this container
           processingContainer = new ProcessingContainer_Impl(casProcessorConfig, metaData,
@@ -170,8 +179,8 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
                       "UIMA_CPM_unable_to_read_meta__SEVERE", Thread.currentThread().getName());
             }
             throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_casprocessor_no_name_found__SEVERE", new Object[] { Thread
-                            .currentThread().getName() });
+                    "UIMA_CPM_casprocessor_no_name_found__SEVERE",
+                    new Object[] { Thread.currentThread().getName() });
           }
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -199,15 +208,15 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
       // There is one instance of ProcessingContainer for set of CasProcessors
       if (processingContainer == null) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_invalid_container__SEVERE", new Object[] { Thread.currentThread()
-                        .getName() });
+                "UIMA_CPM_invalid_container__SEVERE",
+                new Object[] { Thread.currentThread().getName() });
       }
       // Assumption is that the container already exists and it contains CasProcessor configuration
       casProcessorConfig = processingContainer.getCasProcessorConfiguration();
       if (casProcessorConfig == null) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_container_configuration_not_found__SEVERE", new Object[] { Thread
-                        .currentThread().getName() });
+                "UIMA_CPM_container_configuration_not_found__SEVERE",
+                new Object[] { Thread.currentThread().getName() });
       }
     } catch (ResourceConfigurationException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
@@ -226,8 +235,10 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Uses ProcessControllerAdapter instance to launch fenced CasProcessor.
    *
-   * @param aProcessingContainer the a processing container
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aProcessingContainer
+   *          the a processing container
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   @Override
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
@@ -240,15 +251,10 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
         ServiceProxyPool pool = aProcessingContainer.getPool();
         if (pool == null) {
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-            UIMAFramework.getLogger(this.getClass())
-                    .logrb(
-                            Level.SEVERE,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_no_service_proxy__SEVERE",
-                            new Object[] { Thread.currentThread().getName(),
-                                aProcessingContainer.getName() });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_no_service_proxy__SEVERE", new Object[] {
+                        Thread.currentThread().getName(), aProcessingContainer.getName() });
           }
           throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_no_service_proxy__SEVERE", new Object[] {
@@ -259,16 +265,12 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
         while (totalPoolSize != pool.getSize()) {
           try {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.SEVERE,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_wait_for_service_proxy_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          aProcessingContainer.getName() });
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
+                      this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_wait_for_service_proxy_pool__FINEST", new Object[] {
+                          Thread.currentThread().getName(), aProcessingContainer.getName() });
             }
-            pool.wait();  // pool has notifyall when it changes the pool.getSize() result
+            pool.wait(); // pool has notifyall when it changes the pool.getSize() result
           } catch (Exception e) {
           }
         }
@@ -280,15 +282,10 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           pool.checkIn(cProcessor);
           cProcessor = null;
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass())
-                    .logrb(
-                            Level.SEVERE,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_deploying_service__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                aProcessingContainer.getName() });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_deploying_service__FINEST", new Object[] {
+                        Thread.currentThread().getName(), aProcessingContainer.getName() });
 
           }
           // Launch fenced CasProcessor instances (the same number as totalPoolSize)
@@ -332,11 +329,8 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
   public void undeploy(URL aURL) throws CasProcessorDeploymentException {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.SEVERE,
-                this.getClass().getName(),
-                "initialize",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_undeploying_service__FINEST",
                 new Object[] { Thread.currentThread().getName(), aURL.getHost(),
                     String.valueOf(aURL.getPort()) });

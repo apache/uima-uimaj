@@ -25,22 +25,21 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 
-/** 
- * Classes which provide a toArrayForSelect() method that returns 
- * a FeatureStructure[] can implement this to enable the 
- * class to be used as a "select" source
- * T extends FeatureStructure because FSArray with no typing needs to default to FeatureStructure
- *   for backwards compatibility
- * @param <T> the type of the element
+/**
+ * Classes which provide a toArrayForSelect() method that returns a FeatureStructure[] can implement
+ * this to enable the class to be used as a "select" source T extends FeatureStructure because
+ * FSArray with no typing needs to default to FeatureStructure for backwards compatibility
+ * 
+ * @param <T>
+ *          the type of the element
  */
 
+public interface SelectViaCopyToArray<T extends FeatureStructure> {
 
-
-public interface  SelectViaCopyToArray<T extends FeatureStructure> {
-  
   FeatureStructure[] _toArrayForSelect();
-  CASImpl _getView(); 
-  
+
+  CASImpl _getView();
+
   /**
    * @return a new instance of SelectFSs
    */
@@ -49,9 +48,12 @@ public interface  SelectViaCopyToArray<T extends FeatureStructure> {
   }
 
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this type
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this type
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   default <U extends T> SelectFSs<U> select(Type filterByType) {
@@ -59,29 +61,38 @@ public interface  SelectViaCopyToArray<T extends FeatureStructure> {
   }
 
   /**
-   * Treat an FSArray as a source for SelectFSs.  
-   * @param filterByType only includes elements of this JCas class
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this JCas class
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   default <U extends T> SelectFSs<U> select(Class<U> filterByType) {
     return select().type(filterByType);
   }
-  
+
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this JCas class's type
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this JCas class's type
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   default <U extends T> SelectFSs<U> select(int filterByType) {
     return select().type(filterByType);
   }
-  
+
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this type (fully qualifined type name)
-   * @param <U> generic type being selected
+   * Treat an FSArray as a source for SelectFSs.
+   * 
+   * @param filterByType
+   *          only includes elements of this type (fully qualifined type name)
+   * @param <U>
+   *          generic type being selected
    * @return a new instance of SelectFSs
    */
   default <U extends T> SelectFSs<U> select(String filterByType) {

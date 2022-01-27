@@ -32,6 +32,8 @@ import org.apache.uima.pear.insd.edit.InsdConstants;
 import org.apache.uima.pear.insd.edit.PearInstallationDescriptor;
 import org.apache.uima.pear.insd.edit.vars.VarVal;
 import org.apache.uima.pear.nature.ProjectCustomizer;
+import org.apache.uima.pear.tools.InstallationDescriptor;
+import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -42,9 +44,6 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
-import org.apache.uima.pear.tools.InstallationDescriptor;
-import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
 
 /**
@@ -81,7 +80,6 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
    * @param container the container
    */
   public GeneratePearWizard(IContainer container) {
-    super();
     try {
       setWindowTitle("PEAR Generation Wizard");
       setDefaultPageImageDescriptor(PearPlugin.getImageDescriptor("generatePearWiz.gif"));

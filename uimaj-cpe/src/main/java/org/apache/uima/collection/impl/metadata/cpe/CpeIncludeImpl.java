@@ -29,12 +29,11 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CpeIncludeImpl.
  */
 public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 5694100109656286384L;
 
@@ -70,10 +69,14 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
   /**
    * Overridden to read "href" attribute.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -97,7 +100,9 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -114,7 +119,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
    *
    * @return the href
    */
-  /*  METHODS CALLED BY THE PARSER * */
+  /* METHODS CALLED BY THE PARSER * */
   public String getHref() {
     return href;
   }
@@ -122,7 +127,8 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
   /**
    * Sets the href.
    *
-   * @param string the new href
+   * @param string
+   *          the new href
    */
   public void setHref(String string) {
     href = string;

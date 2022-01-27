@@ -30,8 +30,9 @@ import org.apache.uima.jcas.cas.TOP;
  * Repository of indexes over feature structures. Use this interface to access previously defined
  * indexes.
  * 
- * Generics: T is the associated Java cover class for the top type defined for this index name.
- * If JCas is being used, it is that JCas class.  Otherwise it is the standard non-JCas Java cover class.
+ * Generics: T is the associated Java cover class for the top type defined for this index name. If
+ * JCas is being used, it is that JCas class. Otherwise it is the standard non-JCas Java cover
+ * class.
  * 
  */
 public interface FSIndexRepository {
@@ -43,9 +44,10 @@ public interface FSIndexRepository {
    * 
    * @param label
    *          The name of the index.
-   * @param <T> the Java class associated with the top-most type of the index
-   * @return The index with the name <code>label</code>, or <code>null</code> if no such index
-   *         is defined.
+   * @param <T>
+   *          the Java class associated with the top-most type of the index
+   * @return The index with the name <code>label</code>, or <code>null</code> if no such index is
+   *         defined.
    */
   <T extends FeatureStructure> FSIndex<T> getIndex(String label);
 
@@ -59,12 +61,15 @@ public interface FSIndexRepository {
    *          The name of the index.
    * @param type
    *          A subtype of the type of the index.
-   * @param <T> The Java class associated with the type
+   * @param <T>
+   *          The Java class associated with the type
    * @return The specified, or <code>null</code> if an index with that name doesn't exist.
-   * @exception CASRuntimeException When <code>type</code> is not a subtype of the index's type.
+   * @exception CASRuntimeException
+   *              When <code>type</code> is not a subtype of the index's type.
    */
-  <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type) throws CASRuntimeException;
-  
+  <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type)
+          throws CASRuntimeException;
+
   /**
    * Get all labels for all indexes.
    * 
@@ -75,7 +80,8 @@ public interface FSIndexRepository {
   /**
    * Get all indexes in this repository.
    * 
-   * @param <T> the generic type of the FeatureStructures
+   * @param <T>
+   *          the generic type of the FeatureStructures
    * @return All indexes.
    */
   <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes();
@@ -83,24 +89,26 @@ public interface FSIndexRepository {
   /**
    * Get all indexes in this repository as low level indexes
    * 
-   * @param <T> the generic type of the FeatureStructures
+   * @param <T>
+   *          the generic type of the FeatureStructures
    * @return All indexes.
    */
   <T extends FeatureStructure> Iterator<LowLevelIndex<T>> ll_getIndexes();
-  
+
   /**
    * Add a feature structure to all appropriate indexes in the repository. If no indexes exist for
    * the type of FS that you are adding, then a bag (unsorted) index will be automatically created.
    * <p>
-   * <b>Important</b>: after you have called <code>addFS()</code> on a FS, do not change the
-   * values of any features used for indexing. If you do, the index will become corrupted and may be
+   * <b>Important</b>: after you have called <code>addFS()</code> on a FS, do not change the values
+   * of any features used for indexing. If you do, the index will become corrupted and may be
    * unusable. If you need to change an index feature value, first call
    * {@link #removeFS(FeatureStructure) removeFS()} on the FS, change the feature values, then call
    * <code>addFS()</code> again.
    * 
    * @param fs
    *          The FS to be added.
-   * @param <T> the generic type of the FeatureStructure
+   * @param <T>
+   *          the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
@@ -110,9 +118,10 @@ public interface FSIndexRepository {
    * Remove a feature structure from all indexes in the repository.
    * 
    * @param fs
-   *          The FS to be removed.  The fs must be the exact FS to remove, not just one
-   *          which compares "equal" using the index's comparator.
-   * @param <T> the generic type of the FeatureStructure
+   *          The FS to be removed. The fs must be the exact FS to remove, not just one which
+   *          compares "equal" using the index's comparator.
+   * @param <T>
+   *          the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
@@ -120,97 +129,126 @@ public interface FSIndexRepository {
 
   /**
    * Remove all instances of type, including all subtypes from all indexes in the repository view.
-   * @param type the type to remove
-   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
-  */
+   * 
+   * @param type
+   *          the type to remove
+   * @exception NullPointerException
+   *              if the <code>type</code> parameter is <code>null</code>.
+   */
   void removeAllIncludingSubtypes(Type type);
-  
+
   /**
    * Remove all instances of type, including all subtypes from all indexes in the repository view.
-   * @param clazz the JCas class of the type to remove.  To remove all use TOP.class
-   * @param <T> the type to remove
-   * @exception NullPointerException if the <code>clazz</code> parameter is <code>null</code>.
-  */
+   * 
+   * @param clazz
+   *          the JCas class of the type to remove. To remove all use TOP.class
+   * @param <T>
+   *          the type to remove
+   * @exception NullPointerException
+   *              if the <code>clazz</code> parameter is <code>null</code>.
+   */
   default <T extends TOP> void removeAllIncludingSubtypes(Class<T> clazz) {
-    removeAllIncludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+    removeAllIncludingSubtypes(
+            ((FSIndexRepositoryImpl) this).getCasImpl().getJCasImpl().getCasType(clazz));
   }
-  
+
   /**
-   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
-   * @param type the type to remove
-   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
-  */
+   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository
+   * view.
+   * 
+   * @param type
+   *          the type to remove
+   * @exception NullPointerException
+   *              if the <code>type</code> parameter is <code>null</code>.
+   */
   void removeAllExcludingSubtypes(Type type);
 
   /**
-   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
-   * @param clazz the JCas Class of the type to remove
-   * @param <T> the type to remove
-   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
-  */
+   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository
+   * view.
+   * 
+   * @param clazz
+   *          the JCas Class of the type to remove
+   * @param <T>
+   *          the type to remove
+   * @exception NullPointerException
+   *              if the <code>type</code> parameter is <code>null</code>.
+   */
   default <T extends TOP> void removeAllExcludingSubtypes(Class<T> clazz) {
-    removeAllExcludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+    removeAllExcludingSubtypes(
+            ((FSIndexRepositoryImpl) this).getCasImpl().getJCasImpl().getCasType(clazz));
   }
 
   /**
-   * Gets an iterator over all indexed (in this View) FeatureStructures of the specified Type (and any of its
-   * subtypes).  The elements are returned in arbitrary order.
+   * Gets an iterator over all indexed (in this View) FeatureStructures of the specified Type (and
+   * any of its subtypes). The elements are returned in arbitrary order.
    *
    * Generics: T is the Java class for aType.
+   * 
    * @param aType
    *          The type
-   * @param <T> The Java class associated with aType
-   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>
-   *         and its subtypes, in no particular order.
+   * @param <T>
+   *          The Java class associated with aType
+   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code> and
+   *         its subtypes, in no particular order.
    */
   <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type aType);
-  
+
   /**
-   * Gets an FSIterator over all indexed (in this view) FeatureStructures of the specified Type (and any of its
-   * subtypes).  The elements are returned in arbitrary order.
+   * Gets an FSIterator over all indexed (in this view) FeatureStructures of the specified Type (and
+   * any of its subtypes). The elements are returned in arbitrary order.
    *
    * Generics: T is the Java class for aType.
+   * 
    * @param clazz
    *          The JCas class corresponding to the type
-   * @param <T> The Java class associated with aType
-   * @return An iterator that returns all indexed FeatureStructures of the specified type
-   *         and its subtypes, in no particular order.
+   * @param <T>
+   *          The Java class associated with aType
+   * @return An iterator that returns all indexed FeatureStructures of the specified type and its
+   *         subtypes, in no particular order.
    */
   default <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
-    return getAllIndexedFS(((FSIndexRepositoryImpl)this).getCasImpl().getCasType((Class<TOP>) clazz));
+    return getAllIndexedFS(
+            ((FSIndexRepositoryImpl) this).getCasImpl().getCasType((Class<TOP>) clazz));
   }
-  
+
   /**
-   * Returns an unmodifiable collection of all the FSs of this type and its subtypes, 
-   * that are indexed in this view, in an arbitrary order.  
-   * Subsequent modifications to the indexes do not affect this collection.
-   * @param type the type of Feature Structures to include (including subtypes)
-   * @param <T> The Java class associated with type
+   * Returns an unmodifiable collection of all the FSs of this type and its subtypes, that are
+   * indexed in this view, in an arbitrary order. Subsequent modifications to the indexes do not
+   * affect this collection.
+   * 
+   * @param type
+   *          the type of Feature Structures to include (including subtypes)
+   * @param <T>
+   *          The Java class associated with type
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
-  public <T extends TOP> Collection<T> getIndexedFSs(Type type);
-  
+  <T extends TOP> Collection<T> getIndexedFSs(Type type);
+
   /**
-   * Returns an unmodifiable collection of all the FSs of this type and its subtypes, 
-   * that are indexed in this view, in an arbitrary order.  
-   * Subsequent modifications to the indexes do not affect this collection.
+   * Returns an unmodifiable collection of all the FSs of this type and its subtypes, that are
+   * indexed in this view, in an arbitrary order. Subsequent modifications to the indexes do not
+   * affect this collection.
+   * 
    * @param clazz
    *          The JCas class corresponding to the type
-   * @param <T> The Java class associated with type
+   * @param <T>
+   *          The Java class associated with type
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
-  public <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz);
- 
+  <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz);
+
   /**
-   * Returns an unmodifiable collection of all of the FSs
-   * that are indexed in this view, in an arbitrary order.  
-   * Subsequent modifications to the indexes do not affect this collection.
-   * @param <T> The Java class associated with type
+   * Returns an unmodifiable collection of all of the FSs that are indexed in this view, in an
+   * arbitrary order. Subsequent modifications to the indexes do not affect this collection.
+   * 
+   * @param <T>
+   *          The Java class associated with type
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
-  public <T extends TOP> Collection<T> getIndexedFSs();
+  <T extends TOP> Collection<T> getIndexedFSs();
 
 }

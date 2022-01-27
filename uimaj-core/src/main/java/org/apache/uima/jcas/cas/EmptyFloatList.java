@@ -35,6 +35,7 @@ public class EmptyFloatList extends FloatList implements EmptyList {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -46,19 +47,21 @@ public class EmptyFloatList extends FloatList implements EmptyList {
   public EmptyFloatList(TypeImpl_list ti) {
     super(ti, null);
   }
-  
+
   public EmptyFloatList(JCas jcas) {
     super(jcas);
   }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public EmptyFloatList(TypeImpl t, CASImpl c) {
     super(t, c);
-  }  
+  }
 }

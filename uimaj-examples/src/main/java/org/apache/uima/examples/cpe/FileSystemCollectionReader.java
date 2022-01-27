@@ -29,7 +29,6 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.FileUtils;
@@ -94,6 +93,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * @throws ResourceInitializationException the resource initialization exception
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
+  @Override
   public void initialize() throws ResourceInitializationException {
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
     mEncoding  = (String) getConfigParameterValue(PARAM_ENCODING);
@@ -140,6 +140,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * @return true, if successful
    * @see org.apache.uima.collection.CollectionReader#hasNext()
    */
+  @Override
   public boolean hasNext() {
     return mCurrentIndex < mFiles.size();
   }
@@ -152,6 +153,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * @throws CollectionException the collection exception
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     JCas jcas;
     try {
@@ -190,6 +192,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * @throws IOException Signals that an I/O exception has occurred.
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
   }
 
@@ -199,6 +202,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * @return the progress
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     return new Progress[] { new ProgressImpl(mCurrentIndex, mFiles.size(), Progress.ENTITIES) };
   }

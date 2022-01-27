@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine;
 
 import org.apache.uima.cas.CAS;
@@ -25,8 +24,6 @@ import org.apache.uima.resource.ResourceServiceStub;
 
 /**
  * A stub that calls a remote AnalysisEngine service.
- * 
- * 
  */
 public interface AnalysisEngineServiceStub extends ResourceServiceStub {
   /**
@@ -34,21 +31,26 @@ public interface AnalysisEngineServiceStub extends ResourceServiceStub {
    * 
    * @param aCAS
    *          the CAS to process
-   * @throws ResourceServiceException tbd         
+   * @throws ResourceServiceException
+   *           tbd
    */
-  public abstract void callProcess(CAS aCAS) throws ResourceServiceException;
+  void callProcess(CAS aCAS) throws ResourceServiceException;
 
   /**
    * Performs service call to inform the AnalysisEngine that the processing of a batch has been
    * completed.
-   * @throws ResourceServiceException tbd        
+   * 
+   * @throws ResourceServiceException
+   *           tbd
    */
-  public abstract void callBatchProcessComplete() throws ResourceServiceException;
+  void callBatchProcessComplete() throws ResourceServiceException;
 
   /**
    * Performs service call to inform the AnalysisEngine that the processing of a collection has been
    * completed.
-   * @throws ResourceServiceException tbd         
+   * 
+   * @throws ResourceServiceException
+   *           tbd
    */
-  public abstract void callCollectionProcessComplete() throws ResourceServiceException;
+  void callCollectionProcessComplete() throws ResourceServiceException;
 }

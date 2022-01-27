@@ -32,16 +32,15 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-
 /**
  * The Class CpeCollectionReaderCasInitializerImpl.
  *
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
 @Deprecated
-public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl implements
-        CpeCollectionReaderCasInitializer {
-  
+public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl
+        implements CpeCollectionReaderCasInitializer {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6284616239685904940L;
 
@@ -66,7 +65,9 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
+   * @see
+   * org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.
+   * lang.String)
    */
   @Override
   public void setDescriptor(CpeComponentDescriptor aDescriptor) {
@@ -96,8 +97,10 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   /**
    * Sets configuration parameter settings for this CasInitializer.
    *
-   * @param settings the new configuration parameter settings
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param settings
+   *          the new configuration parameter settings
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
@@ -111,8 +114,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
                 .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
-          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
-                  .getParameterSettings()[i].getValue());
+          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(),
+                  settings.getParameterSettings()[i].getValue());
         }
         configurationParameterSettings.setParameterSettings(nvp);
       }
@@ -147,7 +150,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   /**
    * Sets the parameter settings.
    *
-   * @param settings the new parameter settings
+   * @param settings
+   *          the new parameter settings
    */
   public void setParameterSettings(ConfigurationParameterSettings settings) {
     configurationParameterSettings = settings;
@@ -157,7 +161,9 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -169,8 +175,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
-              new PropertyXmlInfo("sofaNameMappings", null),
-          });
+              new PropertyXmlInfo("sofaNameMappings", null), });
 
   /**
    * Gets the sofa name mappings.
@@ -185,7 +190,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   /**
    * Sets the sofa name mappings.
    *
-   * @param mappings the new sofa name mappings
+   * @param mappings
+   *          the new sofa name mappings
    */
   @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {

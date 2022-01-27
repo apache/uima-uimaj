@@ -19,25 +19,17 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.net.URL;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-
-public class RelativePathResolver_implTest extends TestCase {
-  /**
-   * Constructor for RelativePathResolver_implTest.
-   * 
-   * @param arg0
-   */
-  public RelativePathResolver_implTest(String arg0) {
-    super(arg0);
-  }
-
+public class RelativePathResolver_implTest {
+  @Test
   public void testSetDataPath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
@@ -54,6 +46,7 @@ public class RelativePathResolver_implTest extends TestCase {
     }
   }
 
+  @Test
   public void testResolveRelativePath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();

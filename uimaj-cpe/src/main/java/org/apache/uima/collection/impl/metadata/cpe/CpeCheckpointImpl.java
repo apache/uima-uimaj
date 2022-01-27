@@ -30,12 +30,11 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CpeCheckpointImpl.
  */
 public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpoint {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 9155094513948815121L;
 
@@ -87,7 +86,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   /**
    * Convert 2 number.
    *
-   * @param anObject the an object
+   * @param anObject
+   *          the an object
    * @return the int
    */
   private int convert2Number(Object anObject) {
@@ -99,8 +99,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
       for (; i < len; i++) {
         if (Character.isDigit(((String) anObject).charAt(i))) {
           continue;
-        }
-        else {
+        } else {
           break; // non-digit char
         }
       }
@@ -155,10 +154,14 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   /**
    * Overridden to read Checkpoint attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -193,7 +196,9 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -206,7 +211,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
           new PropertyXmlInfo[0]);
 
   // METHODS CALLED BY THE PARSER
-  
+
   /**
    * @return the batch size
    */
@@ -235,7 +240,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   /**
    * Sets the batch.
    *
-   * @param i the new batch
+   * @param i
+   *          the new batch
    */
   public void setBatch(int i) {
     batch = i;
@@ -244,7 +250,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   /**
    * Sets the file.
    *
-   * @param string the new file
+   * @param string
+   *          the new file
    */
   public void setFile(String string) {
     file = string;
@@ -253,7 +260,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   /**
    * Sets the time.
    *
-   * @param i the new time
+   * @param i
+   *          the new time
    */
   public void setTime(String i) {
     time = i;

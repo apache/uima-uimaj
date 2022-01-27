@@ -25,20 +25,19 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UimaTimer;
 
-
 /**
  * Creates an instance of UimaTimer.
  */
 public class TimerFactory {
-  
+
   /** The timer. */
   private static UimaTimer timer = null;
 
   /**
    * Instantiate UimaTimer object from a given class.
    *
-   * @param aClassName -
-   *          UimaTimer implemetation class
+   * @param aClassName
+   *          - UimaTimer implemetation class
    */
   public TimerFactory(String aClassName) {
     try {
@@ -75,9 +74,10 @@ public class TimerFactory {
   /**
    * Instantiates dynamically a UimaTimer object.
    *
-   * @param aClassName -
-   *          class implementing UimaTimer
-   * @throws ResourceInitializationException -
+   * @param aClassName
+   *          - class implementing UimaTimer
+   * @throws ResourceInitializationException
+   *           -
    */
   private void initialize(String aClassName) throws ResourceInitializationException {
 
@@ -101,12 +101,12 @@ public class TimerFactory {
                 new Object[] { aClassName, "CPE" }, e);
       } catch (IllegalAccessException e) {
         throw new ResourceInitializationException(
-                ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { aClassName,
-                    "CPE" }, e);
+                ResourceInitializationException.COULD_NOT_INSTANTIATE,
+                new Object[] { aClassName, "CPE" }, e);
       } catch (InstantiationException e) {
         throw new ResourceInitializationException(
-                ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { aClassName,
-                    "CPE" }, e);
+                ResourceInitializationException.COULD_NOT_INSTANTIATE,
+                new Object[] { aClassName, "CPE" }, e);
       }
 
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {

@@ -24,18 +24,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.resource.metadata.FsIndexKeyDescription;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 
 /**

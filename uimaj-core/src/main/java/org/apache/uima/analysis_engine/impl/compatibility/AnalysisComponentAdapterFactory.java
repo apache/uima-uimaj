@@ -54,7 +54,8 @@ public class AnalysisComponentAdapterFactory {
    * 
    * @return an object that wraps <code>aAdaptee</code> and implements the
    *         <code>AnalysisComponent</code> interface.
-   * @throws ResourceInitializationException if passed an adaptee which is not an analysis component
+   * @throws ResourceInitializationException
+   *           if passed an adaptee which is not an analysis component
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
@@ -66,8 +67,8 @@ public class AnalysisComponentAdapterFactory {
       return new CollectionReaderAdapter((CollectionReader) aAdaptee, aMetaData);
     } else {
       throw new ResourceInitializationException(
-              ResourceInitializationException.NOT_AN_ANALYSIS_COMPONENT, new Object[] {
-                  aAdaptee.getClass().getName(), aMetaData.getSourceUrlString() });
+              ResourceInitializationException.NOT_AN_ANALYSIS_COMPONENT,
+              new Object[] { aAdaptee.getClass().getName(), aMetaData.getSourceUrlString() });
     }
   }
 

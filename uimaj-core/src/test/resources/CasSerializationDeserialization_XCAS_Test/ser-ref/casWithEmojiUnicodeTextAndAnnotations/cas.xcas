@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="&#129395; This &#128115;&#127995;‍♀️ is ✆ a &#129492;&#127998;‍♂️ test &#128123;"/>
+    <uima.tcas.Annotation _indexed="1" _id="2" _ref_sofa="1" begin="0" end="2"/>
+    <uima.tcas.Annotation _indexed="1" _id="3" _ref_sofa="1" begin="3" end="7"/>
+    <uima.tcas.Annotation _indexed="1" _id="4" _ref_sofa="1" begin="8" end="15"/>
+    <uima.tcas.Annotation _indexed="1" _id="5" _ref_sofa="1" begin="16" end="18"/>
+    <uima.tcas.Annotation _indexed="1" _id="6" _ref_sofa="1" begin="19" end="20"/>
+    <uima.tcas.Annotation _indexed="1" _id="7" _ref_sofa="1" begin="21" end="22"/>
+    <uima.tcas.Annotation _indexed="1" _id="8" _ref_sofa="1" begin="23" end="30"/>
+    <uima.tcas.Annotation _indexed="1" _id="9" _ref_sofa="1" begin="31" end="35"/>
+    <uima.tcas.Annotation _indexed="1" _id="10" _ref_sofa="1" begin="36" end="38"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="11" _ref_sofa="1" begin="0" end="38" language="x-unspecified"/>
+</CAS>

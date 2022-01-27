@@ -48,9 +48,10 @@ public class CheckpointData implements Serializable {
   /**
    * Initialize instance with ProcessTrace and SynchPoint
    * 
-   * @param aProcessTrace -
-   *          events and timers accumulated so far
-   * @param aSynchPoint -
+   * @param aProcessTrace
+   *          - events and timers accumulated so far
+   * @param aSynchPoint
+   *          -
    */
   public CheckpointData(ProcessTrace aProcessTrace, SynchPoint aSynchPoint) {
     processTrace = aProcessTrace;
@@ -78,8 +79,8 @@ public class CheckpointData implements Serializable {
   /**
    * Adds ProcessTrace to save in a checkpoint
    * 
-   * @param trace -
-   *          ProcessTrace to save
+   * @param trace
+   *          - ProcessTrace to save
    */
   public void setProcessTrace(ProcessTrace trace) {
     processTrace = trace;
@@ -88,8 +89,8 @@ public class CheckpointData implements Serializable {
   /**
    * Adds SynchPoint to save in a checkpoint
    * 
-   * @param point -
-   *          SynchPoint to save
+   * @param point
+   *          - SynchPoint to save
    */
   public void setSynchPoint(SynchPoint point) {
     synchPoint = point;

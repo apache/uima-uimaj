@@ -26,7 +26,6 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
-import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.util.Progress;
 
 /*
@@ -37,7 +36,7 @@ import org.apache.uima.util.Progress;
  */
 
 /**
- * Creates a Text SofA in the cas. 
+ * Creates a Text SofA in the cas.
  */
 public class SofaCollectionReader extends CollectionReader_ImplBase {
   boolean hasMore = true;
@@ -47,6 +46,7 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
+  @Override
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     String text = "this beer is good";
     try {
@@ -67,6 +67,7 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
+  @Override
   public boolean hasNext() throws IOException, CollectionException {
     return hasMore;
   }
@@ -76,6 +77,7 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
+  @Override
   public Progress[] getProgress() {
     return null;
   }
@@ -85,6 +87,7 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
+  @Override
   public void close() throws IOException {
 
   }

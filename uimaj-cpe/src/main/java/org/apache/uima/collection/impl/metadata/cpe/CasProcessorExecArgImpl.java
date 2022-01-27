@@ -33,7 +33,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorExecArgImpl.
  */
@@ -74,10 +73,14 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -87,7 +90,9 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
     value = XMLUtils.getText(aElement);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -99,8 +104,12 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("arg",
           new PropertyXmlInfo[0]);
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler,
+   * boolean)
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
@@ -127,7 +136,7 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
   }
 
   /**
-   *  PROTECTED METHODS USED BY THE PARSER *.
+   * PROTECTED METHODS USED BY THE PARSER *.
    *
    * @return the value
    */
@@ -141,7 +150,8 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
   /**
    * Sets the value.
    *
-   * @param string the new value
+   * @param string
+   *          the new value
    */
   public void setValue(String string) {
     value = string;

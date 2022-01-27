@@ -24,7 +24,7 @@ package org.apache.uima.internal.util;
 public class XmlAttribute {
   final public String name;
   final public String value;
-  
+
   public XmlAttribute(String name, String value) {
     this.name = name;
     this.value = value;

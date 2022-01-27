@@ -28,29 +28,32 @@ import org.apache.uima.cas.FeatureStructure;
  */
 // extend FeatureStructure because users have type specs like this
 public interface CopyOnWriteIndexPart<T extends FeatureStructure> {
-  
+
   void makeReadOnlyCopy();
-  
+
   /**
-   * @return true if this cow version is the same as the original.
-   *              true means the index has not been updated
+   * @return true if this cow version is the same as the original. true means the index has not been
+   *         updated
    */
   boolean isOriginal();
-  
+
   /**
    * @return The number of elements in the index
    */
   int size();
-  
+
   /**
    * @return iterator over all the elements
    */
   Iterator<T> iterator();
-  
+
   /**
    * Copy FS refs to target from this index part
-   * @param target the target array to copy into
-   * @param startingIndexInTarget the starting index in the target array
+   * 
+   * @param target
+   *          the target array to copy into
+   * @param startingIndexInTarget
+   *          the starting index in the target array
    * @return startingIndexInTarget + size
    */
   int copyToArray(T[] target, int startingIndexInTarget);

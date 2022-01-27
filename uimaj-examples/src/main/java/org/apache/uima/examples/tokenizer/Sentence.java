@@ -18,15 +18,11 @@
  */
 package org.apache.uima.examples.tokenizer;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
-
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
 /**
@@ -49,6 +45,7 @@ public class Sentence extends Annotation {
     /* (non-Javadoc)
      * @see org.apache.uima.jcas.tcas.Annotation#getTypeIndexID()
      */
+    @Override
     public int getTypeIndexID() {
         return typeIndexID;
     }

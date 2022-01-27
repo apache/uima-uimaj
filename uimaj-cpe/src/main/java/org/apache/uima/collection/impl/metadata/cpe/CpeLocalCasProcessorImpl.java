@@ -31,11 +31,11 @@ import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.NameValuePair;
 
-
 /**
  * The Class CpeLocalCasProcessorImpl.
  */
-public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements CpeLocalCasProcessor {
+public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject
+        implements CpeLocalCasProcessor {
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -2239520502855587544L;
@@ -44,7 +44,6 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Instantiates a new cpe local cas processor impl.
    */
   public CpeLocalCasProcessorImpl() {
-    super();
     try {
       super.setDeployment("local");
       addDefaults();
@@ -57,10 +56,10 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   /**
    * Instantiates a new cpe local cas processor impl.
    *
-   * @param initializeWithDefaultValues the initialize with default values
+   * @param initializeWithDefaultValues
+   *          the initialize with default values
    */
   public CpeLocalCasProcessorImpl(boolean initializeWithDefaultValues) {
-    super();
     try {
       super.setDeployment("local");
       if (initializeWithDefaultValues) {
@@ -75,12 +74,14 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   /**
    * Instantiates a new cpe local cas processor impl.
    *
-   * @param aName the a name
-   * @param aSoFa the a so fa
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aName
+   *          the a name
+   * @param aSoFa
+   *          the a so fa
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   protected CpeLocalCasProcessorImpl(String aName, String aSoFa) throws CpeDescriptorException {
-    super();
     try {
       super.setName(aName);
       // super.setContentTag(aSoFa);
@@ -96,7 +97,8 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Gets the base run in seperate process.
    *
    * @return the base run in seperate process
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   private CasProcessorRunInSeperateProcess getBaseRunInSeperateProcess()
           throws CpeDescriptorException {
@@ -111,7 +113,9 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     return sepProcess;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeLocalCasProcessor#addExecArg(java.lang.String)
    */
   @Override
@@ -126,8 +130,10 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   /**
    * Removes the exec arg.
    *
-   * @param aIndex the a index
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aIndex
+   *          the a index
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public void removeExecArg(int aIndex) throws CpeDescriptorException {
     CasProcessorRunInSeperateProcess rip = getRunInSeparateProcess();
@@ -143,7 +149,8 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Gets the exec args.
    *
    * @return the exec args
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public List getExecArgs() throws CpeDescriptorException {
     ArrayList list = new ArrayList();
@@ -161,7 +168,9 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     return list;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.metadata.cpe.CasProcessorCpeObject#addDefaults()
    */
   @Override
@@ -215,9 +224,12 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Adds a new env key to the list of env keys. If a kay with a given key name exists the new key
    * value replaces the old.
    *
-   * @param aEnvKeyName the a env key name
-   * @param aEnvKeyValue the a env key value
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aEnvKeyName
+   *          the a env key name
+   * @param aEnvKeyValue
+   *          the a env key value
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   @Override
   public void addExecEnv(String aEnvKeyName, String aEnvKeyValue) throws CpeDescriptorException {
@@ -251,7 +263,8 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Gets the exec env.
    *
    * @return the exec env
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public List getExecEnv() throws CpeDescriptorException {
     CasProcessorRunInSeperateProcess rip = getRunInSeparateProcess();
@@ -267,8 +280,10 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   /**
    * Removes the exec env.
    *
-   * @param aIndex the a index
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aIndex
+   *          the a index
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public void removeExecEnv(int aIndex) throws CpeDescriptorException {
     CasProcessorRunInSeperateProcess rip = getRunInSeparateProcess();
@@ -283,7 +298,9 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeLocalCasProcessor#setExecutable(java.lang.String)
    */
   @Override
@@ -297,7 +314,9 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeLocalCasProcessor#getExecutable()
    */
   @Override
@@ -329,8 +348,12 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeLocalCasProcessor#setRunInSeperateProcess(org.apache.uima.collection.metadata.CasProcessorRunInSeperateProcess)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CpeLocalCasProcessor#setRunInSeperateProcess(org.apache.
+   * uima.collection.metadata.CasProcessorRunInSeperateProcess)
    */
   @Override
   public void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
@@ -338,7 +361,9 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     super.setRunInSeparateProcess(aSepProcess);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeLocalCasProcessor#getRunInSeperateProcess()
    */
   @Override

@@ -34,7 +34,7 @@ public class UimaContextHolderTest implements Runnable {
   static String nocontextError = "ERROR: No UimaContext accessible";
 
   public String testSettings() throws ResourceConfigurationException {
-    threadId  = Thread.currentThread().getId();
+    threadId = Thread.currentThread().getId();
     UimaContext uimaContext = UimaContextHolder.getContext();
     if (uimaContext == null) {
       return nocontextError;
@@ -45,7 +45,7 @@ public class UimaContextHolderTest implements Runnable {
   @Override
   public void run() {
     try {
-      result  = testSettings();
+      result = testSettings();
     } catch (ResourceConfigurationException e) {
       e.printStackTrace();
     }

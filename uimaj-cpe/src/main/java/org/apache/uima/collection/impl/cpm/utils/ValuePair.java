@@ -19,12 +19,11 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-
 /**
  * The Class ValuePair.
  */
 public class ValuePair {
-  
+
   /** The old V. */
   private String oldV;
 
@@ -34,8 +33,10 @@ public class ValuePair {
   /**
    * Instantiates a new value pair.
    *
-   * @param oldValue the old value
-   * @param newValue the new value
+   * @param oldValue
+   *          the old value
+   * @param newValue
+   *          the new value
    */
   public ValuePair(String oldValue, String newValue) {
     oldV = oldValue;

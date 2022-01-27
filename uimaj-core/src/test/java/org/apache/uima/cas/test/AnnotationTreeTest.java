@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -37,10 +39,9 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class AnnotationTreeTest extends TestCase {
+public class AnnotationTreeTest {
 
   private static final String casDataDirName = "CASTests";
 
@@ -50,10 +51,7 @@ public class AnnotationTreeTest extends TestCase {
 
   private static final String sampleTsFileName = "sample.ts";
 
-  public AnnotationTreeTest(String desc) {
-    super(desc);
-  }
-
+  @Test
   public void testTree() throws Exception {
 
     // The two XCASes used in this test contain the same data, but the
@@ -69,22 +67,22 @@ public class AnnotationTreeTest extends TestCase {
       // instantiate CAS to get type system. Also build style
       // map file if there is none.
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
-      
+
       TypePriorities typePriorities = new TypePriorities_impl();
       TypePriorityList priorityList = typePriorities.addPriorityList();
       priorityList.addType("uima.cas.TOP");
       priorityList.addType("uima.tcas.Annotation");
-      
+
       CAS cas = CasCreationUtils.createCas(tsDesc, typePriorities, new FsIndexDescription[0]);
       SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
       XCASDeserializer xcasDeserializer = new XCASDeserializer(cas.getTypeSystem());
       File xcasFile = new File(xcasDir, sampleXcas1FileName);
       parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));
       AnnotationTreeNode root = cas.getAnnotationIndex().tree(cas.getDocumentAnnotation())
-                           	  .getRoot();
+              .getRoot();
       // There are 7 paragraph annotations in the CAS.
-      assertTrue("There should be 7 paragraphs, but are: " + root.getChildCount(), root
-                          	  .getChildCount() == 7);
+      assertTrue("There should be 7 paragraphs, but are: " + root.getChildCount(),
+              root.getChildCount() == 7);
       // The first paragraph contains 19 sentences, each subsequent one
       // contains only one sentence.
       assertTrue(root.getChild(0).getChildCount() == 19);

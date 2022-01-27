@@ -21,12 +21,11 @@ package org.apache.uima.collection.impl.metadata.cpe;
 
 import org.apache.uima.collection.metadata.NameValuePair;
 
-
 /**
  * The Class NameValuePairImpl.
  */
 public class NameValuePairImpl implements NameValuePair {
-  
+
   /** The name. */
   private String name;
 
@@ -42,15 +41,19 @@ public class NameValuePairImpl implements NameValuePair {
   /**
    * Instantiates a new name value pair impl.
    *
-   * @param aName the a name
-   * @param aValue the a value
+   * @param aName
+   *          the a name
+   * @param aValue
+   *          the a value
    */
   public NameValuePairImpl(String aName, Object aValue) {
     name = aName;
     value = aValue;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.NameValuePair#getName()
    */
   @Override
@@ -58,7 +61,9 @@ public class NameValuePairImpl implements NameValuePair {
     return name;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.NameValuePair#setName(java.lang.String)
    */
   @Override
@@ -66,7 +71,9 @@ public class NameValuePairImpl implements NameValuePair {
     name = aName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.NameValuePair#getValue()
    */
   @Override
@@ -74,7 +81,9 @@ public class NameValuePairImpl implements NameValuePair {
     return value;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.NameValuePair#setValue(java.lang.Object)
    */
   @Override

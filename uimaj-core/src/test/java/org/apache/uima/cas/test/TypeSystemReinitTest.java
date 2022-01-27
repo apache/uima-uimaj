@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,18 +44,18 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-
-public class TypeSystemReinitTest extends TestCase {
+public class TypeSystemReinitTest {
+  @Test
   public void testReinitCASCompleteSerializer() throws Exception {
     try {
-      AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
-      TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-              new XMLInputSource(getClass().getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
+      AnalysisEngineDescription aed = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(
+                      JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+      TypeSystemDescription tsd = UIMAFramework.getXMLParser()
+              .parseTypeSystemDescription(new XMLInputSource(getClass()
+                      .getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
 
       List<MetaDataObject> l = new ArrayList<>();
       l.add(aed);
@@ -65,8 +69,8 @@ public class TypeSystemReinitTest extends TestCase {
       tcas2.setDocumentText("bar");
 
       // reinit
-      //  This uses cas2 which only has a base type system to start, 
-      //    and loads it from a complete serialization which has other new types
+      // This uses cas2 which only has a base type system to start,
+      // and loads it from a complete serialization which has other new types
       cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
@@ -80,12 +84,13 @@ public class TypeSystemReinitTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+
+  @Test
   public void testReinitCASCompleteSerializerWithArrays() throws Exception {
     try {
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension
-                      .getFile("ExampleTae/arrayTypeSerialization.xml")));
-     
+              new XMLInputSource(JUnitExtension.getFile("ExampleTae/arrayTypeSerialization.xml")));
+
       CAS cas1 = CasCreationUtils.createCas(aed);
       cas1.setDocumentText("foo");
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
@@ -95,23 +100,23 @@ public class TypeSystemReinitTest extends TestCase {
       tcas2.setDocumentText("bar");
 
       // reinit
-      //  This uses cas2 which only has a base type system to start, 
-      //    and loads it from a complete serialization which has other new types
+      // This uses cas2 which only has a base type system to start,
+      // and loads it from a complete serialization which has other new types
       cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
       assertTrue(tcas2 == tcas3);
       assertNotNull(cas1.getTypeSystem().getType("Test.ArrayType"));
       assertNotNull(tcas3.getTypeSystem().getType("Test.ArrayType"));
-      
-      TypeSystemImpl ts = (TypeSystemImpl)cas2.getTypeSystem();
+
+      TypeSystemImpl ts = (TypeSystemImpl) cas2.getTypeSystem();
       Type arrayType = ts.getType("Test.ArrayType");
       Feature arrayFeat = arrayType.getFeatureByBaseName("arrayFeature");
-      TypeImpl featRange = (TypeImpl)(arrayFeat.getRange());
-     
+      TypeImpl featRange = (TypeImpl) (arrayFeat.getRange());
+
       assertTrue(ts.ll_isArrayType(featRange.getCode()));
       assertFalse(arrayFeat.isMultipleReferencesAllowed());
-      
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

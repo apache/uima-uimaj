@@ -32,6 +32,7 @@ public class CasEditorPreferencePage extends FieldEditorPreferencePage
     setDescription("General Cas Editor Preferences.");
   }
   
+  @Override
   public void init(IWorkbench arg0) {
     
   }

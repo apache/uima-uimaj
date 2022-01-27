@@ -38,7 +38,7 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  */
 public class OutOfTypeSystemData {
-  
+
   /**
    * List of FSData objects for out-of-typesystem FSs.
    */
@@ -51,9 +51,8 @@ public class OutOfTypeSystemData {
   final Map<TOP, List<Pair<String, Object>>> extraFeatureValues = new IdentityHashMap<>();
 
   /**
-   * Map from FSArray instances to List of ArrayElement objects, each of which
-   * holds an array index and value (as a string).
-   *   key: FSArray instance represented as an xmiId
+   * Map from FSArray instances to List of ArrayElement objects, each of which holds an array index
+   * and value (as a string). key: FSArray instance represented as an xmiId
    */
   final Map<TOP, List<ArrayElement>> arrayElements = new IdentityHashMap<>();
 
@@ -62,14 +61,15 @@ public class OutOfTypeSystemData {
    * IDs used in the generated XCAS.
    */
   final Map<String, String> idMap = new HashMap<>();
-  
+
   /**
    * For debugging purposes only.
    */
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append("FeatureStructures\n-----------------\n");
-    
+
     for (FSData fs : fsList) {
       buf.append(fs.toString()).append('\n');
     }
@@ -78,8 +78,8 @@ public class OutOfTypeSystemData {
       TOP id = entry.getKey();
       buf.append(id._id).append(": ");
       for (Pair<String, Object> p : entry.getValue()) {
-        TOP fs = (p.u instanceof TOP) ? (TOP) p.u : null;       
-        String sv = (p.u instanceof String) ? (String)p.u : fs.toShortString(); 
+        TOP fs = (p.u instanceof TOP) ? (TOP) p.u : null;
+        String sv = (p.u instanceof String) ? (String) p.u : fs.toShortString();
         buf.append(p.t).append('=').append(sv).append('\n');
       }
     }
@@ -88,7 +88,7 @@ public class OutOfTypeSystemData {
 }
 
 /****************************************************************
- *  W A R N I N G   Not an Inner Class ! !  
+ * W A R N I N G Not an Inner Class ! !
  ****************************************************************/
 class ArrayElement {
   int index;
@@ -102,7 +102,7 @@ class ArrayElement {
 }
 
 /****************************************************************
- *  W A R N I N G   Not an Inner Class ! !  
+ * W A R N I N G Not an Inner Class ! !
  ****************************************************************/
 class FSData {
   String id;
@@ -113,7 +113,8 @@ class FSData {
 
   /** map from feature name to value which is a string or a ref to a not-out-of-type-system FS */
   Map<String, Object> featVals = new HashMap<>();
-  
+
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(type).append('[');
@@ -123,12 +124,12 @@ class FSData {
       Object v = entry.getValue();
       if (v instanceof TOP) {
         TOP fs = (TOP) v;
-        v = "FS:" + fs.toShortString(); 
+        v = "FS:" + fs.toShortString();
       }
       buf.append(entry.getKey()).append('=').append(v).append(',');
     }
     buf.append("](ID=").append(id).append(')');
     return buf.toString();
   }
-  
+
 }

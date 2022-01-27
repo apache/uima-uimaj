@@ -40,6 +40,7 @@ public class StringMapResource_impl implements StringMapResource, SharedResource
   /**
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
+  @Override
   public void load(DataResource aData) throws ResourceInitializationException {
     try (InputStream inStr = aData.getInputStream()) {
       // open input stream to data
@@ -62,6 +63,7 @@ public class StringMapResource_impl implements StringMapResource, SharedResource
   /**
    * @see StringMapResource#get(String)
    */
+  @Override
   public String get(String aKey) {
     return (String) mMap.get(aKey);
   }

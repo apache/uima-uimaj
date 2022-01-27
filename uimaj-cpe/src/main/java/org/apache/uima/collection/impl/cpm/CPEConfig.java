@@ -93,8 +93,8 @@ public class CPEConfig {
   /**
    * Copies Checkpoint configuration
    * 
-   * @param config -
-   *          checkpoint configuration
+   * @param config
+   *          - checkpoint configuration
    */
   public void setChConfig(CheckpointConfig config) {
     chConfig = config;
@@ -103,8 +103,8 @@ public class CPEConfig {
   /**
    * Copies CPE startup mode
    * 
-   * @param aCpeDeployMode -
-   *          startup mode
+   * @param aCpeDeployMode
+   *          - startup mode
    */
   public void setDeployAs(String aCpeDeployMode) {
     deployAs = aCpeDeployMode;
@@ -113,8 +113,8 @@ public class CPEConfig {
   /**
    * Copies number of entities to process
    * 
-   * @param aTotalCount -
-   *          total number of entities to process
+   * @param aTotalCount
+   *          - total number of entities to process
    */
   public void setNumToProcess(long aTotalCount) {
     numToProcess = aTotalCount;
@@ -123,8 +123,8 @@ public class CPEConfig {
   /**
    * Copies ind of the first entity to start reading
    * 
-   * @param aStartEntityId -
-   *          id of entity
+   * @param aStartEntityId
+   *          - id of entity
    */
   public void setStartWith(String aStartEntityId) {
     startWith = aStartEntityId;
@@ -133,8 +133,8 @@ public class CPEConfig {
   /**
    * Copies a name of the custom {@link UimaTimer} class
    * 
-   * @param aTimerClass -
-   *          timer class
+   * @param aTimerClass
+   *          - timer class
    */
   public void setTimerClass(String aTimerClass) {
     timerClass = aTimerClass;
