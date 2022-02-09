@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.util.regex.Pattern;
 
-public class SerDesAssuptions {
+public class SerDesAssumptions {
   public static void assumeNotKnownToFail(Runnable aScenario, String... aPatternsAndReasons) {
     for (int i = 0; i < aPatternsAndReasons.length; i += 2) {
       String pattern = aPatternsAndReasons[i];

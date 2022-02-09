@@ -18,6 +18,7 @@
  */
 package org.apache.uima.cas.serdes.scenario;
 
+import static org.apache.uima.cas.impl.CasCompare.compareCASes;
 import static org.apache.uima.cas.serdes.CasToComparableText.toComparableString;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +26,6 @@ import org.apache.commons.lang3.function.FailableBiConsumer;
 import org.apache.commons.lang3.function.FailableSupplier;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.CasCompare;
 import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.assertj.core.internal.Failures;
@@ -91,7 +91,7 @@ public class SerDesTestScenario implements Runnable {
 
     assertThat(targetCas) //
             .as("CasCompare comparison must match (%s)", debugInfo)
-            .usingComparator((a, b) -> CasCompare.compareCASes((CASImpl) a, (CASImpl) b) ? 0 : 1) //
+            .usingComparator((a, b) -> compareCASes((CASImpl) a, (CASImpl) b) ? 0 : 1) //
             .isEqualTo(sourceCas);
   }
 

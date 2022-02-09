@@ -19,7 +19,7 @@
 package org.apache.uima.cas.serdes;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.cas.serdes.SerDesAssuptions.assumeNotKnownToFail;
+import static org.apache.uima.cas.serdes.SerDesAssumptions.assumeNotKnownToFail;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;

@@ -367,7 +367,9 @@ public class CasToComparableText {
       sectionHeader.add("<COVERED_TEXT>");
     }
 
-    listFeatures(aType).stream().filter(f -> !isExcluded(f)).map(f -> f.getShortName())
+    listFeatures(aType).stream() //
+            .filter(f -> !isExcluded(f)) //
+            .map(f -> f.getShortName()) //
             .forEachOrdered(sectionHeader::add);
     aCSV.printRecord(sectionHeader);
   }
@@ -906,7 +908,12 @@ public class CasToComparableText {
       }
 
       // Annotation? Then sort by offsets
-      if (aFS1 instanceof AnnotationFS && aFS2 instanceof AnnotationFS) {
+      boolean fs1IsAnnotation = aFS1 instanceof AnnotationFS;
+      boolean fs2IsAnnotation = aFS2 instanceof AnnotationFS;
+      if (fs1IsAnnotation != fs2IsAnnotation) {
+        return -1;
+      }
+      if (fs1IsAnnotation && fs2IsAnnotation) {
         AnnotationFS ann1 = (AnnotationFS) aFS1;
         AnnotationFS ann2 = (AnnotationFS) aFS2;
 
@@ -917,7 +924,7 @@ public class CasToComparableText {
         }
 
         // Descending by end
-        int endCmp = ann1.getEnd() - ann2.getEnd();
+        int endCmp = ann2.getEnd() - ann1.getEnd();
         if (endCmp != 0) {
           return endCmp;
         }
