@@ -242,8 +242,19 @@
     <finalName>uima-core</finalName>
     <pluginManagement>
       <plugins>
-      
-        <!-- Uncomment the next to run with -Xlint:unchecked  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Uncomment the next to run with -Xlint:unchecked -->
         <!--plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>

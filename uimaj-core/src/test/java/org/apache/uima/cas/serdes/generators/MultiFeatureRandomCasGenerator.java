@@ -86,9 +86,11 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private static final short[] SHORT_VALUES = { 1, 0, -1, Short.MAX_VALUE, Short.MIN_VALUE, 22,
       -22 };
   private static final double[] DOUBLE_VALUES = { 1d, 0d, -1d, Double.MAX_VALUE,
-      /* Double.MIN_NORMAL, */ Double.MIN_VALUE, 33d, -33.33d };
+      /* Double.MIN_NORMAL, */ Double.MIN_VALUE, 33d, -33.33d, Double.NaN, Double.NEGATIVE_INFINITY,
+      Double.POSITIVE_INFINITY };
   private static final float[] FLOAT_VALUES = { 1f, 0f, -1f, Float.MAX_VALUE,
-      /* Float.MIN_NORMAL, */ Float.MIN_VALUE, 17f, -22.33f };
+      /* Float.MIN_NORMAL, */ Float.MIN_VALUE, 17f, -22.33f, Float.NaN, Float.NEGATIVE_INFINITY,
+      Float.POSITIVE_INFINITY };
 
   /**
    * set to true to change FS creation to keep references to all created FS.
