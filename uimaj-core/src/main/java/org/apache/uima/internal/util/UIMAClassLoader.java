@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.uima.cas.impl.FSClassRegistry;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 
 /**
  * UIMAClassLoader is used as extension ClassLoader for UIMA to load additional components like
@@ -284,7 +285,16 @@ public class UIMAClassLoader extends URLClassLoader {
   @Override
   public void close() throws IOException {
     isClosed = true;
-    FSClassRegistry.unregister_jcci_classloader(this);
+    // There is a circular dependency between the static initializer blocks of FSClassRegistry and
+    // TypeSystemImpl which requires that the TypeSystemImpl class must be initialized before the
+    // FSClassRegistry to avoid exceptions. The if-statement here is a red-herring because the
+    // actual comparison does not really matter - under normal circumstances, `staticTsi` cannot be
+    // null.
+    // However, what it really does is trigger the static initialization block of TypeSystemImpl
+    // so that the subsequent call to FSClassRegistry does not trigger an exception.
+    if (TypeSystemImpl.staticTsi != null) {
+      FSClassRegistry.unregister_jcci_classloader(this);
+    }
     super.close();
   }
 
