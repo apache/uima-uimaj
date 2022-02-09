@@ -27,12 +27,11 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
-
 /**
  * Parses the filter expression associated with a Cas Processor in the cpe descriptor.
  */
 public class Filter {
-  
+
   /** The stack. */
   Stack stack = new Stack();
 
@@ -51,10 +50,11 @@ public class Filter {
   /**
    * Parses filter expression.
    *
-   * @param expression -
-   *          filter expression to parse
+   * @param expression
+   *          - filter expression to parse
    * @return - list of filters
-   * @throws ParseException -
+   * @throws ParseException
+   *           -
    */
   public LinkedList parse(String expression) throws ParseException {
     StringTokenizer tokenizer = new StringTokenizer(expression, " !=", true);
@@ -85,9 +85,10 @@ public class Filter {
   /**
    * Parses tokens.
    *
-   * @param aTokenizer -
-   *          tokenized filter expression
-   * @throws ParseException -
+   * @param aTokenizer
+   *          - tokenized filter expression
+   * @throws ParseException
+   *           -
    */
   private void parseTokens(StringTokenizer aTokenizer) throws ParseException {
     boolean leftPartInStack = false;
@@ -129,8 +130,10 @@ public class Filter {
   /**
    * Builds filter expression from values from the stack.
    *
-   * @param anOp the an op
-   * @throws ParseException -
+   * @param anOp
+   *          the an op
+   * @throws ParseException
+   *           -
    */
   private void evaluate(String anOp) throws ParseException {
     Expression ex = new Expression(this);
@@ -166,14 +169,15 @@ public class Filter {
    * Operand.
    */
   public class Operand {
-    
+
     /** The operand. */
     private String operand;
 
     /**
      * Instantiates a new operand.
      *
-     * @param aOp the a op
+     * @param aOp
+     *          the a op
      */
     public Operand(String aOp) {
       operand = aOp;
@@ -193,14 +197,15 @@ public class Filter {
    * Left part of filter expression.
    */
   public class LeftPart {
-    
+
     /** The left part. */
     private String leftPart;
 
     /**
      * Instantiates a new left part.
      *
-     * @param aLPart the a L part
+     * @param aLPart
+     *          the a L part
      */
     public LeftPart(String aLPart) {
       leftPart = aLPart;
@@ -220,14 +225,15 @@ public class Filter {
    * Right part of the filter expression.
    */
   public class RightPart {
-    
+
     /** The right part. */
     private String rightPart;
 
     /**
      * Instantiates a new right part.
      *
-     * @param aRPart the a R part
+     * @param aRPart
+     *          the a R part
      */
     public RightPart(String aRPart) {
       rightPart = aRPart;
@@ -247,7 +253,7 @@ public class Filter {
    * Object containing single filter.
    */
   public class Expression {
-    
+
     /** The l P. */
     private LeftPart lP;
 
@@ -263,7 +269,8 @@ public class Filter {
     /**
      * Instantiates a new expression.
      *
-     * @param aFilter the a filter
+     * @param aFilter
+     *          the a filter
      */
     public Expression(Filter aFilter) {
       filter = aFilter;
@@ -272,7 +279,8 @@ public class Filter {
     /**
      * Sets the is or filter.
      *
-     * @throws ParseException the parse exception
+     * @throws ParseException
+     *           the parse exception
      */
     protected void setIsOrFilter() throws ParseException {
       // Already defined as AND filter. Currently filtering is either AND or OR. No mixing is
@@ -289,7 +297,8 @@ public class Filter {
     /**
      * Sets the is and filter.
      *
-     * @throws ParseException the parse exception
+     * @throws ParseException
+     *           the parse exception
      */
     protected void setIsAndFilter() throws ParseException {
       // Already defined as OR filter. Currently filtering is either AND or OR. No mixing is
@@ -324,7 +333,8 @@ public class Filter {
     /**
      * Sets the left part.
      *
-     * @param aLP the new left part
+     * @param aLP
+     *          the new left part
      */
     public void setLeftPart(LeftPart aLP) {
       lP = aLP;
@@ -333,7 +343,8 @@ public class Filter {
     /**
      * Sets the right part.
      *
-     * @param aRP the new right part
+     * @param aRP
+     *          the new right part
      */
     public void setRightPart(RightPart aRP) {
       rP = aRP;
@@ -342,7 +353,8 @@ public class Filter {
     /**
      * Sets the operand.
      *
-     * @param aOP the new operand
+     * @param aOP
+     *          the new operand
      */
     public void setOperand(Operand aOP) {
       op = aOP;
@@ -415,7 +427,8 @@ public class Filter {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     Filter filter = new Filter();

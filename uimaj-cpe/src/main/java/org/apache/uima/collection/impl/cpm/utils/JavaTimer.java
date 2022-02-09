@@ -23,7 +23,6 @@ import java.io.Serializable;
 
 import org.apache.uima.util.UimaTimer;
 
-
 /**
  * The Class JavaTimer.
  *
@@ -32,7 +31,7 @@ import org.apache.uima.util.UimaTimer;
 
 @Deprecated
 public class JavaTimer implements Timer, Serializable {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 5399135137398839124L;
 
@@ -42,7 +41,9 @@ public class JavaTimer implements Timer, Serializable {
   /** The end. */
   private long end = 0;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#start()
    */
   // starts the time
@@ -51,7 +52,9 @@ public class JavaTimer implements Timer, Serializable {
     start = System.currentTimeMillis();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#end()
    */
   // ends the timer
@@ -60,7 +63,9 @@ public class JavaTimer implements Timer, Serializable {
     end = System.currentTimeMillis();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#getResolution()
    */
   @Override
@@ -68,7 +73,9 @@ public class JavaTimer implements Timer, Serializable {
     return 10;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#getDuration()
    */
   // returns duration (in ms) between start() and end() calls
@@ -86,7 +93,9 @@ public class JavaTimer implements Timer, Serializable {
     return System.currentTimeMillis();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#getTimeInSecs()
    */
   @Override
@@ -94,7 +103,9 @@ public class JavaTimer implements Timer, Serializable {
     return (getTime() / 1000);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#getTimeInMillis()
    */
   @Override
@@ -102,7 +113,9 @@ public class JavaTimer implements Timer, Serializable {
     return getTime();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.cpm.utils.Timer#getTimeInMicros()
    */
   @Override

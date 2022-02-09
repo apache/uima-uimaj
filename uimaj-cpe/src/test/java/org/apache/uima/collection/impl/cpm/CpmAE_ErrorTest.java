@@ -41,10 +41,9 @@ import org.junit.jupiter.api.Test;
  * 
  * In detail the TestCase currently comprises the following test scenarios:<br>
  * <ul>
- * <li> Function tests with errorhandling of the methods defined in
- * {@link org.apache.uima.analysis_engine.annotator.BaseAnnotator} and
- * {@link JTextAnnotator}. </li>
- * <li> CPM function tests concerning errorhandling </li>
+ * <li>Function tests with errorhandling of the methods defined in
+ * {@link org.apache.uima.analysis_engine.annotator.BaseAnnotator} and {@link JTextAnnotator}.</li>
+ * <li>CPM function tests concerning errorhandling</li>
  * </ul>
  * <p>
  * The first section of tests analyse the behaviour of the different methods implemented with the
@@ -59,12 +58,11 @@ import org.junit.jupiter.api.Test;
  * list:
  * </p>
  * <ul>
- * <li> generate the descriptors, with fit to the testcase. For instance an annotator which throws a
- * (runtime) exception after every 5th document. </li>
- * <li> create the cpe an set all needed values (error handling params f. instance) </li>
- * <li> [optional] add some mechanism to stop the cpm if it crashes in the test (timeouts or so)
- * </li>
- * <li> run the test and check for the results </li>
+ * <li>generate the descriptors, with fit to the testcase. For instance an annotator which throws a
+ * (runtime) exception after every 5th document.</li>
+ * <li>create the cpe an set all needed values (error handling params f. instance)</li>
+ * <li>[optional] add some mechanism to stop the cpm if it crashes in the test (timeouts or so)</li>
+ * <li>run the test and check for the results</li>
  * </ul>
  * 
  * Also have a look at <br>
@@ -80,7 +78,8 @@ public class CpmAE_ErrorTest {
     System.gc();
   }
 
-  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener)
+          throws Exception {
     UIMAFramework.getLogger().setLevel(Level.OFF);
     try {
       cpe.process();
@@ -91,17 +90,18 @@ public class CpmAE_ErrorTest {
       UIMAFramework.getLogger().setLevel(Level.INFO);
     }
   }
-  
+
   /**
    * <b>testcase:</b> the process method throws multiple AnnotatorProcessException.<br>
    * <b>expected behaviour:</b><br>
    * the cpm should regular finish after processing all documents. No error and no abort should
    * occur.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessWithAnnotatorProcessException() throws Exception {
+  @Test
+  public void testProcessWithAnnotatorProcessException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 4; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -122,8 +122,8 @@ public class CpmAE_ErrorTest {
     assertEquals(
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-            exceptionSequence), FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ",
+            countExceptions(documentCount, exceptionSequence), FunctionErrorStore.getCount());
 
   }
 
@@ -133,10 +133,11 @@ public class CpmAE_ErrorTest {
    * the cpm should regular finish after processing all documents. No error and no abort should
    * occur.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessWithOutOfMemoryException() throws Exception {
+  @Test
+  public void testProcessWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of documents to process
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -169,10 +170,11 @@ public class CpmAE_ErrorTest {
    * the cpm should regular finish after processing all documents. No error and no abort should
    * occur.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessWithNullPointerException() throws Exception {
+  @Test
+  public void testProcessWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents to process
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -194,8 +196,8 @@ public class CpmAE_ErrorTest {
     assertEquals(
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-            exceptionSequence), FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ",
+            countExceptions(documentCount, exceptionSequence), FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -205,10 +207,11 @@ public class CpmAE_ErrorTest {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithNullPointerException() throws Exception {
+  @Test
+  public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -236,9 +239,10 @@ public class CpmAE_ErrorTest {
     assertEquals(
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
-    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-            .isAborted());
-    assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
+    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
+            listener.isAborted());
+    assertEquals("There are not as much exceptions as expected! ", 1,
+            FunctionErrorStore.getCount());
   }
 
   /**
@@ -247,10 +251,11 @@ public class CpmAE_ErrorTest {
    * the cpm should regular finish, but don't process the documents. No error and no abort should
    * occur. the collectionProcessComplete -method of the listener is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithOutOfMemoryException() throws Exception {
+  @Test
+  public void testInitializeWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -274,7 +279,8 @@ public class CpmAE_ErrorTest {
     assertEquals(
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ", 1,
+            FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -285,10 +291,11 @@ public class CpmAE_ErrorTest {
    * the testclass. Neither the collectionProcessComplete-, nor the aborted- method of the listener
    * is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithAnnotatorInitializationException() throws Exception {
+  @Test
+  public void testInitializeWithAnnotatorInitializationException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -316,9 +323,10 @@ public class CpmAE_ErrorTest {
     assertEquals(
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
-    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-            .isAborted());
-    assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
+    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
+            listener.isAborted());
+    assertEquals("There are not as much exceptions as expected! ", 1,
+            FunctionErrorStore.getCount());
   }
 
   /**
@@ -328,10 +336,11 @@ public class CpmAE_ErrorTest {
    * the testclass. Neither the collectionProcessComplete-, nor the aborted- method of the listener
    * is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithAnnotatorConfigurationException() throws Exception {
+  @Test
+  public void testInitializeWithAnnotatorConfigurationException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -359,13 +368,14 @@ public class CpmAE_ErrorTest {
     assertEquals(
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
-    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-            .isAborted());
-    assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
+    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
+            listener.isAborted());
+    assertEquals("There are not as much exceptions as expected! ", 1,
+            FunctionErrorStore.getCount());
   }
 
   // // TODO: Find a way to call the reconfigure-method for testing perpose.
-  //	
+  //
   // public void testReconfigureWithAnnotatorConfigurationException() throws Exception{
   // int documentCount = 20; // number of documents processed
   // int exceptionSequence = 1; // the sequence in which errors are produced
@@ -380,7 +390,7 @@ public class CpmAE_ErrorTest {
   // "AnnotatorConfigurationException",
   // exceptionSequence,
   // "reconfigure");
-  //   
+  //
   // //Create and register a Status Callback Listener
   // listener = new CollectionReaderStatusCallbackListener(cpe);
   // cpe.addStatusCallbackListener(listener);
@@ -392,7 +402,7 @@ public class CpmAE_ErrorTest {
   // } catch (NullPointerException e) {
   // // e.printStackTrace();
   // exceptionThrown = true;
-  //   
+  //
   // }
   // // check the results, if everything worked as expected
   // assertEquals("The cpm didn't finish correctly! Abort was called.", false,
@@ -410,10 +420,11 @@ public class CpmAE_ErrorTest {
    * the testclass. Neither the collectionProcessComplete-, nor the aborted- method of the listener
    * is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testAeProcessingUnitThreadCount() throws Exception {
+  @Test
+  public void testAeProcessingUnitThreadCount() throws Exception {
     int documentCount = 20; // number of documents processed
     int count = 5; // thread number
     TestStatusCallbackListener listener = null;
@@ -437,8 +448,8 @@ public class CpmAE_ErrorTest {
     // check the results, if everything worked as expected
     assertEquals("The cpm didn't finish correctly! Abort was called.", false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
-    assertEquals("There are not as much ae's running as expected ", count, FunctionErrorStore
-            .getAnnotatorCount());
+    assertEquals("There are not as much ae's running as expected ", count,
+            FunctionErrorStore.getAnnotatorCount());
     // that's it.
   }
 
@@ -450,10 +461,11 @@ public class CpmAE_ErrorTest {
    * The cpm should not finish. Instead, after 100 Exceptions + 1 the aborted -method is called by
    * the cpm. The cpm shut down.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testAeErrorRateThresholdTerminateDefault() throws Exception {
+  @Test
+  public void testAeErrorRateThresholdTerminateDefault() throws Exception {
     int documentCount = 1000; // number of documents to process
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
     int exceptionSequence = 5;
@@ -482,8 +494,8 @@ public class CpmAE_ErrorTest {
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
     assertEquals("The aborted-method of the listener wasn't called.", true, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", (100 + 1), FunctionErrorStore
-            .getCount());
+    assertEquals("There are not as much exceptions as expected! ", (100 + 1),
+            FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -495,10 +507,11 @@ public class CpmAE_ErrorTest {
    * The cpm should not finish. Instead, after 5 Exceptions + 1 the aborted -method is called by the
    * cpm. The cpm shut down.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testAeErrorRateThresholdTerminateModified1() throws Exception {
+  @Test
+  public void testAeErrorRateThresholdTerminateModified1() throws Exception {
     int documentCount = 500; // number of documents to process
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
     int exceptionSequence = 5;
@@ -528,8 +541,8 @@ public class CpmAE_ErrorTest {
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
     assertEquals("The aborted-method of the listener wasn't called.", true, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", (5 + 1), FunctionErrorStore
-            .getCount());
+    assertEquals("There are not as much exceptions as expected! ", (5 + 1),
+            FunctionErrorStore.getCount());
   }
 
   /**
@@ -539,10 +552,11 @@ public class CpmAE_ErrorTest {
    * <b>expected behaviour:</b><br>
    * The cpm should finish, because this failure-rate is in the accepted range.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testAeErrorRateThresholdTerminateModified2() throws Exception {
+  @Test
+  public void testAeErrorRateThresholdTerminateModified2() throws Exception {
     int exceptionSequence = 5;
     int documentCount = 100; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -575,22 +589,23 @@ public class CpmAE_ErrorTest {
             true, listener.isFinished());
     assertEquals("The cpm didn't finish correctly! Abort in the listener was called.", false,
             listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-            exceptionSequence), FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ",
+            countExceptions(documentCount, exceptionSequence), FunctionErrorStore.getCount());
     // that's it.
   }
 
   /**
-   * <b>testcase:</b> set the errorRateThreshold to action:continue and set the value to 5/15.
-   * Every 2nd document an AnnotatorProcessException is thrown.
+   * <b>testcase:</b> set the errorRateThreshold to action:continue and set the value to 5/15. Every
+   * 2nd document an AnnotatorProcessException is thrown.
    * <code>&lt;errorRateThreshold action="continue" value="5/15"/&gt;</code><br>
    * <b>expected behaviour:</b><br>
    * The cpm should finish, because of the continue action.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testAeErrorRateThresholdContinue() throws Exception {
+  @Test
+  public void testAeErrorRateThresholdContinue() throws Exception {
     int exceptionSequence = 4;
     int documentCount = 20; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -633,10 +648,11 @@ public class CpmAE_ErrorTest {
    * <b>expected behaviour:</b><br>
    * The annotator should stop working. The cpm changes to the "isFinished" state.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testAeErrorRateThresholdDisable() throws Exception {
+  @Test
+  public void testAeErrorRateThresholdDisable() throws Exception {
     int exceptionSequence = 2;
     int documentCount = 50; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -668,11 +684,12 @@ public class CpmAE_ErrorTest {
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
-    assertEquals("There are not as much exceptions as expected! ", 6, FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ", 6,
+            FunctionErrorStore.getCount());
   }
 
-    @Test
-    public void testAeErrorRateActionOnMaxRestarts() throws Exception {
+  @Test
+  public void testAeErrorRateActionOnMaxRestarts() throws Exception {
     int exceptionSequence = 1;
     int documentCount = 10; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -705,7 +722,8 @@ public class CpmAE_ErrorTest {
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
-    assertEquals("There are not as many exceptions as expected:", 40, FunctionErrorStore.getCount());
+    assertEquals("There are not as many exceptions as expected:", 40,
+            FunctionErrorStore.getCount());
   }
 
   /**
@@ -714,10 +732,11 @@ public class CpmAE_ErrorTest {
    * <b>expected behaviour:</b><br>
    * After havening successfully processed the given number of documents the process should finish.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testNumToProcess() throws Exception {
+  @Test
+  public void testNumToProcess() throws Exception {
     int exceptionSequence = 25;
     int documentCount = 50; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -748,13 +767,14 @@ public class CpmAE_ErrorTest {
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
-    assertEquals("There are not as much exceptions as expected! ", 0, FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ", 0,
+            FunctionErrorStore.getCount());
     assertEquals("There is a difference between the expected and the processed document number. ",
             20, FunctionErrorStore.getAnnotatorProcessCount());
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
@@ -797,8 +817,8 @@ public class CpmAE_ErrorTest {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = JUnitExtension.getFile(
-              "CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
       String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml")
               .getAbsolutePath();
       String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml")
@@ -874,8 +894,8 @@ public class CpmAE_ErrorTest {
     CpeDescription cpeDesc = null;
     CpeIntegratedCasProcessor integratedProcessor = null;
     try {
-      String colReaderBase = JUnitExtension.getFile(
-              "CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
       String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml")
               .getAbsolutePath();
       String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml")

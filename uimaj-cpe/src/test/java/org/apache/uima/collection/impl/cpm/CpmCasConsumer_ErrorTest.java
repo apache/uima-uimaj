@@ -56,11 +56,11 @@ import org.junit.jupiter.api.Test;
  * list:
  * </p>
  * <ul>
- * <li> generate the descriptors, with fit to the testcase. For instance an annotator which throws a
- * (runtime) exception every 5th document. </li>
- * <li> [optional] add some mechanism to handle errors in the tests (timeouts or try-catch blocks)
+ * <li>generate the descriptors, with fit to the testcase. For instance an annotator which throws a
+ * (runtime) exception every 5th document.</li>
+ * <li>[optional] add some mechanism to handle errors in the tests (timeouts or try-catch blocks)
  * </li>
- * <li> run the test and check for the results </li>
+ * <li>run the test and check for the results</li>
  * </ul>
  * 
  * Also have a look at <br>
@@ -72,7 +72,8 @@ public class CpmCasConsumer_ErrorTest {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 
-  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener)
+          throws Exception {
     UIMAFramework.getLogger().setLevel(Level.OFF);
     try {
       cpe.process();
@@ -90,10 +91,11 @@ public class CpmCasConsumer_ErrorTest {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithResourceInitializationException() throws Exception {
+  @Test
+  public void testInitializeWithResourceInitializationException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -119,8 +121,8 @@ public class CpmCasConsumer_ErrorTest {
               false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
               listener.isAborted());
-      assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-              .getCount());
+      assertEquals("There are not as much exceptions as expected! ", 1,
+              FunctionErrorStore.getCount());
     }
   }
 
@@ -130,10 +132,11 @@ public class CpmCasConsumer_ErrorTest {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithNullPointerException() throws Exception {
+  @Test
+  public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -160,8 +163,8 @@ public class CpmCasConsumer_ErrorTest {
               false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
               listener.isAborted());
-      assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-              .getCount());
+      assertEquals("There are not as much exceptions as expected! ", 1,
+              FunctionErrorStore.getCount());
     }
   }
 
@@ -171,10 +174,11 @@ public class CpmCasConsumer_ErrorTest {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testInitializeWithOutOfMemoryError() throws Exception {
+  @Test
+  public void testInitializeWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean errorThrown = false;
@@ -199,8 +203,8 @@ public class CpmCasConsumer_ErrorTest {
               false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
               listener.isAborted());
-      assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-              .getCount());
+      assertEquals("There are not as much exceptions as expected! ", 1,
+              FunctionErrorStore.getCount());
       assertEquals("The expected Error wasn't thrown! ", true, errorThrown);
     }
   }
@@ -210,10 +214,11 @@ public class CpmCasConsumer_ErrorTest {
    * <b>expected behaviour:</b><br>
    * The cpm should finish correctly.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessCasWithIOException() throws Exception {
+  @Test
+  public void testProcessCasWithIOException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -230,8 +235,8 @@ public class CpmCasConsumer_ErrorTest {
     assertEquals(
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
-    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-            .isAborted());
+    assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
+            listener.isAborted());
     assertEquals("There are not as much exceptions  thrown as expected! ",
             ((documentCount) / exceptionSequence), FunctionErrorStore.getCount());
     assertEquals(
@@ -244,10 +249,11 @@ public class CpmCasConsumer_ErrorTest {
    * <b>expected behaviour:</b><br>
    * The cpm should finish correctly. The aborted- method of the listener is not called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessCasWithResourceProcessException() throws Exception {
+  @Test
+  public void testProcessCasWithResourceProcessException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -261,11 +267,11 @@ public class CpmCasConsumer_ErrorTest {
     cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
-    assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener
-            .isFinished());
+    assertEquals("The cpm did not call the listener, that the cpm has finished.", true,
+            listener.isFinished());
     assertEquals("The aborted-method of the listener was called!", false, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-            exceptionSequence), FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ",
+            countExceptions(documentCount, exceptionSequence), FunctionErrorStore.getCount());
   }
 
   /**
@@ -277,10 +283,11 @@ public class CpmCasConsumer_ErrorTest {
    * abort-methode is called, to comunicate the status of the cpm to everyone who is listening for
    * errors.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessCasWithOutOfMemoryError() throws Exception {
+  @Test
+  public void testProcessCasWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -298,7 +305,8 @@ public class CpmCasConsumer_ErrorTest {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // System.out.println(FunctionErrorStore.printStats());
     assertEquals("Abort was not called!", true, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ", 1,
+            FunctionErrorStore.getCount());
     assertEquals("There is no Error thrown! ", true, listener.hasError());
   }
 
@@ -307,10 +315,11 @@ public class CpmCasConsumer_ErrorTest {
    * <b>expected behaviour:</b><br>
    * The cpm should finish correctly. The aborted- method of the listener is not called.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testProcessCasWithNullPointerException() throws Exception {
+  @Test
+  public void testProcessCasWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -324,15 +333,15 @@ public class CpmCasConsumer_ErrorTest {
     cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
-    assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener
-            .isFinished());
+    assertEquals("The cpm did not call the listener, that the cpm has finished.", true,
+            listener.isFinished());
     assertEquals("The aborted-method of the listener was called!", false, listener.isAborted());
-    assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-            exceptionSequence), FunctionErrorStore.getCount());
+    assertEquals("There are not as much exceptions as expected! ",
+            countExceptions(documentCount, exceptionSequence), FunctionErrorStore.getCount());
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
@@ -356,9 +365,12 @@ public class CpmCasConsumer_ErrorTest {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
-      String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml").getAbsolutePath();
-      String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml")
+              .getAbsolutePath();
 
       // first, prepare all descriptors as needed
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);

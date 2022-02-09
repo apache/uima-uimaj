@@ -61,7 +61,6 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
-
 /**
  * Vinci Proxy to remote Cas Processor vinci service. This component is used for both local(
  * managed) and remote ( unmanaged) Cas Processors. Its main purpose is to invoke remote APIs on Cas
@@ -70,7 +69,7 @@ import org.apache.vinci.transport.document.AFrame;
  */
 
 public class VinciTAP {
-  
+
   /** The service host. */
   private String serviceHost;
 
@@ -139,8 +138,8 @@ public class VinciTAP {
   /**
    * Defines subject of analysis.
    *
-   * @param aContentTag -
-   *          subject of analysis
+   * @param aContentTag
+   *          - subject of analysis
    */
   public void setContentTag(String aContentTag) {
     contentTag = aContentTag;
@@ -149,8 +148,8 @@ public class VinciTAP {
   /**
    * Defines a custom timer to use for stats.
    *
-   * @param aTimer -
-   *          custom timer
+   * @param aTimer
+   *          - custom timer
    */
   public void setTimer(UimaTimer aTimer) {
     uimaTimer = aTimer;
@@ -159,8 +158,8 @@ public class VinciTAP {
   /**
    * Defines types as array that will not be sent to the Cas Processor service.
    *
-   * @param aKeys2Drop -
-   *          array of types excluded from the request
+   * @param aKeys2Drop
+   *          - array of types excluded from the request
    */
   public void setKeys2Drop(String[] aKeys2Drop) {
     keys2Drop = aKeys2Drop;
@@ -169,12 +168,13 @@ public class VinciTAP {
   /**
    * Connects the proxy to Cas Processor running as a vinci service on a given host and port number.
    * 
-   * @param aHost -
-   *          name of the host where the service is running
-   * @param aPort -
-   *          port number where the service listens for requests
+   * @param aHost
+   *          - name of the host where the service is running
+   * @param aPort
+   *          - port number where the service listens for requests
    * 
-   * @throws ConnectException wraps Exception or unable to connect
+   * @throws ConnectException
+   *           wraps Exception or unable to connect
    */
   public void connect(String aHost, int aPort) throws ConnectException {
     int attemptCount = 0;
@@ -265,15 +265,10 @@ public class VinciTAP {
       } catch (Exception e) {
         if (e instanceof ConnectException) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-            UIMAFramework.getLogger(this.getClass())
-                    .logrb(
-                            Level.WARNING,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_connection_not_established__WARNING",
-                            new Object[] { Thread.currentThread().getName(), aHost,
-                                String.valueOf(aPort) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_connection_not_established__WARNING", new Object[] {
+                        Thread.currentThread().getName(), aHost, String.valueOf(aPort) });
           }
           try {
             Thread.sleep(100);
@@ -289,8 +284,7 @@ public class VinciTAP {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_connection_failed__WARNING",
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_connection_failed__WARNING",
               new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) });
     }
     throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
@@ -301,8 +295,8 @@ public class VinciTAP {
   /**
    * Define the max time in millis the proxy will wait for response from remote service.
    *
-   * @param aTimeout -
-   *          number of millis to wait
+   * @param aTimeout
+   *          - number of millis to wait
    */
   public void setTimeout(int aTimeout) {
     timeout = aTimeout;
@@ -311,9 +305,10 @@ public class VinciTAP {
   /**
    * Connects to external service using service name as a way to locate it.
    *
-   * @param aServiceName -
-   *          name of the service
-   * @throws ServiceConnectionException the service connection exception
+   * @param aServiceName
+   *          - name of the service
+   * @throws ServiceConnectionException
+   *           the service connection exception
    */
   public void connect(String aServiceName) throws ServiceConnectionException {
     // To locate the service by name the VNS is critical. Make sure we know where it is
@@ -321,8 +316,7 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_vns_not_provided__SEVERE",
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_not_provided__SEVERE",
                 new Object[] { Thread.currentThread().getName() });
       }
       throw new ServiceConnectionException(CpmLocalizedMessage.getLocalizedMessage(
@@ -335,12 +329,8 @@ public class VinciTAP {
 
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "initialize",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_locating_service__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_locating_service__FINEST",
                 new Object[] { Thread.currentThread().getName(), aServiceName,
                     System.getProperty("VNS_HOST"), System.getProperty("VNS_PORT") });
       }
@@ -350,8 +340,7 @@ public class VinciTAP {
       vctx.setVNSPort(Integer.parseInt(getVNSPort()));
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).log(
-                Level.FINEST,
+        UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
                 Thread.currentThread().getName() + " Connecting to::" + aServiceName
                         + " VinciContext.getVNSHost():" + vctx.getVNSHost()
                         + " VinciContext.getVNSPort():" + vctx.getVNSPort()); // getVNSHost());
@@ -361,11 +350,8 @@ public class VinciTAP {
       conn.setSocketTimeout(timeout);
       conn.setRetry(false);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "initialize",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_set_service_timeout__FINEST",
                 new Object[] { Thread.currentThread().getName(),
                     aServiceName + ":" + String.valueOf(timeout) });
@@ -383,8 +369,8 @@ public class VinciTAP {
                 "UIMA_CPM_connection_failed__WARNING",
                 new Object[] { Thread.currentThread().getName(), aServiceName, "" });
 
-        UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                Thread.currentThread().getName(), e);
+        UIMAFramework.getLogger(this.getClass()).log(Level.FINEST, Thread.currentThread().getName(),
+                e);
       }
     }
 
@@ -397,8 +383,10 @@ public class VinciTAP {
   /**
    * Test and reconnect.
    *
-   * @throws ServiceException the service exception
-   * @throws ServiceConnectionException the service connection exception
+   * @throws ServiceException
+   *           the service exception
+   * @throws ServiceConnectionException
+   *           the service connection exception
    */
   private void testAndReconnect() throws ServiceException, ServiceConnectionException {
     // Make sure there is valid connection to the service and if there isnt one establish it
@@ -420,10 +408,10 @@ public class VinciTAP {
         }
       } catch (ConnectException ce) {
         if (serviceName != null) {
-          throw new ServiceException(CpmLocalizedMessage.getLocalizedMessage(
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_EXP_unable_to_connect_toservice__WARNING", new Object[] {
-                      Thread.currentThread().getName(), serviceName }));
+          throw new ServiceException(
+                  CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_EXP_unable_to_connect_toservice__WARNING",
+                          new Object[] { Thread.currentThread().getName(), serviceName }));
         } else {
           throw new ServiceException(CpmLocalizedMessage.getLocalizedMessage(
                   CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_unable_to_connect__WARNING",
@@ -441,22 +429,20 @@ public class VinciTAP {
   /**
    * Send a given Vinci Frame to the remote vinci service and return result.
    *
-   * @param aFrame -
-   *          Vinci Frame containing request
+   * @param aFrame
+   *          - Vinci Frame containing request
    * @return AFrame - Frame containing result
-   * @throws ServiceException the service exception
-   * @throws ServiceConnectionException the service connection exception
+   * @throws ServiceException
+   *           the service exception
+   * @throws ServiceConnectionException
+   *           the service connection exception
    */
   public AFrame sendAndReceive(AFrame aFrame) throws ServiceException, ServiceConnectionException {
     int currentTimeout = 0;
     currentTimeout = conn.getSocketTimeout();
     if (UIMAFramework.getLogger().isLoggable(Level.FINE)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINE,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_sending_process_req__FINEST",
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sending_process_req__FINEST",
               new Object[] { Thread.currentThread().getName(), serviceHost, servicePort,
                   String.valueOf(currentTimeout) });
     }
@@ -471,11 +457,8 @@ public class VinciTAP {
 
       long memStart = Runtime.getRuntime().freeMemory();
       if (System.getProperty("SHOW_MEMORY") != null) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_show_memory_before_call__FINEST",
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
@@ -483,11 +466,8 @@ public class VinciTAP {
       }
       responseFrame = (AFrame) conn.sendAndReceive(aFrame, AFrame.getAFrameFactory(), timeout);
       if (System.getProperty("SHOW_MEMORY") != null) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_show_memory_after_call__FINEST",
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
@@ -500,11 +480,8 @@ public class VinciTAP {
       }
       return responseFrame;
     } catch (VNSException vnse) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.WARNING,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_failed_service_request__WARNING",
               new Object[] { Thread.currentThread().getName(), conn.getHost(),
                   String.valueOf(conn.getPort()) });
@@ -514,11 +491,8 @@ public class VinciTAP {
       conn.close();
       throw new ServiceException(vnse.getMessage());
     } catch (ServiceDownException sde) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.WARNING,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_failed_service_request__WARNING",
               new Object[] { Thread.currentThread().getName(), conn.getHost(),
                   String.valueOf(conn.getPort()) });
@@ -527,11 +501,8 @@ public class VinciTAP {
       conn.close();
       throw new ServiceConnectionException(sde.getMessage());
     } catch (ServiceException sde) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.WARNING,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_failed_service_request__WARNING",
               new Object[] { Thread.currentThread().getName(), conn.getHost(),
                   String.valueOf(conn.getPort()) });
@@ -542,11 +513,8 @@ public class VinciTAP {
       }
       throw new ServiceConnectionException(sde.getMessage());
     } catch (IOException e) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.WARNING,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_failed_service_request__WARNING",
               new Object[] { Thread.currentThread().getName(), conn.getHost(),
                   String.valueOf(conn.getPort()) });
@@ -566,11 +534,8 @@ public class VinciTAP {
               new Object[] { Thread.currentThread().getName(), conn.getHost(),
                   String.valueOf(conn.getPort()), String.valueOf(currentTimeout) }));
     } catch (Exception e) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.WARNING,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_failed_service_request__WARNING",
               new Object[] { Thread.currentThread().getName(), conn.getHost(),
                   String.valueOf(conn.getPort()) });
@@ -587,13 +552,14 @@ public class VinciTAP {
    * Appends keys (types) from XCAS to provided CasData instance doing conversions of ':' in WF keys
    * to '_colon_' and '-' to '_dash_' to enforce UIMA compliance.
    * 
-   * @param dataCas -
-   *          instance of CasData where the keys will be appended
-   * @param aFrame -
-   *          source of keys (data)
+   * @param dataCas
+   *          - instance of CasData where the keys will be appended
+   * @param aFrame
+   *          - source of keys (data)
    * @return - modified CasData
    * 
-   * @throws Exception passthru
+   * @throws Exception
+   *           passthru
    */
   public static CasData addKeysToDataCas(CasData dataCas, AFrame aFrame) throws Exception {
     try {
@@ -636,7 +602,8 @@ public class VinciTAP {
   /**
    * Prints to stdout contents of a given CasData instance.
    *
-   * @param aCAS the a CAS
+   * @param aCAS
+   *          the a CAS
    */
   private static void dumpFeatures(CasData aCAS) {
 
@@ -672,14 +639,15 @@ public class VinciTAP {
    * Produces XCas from a given Cas. It selectively copies features from the Cas excluding those
    * types that are defined in a given dropKeyList.
    * 
-   * @param aCasData -
-   *          Cas for which XCAS is built
-   * @param dataFrame -
-   *          XCas frame for data
-   * @param aDropKeyList -
-   *          list of types to exclude from XCas
+   * @param aCasData
+   *          - Cas for which XCAS is built
+   * @param dataFrame
+   *          - XCas frame for data
+   * @param aDropKeyList
+   *          - list of types to exclude from XCas
    * 
-   * @throws Exception passthru
+   * @throws Exception
+   *           passthru
    */
   private void produceXCASRequestFrame(CasData aCasData, AFrame dataFrame, String[] aDropKeyList)
           throws Exception {
@@ -741,8 +709,8 @@ public class VinciTAP {
   /**
    * Returns true if a given feature represents any of the content (SoFa) types.
    * 
-   * @param feature -
-   *          type to check
+   * @param feature
+   *          - type to check
    * 
    * @return - true if SoFa, false otherwise
    */
@@ -757,15 +725,17 @@ public class VinciTAP {
   /**
    * Performs Analysis of the CAS by the remote vinci service Cas Processor.
    *
-   * @param aCas -
-   *          Cas to analayze
-   * @param aPT -
-   *          performance trace object for stats and totals
-   * @param aResourceName -
-   *          name of the Cas Processor
+   * @param aCas
+   *          - Cas to analayze
+   * @param aPT
+   *          - performance trace object for stats and totals
+   * @param aResourceName
+   *          - name of the Cas Processor
    * @return - CAS containing results of analysis
-   * @throws ServiceException - passthru, wraps Exception
-   * @throws ServiceConnectionException passthru
+   * @throws ServiceException
+   *           - passthru, wraps Exception
+   * @throws ServiceConnectionException
+   *           passthru
    */
   public CasData analyze(CasData aCas, ProcessTrace aPT, String aResourceName)
           throws ServiceException, ServiceConnectionException {
@@ -793,8 +763,8 @@ public class VinciTAP {
       if (casDataFs != null) {
         newCasData.addFeatureStructure(casDataFs);
       }
-      vinciCasDataConverter.appendVinciFrameToCasData(responseFrame.fgetAFrame("DATA").fgetAFrame(
-              "KEYS"), newCasData);
+      vinciCasDataConverter.appendVinciFrameToCasData(
+              responseFrame.fgetAFrame("DATA").fgetAFrame("KEYS"), newCasData);
       aCas = newCasData;
 
       aPT.endEvent(aResourceName, "Vinci Response Frame to CAS", "");
@@ -848,8 +818,10 @@ public class VinciTAP {
   /**
    * Drop named types.
    *
-   * @param aKeyFrame the a key frame
-   * @param aDropKeyList the a drop key list
+   * @param aKeyFrame
+   *          the a key frame
+   * @param aDropKeyList
+   *          the a drop key list
    */
   private void dropNamedTypes(AFrame aKeyFrame, String[] aDropKeyList) {
     // Now drop keys this annotator does not want to see
@@ -888,15 +860,18 @@ public class VinciTAP {
    * frame. These keys are not required by the annotator thus it is waste of bandwidth to include
    * them in the request.
    * 
-   * @param aCasList -
-   *          a list of Cas to send to service for analysis
-   * @param aPT -
-   *          Process Trace object to aggrate time and stats
-   * @param aResourceName -
-   *          name of the Cas Processor
+   * @param aCasList
+   *          - a list of Cas to send to service for analysis
+   * @param aPT
+   *          - Process Trace object to aggrate time and stats
+   * @param aResourceName
+   *          - name of the Cas Processor
    * @return - List of Cas instances containing results of analysis
-   * @throws ServiceException - passthru, wraps Exception
-   * @throws ServiceConnectionException passthru   */
+   * @throws ServiceException
+   *           - passthru, wraps Exception
+   * @throws ServiceConnectionException
+   *           passthru
+   */
   public CasData[] analyze(CasData[] aCasList, ProcessTrace aPT, String aResourceName)
           throws ServiceException, ServiceConnectionException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -979,7 +954,7 @@ public class VinciTAP {
         return aCasList;
       }
       ArrayList d = new ArrayList();
-      if ( responseFrame != null ) {
+      if (responseFrame != null) {
         d = responseFrame.fget("DATA");
       }
       int instanceCount = 0;
@@ -1041,12 +1016,8 @@ public class VinciTAP {
           instanceCount++;
         } catch (Exception e) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINER,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_exception__FINER",
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
                     new Object[] { Thread.currentThread().getName(), e.getMessage(),
                         dataFrame.toXML() });
             e.printStackTrace();
@@ -1091,16 +1062,13 @@ public class VinciTAP {
    * service.
    *
    * @return the analysis engine meta data
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    */
   public ProcessingResourceMetaData getAnalysisEngineMetaData() throws ResourceServiceException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_request_metadata__FINEST",
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_request_metadata__FINEST",
               new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
                   String.valueOf(conn.getPort()) });
     }
@@ -1114,12 +1082,8 @@ public class VinciTAP {
       // Send the request to the service and wait for response
       resultFrame = (AFrame) conn.sendAndReceive(queryFrame, AFrame.getAFrameFactory(), timeout);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_return_meta__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_meta__FINEST",
                 new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
                     String.valueOf(conn.getPort()) });
       }
@@ -1133,12 +1097,8 @@ public class VinciTAP {
       ProcessingResourceMetaData metadata = (ProcessingResourceMetaData) saxDeser.getObject();
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_done_parsing_meta__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_done_parsing_meta__FINEST",
                 new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
                     String.valueOf(conn.getPort()) });
       }
@@ -1157,15 +1117,10 @@ public class VinciTAP {
     } catch (Exception e) {
       if ("No Such Command supported".equals(e.getMessage())) {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-          UIMAFramework.getLogger(this.getClass())
-                  .logrb(
-                          Level.WARNING,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_service_rejected_requested__WARNING",
-                          new Object[] { Thread.currentThread().getName(), serviceName,
-                              resultFrame.toXML() });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_service_rejected_requested__WARNING", new Object[] {
+                      Thread.currentThread().getName(), serviceName, resultFrame.toXML() });
         }
         return null;
       }
@@ -1183,7 +1138,8 @@ public class VinciTAP {
    * Let the remote service now that end of batch marker has been reached, the notification is
    * one-way meaning the CPE does not expect anything back from the service.
    *
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    */
   public void batchProcessComplete() throws ResourceServiceException {
     // For some installations, like WF, dont bother sending end-of-batch marker.
@@ -1196,11 +1152,8 @@ public class VinciTAP {
         VinciFrame query = new VinciFrame();
         query.fadd("vinci:COMMAND", Constants.BATCH_PROCESS_COMPLETE);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_send_batch_complete__FINEST",
                   new Object[] { Thread.currentThread().getName(), conn.getHost(),
                       String.valueOf(conn.getPort()), query.toXML() });
@@ -1223,7 +1176,8 @@ public class VinciTAP {
    * service before returning. This ensures that the request is accepted and the desired logic
    * handling end of processing has completed.
    * 
-   * @throws ResourceServiceException wraps Exception
+   * @throws ResourceServiceException
+   *           wraps Exception
    */
   public void collectionProcessComplete() throws ResourceServiceException {
     try {
@@ -1231,11 +1185,8 @@ public class VinciTAP {
         VinciFrame query = new VinciFrame();
         query.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_send_collection_complete__FINEST",
                   new Object[] { Thread.currentThread().getName(), conn.getHost(),
                       String.valueOf(conn.getPort()), query.toXML() });
@@ -1262,43 +1213,28 @@ public class VinciTAP {
    * service shut itself down. It does not even wait for response. It is up to the service to clean
    * itself up and terminate.
    * 
-   * @param shutdownService -
-   *          flag indicating if a shutdown command should be sent to the service
-   * @param aDoSendNotification -
-   *          indicates whether or not to sent CollectionProcessComplete frame to service
+   * @param shutdownService
+   *          - flag indicating if a shutdown command should be sent to the service
+   * @param aDoSendNotification
+   *          - indicates whether or not to sent CollectionProcessComplete frame to service
    * @return - true if shutdown message has been sent without error, false otherwise
    */
   public boolean shutdown(boolean shutdownService, boolean aDoSendNotification) {
     if (System.getProperty("SHOW_STATS") != null) {
-      UIMAFramework.getLogger(this.getClass())
-              .logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_time_spent_serializing_xcas__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(totalSerializeTime) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_time_spent_serializing_xcas__FINEST", new Object[] {
+                  Thread.currentThread().getName(), String.valueOf(totalSerializeTime) });
 
-      UIMAFramework.getLogger(this.getClass())
-              .logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_time_spent_deserializing_xcas__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(totalDeSerializeTime) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_time_spent_deserializing_xcas__FINEST", new Object[] {
+                  Thread.currentThread().getName(), String.valueOf(totalDeSerializeTime) });
 
-      UIMAFramework.getLogger(this.getClass())
-              .logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_time_spent_in_transit__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(totalRoundTripTime) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_time_spent_in_transit__FINEST",
+              new Object[] { Thread.currentThread().getName(),
+                  String.valueOf(totalRoundTripTime) });
     }
     try {
 
@@ -1313,11 +1249,8 @@ public class VinciTAP {
             VinciFrame query = new VinciFrame();
             query.fadd("vinci:COMMAND", Constants.SHUTDOWN);
             if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.INFO,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_stopping_service__INFO",
                       new Object[] { Thread.currentThread().getName(), conn.getHost(),
                           String.valueOf(conn.getPort()), query.toXML() });
@@ -1372,23 +1305,19 @@ public class VinciTAP {
       try {
         // establish ownership of query object, otherwise IllegalMonitorStateException is
         // thrown. Than give the service time to cleanly exit.
-        
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_waiting_for_service_shutdown__FINEST",
-                    new Object[] { Thread.currentThread().getName(), String.valueOf(10 - retry),
-                        "10" });
-          }
-          Thread.sleep(100); // wait for 100ms to give the service time to exit cleanly
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                    " Resuming CPE shutdown.Service should be down now.");
-          }
-        
+
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_waiting_for_service_shutdown__FINEST", new Object[] {
+                      Thread.currentThread().getName(), String.valueOf(10 - retry), "10" });
+        }
+        Thread.sleep(100); // wait for 100ms to give the service time to exit cleanly
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+                  " Resuming CPE shutdown.Service should be down now.");
+        }
+
       } catch (InterruptedException e) {
       }
       if (retry-- <= 0) {
@@ -1419,8 +1348,8 @@ public class VinciTAP {
   /**
    * Sets the VNS port this proxy will use to locate service.
    *
-   * @param aVNSPort -
-   *          vns port to use
+   * @param aVNSPort
+   *          - vns port to use
    */
   public void setVNSPort(String aVNSPort) {
     System.setProperty(Vinci.VNS_PORT, aVNSPort);
@@ -1430,8 +1359,8 @@ public class VinciTAP {
   /**
    * Sets the VNS host this proxy will use to locate service.
    *
-   * @param aVNSHost -
-   *          name of the VNS host
+   * @param aVNSHost
+   *          - name of the VNS host
    */
   public void setVNSHost(String aVNSHost) {
     vnsHost = aVNSHost;

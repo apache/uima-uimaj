@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -265,5 +266,14 @@ public class ResourceManager_implTest {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+  }
+
+  @Test
+  public void testCreateWithExtensionClassloaderAndDestroy() throws Exception {
+    assertThatCode(() -> {
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      resMgr.setExtensionClassLoader(getClass().getClassLoader(), false);
+      resMgr.destroy();
+    }).doesNotThrowAnyException();
   }
 }

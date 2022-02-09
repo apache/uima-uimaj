@@ -37,12 +37,11 @@ import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.util.Level;
 
-
 /**
  * The Class RunnableApplication.
  */
 public class RunnableApplication {
-  
+
   /** The executable. */
   protected String executable;
 
@@ -54,7 +53,7 @@ public class RunnableApplication {
 
   /** The arg list. */
   protected List argList = new ArrayList();
-  
+
   /** The sys env vars. */
   private Properties sysEnvVars = null;
 
@@ -62,10 +61,12 @@ public class RunnableApplication {
    * Sets up command line used to launch Cas Processor in a separate process. Combines environment
    * variables setup in the CPE descriptor with a System environment variables.
    *
-   * @param aCasProcessorConfiguration -
-   *          access to Cas Processor configuration
-   * @param aCasProcessor the a cas processor
-   * @throws ResourceConfigurationException wraps Exception
+   * @param aCasProcessorConfiguration
+   *          - access to Cas Processor configuration
+   * @param aCasProcessor
+   *          the a cas processor
+   * @throws ResourceConfigurationException
+   *           wraps Exception
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
@@ -102,12 +103,12 @@ public class RunnableApplication {
         environment.clear();
         boolean pathDone = false;
         boolean classpathDone = false;
-        
+
         if (descrptrEnvVars != null) {
 
           // First copy all env vars from the CPE Descriptor treating PATH and CLASSPATH as special
           // cases
-          
+
           for (CasProcessorRuntimeEnvParam descrptrEv : descrptrEnvVars) {
             String key = descrptrEv.getEnvParamName();
             String value = descrptrEv.getEnvParamValue();
@@ -127,8 +128,8 @@ public class RunnableApplication {
             if (key.equalsIgnoreCase("CLASSPATH")) {
               String classpath = getSysEnvVarValue(key);
               if (classpath != null) {
-                environment.add(key + "=" + value + System.getProperty("path.separator")
-                        + classpath);
+                environment
+                        .add(key + "=" + value + System.getProperty("path.separator") + classpath);
               } else {
                 environment.add(key + "=" + value + System.getProperty("path.separator"));
               }
@@ -146,8 +147,8 @@ public class RunnableApplication {
           while (envKeys.hasMoreElements()) {
             String key = (String) envKeys.nextElement();
             // Skip those vars that we've already setup above
-            if ((key.equalsIgnoreCase("PATH") && pathDone) || 
-                (key.equalsIgnoreCase("CLASSPATH") && classpathDone)) {
+            if ((key.equalsIgnoreCase("PATH") && pathDone)
+                    || (key.equalsIgnoreCase("CLASSPATH") && classpathDone)) {
               continue;
             }
             environment.add(key + "=" + sysEnvVars.getProperty(key));
@@ -156,7 +157,7 @@ public class RunnableApplication {
         String[] envArray = new String[environment.size()];
         environment.toArray(envArray);
         exec.setEnvironment(envArray);
-        
+
         CasProcessorExecArg[] args = rip.getExecutable().getAllCasProcessorExecArgs();
         for (int i = 0; args != null && i < args.length; i++) {
           argList.add(args[i]);
@@ -193,14 +194,14 @@ public class RunnableApplication {
   /**
    * Returns a value of a given environment variable.
    *
-   * @param aKey -
-   *          name of the environment variable
+   * @param aKey
+   *          - name of the environment variable
    * @return - value correspnding to environment variable
    */
   protected String getSysEnvVarValue(String aKey) {
     try {
       // Retrieve all env variables
-//      sysEnv = SystemEnvReader.getEnvVars();  // already done, do only once
+      // sysEnv = SystemEnvReader.getEnvVars(); // already done, do only once
       Enumeration sysKeys = sysEnvVars.keys();
       while (sysKeys.hasMoreElements()) {
         String key = (String) sysKeys.nextElement();

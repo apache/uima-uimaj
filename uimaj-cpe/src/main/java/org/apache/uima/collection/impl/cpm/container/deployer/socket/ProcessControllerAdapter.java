@@ -21,29 +21,32 @@ package org.apache.uima.collection.impl.cpm.container.deployer.socket;
 
 import java.net.URL;
 
-
 /**
  * Interface for the custom deployer component responsible for launching and terminating fenced
  * CasProcessors.
  * 
  */
 public interface ProcessControllerAdapter {
-  
+
   /**
    * Deploys given number of CasProcessors and returns their endpoint configuration( host,port).
    * This method blocks until all Connections are resolved or an error occurs.
    *
-   * @param aCasProcessorName -name of the fenced CasProcessor
-   * @param howMany - how many CasProcessor instances to deploy
+   * @param aCasProcessorName
+   *          -name of the fenced CasProcessor
+   * @param howMany
+   *          - how many CasProcessor instances to deploy
    * @return URL[] - list of URLs containing endpoint info
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   URL[] deploy(String aCasProcessorName, int howMany) throws Exception;
 
   /**
    * Stops a given CasProcessor service.
    * 
-   * @param aURL - service endpoint.
+   * @param aURL
+   *          - service endpoint.
    * 
    */
   void undeploy(URL aURL);

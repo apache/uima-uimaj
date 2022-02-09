@@ -66,7 +66,6 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-
 /**
  * Manages a pool of CasProcessor instances. Provides access to CasProcessor instance to Processing
  * Thread. Processing threads check out an instance of Cas Processor and when done invoking its
@@ -78,7 +77,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  */
 
 public class ProcessingContainer_Impl extends ProcessingContainer implements RunnableContainer {
-  
+
   /** The Constant CONTAINER_SLEEP_TIME. */
   private static final int CONTAINER_SLEEP_TIME = 100;
 
@@ -178,7 +177,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
 
   // access this only under monitor lock
   /** The is paused. */
-  //   monitor.notifyall called when switching from true -> false
+  // monitor.notifyall called when switching from true -> false
   private boolean isPaused = false;
 
   /** The single fenced instance. */
@@ -201,12 +200,14 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Initialize container with CasProcessor configuration and pool containing instances of
    * CasProcessor instances.
    *
-   * @param aCasProcessorConfig -
-   *          CasProcessor configuration as defined in cpe descriptor
-   * @param aMetaData the a meta data
-   * @param aCasProcessorPool -
-   *          pool of CasProcessor instances
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aCasProcessorConfig
+   *          - CasProcessor configuration as defined in cpe descriptor
+   * @param aMetaData
+   *          the a meta data
+   * @param aCasProcessorPool
+   *          - pool of CasProcessor instances
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   public ProcessingContainer_Impl(CasProcessorConfiguration aCasProcessorConfig,
           ProcessingResourceMetaData aMetaData, ServiceProxyPool aCasProcessorPool)
@@ -235,7 +236,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Sets component's input/output capabilities.
    *
-   * @param aMetadata       component capabilities
+   * @param aMetadata
+   *          component capabilities
    */
   @Override
   public void setMetadata(ProcessingResourceMetaData aMetadata) {
@@ -250,15 +252,15 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         // Convert the types if necessary
         for (int i = 0; i < tORf.length; i++) {
           newKey = tORf[i].getName();
-          if (tORf[i].getName().indexOf(
-                  org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
+          if (tORf[i].getName()
+                  .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
             newKey = StringUtils.replaceAll(tORf[i].getName(),
                     org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
                     org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
             modified = true;
           }
-          if (tORf[i].getName().indexOf(
-                  org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
+          if (tORf[i].getName()
+                  .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
             newKey = StringUtils.replaceAll(tORf[i].getName(),
                     org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
                     org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
@@ -277,8 +279,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Plug in deployer object used to launch/deploy the CasProcessor instance. Used for restarts.
    * 
-   * @param aDeployer -
-   *          object responsible for deploying/launching CasProcessor
+   * @param aDeployer
+   *          - object responsible for deploying/launching CasProcessor
    */
   @Override
   public void setCasProcessorDeployer(CasProcessorDeployer aDeployer) {
@@ -337,8 +339,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_logpath_not_defined__FINEST",
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_logpath_not_defined__FINEST",
                 new Object[] { Thread.currentThread().getName(), getName() });
       }
     }
@@ -348,8 +349,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Logs Cas'es that could not be processed.
    * 
-   * @param abortedCasList -
-   *          an arrar of Cas'es that could not be processed by this CasProcessor
+   * @param abortedCasList
+   *          - an arrar of Cas'es that could not be processed by this CasProcessor
    * 
    */
   @Override
@@ -412,7 +413,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Aggregate total bytes ingested by the CasProcessor.
    * 
-   * @param aBytesIn - number of ingested bytes
+   * @param aBytesIn
+   *          - number of ingested bytes
    */
   @Override
   public void addBytesIn(long aBytesIn) {
@@ -433,7 +435,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Aggregate total bytes processed by this CasProcessor.
    *
-   * @param aBytesOut the a bytes out
+   * @param aBytesOut
+   *          the a bytes out
    */
   @Override
   public void addBytesOut(long aBytesOut) {
@@ -443,7 +446,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increment number of times the casProcessor was restarted due to failures.
    *
-   * @param aCount - restart count
+   * @param aCount
+   *          - restart count
    */
   @Override
   public void incrementRestartCount(int aCount) {
@@ -464,7 +468,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Increments number of times CasProceesor failed analyzing Cas'es due to timeout or some other
    * problems.
    *
-   * @param aCount - failure count
+   * @param aCount
+   *          - failure count
    */
   @Override
   public void incrementRetryCount(int aCount) {
@@ -484,7 +489,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increment number of aborted Cas'es due to inability to process the Cas.
    *
-   * @param aCount - number of aborts while processing Cas'es
+   * @param aCount
+   *          - number of aborts while processing Cas'es
    */
   @Override
   public void incrementAbortCount(int aCount) {
@@ -506,8 +512,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * features. Features that are required by the Cas Processor to perform analysis. Dependant
    * feateurs are defined in the filter expression in the CPE descriptor
    * 
-   * @param aCount -
-   *          number of filtered Cas'es
+   * @param aCount
+   *          - number of filtered Cas'es
    */
   @Override
   public void incrementFilteredCount(int aCount) {
@@ -538,8 +544,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Copies number of entities the CasProcessor has yet to process.
    * 
-   * @param aRemainingCount -
-   *          number of entities to process
+   * @param aRemainingCount
+   *          - number of entities to process
    */
   @Override
   public synchronized void setRemaining(long aRemainingCount) {
@@ -549,7 +555,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Copies id of the last entity processed by the CasProcessor.
    *
-   * @param aEntityId - id of the entity
+   * @param aEntityId
+   *          - id of the entity
    */
   @Override
   public void setLastProcessedEntityId(String aEntityId) {
@@ -572,8 +579,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Copies the last Cas Processed.
    *
-   * @param aCasObject the new last cas
-   * @deprecated 
+   * @param aCasObject
+   *          the new last cas
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -585,7 +593,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Returns the last Cas processed.
    *
    * @return the last cas
-   * @deprecated 
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -596,7 +604,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increment processed.
    *
-   * @param aIncrement the a increment
+   * @param aIncrement
+   *          the a increment
    */
   public void incrementProcessed(int aIncrement) {
     processed += aIncrement;
@@ -605,7 +614,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Used when recovering from checkpoint, sets the total number of entities before CPE stopped.
    * 
-   * @param aProcessedCount - number of entities processed before CPE stopped
+   * @param aProcessedCount
+   *          - number of entities processed before CPE stopped
    */
   @Override
   public void setProcessed(long aProcessedCount) {
@@ -630,7 +640,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     errorCounter = 0;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#resetRestartCount()
    */
   @Override
@@ -642,8 +654,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increments total time spend in the process() method of the CasProcessor.
    *
-   * @param aTime -
-   *          total time in process()
+   * @param aTime
+   *          - total time in process()
    */
   @Override
   public void incrementTotalTime(long aTime) {
@@ -679,8 +691,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Returns true if the Exception cause is SocketTimeoutException.
    *
-   * @param aThrowable -
-   *          Exception to check for SocketTimeoutException
+   * @param aThrowable
+   *          - Exception to check for SocketTimeoutException
    * @return - true if Socket Timeout, false otherwise
    */
   private boolean isTimeout(Throwable aThrowable) {
@@ -698,8 +710,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * run, if it should disable the CasProcessor (and all its instances), or disregard the error and
    * continue.
    *
-   * @param aThrowable - exception to examine
-   * @throws Exception the exception
+   * @param aThrowable
+   *          - exception to examine
+   * @throws Exception
+   *           the exception
    */
   @Override
   public synchronized void incrementCasProcessorErrors(Throwable aThrowable) throws Exception {
@@ -711,12 +725,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     }
     if (System.getProperty("DEBUG_EXCEPTIONS") != null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_show_cp_error_count__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cp_error_count__FINEST",
                 new Object[] { Thread.currentThread().getName(), getName(),
                     String.valueOf(errorCounter), aThrowable.getCause().getMessage() });
       }
@@ -758,15 +768,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         // Check if configured max restart count has been reached
         if (restartCount > rC) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass())
-                    .logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_max_restart_reached__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName(),
-                                String.valueOf(rC) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_max_restart_reached__FINEST", new Object[] {
+                        Thread.currentThread().getName(), getName(), String.valueOf(rC) });
           }
           // get from configuration action to be taken if max restart count reached
           String actionOnMaxRestarts = casProcessorCPEConfiguration.getActionOnMaxRestart();
@@ -790,9 +795,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
                       new Object[] { Thread.currentThread().getName(), getName() });
             }
             throw new AbortCasProcessorException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_EXP_configured_to_disable__WARNING", new Object[] {
-                        Thread.currentThread().getName(), getName() }));
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_configured_to_disable__WARNING",
+                    new Object[] { Thread.currentThread().getName(), getName() }));
           } else if (Constants.KILL_PROCESSING_PIPELINE.equals(actionOnMaxRestarts)) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
@@ -800,10 +804,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
                       "UIMA_CPM_kill_pipeline__FINEST",
                       new Object[] { Thread.currentThread().getName(), getName() });
             }
-            throw new KillPipelineException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_EXP_configured_to_kill_pipeline__WARNING", new Object[] {
-                        Thread.currentThread().getName(), getName() }));
+            throw new KillPipelineException(
+                    CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                            "UIMA_CPM_EXP_configured_to_kill_pipeline__WARNING",
+                            new Object[] { Thread.currentThread().getName(), getName() }));
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -823,12 +827,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       }
       if (aThrowable.getCause() != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_other_exception__FINEST",
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_other_exception__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName(),
                       aThrowable.getCause().getClass().getName() });
         }
@@ -856,11 +856,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     if (errorCounter > configuredErrorRate) {
       if (abortCPMOnError()) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.SEVERE,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_abort_exceeded_error_threshold__SEVERE",
                   new Object[] { Thread.currentThread().getName(), getName(),
                       String.valueOf(configuredErrorRate) });
@@ -869,11 +866,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       }
       if (isAbortable()) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.SEVERE,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_disable_exceeded_error_threshold__SEVERE",
                   new Object[] { Thread.currentThread().getName(), getName(),
                       String.valueOf(configuredErrorRate) });
@@ -896,30 +890,30 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#isEndOfBatch(org.apache.uima.collection.base_cpm.CasProcessor, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#isEndOfBatch(org.apache.
+   * uima.collection.base_cpm.CasProcessor, int)
    */
   /*
    * Called after each entity set is processed and its purpose is to mark end of batch associated
    * with this Container. At the end of batch a CasProcessor may perform a specific processing like
    * writing to a store or do indexing.
    * 
-   * @see org.apache.uima.collection.base_cpm.container.ProcessingContainer#isEndOfBatch(org.apache.uima.collection.base_cpm.CasProcessor,
-   *      int)
+   * @see
+   * org.apache.uima.collection.base_cpm.container.ProcessingContainer#isEndOfBatch(org.apache.uima.
+   * collection.base_cpm.CasProcessor, int)
    */
   @Override
   public synchronized boolean isEndOfBatch(CasProcessor aCasProcessor, int aProcessedSize)
           throws ResourceProcessException, IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass())
-              .logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_cp_batch_size__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          String.valueOf(batchSize) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cp_batch_size__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(),
+                  String.valueOf(batchSize) });
     }
     boolean eob = false;
 
@@ -938,15 +932,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     // Increment the total number of entities processed so far through this container
     processed += aProcessedSize;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass())
-              .logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_cp_doc_count__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          String.valueOf(processed) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cp_doc_count__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(),
+                  String.valueOf(processed) });
     }
     // Check for end-of-batch
     if (batchCounter > batchSize || batchCounter % batchSize == 0) {
@@ -986,8 +975,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * all Cas'es must contain required features. If even one Cas does not have them, the entire
    * bundle is skipped.
    *
-   * @param aCasList -
-   *          bundle containing instances of CAS
+   * @param aCasList
+   *          - bundle containing instances of CAS
    * @return true, if successful
    */
   @Override
@@ -1014,8 +1003,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * defined in the filter. Filtering is optional and if not present in the cpe descriptor this
    * routine always returns true.
    * 
-   * @param aCas -
-   *          Cas instance to check
+   * @param aCas
+   *          - Cas instance to check
    * 
    * @return - true if feature is in the Cas, false otherwise
    */
@@ -1050,8 +1039,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         }
       }
       Filter.Expression filterExpression = (Filter.Expression) filterList.get(i);
-      String featureValue = DATACasUtils.getFeatureValueByType(aCas, filterExpression.getLeftPart()
-              .get());
+      String featureValue = DATACasUtils.getFeatureValueByType(aCas,
+              filterExpression.getLeftPart().get());
       // This evaluates if the Feature with a given name exist
       if (filterExpression.getRightPart() == null) {
         if (System.getProperty("DEBUG_FILTER") != null) {
@@ -1065,22 +1054,21 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         // the featureValue must NOT be null.
         // The second check is to see if the the feature does NOT exist in the CAS. In
         // this case, the feature MUST be null.
-        boolean exists = DATACasUtils.hasFeatureStructure(aCas, filterExpression.getLeftPart()
-                .get());
+        boolean exists = DATACasUtils.hasFeatureStructure(aCas,
+                filterExpression.getLeftPart().get());
         if (System.getProperty("DEBUG_FILTER") != null) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_filter_enabled_left_part__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName(),
                       filterExpression.getLeftPart().get(), String.valueOf(exists) });
         }
 
         if ((filterExpression.getOperand() == null
-                || filterExpression.getOperand().getOperand() == null || !exists)
-                || // this means that the feature must exist in CAS
+                || filterExpression.getOperand().getOperand() == null || !exists) || // this means
+                                                                                     // that the
+                                                                                     // feature must
+                                                                                     // exist in CAS
                 ("!".equals(filterExpression.getOperand().getOperand()) && exists)) // this
         // means
         // that
@@ -1122,8 +1110,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Checks if a given Cas has required features.
    * 
-   * @param aCas -
-   *          Cas instance to check
+   * @param aCas
+   *          - Cas instance to check
    * 
    * @return - true if feature is in the Cas, false otherwise
    */
@@ -1153,7 +1141,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Start.
    *
-   * @deprecated 
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -1164,7 +1152,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Stop.
    *
-   * @deprecated 
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -1203,11 +1191,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
 
         if (!isPaused) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                    Level.FINEST,
-                    this.getClass().getName(),
-                    "process",
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_resuming_container__FINEST",
                     new Object[] { Thread.currentThread().getName(), getName(),
                         String.valueOf(CONTAINER_SLEEP_TIME) });
@@ -1249,8 +1234,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Returns a given casProcessor instance back to the pool.
    *
-   * @param aCasProcessor -
-   *          an instance of CasProcessor to return back to the pool
+   * @param aCasProcessor
+   *          - an instance of CasProcessor to return back to the pool
    * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#releaseCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
   @Override
@@ -1275,8 +1260,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Changes the status of the CasProcessor as a group.
    *
-   * @param aStatus -
-   *          new status
+   * @param aStatus
+   *          - new status
    */
   @Override
   public void setStatus(int aStatus) {
@@ -1287,7 +1272,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Checks if is local.
    *
    * @return true, if is local
-   * @deprecated 
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -1299,7 +1284,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Checks if is remote.
    *
    * @return true, if is remote
-   * @deprecated 
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -1311,7 +1296,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Checks if is integrated.
    *
    * @return true, if is integrated
-   * @deprecated 
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -1347,11 +1332,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     try {
       anAction = casProcessorCPEConfiguration.getActionOnError();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_show_cp_action_on_error__FINEST",
                 new Object[] { Thread.currentThread().getName(), getName(),
                     casProcessorCPEConfiguration.getActionOnError() });
@@ -1390,9 +1372,11 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     return false;
   }
 
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.
+   * ResourceSpecifier, java.util.Map)
    */
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
@@ -1426,11 +1410,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   @Override
   public void destroy() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_show_cp_proxy_pool_size__FINEST",
               new Object[] { Thread.currentThread().getName(), getName(),
                   String.valueOf(casProcessorPool.getSize()) });
@@ -1499,7 +1480,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String,
-   *      java.lang.String)
+   * java.lang.String)
    */
   @Override
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
@@ -1510,7 +1491,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
-   *      java.lang.Object)
+   * java.lang.Object)
    */
   @Override
   public void setConfigParameterValue(String aParamName, Object aValue) {
@@ -1521,7 +1502,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
-   *      java.lang.String, java.lang.Object)
+   * java.lang.String, java.lang.Object)
    */
   @Override
   public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
@@ -1547,9 +1528,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   @Override
   public String getName() {
     if (processorName == null) {
-      if (metadata != null
-              && Constants.DEPLOYMENT_INTEGRATED.equalsIgnoreCase(casProcessorCPEConfiguration
-                      .getDeploymentType())) {
+      if (metadata != null && Constants.DEPLOYMENT_INTEGRATED
+              .equalsIgnoreCase(casProcessorCPEConfiguration.getDeploymentType())) {
         processorName = metadata.getName().trim();
       } else {
         processorName = casProcessorCPEConfiguration.getName().trim();
@@ -1571,8 +1551,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increment a value of a given stat.
    *
-   * @param aStatName the a stat name
-   * @param aStat the a stat
+   * @param aStatName
+   *          the a stat name
+   * @param aStat
+   *          the a stat
    */
   @Override
   public void incrementStat(String aStatName, Integer aStat) {
@@ -1592,8 +1574,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Add an arbitrary object and bind it to a given name.
    *
-   * @param aStatName the a stat name
-   * @param aStat the a stat
+   * @param aStatName
+   *          the a stat name
+   * @param aStat
+   *          the a stat
    */
   @Override
   public void addStat(String aStatName, Object aStat) {
@@ -1608,7 +1592,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Return an abject identified with a given name.
    *
-   * @param aStatName the a stat name
+   * @param aStatName
+   *          the a stat name
    * @return the stat
    */
   @Override
@@ -1652,7 +1637,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#resume()
    */
   @Override
@@ -1668,7 +1655,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#isPaused()
    */
   @Override
@@ -1678,7 +1667,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#getPool()
    */
   @Override
@@ -1686,17 +1677,23 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     return casProcessorPool;
   }
 
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#setSingleFencedService(boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#setSingleFencedService(
+   * boolean)
    */
   @Override
   public void setSingleFencedService(boolean aSingleFencedInstance) {
     singleFencedInstance = aSingleFencedInstance;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#isSingleFencedService()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer#isSingleFencedService()
    */
   @Override
   public boolean isSingleFencedService() {

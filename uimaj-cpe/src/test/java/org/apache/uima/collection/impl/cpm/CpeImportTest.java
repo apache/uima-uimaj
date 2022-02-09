@@ -43,25 +43,25 @@ import org.junit.jupiter.api.Test;
 public class CpeImportTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   @AfterEach
-    public void tearDown() throws Exception {
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
   /**
    * Test a CPE descriptor that uses the import syntax.
    */
-    @Test
-    public void testImports() throws Exception {
-    CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-            new XMLInputSource(JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportTest.xml")));            
+  @Test
+  public void testImports() throws Exception {
+    CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(new XMLInputSource(
+            JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportTest.xml")));
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
 
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -75,28 +75,31 @@ public class CpeImportTest {
     }
 
     // check that components were called
-    final int documentCount = 1000; //this is the # of documents produced by the test CollectionReader
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
+    final int documentCount = 1000; // this is the # of documents produced by the test
+                                    // CollectionReader
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
   }
-  
+
   /**
    * Test a CPE descriptor using import by name and requiring data patht o be set
    */
-    @Test
-    public void testImportsWithDataPath() throws Exception {
-    CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-            new XMLInputSource(JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportDataPathTest.xml")));
+  @Test
+  public void testImportsWithDataPath() throws Exception {
+    CpeDescription cpeDesc = UIMAFramework.getXMLParser()
+            .parseCpeDescription(new XMLInputSource(JUnitExtension
+                    .getFile("CollectionProcessingEngineImplTest/CpeImportDataPathTest.xml")));
     ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
     File dataPathDir = JUnitExtension.getFile("CollectionProcessingEngineImplTest/imports");
     resMgr.setDataPath(dataPathDir.getAbsolutePath());
-    CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, resMgr, null);
+    CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
+            resMgr, null);
 
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
     cpe.addStatusCallbackListener(listener);
@@ -109,14 +112,15 @@ public class CpeImportTest {
     }
 
     // check that components were called
-    final int documentCount = 1000; //this is the # of documents produced by the test CollectionReader
-    Assert.assertEquals("StatusCallbackListener", documentCount, listener
-            .getEntityProcessCompleteCount());
-    Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-            .getCasConsumerProcessCount());
-    Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-            .getAnnotatorProcessCount());
-    Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-            .getCollectionReaderGetNextCount());
-  }  
+    final int documentCount = 1000; // this is the # of documents produced by the test
+                                    // CollectionReader
+    Assert.assertEquals("StatusCallbackListener", documentCount,
+            listener.getEntityProcessCompleteCount());
+    Assert.assertEquals("CasConsumer process Count", documentCount,
+            FunctionErrorStore.getCasConsumerProcessCount());
+    Assert.assertEquals("Annotator process count", documentCount,
+            FunctionErrorStore.getAnnotatorProcessCount());
+    Assert.assertEquals("Collection reader getNext count", documentCount,
+            FunctionErrorStore.getCollectionReaderGetNextCount());
+  }
 }

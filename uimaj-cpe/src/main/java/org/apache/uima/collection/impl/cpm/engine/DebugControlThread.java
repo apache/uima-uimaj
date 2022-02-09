@@ -29,12 +29,11 @@ import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 
-
 /**
  * The Class DebugControlThread.
  */
 public class DebugControlThread implements Runnable {
-  
+
   /** The Constant NOTFOUND. */
   private final static String NOTFOUND = "NOT-FOUND";
 
@@ -61,9 +60,12 @@ public class DebugControlThread implements Runnable {
   /**
    * Instantiates a new debug control thread.
    *
-   * @param aCpm the a cpm
-   * @param aFilename the a filename
-   * @param aCheckpointFrequency the a checkpoint frequency
+   * @param aCpm
+   *          the a cpm
+   * @param aFilename
+   *          the a filename
+   * @param aCheckpointFrequency
+   *          the a checkpoint frequency
    */
   public DebugControlThread(CPMEngine aCpm, String aFilename, int aCheckpointFrequency) {
     cpm = aCpm;
@@ -74,7 +76,8 @@ public class DebugControlThread implements Runnable {
   /**
    * Start.
    *
-   * @throws RuntimeException the runtime exception
+   * @throws RuntimeException
+   *           the runtime exception
    */
   public void start() throws RuntimeException {
     if (fileName == null) {
@@ -84,10 +87,10 @@ public class DebugControlThread implements Runnable {
                 "UIMA_CPM_checkpoint_target_not_defined__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
-      throw new RuntimeException(CpmLocalizedMessage.getLocalizedMessage(
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_EXP_target_checkpoint_not_defined__WARNING", new Object[] { Thread
-                      .currentThread().getName() }));
+      throw new RuntimeException(
+              CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_target_checkpoint_not_defined__WARNING",
+                      new Object[] { Thread.currentThread().getName() }));
     }
     if (cpm == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -113,7 +116,9 @@ public class DebugControlThread implements Runnable {
     doCheckpoint();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Runnable#run()
    */
   @Override
@@ -147,7 +152,8 @@ public class DebugControlThread implements Runnable {
   /**
    * Interpret and execute command.
    *
-   * @param aCommand the a command
+   * @param aCommand
+   *          the a command
    */
   private void interpretAndExecuteCommand(String aCommand) {
     if (aCommand == null) {
