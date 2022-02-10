@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,19 +16,22 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-package org.apache.uima.cas.serdes;
+ -->
 
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-
-import java.util.regex.Pattern;
-
-public class SerDesAssuptions {
-  public static void assumeNotKnownToFail(Runnable aScenario, String... aPatternsAndReasons) {
-    for (int i = 0; i < aPatternsAndReasons.length; i += 2) {
-      String pattern = aPatternsAndReasons[i];
-      String reason = aPatternsAndReasons[i + 1];
-      assumeFalse(Pattern.matches(pattern, aScenario.toString()), "Skipped because: " + reason);
-    }
-  }
-}
+<!-- For testing only. -->
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>Circular2</name>
+  <description>For testing circular imports.</description>
+  <version>0.1</version>
+  <vendor>The Apache Software Foundation</vendor>
+  <imports>
+    <import location="Loop-with-2-nodes-1.xml" />
+  </imports>
+  <types>
+    <typeDescription>
+      <name>Bar</name>
+      <description />
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

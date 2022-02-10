@@ -31,17 +31,18 @@ import org.apache.uima.resource.ResourceConfigurationException;
  */
 public interface CasProcessorDeployer {
   /**
-   * Deploys all Cas Processors in <i>aCasProcessorList</i>. The list contains one or more
-   * instances of the same Cas Processor.
+   * Deploys all Cas Processors in <i>aCasProcessorList</i>. The list contains one or more instances
+   * of the same Cas Processor.
    * 
-   * @param aCasProcessorList -
-   *          list of Cas Processors to deploy
-   * @param redeploy -
-   *          true if the Cas Processor is being redeployed as part of the recovery, false otherwise
+   * @param aCasProcessorList
+   *          - list of Cas Processors to deploy
+   * @param redeploy
+   *          - true if the Cas Processor is being redeployed as part of the recovery, false
+   *          otherwise
    * @return ProcessingContainer managing deployed Cas Processors
    * 
-   * @throws ResourceConfigurationException -
-   *           failed to deploy Cas Processor
+   * @throws ResourceConfigurationException
+   *           - failed to deploy Cas Processor
    */
   ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException;
@@ -49,11 +50,11 @@ public interface CasProcessorDeployer {
   /**
    * Method used to redeploy a single instance of a Cas Processor.
    * 
-   * @param aProcessingContainer -
-   *          ProcessingContainer managing deployed Cas Processor to redeploy
+   * @param aProcessingContainer
+   *          - ProcessingContainer managing deployed Cas Processor to redeploy
    * 
-   * @throws ResourceConfigurationException -
-   *           failed to deploy Cas Processor
+   * @throws ResourceConfigurationException
+   *           - failed to deploy Cas Processor
    */
   void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException;

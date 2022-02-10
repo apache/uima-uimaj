@@ -21,13 +21,11 @@ package org.apache.uima.collection.impl.cpm.engine;
 
 import org.apache.uima.cas.CAS;
 
-
-
 /**
  * The Class WorkUnit.
  */
 public class WorkUnit {
-  
+
   /** The payload. */
   private Object payload = null;
 
@@ -37,11 +35,11 @@ public class WorkUnit {
   /** The timedout. */
   private boolean timedout = false;
 
-  
   /**
    * Instantiates a new work unit.
    *
-   * @param aPayload the a payload
+   * @param aPayload
+   *          the a payload
    */
   public WorkUnit(Object aPayload) {
     payload = aPayload;
@@ -59,7 +57,8 @@ public class WorkUnit {
   /**
    * Sets the cas.
    *
-   * @param aCas the new cas
+   * @param aCas
+   *          the new cas
    */
   public void setCas(CAS[] aCas) {
     cas = aCas;

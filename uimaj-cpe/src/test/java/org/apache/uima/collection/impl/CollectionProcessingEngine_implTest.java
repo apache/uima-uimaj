@@ -40,30 +40,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CollectionProcessingEngine_implTest {
-  protected final String TEST_DATAPATH = JUnitExtension.getFile(
-      "CollectionProcessingEngineImplTest").getPath()
-      + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+  protected final String TEST_DATAPATH = JUnitExtension
+          .getFile("CollectionProcessingEngineImplTest").getPath()
+          + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     File referenceFile = JUnitExtension
-	.getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml");
+            .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml");
     System.setProperty("CPM_HOME", referenceFile.getParentFile().getParentFile().getAbsolutePath());
   }
 
-    @Test
-    public void testPerformanceTuningSettings() throws Exception {
+  @Test
+  public void testPerformanceTuningSettings() throws Exception {
     try {
       Properties newProps = UIMAFramework.getDefaultPerformanceTuningProperties();
       newProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "100000");
       HashMap params = new HashMap();
       params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
 
-      CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-	  new XMLInputSource(JUnitExtension
-	      .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
+      CpeDescription cpeDesc = UIMAFramework.getXMLParser()
+              .parseCpeDescription(new XMLInputSource(JUnitExtension.getFile(
+                      "CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
-	  params);
+              params);
       cpe.process();
       // Need to give CPE time to do its work. The following should work, but
       // doesn't
@@ -77,35 +77,35 @@ public class CollectionProcessingEngine_implTest {
     }
   }
 
-    @Test
-    public void testExternalResoures() throws Exception {
+  @Test
+  public void testExternalResoures() throws Exception {
     try {
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
-      CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-	  new XMLInputSource(JUnitExtension
-	      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
+      CpeDescription cpeDesc = UIMAFramework.getXMLParser()
+              .parseCpeDescription(new XMLInputSource(JUnitExtension
+                      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, rm,
-	  null);
+              null);
       CollectionReader colRdr = (CollectionReader) cpe.getCollectionReader();
       assertNotNull(colRdr.getUimaContext().getResourceObject("TestFileResource"));
       CasInitializer casIni = colRdr.getCasInitializer();
       assertNotNull(casIni.getUimaContext().getResourceObject("TestFileLanguageResource",
-	  new String[] { "en" }));
+              new String[] { "en" }));
       AnalysisEngine ae = (AnalysisEngine) cpe.getCasProcessors()[0];
       assertNotNull(ae.getUimaContext().getResourceObject("TestResourceObject"));
       assertNotNull(ae.getUimaContext().getResourceObject("TestLanguageResourceObject",
-	  new String[] { "en" }));
+              new String[] { "en" }));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @Test
-    public void testCasMultiplierTypeSystem() throws Throwable {
+
+  @Test
+  public void testCasMultiplierTypeSystem() throws Throwable {
     CpeDescription cpeDesc = UIMAFramework.getXMLParser()
-            .parseCpeDescription(new XMLInputSource(
-                    JUnitExtension.getFile("CollectionProcessingEngineImplTest/cpeWithWrappedCasMultiplier.xml")));
+            .parseCpeDescription(new XMLInputSource(JUnitExtension.getFile(
+                    "CollectionProcessingEngineImplTest/cpeWithWrappedCasMultiplier.xml")));
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
     // create and register a status callback listener
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -118,10 +118,10 @@ public class CollectionProcessingEngine_implTest {
     while (!listener.isFinished()) {
       Thread.sleep(5);
     }
-    
-    //check that there was no exception
+
+    // check that there was no exception
     if (listener.getLastStatus().isException()) {
-      throw (Throwable)listener.getLastStatus().getExceptions().get(0);
+      throw (Throwable) listener.getLastStatus().getExceptions().get(0);
     }
   }
 }

@@ -20,10 +20,11 @@ package org.apache.uima.cas.serdes;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.SerialFormat.XCAS;
-import static org.apache.uima.cas.serdes.SerDesAssuptions.assumeNotKnownToFail;
+import static org.apache.uima.cas.serdes.SerDesAssumptions.assumeNotKnownToFail;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.desser;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.serdes;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.CasLoadOptions.PRESERVE_ORIGINAL_TSI;
 import static org.apache.uima.cas.serdes.generators.MultiFeatureRandomCasGenerator.StringArrayMode.EMPTY_STRINGS_AS_NULL;
 import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.LENIENT;
@@ -49,9 +50,9 @@ public class CasSerializationDeserialization_XCAS_Test {
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
           new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
-                  (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
+                  (a, b) -> serdes(a, b, FORMAT, DEFAULT, PRESERVE_ORIGINAL_TSI)),
           new CasSerDesCycleConfiguration(FORMAT + " / LENIENT", //
-                  (a, b) -> serdes(a, b, FORMAT, LENIENT)));
+                  (a, b) -> serdes(a, b, FORMAT, LENIENT, PRESERVE_ORIGINAL_TSI)));
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
           new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //

@@ -42,10 +42,10 @@ public class CheckpointConfig {
   /**
    * Initilizes instance with a file where the checkpoint will be stored and checkpoint frequency.
    * 
-   * @param aChpFile -
-   *          path to the checkpoint file
-   * @param aFrequency -
-   *          frequency of checkpoints
+   * @param aChpFile
+   *          - path to the checkpoint file
+   * @param aFrequency
+   *          - frequency of checkpoints
    */
   public CheckpointConfig(String aChpFile, String aFrequency) {
     checkpointFile = aChpFile;

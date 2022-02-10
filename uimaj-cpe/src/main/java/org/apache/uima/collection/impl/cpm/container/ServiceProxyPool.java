@@ -38,7 +38,7 @@ public class ServiceProxyPool {
 
   private LinkedList mFreeInstances = new LinkedList();
 
-//  private int mNumInstances;
+  // private int mNumInstances;
 
   /**
    * Checks out a Resource from the pool.
@@ -57,24 +57,16 @@ public class ServiceProxyPool {
       }
       CasProcessor r = (CasProcessor) mFreeInstances.remove(0);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_show_cp_pool_size__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cp_pool_size__FINEST",
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
       }
       return r;
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.WARNING,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_cp_pool_empty__WARNING",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cp_pool_empty__WARNING",
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
       }
@@ -86,19 +78,16 @@ public class ServiceProxyPool {
    * Checks in a Resource to the pool. Also notifies other Threads that may be waiting for available
    * instance.
    * 
-   * @param aResource -
-   *          instance of the CasProcessor to check in
+   * @param aResource
+   *          - instance of the CasProcessor to check in
    */
   public synchronized void checkIn(CasProcessor aResource) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_checking_in_cp_to_pool__FINEST",
-              new Object[] { Thread.currentThread().getName(),
-                  String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
+              new Object[] { Thread.currentThread().getName(), String.valueOf(mAllInstances.size()),
+                  String.valueOf(mFreeInstances.size()) });
     }
     // make sure this Resource was actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aResource) || mFreeInstances.contains(aResource)) {
@@ -127,14 +116,10 @@ public class ServiceProxyPool {
       mFreeInstances.add(aResource);
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_show_cp_pool_size__FINEST",
-              new Object[] { Thread.currentThread().getName(),
-                  String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cp_pool_size__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(mAllInstances.size()),
+                  String.valueOf(mFreeInstances.size()) });
     }
     // Notify any threads waiting on this object
     notifyAll();
@@ -180,99 +165,91 @@ public class ServiceProxyPool {
    * 
    * @return the available size of this pool
    */
-  public synchronized int getSize() {  // synch for JVM memory model to get current value
+  public synchronized int getSize() { // synch for JVM memory model to get current value
     return mFreeInstances.size();
   }
 
   public synchronized void addCasProcessor(CasProcessor aCasProcessor) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_add_cp_to_pool__FINEST",
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_add_cp_to_pool__FINEST",
               new Object[] { Thread.currentThread().getName(),
                   aCasProcessor.getProcessingResourceMetaData().getName() });
     }
     mAllInstances.add(aCasProcessor);
     mFreeInstances.add(aCasProcessor);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.FINEST,
-              this.getClass().getName(),
-              "process",
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_show_cp_pool_size__FINEST",
-              new Object[] { Thread.currentThread().getName(),
-                  String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cp_pool_size__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(mAllInstances.size()),
+                  String.valueOf(mFreeInstances.size()) });
     }
   }
 
-//  /**
-//   * Utility method used in the constructor to fill the pool with Resource instances.
-//   * 
-//   * @param aResourceSpecifier
-//   *          specifier that describes how to create the Resource instances for the pool
-//   * @param aResourceClass
-//   *          class of resource to instantiate
-//   * @param aResourceInitParams
-//   *          initialization parameters to be passed to the
-//   *          {@link Resource#initialize(ResourceSpecifier,Map)} method.
-//   * 
-//   * 
-//   * @throws ResourceInitializationException
-//   *           if the Resource instances could not be created
-//   */
-//  protected void fillPool(BoundedWorkQueue portQueue, Map initParams)
-//          throws ResourceInitializationException {
-//    boolean isServiceLocal = false;
-//    if (initParams != null && initParams.containsKey("SERVICE_NAME")) {
-//      isServiceLocal = true;
-//    }
-//    // fill the pool
-//    for (int i = 0; i < mNumInstances; i++) {
-//      VinciTAP tap = new VinciTAP();
-//      if (isServiceLocal) {
-//        String portAsString = (String) portQueue.dequeue();
-//        int port = -1;
-//        try {
-//          port = Integer.parseInt(portAsString);
-//        } catch (NumberFormatException e) {
-//        }
-//        String vnsHost = (String) initParams.get("VNS_HOST");
-//        String vnsPort = (String) initParams.get("VNS_PORT");
-//        tap.setVNSHost(vnsHost);
-//        tap.setVNSPort(vnsPort);
-//        try {
-//          tap.connect("127.0.0.1", port);
-//        } catch (ConnectException e) {
-//          throw new ResourceInitializationException(e.getMessage(), null);
-//        }
-//      }
-//      mAllInstances.add(tap);
-//      mFreeInstances.add(tap);
-//    }
-//  }
+  // /**
+  // * Utility method used in the constructor to fill the pool with Resource instances.
+  // *
+  // * @param aResourceSpecifier
+  // * specifier that describes how to create the Resource instances for the pool
+  // * @param aResourceClass
+  // * class of resource to instantiate
+  // * @param aResourceInitParams
+  // * initialization parameters to be passed to the
+  // * {@link Resource#initialize(ResourceSpecifier,Map)} method.
+  // *
+  // *
+  // * @throws ResourceInitializationException
+  // * if the Resource instances could not be created
+  // */
+  // protected void fillPool(BoundedWorkQueue portQueue, Map initParams)
+  // throws ResourceInitializationException {
+  // boolean isServiceLocal = false;
+  // if (initParams != null && initParams.containsKey("SERVICE_NAME")) {
+  // isServiceLocal = true;
+  // }
+  // // fill the pool
+  // for (int i = 0; i < mNumInstances; i++) {
+  // VinciTAP tap = new VinciTAP();
+  // if (isServiceLocal) {
+  // String portAsString = (String) portQueue.dequeue();
+  // int port = -1;
+  // try {
+  // port = Integer.parseInt(portAsString);
+  // } catch (NumberFormatException e) {
+  // }
+  // String vnsHost = (String) initParams.get("VNS_HOST");
+  // String vnsPort = (String) initParams.get("VNS_PORT");
+  // tap.setVNSHost(vnsHost);
+  // tap.setVNSPort(vnsPort);
+  // try {
+  // tap.connect("127.0.0.1", port);
+  // } catch (ConnectException e) {
+  // throw new ResourceInitializationException(e.getMessage(), null);
+  // }
+  // }
+  // mAllInstances.add(tap);
+  // mFreeInstances.add(tap);
+  // }
+  // }
 
   // never used
-//  /**
-//   * Returns all instances in the pool
-//   * 
-//   * @return - list of CasProcessor instances
-//   */
-//  protected synchronized LinkedList getAllInstances() {
-//    return mAllInstances;
-//  }
-//
-//  /**
-//   * Returns a list of CasProcessor instances not currently in use
-//   * 
-//   * @return -list of free proxies
-//   */
-//  protected synchronized LinkedList getFreeInstances() {
-//    return mFreeInstances;
-//  }
+  // /**
+  // * Returns all instances in the pool
+  // *
+  // * @return - list of CasProcessor instances
+  // */
+  // protected synchronized LinkedList getAllInstances() {
+  // return mAllInstances;
+  // }
+  //
+  // /**
+  // * Returns a list of CasProcessor instances not currently in use
+  // *
+  // * @return -list of free proxies
+  // */
+  // protected synchronized LinkedList getFreeInstances() {
+  // return mFreeInstances;
+  // }
 
   public synchronized int getAllInstanceCount() {
     return mAllInstances.size();

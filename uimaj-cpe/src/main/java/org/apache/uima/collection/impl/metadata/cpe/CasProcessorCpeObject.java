@@ -51,7 +51,6 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * Base class for all CpeCasProcessor objects in the reference implementation. Provides support for
  * getting and setting common configuration settings shared by all CpeCasProcessor objects
@@ -59,12 +58,13 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  */
 public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCasProcessor {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -2424851648116984900L;
 
   /** The Constant actionArray. */
-  private static final String[] actionArray = { "continue", "terminate", "disable", "kill-pipeline" };
+  private static final String[] actionArray = { "continue", "terminate", "disable",
+      "kill-pipeline" };
 
   /** The Constant deployArray. */
   private static final String[] deployArray = { "integrated", "remote", "local" };
@@ -111,15 +111,15 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
   /**
    * Associates deployment type with for this CasProcessor. Three types are currently supported:
    * <ul>
-   * <li> integrated - CasProcessor is collocated with the CPM
-   * <li> local - CasProcessor runs on the same machine as the CPM however in a different process
-   * <li> remote - CasProcessor runs on remote machine
+   * <li>integrated - CasProcessor is collocated with the CPM
+   * <li>local - CasProcessor runs on the same machine as the CPM however in a different process
+   * <li>remote - CasProcessor runs on remote machine
    * </ul>
    * 
-   * @param aDeployMode -
-   *          String identifying deployment type
-   * @throws CpeDescriptorException -
-   *           if invalid deployment type is provided
+   * @param aDeployMode
+   *          - String identifying deployment type
+   * @throws CpeDescriptorException
+   *           - if invalid deployment type is provided
    */
   public void setDeployment(String aDeployMode) throws CpeDescriptorException {
     deployment = aDeployMode;
@@ -147,9 +147,10 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
   /**
    * Associates a given descriptor path with this CasProcessor.
    *
-   * @param aDescriptorPath -
-   *          path to the descriptor
-   * @throws CpeDescriptorException tbd
+   * @param aDescriptorPath
+   *          - path to the descriptor
+   * @throws CpeDescriptorException
+   *           tbd
    */
   @Override
   public void setDescriptor(String aDescriptorPath) throws CpeDescriptorException {
@@ -166,12 +167,13 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * Returns a descriptor path associated with this CasProcessor.
    *
    * @return String - descriptor path
-   * @deprecated Doesn't support the new import syntax.  Use getCpeComponentDescriptor().findAbsoluteUrl() instead.
+   * @deprecated Doesn't support the new import syntax. Use
+   *             getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
 
   @Override
   @Deprecated
-public String getDescriptor() {
+  public String getDescriptor() {
     if (descriptor != null && descriptor.getInclude() != null) {
       return descriptor.getInclude().get();
     }
@@ -193,8 +195,8 @@ public String getDescriptor() {
    * Associates a filter string with this CasProcessor. A filter provides a mechanism that
    * facilitates efficient routing of Cas's to the CasProcessor.
    * 
-   * @param aFilterExpression -
-   *          String containing a filter
+   * @param aFilterExpression
+   *          - String containing a filter
    */
   @Override
   public void setCasProcessorFilter(String aFilterExpression) {
@@ -217,7 +219,8 @@ public String getDescriptor() {
     }
     String filterString = getFilter().getFilterString();
     if (filter != null) {
-      if (filterString.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
+      if (filterString
+              .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
         filterString = StringUtils.replaceAll(filterString,
                 org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
                 org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
@@ -234,7 +237,8 @@ public String getDescriptor() {
   /**
    * Adds default configuration shared by CasProcessors.
    *
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   protected void addDefaults() throws CpeDescriptorException {
     if (getCasProcessorFilter() == null) {
@@ -271,8 +275,8 @@ public String getDescriptor() {
   /**
    * Associates a batch size with this CasProcessor.
    * 
-   * @param aBatchSize -
-   *          batch size of this CasProcessor
+   * @param aBatchSize
+   *          - batch size of this CasProcessor
    */
   @Override
   public void setBatchSize(int aBatchSize) {
@@ -293,10 +297,11 @@ public String getDescriptor() {
    * Deletes a given param from a param list if it exists. Returns a position in the current Param
    * List for a given 'aParamName'.
    *
-   * @param aParamName -
-   *          name of the param to find.
+   * @param aParamName
+   *          - name of the param to find.
    * @return - position in the list as int, -1 if not found
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   private int deleteParam(String aParamName) throws CpeDescriptorException {
     CasProcessorDeploymentParams depParams = getDeploymentParameters();
@@ -316,12 +321,13 @@ public String getDescriptor() {
    * Adds a given deployment param to the param list. If a param with a given name exists in the
    * list its value will be over-written.
    * 
-   * @param aParamName -
-   *          name of the new parameter
-   * @param aParamValue -
-   *          value of the new parameter
+   * @param aParamName
+   *          - name of the new parameter
+   * @param aParamValue
+   *          - value of the new parameter
    * 
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   @Override
   public void addDeployParam(String aParamName, String aParamValue) throws CpeDescriptorException {
@@ -336,16 +342,18 @@ public String getDescriptor() {
       }
     }
     if (!found) {
-      deploymentParameters.add(new CasProcessorDeploymentParamImpl(aParamName, aParamValue,
-              "string"));
+      deploymentParameters
+              .add(new CasProcessorDeploymentParamImpl(aParamName, aParamValue, "string"));
     }
   }
 
   /**
    * Sets the deployment params.
    *
-   * @param aParams the new deployment params
-   * @throws CpeDescriptorException tbd
+   * @param aParams
+   *          the new deployment params
+   * @throws CpeDescriptorException
+   *           tbd
    */
   protected void setDeploymentParams(CasProcessorDeploymentParams aParams)
           throws CpeDescriptorException {
@@ -366,9 +374,10 @@ public String getDescriptor() {
   /**
    * Associates a name with this CasProcessor.
    *
-   * @param aName -
-   *          name as string
-   * @throws CpeDescriptorException tbd
+   * @param aName
+   *          - name as string
+   * @throws CpeDescriptorException
+   *           tbd
    */
   @Override
   public void setName(String aName) throws CpeDescriptorException {
@@ -394,9 +403,11 @@ public String getDescriptor() {
   /**
    * Sets the sofa.
    *
-   * @param aSoFa the new sofa
-   * @throws CpeDescriptorException tbd
-   * @deprecated 
+   * @param aSoFa
+   *          the new sofa
+   * @throws CpeDescriptorException
+   *           tbd
+   * @deprecated
    */
   @Override
   @Deprecated
@@ -439,8 +450,10 @@ public String getDescriptor() {
   /**
    * Sets the cas processor filter.
    *
-   * @param aFilter the new cas processor filter
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aFilter
+   *          the new cas processor filter
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   public void setCasProcessorFilter(CasProcessorFilter aFilter) throws CpeDescriptorException {
     filter = aFilter;
@@ -449,13 +462,17 @@ public String getDescriptor() {
   /**
    * Sets the error handling.
    *
-   * @param aErrorHandling the new error handling
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aErrorHandling
+   *          the new error handling
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeCasProcessor#setErrorHandling(org.apache.uima.collection.metadata.CasProcessorErrorHandling)
+   * @see
+   * org.apache.uima.collection.metadata.CpeCasProcessor#setErrorHandling(org.apache.uima.collection
+   * .metadata.CasProcessorErrorHandling)
    */
   public void setErrorHandling(CasProcessorErrorHandling aErrorHandling)
           throws CpeDescriptorException {
@@ -478,8 +495,8 @@ public String getDescriptor() {
    * sample size is defined seperately.
    * 
    * 
-   * @param aErrorCount -
-   *          max error tolerance
+   * @param aErrorCount
+   *          - max error tolerance
    */
   @Override
   public void setMaxErrorCount(int aErrorCount) {
@@ -514,8 +531,8 @@ public String getDescriptor() {
    * sample size is defined seperately.
    * 
    * 
-   * @param aErrorSampleSize -
-   *          max error tolerance
+   * @param aErrorSampleSize
+   *          - max error tolerance
    */
   @Override
   public void setMaxErrorSampleSize(int aErrorSampleSize) {
@@ -547,8 +564,8 @@ public String getDescriptor() {
   /**
    * Check if the action String is valid.
    *
-   * @param aAction -
-   *          action as string
+   * @param aAction
+   *          - action as string
    * @return - true is valid, false otherwise
    */
   private boolean validAction(String aAction) {
@@ -564,8 +581,8 @@ public String getDescriptor() {
    * Associates action in the event the errors exceed max tolerance. In such case, the action
    * determines appropriate strategy ( terminate, continue, disable).
    * 
-   * @param aAction -
-   *          action string
+   * @param aAction
+   *          - action string
    */
   @Override
   public void setActionOnMaxError(String aAction) {
@@ -593,8 +610,8 @@ public String getDescriptor() {
    * Associates action in the event CasProcessor restarts exceed max tolerance. In such case, the
    * action determines appropriate strategy ( terminate, continue, disable).
    * 
-   * @param aAction -
-   *          action string
+   * @param aAction
+   *          - action string
    */
   @Override
   public void setActionOnMaxRestart(String aAction) {
@@ -621,8 +638,8 @@ public String getDescriptor() {
   /**
    * Associates max tolerance for CasProcessor restarts.
    * 
-   * @param aRestartCount -
-   *          max number of restarts
+   * @param aRestartCount
+   *          - max number of restarts
    */
   @Override
   public void setMaxRestartCount(int aRestartCount) {
@@ -650,8 +667,8 @@ public String getDescriptor() {
    * Associates timeout in terms of ms, with this CasProcessor. It is the max number of millis to
    * wait for response.
    * 
-   * @param aTimeoutValue -
-   *          millis to wait for response
+   * @param aTimeoutValue
+   *          - millis to wait for response
    */
   @Override
   public void setTimeout(int aTimeoutValue) {
@@ -679,8 +696,10 @@ public String getDescriptor() {
   /**
    * Sets configuration parameter settings for this CasProcessor.
    *
-   * @param settings the new configuration parameter settings
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param settings
+   *          the new configuration parameter settings
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
@@ -693,8 +712,8 @@ public String getDescriptor() {
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
                 .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
-          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
-                  .getParameterSettings()[i].getValue());
+          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(),
+                  settings.getParameterSettings()[i].getValue());
         }
         parameterSettings.setParameterSettings(nvp);
       }
@@ -716,7 +735,8 @@ public String getDescriptor() {
   /**
    * Sets the parameter settings.
    *
-   * @param settings the new parameter settings
+   * @param settings
+   *          the new parameter settings
    */
   public void setParameterSettings(ConfigurationParameterSettings settings) {
     parameterSettings = settings;
@@ -770,7 +790,8 @@ public String getDescriptor() {
   /**
    * Sets the checkpoint.
    *
-   * @param checkpoint the new checkpoint
+   * @param checkpoint
+   *          the new checkpoint
    */
   public void setCheckpoint(CpeCheckpoint checkpoint) {
     this.checkpoint = checkpoint;
@@ -779,7 +800,8 @@ public String getDescriptor() {
   /**
    * Sets the parameters.
    *
-   * @param aparameters the new parameters
+   * @param aparameters
+   *          the new parameters
    */
   public void setParameters(Parameter[] aparameters) {
     parameters = aparameters;
@@ -788,7 +810,8 @@ public String getDescriptor() {
   /**
    * Sets the filter.
    *
-   * @param aFilter the new filter
+   * @param aFilter
+   *          the new filter
    */
   public void setFilter(CasProcessorFilter aFilter) {
     filter = aFilter;
@@ -807,7 +830,8 @@ public String getDescriptor() {
   /**
    * Sets the run in separate process.
    *
-   * @param process container with configuration info for running CasProcessor in separate process
+   * @param process
+   *          container with configuration info for running CasProcessor in separate process
    */
   public void setRunInSeparateProcess(CasProcessorRunInSeperateProcess process) {
     runInSeparateProcess = process;
@@ -825,7 +849,8 @@ public String getDescriptor() {
   /**
    * Sets the deployment parameters.
    *
-   * @param parameters deployment parameters
+   * @param parameters
+   *          deployment parameters
    */
   public void setDeploymentParameters(CasProcessorDeploymentParams parameters) {
     deploymentParameters = parameters;
@@ -834,10 +859,14 @@ public String getDescriptor() {
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -874,7 +903,9 @@ public String getDescriptor() {
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -915,14 +946,17 @@ public String getDescriptor() {
   /**
    * Sets the sofa name mappings.
    *
-   * @param mappings sofa name mappings
+   * @param mappings
+   *          sofa name mappings
    */
   @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessor#setIsParallelizable(boolean)
    */
   @Override
@@ -930,7 +964,9 @@ public String getDescriptor() {
     isParallelizable = isP;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessor#getIsParallelizable()
    */
   @Override

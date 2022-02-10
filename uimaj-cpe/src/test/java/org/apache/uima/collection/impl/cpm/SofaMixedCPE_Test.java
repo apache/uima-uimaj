@@ -51,12 +51,13 @@ public class SofaMixedCPE_Test {
 
   Throwable firstFailure;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaMixedCPE.xml");
     // Use the specifier file to determine where the specifiers live.
-    System.setProperty("CPM_HOME", cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
+    System.setProperty("CPM_HOME",
+            cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
     cpeDesc = UIMAFramework.getXMLParser()
             .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
     // instantiate a cpe
@@ -67,8 +68,8 @@ public class SofaMixedCPE_Test {
     firstFailure = null;
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     cpeDesc = null;
     cpe = null;
     cpeSpecifierFile = null;
@@ -76,11 +77,11 @@ public class SofaMixedCPE_Test {
     System.gc();
   }
 
-    @Test
-    public void testProcess() throws Throwable {
+  @Test
+  public void testProcess() throws Throwable {
     try {
       cpe.process();
-      while ( cpe.isProcessing() ) {
+      while (cpe.isProcessing()) {
         // wait till cpe finishes
         synchronized (statCbL1) {
           statCbL1.wait(100);

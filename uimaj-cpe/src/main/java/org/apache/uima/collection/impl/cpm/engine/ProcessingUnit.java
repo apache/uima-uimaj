@@ -61,18 +61,15 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-
 /**
- * This component executes the processing pipeline. Running in a seperate thread it continuously
- * reads bundles of Cas from the Work Queue filled by {@link ArtifactProducer} and sends it through
+ * This component executes the processing pipeline. Running in a separate thread it continuously
+ * reads bundles of CAS from the Work Queue filled by {@link ArtifactProducer} and sends it through
  * configured CasProcessors. The sequence in which CasProcessors are invoked is defined by the order
- * of Cas Processor listing in the cpe descriptor. The results of analysis produced be Cas
- * Processors is enqueued onto an output queue that is shared with Cas Consumers.
- * 
- * 
+ * of CAS Processor listing in the CPE descriptor. The results of analysis produced be CAS
+ * Processors is enqueued onto an output queue that is shared with CAS Consumers.
  */
-public class ProcessingUnit extends Thread {
-  
+public class ProcessingUnit implements Runnable {
+
   /** The thread state. */
   public int threadState = 0;
 
@@ -157,6 +154,8 @@ public class ProcessingUnit extends Thread {
   /** The timer 06. */
   public long timer06 = 0;
 
+  private String name;
+
   /**
    * Instantiates a new processing unit.
    */
@@ -166,17 +165,26 @@ public class ProcessingUnit extends Thread {
     mConverter = new CasConverter();
   }
 
+  public void setName(String aName) {
+    name = aName;
+  }
+
+  public String getName() {
+    return name;
+  }
+
   /**
    * Initialize the PU.
    *
-   * @param acpm -
-   *          component managing life cycle of the CPE
-   * @param aInputQueue -
-   *          queue to read from
-   * @param aOutputQueue -
-   *          queue to write to
+   * @param acpm
+   *          - component managing life cycle of the CPE
+   * @param aInputQueue
+   *          - queue to read from
+   * @param aOutputQueue
+   *          - queue to write to
    */
-  public ProcessingUnit(CPMEngine acpm, BoundedWorkQueue aInputQueue, BoundedWorkQueue aOutputQueue) {
+  public ProcessingUnit(CPMEngine acpm, BoundedWorkQueue aInputQueue,
+          BoundedWorkQueue aOutputQueue) {
     cpm = acpm;
     try {
       cpeConfiguration = cpm.getCpeConfig();
@@ -194,7 +202,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Instantiates a new processing unit.
    *
-   * @param acpm the acpm
+   * @param acpm
+   *          the acpm
    */
   public ProcessingUnit(CPMEngine acpm) {
     cpm = acpm;
@@ -235,8 +244,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Alternative method of providing a queue from which this PU will read bundle of Cas.
    *
-   * @param aInputQueue -
-   *          read queue
+   * @param aInputQueue
+   *          - read queue
    */
   public void setInputQueue(BoundedWorkQueue aInputQueue) {
     workQueue = aInputQueue;
@@ -245,8 +254,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Alternative method of providing a queue where this PU will deposit results of analysis.
    *
-   * @param aOutputQueue -
-   *          queue to write to
+   * @param aOutputQueue
+   *          - queue to write to
    */
   public void setOutputQueue(BoundedWorkQueue aOutputQueue) {
     outputQueue = aOutputQueue;
@@ -256,8 +265,8 @@ public class ProcessingUnit extends Thread {
    * Alternative method of providing the reference to the component managing the lifecycle of the
    * CPE.
    *
-   * @param acpm -
-   *          reference to the contrlling engine
+   * @param acpm
+   *          - reference to the contrlling engine
    */
   public void setCPMEngine(CPMEngine acpm) {
     cpm = acpm;
@@ -285,8 +294,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Set a flag indicating if notifications should be made via configured Listeners.
    *
-   * @param aDoNotify -
-   *          true if notification is required, false otherwise
+   * @param aDoNotify
+   *          - true if notification is required, false otherwise
    */
   public void setNotifyListeners(boolean aDoNotify) {
     notifyListeners = aDoNotify;
@@ -295,8 +304,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Plugs in Listener object used for notifications.
    * 
-   * @param aListener -
-   *          {@link org.apache.uima.collection.base_cpm.BaseStatusCallbackListener} instance
+   * @param aListener
+   *          - {@link org.apache.uima.collection.base_cpm.BaseStatusCallbackListener} instance
    */
   public void addStatusCallbackListener(BaseStatusCallbackListener aListener) {
     statusCbL.add(aListener);
@@ -315,8 +324,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Removes given listener from the list of listeners.
    *
-   * @param aListener -
-   *          object to remove from the list
+   * @param aListener
+   *          - object to remove from the list
    */
   public void removeStatusCallbackListener(BaseStatusCallbackListener aListener) {
     statusCbL.remove(aListener);
@@ -325,8 +334,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Plugs in ProcessTrace object used to collect statistics.
    *
-   * @param aProcessingUnitProcessTrace -
-   *          object to compile stats
+   * @param aProcessingUnitProcessTrace
+   *          - object to compile stats
    */
   public void setProcessingUnitProcessTrace(ProcessTrace aProcessingUnitProcessTrace) {
     processingUnitProcessTrace = aProcessingUnitProcessTrace;
@@ -336,8 +345,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Plugs in custom timer used by the PU for getting time.
    *
-   * @param aTimer -
-   *          custom timer to use
+   * @param aTimer
+   *          - custom timer to use
    */
   public void setUimaTimer(UimaTimer aTimer) {
     timer = aTimer;
@@ -361,8 +370,8 @@ public class ProcessingUnit extends Thread {
    * Disable a CASProcessor in the processing pipeline. Locate it by provided index. The disabled
    * Cas Processor remains in the Processing Pipeline, however it is not used furing processing.
    * 
-   * @param aCasProcessorIndex -
-   *          location in the pipeline of the Cas Processor to delete
+   * @param aCasProcessorIndex
+   *          - location in the pipeline of the Cas Processor to delete
    */
   public void disableCasProcessor(int aCasProcessorIndex) {
     if (aCasProcessorIndex < 0 || aCasProcessorIndex > processContainers.size()) {
@@ -380,8 +389,8 @@ public class ProcessingUnit extends Thread {
    * 
    * Alternative method to disable Cas Processor. Uses a name to locate it.
    * 
-   * @param aCasProcessorName -
-   *          a name of the Cas Processor to disable
+   * @param aCasProcessorName
+   *          - a name of the Cas Processor to disable
    */
   public void disableCasProcessor(String aCasProcessorName) {
     for (int i = 0; i < processContainers.size(); i++) {
@@ -398,8 +407,8 @@ public class ProcessingUnit extends Thread {
    * Enables Cas Processor with a given name. Enabled Cas Processor will immediately begin to
    * receive bundles of Cas.
    * 
-   * @param aCasProcessorName -
-   *          name of the Cas Processor to enable
+   * @param aCasProcessorName
+   *          - name of the Cas Processor to enable
    */
   public void enableCasProcessor(String aCasProcessorName) {
     for (int i = 0; i < processContainers.size(); i++) {
@@ -437,7 +446,8 @@ public class ProcessingUnit extends Thread {
    * be generated by ArtifactProducer if end of collection is reached, or the CPM itself can place
    * it in the Work Queue to force all processing threads to stop.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private void handleEOFToken() throws Exception {
     maybeLogFinest("UIMA_CPM_got_eof_token__FINEST");
@@ -449,9 +459,9 @@ public class ProcessingUnit extends Thread {
       if (cpm.getThreadCount() > 1) {
         // Put EOF Token back to queue to ensure that all PUs get it
         workQueue.enqueue(artifact);
-//        synchronized (workQueue) { redundant - the above enqueue call does this
-//          workQueue.notifyAll();
-//        }
+        // synchronized (workQueue) { redundant - the above enqueue call does this
+        // workQueue.notifyAll();
+        // }
       }
       if (outputQueue != null) {
         maybeLogFinest("UIMA_CPM_placed_eof_in_queue__FINEST", outputQueue.getName());
@@ -478,17 +488,17 @@ public class ProcessingUnit extends Thread {
    * are invalidated. Invalidated in the sense that they are marked as timed out. Each CAS will be
    * released back to the CAS Pool.
    * 
-   * @param artifact -
-   *          an array of CAS instances
+   * @param artifact
+   *          - an array of CAS instances
    */
   private void releaseTimedOutCases(Object[] artifact) {
     for (int j = 0; j < artifact.length; j++) {
       if (artifact[j] != null) {
         // Release CASes that timed out back to the pool
         casPool.releaseCas((CAS) artifact[j]);
-//        synchronized (casPool) { // redundant - the above releaseCas call does this
-//          casPool.notifyAll();
-//        }
+        // synchronized (casPool) { // redundant - the above releaseCas call does this
+        // casPool.notifyAll();
+        // }
         artifact[j] = null;
       }
     }
@@ -521,20 +531,22 @@ public class ProcessingUnit extends Thread {
    */
   @Override
   public void run() {
-    if (!cpm.isRunning()) {
+    Thread.currentThread().setName(getName());
 
+    if (!cpm.isRunning()) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_not_running__WARNING",
               new Object[] { Thread.currentThread().getName() });
       return;
     }
+
     maybeLogFinestWorkQueue("UIMA_CPM_start_pp__FINEST", workQueue);
     // Assign initial status to all Cas Processors in the processing pipeline
     for (int i = 0; i < processContainers.size(); i++) {
       ((ProcessingContainer) processContainers.get(i)).setStatus(Constants.CAS_PROCESSOR_RUNNING);
     }
+
     // Continue until CPE is stopped
-    boolean run = true;
     int maxWaitTimeForEntity = 0;
     if (cpeConfiguration != null && cpeConfiguration.getMaxTimeToWait() > 0) {
       maxWaitTimeForEntity = cpeConfiguration.getMaxTimeToWait();
@@ -542,6 +554,7 @@ public class ProcessingUnit extends Thread {
 
     isRunning = true;
 
+    boolean run = true;
     while (run) {
       threadState = 2000; // Start the Loop
       // blocks if CPM is in pause state
@@ -560,13 +573,13 @@ public class ProcessingUnit extends Thread {
         entity = workQueue.dequeue(maxWaitTimeForEntity);
       } else {
         entity = workQueue.dequeue(0);
-
       }
 
       if (entity == null) {
         maybeLogFinest("UIMA_CPM_queue_empty__FINEST", workQueue.getName());
         continue;
       }
+
       try {
         if (entity instanceof WorkUnit) {
           artifact = (Object[]) ((WorkUnit) entity).get();
@@ -577,9 +590,9 @@ public class ProcessingUnit extends Thread {
               if (meta != null) {
                 EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(
                         processingUnitProcessTrace);
-                enProcSt.addEventStatus("Process", "Failed", new SkipCasException(
-                        "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId() + " Sequence:"
-                                + meta.getSequence()));
+                enProcSt.addEventStatus("Process", "Failed",
+                        new SkipCasException("Dropping CAS due chunk Timeout. Doc Id::"
+                                + meta.getDocId() + " Sequence:" + meta.getSequence()));
                 doNotifyListeners(artifact[i], true, enProcSt);
               } else {
                 EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(
@@ -612,7 +625,7 @@ public class ProcessingUnit extends Thread {
           handleEOFToken();
           break; // Terminate Loop
         }
-        
+
         maybeLogFinest("UIMA_CPM_call_processNext__FINEST");
         /* *********** EXECUTE PIPELINE ************ */
         processNext(artifact, pT);
@@ -640,12 +653,10 @@ public class ProcessingUnit extends Thread {
         threadState = 2003; // Killing
 
         this.cpm.killIt();
-
       } finally {
         if (releaseCAS) {
           clearCasCache();
         }
-
       }
     }
     maybeLogFinestWorkQueue("UIMA_CPM_exit_pp__FINEST", workQueue);
@@ -653,7 +664,6 @@ public class ProcessingUnit extends Thread {
     clearCasCache();
     maybeLogFinest("UIMA_CPM_pp_terminated__FINEST");
     isRunning = false;
-
   }
 
   /**
@@ -669,16 +679,15 @@ public class ProcessingUnit extends Thread {
           // casCache[index].reset();
           maybeLogFinest("UIMA_CPM_release_cas_from_cache__FINEST");
           casPool.releaseCas(casCache[index]);
-//          synchronized (casPool) { // redundant - the above releaseCas call does this
-//            casPool.notifyAll();
-//          }
+          // synchronized (casPool) { // redundant - the above releaseCas call does this
+          // casPool.notifyAll();
+          // }
 
           maybeLogFinest("UIMA_CPM_release_cas_from_cache_done__FINEST");
         }
       }
       casCache = null;
     }
-
   }
 
   /**
@@ -718,26 +727,33 @@ public class ProcessingUnit extends Thread {
   }
 
   /**
-   * Executes the processing pipeline. Given bundle of Cas instances is processed by each Cas
-   * Processor in the pipeline. Conversions between different types of Cas Processors is done on the
-   * fly. Two types of Cas Processors are currently supported:
+   * Executes the processing pipeline. Given bundle of CAS instances is processed by each CAS
+   * Processor in the pipeline. Conversions between different types of CAS Processors is done on the
+   * fly. Two types of CAS Processors are currently supported:
    * 
    * <ul>
-   * <li> CasDataProcessor</li>
-   * <li> CasObjectProcessor</li>
+   * <li>CasDataProcessor</li>
+   * <li>CasObjectProcessor</li>
    * </ul>
    * 
    * The first operates on instances of CasData the latter operates on instances of CAS. The results
-   * produced by Cas Processors are added to the output queue.
+   * produced by CAS Processors are added to the output queue.
    *
-   * @param aCasObjectList - bundle of Cas to analyze
-   * @param pTrTemp - object used to aggregate stats
+   * @param aCasObjectList
+   *          - bundle of CAS to analyze
+   * @param pTrTemp
+   *          - object used to aggregate stats
    * @return true, if successful
-   * @throws ResourceProcessException the resource process exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws CollectionException the collection exception
-   * @throws AbortCPMException the abort CPM exception
-   * @throws KillPipelineException the kill pipeline exception
+   * @throws ResourceProcessException
+   *           the resource process exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws CollectionException
+   *           the collection exception
+   * @throws AbortCPMException
+   *           the abort CPM exception
+   * @throws KillPipelineException
+   *           the kill pipeline exception
    */
   protected boolean processNext(Object[] aCasObjectList, ProcessTrace pTrTemp)
           throws ResourceProcessException, IOException, CollectionException, AbortCPMException,
@@ -766,9 +782,9 @@ public class ProcessingUnit extends Thread {
     // *******************************************
     // ** P R O C E S S I N G P I P E L I N E **
     // *******************************************
-    // Send Cas Object through the processing pipeline.
+    // Send CAS Object through the processing pipeline.
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
-      
+
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         logFinest("UIMA_CPM_retrieve_container__FINEST", String.valueOf(i));
       }
@@ -814,8 +830,8 @@ public class ProcessingUnit extends Thread {
           maybeLogSevere("UIMA_CPM_checkout_null_cp_from_container__SEVERE", container.getName());
           throw new ResourceProcessException(CpmLocalizedMessage.getLocalizedMessage(
                   CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_EXP_invalid_component_reference__WARNING", new Object[] {
-                      Thread.currentThread().getName(), "CasProcessor", "NULL" }), null);
+                  "UIMA_CPM_EXP_invalid_component_reference__WARNING",
+                  new Object[] { Thread.currentThread().getName(), "CasProcessor", "NULL" }), null);
         }
         // Check to see if the CasProcessor is available for processing
         // Container may have been disabled by another thread, so first check
@@ -899,8 +915,8 @@ public class ProcessingUnit extends Thread {
               maybeLogFinest("UIMA_CPM_initialize_cas__FINEST", container);
               if (aCasObjectList[casIndex] == null) {
                 if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-                  logSevere("UIMA_CPM_casobjectlist_is_null__SEVERE", 
-                      container.getName(), String.valueOf(casIndex));
+                  logSevere("UIMA_CPM_casobjectlist_is_null__SEVERE", container.getName(),
+                          String.valueOf(casIndex));
                 }
                 break;
               }
@@ -912,7 +928,7 @@ public class ProcessingUnit extends Thread {
 
                   while (casList[casIndex] == null) {
                     maybeLogFinest("UIMA_CPM_get_cas_from_pool__FINEST", container);
-                     // Retrieve a Cas from Cas Pool. Wait max 10 millis for an instance
+                    // Retrieve a Cas from Cas Pool. Wait max 10 millis for an instance
                     casList[casIndex] = casPool.getCas(0);
                     maybeLogFinest("UIMA_CPM_got_cas_from_pool__FINEST", container);
                   }
@@ -934,8 +950,8 @@ public class ProcessingUnit extends Thread {
               } else {
                 casList[casIndex] = (CAS) aCasObjectList[casIndex];
               }
-              //	Set the type from CasData to CasObject. When an error occurs in the proces()
-              //	we need to know what type of object we deal with. 
+              // Set the type from CasData to CasObject. When an error occurs in the proces()
+              // we need to know what type of object we deal with.
               isCasObject = true;
               aCasObjectList = casList;
 
@@ -968,8 +984,8 @@ public class ProcessingUnit extends Thread {
             notifyListeners(aCasObjectList, isCasObject, aEntityProcStatus);
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               logFinest("UIMA_CPM_done_notify_listeners__FINEST");
-              logFinest("UIMA_CPM_releasing_cases__FINEST",
-                container.getName(), String.valueOf(releaseCAS), "true");
+              logFinest("UIMA_CPM_releasing_cases__FINEST", container.getName(),
+                      String.valueOf(releaseCAS), "true");
             }
             if (casCache != null) {
               clearCasCache();
@@ -999,8 +1015,8 @@ public class ProcessingUnit extends Thread {
 
             maybeLogSevereException(e);
 
-            logFinest("UIMA_CPM_pipeline_exception__FINEST", 
-                container.getName(), String.valueOf(container.isPaused()));
+            logFinest("UIMA_CPM_pipeline_exception__FINEST", container.getName(),
+                    String.valueOf(container.isPaused()));
           }
 
           EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(pTrTemp);
@@ -1024,8 +1040,8 @@ public class ProcessingUnit extends Thread {
               cpm.invalidateCASes((CAS[]) aCasObjectList);
             }
             retry = false; // Dont retry. The CAS has been released
-            maybeLogWarning("UIMA_CPM_drop_cas__WARNING", 
-                container.getName(), processor.getClass().getName());
+            maybeLogWarning("UIMA_CPM_drop_cas__WARNING", container.getName(),
+                    processor.getClass().getName());
           } else {
             retry = true; // default on Exception
           }
@@ -1073,8 +1089,8 @@ public class ProcessingUnit extends Thread {
             threadId = Thread.currentThread().getName();
           }
 
-          if (processor instanceof CasDataProcessor
-                  || (processor instanceof CasObjectProcessor && !(processor instanceof AnalysisEngine))) {
+          if (processor instanceof CasDataProcessor || (processor instanceof CasObjectProcessor
+                  && !(processor instanceof AnalysisEngine))) {
             try {
               pTrTemp.endEvent(container.getName(), "Process", "failed");
             } catch (Exception exc) {
@@ -1106,8 +1122,8 @@ public class ProcessingUnit extends Thread {
               handleKillPipeline(container);
               processor = null;
             } catch (Exception innerE) {
-              maybeLogWarning("UIMA_CPM_exception_on_pipeline_kill__WARNING",
-                  container.getName(), innerE.getMessage());
+              maybeLogWarning("UIMA_CPM_exception_on_pipeline_kill__WARNING", container.getName(),
+                      innerE.getMessage());
             }
             // finally
             // {
@@ -1119,8 +1135,8 @@ public class ProcessingUnit extends Thread {
             try {
               handleAbortCPM(container, processor);
             } catch (Exception innerE) {
-              maybeLogWarning("UIMA_CPM_exception_on_cpm_kill__WARNING", 
-                  container.getName(), innerE.getMessage());
+              maybeLogWarning("UIMA_CPM_exception_on_cpm_kill__WARNING", container.getName(),
+                      innerE.getMessage());
             }
             // finally
             // {
@@ -1178,8 +1194,8 @@ public class ProcessingUnit extends Thread {
                   processor = null;
                 } catch (Exception excep) {
                   // Just log the exception. We are killing the pipeline
-                  maybeLogWarning("UIMA_CPM_exception_on_pipeline_kill__WARNING", 
-                      container.getName(), excep.getMessage());
+                  maybeLogWarning("UIMA_CPM_exception_on_pipeline_kill__WARNING",
+                          container.getName(), excep.getMessage());
                 }
               }
               pTrTemp.endEvent(container.getName(), "Process", "failure");
@@ -1209,7 +1225,7 @@ public class ProcessingUnit extends Thread {
             }
           } catch (Exception ex) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
-              logCPM(Level.FINER, "UIMA_CPM_exception__FINER", new Object[] {ex.getMessage()});
+              logCPM(Level.FINER, "UIMA_CPM_exception__FINER", new Object[] { ex.getMessage() });
               ex.printStackTrace();
             }
 
@@ -1254,7 +1270,7 @@ public class ProcessingUnit extends Thread {
       throw new ResourceProcessException(rpe);
     }
     maybeLogFinest("UIMA_CPM_pipeline_completed__FINEST");
- 
+
     return true;
   }
 
@@ -1262,16 +1278,18 @@ public class ProcessingUnit extends Thread {
    * Notifies application listeners of completed analysis and stores results of analysis (CAS) in
    * the Output Queue that this thread shares with a Cas Consumer thread.
    *
-   * @param aCasObjectList -
-   *          List of Artifacts just analyzed
-   * @param isCasObject -
-   *          determines the types of CAS just analyzed ( CasData vs CasObject)
-   * @param casObjects the cas objects
-   * @param aProcessTr -
-   *          ProcessTrace object holding events and stats
-   * @param doneAlready -
-   *          flag to indicate if the last Cas Processor was released back to its container
-   * @throws Exception -
+   * @param aCasObjectList
+   *          - List of Artifacts just analyzed
+   * @param isCasObject
+   *          - determines the types of CAS just analyzed ( CasData vs CasObject)
+   * @param casObjects
+   *          the cas objects
+   * @param aProcessTr
+   *          - ProcessTrace object holding events and stats
+   * @param doneAlready
+   *          - flag to indicate if the last Cas Processor was released back to its container
+   * @throws Exception
+   *           -
    */
   private void postAnalysis(Object[] aCasObjectList, boolean isCasObject, Object[] casObjects,
           ProcessTrace aProcessTr, boolean doneAlready) throws Exception {
@@ -1288,8 +1306,8 @@ public class ProcessingUnit extends Thread {
         maybeLogFinest("UIMA_CPM_done_notify_listeners__FINEST");
       }
       // enqueue CASes. If the CPM is in shutdown mode due to hard kill dont allow enqueue of CASes
-      if (outputQueue != null
-              && (cpm.isRunning() == true || (cpm.isRunning() == false && cpm.isHardKilled() == false))) {
+      if (outputQueue != null && (cpm.isRunning() == true
+              || (cpm.isRunning() == false && cpm.isHardKilled() == false))) {
         maybeLogFinestWorkQueue("UIMA_CPM_add_cas_to_queue__FINEST", outputQueue);
         WorkUnit workUnit = new WorkUnit(aCasObjectList);
         if (casCache != null && casCache[0] != null) {
@@ -1301,9 +1319,9 @@ public class ProcessingUnit extends Thread {
 
         casCache = null;
 
-//        synchronized (outputQueue) { // redundant - the above enqueue call does this
-//          outputQueue.notifyAll();
-//        }
+        // synchronized (outputQueue) { // redundant - the above enqueue call does this
+        // outputQueue.notifyAll();
+        // }
 
       }
       return;
@@ -1313,7 +1331,8 @@ public class ProcessingUnit extends Thread {
       if (outputQueue == null && casObjects != null && casObjects instanceof CasData[]) {
         if (System.getProperty("DEBUG_RELEASE") != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            logFinest("UIMA_CPM_done_with_cas__FINEST", String.valueOf(Runtime.getRuntime().freeMemory() / 1024));  
+            logFinest("UIMA_CPM_done_with_cas__FINEST",
+                    String.valueOf(Runtime.getRuntime().freeMemory() / 1024));
           }
         }
         for (int i = 0; i < casObjects.length; i++) {
@@ -1322,9 +1341,10 @@ public class ProcessingUnit extends Thread {
           aCasObjectList[i] = null;
           maybeLogFinest("UIMA_CPM_show_local_cache__FINEST", casCache);
         }
-        if (System.getProperty("DEBUG_RELEASE") != null) {          
+        if (System.getProperty("DEBUG_RELEASE") != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            logFinest("UIMA_CPM_show_total_memory__FINEST", String.valueOf(Runtime.getRuntime().freeMemory() / 1024));
+            logFinest("UIMA_CPM_show_total_memory__FINEST",
+                    String.valueOf(Runtime.getRuntime().freeMemory() / 1024));
           }
         }
       }
@@ -1336,14 +1356,14 @@ public class ProcessingUnit extends Thread {
    * container using configuration determines if its time to call Cas Processor's
    * batchProcessComplete() method.
    * 
-   * @param aContainer -
-   *          container performing end of batch processing
-   * @param aProcessor -
-   *          Cas Processor to call on end of batch
-   * @param aProcessTr -
-   *          Process Trace to use for aggregating events
-   * @param aCasObjectList -
-   *          CASes just analyzed
+   * @param aContainer
+   *          - container performing end of batch processing
+   * @param aProcessor
+   *          - Cas Processor to call on end of batch
+   * @param aProcessTr
+   *          - Process Trace to use for aggregating events
+   * @param aCasObjectList
+   *          - CASes just analyzed
    */
   private void doEndOfBatchProcessing(ProcessingContainer aContainer, CasProcessor aProcessor,
           ProcessTrace aProcessTr, Object[] aCasObjectList) {
@@ -1355,8 +1375,8 @@ public class ProcessingUnit extends Thread {
 
       maybeLogFinest("UIMA_CPM_end_of_batch_completed__FINEST", aContainer);
     } catch (Exception ex) {
-      maybeLogSevere("UIMA_CPM_end_of_batch_exception__SEVERE", 
-          aContainer.getName(), ex.getMessage());
+      maybeLogSevere("UIMA_CPM_end_of_batch_exception__SEVERE", aContainer.getName(),
+              ex.getMessage());
       aProcessTr.endEvent(cName, "End of Batch", "failed");
 
     } finally {
@@ -1373,10 +1393,14 @@ public class ProcessingUnit extends Thread {
    * In case a CAS is skipped ( due to excessive exceptions that it causes ), increments stats and
    * totals.
    *
-   * @param aContainer the a container
-   * @param aCasObjectList the a cas object list
-   * @param isLastCP the is last CP
-   * @throws Exception -
+   * @param aContainer
+   *          the a container
+   * @param aCasObjectList
+   *          the a cas object list
+   * @param isLastCP
+   *          the is last CP
+   * @throws Exception
+   *           -
    */
   private void handleSkipCasProcessor(ProcessingContainer aContainer, Object[] aCasObjectList,
           boolean isLastCP) throws Exception {
@@ -1404,7 +1428,7 @@ public class ProcessingUnit extends Thread {
         try {
           releaseCases(casList, isLastCP, aContainer.getName());
         } catch (Exception ex2) {
-          
+
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
             logSevere("UIMA_CPM_exception_releasing_cas__SEVERE", aContainer.getName());
             maybeLogSevereException(ex2);
@@ -1419,16 +1443,17 @@ public class ProcessingUnit extends Thread {
   /**
    * Handle exceptions related to remote invocations.
    * 
-   * @param aContainer -
-   *          container managing CasProcessor that failed
-   * @param aProcessor -
-   *          failed CasProcessor
-   * @param aProcessTr -
-   *          ProcessTrace object holding events
-   * @param ex -
-   *          Source exception
+   * @param aContainer
+   *          - container managing CasProcessor that failed
+   * @param aProcessor
+   *          - failed CasProcessor
+   * @param aProcessTr
+   *          - ProcessTrace object holding events
+   * @param ex
+   *          - Source exception
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
   private void handleServiceException(ProcessingContainer aContainer, CasProcessor aProcessor,
           ProcessTrace aProcessTr, Exception ex) throws Exception {
@@ -1450,7 +1475,7 @@ public class ProcessingUnit extends Thread {
         aProcessTr.startEvent(aContainer.getName(), "Process", "");
         // Redeploy the CasProcessor
         maybeLogFinest("UIMA_CPM_redeploy_cp__FINEST", aContainer, aProcessor);
-       // Reconnect the CPM to CasProcessor running in fenced mode
+        // Reconnect the CPM to CasProcessor running in fenced mode
         cpm.redeployAnalysisEngine(aContainer);
 
         // Resume the container
@@ -1472,16 +1497,16 @@ public class ProcessingUnit extends Thread {
   /**
    * Diables currect CasProcessor.
    * 
-   * @param aContainer -
-   *          a container that manages the current Cas Processor.
-   * @param aProcessor -
-   *          a Cas Processor to be disabled
-   * @throws Exception -
-   *           exception
+   * @param aContainer
+   *          - a container that manages the current Cas Processor.
+   * @param aProcessor
+   *          - a Cas Processor to be disabled
+   * @throws Exception
+   *           - exception
    */
   private void handleAbortCasProcessor(ProcessingContainer aContainer, CasProcessor aProcessor)
           throws Exception {
-    maybeLogFinest("UIMA_CPM_disable_due_to_action__FINEST", aContainer); 
+    maybeLogFinest("UIMA_CPM_disable_due_to_action__FINEST", aContainer);
     if (aContainer.isPaused()) {
       aContainer.resume();
     }
@@ -1499,12 +1524,12 @@ public class ProcessingUnit extends Thread {
   /**
    * Terminates the CPM.
    *
-   * @param aContainer -
-   *          a container that manages the current Cas Processor.
-   * @param aProcessor -
-   *          a Cas Processor to be disabled
-   * @throws Exception -
-   *           exception
+   * @param aContainer
+   *          - a container that manages the current Cas Processor.
+   * @param aProcessor
+   *          - a Cas Processor to be disabled
+   * @throws Exception
+   *           - exception
    */
   private void handleAbortCPM(ProcessingContainer aContainer, CasProcessor aProcessor)
           throws Exception {
@@ -1523,7 +1548,8 @@ public class ProcessingUnit extends Thread {
         releaseCAS = true;
         releaseCases(casList, true, aContainer.getName());
       } catch (Exception exc) {
-        maybeLogSevere("UIMA_CPM_exception_on_cpm_kill__WARNING", aContainer.getName(), exc.getMessage());
+        maybeLogSevere("UIMA_CPM_exception_on_cpm_kill__WARNING", aContainer.getName(),
+                exc.getMessage());
         maybeLogSevereException(exc);
       }
     }
@@ -1536,10 +1562,10 @@ public class ProcessingUnit extends Thread {
   /**
    * Terminates the CPM.
    *
-   * @param aContainer -
-   *          a container that manages the current Cas Processor.
-   * @throws Exception -
-   *           exception
+   * @param aContainer
+   *          - a container that manages the current Cas Processor.
+   * @throws Exception
+   *           - exception
    */
   private void handleKillPipeline(ProcessingContainer aContainer) throws Exception {
     if (aContainer.isPaused()) {
@@ -1565,11 +1591,12 @@ public class ProcessingUnit extends Thread {
    * initiate service restart. While the service is being restarted no invocations on the service
    * should be done. Containers will be resumed on successfull service restart.
    *
-   * @param aContainer -
-   *          a container that manages the current Cas Processor.
-   * @param aException the a exception
-   * @param aThreadId -
-   *          id of the current thread
+   * @param aContainer
+   *          - a container that manages the current Cas Processor.
+   * @param aException
+   *          the a exception
+   * @param aThreadId
+   *          - id of the current thread
    * @return true, if successful
    */
   private boolean pauseContainer(ProcessingContainer aContainer, Exception aException,
@@ -1586,18 +1613,19 @@ public class ProcessingUnit extends Thread {
    * Conditionally, releases CASes back to the CAS pool. The release only occurs if the Cas
    * Processor is the last in the processing chain.
    *
-   * @param aCasList -
-   *          list of CASes to release
-   * @param lastProcessor -
-   *          determines if the release takes place
-   * @param aName the a name
+   * @param aCasList
+   *          - list of CASes to release
+   * @param lastProcessor
+   *          - determines if the release takes place
+   * @param aName
+   *          the a name
    */
   private void releaseCases(Object aCasList, boolean lastProcessor, String aName) // ProcessingContainer
   // aContainer)
   {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      logFinest("UIMA_CPM_releasing_cases__FINEST", 
-          aName, String.valueOf(releaseCAS), String.valueOf(lastProcessor));
+      logFinest("UIMA_CPM_releasing_cases__FINEST", aName, String.valueOf(releaseCAS),
+              String.valueOf(lastProcessor));
     }
     if (aCasList == null) {
       return;
@@ -1620,14 +1648,15 @@ public class ProcessingUnit extends Thread {
   }
 
   /**
-   * Notifies Listeners of the fact that the pipeline has finished processing the current set Cas'es.
+   * Notifies Listeners of the fact that the pipeline has finished processing the current set
+   * Cas'es.
    *
-   * @param aCas -
-   *          object containing an array of OR a single instance of Cas
-   * @param isCasObject -
-   *          true if instance of Cas is of type Cas, false otherwise
-   * @param aEntityProcStatus -
-   *          status object that may contain exceptions and trace
+   * @param aCas
+   *          - object containing an array of OR a single instance of Cas
+   * @param isCasObject
+   *          - true if instance of Cas is of type Cas, false otherwise
+   * @param aEntityProcStatus
+   *          - status object that may contain exceptions and trace
    */
   protected void notifyListeners(Object aCas, boolean isCasObject,
           EntityProcessStatus aEntityProcStatus) {
@@ -1644,12 +1673,12 @@ public class ProcessingUnit extends Thread {
    * Notifies all configured listeners. Makes sure that appropriate type of Cas is sent to the
    * listener. Convertions take place to ensure compatibility.
    * 
-   * @param aCas -
-   *          Cas to pass to listener
-   * @param isCasObject -
-   *          true is Cas is of type CAS
-   * @param aEntityProcStatus -
-   *          status object containing exceptions and trace info
+   * @param aCas
+   *          - Cas to pass to listener
+   * @param isCasObject
+   *          - true is Cas is of type CAS
+   * @param aEntityProcStatus
+   *          - status object containing exceptions and trace info
    */
   protected void doNotifyListeners(Object aCas, boolean isCasObject,
           EntityProcessStatus aEntityProcStatus) {
@@ -1689,9 +1718,10 @@ public class ProcessingUnit extends Thread {
           casObjectCopy = conversionCas;
         }
         // Notify the listener that the Cas has been processed
-//        ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
-//                aEntityProcStatus);
-        CPMEngine.callEntityProcessCompleteWithCAS((StatusCallbackListener) statCL, (CAS) casObjectCopy, aEntityProcStatus);
+        // ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
+        // aEntityProcStatus);
+        CPMEngine.callEntityProcessCompleteWithCAS((StatusCallbackListener) statCL,
+                (CAS) casObjectCopy, aEntityProcStatus);
         if (conversionCas != null) {
           if (casFromPool) {
             conversionCasArray[0] = conversionCas;
@@ -1713,8 +1743,8 @@ public class ProcessingUnit extends Thread {
    * at the end of processing. This is typically done for Cas Consumer thread, but in configurations
    * not using Cas Consumers The processing pipeline may also release the CAS.
    * 
-   * @param aFlag -
-   *          true if this thread should release a CAS when analysis is complete
+   * @param aFlag
+   *          - true if this thread should release a CAS when analysis is complete
    */
   public void setReleaseCASFlag(boolean aFlag) {
     releaseCAS = aFlag;
@@ -1723,25 +1753,25 @@ public class ProcessingUnit extends Thread {
   /**
    * Stops all Cas Processors that are part of this PU.
    * 
-   * @param kill -
-   *          true if CPE has been stopped before finishing processing during external stop
+   * @param kill
+   *          - true if CPE has been stopped before finishing processing during external stop
    * 
    */
   public void stopCasProcessors(boolean kill) {
     maybeLogFinest("UIMA_CPM_stop_containers__FINEST");
-   // Stop all running CASProcessors
+    // Stop all running CASProcessors
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
       ProcessingContainer container = (ProcessingContainer) processContainers.get(i);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        logFinest("UIMA_CPM_show_container_time__FINEST", 
-            container.getName(), String.valueOf(container.getTotalTime()));
+        logFinest("UIMA_CPM_show_container_time__FINEST", container.getName(),
+                String.valueOf(container.getTotalTime()));
       }
       synchronized (container) {
         // Change the status of this container to KILLED if the CPM has been stopped
         // before completing the collection and current status of CasProcessor is
         // either READY or RUNNING
         if (kill || (!cpm.isRunning() && isProcessorReady(container.getStatus()))) {
-          maybeLogFinest("UIMA_CPM_kill_cp__FINEST", container);         
+          maybeLogFinest("UIMA_CPM_kill_cp__FINEST", container);
           container.setStatus(Constants.CAS_PROCESSOR_KILLED);
         } else {
           // If the CasProcessor has not been disabled during processing change its
@@ -1750,10 +1780,10 @@ public class ProcessingUnit extends Thread {
             container.setStatus(Constants.CAS_PROCESSOR_COMPLETED);
           }
         }
-        
+
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          logFinest("UIMA_CPM_container_status__FINEST", 
-              container.getName(), String.valueOf(container.getStatus()));
+          logFinest("UIMA_CPM_container_status__FINEST", container.getName(),
+                  String.valueOf(container.getStatus()));
         }
         ProcessTrace pTrTemp = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());
         pTrTemp.startEvent(container.getName(), "End of Batch", "");
@@ -1762,14 +1792,16 @@ public class ProcessingUnit extends Thread {
 
           if (deployer != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              logFinest("UIMA_CPM_undeploy_cp_instances__FINEST", container.getName(), deployer.getClass().getName());
+              logFinest("UIMA_CPM_undeploy_cp_instances__FINEST", container.getName(),
+                      deployer.getClass().getName());
             }
             deployer.undeploy();
           }
           container.destroy();
         } catch (Exception e) {
 
-          logWarning("UIMA_CPM_exception_during_cp_stop__WARNING", container.getName(), e.getMessage());
+          logWarning("UIMA_CPM_exception_during_cp_stop__WARNING", container.getName(),
+                  e.getMessage());
         } finally {
           pTrTemp.endEvent(container.getName(), "End of Batch", "");
           if (processingUnitProcessTrace != null) {
@@ -1783,8 +1815,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Returns true if the CPM has finished analyzing the collection.
    * 
-   * @param aCount -
-   *          running total of documents processed so far
+   * @param aCount
+   *          - running total of documents processed so far
    * 
    * @return - true if CPM has processed all docs, false otherwise
    */
@@ -1801,7 +1833,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Process.
    *
-   * @param anArtifact the an artifact
+   * @param anArtifact
+   *          the an artifact
    */
   protected void process(Object anArtifact) {
     if (anArtifact instanceof Object[]) {
@@ -1815,7 +1848,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Show metadata.
    *
-   * @param aCasList the a cas list
+   * @param aCasList
+   *          the a cas list
    */
   protected void showMetadata(Object[] aCasList) {
   }
@@ -1823,7 +1857,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Check if the CASProcessor status is available for processing.
    *
-   * @param aStatus the a status
+   * @param aStatus
+   *          the a status
    * @return true, if is processor ready
    */
   protected boolean isProcessorReady(int aStatus) {
@@ -1837,7 +1872,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Returns the size of the CAS object. Currently only CASData is supported.
    * 
-   * @param aCas CAS to get the size for
+   * @param aCas
+   *          CAS to get the size for
    * 
    * @return the size of the CAS object. Currently only CASData is supported.
    */
@@ -1855,7 +1891,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Sets the cas pool.
    *
-   * @param aPool the new cas pool
+   * @param aPool
+   *          the new cas pool
    */
   public void setCasPool(CPECasPool aPool) {
     casPool = aPool;
@@ -1864,9 +1901,12 @@ public class ProcessingUnit extends Thread {
   /**
    * Filter out the CAS.
    *
-   * @param aContainer the a container
-   * @param isCasObject the is cas object
-   * @param aCasObjectList the a cas object list
+   * @param aContainer
+   *          the a container
+   * @param isCasObject
+   *          the is cas object
+   * @param aCasObjectList
+   *          the a cas object list
    * @return true, if successful
    */
   private boolean filterOutTheCAS(ProcessingContainer aContainer, boolean isCasObject,
@@ -1887,7 +1927,8 @@ public class ProcessingUnit extends Thread {
   /**
    * Container disabled.
    *
-   * @param aContainer the a container
+   * @param aContainer
+   *          the a container
    * @return true, if successful
    */
   private boolean containerDisabled(ProcessingContainer aContainer) {
@@ -1907,12 +1948,13 @@ public class ProcessingUnit extends Thread {
   /**
    * An alternate processing loop designed for the single-threaded CPM.
    *
-   * @param aCasObjectList -
-   *          a list of CASes to analyze
-   * @param pTrTemp -
-   *          process trace where statistics are added during analysis
+   * @param aCasObjectList
+   *          - a list of CASes to analyze
+   * @param pTrTemp
+   *          - process trace where statistics are added during analysis
    * @return true, if successful
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   protected boolean analyze(Object[] aCasObjectList, ProcessTrace pTrTemp) throws Exception // throws
   // ResourceProcessException,
@@ -1985,8 +2027,9 @@ public class ProcessingUnit extends Thread {
             maybeLogSevere("UIMA_CPM_checkout_null_cp_from_container__SEVERE", containerName);
             throw new ResourceProcessException(CpmLocalizedMessage.getLocalizedMessage(
                     CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_EXP_invalid_component_reference__WARNING", new Object[] {
-                        Thread.currentThread().getName(), "CasProcessor", "NULL" }), null);
+                    "UIMA_CPM_EXP_invalid_component_reference__WARNING",
+                    new Object[] { Thread.currentThread().getName(), "CasProcessor", "NULL" }),
+                    null);
           }
           // Check to see if the CasProcessor is available for processing
           // The CasProcessor may have been disabled due to excessive errors and error policy
@@ -2077,8 +2120,10 @@ public class ProcessingUnit extends Thread {
   /**
    * Do release cas processor.
    *
-   * @param aContainer the a container
-   * @param aCasProcessor the a cas processor
+   * @param aContainer
+   *          the a container
+   * @param aCasProcessor
+   *          the a cas processor
    */
   private void doReleaseCasProcessor(ProcessingContainer aContainer, CasProcessor aCasProcessor) {
     if (aCasProcessor != null && aContainer != null) {
@@ -2089,10 +2134,14 @@ public class ProcessingUnit extends Thread {
   /**
    * Do end of batch.
    *
-   * @param aContainer the a container
-   * @param aProcessor the a processor
-   * @param aProcessTr the a process tr
-   * @param howManyCases the how many cases
+   * @param aContainer
+   *          the a container
+   * @param aProcessor
+   *          the a processor
+   * @param aProcessTr
+   *          the a process tr
+   * @param howManyCases
+   *          the how many cases
    */
   private void doEndOfBatch(ProcessingContainer aContainer, CasProcessor aProcessor,
           ProcessTrace aProcessTr, int howManyCases) {
@@ -2101,38 +2150,39 @@ public class ProcessingUnit extends Thread {
       aContainer.isEndOfBatch(aProcessor, howManyCases);
       maybeLogFinest("UIMA_CPM_end_of_batch_completed__FINEST", aContainer);
     } catch (Exception ex) {
-        maybeLogSevere("UIMA_CPM_end_of_batch_exception__SEVERE", containerName, ex.getMessage());
+      maybeLogSevere("UIMA_CPM_end_of_batch_exception__SEVERE", containerName, ex.getMessage());
     }
   }
 
   /**
    * Main routine that handles errors occuring in the processing loop.
    * 
-   * @param e -
-   *          exception in the main processing loop
-   * @param aContainer -
-   *          current container of the Cas Processor
-   * @param aProcessor -
-   *          current Cas Processor
-   * @param aProcessTrace -
-   *          an object containing stats for this procesing loop
-   * @param aCasObjectList -
-   *          list of CASes being analyzed
-   * @param isCasObject -
-   *          determines type of CAS in the aCasObjectList ( CasData or CasObject)
+   * @param e
+   *          - exception in the main processing loop
+   * @param aContainer
+   *          - current container of the Cas Processor
+   * @param aProcessor
+   *          - current Cas Processor
+   * @param aProcessTrace
+   *          - an object containing stats for this procesing loop
+   * @param aCasObjectList
+   *          - list of CASes being analyzed
+   * @param isCasObject
+   *          - determines type of CAS in the aCasObjectList ( CasData or CasObject)
    * @return boolean
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-  private boolean handleErrors(Throwable e, ProcessingContainer aContainer,
-          CasProcessor aProcessor, ProcessTrace aProcessTrace, Object[] aCasObjectList,
-          boolean isCasObject) throws Exception {
+  private boolean handleErrors(Throwable e, ProcessingContainer aContainer, CasProcessor aProcessor,
+          ProcessTrace aProcessTrace, Object[] aCasObjectList, boolean isCasObject)
+          throws Exception {
     boolean retry = true;
 
     String containerName = aContainer.getName();
     e.printStackTrace();
     maybeLogSevereException(e);
-    maybeLogSevere("UIMA_CPM_handle_exception__SEVERE", 
-        containerName, aProcessor.getClass().getName(), e.getMessage());
+    maybeLogSevere("UIMA_CPM_handle_exception__SEVERE", containerName,
+            aProcessor.getClass().getName(), e.getMessage());
 
     EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(aProcessTrace);
     enProcSt.addEventStatus("Process", "Failed", e);
@@ -2232,15 +2282,12 @@ public class ProcessingUnit extends Thread {
     } catch (Exception ex) {
       maybeLogSevereException(ex);
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-        // done as 2 messages because there is no method supporting 
+        // done as 2 messages because there is no method supporting
         // both a Throwable, and a message with substitutable args, in the logger
         logSevere("UIMA_CPM_unhandled_error__SEVERE", e.getLocalizedMessage());
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
-            this.getClass().getName(),
-            "handleErrors",
-            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-            "UIMA_CPM_unexpected_exception__SEVERE",
-            ex);     
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                "handleErrors", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_unexpected_exception__SEVERE", ex);
       }
       retry = false;
       ex.printStackTrace();
@@ -2251,12 +2298,18 @@ public class ProcessingUnit extends Thread {
   /**
    * Invoke cas object cas processor.
    *
-   * @param container the container
-   * @param processor the processor
-   * @param aCasObjectList the a cas object list
-   * @param pTrTemp the tr temp
-   * @param isCasObject the is cas object
-   * @throws Exception -
+   * @param container
+   *          the container
+   * @param processor
+   *          the processor
+   * @param aCasObjectList
+   *          the a cas object list
+   * @param pTrTemp
+   *          the tr temp
+   * @param isCasObject
+   *          the is cas object
+   * @throws Exception
+   *           -
    */
   private void invokeCasObjectCasProcessor(ProcessingContainer container, CasProcessor processor,
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject) throws Exception {
@@ -2267,11 +2320,8 @@ public class ProcessingUnit extends Thread {
       maybeLogFinest("UIMA_CPM_initialize_cas__FINEST", container);
       if (aCasObjectList[casIndex] == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.SEVERE,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_casobjectlist_is_null__SEVERE",
                   new Object[] { Thread.currentThread().getName(), container.getName(),
                       String.valueOf(casIndex) });
@@ -2305,10 +2355,14 @@ public class ProcessingUnit extends Thread {
   /**
    * Convert cas data to cas object.
    *
-   * @param casIndex the cas index
-   * @param aContainerName the a container name
-   * @param aCasObjectList the a cas object list
-   * @throws Exception -
+   * @param casIndex
+   *          the cas index
+   * @param aContainerName
+   *          the a container name
+   * @param aCasObjectList
+   *          the a cas object list
+   * @throws Exception
+   *           -
    */
   private void convertCasDataToCasObject(int casIndex, String aContainerName,
           Object[] aCasObjectList) throws Exception {
@@ -2342,13 +2396,20 @@ public class ProcessingUnit extends Thread {
   /**
    * Invoke cas data cas processor.
    *
-   * @param container the container
-   * @param processor the processor
-   * @param aCasObjectList the a cas object list
-   * @param pTrTemp the tr temp
-   * @param isCasObject the is cas object
-   * @param retry the retry
-   * @throws Exception -
+   * @param container
+   *          the container
+   * @param processor
+   *          the processor
+   * @param aCasObjectList
+   *          the a cas object list
+   * @param pTrTemp
+   *          the tr temp
+   * @param isCasObject
+   *          the is cas object
+   * @param retry
+   *          the retry
+   * @throws Exception
+   *           -
    */
   private void invokeCasDataCasProcessor(ProcessingContainer container, CasProcessor processor,
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject, boolean retry)
@@ -2404,21 +2465,26 @@ public class ProcessingUnit extends Thread {
     }
     pTrTemp.endEvent(container.getName(), "Process", "success");
   }
-  
- 
-  /** loggers   Special forms for frequent args sets   "maybe" versions test isLoggable      Additional args passed as object array to logger. */
-  
-  private static final Object [] zeroLengthObjectArray = new Object[0];
-  
+
+  /**
+   * loggers Special forms for frequent args sets "maybe" versions test isLoggable Additional args
+   * passed as object array to logger.
+   */
+
+  private static final Object[] zeroLengthObjectArray = new Object[0];
+
   /** The Constant thisClassName. */
   private static final String thisClassName = ProcessingUnit.class.getName();
-  
+
   /**
    * Log CPM.
    *
-   * @param level the level
-   * @param msgBundleId the msg bundle id
-   * @param args the args
+   * @param level
+   *          the level
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param args
+   *          the args
    */
   private void logCPM(Level level, String msgBundleId, Object[] args) {
     if (null == args) {
@@ -2427,21 +2493,17 @@ public class ProcessingUnit extends Thread {
     Object[] aa = new Object[args.length + 1];
     aa[0] = Thread.currentThread().getName();
     System.arraycopy(args, 0, aa, 1, args.length);
-  
-    UIMAFramework.getLogger(this.getClass()).logrb(
-        level,
-        thisClassName,
-        "process",  // used as the method name
-        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-        msgBundleId,
-        aa
-        );
+
+    UIMAFramework.getLogger(this.getClass()).logrb(level, thisClassName, "process", // used as the
+                                                                                    // method name
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, msgBundleId, aa);
   }
 
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
+   * @param msgBundleId
+   *          the msg bundle id
    */
   // 0 arg
   private void maybeLogFinest(String msgBundleId) {
@@ -2449,21 +2511,24 @@ public class ProcessingUnit extends Thread {
       logFinest(msgBundleId);
     }
   }
-  
+
   /**
    * Log finest.
    *
-   * @param msgBundleId the msg bundle id
+   * @param msgBundleId
+   *          the msg bundle id
    */
   private void logFinest(String msgBundleId) {
     logCPM(Level.FINEST, msgBundleId, null);
   }
- 
+
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
    */
   // 1 arg
   private void maybeLogFinest(String msgBundleId, String arg1) {
@@ -2471,23 +2536,28 @@ public class ProcessingUnit extends Thread {
       logFinest(msgBundleId, arg1);
     }
   }
-  
+
   /**
    * Log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
    */
   private void logFinest(String msgBundleId, String arg1) {
-    logCPM(Level.FINEST, msgBundleId, new Object [] {arg1});
+    logCPM(Level.FINEST, msgBundleId, new Object[] { arg1 });
   }
 
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
    */
   // 2 args
   private void maybeLogFinest(String msgBundleId, String arg1, String arg2) {
@@ -2495,110 +2565,134 @@ public class ProcessingUnit extends Thread {
       logFinest(msgBundleId, arg1, arg2);
     }
   }
-  
+
   /**
    * Log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
    */
   private void logFinest(String msgBundleId, String arg1, String arg2) {
-    logCPM(Level.FINEST, msgBundleId, new Object [] {arg1, arg2});
+    logCPM(Level.FINEST, msgBundleId, new Object[] { arg1, arg2 });
   }
-  
+
   // 3 args
-  
+
   /**
    * Log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
-   * @param arg3 the arg 3
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
+   * @param arg3
+   *          the arg 3
    */
   private void logFinest(String msgBundleId, String arg1, String arg2, String arg3) {
-    logCPM(Level.FINEST, msgBundleId, new Object [] {arg1, arg2, arg3});
+    logCPM(Level.FINEST, msgBundleId, new Object[] { arg1, arg2, arg3 });
   }
-
 
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param container the container
-   * @param processor the processor
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param container
+   *          the container
+   * @param processor
+   *          the processor
    */
   // special common 2 arg version with container, processor
-  private void maybeLogFinest(String msgBundleId, ProcessingContainer container, CasProcessor processor) {
+  private void maybeLogFinest(String msgBundleId, ProcessingContainer container,
+          CasProcessor processor) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       logFinest(msgBundleId, container.getName(), processor.getClass().getName());
     }
   }
-  
+
   /**
    * Log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param container the container
-   * @param processor the processor
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param container
+   *          the container
+   * @param processor
+   *          the processor
    */
-  private void logFinest(String msgBundleId, ProcessingContainer container, CasProcessor processor) {
+  private void logFinest(String msgBundleId, ProcessingContainer container,
+          CasProcessor processor) {
     logFinest(msgBundleId, container.getName(), processor.getClass().getName());
   }
-  
+
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param container the container
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param container
+   *          the container
    */
   private void maybeLogFinest(String msgBundleId, ProcessingContainer container) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       logFinest(msgBundleId, container.getName());
     }
   }
-  
+
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param processor the processor
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param processor
+   *          the processor
    */
   private void maybeLogFinest(String msgBundleId, CasProcessor processor) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       logFinest(msgBundleId, processor.getClass().getName());
     }
   }
-  
+
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param container the container
-   * @param processor the processor
-   * @param casCache the cas cache
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param container
+   *          the container
+   * @param processor
+   *          the processor
+   * @param casCache
+   *          the cas cache
    */
-  private void maybeLogFinest(String msgBundleId, ProcessingContainer container, CasProcessor processor, CAS [] casCache) {
+  private void maybeLogFinest(String msgBundleId, ProcessingContainer container,
+          CasProcessor processor, CAS[] casCache) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       logFinest(msgBundleId, container.getName(), processor.getClass().getName(),
-          String.valueOf(casCache == null));
+              String.valueOf(casCache == null));
     }
   }
-  
+
   /**
    * Maybe log finest.
    *
-   * @param msgBundleId the msg bundle id
-   * @param casCache the cas cache
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param casCache
+   *          the cas cache
    */
-  private void maybeLogFinest(String msgBundleId, CAS [] casCache) {
+  private void maybeLogFinest(String msgBundleId, CAS[] casCache) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       logFinest(msgBundleId, String.valueOf(casCache == null));
     }
   }
 
-  
   /**
    * Maybe log memory finest.
    */
@@ -2607,20 +2701,21 @@ public class ProcessingUnit extends Thread {
       logMemoryFinest();
     }
   }
-  
+
   /**
    * Log memory finest.
    */
   private void logMemoryFinest() {
-    logFinest("UIMA_CPM_show_memory__FINEST", 
-          String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
-          String.valueOf(Runtime.getRuntime().freeMemory() / 1024));
+    logFinest("UIMA_CPM_show_memory__FINEST",
+            String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
+            String.valueOf(Runtime.getRuntime().freeMemory() / 1024));
   }
 
   /**
    * Log warning.
    *
-   * @param msgBundleId the msg bundle id
+   * @param msgBundleId
+   *          the msg bundle id
    */
   private void logWarning(String msgBundleId) {
     logCPM(Level.WARNING, msgBundleId, null);
@@ -2629,31 +2724,38 @@ public class ProcessingUnit extends Thread {
   /**
    * Maybe log warning.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
    */
   private void maybeLogWarning(String msgBundleId, String arg1, String arg2) {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       logWarning(msgBundleId, arg1, arg2);
     }
   }
-  
+
   /**
    * Log warning.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
    */
   private void logWarning(String msgBundleId, String arg1, String arg2) {
-    logCPM(Level.WARNING, msgBundleId, new Object [] {arg1, arg2});
+    logCPM(Level.WARNING, msgBundleId, new Object[] { arg1, arg2 });
   }
-  
+
   /**
    * Maybe log severe.
    *
-   * @param msgBundleId the msg bundle id
+   * @param msgBundleId
+   *          the msg bundle id
    */
   private void maybeLogSevere(String msgBundleId) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
@@ -2661,97 +2763,117 @@ public class ProcessingUnit extends Thread {
     }
   }
 
-  
   /**
    * Maybe log severe.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
    */
   private void maybeLogSevere(String msgBundleId, String arg1) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       logSevere(msgBundleId, arg1);
     }
   }
-  
+
   /**
    * Log severe.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
    */
   private void logSevere(String msgBundleId, String arg1) {
-    logCPM(Level.SEVERE, msgBundleId, new Object[] {arg1});
+    logCPM(Level.SEVERE, msgBundleId, new Object[] { arg1 });
   }
 
-  
   /**
    * Maybe log severe.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
    */
   private void maybeLogSevere(String msgBundleId, String arg1, String arg2) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       logSevere(msgBundleId, arg1, arg2);
     }
   }
-  
+
   /**
    * Log severe.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
    */
   private void logSevere(String msgBundleId, String arg1, String arg2) {
-    logCPM(Level.SEVERE, msgBundleId, new Object[] {arg1, arg2});
+    logCPM(Level.SEVERE, msgBundleId, new Object[] { arg1, arg2 });
   }
 
   /**
    * Maybe log severe.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
-   * @param arg3 the arg 3
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
+   * @param arg3
+   *          the arg 3
    */
   private void maybeLogSevere(String msgBundleId, String arg1, String arg2, String arg3) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       logSevere(msgBundleId, arg1, arg2, arg3);
     }
   }
-  
+
   /**
    * Log severe.
    *
-   * @param msgBundleId the msg bundle id
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
-   * @param arg3 the arg 3
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
+   * @param arg3
+   *          the arg 3
    */
   private void logSevere(String msgBundleId, String arg1, String arg2, String arg3) {
-    logCPM(Level.SEVERE, msgBundleId, new Object[] {arg1, arg2, arg3});
+    logCPM(Level.SEVERE, msgBundleId, new Object[] { arg1, arg2, arg3 });
   }
-  
+
   /**
    * Maybe log severe exception.
    *
-   * @param e the e
+   * @param e
+   *          the e
    */
   private void maybeLogSevereException(Throwable e) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-      String m = "Thread: " + Thread.currentThread().getName() + ", message: " +  e.getLocalizedMessage();
+      String m = "Thread: " + Thread.currentThread().getName() + ", message: "
+              + e.getLocalizedMessage();
       UIMAFramework.getLogger().log(Level.SEVERE, m, e);
     }
   }
-  
+
   /**
    * Maybe log finest work queue.
    *
-   * @param msgBundleId the msg bundle id
-   * @param workQueue the work queue
+   * @param msgBundleId
+   *          the msg bundle id
+   * @param workQueue
+   *          the work queue
    */
   private void maybeLogFinestWorkQueue(String msgBundleId, BoundedWorkQueue workQueue) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {

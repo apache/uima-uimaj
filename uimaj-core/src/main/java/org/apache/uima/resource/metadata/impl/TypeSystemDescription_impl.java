@@ -19,27 +19,16 @@
 
 package org.apache.uima.resource.metadata.impl;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
-import org.apache.uima.util.XMLizable;
 
 /**
  * Reference implementation of {@link TypeSystemDescription}.
@@ -202,8 +191,9 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   @Override
   public TypeDescription getType(String aTypeName) {
     for (int i = 0; i < mTypes.length; i++) {
-      if (aTypeName.equals(mTypes[i].getName()))
+      if (aTypeName.equals(mTypes[i].getName())) {
         return mTypes[i];
+      }
     }
     return null;
   }
@@ -214,96 +204,22 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   // allow these calls to be done multiple times on this same object, in different threads
   @Override
   public synchronized void resolveImports() throws InvalidXMLException {
-    if (getImports().length == 0) {
-      resolveImports(null, null);
-    } else {
-      resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
-    }
+    resolveImports(null, UIMAFramework.newDefaultResourceManager());
   }
 
   @Override
   public synchronized void resolveImports(ResourceManager aResourceManager)
           throws InvalidXMLException {
-    resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
+    resolveImports(null, aResourceManager);
   }
 
+  @Deprecated
   @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
-    List<TypeDescription> importedTypes = null;
-    if (getImports().length != 0) {
-      // add our own URL, if known, to the collection of already imported URLs
-      if (getSourceUrl() != null) {
-        aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
-      }
-
-      importedTypes = new ArrayList<>();
-      Import[] imports = getImports();
-      for (int i = 0; i < imports.length; i++) {
-        // make sure Import's relative path base is set, to allow for users who create
-        // new import objects
-        if (imports[i] instanceof Import_impl) {
-          ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
-        }
-        URL url = imports[i].findAbsoluteUrl(aResourceManager);
-        if (!aAlreadyImportedTypeSystemURLs.contains(url.toString())) {
-          aAlreadyImportedTypeSystemURLs.add(url.toString());
-          try {
-            resolveImport(url, aAlreadyImportedTypeSystemURLs, importedTypes, aResourceManager);
-          } catch (IOException e) {
-            throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                    new Object[] { url, imports[i].getSourceUrlString() }, e);
-          }
-        }
-      }
-    }
-    // maybe update this object
-    TypeDescription[] existingTypes = this.getTypes();
-    if (existingTypes == null) {
-      this.setTypes(existingTypes = TypeDescription.EMPTY_TYPE_DESCRIPTIONS);
-    }
-    if (null != importedTypes) {
-      TypeDescription[] newTypes = new TypeDescription[existingTypes.length + importedTypes.size()];
-      System.arraycopy(existingTypes, 0, newTypes, 0, existingTypes.length);
-      for (int i = 0; i < importedTypes.size(); i++) {
-        newTypes[existingTypes.length + i] = importedTypes.get(i);
-      }
-      this.setTypes(newTypes);
-    }
-    // clear imports
-    this.setImports(Import.EMPTY_IMPORTS);
-  }
-
-  private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypeSystemURLs,
-          Collection<TypeDescription> aResults, ResourceManager aResourceManager)
-          throws InvalidXMLException, IOException {
-    // check the import cache
-    TypeSystemDescription desc;
-    String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
-    Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl) aResourceManager)
-            .getImportUrlsCache();
-    synchronized (importCache) {
-      XMLizable cachedObject = importCache.get(urlString);
-      if (cachedObject instanceof TypeSystemDescription) {
-        desc = (TypeSystemDescription) cachedObject;
-        // Add the URLs parsed for this cached object to the list already-parsed (UIMA-5058)
-        aAlreadyImportedTypeSystemURLs.addAll(importUrlsCache.get(urlString));
-      } else {
-        XMLInputSource input;
-        input = new XMLInputSource(aURL);
-        desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
-        TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
-        desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
-        importCache.put(urlString, desc);
-        // Save the URLS parsed by this import
-        TreeSet<String> locallyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
-        locallyImported.removeAll(previouslyImported);
-        importUrlsCache.put(urlString, locallyImported);
-      }
-
-    }
-    aResults.addAll(Arrays.asList(desc.getTypes()));
+    ImportResolver<TypeSystemDescription, TypeDescription> resolver = new ImportResolver<>(
+            TypeSystemDescriptionImportResolverAdapter::new);
+    resolver.resolveImports(this, aAlreadyImportedTypeSystemURLs, aResourceManager);
   }
 
   @Override

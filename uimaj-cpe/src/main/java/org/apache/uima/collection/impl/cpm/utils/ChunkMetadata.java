@@ -19,13 +19,12 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-
 /**
  * Convenience class that is used to hold metadata associated with chunking and sequencing of
  * documents. It allows the OutputQueue to manage sequencing of chunks destined for the CasConsumer.
  */
 public class ChunkMetadata {
-  
+
   /** The Constant SEQUENCE. */
   public static final String SEQUENCE = "sequenceNumber";
 
@@ -59,13 +58,15 @@ public class ChunkMetadata {
   /** The throttle ID. */
   private String throttleID;
 
-  
   /**
    * Instantiates a new chunk metadata.
    *
-   * @param aDocId the a doc id
-   * @param aSequence the a sequence
-   * @param aLast the a last
+   * @param aDocId
+   *          the a doc id
+   * @param aSequence
+   *          the a sequence
+   * @param aLast
+   *          the a last
    */
   public ChunkMetadata(String aDocId, int aSequence, boolean aLast) {
     docId = aDocId;
@@ -139,7 +140,8 @@ public class ChunkMetadata {
   /**
    * Sets the timed out.
    *
-   * @param b true means timed out
+   * @param b
+   *          true means timed out
    */
   public void setTimedOut(boolean b) {
     timedOut = b;
@@ -148,7 +150,8 @@ public class ChunkMetadata {
   /**
    * Sets the throttle ID.
    *
-   * @param aThrottleID the new throttle ID
+   * @param aThrottleID
+   *          the new throttle ID
    */
   public void setThrottleID(String aThrottleID) {
     throttleID = aThrottleID;
@@ -157,7 +160,8 @@ public class ChunkMetadata {
   /**
    * Sets the url.
    *
-   * @param aURL the new url
+   * @param aURL
+   *          the new url
    */
   public void setURL(String aURL) {
     url = aURL;

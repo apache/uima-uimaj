@@ -29,13 +29,12 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CpeResourceManagerConfigurationImpl.
  */
-public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl implements
-        CpeResourceManagerConfiguration {
-  
+public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl
+        implements CpeResourceManagerConfiguration {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8905321767282361433L;
 
@@ -71,10 +70,14 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   /**
    * Overridden to read "href" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -104,7 +107,9 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "resourceManagerConfiguration", new PropertyXmlInfo[0]);
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -124,7 +129,8 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   /**
    * Sets the href.
    *
-   * @param string the new href
+   * @param string
+   *          the new href
    */
   public void setHref(String string) {
     href = string;

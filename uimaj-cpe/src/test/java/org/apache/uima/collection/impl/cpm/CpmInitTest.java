@@ -34,13 +34,13 @@ import org.junit.jupiter.api.Test;
 public class CpmInitTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
-    @Test
-    public void testInitSingleThreadCPMMode() throws Exception {
+  @Test
+  public void testInitSingleThreadCPMMode() throws Exception {
     int documentCount = 10000000;
     int threadCount = 1;
 
@@ -72,8 +72,8 @@ public class CpmInitTest {
     }
   }
 
-    @Test
-    public void testInitMultiThreadCPMMode() throws Exception {
+  @Test
+  public void testInitMultiThreadCPMMode() throws Exception {
     int documentCount = 10000000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 
@@ -104,8 +104,8 @@ public class CpmInitTest {
     }
   }
 
-    @Test
-    public void testInitMultiThreadCPM() throws Exception {
+  @Test
+  public void testInitMultiThreadCPM() throws Exception {
     int documentCount = 10000000;
     int threadCount = 3;
 
@@ -122,8 +122,8 @@ public class CpmInitTest {
     while (!listener.isInitialized()) {
       Thread.sleep(10);
     }
-    System.out.println("testInitMultiThreadCPM()-Initialize was called: "
-            + listener.isInitialized());
+    System.out
+            .println("testInitMultiThreadCPM()-Initialize was called: " + listener.isInitialized());
     // Let the CPM process some docs, before calling stop
     Thread.sleep(300);
 
@@ -152,11 +152,12 @@ public class CpmInitTest {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCollectionReader.xml").getAbsolutePath();
-      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
-      String casConsumerBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCasConsumer.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -183,8 +184,8 @@ public class CpmInitTest {
       if (useSlowAnnotator) {
         CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
                 .produceCasProcessor("SlowAnnotator");
-        slowProcessor.setDescriptor(JUnitExtension.getFile("CpmTests" + separator
-                + "SlowAnnotator.xml").getAbsolutePath());
+        slowProcessor.setDescriptor(JUnitExtension
+                .getFile("CpmTests" + separator + "SlowAnnotator.xml").getAbsolutePath());
         cpeDesc.addCasProcessor(slowProcessor);
       }
 

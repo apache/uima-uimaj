@@ -367,7 +367,9 @@ public class CasToComparableText {
       sectionHeader.add("<COVERED_TEXT>");
     }
 
-    listFeatures(aType).stream().filter(f -> !isExcluded(f)).map(f -> f.getShortName())
+    listFeatures(aType).stream() //
+            .filter(f -> !isExcluded(f)) //
+            .map(f -> f.getShortName()) //
             .forEachOrdered(sectionHeader::add);
     aCSV.printRecord(sectionHeader);
   }
@@ -623,63 +625,56 @@ public class CasToComparableText {
         }
       }
 
-      switch (aValue.getType().getName()) {
-        case CAS.TYPE_NAME_FLOAT_LIST: {
-          float[] floatTarget = new float[length];
-          int i = 0;
-          FeatureStructure cur = aValue;
-          // We assume to by facing a non-empty element if it has a "head" feature
-          while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
-            floatTarget[i] = cur
-                    .getFloatValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD));
-            cur = cur.getFeatureValue(
-                    cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
-          }
-          target = floatTarget;
-          break;
+      if (ts.subsumes(ts.getType(CAS.TYPE_NAME_FLOAT_LIST), aValue.getType())) {
+        float[] floatTarget = new float[length];
+        FeatureStructure cur = aValue;
+        // We assume to by facing a non-empty element if it has a "head" feature
+        int i = 0;
+        while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
+          floatTarget[i] = cur
+                  .getFloatValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD));
+          cur = cur.getFeatureValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
+          i++;
         }
-        case CAS.TYPE_NAME_INTEGER_LIST: {
-          int[] intTarget = new int[length];
-          int i = 0;
-          FeatureStructure cur = aValue;
-          // We assume to by facing a non-empty element if it has a "head" feature
-          while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
-            intTarget[i] = cur
-                    .getIntValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD));
-            cur = cur.getFeatureValue(
-                    cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
-          }
-          target = intTarget;
-          break;
+        target = floatTarget;
+      } else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_INTEGER_LIST), aValue.getType())) {
+        int[] intTarget = new int[length];
+        FeatureStructure cur = aValue;
+        // We assume to by facing a non-empty element if it has a "head" feature
+        int i = 0;
+        while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
+          intTarget[i] = cur
+                  .getIntValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD));
+          cur = cur.getFeatureValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
+          i++;
         }
-        case CAS.TYPE_NAME_STRING_LIST: {
-          String[] stringTarget = new String[length];
-          int i = 0;
-          FeatureStructure cur = aValue;
-          // We assume to by facing a non-empty element if it has a "head" feature
-          while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
-            stringTarget[i] = cur
-                    .getStringValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD));
-            cur = cur.getFeatureValue(
-                    cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
-          }
-          target = stringTarget;
-          break;
+        target = intTarget;
+      } else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING_LIST), aValue.getType())) {
+        String[] stringTarget = new String[length];
+        FeatureStructure cur = aValue;
+        // We assume to by facing a non-empty element if it has a "head" feature
+        int i = 0;
+        while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
+          stringTarget[i] = cur
+                  .getStringValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD));
+          cur = cur.getFeatureValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
+          i++;
         }
-        default: {
-          target = new FeatureStructure[length];
-          int i = 0;
-          FeatureStructure cur = aValue;
-          // We assume to by facing a non-empty element if it has a "head" feature
-          while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
-            Array.set(target, i, cur.getFeatureValue(
-                    cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD)));
-            i++;
-            cur = cur.getFeatureValue(
-                    cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
-          }
-          break;
+        target = stringTarget;
+      } else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_FS_LIST), aValue.getType())) {
+        target = new FeatureStructure[length];
+        FeatureStructure cur = aValue;
+        // We assume to by facing a non-empty element if it has a "head" feature
+        int i = 0;
+        while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
+          Array.set(target, i, cur
+                  .getFeatureValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD)));
+          cur = cur.getFeatureValue(cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL));
+          i++;
         }
+      } else {
+        throw new IllegalStateException(
+                "Unsupported list type [" + aValue.getType().getName() + "]");
       }
     }
 
@@ -913,7 +908,12 @@ public class CasToComparableText {
       }
 
       // Annotation? Then sort by offsets
-      if (aFS1 instanceof AnnotationFS && aFS2 instanceof AnnotationFS) {
+      boolean fs1IsAnnotation = aFS1 instanceof AnnotationFS;
+      boolean fs2IsAnnotation = aFS2 instanceof AnnotationFS;
+      if (fs1IsAnnotation != fs2IsAnnotation) {
+        return -1;
+      }
+      if (fs1IsAnnotation && fs2IsAnnotation) {
         AnnotationFS ann1 = (AnnotationFS) aFS1;
         AnnotationFS ann2 = (AnnotationFS) aFS2;
 
@@ -924,7 +924,7 @@ public class CasToComparableText {
         }
 
         // Descending by end
-        int endCmp = ann1.getEnd() - ann2.getEnd();
+        int endCmp = ann2.getEnd() - ann1.getEnd();
         if (endCmp != 0) {
           return endCmp;
         }

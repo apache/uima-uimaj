@@ -33,19 +33,18 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 
-
 /**
  * The Class CpeComponentDescriptorImpl.
  */
-public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
-        CpeComponentDescriptor {
-  
+public class CpeComponentDescriptorImpl extends MetaDataObject_impl
+        implements CpeComponentDescriptor {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1607312024379882416L;
 
   /** The m include. */
   private CpeInclude mInclude;
-  
+
   /** The m import. */
   private Import mImport;
 
@@ -58,7 +57,8 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setInclude(org.apache.uima.collection.metadata.CpeInclude)
+   * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setInclude(org.apache.uima.
+   * collection.metadata.CpeInclude)
    */
   @Override
   public void setInclude(CpeInclude aInclude) {
@@ -74,10 +74,10 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
   public CpeInclude getInclude() {
     return mInclude;
   }
-  
-  
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#getImport()
    */
   @Override
@@ -85,47 +85,52 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
     return mImport;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setImport(org.apache.uima.resource.metadata.Import)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CpeComponentDescriptor#setImport(org.apache.uima.resource.
+   * metadata.Import)
    */
   @Override
   public void setImport(Import aImport) {
     mImport = aImport;
   }
-  
+
   /**
    * Find absolute url.
    *
-   * @param aResourceManager the a resource manager
+   * @param aResourceManager
+   *          the a resource manager
    * @return the url
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    * @see CpeComponentDescriptor#findAbsoluteUrl(ResourceManager)
    */
   @Override
-  public URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException {
+  public URL findAbsoluteUrl(ResourceManager aResourceManager)
+          throws ResourceConfigurationException {
     try {
       if (mImport != null) {
         return mImport.findAbsoluteUrl(aResourceManager);
-      }
-      else {
+      } else {
         String path = mInclude.get();
-        //replace ${CPM_HOME}
+        // replace ${CPM_HOME}
         if (path.startsWith("${CPM_HOME}")) {
           String cpmHome = System.getProperty("CPM_HOME");
           path = cpmHome + path.substring("${CPM_HOME}".length());
         }
         try {
-          //try path as a URL, then if that fails try it as a File
-          //TODO: is there a good way to tell if it's a valid URL without
-          //having to catch MalformedURLException?
-          return new URL(path);         
+          // try path as a URL, then if that fails try it as a File
+          // TODO: is there a good way to tell if it's a valid URL without
+          // having to catch MalformedURLException?
+          return new URL(path);
         } catch (MalformedURLException e) {
           try {
             return new File(path).getAbsoluteFile().toURI().toURL();
-          }
-          catch(MalformedURLException e2) {
-            throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
-                  path, getSourceUrlString() }, e);
+          } catch (MalformedURLException e2) {
+            throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL,
+                    new Object[] { path, getSourceUrlString() }, e);
           }
         }
       }
@@ -134,7 +139,9 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -144,8 +151,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("descriptor",
-          new PropertyXmlInfo[] { 
-           new PropertyXmlInfo("include", null), 
-           new PropertyXmlInfo("import", null)});
+          new PropertyXmlInfo[] { new PropertyXmlInfo("include", null),
+              new PropertyXmlInfo("import", null) });
 
 }

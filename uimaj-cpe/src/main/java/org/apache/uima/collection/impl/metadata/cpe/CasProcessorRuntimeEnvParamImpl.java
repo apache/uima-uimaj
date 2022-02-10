@@ -30,13 +30,12 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorRuntimeEnvParamImpl.
  */
-public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl implements
-        CasProcessorRuntimeEnvParam {
-  
+public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl
+        implements CasProcessorRuntimeEnvParam {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6750487360818463790L;
 
@@ -55,7 +54,8 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#setEnvParamName(java.lang.String)
+   * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#setEnvParamName(java.lang.
+   * String)
    */
   @Override
   public void setEnvParamName(String aEnvParamName) throws CpeDescriptorException {
@@ -75,7 +75,9 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#setEnvParamValue(java.lang.String)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#setEnvParamValue(java.lang.
+   * String)
    */
   @Override
   public void setEnvParamValue(String aEnvParamValue) throws CpeDescriptorException {
@@ -95,10 +97,14 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   /**
    * Overridden to read "key" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -125,7 +131,9 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -149,7 +157,8 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   /**
    * Sets the value.
    *
-   * @param string the new value
+   * @param string
+   *          the new value
    */
   public void setValue(String string) {
     value = string;
@@ -167,7 +176,8 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   /**
    * Sets the key.
    *
-   * @param string the new key
+   * @param string
+   *          the new key
    */
   public void setKey(String string) {
     key = string;
