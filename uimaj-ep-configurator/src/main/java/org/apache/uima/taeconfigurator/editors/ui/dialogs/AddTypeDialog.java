@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddTypeDialog.
  */
@@ -77,7 +76,8 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Instantiates a new adds the type dialog.
    *
-   * @param aSection the a section
+   * @param aSection
+   *          the a section
    */
   public AddTypeDialog(AbstractSection aSection) {
     super(aSection, "Add a Type", "Use this panel to specify a type.");
@@ -87,16 +87,22 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Editing an existing Type DescriptionD.
    *
-   * @param aSection the a section
-   * @param aExistingTd the a existing td
+   * @param aSection
+   *          the a section
+   * @param aExistingTd
+   *          the a existing td
    */
   public AddTypeDialog(AbstractSection aSection, TypeDescription aExistingTd) {
     this(aSection);
     existingTd = aExistingTd;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -105,7 +111,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
             "Type names must be globally unique, unless you are intentionally redefining another type.");
 
     // This part of the form looks like this sketch
-    //   
+    //
     // typeName: Text field << in 2 grid composite
     // supertypeName: Text field << in 2 grid composite
     // description: Text field << in 2 grid composite
@@ -136,7 +142,9 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     return mainArea;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
    */
   /*
@@ -151,7 +159,8 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     boolean hasAllowedValues = false;
     if (null != existingTd) {
       hasFeatures = ((null != existingTd.getFeatures()) && (existingTd.getFeatures().length > 0));
-      hasAllowedValues = ((null != existingTd.getAllowedValues()) && (existingTd.getAllowedValues().length > 0));
+      hasAllowedValues = ((null != existingTd.getAllowedValues())
+              && (existingTd.getAllowedValues().length > 0));
       if (hasAllowedValues) {
         result.add(CAS.TYPE_NAME_STRING);
         allTypesList = result;
@@ -180,7 +189,9 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -190,7 +201,9 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     supertypeName = supertypeNameUI.getText();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
@@ -224,7 +237,9 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

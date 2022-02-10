@@ -26,7 +26,6 @@ import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm;
 
-
 /**
  * Instances of this class model the 3 varients of configuration parameter sets.
  * 
@@ -54,8 +53,10 @@ public class ConfigGroup {
   /**
    * Instantiates a new config group.
    *
-   * @param aCpd the a cpd
-   * @param aKind the a kind
+   * @param aCpd
+   *          the a cpd
+   * @param aKind
+   *          the a kind
    */
   public ConfigGroup(ConfigurationParameterDeclarations aCpd, int aKind) {
     cpd = aCpd;
@@ -66,8 +67,10 @@ public class ConfigGroup {
   /**
    * Instantiates a new config group.
    *
-   * @param aCpd the a cpd
-   * @param aNamedCg the a named cg
+   * @param aCpd
+   *          the a cpd
+   * @param aNamedCg
+   *          the a named cg
    */
   public ConfigGroup(ConfigurationParameterDeclarations aCpd, ConfigurationGroup aNamedCg) {
     cpd = aCpd;
@@ -150,7 +153,8 @@ public class ConfigGroup {
   /**
    * Sets the name array.
    *
-   * @param names the new name array
+   * @param names
+   *          the new name array
    */
   public void setNameArray(String[] names) {
     if (kind != NAMED_GROUP)

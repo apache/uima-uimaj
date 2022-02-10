@@ -31,7 +31,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.eclipse.swt.widgets.Composite;
 
-
 /**
  * The Class TypePriorityImportSection.
  */
@@ -40,8 +39,10 @@ public class TypePriorityImportSection extends ImportSection {
   /**
    * Instantiates a new type priority import section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public TypePriorityImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Type Priority Imports",
@@ -50,7 +51,9 @@ public class TypePriorityImportSection extends ImportSection {
 
   // **************************************
   // * Code to support type import section
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isAppropriate()
    */
   // **************************************
@@ -62,19 +65,24 @@ public class TypePriorityImportSection extends ImportSection {
   /**
    * used when hovering.
    *
-   * @param source the source
+   * @param source
+   *          the source
    * @return the description from import
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
-    TypePriorities parsedImportItem = UIMAFramework.getXMLParser().parseTypePriorities(
-            new XMLInputSource(source));
+    TypePriorities parsedImportItem = UIMAFramework.getXMLParser()
+            .parseTypePriorities(new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getModelImportArray()
    */
   @Override
@@ -82,15 +90,21 @@ public class TypePriorityImportSection extends ImportSection {
     return getTypePriorities().getImports();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.resource.metadata.Import[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.
+   * resource.metadata.Import[])
    */
   @Override
   protected void setModelImportArray(Import[] imports) {
     getTypePriorities().setImports(imports);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#clearModelBaseValue()
    */
   @Override
@@ -98,8 +112,11 @@ public class TypePriorityImportSection extends ImportSection {
     getTypePriorities().setPriorityLists(typePriorityList0);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String,
+   * java.lang.String)
    */
   // indexes are checked and merged when the CAS is built
   @Override
@@ -120,7 +137,9 @@ public class TypePriorityImportSection extends ImportSection {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#finishImportChangeAction()
    */
   @Override

@@ -27,7 +27,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
  * The Class ColorManager.
  */
@@ -48,7 +47,8 @@ public class ColorManager {
   /**
    * Gets the color.
    *
-   * @param rgb the rgb
+   * @param rgb
+   *          the rgb
    * @return the color
    */
   public Color getColor(RGB rgb) {

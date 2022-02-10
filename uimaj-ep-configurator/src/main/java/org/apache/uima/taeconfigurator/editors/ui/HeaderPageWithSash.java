@@ -40,9 +40,12 @@ public class HeaderPageWithSash extends HeaderPage {
   /**
    * Instantiates a new header page with sash.
    *
-   * @param formEditor the form editor
-   * @param id the id
-   * @param keyPageTitle the key page title
+   * @param formEditor
+   *          the form editor
+   * @param id
+   *          the id
+   * @param keyPageTitle
+   *          the key page title
    */
   public HeaderPageWithSash(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
@@ -51,8 +54,10 @@ public class HeaderPageWithSash extends HeaderPage {
   /**
    * Instantiates a new header page with sash.
    *
-   * @param formEditor the form editor
-   * @param pageTitle the page title
+   * @param formEditor
+   *          the form editor
+   * @param pageTitle
+   *          the page title
    */
   public HeaderPageWithSash(MultiPageEditor formEditor, String pageTitle) {
     super(formEditor, pageTitle);
@@ -61,7 +66,8 @@ public class HeaderPageWithSash extends HeaderPage {
   /**
    * Creates the tool bar actions.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   protected void createToolBarActions(IManagedForm managedForm) {
     final ScrolledForm form = managedForm.getForm();
@@ -76,10 +82,10 @@ public class HeaderPageWithSash extends HeaderPage {
     haction.setChecked(true);
     haction.setToolTipText("Horizontal Orientation");
     TAEConfiguratorPlugin instance = TAEConfiguratorPlugin.getDefault();
-    haction.setImageDescriptor(instance
-            .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
-    haction.setDisabledImageDescriptor(instance
-            .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
+    haction.setImageDescriptor(
+            instance.getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
+    haction.setDisabledImageDescriptor(
+            instance.getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
 
     vaction = new Action("ver", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
       @Override
@@ -90,10 +96,10 @@ public class HeaderPageWithSash extends HeaderPage {
     };
     vaction.setChecked(false);
     vaction.setToolTipText("Vertical Orientation");
-    vaction.setImageDescriptor(instance
-            .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
-    vaction.setDisabledImageDescriptor(instance
-            .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
+    vaction.setImageDescriptor(
+            instance.getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
+    vaction.setDisabledImageDescriptor(
+            instance.getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
     form.getToolBarManager().add(haction);
     form.getToolBarManager().add(vaction);
     form.updateToolBar();

@@ -20,33 +20,33 @@ package org.apache.uima.taeconfigurator.editors.point;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
-
 /**
- * This interface is used to redirect the editing functions from CDE
- * to the external editor for a new type of Resource Specifier.
+ * This interface is used to redirect the editing functions from CDE to the external editor for a
+ * new type of Resource Specifier.
  */
 public interface IUimaMultiPageEditor {
-  
+
   /**
    * Adds the pages for current editor.
    */
   void addPagesForCurrentEditor();
-  
+
   /**
    * Page change for current editor.
    *
-   * @param newPageIndex the new page index
+   * @param newPageIndex
+   *          the new page index
    */
   void pageChangeForCurrentEditor(int newPageIndex);
-  
+
   /**
    * Do save for current editor.
    *
-   * @param monitor the monitor
+   * @param monitor
+   *          the monitor
    */
   void doSaveForCurrentEditor(IProgressMonitor monitor);
-  
+
   /**
    * Do save as for current editor.
    */

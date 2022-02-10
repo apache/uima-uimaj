@@ -21,12 +21,11 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import org.eclipse.swt.graphics.RGB;
 
-
 /**
  * The Interface IXMLColorConstants.
  */
 public interface IXMLColorConstants {
-  
+
   /** The xml comment. */
   RGB XML_COMMENT = new RGB(128, 0, 0);
 

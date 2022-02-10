@@ -28,7 +28,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-
 /**
  * The Class AbstractDialogKeyVerify.
  */
@@ -37,9 +36,12 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
   /**
    * Instantiates a new abstract dialog key verify.
    *
-   * @param aSection the a section
-   * @param title the title
-   * @param description the description
+   * @param aSection
+   *          the a section
+   * @param title
+   *          the title
+   * @param description
+   *          the description
    */
   protected AbstractDialogKeyVerify(AbstractSection aSection, String title, String description) {
     super(aSection, title, description);
@@ -48,9 +50,12 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
   /**
    * New labeled single line styled text.
    *
-   * @param twoCol the two col
-   * @param label the label
-   * @param tip the tip
+   * @param twoCol
+   *          the two col
+   * @param label
+   *          the label
+   * @param tip
+   *          the tip
    * @return the styled text
    */
   protected StyledText newLabeledSingleLineStyledText(Composite twoCol, String label, String tip) {
@@ -61,8 +66,10 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
   /**
    * New single line styled text.
    *
-   * @param parent the parent
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param tip
+   *          the tip
    * @return the styled text
    */
   protected StyledText newSingleLineStyledText(Composite parent, String tip) {
@@ -75,7 +82,9 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
     return w;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
    */
   @Override
@@ -93,7 +102,8 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
   /**
    * Default verify key checks.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @return true, if successful
    */
   public boolean verifyKeyChecks(VerifyEvent event) {

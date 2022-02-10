@@ -23,7 +23,6 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class ResourcesPage.
  */
@@ -42,7 +41,8 @@ public class ResourcesPage extends HeaderPageWithSash {
   /**
    * Instantiates a new resources page.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public ResourcesPage(MultiPageEditor editor) {
     super(editor, "Resource Definitions and Bindings");
@@ -51,7 +51,8 @@ public class ResourcesPage extends HeaderPageWithSash {
   /**
    * Called by the framework to fill in the contents.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   @Override
   protected void createFormContent(IManagedForm managedForm) {
@@ -68,8 +69,8 @@ public class ResourcesPage extends HeaderPageWithSash {
 
     managedForm.addPart(extnlResBindSection = new ExtnlResBindSection(editor, form2panel.left));
     managedForm.addPart(resBindImportSection = new ImportResBindSection(editor, form2panel.left));
-    managedForm.addPart(resourceDependencySection = new ResourceDependencySection(editor,
-            form2panel.right));
+    managedForm.addPart(
+            resourceDependencySection = new ResourceDependencySection(editor, form2panel.right));
     createToolBarActions(managedForm);
   }
 

@@ -26,12 +26,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddAllowedValueDialog.
  */
 public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
-  
+
   /** The allowed value UI. */
   private StyledText allowedValueUI;
 
@@ -50,8 +49,10 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
   /**
    * Constructor for Adding or Editing an Allowed Value.
    *
-   * @param aSection the a section
-   * @param aExistingAv the a existing av
+   * @param aSection
+   *          the a section
+   * @param aExistingAv
+   *          the a existing av
    */
   public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
     super(aSection, "Add an Allowed Value for a String subtype",
@@ -59,15 +60,19 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     existingAv = aExistingAv;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingAv);
 
     // This part of the form looks like this sketch
-    //   
+    //
     // Allowed Value: Text field << in 2 grid composite
     // description: Text field << in 2 grid composite
 
@@ -86,7 +91,9 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -95,7 +102,9 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     description = nullIf0lengthString(descriptionUI.getText());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
@@ -105,7 +114,9 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

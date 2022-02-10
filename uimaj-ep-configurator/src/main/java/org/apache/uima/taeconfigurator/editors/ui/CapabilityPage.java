@@ -24,7 +24,6 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class CapabilityPage.
  */
@@ -36,7 +35,8 @@ public class CapabilityPage extends HeaderPageWithSash {
   /**
    * Instantiates a new capability page.
    *
-   * @param aEditor the a editor
+   * @param aEditor
+   *          the a editor
    */
   public CapabilityPage(MultiPageEditor aEditor) {
     super(aEditor, "Capabilities");
@@ -45,7 +45,8 @@ public class CapabilityPage extends HeaderPageWithSash {
   /**
    * Called by the framework to fill in the contents.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   @Override
   protected void createFormContent(IManagedForm managedForm) {

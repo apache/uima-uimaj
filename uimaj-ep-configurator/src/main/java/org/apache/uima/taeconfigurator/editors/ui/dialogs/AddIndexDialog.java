@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddIndexDialog.
  */
@@ -113,7 +112,8 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Instantiates a new adds the index dialog.
    *
-   * @param aSection the a section
+   * @param aSection
+   *          the a section
    */
   public AddIndexDialog(AbstractSection aSection) {
     super(aSection, "Add an index", "Add or Edit an index specification");
@@ -123,16 +123,22 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Editing an existing XRD.
    *
-   * @param aSection the a section
-   * @param aExistingNDX the a existing NDX
+   * @param aSection
+   *          the a section
+   * @param aExistingNDX
+   *          the a existing NDX
    */
   public AddIndexDialog(AbstractSection aSection, FsIndexDescription aExistingNDX) {
     this(aSection);
     existingNDX = aExistingNDX;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -140,7 +146,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     createWideLabel(mainArea, "The Index name must be globally unique.");
 
     // This part of the form looks like this sketch
-    //   
+    //
     // IndexName: Text field << in 2 grid composite
     // IndexKind: combo
     // IndexType: Text field << assisted <browse button>
@@ -162,9 +168,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     new Label(twoCol, SWT.NONE).setText("CAS Type");
     indexTypeUI = newTypeInput(section, twoCol);
 
-    setTextAndTip(
-            keyTable = new Label(twoCol, SWT.NONE),
-            "Index Keys:",
+    setTextAndTip(keyTable = new Label(twoCol, SWT.NONE), "Index Keys:",
             "For Set and Sorted index kinds, specify the keys; for Sorted indexes specify also the sort direction.");
     tableContainer = new2ColumnComposite(twoCol);
     table = newTable(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION);
@@ -208,7 +212,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return mainArea;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
    */
   @Override
@@ -224,11 +230,12 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Adds the key.
    *
-   * @param key the key
+   * @param key
+   *          the key
    */
   private void addKey(FsIndexKeyDescription key) {
     if (null == key) {
-        return;
+      return;
     }
     TableItem item = new TableItem(table, SWT.NONE);
     updateKey(item, key);
@@ -237,28 +244,34 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Update key.
    *
-   * @param item the item
-   * @param key the key
+   * @param item
+   *          the item
+   * @param key
+   *          the key
    */
   private void updateKey(TableItem item, FsIndexKeyDescription key) {
     if (null == key) {
-        return;
+      return;
     }
     if (key.isTypePriority()) {
       item.setText(0, S_);
       item.setText(1, TYPE_PRIORITY);
     } else {
       item.setText(0, key.getFeatureName());
-      item.setText(1, key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? STANDARD
-              : REVERSE);
+      item.setText(1,
+              key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? STANDARD : REVERSE);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.
+   * widgets.Event)
    */
   @Override
-  //   2019-7  never called
+  // 2019-7 never called
   public void handleEvent(Event event) {
     if (event.widget == indexKindUI) {
       boolean showKeys = "sorted".equals(indexKindUI.getText())
@@ -266,14 +279,14 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       tableContainer.setVisible(showKeys);
       keyTable.setVisible(showKeys);
     } else if (event.widget == addButton) {
-      AddIndexKeyDialog dialog = new AddIndexKeyDialog(section, indexTypeUI.getText(), indexKindUI
-              .getText(), alreadyDefined(table.getItems()));
+      AddIndexKeyDialog dialog = new AddIndexKeyDialog(section, indexTypeUI.getText(),
+              indexKindUI.getText(), alreadyDefined(table.getItems()));
       addKey(indexSection.addOrEditIndexKey(dialog, null));
       section.packTable(table);
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       TableItem item = table.getItem(table.getSelectionIndex());
-      AddIndexKeyDialog dialog = new AddIndexKeyDialog(section, indexTypeUI.getText(), indexKindUI
-              .getText(), alreadyDefined(table.getItems()), makeKey(item));
+      AddIndexKeyDialog dialog = new AddIndexKeyDialog(section, indexTypeUI.getText(),
+              indexKindUI.getText(), alreadyDefined(table.getItems()), makeKey(item));
       FsIndexKeyDescription key = indexSection.addOrEditIndexKey(dialog, null);
       updateKey(item, key);
       section.packTable(table);
@@ -295,13 +308,14 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Already defined.
    *
-   * @param items the items
+   * @param items
+   *          the items
    * @return the list
    */
   public List alreadyDefined(TableItem[] items) {
     List result = new ArrayList();
     if (null == items) {
-        return result;
+      return result;
     }
     for (int i = 0; i < items.length; i++) {
       result.add(items[i].getText(0));
@@ -309,7 +323,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -323,16 +339,16 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       for (int i = 0; i < items.length; i++) {
         keys[i] = makeKey(items[i]);
       }
-    }
-    else {
-        keys = null;
+    } else {
+      keys = null;
     }
   }
 
   /**
    * Make key.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the fs index key description
    */
   private FsIndexKeyDescription makeKey(TableItem item) {
@@ -348,7 +364,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return key;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
@@ -356,14 +374,16 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     if (indexName.length() == 0 || indexType.length() == 0)
       return false;
     if (!indexName.equals(originalIndexName) && indexSection.isDuplicateIndexLabel(indexName)) {
-      errorMessageUI
-              .setText("The name on this index duplicates anexisting name.  Please specify a globally unique name.");
+      errorMessageUI.setText(
+              "The name on this index duplicates anexisting name.  Please specify a globally unique name.");
       return false;
     }
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

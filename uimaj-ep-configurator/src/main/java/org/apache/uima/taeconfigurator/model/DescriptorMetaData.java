@@ -22,7 +22,6 @@ package org.apache.uima.taeconfigurator.model;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-
 /**
  * Instances of this class model the varients of getting and setting metadata.
  * 
@@ -35,7 +34,8 @@ public class DescriptorMetaData {
   /**
    * Instantiates a new descriptor meta data.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public DescriptorMetaData(MultiPageEditor editor) {
     this.editor = editor;
@@ -63,7 +63,8 @@ public class DescriptorMetaData {
   /**
    * Sets the name.
    *
-   * @param name the new name
+   * @param name
+   *          the new name
    */
   public void setName(String name) {
     if (editor.isLocalProcessingDescriptor())
@@ -102,7 +103,8 @@ public class DescriptorMetaData {
   /**
    * Sets the version.
    *
-   * @param name the new version
+   * @param name
+   *          the new version
    */
   public void setVersion(String name) {
     if (editor.isLocalProcessingDescriptor())
@@ -141,7 +143,8 @@ public class DescriptorMetaData {
   /**
    * Sets the vendor.
    *
-   * @param name the new vendor
+   * @param name
+   *          the new vendor
    */
   public void setVendor(String name) {
     if (editor.isLocalProcessingDescriptor())
@@ -180,7 +183,8 @@ public class DescriptorMetaData {
   /**
    * Sets the description.
    *
-   * @param name the new description
+   * @param name
+   *          the new description
    */
   public void setDescription(String name) {
     if (editor.isAeDescriptor() || editor.isLocalProcessingDescriptor())

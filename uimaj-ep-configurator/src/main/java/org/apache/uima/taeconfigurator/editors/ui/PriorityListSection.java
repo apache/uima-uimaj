@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class PriorityListSection.
  */
@@ -71,15 +70,21 @@ public class PriorityListSection extends AbstractSection {
   /**
    * Instantiates a new priority list section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public PriorityListSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Priority Lists", "This section shows the defined Prioirity Lists");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.
+   * IManagedForm)
    */
   @Override
   public void initialize(IManagedForm form) {
@@ -142,7 +147,8 @@ public class PriorityListSection extends AbstractSection {
   /**
    * Gets the type priority list from tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the type priority list from tree item
    */
   public TypePriorityList getTypePriorityListFromTreeItem(TreeItem item) {
@@ -151,7 +157,9 @@ public class PriorityListSection extends AbstractSection {
     return typePriorityLists[tree.indexOf(item)];
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
   @Override
@@ -171,15 +179,13 @@ public class PriorityListSection extends AbstractSection {
       TreeItem item = new TreeItem(tree, SWT.NONE);
       item.setText(PRIORITY_LIST);
 
-      tree.setSelection( item );
+      tree.setSelection(item);
       setFileDirty();
     } else if (event.widget == addButton) { // add type to set
       if (editor.isTypePriorityDescriptor() && !editor.getIsContextLoaded()) {
-        Utility
-                .popMessage(
-                        "Can''t add types here",
-                        "Types cannot be added here, because there is no loaded context type system to pick the types from",
-                        MessageDialog.WARNING);
+        Utility.popMessage("Can''t add types here",
+                "Types cannot be added here, because there is no loaded context type system to pick the types from",
+                MessageDialog.WARNING);
         return;
       }
       TreeItem parent = tree.getSelection()[0];
@@ -231,8 +237,8 @@ public class PriorityListSection extends AbstractSection {
         typePriorityList.removeType(item.getText());
       }
 
-      TreeItem previousSelection = getPreviousSelection(parent == null ? tree.getItems() : parent
-              .getItems(), item);
+      TreeItem previousSelection = getPreviousSelection(
+              parent == null ? tree.getItems() : parent.getItems(), item);
       if (null != previousSelection)
         tree.setSelection(previousSelection);
       item.dispose();
@@ -256,7 +262,7 @@ public class PriorityListSection extends AbstractSection {
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
         TreeItem t = new TreeItem(parent, SWT.NONE, i + 1);
         t.setText(formatName(types[i + 1]));
-        tree.setSelection( t);
+        tree.setSelection(t);
 
         items[i].dispose();
         items[i + 1].dispose();
@@ -267,7 +273,7 @@ public class PriorityListSection extends AbstractSection {
 
         TreeItem t = new TreeItem(parent, SWT.NONE, i - 1);
         t.setText(formatName(types[i - 1]));
-        tree.setSelection( t);
+        tree.setSelection(t);
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
 
         items[i - 1].dispose();
@@ -285,7 +291,9 @@ public class PriorityListSection extends AbstractSection {
     enable();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override

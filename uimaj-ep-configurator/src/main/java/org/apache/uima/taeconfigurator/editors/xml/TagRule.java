@@ -23,7 +23,6 @@ import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 
-
 /**
  * The Class TagRule.
  */
@@ -32,17 +31,22 @@ public class TagRule extends MultiLineRule {
   /**
    * Instantiates a new tag rule.
    *
-   * @param token the token
+   * @param token
+   *          the token
    */
   public TagRule(IToken token) {
     super("<", ">", token);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.rules.PatternRule#sequenceDetected(org.eclipse.jface.text.rules.ICharacterScanner, char[], boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jface.text.rules.PatternRule#sequenceDetected(org.eclipse.jface.text.rules.
+   * ICharacterScanner, char[], boolean)
    */
   @Override
-  protected boolean sequenceDetected(ICharacterScanner scanner, char[] sequence, boolean eofAllowed) {
+  protected boolean sequenceDetected(ICharacterScanner scanner, char[] sequence,
+          boolean eofAllowed) {
     int c = scanner.read();
     if (sequence[0] == '<') {
       if (c == '?') {

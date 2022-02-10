@@ -41,7 +41,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
-
 // import org.eclipse.jdt.launching.IVMRunner;
 
 // import org.apache.uima.jcas.jcasgen.Prefs;
@@ -52,13 +51,13 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
  * contributors for the individual editors in the multi-page editor.
  */
 public class MultiPageEditorContributor extends MultiPageEditorActionBarContributor {
-  
+
   /** The active editor part. */
   private IEditorPart activeEditorPart;
 
   /** The auto J cas action. */
   Action autoJCasAction;
-  
+
   /** The limit J cas gen to project. */
   Action limitJCasGenToProject;
 
@@ -78,8 +77,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Returns the action registed with the given text editor.
    *
-   * @param editor the editor
-   * @param actionID the action ID
+   * @param editor
+   *          the editor
+   * @param actionID
+   *          the action ID
    * @return IAction or null if editor is null.
    */
   protected IAction getAction(MultiPageEditorPart editor, String actionID) {
@@ -90,16 +91,21 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Gets the action 1.
    *
-   * @param editor the editor
-   * @param actionID the action ID
+   * @param editor
+   *          the editor
+   * @param actionID
+   *          the action ID
    * @return the action 1
    */
   protected IAction getAction1(ITextEditor editor, String actionID) {
     return (editor == null ? null : editor.getAction(actionID));
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActiveEditor(org.eclipse.ui.
+   * IEditorPart)
    */
   @Override
   public void setActiveEditor(IEditorPart part) {
@@ -107,7 +113,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       return;
 
     if (null == part) {
-        return;
+      return;
     }
     activeEditorPart = part;
 
@@ -116,24 +122,24 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
       MultiPageEditorPart editor = (MultiPageEditorPart) part;
 
-      actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor,
-              ITextEditorActionConstants.DELETE));
-      actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor,
-              ITextEditorActionConstants.UNDO));
-      actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor,
-              ITextEditorActionConstants.REDO));
-      actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(editor,
-              ITextEditorActionConstants.CUT));
-      actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(editor,
-              ITextEditorActionConstants.COPY));
-      actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(editor,
-              ITextEditorActionConstants.PASTE));
-      actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor,
-              ITextEditorActionConstants.SELECT_ALL));
-      actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor,
-              ITextEditorActionConstants.FIND));
-      actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor,
-              IDEActionFactory.BOOKMARK.getId()));
+      actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(),
+              getAction(editor, ITextEditorActionConstants.DELETE));
+      actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+              getAction(editor, ITextEditorActionConstants.UNDO));
+      actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+              getAction(editor, ITextEditorActionConstants.REDO));
+      actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(),
+              getAction(editor, ITextEditorActionConstants.CUT));
+      actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
+              getAction(editor, ITextEditorActionConstants.COPY));
+      actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(),
+              getAction(editor, ITextEditorActionConstants.PASTE));
+      actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
+              getAction(editor, ITextEditorActionConstants.SELECT_ALL));
+      actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(),
+              getAction(editor, ITextEditorActionConstants.FIND));
+      actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(),
+              getAction(editor, IDEActionFactory.BOOKMARK.getId()));
       actionBars.updateActionBars();
     }
   }
@@ -141,7 +147,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /*
    * (non-Javadoc)
    * 
-   * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActivePage(org.eclipse.ui.IEditorPart)
+   * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActivePage(org.eclipse.ui.
+   * IEditorPart)
    */
   @Override
   public void setActivePage(IEditorPart part) {
@@ -151,24 +158,24 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
       ITextEditor textEditor = (part instanceof XMLEditor) ? (ITextEditor) part : null;
 
-      actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.DELETE));
-      actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.UNDO));
-      actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.REDO));
-      actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.CUT));
-      actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.COPY));
-      actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.PASTE));
-      actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.SELECT_ALL));
-      actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction1(textEditor,
-              ITextEditorActionConstants.FIND));
-      actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction1(textEditor,
-              IDEActionFactory.BOOKMARK.getId()));
+      actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.DELETE));
+      actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.UNDO));
+      actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.REDO));
+      actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.CUT));
+      actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.COPY));
+      actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.PASTE));
+      actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.SELECT_ALL));
+      actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(),
+              getAction1(textEditor, ITextEditorActionConstants.FIND));
+      actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(),
+              getAction1(textEditor, IDEActionFactory.BOOKMARK.getId()));
       actionBars.updateActionBars();
     }
   }
@@ -180,27 +187,27 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
     autoJCasAction = new Action() {
       // The run action is simply to toggle the setting in the prefs page, and
-      //   to update the checked status to correspond to that
+      // to update the checked status to correspond to that
       @Override
       public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
-        boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS); 
+        boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS);
         autoJCasAction.setChecked(bAutoJCasGen);
-        prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen); 
+        prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen);
       }
     };
-    
-    limitJCasGenToProject = new Action () {
+
+    limitJCasGenToProject = new Action() {
       // The run action is simply to toggle the setting in the prefs page, and
-      //   to update the checked status to correspond to that
+      // to update the checked status to correspond to that
       @Override
       public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
-        boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE); 
+        boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE);
         limitJCasGenToProject.setChecked(bJCasLimit);
-        prefs.setValue(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, bJCasLimit); 
+        prefs.setValue(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, bJCasLimit);
       }
     };
 
@@ -218,9 +225,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bFullyQualifiedTypeNames = !prefs
-                .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES); 
+                .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES);
         qualifiedTypesAction.setChecked(bFullyQualifiedTypeNames);
-        prefs.setValue(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, bFullyQualifiedTypeNames); 
+        prefs.setValue(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, bFullyQualifiedTypeNames);
 
         // mark all pages as stale for all editors, since this is a global setting
         IWorkbenchPage[] pages = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPages();
@@ -237,19 +244,23 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     };
 
     autoJCasAction.setText(Messages.getString("MultiPageEditorContributor.autoGenJCas")); //$NON-NLS-1$
-    autoJCasAction.setChecked(getAutoJCasGen()); 
-    
-    limitJCasGenToProject.setText(Messages.getString("MultiPageEditorContributor.limitJCasGenToProjectScope"));
+    autoJCasAction.setChecked(getAutoJCasGen());
+
+    limitJCasGenToProject
+            .setText(Messages.getString("MultiPageEditorContributor.limitJCasGenToProjectScope"));
     limitJCasGenToProject.setChecked(getLimitJCasGenToProjectScope());
 
     qualifiedTypesAction.setText(Messages.getString("MultiPageEditorContributor.showFullNames")); //$NON-NLS-1$
-    qualifiedTypesAction.setChecked(getUseQualifiedTypes()); 
+    qualifiedTypesAction.setChecked(getUseQualifiedTypes());
 
     runJCasGenAction.setText("Run JCasGen");
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToMenu(org.eclipse.jface.action.IMenuManager)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToMenu(org.eclipse.jface.action.
+   * IMenuManager)
    */
   @Override
   public void contributeToMenu(IMenuManager manager) {
@@ -281,7 +292,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   public static boolean getUseQualifiedTypes() {
     return getUimaPrefBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, true);
   }
-  
+
   /**
    * Gets the limit J cas gen to project scope.
    *
@@ -321,7 +332,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Sets the vns host.
    *
-   * @param v the new vns host
+   * @param v
+   *          the new vns host
    */
   public static void setVnsHost(String v) {
     System.setProperty("VNS_HOST", v);
@@ -330,7 +342,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Sets the vns port.
    *
-   * @param v the new vns port
+   * @param v
+   *          the new vns port
    */
   public static void setVnsPort(String v) {
     System.setProperty("VNS_PORT", v);
@@ -353,8 +366,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Gets the uima pref string.
    *
-   * @param key the key
-   * @param defaultValue the default value
+   * @param key
+   *          the key
+   * @param defaultValue
+   *          the default value
    * @return the uima pref string
    */
   private static String getUimaPrefString(String key, String defaultValue) {
@@ -362,7 +377,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
     if (isDefault) {
-        prefs.setDefault(key, defaultValue);
+      prefs.setDefault(key, defaultValue);
     }
     return prefs.getString(key);
   }
@@ -370,8 +385,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Gets the uima pref boolean.
    *
-   * @param key the key
-   * @param defaultValue the default value
+   * @param key
+   *          the key
+   * @param defaultValue
+   *          the default value
    * @return the uima pref boolean
    */
   private static boolean getUimaPrefBoolean(String key, boolean defaultValue) {
@@ -379,7 +396,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
     if (isDefault) {
-        prefs.setDefault(key, defaultValue);
+      prefs.setDefault(key, defaultValue);
     }
     return prefs.getBoolean(key);
   }
@@ -387,8 +404,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   /**
    * Gets the uima pref int.
    *
-   * @param key the key
-   * @param defaultValue the default value
+   * @param key
+   *          the key
+   * @param defaultValue
+   *          the default value
    * @return the uima pref int
    */
   private static int getUimaPrefInt(String key, int defaultValue) {
@@ -396,7 +415,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
     if (isDefault) {
-        prefs.setDefault(key, defaultValue);
+      prefs.setDefault(key, defaultValue);
     }
     return prefs.getInt(key);
   }

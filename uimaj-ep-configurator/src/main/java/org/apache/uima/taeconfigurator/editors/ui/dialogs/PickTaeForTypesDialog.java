@@ -36,12 +36,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class PickTaeForTypesDialog.
  */
 public class PickTaeForTypesDialog extends AbstractDialog {
-  
+
   /** The m delegate component descriptions. */
   private java.util.List m_DelegateComponentDescriptors, m_delegateComponentDescriptions;
 
@@ -78,18 +77,19 @@ public class PickTaeForTypesDialog extends AbstractDialog {
   public boolean isImportByName;
 
   /**
-   * The listener interface for receiving dialogSelection events.
-   * The class that is interested in processing a dialogSelection
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addDialogSelectionListener</code> method. When
-   * the dialogSelection event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving dialogSelection events. The class that is interested in
+   * processing a dialogSelection event implements this interface, and the object created with that
+   * class is registered with a component using the component's
+   * <code>addDialogSelectionListener</code> method. When the dialogSelection event occurs, that
+   * object's appropriate method is invoked.
    */
   public class DialogSelectionListener implements SelectionListener {
 
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.
+     * SelectionEvent)
      */
     @Override
     public void widgetSelected(SelectionEvent e) {
@@ -97,14 +97,16 @@ public class PickTaeForTypesDialog extends AbstractDialog {
         update();
       } else {
         if (okButton != null) {
-            enableOK();
+          enableOK();
         }
       }
     }
 
-
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.
+     * SelectionEvent)
      */
 
     @Override
@@ -113,17 +115,21 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     }
   }
 
-
   /**
    * Instantiates a new pick tae for types dialog.
    *
-   * @param aSection the a section
-   * @param aggregateFileName the aggregate file name
-   * @param delegateComponentDescriptors the delegate component descriptors
-   * @param delegateComponentDescriptions the delegate component descriptions
+   * @param aSection
+   *          the a section
+   * @param aggregateFileName
+   *          the aggregate file name
+   * @param delegateComponentDescriptors
+   *          the delegate component descriptors
+   * @param delegateComponentDescriptions
+   *          the delegate component descriptions
    */
   public PickTaeForTypesDialog(AbstractSection aSection, String aggregateFileName,
-          java.util.List delegateComponentDescriptors, java.util.List delegateComponentDescriptions) {
+          java.util.List delegateComponentDescriptors,
+          java.util.List delegateComponentDescriptions) {
 
     super(aSection, "Select Delegate Component Descriptor(s)",
             "Select one or more delegate components to add and press OK");
@@ -132,9 +138,12 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     m_delegateComponentDescriptions = delegateComponentDescriptions;
   }
 
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -162,8 +171,8 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     delegateComponentListGUI.addSelectionListener(dialogSelectionListener);
 
     if (bContainsConstituentsAlreadyInAggregate && bContainsAggregate) {
-      specialMsgLabel
-              .setText("(* indicates delegate component is already part of aggregate, ** is aggregate currently being configured)");
+      specialMsgLabel.setText(
+              "(* indicates delegate component is already part of aggregate, ** is aggregate currently being configured)");
     } else if (bContainsConstituentsAlreadyInAggregate) {
       specialMsgLabel.setText("(* indicates delegate component is already part of aggregate)");
     } else if (bContainsAggregate) {
@@ -172,8 +181,8 @@ public class PickTaeForTypesDialog extends AbstractDialog {
 
     createWideLabel(composite, "Delegate Component Description:");
 
-    delegateComponentDescriptionText = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL
-            | SWT.BORDER);
+    delegateComponentDescriptionText = new Text(composite,
+            SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
     delegateComponentDescriptionText.setLayoutData(new GridData(GridData.FILL_BOTH));
     GridData dcgd = new GridData(GridData.FILL_HORIZONTAL);
     dcgd.heightHint = 50;
@@ -220,8 +229,9 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     ResourceSpecifier rs = (ResourceSpecifier) m_delegateComponentDescriptions
             .get(nSelectedAeIndex);
 
-    String description = rs instanceof ResourceCreationSpecifier ? ((ResourceCreationSpecifier) rs)
-            .getMetaData().getDescription() : "No Description - remote service descriptor";
+    String description = rs instanceof ResourceCreationSpecifier
+            ? ((ResourceCreationSpecifier) rs).getMetaData().getDescription()
+            : "No Description - remote service descriptor";
     delegateComponentDescriptionText.setText(convertNull(description));
 
     inputTypesList.removeAll();
@@ -247,11 +257,13 @@ public class PickTaeForTypesDialog extends AbstractDialog {
       }
     }
     if (okButton != null) {
-        enableOK();
+      enableOK();
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

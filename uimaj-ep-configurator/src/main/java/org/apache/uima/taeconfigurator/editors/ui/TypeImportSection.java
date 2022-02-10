@@ -33,7 +33,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
-
 /**
  * The Class TypeImportSection.
  */
@@ -48,8 +47,10 @@ public class TypeImportSection extends ImportSection {
   /**
    * Instantiates a new type import section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public TypeImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Imported Type Systems",
@@ -60,7 +61,9 @@ public class TypeImportSection extends ImportSection {
   // * Code to support type import section
   // **************************************
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isAppropriate()
    */
   @Override
@@ -75,8 +78,12 @@ public class TypeImportSection extends ImportSection {
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getDescriptionFromImport(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.ImportSection#getDescriptionFromImport(java.lang.
+   * String)
    */
   @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
@@ -85,7 +92,9 @@ public class TypeImportSection extends ImportSection {
     return parsedImportItem.getDescription();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getModelImportArray()
    */
   @Override
@@ -93,8 +102,12 @@ public class TypeImportSection extends ImportSection {
     return getTypeSystemDescription().getImports();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.resource.metadata.Import[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.
+   * resource.metadata.Import[])
    */
   @Override
   protected void setModelImportArray(Import[] imports) {
@@ -104,7 +117,9 @@ public class TypeImportSection extends ImportSection {
     getTypeSystemDescription().setImports(imports);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#clearModelBaseValue()
    */
   @Override
@@ -112,8 +127,11 @@ public class TypeImportSection extends ImportSection {
     getTypeSystemDescription().setTypes(typeDescription0);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String,
+   * java.lang.String)
    */
   @Override
   protected boolean isValidImport(String title, String msg) {

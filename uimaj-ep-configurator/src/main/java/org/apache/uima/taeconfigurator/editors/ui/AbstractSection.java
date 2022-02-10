@@ -117,12 +117,11 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-
 /**
  * The Class AbstractSection.
  */
 public abstract class AbstractSection extends SectionPart /* extends FormSection */
-implements Listener, StandardStrings {
+        implements Listener, StandardStrings {
 
   /** The toolkit. */
   protected FormToolkit toolkit;
@@ -196,10 +195,14 @@ implements Listener, StandardStrings {
   /**
    * Instantiates a new abstract section.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
-   * @param headerText the header text
-   * @param description the description
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
+   * @param headerText
+   *          the header text
+   * @param description
+   *          the description
    */
   public AbstractSection(MultiPageEditor aEditor, Composite parent, String headerText,
           String description) {
@@ -210,12 +213,14 @@ implements Listener, StandardStrings {
     getSection().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     toolkit.createCompositeSeparator(getSection());
     if (null != description) {
-        getSection().setDescription(description);
+      getSection().setDescription(description);
     }
     editor = aEditor;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
   @Override
@@ -248,7 +253,8 @@ implements Listener, StandardStrings {
   /**
    * New composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   // **************************************************
@@ -259,7 +265,8 @@ implements Listener, StandardStrings {
   /**
    * New 2 column composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   public Composite new2ColumnComposite(Composite parent) {
@@ -269,7 +276,8 @@ implements Listener, StandardStrings {
   /**
    * New 3 column composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   public Composite new3ColumnComposite(Composite parent) {
@@ -279,7 +287,8 @@ implements Listener, StandardStrings {
   /**
    * New 4 column composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   public Composite new4ColumnComposite(Composite parent) {
@@ -289,14 +298,16 @@ implements Listener, StandardStrings {
   /**
    * New ncolumn composite.
    *
-   * @param parent the parent
-   * @param cols the cols
+   * @param parent
+   *          the parent
+   * @param cols
+   *          the cols
    * @return the composite
    */
   public Composite newNcolumnComposite(Composite parent, int cols) {
     Composite composite = toolkit.createComposite(parent);
     if (parent instanceof ExpandableComposite) {
-        ((ExpandableComposite) parent).setClient(composite);
+      ((ExpandableComposite) parent).setClient(composite);
     }
     GridLayout layout = new GridLayout(cols, !EQUAL_WIDTH);
     layout.marginHeight = 0;
@@ -309,9 +320,12 @@ implements Listener, StandardStrings {
   /**
    * Sets the margins.
    *
-   * @param composite the composite
-   * @param height the height
-   * @param width the width
+   * @param composite
+   *          the composite
+   * @param height
+   *          the height
+   * @param width
+   *          the width
    */
   public void setMargins(Composite composite, int height, int width) {
     GridLayout g = (GridLayout) composite.getLayout();
@@ -322,15 +336,16 @@ implements Listener, StandardStrings {
   /**
    * Enable borders.
    *
-   * @param composite the composite
+   * @param composite
+   *          the composite
    */
   public void enableBorders(Composite composite) {
     GridLayout g = (GridLayout) composite.getLayout();
     if (g.marginHeight < 2) {
-        g.marginHeight = 2;
+      g.marginHeight = 2;
     }
     if (g.marginWidth < 1) {
-        g.marginWidth = 1;
+      g.marginWidth = 1;
     }
   }
 
@@ -346,7 +361,8 @@ implements Listener, StandardStrings {
   /**
    * New button container.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   public Composite newButtonContainer(Composite parent) {
@@ -356,9 +372,12 @@ implements Listener, StandardStrings {
   /**
    * New button container.
    *
-   * @param parent the parent
-   * @param style the style
-   * @param widthMin the width min
+   * @param parent
+   *          the parent
+   * @param style
+   *          the style
+   * @param widthMin
+   *          the width min
    * @return the composite
    */
   public Composite newButtonContainer(Composite parent, int style, int widthMin) {
@@ -409,9 +428,12 @@ implements Listener, StandardStrings {
   /**
    * New labeled text field.
    *
-   * @param parent the parent
-   * @param label the label
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param label
+   *          the label
+   * @param tip
+   *          the tip
    * @return the text
    */
   protected Text newLabeledTextField(Composite parent, String label, String tip) {
@@ -421,10 +443,14 @@ implements Listener, StandardStrings {
   /**
    * New labeled text field.
    *
-   * @param parent the parent
-   * @param labelKey the label key
-   * @param textToolTip the text tool tip
-   * @param style the style
+   * @param parent
+   *          the parent
+   * @param labelKey
+   *          the label key
+   * @param textToolTip
+   *          the text tool tip
+   * @param style
+   *          the style
    * @return the text
    */
   protected Text newLabeledTextField(Composite parent, String labelKey, String textToolTip,
@@ -441,9 +467,12 @@ implements Listener, StandardStrings {
   /**
    * New text with tip.
    *
-   * @param parent the parent
-   * @param initialTxt the initial txt
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param initialTxt
+   *          the initial txt
+   * @param tip
+   *          the tip
    * @return the text
    */
   protected Text newTextWithTip(Composite parent, String initialTxt, String tip) {
@@ -453,10 +482,14 @@ implements Listener, StandardStrings {
   /**
    * New text with tip.
    *
-   * @param parent the parent
-   * @param text the text
-   * @param style the style
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param text
+   *          the text
+   * @param style
+   *          the style
+   * @param tip
+   *          the tip
    * @return the text
    */
   protected Text newTextWithTip(Composite parent, String text, int style, String tip) {
@@ -474,8 +507,10 @@ implements Listener, StandardStrings {
   /**
    * New label with data.
    *
-   * @param parent the parent
-   * @param text the text
+   * @param parent
+   *          the parent
+   * @param text
+   *          the text
    * @return the label
    */
   public Label newLabelWithData(Composite parent, String text) {
@@ -485,9 +520,12 @@ implements Listener, StandardStrings {
   /**
    * New label with tip.
    *
-   * @param parent the parent
-   * @param text the text
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param text
+   *          the text
+   * @param tip
+   *          the tip
    * @return the label
    */
   public Label newLabelWithTip(Composite parent, String text, String tip) {
@@ -497,9 +535,12 @@ implements Listener, StandardStrings {
   /**
    * New un updatable text with tip.
    *
-   * @param parent the parent
-   * @param text the text
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param text
+   *          the text
+   * @param tip
+   *          the tip
    * @return the label
    */
   public Label newUnUpdatableTextWithTip(Composite parent, String text, String tip) {
@@ -511,16 +552,20 @@ implements Listener, StandardStrings {
   /**
    * New label with tip.
    *
-   * @param parent the parent
-   * @param text the text
-   * @param tip the tip
-   * @param style the style
+   * @param parent
+   *          the parent
+   * @param text
+   *          the text
+   * @param tip
+   *          the tip
+   * @param style
+   *          the style
    * @return the label
    */
   public Label newLabelWithTip(Composite parent, String text, String tip, int style) {
     Label t = toolkit.createLabel(parent, text, style);
     if ((tip != null) && (tip.length()) > 0) {
-        t.setToolTipText(tip);
+      t.setToolTipText(tip);
     }
     return t;
   }
@@ -528,9 +573,12 @@ implements Listener, StandardStrings {
   /**
    * New labeled C combo with tip.
    *
-   * @param parent the parent
-   * @param labelKey the label key
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param labelKey
+   *          the label key
+   * @param tip
+   *          the tip
    * @return the c combo
    */
   protected CCombo newLabeledCComboWithTip(Composite parent, String labelKey, String tip) {
@@ -541,8 +589,10 @@ implements Listener, StandardStrings {
   /**
    * New C combo with tip.
    *
-   * @param parent the parent
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param tip
+   *          the tip
    * @return the c combo
    */
   protected CCombo newCComboWithTip(Composite parent, String tip) {
@@ -553,7 +603,7 @@ implements Listener, StandardStrings {
     ccombo.addListener(SWT.Selection, this);
     // Make the CCombo's border visible since CCombo is NOT a widget supported
     // by FormToolkit.
-    // needed apparently by RedHat Linux 
+    // needed apparently by RedHat Linux
     ccombo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
     return ccombo;
   }
@@ -561,8 +611,10 @@ implements Listener, StandardStrings {
   /**
    * New description text box.
    *
-   * @param parent the parent
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param tip
+   *          the tip
    * @return the text
    */
   protected Text newDescriptionTextBox(Composite parent, String tip) {
@@ -574,10 +626,14 @@ implements Listener, StandardStrings {
   /**
    * New radio button.
    *
-   * @param parent the parent
-   * @param label the label
-   * @param toolTip the tool tip
-   * @param selected the selected
+   * @param parent
+   *          the parent
+   * @param label
+   *          the label
+   * @param toolTip
+   *          the tool tip
+   * @param selected
+   *          the selected
    * @return the button
    */
   // **************************************************
@@ -592,9 +648,12 @@ implements Listener, StandardStrings {
   /**
    * add pushbutton to container, set enabled, add listener for it.
    *
-   * @param parent the parent
-   * @param label the label
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param label
+   *          the label
+   * @param tip
+   *          the tip
    * @return the push button
    */
   public Button newPushButton(Composite parent, String label, String tip) {
@@ -604,10 +663,14 @@ implements Listener, StandardStrings {
   /**
    * Add a push button to a container, add a listener for it too.
    *
-   * @param parent the parent
-   * @param label the label
-   * @param tip the tip
-   * @param enabled the enabled
+   * @param parent
+   *          the parent
+   * @param label
+   *          the label
+   * @param tip
+   *          the tip
+   * @param enabled
+   *          the enabled
    * @return the pushbutton
    */
   public Button newPushButton(Composite parent, String label, String tip, boolean enabled) {
@@ -617,14 +680,20 @@ implements Listener, StandardStrings {
   /**
    * New push button.
    *
-   * @param parent the parent
-   * @param label the label
-   * @param tip the tip
-   * @param enabled the enabled
-   * @param style the style
+   * @param parent
+   *          the parent
+   * @param label
+   *          the label
+   * @param tip
+   *          the tip
+   * @param enabled
+   *          the enabled
+   * @param style
+   *          the style
    * @return the button
    */
-  public Button newPushButton(Composite parent, String label, String tip, boolean enabled, int style) {
+  public Button newPushButton(Composite parent, String label, String tip, boolean enabled,
+          int style) {
     Button button = toolkit.createButton(parent, label, SWT.PUSH | style);
     GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
     button.setLayoutData(gd);
@@ -641,15 +710,18 @@ implements Listener, StandardStrings {
   /**
    * New check box.
    *
-   * @param parent the parent
-   * @param label the label
-   * @param tip the tip
+   * @param parent
+   *          the parent
+   * @param label
+   *          the label
+   * @param tip
+   *          the tip
    * @return the button
    */
   public Button newCheckBox(Composite parent, String label, String tip) {
     Button button = toolkit.createButton(parent, label, SWT.CHECK);
-    button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
-            | GridData.HORIZONTAL_ALIGN_FILL));
+    button.setLayoutData(
+            new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_FILL));
     button.pack();
     button.setToolTipText(tip);
     button.addListener(SWT.Selection, this);
@@ -659,7 +731,8 @@ implements Listener, StandardStrings {
   /**
    * Spacer.
    *
-   * @param container the container
+   * @param container
+   *          the container
    */
   public static void spacer(Composite container) {
     Label label = new Label(container, SWT.NONE);
@@ -689,7 +762,8 @@ implements Listener, StandardStrings {
   /**
    * New table.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the table
    */
   protected Table newTable(Composite parent) {
@@ -699,9 +773,12 @@ implements Listener, StandardStrings {
   /**
    * New table.
    *
-   * @param parent the parent
-   * @param style the style
-   * @param minHeight the min height
+   * @param parent
+   *          the parent
+   * @param style
+   *          the style
+   * @param minHeight
+   *          the min height
    * @return the table
    */
   protected Table newTable(Composite parent, int style, int minHeight) {
@@ -711,17 +788,21 @@ implements Listener, StandardStrings {
   /**
    * New table.
    *
-   * @param parent the parent
-   * @param style the style
-   * @param minHeight the min height
-   * @param flags the flags
+   * @param parent
+   *          the parent
+   * @param style
+   *          the style
+   * @param minHeight
+   *          the min height
+   * @param flags
+   *          the flags
    * @return the table
    */
   protected Table newTable(Composite parent, int style, int minHeight, int flags) {
     Table table = toolkit.createTable(parent, style);
     GridData gd = new GridData(GridData.FILL_BOTH);
     if (minHeight != NO_MIN_HEIGHT) {
-        gd.heightHint = minHeight;
+      gd.heightHint = minHeight;
     }
     table.setLayoutData(gd);
 
@@ -735,7 +816,8 @@ implements Listener, StandardStrings {
   /**
    * New tree.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the tree
    */
   protected Tree newTree(Composite parent) {
@@ -749,8 +831,10 @@ implements Listener, StandardStrings {
   /**
    * Gets the previous selection.
    *
-   * @param items the items
-   * @param nextItem the next item
+   * @param items
+   *          the items
+   * @param nextItem
+   *          the next item
    * @return the previous selection
    */
   protected TreeItem getPreviousSelection(TreeItem[] items, TreeItem nextItem) {
@@ -758,7 +842,7 @@ implements Listener, StandardStrings {
     for (int i = 0; i < items.length; i++) {
       if (nextItem == items[i]) {
         return prevItem;
-    }
+      }
       prevItem = items[i];
     }
     return prevItem;
@@ -767,15 +851,17 @@ implements Listener, StandardStrings {
   /**
    * Gets the item index.
    *
-   * @param items the items
-   * @param item the item
+   * @param items
+   *          the items
+   * @param item
+   *          the item
    * @return the item index
    */
   protected int getItemIndex(TreeItem[] items, TreeItem item) {
     for (int i = 0; i < items.length; i++) {
       if (items[i] == item) {
         return i;
-    }
+      }
     }
     return -1;
   }
@@ -783,8 +869,10 @@ implements Listener, StandardStrings {
   /**
    * New tree.
    *
-   * @param parent the parent
-   * @param style          SWT.SINGLE SWT.MULTI SWT.CHECK SWT.FULL_SELECTION
+   * @param parent
+   *          the parent
+   * @param style
+   *          SWT.SINGLE SWT.MULTI SWT.CHECK SWT.FULL_SELECTION
    * @return the TableTree
    */
   protected Tree newTree(Composite parent, int style) {
@@ -796,9 +884,9 @@ implements Listener, StandardStrings {
     tt.addListener(SWT.MouseDoubleClick, this); // for edit
     tt.addListener(SWT.Expand, this);
     tt.addListener(SWT.Collapse, this);
- 
+
     // Make the TableTree's border visible since TableTree is NOT a widget supported
-    // by FormToolkit.  Needed by RedHat Linux
+    // by FormToolkit. Needed by RedHat Linux
     tt.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
     return tt;
   }
@@ -806,7 +894,8 @@ implements Listener, StandardStrings {
   /**
    * Pack table.
    *
-   * @param table the table
+   * @param table
+   *          the table
    */
   public void packTable(Table table) {
     TableColumn[] columns = table.getColumns();
@@ -815,11 +904,11 @@ implements Listener, StandardStrings {
     }
   }
 
-  
   /**
    * Pack tree.
    *
-   * @param p_tree the tree
+   * @param p_tree
+   *          the tree
    */
   public void packTree(Tree p_tree) {
     TreeColumn[] columns = p_tree.getColumns();
@@ -831,7 +920,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the index.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the index
    */
   public static int getIndex(TableItem item) {
@@ -840,7 +930,7 @@ implements Listener, StandardStrings {
     for (int i = items.length - 1; i >= 0; i--) {
       if (items[i] == item) {
         return i;
-    }
+      }
     }
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
@@ -848,7 +938,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the index.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the index
    */
   public static int getIndex(TreeItem item) {
@@ -857,35 +948,36 @@ implements Listener, StandardStrings {
     for (int i = items.length - 1; i >= 0; i--) {
       if (items[i] == item) {
         return i;
-    }
+      }
     }
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
 
-//  /**
-//   * Removes the children.
-//   *
-//   * @param item the item
-//   */
-//  protected void removeChildren(TreeItem item) {
-//    TreeItem[] items = item.getItems();
-//    if (null != items)
-//      for (int i = 0; i < items.length; i++) {
-//        items[i].dispose();
-//      }
-//  }
+  // /**
+  // * Removes the children.
+  // *
+  // * @param item the item
+  // */
+  // protected void removeChildren(TreeItem item) {
+  // TreeItem[] items = item.getItems();
+  // if (null != items)
+  // for (int i = 0; i < items.length; i++) {
+  // items[i].dispose();
+  // }
+  // }
 
   /**
    * Removes the children.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   protected void removeChildren(TreeItem item) {
     TreeItem[] items = item.getItems();
     if (null != items) {
-        for (int i = 0; i < items.length; i++) {
-            items[i].dispose();
-          }
+      for (int i = 0; i < items.length; i++) {
+        items[i].dispose();
+      }
     }
   }
 
@@ -894,18 +986,20 @@ implements Listener, StandardStrings {
   /**
    * New table column.
    *
-   * @param table the table
+   * @param table
+   *          the table
    * @return the table column
    */
   // **********************************
   protected TableColumn newTableColumn(Table table) {
     return newTableColumn(table, ""); //$NON-NLS-1$
   }
-  
+
   /**
    * New tree column.
    *
-   * @param p_tree the tree
+   * @param p_tree
+   *          the tree
    * @return the tree column
    */
   // **********************************
@@ -913,37 +1007,43 @@ implements Listener, StandardStrings {
     return newTreeColumn(p_tree, ""); //$NON-NLS-1$
   }
 
-
   /**
    * New table column.
    *
-   * @param container the container
-   * @param header the header
+   * @param container
+   *          the container
+   * @param header
+   *          the header
    * @return the table column
    */
   protected TableColumn newTableColumn(Table container, String header) {
     return newTableColumn(container, 50, SWT.LEFT, header);
   }
-  
+
   /**
    * New tree column.
    *
-   * @param container the container
-   * @param header the header
+   * @param container
+   *          the container
+   * @param header
+   *          the header
    * @return the tree column
    */
   protected TreeColumn newTreeColumn(Tree container, String header) {
     return newTreeColumn(container, 50, SWT.LEFT, header);
   }
 
-
   /**
    * New table column.
    *
-   * @param container the container
-   * @param width the width
-   * @param alignment the alignment
-   * @param header the header
+   * @param container
+   *          the container
+   * @param width
+   *          the width
+   * @param alignment
+   *          the alignment
+   * @param header
+   *          the header
    * @return the table column
    */
   protected TableColumn newTableColumn(Table container, int width, int alignment, String header) {
@@ -954,14 +1054,18 @@ implements Listener, StandardStrings {
     tc.setWidth(width);
     return tc;
   }
-  
+
   /**
    * New tree column.
    *
-   * @param container the container
-   * @param width the width
-   * @param alignment the alignment
-   * @param header the header
+   * @param container
+   *          the container
+   * @param width
+   *          the width
+   * @param alignment
+   *          the alignment
+   * @param header
+   *          the header
    * @return the tree column
    */
   protected TreeColumn newTreeColumn(Tree container, int width, int alignment, String header) {
@@ -972,13 +1076,14 @@ implements Listener, StandardStrings {
     tc.setWidth(width);
     return tc;
   }
-  
 
   /**
    * New table column.
    *
-   * @param container the container
-   * @param width the width
+   * @param container
+   *          the container
+   * @param width
+   *          the width
    * @return the table column
    */
   protected TableColumn newTableColumn(Table container, int width) {
@@ -988,8 +1093,10 @@ implements Listener, StandardStrings {
   /**
    * New tree column.
    *
-   * @param container the container
-   * @param width the width
+   * @param container
+   *          the container
+   * @param width
+   *          the width
    * @return the tree column
    */
   protected TreeColumn newTreeColumn(Tree container, int width) {
@@ -1129,7 +1236,8 @@ implements Listener, StandardStrings {
   /**
    * Sets the flow controller declaration.
    *
-   * @param fcd the new flow controller declaration
+   * @param fcd
+   *          the new flow controller declaration
    */
   public void setFlowControllerDeclaration(FlowControllerDeclaration fcd) {
     editor.getAeDescription().setFlowControllerDeclaration(fcd);
@@ -1157,7 +1265,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the sofa mappings.
    *
-   * @param pEditor the editor
+   * @param pEditor
+   *          the editor
    * @return the sofa mappings
    */
   public static SofaMapping[] getSofaMappings(MultiPageEditor pEditor) {
@@ -1182,7 +1291,7 @@ implements Listener, StandardStrings {
   public Capability[] getCapabilities() {
     Capability[] c = getAnalysisEngineMetaData().getCapabilities();
     if (null == c) {
-        return capabilityArray0;
+      return capabilityArray0;
     }
     return c;
   }
@@ -1234,7 +1343,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the available type names.
    *
-   * @param excluded the excluded
+   * @param excluded
+   *          the excluded
    * @return the available type names
    */
   public String[] getAvailableTypeNames(Set excluded) {
@@ -1245,7 +1355,7 @@ implements Listener, StandardStrings {
       String item = (String) it.next();
       if (!excluded.contains(item)) {
         availableTypes.add(item);
-    }
+      }
     }
     return (String[]) availableTypes.toArray(stringArray0);
   }
@@ -1314,8 +1424,8 @@ implements Listener, StandardStrings {
   public ExternalResourceBinding[] getExternalResourceBindings() {
     ExternalResourceBinding[] erb = getResourceManagerConfiguration().getExternalResourceBindings();
     if (null == erb) {
-        getResourceManagerConfiguration().setExternalResourceBindings(
-                  erb = new ExternalResourceBinding[0]);
+      getResourceManagerConfiguration()
+              .setExternalResourceBindings(erb = new ExternalResourceBinding[0]);
     }
     return erb;
   }
@@ -1328,8 +1438,8 @@ implements Listener, StandardStrings {
   public ExternalResourceDescription[] getExternalResources() {
     ExternalResourceDescription[] erd = getResourceManagerConfiguration().getExternalResources();
     if (null == erd) {
-        getResourceManagerConfiguration().setExternalResources(
-                  erd = new ExternalResourceDescription[0]);
+      getResourceManagerConfiguration()
+              .setExternalResources(erd = new ExternalResourceDescription[0]);
     }
     return erd;
   }
@@ -1339,7 +1449,8 @@ implements Listener, StandardStrings {
   /**
    * Adds the listener for pastable widget.
    *
-   * @param w the w
+   * @param w
+   *          the w
    */
   // **************************************************
   protected void addListenerForPastableWidget(Widget w) {
@@ -1357,16 +1468,17 @@ implements Listener, StandardStrings {
   /**
    * Sets the value changed.
    *
-   * @param newValue the new value
-   * @param oldValue the old value
+   * @param newValue
+   *          the new value
+   * @param oldValue
+   *          the old value
    * @return the string
    */
   protected String setValueChanged(String newValue, String oldValue) {
     if (null == newValue) {
-        valueChanged = valueChanged || (null != oldValue);
-    }
-    else if (!newValue.equals(oldValue)) {
-        valueChanged = true;
+      valueChanged = valueChanged || (null != oldValue);
+    } else if (!newValue.equals(oldValue)) {
+      valueChanged = true;
     }
     return newValue;
   }
@@ -1374,13 +1486,15 @@ implements Listener, StandardStrings {
   /**
    * Sets the value changed int.
    *
-   * @param newValue the new value
-   * @param oldValue the old value
+   * @param newValue
+   *          the new value
+   * @param oldValue
+   *          the old value
    * @return the int
    */
   protected int setValueChangedInt(int newValue, int oldValue) {
     if (newValue != oldValue) {
-        valueChanged = true;
+      valueChanged = true;
     }
     return newValue;
   }
@@ -1388,13 +1502,15 @@ implements Listener, StandardStrings {
   /**
    * Sets the value changed boolean.
    *
-   * @param newValue the new value
-   * @param oldValue the old value
+   * @param newValue
+   *          the new value
+   * @param oldValue
+   *          the old value
    * @return true, if successful
    */
   protected boolean setValueChangedBoolean(boolean newValue, boolean oldValue) {
     if (newValue != oldValue) {
-        valueChanged = true;
+      valueChanged = true;
     }
     return newValue;
   }
@@ -1402,8 +1518,10 @@ implements Listener, StandardStrings {
   /**
    * Sets the value changed capital boolean.
    *
-   * @param newValue the new value
-   * @param oldValue the old value
+   * @param newValue
+   *          the new value
+   * @param oldValue
+   *          the old value
    * @return the boolean
    */
   protected Boolean setValueChangedCapitalBoolean(Boolean newValue, Boolean oldValue) {
@@ -1412,7 +1530,7 @@ implements Listener, StandardStrings {
     } else if (null == oldValue) {
       valueChanged = true;
     } else if (newValue.booleanValue() != oldValue.booleanValue()) {
-        valueChanged = true;
+      valueChanged = true;
     }
     return newValue;
   }
@@ -1420,8 +1538,10 @@ implements Listener, StandardStrings {
   /**
    * Sets the value changed keys.
    *
-   * @param newKeys the new keys
-   * @param oldKeys the old keys
+   * @param newKeys
+   *          the new keys
+   * @param oldKeys
+   *          the old keys
    * @return the fs index key description[]
    */
   protected FsIndexKeyDescription[] setValueChangedKeys(FsIndexKeyDescription[] newKeys,
@@ -1431,9 +1551,8 @@ implements Listener, StandardStrings {
     } else if (oldKeys != null && Arrays.equals(oldKeys, newKeys)) {
     } else if (Arrays.equals(newKeys, oldKeys)) // newKeys must be non-null here
     {
-    }
-    else {
-        valueChanged = true;
+    } else {
+      valueChanged = true;
     }
 
     return newKeys;
@@ -1446,7 +1565,7 @@ implements Listener, StandardStrings {
    */
   protected boolean isValidAe() {
     if (editor.isValidAE(editor.getAeDescription())) {
-        return true;
+      return true;
     }
     return false;
   }
@@ -1454,7 +1573,8 @@ implements Listener, StandardStrings {
   /**
    * Revert type system.
    *
-   * @param tsd the tsd
+   * @param tsd
+   *          the tsd
    */
   protected void revertTypeSystem(TypeSystemDescription tsd) {
     try {
@@ -1466,9 +1586,12 @@ implements Listener, StandardStrings {
   /**
    * Revert msg.
    *
-   * @param msgTitle the msg title
-   * @param msgTxt the msg txt
-   * @param exceptionMessage the exception message
+   * @param msgTitle
+   *          the msg title
+   * @param msgTxt
+   *          the msg txt
+   * @param exceptionMessage
+   *          the exception message
    */
   protected void revertMsg(String msgTitle, String msgTxt, String exceptionMessage) {
     Utility.popMessage(msgTitle, msgTxt + "\r\n" + exceptionMessage, //$NON-NLS-1$
@@ -1479,16 +1602,17 @@ implements Listener, StandardStrings {
   /**
    * Revert or continue.
    *
-   * @param msg the msg
-   * @param msgDetails the msg details
+   * @param msg
+   *          the msg
+   * @param msgDetails
+   *          the msg details
    * @return true to revert, false to continue
    */
   public static boolean revertOrContinue(String msg, String msgDetails) {
-    if (Window.CANCEL == Utility.popMessage(msg, msgDetails
-            + "\nDo you want to continue, or Abort the last action?", MessageDialog.QUESTION,
-            new String[] { "Continue", "Abort" }))
-     {
-        return true; // for closing the window or hitting Undo
+    if (Window.CANCEL == Utility.popMessage(msg,
+            msgDetails + "\nDo you want to continue, or Abort the last action?",
+            MessageDialog.QUESTION, new String[] { "Continue", "Abort" })) {
+      return true; // for closing the window or hitting Undo
     }
     return false;
   }
@@ -1496,23 +1620,26 @@ implements Listener, StandardStrings {
   /**
    * Mark stale.
    *
-   * @param section the section
+   * @param section
+   *          the section
    */
   public void markStale(IFormPart section) {
     if (section != null) {
-        ((AbstractFormPart) section).markStale();
+      ((AbstractFormPart) section).markStale();
     }
   }
 
   /**
    * Mark rest of page stale.
    *
-   * @param mform the mform
-   * @param section the section
+   * @param mform
+   *          the mform
+   * @param section
+   *          the section
    */
   protected void markRestOfPageStale(IManagedForm mform, AbstractSection section) {
     if (null == mform) {
-        return;
+      return;
     }
     IFormPart[] parts = mform.getParts();
     for (int i = 0; i < parts.length; i++) {
@@ -1523,24 +1650,27 @@ implements Listener, StandardStrings {
   /**
    * Mark stale if different.
    *
-   * @param thisOne the this one
-   * @param otherOne the other one
+   * @param thisOne
+   *          the this one
+   * @param otherOne
+   *          the other one
    */
   protected void markStaleIfDifferent(IFormPart thisOne, IFormPart otherOne) {
     if (thisOne != otherOne) {
-        markStale(otherOne);
+      markStale(otherOne);
     }
   }
 
   /**
    * Multi line fix.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the string
    */
   protected String multiLineFix(String s) {
     if (null == s) {
-        return null;
+      return null;
     }
     return s.replaceAll("\\r\\n", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
   }
@@ -1550,14 +1680,16 @@ implements Listener, StandardStrings {
    * Augment arrays (make new array, add one item to it at end
    * *********************************************************.
    *
-   * @param a the a
-   * @param s the s
+   * @param a
+   *          the a
+   * @param s
+   *          the s
    * @return the string[]
    */
 
   public String[] stringArrayAdd(String[] a, String s) {
     if (a == null) {
-        return new String[] { s };
+      return new String[] { s };
     }
 
     String[] newA = new String[a.length + 1];
@@ -1569,8 +1701,10 @@ implements Listener, StandardStrings {
   /**
    * String array remove.
    *
-   * @param a the a
-   * @param s the s
+   * @param a
+   *          the a
+   * @param s
+   *          the s
    * @return the string[]
    */
   public String[] stringArrayRemove(String[] a, String s) {
@@ -1578,7 +1712,7 @@ implements Listener, StandardStrings {
     for (int i = 0, j = 0; i < a.length; i++) {
       if (!a[i].equals(s)) {
         result[j++] = a[i];
-    }
+      }
     }
     return result;
   }
@@ -1586,13 +1720,15 @@ implements Listener, StandardStrings {
   /**
    * Type or feature array add.
    *
-   * @param a the a
-   * @param item the item
+   * @param a
+   *          the a
+   * @param item
+   *          the item
    * @return the type or feature[]
    */
   public TypeOrFeature[] typeOrFeatureArrayAdd(TypeOrFeature[] a, TypeOrFeature item) {
     if (null == a) {
-        return new TypeOrFeature[] { item };
+      return new TypeOrFeature[] { item };
     }
 
     TypeOrFeature[] result = new TypeOrFeature[a.length + 1];
@@ -1604,8 +1740,10 @@ implements Listener, StandardStrings {
   /**
    * Type or feature array remove.
    *
-   * @param a the a
-   * @param item the item
+   * @param a
+   *          the a
+   * @param item
+   *          the item
    * @return the type or feature[]
    */
   public TypeOrFeature[] typeOrFeatureArrayRemove(TypeOrFeature[] a, TypeOrFeature item) {
@@ -1613,7 +1751,7 @@ implements Listener, StandardStrings {
     for (int i = 0, j = 0; i < a.length; i++) {
       if (a[i] != item) {
         result[j++] = a[i];
-    }
+      }
     }
     return result;
   }
@@ -1621,8 +1759,10 @@ implements Listener, StandardStrings {
   /**
    * Type or feature array remove.
    *
-   * @param a the a
-   * @param s the s
+   * @param a
+   *          the a
+   * @param s
+   *          the s
    * @return the type or feature[]
    */
   public TypeOrFeature[] typeOrFeatureArrayRemove(TypeOrFeature[] a, String s) {
@@ -1631,7 +1771,7 @@ implements Listener, StandardStrings {
       if (!a[i].getName().equals(s)) {
         // debug
         if (j == a.length - 1) {
-            throw new InternalErrorCDE("feature or type not found: looking for " + s);
+          throw new InternalErrorCDE("feature or type not found: looking for " + s);
         }
         result[j++] = a[i];
       }
@@ -1642,18 +1782,20 @@ implements Listener, StandardStrings {
   /**
    * Gets the type or feature.
    *
-   * @param a the a
-   * @param name the name
+   * @param a
+   *          the a
+   * @param name
+   *          the name
    * @return the type or feature
    */
   public static TypeOrFeature getTypeOrFeature(TypeOrFeature[] a, String name) {
     if (null == a) {
-        return null;
+      return null;
     }
     for (int i = 0; i < a.length; i++) {
       if (a[i].getName().equals(name)) {
         return a[i];
-    }
+      }
     }
     return null;
   }
@@ -1661,13 +1803,14 @@ implements Listener, StandardStrings {
   /**
    * Parses the to fit in tool tips.
    *
-   * @param text the text
+   * @param text
+   *          the text
    * @return the string
    */
   // tool tips seem to require no blanks following /n on Windows.
   protected static String parseToFitInToolTips(String text) {
     if (null == text) {
-        return "";
+      return "";
     }
     StringBuffer buffer = new StringBuffer();
     final int MAGIC_LENGTH = 65;
@@ -1692,16 +1835,16 @@ implements Listener, StandardStrings {
   /**
    * Format name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the string
    */
   public String formatName(String name) {
-    if (null == name)
-     {
-        return ""; //$NON-NLS-1$
+    if (null == name) {
+      return ""; //$NON-NLS-1$
     }
     if (MultiPageEditorContributor.getUseQualifiedTypes()) {
-        return name;
+      return name;
     }
     return getShortName(name);
   }
@@ -1709,17 +1852,17 @@ implements Listener, StandardStrings {
   /**
    * Gets the short name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the short name
    */
   public static String getShortName(String name) {
-    if (null == name)
-     {
-        return ""; //$NON-NLS-1$
+    if (null == name) {
+      return ""; //$NON-NLS-1$
     }
     int i = name.lastIndexOf('.');
     if (i < 0) {
-        return name;
+      return name;
     }
     return name.substring(i + 1);
   }
@@ -1727,7 +1870,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the short feature name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the short feature name
    */
   public static String getShortFeatureName(String name) {
@@ -1737,7 +1881,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the type from full feature name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the type from full feature name
    */
   public static String getTypeFromFullFeatureName(String name) {
@@ -1747,13 +1892,14 @@ implements Listener, StandardStrings {
   /**
    * Gets the name space.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the name space
    */
   public static String getNameSpace(String name) {
     int i = name.lastIndexOf('.');
     if (i < 0) {
-        return "";
+      return "";
     }
     return (name.substring(0, i));
   }
@@ -1761,28 +1907,30 @@ implements Listener, StandardStrings {
   /**
    * gets a feature description for a type, including supertypes.
    *
-   * @param td the td
-   * @param featureName the feature name
+   * @param td
+   *          the td
+   * @param featureName
+   *          the feature name
    * @return a feature description for a type, including supertypes
    */
   public FeatureDescription getFeature(TypeDescription td, String featureName) {
     FeatureDescription[] features = td.getFeatures();
     String supertypeName;
     if (null != features) {
-        for (int i = 0; i < features.length; i++) {
-            if (featureName.equals(features[i].getName())) {
-                return features[i];
-            }
-          }
+      for (int i = 0; i < features.length; i++) {
+        if (featureName.equals(features[i].getName())) {
+          return features[i];
+        }
+      }
     }
     if (null != (supertypeName = td.getSupertypeName())) {
-        if (!CAS.TYPE_NAME_TOP.equals(supertypeName)) { 
-            TypeDescription supertype = getMergedTypeSystemDescription().getType(supertypeName);
-            if (null == supertype) {
-                supertype = (TypeDescription) BuiltInTypes.typeDescriptions.get(supertypeName);
-            }
-            return getFeature(supertype, featureName);
-          }
+      if (!CAS.TYPE_NAME_TOP.equals(supertypeName)) {
+        TypeDescription supertype = getMergedTypeSystemDescription().getType(supertypeName);
+        if (null == supertype) {
+          supertype = (TypeDescription) BuiltInTypes.typeDescriptions.get(supertypeName);
+        }
+        return getFeature(supertype, featureName);
+      }
     }
     return null;
   }
@@ -1790,7 +1938,8 @@ implements Listener, StandardStrings {
   /**
    * Checks if is indexable range.
    *
-   * @param rangeName the range name
+   * @param rangeName
+   *          the range name
    * @return true, if is indexable range
    */
   // means is this range allowed in the UIMA Index Spec as a Key
@@ -1804,19 +1953,22 @@ implements Listener, StandardStrings {
   /**
    * Sets the tool tip text.
    *
-   * @param w the w
-   * @param text the text
+   * @param w
+   *          the w
+   * @param text
+   *          the text
    */
   public static void setToolTipText(Control w, String text) {
     if (null != text) {
-        w.setToolTipText(parseToFitInToolTips(text));
+      w.setToolTipText(parseToFitInToolTips(text));
     }
   }
 
   /**
    * Maybe shorten file name.
    *
-   * @param filePathName the file path name
+   * @param filePathName
+   *          the file path name
    * @return the string
    */
   public static String maybeShortenFileName(String filePathName) {
@@ -1832,13 +1984,15 @@ implements Listener, StandardStrings {
   /**
    * Swap tree items.
    *
-   * @param itemBelow the item below
-   * @param newSelection the new selection
+   * @param itemBelow
+   *          the item below
+   * @param newSelection
+   *          the new selection
    */
   public static void swapTreeItems(TreeItem itemBelow, int newSelection) {
     TreeItem parent = itemBelow.getParentItem();
     if (null == parent) {
-        throw new InternalErrorCDE("invalid arg");
+      throw new InternalErrorCDE("invalid arg");
     }
     int i = getIndex(itemBelow);
     TreeItem itemAbove = parent.getItems()[i - 1];
@@ -1854,8 +2008,10 @@ implements Listener, StandardStrings {
   /**
    * Copy table tree item.
    *
-   * @param target the target
-   * @param source the source
+   * @param target
+   *          the target
+   * @param source
+   *          the source
    */
   public static void copyTreeItem(TreeItem target, TreeItem source) {
     int columnCount = target.getParent().getColumnCount();
@@ -1863,7 +2019,7 @@ implements Listener, StandardStrings {
       String text = source.getText(i);
       if (null != text) {
         target.setText(i, text);
-    }
+      }
     }
     target.setData(source.getData());
   }
@@ -1871,8 +2027,10 @@ implements Listener, StandardStrings {
   /**
    * Swap index keys.
    *
-   * @param itemBelow the item below
-   * @param newSelection the new selection
+   * @param itemBelow
+   *          the item below
+   * @param newSelection
+   *          the new selection
    */
   public static void swapIndexKeys(TreeItem itemBelow, int newSelection) {
     TreeItem parent = itemBelow.getParentItem();
@@ -1890,8 +2048,10 @@ implements Listener, StandardStrings {
   /**
    * Swap table items.
    *
-   * @param itemBelow the item below
-   * @param newSelection the new selection
+   * @param itemBelow
+   *          the item below
+   * @param newSelection
+   *          the new selection
    */
   public static void swapTableItems(TableItem itemBelow, int newSelection) {
     Table parent = itemBelow.getParent();
@@ -1909,8 +2069,10 @@ implements Listener, StandardStrings {
   /**
    * Copy table item.
    *
-   * @param target the target
-   * @param source the source
+   * @param target
+   *          the target
+   * @param source
+   *          the source
    */
   public static void copyTableItem(TableItem target, TableItem source) {
     int columnCount = target.getParent().getColumnCount();
@@ -1918,7 +2080,7 @@ implements Listener, StandardStrings {
       String text = source.getText(i);
       if (null != text) {
         target.setText(i, text);
-    }
+      }
     }
     target.setData(source.getData());
   }
@@ -1926,7 +2088,8 @@ implements Listener, StandardStrings {
   /**
    * Gets the fs index description from table tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the fs index description from table tree item
    */
   public static FsIndexDescription getFsIndexDescriptionFromTableTreeItem(TreeItem item) {
@@ -1952,13 +2115,14 @@ implements Listener, StandardStrings {
   /**
    * Gets the capabilities.
    *
-   * @param rs the rs
+   * @param rs
+   *          the rs
    * @return the capabilities
    */
   public static Capability[] getCapabilities(ResourceSpecifier rs) {
     if (rs instanceof ResourceCreationSpecifier) {
-        return ((ProcessingResourceMetaData) ((ResourceCreationSpecifier) rs).getMetaData())
-                  .getCapabilities();
+      return ((ProcessingResourceMetaData) ((ResourceCreationSpecifier) rs).getMetaData())
+              .getCapabilities();
     }
     return null;
   }
@@ -1966,8 +2130,10 @@ implements Listener, StandardStrings {
   /**
    * Gets the capability sofa names.
    *
-   * @param rs the rs
-   * @param componentKey the component key
+   * @param rs
+   *          the rs
+   * @param componentKey
+   *          the component key
    * @return the capability sofa names
    */
   protected static Set[] getCapabilitySofaNames(ResourceCreationSpecifier rs, String componentKey) {
@@ -1985,22 +2151,24 @@ implements Listener, StandardStrings {
   /**
    * Merge sofa names.
    *
-   * @param set the set
-   * @param items the items
-   * @param componentKey the component key
+   * @param set
+   *          the set
+   * @param items
+   *          the items
+   * @param componentKey
+   *          the component key
    */
   private static void mergeSofaNames(Set set, String[] items, String componentKey) {
     if (null != items) {
       for (int i = 0; i < items.length; i++) {
         if (null != componentKey) {
-            set.add(componentKey + '/' + items[i]);
-        }
-        else {
-            set.add(items[i]);
+          set.add(componentKey + '/' + items[i]);
+        } else {
+          set.add(items[i]);
         }
       }
     } else if (null != componentKey) {
-        set.add(componentKey);
+      set.add(componentKey);
     }
   }
 
@@ -2015,9 +2183,8 @@ implements Listener, StandardStrings {
     AnalysisEngineMetaData md = getAnalysisEngineMetaData();
     Capability[] c = getCapabilities();
     if (c == null) {
-        md.setCapabilities(new Capability[] { newCset });
-    }
-    else {
+      md.setCapabilities(new Capability[] { newCset });
+    } else {
       Capability[] newC = new Capability[c.length + 1];
       System.arraycopy(c, 0, newC, 0, c.length);
       newC[c.length] = newCset;
@@ -2051,15 +2218,17 @@ implements Listener, StandardStrings {
       ae.destroy();
       return aemd;
     }
-    
+
     throw new InternalErrorCDE("invalid call");
   }
 
   /**
    * Sets the vns host and port.
    *
-   * @param vnsHost the vns host
-   * @param vnsPort the vns port
+   * @param vnsHost
+   *          the vns host
+   * @param vnsPort
+   *          the vns port
    */
   public static void setVnsHostAndPort(String vnsHost, String vnsPort) {
     MultiPageEditorContributor.setVnsHost(vnsHost);
@@ -2069,7 +2238,8 @@ implements Listener, StandardStrings {
   /**
    * Sets the vns host and port.
    *
-   * @param descriptor the new vns host and port
+   * @param descriptor
+   *          the new vns host and port
    */
   public static void setVnsHostAndPort(Object descriptor) {
     String vnsHost = MultiPageEditorContributor.getCDEVnsHost();
@@ -2095,16 +2265,19 @@ implements Listener, StandardStrings {
   /**
    * Request pop up over import.
    *
-   * @param importItem the import item
-   * @param control the control
-   * @param event the event
+   * @param importItem
+   *          the import item
+   * @param control
+   *          the control
+   * @param event
+   *          the event
    */
   protected void requestPopUpOverImport(Import importItem, Control control, Event event) {
     String path = editor.getAbsolutePathFromImport(importItem);
     IPath iPath = new Path(path);
     IFile[] files = editor.getProject().getWorkspace().getRoot().findFilesForLocation(iPath);
     if (null == files || files.length != 1) {
-        return;
+      return;
     }
 
     String filePathName = files[0].getLocation().toOSString();
@@ -2128,34 +2301,36 @@ implements Listener, StandardStrings {
 
     // code to open selected file, by location or by name
     if (null != res) {
-      if ((inputDescription instanceof URISpecifier) ||
-          isJmsDescriptor(inputDescription)) {
+      if ((inputDescription instanceof URISpecifier) || isJmsDescriptor(inputDescription)) {
         editor.openTextEditor(path);
-      }
-    else {
+      } else {
         editor.open(path);
-    }
+      }
     }
   }
-  
+
   /**
    * Checks if is jms descriptor.
    *
-   * @param inputDescription the input description
+   * @param inputDescription
+   *          the input description
    * @return true, if is jms descriptor
    */
-  protected boolean isJmsDescriptor (XMLizable inputDescription) {
-    return (inputDescription instanceof CustomResourceSpecifier) &&
-    ("org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter".equals(
-        ((CustomResourceSpecifier)inputDescription).getResourceClassName()));
+  protected boolean isJmsDescriptor(XMLizable inputDescription) {
+    return (inputDescription instanceof CustomResourceSpecifier)
+            && ("org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter"
+                    .equals(((CustomResourceSpecifier) inputDescription).getResourceClassName()));
   }
 
   /**
    * Gets the absolute location.
    *
-   * @param control the control
-   * @param x the x
-   * @param y the y
+   * @param control
+   *          the control
+   * @param x
+   *          the x
+   * @param y
+   *          the y
    * @return the absolute location
    */
   private Point getAbsoluteLocation(Control control, int x, int y) {
@@ -2172,12 +2347,13 @@ implements Listener, StandardStrings {
   /**
    * Convert null.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the string
    */
   public static String convertNull(String s) {
     if (null == s) {
-        return "";
+      return "";
     }
     return s;
   }
@@ -2185,29 +2361,32 @@ implements Listener, StandardStrings {
   /**
    * Creates the import.
    *
-   * @param fileName the file name
-   * @param isByName the is by name
+   * @param fileName
+   *          the file name
+   * @param isByName
+   *          the is by name
    * @return the import
    */
   public Import createImport(String fileName, boolean isByName) {
     if (isByName) {
       return createByNameImport(fileName);
-    }
-    else {
-        try {
-            return createLocationImport(fileName);
-          } catch (MalformedURLException e1) {
-            throw new InternalErrorCDE("unhandled exception", e1);
-          }
+    } else {
+      try {
+        return createLocationImport(fileName);
+      } catch (MalformedURLException e1) {
+        throw new InternalErrorCDE("unhandled exception", e1);
+      }
     }
   }
 
   /**
    * Creates the location import.
    *
-   * @param location the location
+   * @param location
+   *          the location
    * @return a location import
-   * @throws MalformedURLException -
+   * @throws MalformedURLException
+   *           -
    */
   public Import createLocationImport(String location) throws MalformedURLException {
 
@@ -2235,21 +2414,22 @@ implements Listener, StandardStrings {
   /**
    * Creates the by name import.
    *
-   * @param fileName the file name
+   * @param fileName
+   *          the file name
    * @return the import
    */
   public Import createByNameImport(String fileName) {
     if (fileName.endsWith(".xml")) {
-        fileName = fileName.substring(0, fileName.length() - 4);
+      fileName = fileName.substring(0, fileName.length() - 4);
     }
     fileName = fileName.replace('\\', '/');
     fileName = fileName.replace('/', '.');
     int i = fileName.indexOf(":");
     if (i >= 0) {
-        fileName = fileName.substring(i + 1);
+      fileName = fileName.substring(i + 1);
     }
     if (fileName.charAt(0) == '.') {
-        fileName = fileName.substring(1);
+      fileName = fileName.substring(1);
     }
     int partStart = 0;
 
@@ -2262,9 +2442,8 @@ implements Listener, StandardStrings {
         imp.findAbsoluteUrl(rm);
       } catch (InvalidXMLException e) {
         partStart = fileName.indexOf('.', partStart) + 1;
-        if (0 == partStart)
-         {
-            return imp; // not found -outer code will catch error later
+        if (0 == partStart) {
+          return imp; // not found -outer code will catch error later
         }
         continue;
       }
@@ -2275,7 +2454,8 @@ implements Listener, StandardStrings {
   /**
    * Checks if is FS array or list type.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return true, if is FS array or list type
    */
   // subtype of FSLists should not match
@@ -2287,24 +2467,19 @@ implements Listener, StandardStrings {
   /**
    * Checks if is array or list type.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return true, if is array or list type
    */
   public static boolean isArrayOrListType(String type) {
-    return (null != type)
-            && (type.equals(CAS.TYPE_NAME_FS_ARRAY) || type.equals(CAS.TYPE_NAME_FS_LIST)
-                    || type.equals(CAS.TYPE_NAME_STRING_LIST)
-                    || type.equals(CAS.TYPE_NAME_FLOAT_LIST)
-                    || type.equals(CAS.TYPE_NAME_INTEGER_LIST)
-                    || type.equals(CAS.TYPE_NAME_STRING_ARRAY)
-                    || type.equals(CAS.TYPE_NAME_FLOAT_ARRAY)
+    return (null != type) && (type.equals(CAS.TYPE_NAME_FS_ARRAY)
+            || type.equals(CAS.TYPE_NAME_FS_LIST) || type.equals(CAS.TYPE_NAME_STRING_LIST)
+            || type.equals(CAS.TYPE_NAME_FLOAT_LIST) || type.equals(CAS.TYPE_NAME_INTEGER_LIST)
+            || type.equals(CAS.TYPE_NAME_STRING_ARRAY) || type.equals(CAS.TYPE_NAME_FLOAT_ARRAY)
 
-                    || type.equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)
-                    || type.equals(CAS.TYPE_NAME_BYTE_ARRAY)
-                    || type.equals(CAS.TYPE_NAME_SHORT_ARRAY)
-                    || type.equals(CAS.TYPE_NAME_INTEGER_ARRAY)
-                    || type.equals(CAS.TYPE_NAME_LONG_ARRAY) || type
-                    .equals(CAS.TYPE_NAME_DOUBLE_ARRAY));
+            || type.equals(CAS.TYPE_NAME_BOOLEAN_ARRAY) || type.equals(CAS.TYPE_NAME_BYTE_ARRAY)
+            || type.equals(CAS.TYPE_NAME_SHORT_ARRAY) || type.equals(CAS.TYPE_NAME_INTEGER_ARRAY)
+            || type.equals(CAS.TYPE_NAME_LONG_ARRAY) || type.equals(CAS.TYPE_NAME_DOUBLE_ARRAY));
   }
 
   /** The Constant RIDICULOUSLY_LARGE. */
@@ -2313,7 +2488,8 @@ implements Listener, StandardStrings {
   /**
    * Produce Unique key for a newly added descriptor file.
    *
-   * @param fileName the file name
+   * @param fileName
+   *          the file name
    * @return Unique key for a newly added descriptor file
    */
   protected String produceUniqueComponentKey(String fileName) {
@@ -2321,7 +2497,7 @@ implements Listener, StandardStrings {
     Set existingKeyNames = new HashSet(getDelegateAnalysisEngineSpecifiersWithImports().keySet());
     FlowControllerDeclaration fcd = getFlowControllerDeclaration();
     if (null != fcd && null != fcd.getKey() && !"".equals(fcd.getKey())) {
-        existingKeyNames.add(fcd.getKey());
+      existingKeyNames.add(fcd.getKey());
     }
     String keyName = fileName;
     String keyNameLowerCase = keyName.toLowerCase();
@@ -2336,9 +2512,9 @@ implements Listener, StandardStrings {
         return sKeyName;
       }
     }
-    Utility.popMessage("Failed to create unique key", "The Flow Controller name, '" + fileName
-            + "', could not be "
-            + "converted to a unique key name -- tried with 10000 different suffixes",
+    Utility.popMessage("Failed to create unique key",
+            "The Flow Controller name, '" + fileName + "', could not be "
+                    + "converted to a unique key name -- tried with 10000 different suffixes",
             MessageDialog.ERROR);
     return null;
   }
@@ -2356,23 +2532,29 @@ implements Listener, StandardStrings {
   /**
    * Parses the descriptor.
    *
-   * @param input the input
+   * @param input
+   *          the input
    * @return the XM lizable
-   * @throws InvalidXMLException the invalid XML exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    */
   public static XMLizable parseDescriptor(XMLInputSource input) throws InvalidXMLException {
     return parseDescriptor(input, false);
   }
-  
+
   /**
    * Parses the descriptor.
    *
-   * @param input the input
-   * @param preserveComments the preserve comments
+   * @param input
+   *          the input
+   * @param preserveComments
+   *          the preserve comments
    * @return the XM lizable
-   * @throws InvalidXMLException the invalid XML exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    */
-  public static XMLizable parseDescriptor(XMLInputSource input, boolean preserveComments) throws InvalidXMLException {
+  public static XMLizable parseDescriptor(XMLInputSource input, boolean preserveComments)
+          throws InvalidXMLException {
     // turn off environment variable expansion
     XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
     parsingOptions.preserveComments = preserveComments;
@@ -2386,13 +2568,13 @@ implements Listener, StandardStrings {
   /**
    * Show exception reading imported descriptor.
    *
-   * @param e the e
+   * @param e
+   *          the e
    */
   protected void showExceptionReadingImportedDescriptor(Exception e) {
     StringBuffer msg = new StringBuffer(1000);
-    msg
-            .append("There was an exception raised while reading and parsing an imported descriptor. "
-                    + "If this is a ''not found'' message for a remote descriptor imported by name, insure that the class path or data path includes an entry where this file should be found.\n");
+    msg.append("There was an exception raised while reading and parsing an imported descriptor. "
+            + "If this is a ''not found'' message for a remote descriptor imported by name, insure that the class path or data path includes an entry where this file should be found.\n");
     msg.append(editor.getMessagesToRootCause(e));
     Utility.popMessage("Exception reading Imported File", msg.toString(), MessageDialog.ERROR);
   }
@@ -2405,13 +2587,11 @@ implements Listener, StandardStrings {
   protected boolean isValidAggregateChange() {
 
     // doing this check here is expensive, but gives the best error location information
-    if (!editor.isValidAE(editor.getAeDescription()))
-     {
-        if (revertOrContinue("Continue or Abort",
-                  "Because of errors in validating the resulting Analysis Engine:\n"))
-         {
-            return false; // want to revert
-        }
+    if (!editor.isValidAE(editor.getAeDescription())) {
+      if (revertOrContinue("Continue or Abort",
+              "Because of errors in validating the resulting Analysis Engine:\n")) {
+        return false; // want to revert
+      }
     }
 
     try {
@@ -2454,7 +2634,7 @@ implements Listener, StandardStrings {
     editor.getCapabilityPage().markStale();
     SectionPart s = editor.getParameterPage().getParameterDelegatesSection();
     if (null != s) {
-        s.markStale();
+      s.markStale();
     }
     editor.getResourcesPage().markStale();
   }
@@ -2462,9 +2642,12 @@ implements Listener, StandardStrings {
   /**
    * Read import.
    *
-   * @param imp the imp
-   * @param fileName the file name
-   * @param isImportByName the is import by name
+   * @param imp
+   *          the imp
+   * @param fileName
+   *          the file name
+   * @param isImportByName
+   *          the is import by name
    * @return the XM lizable
    */
   protected XMLizable readImport(Import imp, String fileName, boolean isImportByName) {
@@ -2479,8 +2662,8 @@ implements Listener, StandardStrings {
       }
 
       try {
-        input = new XMLInputSource(byNameURL.openStream(), new File(byNameURL.getFile())
-                .getParentFile());
+        input = new XMLInputSource(byNameURL.openStream(),
+                new File(byNameURL.getFile()).getParentFile());
       } catch (IOException e) {
         showExceptionReadingImportedDescriptor(e);
         return null;
@@ -2506,24 +2689,28 @@ implements Listener, StandardStrings {
   /**
    * Enable ctrl.
    *
-   * @param c the c
-   * @param enabled the enabled
+   * @param c
+   *          the c
+   * @param enabled
+   *          the enabled
    */
   protected static void enableCtrl(Control c, boolean enabled) {
     if (null != c) {
-        c.setEnabled(enabled);
+      c.setEnabled(enabled);
     }
   }
 
   /**
    * Sets the button selection.
    *
-   * @param c the c
-   * @param selected the selected
+   * @param c
+   *          the c
+   * @param selected
+   *          the selected
    */
   protected static void setButtonSelection(Button c, boolean selected) {
     if (null != c) {
-        c.setSelection(selected);
+      c.setSelection(selected);
     }
   }
 
@@ -2546,13 +2733,15 @@ implements Listener, StandardStrings {
   /**
    * Gets the description for descriptor.
    *
-   * @param fileRef the file ref
-   * @param rs the rs
+   * @param fileRef
+   *          the file ref
+   * @param rs
+   *          the rs
    * @return the description for descriptor
    */
   protected String getDescriptionForDescriptor(String fileRef, ResourceSpecifier rs) {
     if (null == fileRef || "".equals(fileRef) || null == rs) {
-        return "";
+      return "";
     }
     String sDesc;
     long lCurrentTimeInMillis = System.currentTimeMillis();
@@ -2571,10 +2760,9 @@ implements Listener, StandardStrings {
           String description = resourceMetaData.getDescription();
           if (null != description && !description.equals("")) {
             sDesc += parseToFitInToolTips(description);
-          }
-        else {
+          } else {
             sDesc += "(No Description)";
-        }
+          }
         }
       }
       lastResourceForDescription = rs;
@@ -2587,16 +2775,17 @@ implements Listener, StandardStrings {
   /**
    * Setup to print file.
    *
-   * @param filePath the file path
+   * @param filePath
+   *          the file path
    * @return the prints the writer
    */
   protected PrintWriter setupToPrintFile(String filePath) {
     if (new File(filePath).exists()) {
-        if (Window.CANCEL == Utility.popOkCancel("File exists, OK to replace?", MessageFormat.format(
-                  "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
-                  new Object[] { filePath }), MessageDialog.WARNING)) {
-            return null;
-        }
+      if (Window.CANCEL == Utility.popOkCancel("File exists, OK to replace?", MessageFormat.format(
+              "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
+              new Object[] { filePath }), MessageDialog.WARNING)) {
+        return null;
+      }
     }
     FileOutputStream fos = null;
     try {
@@ -2616,8 +2805,8 @@ implements Listener, StandardStrings {
   protected FsIndexCollection getFsIndexCollection() {
     FsIndexCollection fsic = getAnalysisEngineMetaData().getFsIndexCollection();
     if (null == fsic) {
-        getAnalysisEngineMetaData().setFsIndexCollection(
-                  fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
+      getAnalysisEngineMetaData().setFsIndexCollection(
+              fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
     }
     return fsic;
   }
@@ -2625,28 +2814,31 @@ implements Listener, StandardStrings {
   /**
    * Handle default index kind.
    *
-   * @param indexKind the index kind
+   * @param indexKind
+   *          the index kind
    * @return the string
    */
   public static String handleDefaultIndexKind(String indexKind) {
     if (null == indexKind) {
-        return "sorted";
+      return "sorted";
     }
     return indexKind;
   }
-  
+
   /**
-   * Set the selection one above this item, unless it's the top one already.
-   * Used when removing the item.
+   * Set the selection one above this item, unless it's the top one already. Used when removing the
+   * item.
    * 
-   * @param tt tree
-   * @param item context item
+   * @param tt
+   *          tree
+   * @param item
+   *          context item
    */
   public static void setSelectionOneUp(Tree tt, TreeItem item) {
     int itemIndex = tt.indexOf(item);
     maybeSetSelection(tt, itemIndex - 1);
   }
-  
+
   public static void maybeSetSelection(Tree tt, int itemIndex) {
     TreeItem[] items = tt.getItems();
     if (itemIndex >= 0 && itemIndex < items.length) {

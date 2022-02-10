@@ -22,12 +22,11 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 
-
 /**
  * The Class FileAndShortName.
  */
 public class FileAndShortName {
-  
+
   /** The file name. */
   public String fileName;
 
@@ -37,7 +36,8 @@ public class FileAndShortName {
   /**
    * Instantiates a new file and short name.
    *
-   * @param o the o
+   * @param o
+   *          the o
    */
   public FileAndShortName(Object o) {
 
@@ -46,10 +46,10 @@ public class FileAndShortName {
       fileName = file.getLocation().toString();
       shortName = file.getName();
     } else if (o instanceof String) {
-        fileName = (String)o;
-        int lastSlash = fileName.lastIndexOf('/');
-        shortName = (lastSlash >= 0) ? fileName.substring(lastSlash + 1) : fileName;
-      } else {
+      fileName = (String) o;
+      int lastSlash = fileName.lastIndexOf('/');
+      shortName = (lastSlash >= 0) ? fileName.substring(lastSlash + 1) : fileName;
+    } else {
       IPath path = (IPath) o;
       fileName = path.toString();
       shortName = path.toFile().getName();

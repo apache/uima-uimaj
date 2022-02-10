@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-
 /**
  * The Class EditSofaBindingsDialog.
  */
@@ -51,9 +50,12 @@ public class EditSofaBindingsDialog extends AbstractDialog {
   /**
    * Instantiates a new edits the sofa bindings dialog.
    *
-   * @param aSection the a section
-   * @param aAggrSofaName the a aggr sofa name
-   * @param aAvailAndBoundSofas the a avail and bound sofas
+   * @param aSection
+   *          the a section
+   * @param aAggrSofaName
+   *          the a aggr sofa name
+   * @param aAvailAndBoundSofas
+   *          the a avail and bound sofas
    */
   public EditSofaBindingsDialog(AbstractSection aSection, String aAggrSofaName,
           Map aAvailAndBoundSofas) {
@@ -63,13 +65,17 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     aggrSofaName = aAggrSofaName;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
     // create composite
-    //   
+    //
     // Bindings for aggregate sofa name xxxxxx:
     // <Table with multi-select, one column>
     // component/sofa-name
@@ -97,7 +103,9 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     return composite;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -110,7 +118,9 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override

@@ -24,7 +24,6 @@ import java.util.Properties;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-
 /**
  * The Class AbstractModelPart.
  */
@@ -46,7 +45,8 @@ public class AbstractModelPart {
   /**
    * Instantiates a new abstract model part.
    *
-   * @param pMPE the mpe
+   * @param pMPE
+   *          the mpe
    */
   public AbstractModelPart(MultiPageEditor pMPE) {
     modelRoot = pMPE;

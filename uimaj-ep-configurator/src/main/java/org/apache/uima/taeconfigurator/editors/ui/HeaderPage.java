@@ -40,7 +40,6 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-
 /**
  * Common part of most pages.
  */
@@ -82,9 +81,12 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Instantiates a new header page.
    *
-   * @param formEditor the form editor
-   * @param id the id
-   * @param keyPageTitle the key page title
+   * @param formEditor
+   *          the form editor
+   * @param id
+   *          the id
+   * @param keyPageTitle
+   *          the key page title
    */
   public HeaderPage(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
@@ -95,8 +97,10 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Instantiates a new header page.
    *
-   * @param formEditor the form editor
-   * @param pageTitle the page title
+   * @param formEditor
+   *          the form editor
+   * @param pageTitle
+   *          the page title
    */
   public HeaderPage(MultiPageEditor formEditor, String pageTitle) {
     this(formEditor, "UID_" + pageTitle, pageTitle);
@@ -105,11 +109,12 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Maybe initialize.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   protected void maybeInitialize(IManagedForm managedForm) {
-//    if (TAEConfiguratorPlugin.is30version)
-//      ((ManagedForm) managedForm).initialize();
+    // if (TAEConfiguratorPlugin.is30version)
+    // ((ManagedForm) managedForm).initialize();
   }
 
   /*
@@ -119,7 +124,8 @@ public abstract class HeaderPage extends FormPage {
   /**
    * New composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   public Composite newComposite(Composite parent) {
@@ -129,7 +135,8 @@ public abstract class HeaderPage extends FormPage {
   /**
    * New centered 2 span composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   // this composite spans col 1 & 2, out of a 4 column (0, 1, 2, 3) grid layout
@@ -143,8 +150,10 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Newn column section.
    *
-   * @param parent the parent
-   * @param cols the cols
+   * @param parent
+   *          the parent
+   * @param cols
+   *          the cols
    * @return the composite
    */
   public Composite newnColumnSection(Composite parent, int cols) {
@@ -161,7 +170,8 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Setup 1 column layout.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    * @return the composite
    */
   public Composite setup1ColumnLayout(IManagedForm managedForm) {
@@ -174,7 +184,7 @@ public abstract class HeaderPage extends FormPage {
 
     Control c = form.getParent();
     while (!(c instanceof ScrolledComposite)) {
-        c = c.getParent();
+      c = c.getParent();
     }
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     return xtra;
@@ -183,8 +193,10 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Setup 2 column grid.
    *
-   * @param managedForm the managed form
-   * @param equalWidth the equal width
+   * @param managedForm
+   *          the managed form
+   * @param equalWidth
+   *          the equal width
    * @return the composite
    */
   // this method creates no new composites.
@@ -200,9 +212,12 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Setup 2 column layout.
    *
-   * @param managedForm the managed form
-   * @param w1 the w 1
-   * @param w2 the w 2
+   * @param managedForm
+   *          the managed form
+   * @param w1
+   *          the w 1
+   * @param w2
+   *          the w 2
    * @return the form 2 panel
    */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, int w1, int w2) {
@@ -214,7 +229,7 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
     Control c = xtra.getParent();
     while (!(c instanceof ScrolledComposite)) {
-        c = c.getParent();
+      c = c.getParent();
     }
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     ((GridData) xtra.getLayoutData()).heightHint = c.getSize().y;
@@ -258,25 +273,28 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Sash impl.
    *
-   * @param managedForm the managed form
-   * @param equalWidth the equal width
+   * @param managedForm
+   *          the managed form
+   * @param equalWidth
+   *          the equal width
    * @return the form 2 panel
    */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, boolean equalWidth) {
     if (equalWidth) {
-        return setup2ColumnLayout(managedForm, 50, 50);
-    }
-    else {
-        // a hack - based on first column more likely being wider
-          return setup2ColumnLayout(managedForm, 60, 40);
+      return setup2ColumnLayout(managedForm, 50, 50);
+    } else {
+      // a hack - based on first column more likely being wider
+      return setup2ColumnLayout(managedForm, 60, 40);
     }
   }
 
   /**
    * Setup 2 column layout not sash.
    *
-   * @param managedForm the managed form
-   * @param equalWidth the equal width
+   * @param managedForm
+   *          the managed form
+   * @param equalWidth
+   *          the equal width
    * @return the form 2 panel
    */
   public Form2Panel setup2ColumnLayoutNotSash(IManagedForm managedForm, boolean equalWidth) {
@@ -304,7 +322,8 @@ public abstract class HeaderPage extends FormPage {
         float col1CurrentWidth = leftPanel.getSize().x;
         float col2CurrentWidth = rightPanel.getSize().x;
         final int minLeftPanelWidth = 250; // in pels
-        final int minRightPanelWidth = (int) (col2CurrentWidth * minLeftPanelWidth / col1CurrentWidth);
+        final int minRightPanelWidth = (int) (col2CurrentWidth * minLeftPanelWidth
+                / col1CurrentWidth);
         ((GridData) leftPanel.getLayoutData()).widthHint = minLeftPanelWidth;
         ((GridData) rightPanel.getLayoutData()).widthHint = minRightPanelWidth;
         sform.removeListener(SWT.Resize, this); // only do this one time
@@ -316,8 +335,10 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Setup 2 column layout on 4 grid.
    *
-   * @param managedForm the managed form
-   * @param equalWidth the equal width
+   * @param managedForm
+   *          the managed form
+   * @param equalWidth
+   *          the equal width
    * @return the form 2 panel
    */
   public Form2Panel setup2ColumnLayoutOn4Grid(IManagedForm managedForm, boolean equalWidth) {
@@ -331,7 +352,8 @@ public abstract class HeaderPage extends FormPage {
   /**
    * Spacer.
    *
-   * @param container the container
+   * @param container
+   *          the container
    */
   protected void spacer(Composite container) {
     toolkit.createLabel(container, " ");

@@ -27,15 +27,14 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-
 /**
  * The Class PreferencePage.
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-  
+
   /** The Constant P_JCAS. */
   public static final String P_JCAS = "org.apache.uima.cde.autojcasgen";
-  
+
   /** The Constant P_JCAS_LIMIT_TO_PROJECT_SCOPE. */
   public static final String P_JCAS_LIMIT_TO_PROJECT_SCOPE = "org.apache.uima.cde.jcasgen.limittoprojectscope";
 
@@ -74,7 +73,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     // store.setDefault(P_DATA_PATH, "");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
    */
   @Override
@@ -82,8 +83,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     addField(new BooleanFieldEditor(P_JCAS, "&Automatically run JCasGen when Types change",
             getFieldEditorParent()));
 
-    addField(new BooleanFieldEditor(P_JCAS_LIMIT_TO_PROJECT_SCOPE, "&Limit JCasGen to types defined in this project",
-        getFieldEditorParent()));
+    addField(new BooleanFieldEditor(P_JCAS_LIMIT_TO_PROJECT_SCOPE,
+            "&Limit JCasGen to types defined in this project", getFieldEditorParent()));
 
     addField(new BooleanFieldEditor(P_SHOW_FULLY_QUALIFIED_NAMES, "&Show fully qualified names",
             getFieldEditorParent()));
@@ -97,7 +98,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
             getFieldEditorParent()));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
    */
   @Override

@@ -79,12 +79,11 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class TypeSection.
  */
 public class TypeSection extends AbstractImportablePartSection {
-  
+
   /** The Constant CASCADE_MESSAGE. */
   public static final String CASCADE_MESSAGE = "This will cause a cascading deletion of an associated "
           + "input, output, index, or type priority, unless this deletion exposes a "
@@ -146,14 +145,13 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Instantiates a new type section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public TypeSection(MultiPageEditor editor, Composite parent) {
-    super(
-            editor,
-            parent,
-            "Types (or Classes)",
+    super(editor, parent, "Types (or Classes)",
             "The following types (classes) are defined in this analysis engine descriptor.\nThe grayed out items are imported or merged from other descriptors, and cannot be edited here. (To edit them, edit their source files).");
   }
 
@@ -192,9 +190,9 @@ public class TypeSection extends AbstractImportablePartSection {
     spacer(buttonContainer);
     jcasGenButton = newPushButton(buttonContainer, "JCasGen",
             "Click here to run JCasGen on this type system.");
-    limitJCasGenToProjectScope = newCheckBox(buttonContainer, "limited", 
-        "JCasGen only those types defined within this project" + 
-        "\n  You can change the default in UIMA prefs or in the UIMA menu");
+    limitJCasGenToProjectScope = newCheckBox(buttonContainer, "limited",
+            "JCasGen only those types defined within this project"
+                    + "\n  You can change the default in UIMA prefs or in the UIMA menu");
     boolean defaultValue = editor.getLimitJCasGenToProjectScope();
     limitJCasGenToProjectScope.setSelection(defaultValue);
   }
@@ -228,11 +226,14 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Sets the difference.
    *
-   * @param all the all
-   * @param subset the subset
+   * @param all
+   *          the all
+   * @param subset
+   *          the subset
    * @return the feature description[]
    */
-  private FeatureDescription[] setDifference(FeatureDescription[] all, FeatureDescription[] subset) {
+  private FeatureDescription[] setDifference(FeatureDescription[] all,
+          FeatureDescription[] subset) {
     if (null == all)
       return featureDescriptionArray0;
     if (null == subset)
@@ -253,7 +254,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Adds the type to GUI.
    *
-   * @param td the td
+   * @param td
+   *          the td
    */
   private void addTypeToGUI(TypeDescription td) {
     TreeItem item = new TreeItem(tt, SWT.NONE);
@@ -267,8 +269,8 @@ public class TypeSection extends AbstractImportablePartSection {
 
     TypeDescription builtInTd = getBuiltInTypeDescription(td);
     if (null != builtInTd) {
-      FeatureDescription[] additionalBuiltInFeatures = setDifference(builtInTd.getFeatures(), td
-              .getFeatures());
+      FeatureDescription[] additionalBuiltInFeatures = setDifference(builtInTd.getFeatures(),
+              td.getFeatures());
       addFeaturesToGui(td, item, additionalBuiltInFeatures);
     }
 
@@ -289,12 +291,14 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Adds the features to gui.
    *
-   * @param td the td
-   * @param item the item
-   * @param features the features
+   * @param td
+   *          the td
+   * @param item
+   *          the item
+   * @param features
+   *          the features
    */
-  private void addFeaturesToGui(TypeDescription td, TreeItem item,
-          FeatureDescription[] features) {
+  private void addFeaturesToGui(TypeDescription td, TreeItem item, FeatureDescription[] features) {
     if (null != features) {
       for (int i = 0; i < features.length; i++) {
         TreeItem fItem = new TreeItem(item, SWT.NONE);
@@ -306,9 +310,12 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Update gui feature.
    *
-   * @param fItem the f item
-   * @param fd the fd
-   * @param td the td
+   * @param fItem
+   *          the f item
+   * @param fd
+   *          the fd
+   * @param td
+   *          the td
    */
   private void updateGuiFeature(TreeItem fItem, FeatureDescription fd, TypeDescription td) {
     String rangeType;
@@ -319,9 +326,9 @@ public class TypeSection extends AbstractImportablePartSection {
     if (isArrayOrListType(rangeType)) {
       Boolean mra = fd.getMultipleReferencesAllowed();
       fItem.setImage(MULTIPLE_REF_OK_COL,
-              (null != mra && mra) ? TAEConfiguratorPlugin
-                      .getImage(TAEConfiguratorPlugin.IMAGE_MREFOK) : TAEConfiguratorPlugin
-                      .getImage(TAEConfiguratorPlugin.IMAGE_NOMREF));
+              (null != mra && mra)
+                      ? TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_MREFOK)
+                      : TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_NOMREF));
     } else {
       fItem.setImage(MULTIPLE_REF_OK_COL, null);
     }
@@ -335,8 +342,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Sets the item color.
    *
-   * @param item the item
-   * @param isLocal the is local
+   * @param item
+   *          the item
+   * @param isLocal
+   *          the is local
    */
   private void setItemColor(TreeItem item, boolean isLocal) {
     if (isLocal)
@@ -347,7 +356,9 @@ public class TypeSection extends AbstractImportablePartSection {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.widgets.Event)
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.
+   * widgets.Event)
    */
   @Override
   public void handleEvent(Event event) {
@@ -387,7 +398,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Handle hover.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   public void handleHover(Event event) {
     // next getItem call requires that table have SWT.FULL_SELECTION Style
@@ -418,7 +430,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Gets the type description from table tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the type description from table tree item
    */
   public TypeDescription getTypeDescriptionFromTableTreeItem(TreeItem item) {
@@ -428,7 +441,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Handle add allowed value.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   // disabled unless type having String as supertype is selected
   public void handleAddAllowedValue(TreeItem parent) {
@@ -471,8 +485,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Adds the allowed value.
    *
-   * @param td the td
-   * @param av the av
+   * @param td
+   *          the td
+   * @param av
+   *          the av
    */
   private void addAllowedValue(TypeDescription td, AllowedValue av) {
     td.setAllowedValues((AllowedValue[]) Utility.addElementToArray(td.getAllowedValues(), av,
@@ -482,9 +498,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Removes the allowed value.
    *
-   * @param td -
-   *          local or merged (2 callers)
-   * @param av the av
+   * @param td
+   *          - local or merged (2 callers)
+   * @param av
+   *          the av
    */
   private void removeAllowedValue(TypeDescription td, AllowedValue av) {
     td.setAllowedValues((AllowedValue[]) Utility.removeEqualElementFromArray(td.getAllowedValues(),
@@ -494,7 +511,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Handle add feature.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   // disabled unless type is selected
   public void handleAddFeature(TreeItem parent) {
@@ -542,13 +560,14 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Select type in gui.
    *
-   * @param td the td
+   * @param td
+   *          the td
    */
   private void selectTypeInGui(TypeDescription td) {
     TreeItem[] items = tt.getItems();
     for (int i = 0; i < items.length; i++) {
       if (td.getName().equals(((TypeDescription) items[i].getData()).getName())) {
-        tt.setSelection( items[i]);
+        tt.setSelection(items[i]);
         return;
       }
     }
@@ -557,8 +576,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Allowed value update.
    *
-   * @param av the av
-   * @param dialog the dialog
+   * @param av
+   *          the av
+   * @param dialog
+   *          the dialog
    */
   public void allowedValueUpdate(AllowedValue av, AddAllowedValueDialog dialog) {
     valueChanged = false;
@@ -569,8 +590,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Feature update.
    *
-   * @param fd the fd
-   * @param dialog the dialog
+   * @param fd
+   *          the fd
+   * @param dialog
+   *          the dialog
    */
   public void featureUpdate(FeatureDescription fd, AddFeatureDialog dialog) {
     valueChanged = false;
@@ -664,7 +687,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Gets the feature description from table tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the feature description from table tree item
    */
   public FeatureDescription getFeatureDescriptionFromTableTreeItem(TreeItem item) {
@@ -674,8 +698,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Edits the feature.
    *
-   * @param item the item
-   * @param parent the parent
+   * @param item
+   *          the item
+   * @param parent
+   *          the parent
    */
   private void editFeature(TreeItem item, TreeItem parent) {
     boolean remergeNeeded = false;
@@ -694,30 +720,18 @@ public class TypeSection extends AbstractImportablePartSection {
 
     if (!dialog.featureName.equals(oldFeatureName)) {
       if (isImportedFeature(oldFeatureName, td)) {
-        Utility
-                .popMessage(
-                        "Imported Feature not changed",
-                        "Changing the feature name from '"
-                                + oldFeatureName
-                                + "' to '"
-                                + dialog.featureName
-                                + "' will not affect the corresponding imported type with the previous feature name.  "
-                                + "Both features will be included in the type.",
-                        MessageDialog.INFORMATION);
+        Utility.popMessage("Imported Feature not changed", "Changing the feature name from '"
+                + oldFeatureName + "' to '" + dialog.featureName
+                + "' will not affect the corresponding imported type with the previous feature name.  "
+                + "Both features will be included in the type.", MessageDialog.INFORMATION);
         remergeNeeded = true;
         refreshNeeded = true;
       }
       if (isBuiltInFeature(oldFeatureName, td)) {
-        Utility
-                .popMessage(
-                        "BuiltIn Feature not changed",
-                        "Changing the feature name from '"
-                                + oldFeatureName
-                                + "' to '"
-                                + dialog.featureName
-                                + "' will not affect the corresponding built-in type with the previous feature name.  "
-                                + "Both features will be included in the type.",
-                        MessageDialog.INFORMATION);
+        Utility.popMessage("BuiltIn Feature not changed", "Changing the feature name from '"
+                + oldFeatureName + "' to '" + dialog.featureName
+                + "' will not affect the corresponding built-in type with the previous feature name.  "
+                + "Both features will be included in the type.", MessageDialog.INFORMATION);
         refreshNeeded = true; // no remerge needed - builtins not merged
       }
     }
@@ -740,7 +754,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Gets the allowed value from table tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the allowed value from table tree item
    */
   public AllowedValue getAllowedValueFromTableTreeItem(TreeItem item) {
@@ -750,8 +765,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Edits the allowed value.
    *
-   * @param item the item
-   * @param parent the parent
+   * @param item
+   *          the item
+   * @param parent
+   *          the parent
    */
   private void editAllowedValue(TreeItem item, TreeItem parent) {
 
@@ -777,8 +794,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * New Feature test: return null if OK, error message otherwise.
    *
-   * @param td the td
-   * @param dialog the dialog
+   * @param td
+   *          the td
+   * @param dialog
+   *          the dialog
    * @return error message or null
    */
   private String newFeatureTests(TypeDescription td, AddFeatureDialog dialog) {
@@ -807,12 +826,16 @@ public class TypeSection extends AbstractImportablePartSection {
    * still there, warn about index being invalidated (not done here - done during feature update
    * itself). If name used in index, and range is not indexable - error
    *
-   * @param dialog the dialog
-   * @param td the td
-   * @param oldFd the old fd
+   * @param dialog
+   *          the dialog
+   * @param td
+   *          the td
+   * @param oldFd
+   *          the old fd
    * @return error message or null
    */
-  public String checkFeature(AddFeatureDialog dialog, TypeDescription td, FeatureDescription oldFd) {
+  public String checkFeature(AddFeatureDialog dialog, TypeDescription td,
+          FeatureDescription oldFd) {
     if (null == oldFd) { // adding new feature
       return newFeatureTests(td, dialog);
     }
@@ -836,12 +859,16 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Check allowed value.
    *
-   * @param dialog the dialog
-   * @param td the td
-   * @param av the av
+   * @param dialog
+   *          the dialog
+   * @param td
+   *          the td
+   * @param av
+   *          the av
    * @return the string
    */
-  public String checkAllowedValue(AddAllowedValueDialog dialog, TypeDescription td, AllowedValue av) {
+  public String checkAllowedValue(AddAllowedValueDialog dialog, TypeDescription td,
+          AllowedValue av) {
     if (isLocalAllowedValue(dialog.allowedValue, td)) {
       return "Duplicate Allowed Value in this Descriptor";
     }
@@ -851,7 +878,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Edits the type.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   // type is always local; could be merging with import(s) or built-in
   private void editType(TreeItem item) {
@@ -873,23 +901,17 @@ public class TypeSection extends AbstractImportablePartSection {
       if (null == typesRequiringThisOne) // null is cancel signal
         return;
 
-      if (isImportedType(oldTypeName)
-              && Window.CANCEL == Utility
-                      .popOkCancel(
-                              "Type define via Import",
-                              "The type '"
-                                      + oldTypeName
-                                      + "' is also defined in 1 or more imports.  Changing the type name here will not change it in the imported type file, causing both types to be in the type system, together. Please confirm this is what you intend.",
-                              MessageDialog.WARNING))
+      if (isImportedType(oldTypeName) && Window.CANCEL == Utility.popOkCancel(
+              "Type define via Import",
+              "The type '" + oldTypeName
+                      + "' is also defined in 1 or more imports.  Changing the type name here will not change it in the imported type file, causing both types to be in the type system, together. Please confirm this is what you intend.",
+              MessageDialog.WARNING))
         return;
-      if (isBuiltInType(oldTypeName)
-              && Window.CANCEL == Utility
-                      .popOkCancel(
-                              "Type was extending a built-in",
-                              "The type '"
-                                      + oldTypeName
-                                      + "' was extending a builtin type of the same name. Changing the type name here will not change the built-in type, causing both types to be in the type system, together. Please confirm this is what you intend.",
-                              MessageDialog.WARNING))
+      if (isBuiltInType(oldTypeName) && Window.CANCEL == Utility.popOkCancel(
+              "Type was extending a built-in",
+              "The type '" + oldTypeName
+                      + "' was extending a builtin type of the same name. Changing the type name here will not change the built-in type, causing both types to be in the type system, together. Please confirm this is what you intend.",
+              MessageDialog.WARNING))
         return;
       if (isImportedType(oldTypeName) || isImportedType(newTypeName) || isBuiltInType(oldTypeName)
               || isBuiltInType(newTypeName))
@@ -930,8 +952,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Update gui type.
    *
-   * @param item the item
-   * @param td the td
+   * @param item
+   *          the item
+   * @param td
+   *          the td
    */
   private void updateGuiType(TreeItem item, TypeDescription td) {
     item.setText(NAME_COL, formatName(td.getName()));
@@ -952,8 +976,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Type update.
    *
-   * @param td the td
-   * @param dialog the dialog
+   * @param td
+   *          the td
+   * @param dialog
+   *          the dialog
    */
   private void typeUpdate(TypeDescription td, AddTypeDialog dialog) {
     td.setName(setValueChanged(dialog.typeName, td.getName()));
@@ -967,7 +993,8 @@ public class TypeSection extends AbstractImportablePartSection {
    * not allowed. Type that duplicates imported type is OK. Type that duplicates built-in type is
    * OK.
    *
-   * @param newTypeName the new type name
+   * @param newTypeName
+   *          the new type name
    * @return the string
    */
   public String checkDuplTypeName(String newTypeName) {
@@ -998,7 +1025,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Handle remove allowed value.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   private void handleRemoveAllowedValue(TreeItem item) {
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item.getParentItem());
@@ -1023,7 +1051,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Handle remove feature.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   // same - for built-in <could be created outside of the CDE>
   private void handleRemoveFeature(final TreeItem item) {
@@ -1054,7 +1083,7 @@ public class TypeSection extends AbstractImportablePartSection {
       else {
         // update GUI
         setSelectionOneUp(tt, item);
-//        tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
+        // tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
         item.dispose();
       }
     }
@@ -1072,7 +1101,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * The Class TypeFeature.
    */
   private static class TypeFeature {
-    
+
     /** The type name. */
     String typeName;
 
@@ -1082,8 +1111,10 @@ public class TypeSection extends AbstractImportablePartSection {
     /**
      * Instantiates a new type feature.
      *
-     * @param type the type
-     * @param feat the feat
+     * @param type
+     *          the type
+     * @param feat
+     *          the feat
      */
     TypeFeature(String type, String feat) {
       typeName = type;
@@ -1101,8 +1132,10 @@ public class TypeSection extends AbstractImportablePartSection {
    * is removed completely (no shadowing of built-in or imported types), so no special feature
    * removal is needed.
    *
-   * @param localTd the local td
-   * @param mergedTd          The "remerged" value of the type.
+   * @param localTd
+   *          the local td
+   * @param mergedTd
+   *          The "remerged" value of the type.
    * @return array of string names of features to be removed
    */
 
@@ -1151,7 +1184,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Handle remove type.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   private void handleRemoveType(final TreeItem item) {
 
@@ -1214,8 +1248,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Called when removing a type (or renaming a type - treating old value like remove).
    *
-   * @param existingTypeName the existing type name
-   * @param allowed the allowed
+   * @param existingTypeName
+   *          the existing type name
+   * @param allowed
+   *          the allowed
    * @return null means "cancel", stringArray0 means no problem, stringArrayN = dependent types
    */
   private String[] showTypesRequiringThisOneMessage(String existingTypeName, boolean allowed) {
@@ -1250,8 +1286,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Removes the type.
    *
-   * @param td the td
-   * @param tsd the tsd
+   * @param td
+   *          the td
+   * @param tsd
+   *          the tsd
    */
   private void removeType(TypeDescription td, TypeSystemDescription tsd) {
     tsd.setTypes((TypeDescription[]) Utility.removeElementFromArray(tsd.getTypes(), td,
@@ -1261,8 +1299,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Removes the feature.
    *
-   * @param td the td
-   * @param fd the fd
+   * @param td
+   *          the td
+   * @param fd
+   *          the fd
    */
   private void removeFeature(TypeDescription td, FeatureDescription fd) {
     td.setFeatures((FeatureDescription[]) Utility.removeElementFromArray(td.getFeatures(), fd,
@@ -1272,7 +1312,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Gets the types requiring this one.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    * @return the types requiring this one
    */
   private String[] getTypesRequiringThisOne(String typeName) {
@@ -1294,8 +1335,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Type requires type.
    *
-   * @param upstreamType the upstream type
-   * @param typeName the type name
+   * @param upstreamType
+   *          the upstream type
+   * @param typeName
+   *          the type name
    * @return true, if successful
    */
   private boolean typeRequiresType(TypeDescription upstreamType, String typeName) {
@@ -1318,7 +1361,9 @@ public class TypeSection extends AbstractImportablePartSection {
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -1349,7 +1394,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Checks if is subtype of string.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is subtype of string
    */
   private boolean isSubtypeOfString(TreeItem item) {
@@ -1360,7 +1406,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Checks if is type in use elsewhere.
    *
-   * @param sTypeName the s type name
+   * @param sTypeName
+   *          the s type name
    * @return true, if is type in use elsewhere
    */
   private boolean isTypeInUseElsewhere(final String sTypeName) {
@@ -1407,8 +1454,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Type priority lists visit.
    *
-   * @param kind the kind
-   * @param typeName the type name
+   * @param kind
+   *          the kind
+   * @param typeName
+   *          the type name
    * @return true, if successful
    */
   private boolean typePriorityListsVisit(int kind, String typeName) {
@@ -1418,9 +1467,12 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Type priority lists visit.
    *
-   * @param kind the kind
-   * @param typeName the type name
-   * @param newTypeName the new type name
+   * @param kind
+   *          the kind
+   * @param typeName
+   *          the type name
+   * @param newTypeName
+   *          the new type name
    * @return FIND_EQUAL_TYPE: true if found, false otherwise REMOVE_EQUAL_TYPE: true if found, false
    *         if nothing done UPDATE_TYPE_NAME: true if found & updated, false if nothing done
    */
@@ -1470,10 +1522,14 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Delete type or feature from capability.
    *
-   * @param io_s the io s
-   * @param isType the is type
-   * @param name the name
-   * @param typeName the type name
+   * @param io_s
+   *          the io s
+   * @param isType
+   *          the is type
+   * @param name
+   *          the name
+   * @param typeName
+   *          the type name
    * @return the type or feature[]
    */
   private TypeOrFeature[] deleteTypeOrFeatureFromCapability(TypeOrFeature[] io_s,
@@ -1530,10 +1586,12 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * feature name if used, is short-name.
    *
-   * @param typeOrFeatureName -
-   *          if feature is short feature name
-   * @param isType the is type
-   * @param typeName the type name
+   * @param typeOrFeatureName
+   *          - if feature is short feature name
+   * @param isType
+   *          the is type
+   * @param typeName
+   *          the type name
    */
   private void deleteTypeOrFeatureMentions(final String typeOrFeatureName, boolean isType,
           final String typeName) {
@@ -1554,8 +1612,8 @@ public class TypeSection extends AbstractImportablePartSection {
 
     final FsIndexCollection indexCollection = editor.getFsIndexCollection();
 
-    FsIndexDescription[] indexes = (null == indexCollection) ? null : indexCollection
-            .getFsIndexes();
+    FsIndexDescription[] indexes = (null == indexCollection) ? null
+            : indexCollection.getFsIndexes();
 
     boolean somethingChanged = false;
     if (indexes != null) {
@@ -1607,8 +1665,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * return true if refresh is needed.
    *
-   * @param oldTypeName the old type name
-   * @param newTypeName the new type name
+   * @param oldTypeName
+   *          the old type name
+   * @param newTypeName
+   *          the new type name
    * @return true if refresh is needed
    */
   private boolean alterTypeMentionsInOtherTypes(String oldTypeName, String newTypeName) {
@@ -1624,14 +1684,11 @@ public class TypeSection extends AbstractImportablePartSection {
       if (td.getSupertypeName().equals(oldTypeName)) {
         if (null != localTd) { // is a local type
           if (isImportedType(typeName)) {
-            Utility
-                    .popMessage(
-                            "Imported type won't be changed",
-                            "There is both a local and imported version of type, '"
-                                    + typeName
-                                    + "', which has a supertype which is the item being renamed.  Although the local version will be updated, but the imported one won't."
-                                    + "This may cause an error when you save.",
-                            MessageDialog.WARNING);
+            Utility.popMessage("Imported type won't be changed",
+                    "There is both a local and imported version of type, '" + typeName
+                            + "', which has a supertype which is the item being renamed.  Although the local version will be updated, but the imported one won't."
+                            + "This may cause an error when you save.",
+                    MessageDialog.WARNING);
           }
           if (isBuiltInType(typeName)) {
             // invalid: changed some type name which was a supertype of a built in - but
@@ -1640,14 +1697,10 @@ public class TypeSection extends AbstractImportablePartSection {
           }
         } else { // is not a local type
           // can't be a built-in type because all the supertypes of built-ins are unchangeable
-          Utility
-                  .popMessage(
-                          "Imported type not changed",
-                          "There is an imported type, '"
-                                  + typeName
-                                  + "', which has a supertype which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
-                                  + "  If it does, you will need to edit the imported type to change it.",
-                          MessageDialog.WARNING);
+          Utility.popMessage("Imported type not changed", "There is an imported type, '" + typeName
+                  + "', which has a supertype which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
+                  + "  If it does, you will need to edit the imported type to change it.",
+                  MessageDialog.WARNING);
           continue;
         }
         // guaranteed to have local type def here
@@ -1690,9 +1743,12 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Sets the named feature description range.
    *
-   * @param localFds the local fds
-   * @param featureName the feature name
-   * @param rangeName the range name
+   * @param localFds
+   *          the local fds
+   * @param featureName
+   *          the feature name
+   * @param rangeName
+   *          the range name
    */
   // this function to set the corresponding feature in the "local" type's fd array
   private void setNamedFeatureDescriptionRange(FeatureDescription[] localFds, String featureName,
@@ -1711,30 +1767,26 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Warn and skip if imported.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    * @return true, if successful
    */
   private boolean warnAndSkipIfImported(String typeName) {
     if (isLocalType(typeName)) {
       if (isImportedType(typeName)) {
-        Utility
-                .popMessage(
-                        "Imported type won't be changed",
-                        "There is both a local and imported version of type, '"
-                                + typeName
-                                + "', which has a feature whose range type is the item being renamed.  Although the local version will be updated, but the imported one won't."
-                                + "This may cause an error when you save.", MessageDialog.WARNING);
+        Utility.popMessage("Imported type won't be changed",
+                "There is both a local and imported version of type, '" + typeName
+                        + "', which has a feature whose range type is the item being renamed.  Although the local version will be updated, but the imported one won't."
+                        + "This may cause an error when you save.",
+                MessageDialog.WARNING);
       }
       return false;
     } else { // is not a local type
-      Utility
-              .popMessage(
-                      "Imported feature range not changed",
-                      "There is an imported type, '"
-                              + typeName
-                              + "', which has a a feature whose range which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
-                              + "  If it does, you will need to edit the imported type to change it.",
-                      MessageDialog.WARNING);
+      Utility.popMessage("Imported feature range not changed", "There is an imported type, '"
+              + typeName
+              + "', which has a a feature whose range which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
+              + "  If it does, you will need to edit the imported type to change it.",
+              MessageDialog.WARNING);
       return true;
     }
   }
@@ -1742,8 +1794,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Alter type mentions.
    *
-   * @param sOldTypeName the s old type name
-   * @param sNewTypeName the s new type name
+   * @param sOldTypeName
+   *          the s old type name
+   * @param sNewTypeName
+   *          the s new type name
    */
   private void alterTypeMentions(final String sOldTypeName, final String sNewTypeName) {
     if (sOldTypeName.equals(sNewTypeName) || (!isLocalProcessingDescriptor()))
@@ -1777,8 +1831,8 @@ public class TypeSection extends AbstractImportablePartSection {
 
     FsIndexCollection indexCollection = getAnalysisEngineMetaData().getFsIndexCollection();
 
-    FsIndexDescription[] indexes = (null == indexCollection) ? null : indexCollection
-            .getFsIndexes();
+    FsIndexDescription[] indexes = (null == indexCollection) ? null
+            : indexCollection.getFsIndexes();
 
     boolean somethingChanged = false;
     boolean markStale = false;
@@ -1822,8 +1876,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Checks if is feature used in index.
    *
-   * @param td the td
-   * @param featureName the feature name
+   * @param td
+   *          the td
+   * @param featureName
+   *          the feature name
    * @return true, if is feature used in index
    */
   private boolean isFeatureUsedInIndex(TypeDescription td, String featureName) {
@@ -1833,7 +1889,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Checks if is feature used in index.
    *
-   * @param fullFeatureName the full feature name
+   * @param fullFeatureName
+   *          the full feature name
    * @return true, if is feature used in index
    */
   private boolean isFeatureUsedInIndex(String fullFeatureName) {
@@ -1860,8 +1917,10 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Checks if is feature in use elsewhere.
    *
-   * @param td the td
-   * @param featureName the feature name
+   * @param td
+   *          the td
+   * @param featureName
+   *          the feature name
    * @return true, if is feature in use elsewhere
    */
   private boolean isFeatureInUseElsewhere(TypeDescription td, String featureName) {
@@ -1871,7 +1930,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Checks if is feature in use elsewhere.
    *
-   * @param typePlusFeature the type plus feature
+   * @param typePlusFeature
+   *          the type plus feature
    * @return true, if is feature in use elsewhere
    */
   private boolean isFeatureInUseElsewhere(final String typePlusFeature) {
@@ -1898,11 +1958,12 @@ public class TypeSection extends AbstractImportablePartSection {
    * The Class CapabilityVisitor.
    */
   private abstract class CapabilityVisitor {
-    
+
     /**
      * Visit.
      *
-     * @param i_o the i o
+     * @param i_o
+     *          the i o
      * @return true, if successful
      */
     abstract boolean visit(TypeOrFeature i_o);
@@ -1911,7 +1972,8 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Capability visit.
    *
-   * @param v the v
+   * @param v
+   *          the v
    * @return true, if successful
    */
   private boolean capabilityVisit(CapabilityVisitor v) {
@@ -1937,9 +1999,12 @@ public class TypeSection extends AbstractImportablePartSection {
   /**
    * Alter feature mentions.
    *
-   * @param sOldFeatureName the s old feature name
-   * @param sNewFeatureName the s new feature name
-   * @param typeName the type name
+   * @param sOldFeatureName
+   *          the s old feature name
+   * @param sNewFeatureName
+   *          the s new feature name
+   * @param typeName
+   *          the type name
    */
   private void alterFeatureMentions(final String sOldFeatureName, final String sNewFeatureName,
           final String typeName) {

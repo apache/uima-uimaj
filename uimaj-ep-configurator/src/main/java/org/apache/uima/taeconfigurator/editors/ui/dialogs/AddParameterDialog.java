@@ -40,18 +40,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddParameterDialog.
  */
 public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
-  
+
   /** The parm name UI. */
   private StyledText parmNameUI;
 
   /** The ext parm name UI. */
   private StyledText extParmNameUI;
-  
+
   /** The multi value UI. */
   public Button multiValueUI;
 
@@ -66,7 +65,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
 
   /** The parm name. */
   public String parmName;
-  
+
   /** The ext parm name. */
   public String extParmName;
 
@@ -97,7 +96,8 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Instantiates a new adds the parameter dialog.
    *
-   * @param aSection the a section
+   * @param aSection
+   *          the a section
    */
   private AddParameterDialog(AbstractSection aSection) {
     super(aSection, "Add Parameter", "Specify a parameter name && type");
@@ -107,8 +107,10 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Editing an existing parameter.
    *
-   * @param aSection the a section
-   * @param aExistingCP the a existing CP
+   * @param aSection
+   *          the a section
+   * @param aExistingCP
+   *          the a existing CP
    */
   public AddParameterDialog(AbstractSection aSection, ConfigurationParameter aExistingCP) {
     this(aSection);
@@ -118,16 +120,22 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Adding a new parameter to a group (may be the not-in-any one).
    *
-   * @param aSection the a section
-   * @param cg the cg
+   * @param aSection
+   *          the a section
+   * @param cg
+   *          the cg
    */
   public AddParameterDialog(AbstractSection aSection, ConfigGroup cg) {
     this(aSection);
     configGroup = cg;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -135,13 +143,13 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     createWideLabel(mainArea, "Parameter names must be unique within this descriptor");
 
     // This part of the form looks like this sketch
-    //   
+    //
     // parmName: Text field << in 2 grid composite
     // parmType: CCombo << in 2 grid composite
     // description: Text field << in 2 grid composite
     // (checkbox) is MultiValued
     // (checkbox) is Mandatory
-    // 
+    //
 
     Composite twoCol = new2ColumnComposite(mainArea);
 
@@ -158,8 +166,8 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     descriptionUI = newDescription(twoCol, "Description of parameter (optional)");
 
     extParmNameUI = newLabeledSingleLineStyledText(twoCol, "External Override",
-            "External overrides allow a parameter's value to be overriden by an entry in\n" + 
-            "an external settings file, independent of the descriptor hierarchy (optional)");
+            "External overrides allow a parameter's value to be overriden by an entry in\n"
+                    + "an external settings file, independent of the descriptor hierarchy (optional)");
 
     multiValueUI = newButton(mainArea, SWT.CHECK, "Parameter is multi-valued",
             "Check the box if the parameter is multi-valued");
@@ -186,7 +194,9 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     return mainArea;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -199,21 +209,26 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     extParmName = nullIf0lengthString(extParmNameUI.getText());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
   public boolean isValid() {
     if (parmName.length() == 0)
       return false;
-    if (!parmName.equals(originalParmName) && parmSection.parameterNameAlreadyDefined(parmName,configGroup))
+    if (!parmName.equals(originalParmName)
+            && parmSection.parameterNameAlreadyDefined(parmName, configGroup))
       return false;
     if (parmType.length() == 0)
       return false;
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

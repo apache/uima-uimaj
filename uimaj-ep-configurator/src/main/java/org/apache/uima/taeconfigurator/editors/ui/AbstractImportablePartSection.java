@@ -28,7 +28,6 @@ import org.apache.uima.taeconfigurator.model.BuiltInTypes;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
-
 /**
  * The Class AbstractImportablePartSection.
  */
@@ -37,13 +36,17 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Instantiates a new abstract importable part section.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
-   * @param headerText the header text
-   * @param description the description
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
+   * @param headerText
+   *          the header text
+   * @param description
+   *          the description
    */
-  public AbstractImportablePartSection(MultiPageEditor aEditor, Composite parent,
-          String headerText, String description) {
+  public AbstractImportablePartSection(MultiPageEditor aEditor, Composite parent, String headerText,
+          String description) {
     super(aEditor, parent, headerText, description);
   }
 
@@ -52,7 +55,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is local item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is local item
    */
   // ********************************
@@ -66,8 +70,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * returns null if no feature by this name.
    *
-   * @param name the name
-   * @param td the td
+   * @param name
+   *          the name
+   * @param td
+   *          the td
    * @return the feature from type description
    */
   public FeatureDescription getFeatureFromTypeDescription(String name, TypeDescription td) {
@@ -84,8 +90,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Gets the allowed value.
    *
-   * @param value the value
-   * @param td the td
+   * @param value
+   *          the value
+   * @param td
+   *          the td
    * @return the allowed value
    */
   public AllowedValue getAllowedValue(String value, TypeDescription td) {
@@ -106,7 +114,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Gets the local type definition.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return the local type definition
    */
   protected TypeDescription getLocalTypeDefinition(TypeDescription td) {
@@ -119,19 +128,24 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Gets the local feature definition.
    *
-   * @param td the td
-   * @param fd the fd
+   * @param td
+   *          the td
+   * @param fd
+   *          the fd
    * @return the local feature definition
    */
-  protected FeatureDescription getLocalFeatureDefinition(TypeDescription td, FeatureDescription fd) {
+  protected FeatureDescription getLocalFeatureDefinition(TypeDescription td,
+          FeatureDescription fd) {
     return getLocalFeatureDefinition(td, fd.getName());
   }
 
   /**
    * Gets the local feature definition.
    *
-   * @param td the td
-   * @param featureName the feature name
+   * @param td
+   *          the td
+   * @param featureName
+   *          the feature name
    * @return the local feature definition
    */
   protected FeatureDescription getLocalFeatureDefinition(TypeDescription td, String featureName) {
@@ -144,8 +158,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Gets the local allowed value.
    *
-   * @param td the td
-   * @param unchangedAv the unchanged av
+   * @param td
+   *          the td
+   * @param unchangedAv
+   *          the unchanged av
    * @return the local allowed value
    */
   protected AllowedValue getLocalAllowedValue(TypeDescription td, AllowedValue unchangedAv) {
@@ -161,7 +177,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Gets the built in type description.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return the built in type description
    */
   // ********************************
@@ -174,7 +191,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is local type.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return true, if is local type
    */
   // ********************************
@@ -185,7 +203,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is local type.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    * @return true, if is local type
    */
   protected boolean isLocalType(String typeName) {
@@ -195,8 +214,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is local feature.
    *
-   * @param featureName the feature name
-   * @param td the td
+   * @param featureName
+   *          the feature name
+   * @param td
+   *          the td
    * @return true, if is local feature
    */
   protected boolean isLocalFeature(String featureName, TypeDescription td) {
@@ -206,8 +227,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is local allowed value.
    *
-   * @param avString the av string
-   * @param td the td
+   * @param avString
+   *          the av string
+   * @param td
+   *          the td
    * @return true, if is local allowed value
    */
   protected boolean isLocalAllowedValue(String avString, TypeDescription td) {
@@ -224,7 +247,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is imported type.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    * @return true, if is imported type
    */
   public boolean isImportedType(String typeName) {
@@ -234,7 +258,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is imported type.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return true, if is imported type
    */
   protected boolean isImportedType(TypeDescription td) {
@@ -244,8 +269,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is imported feature.
    *
-   * @param name the name
-   * @param td the td
+   * @param name
+   *          the name
+   * @param td
+   *          the td
    * @return true, if is imported feature
    */
   protected boolean isImportedFeature(String name, TypeDescription td) {
@@ -258,8 +285,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is imported allowed value.
    *
-   * @param td the td
-   * @param av the av
+   * @param td
+   *          the td
+   * @param av
+   *          the av
    * @return true, if is imported allowed value
    */
   protected boolean isImportedAllowedValue(TypeDescription td, AllowedValue av) {
@@ -274,7 +303,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is built in type.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return true, if is built in type
    */
   // ********************************
@@ -285,7 +315,8 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is built in type.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    * @return true, if is built in type
    */
   protected boolean isBuiltInType(String typeName) {
@@ -295,8 +326,10 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   /**
    * Checks if is built in feature.
    *
-   * @param name the name
-   * @param td the td
+   * @param name
+   *          the name
+   * @param td
+   *          the td
    * @return true, if is built in feature
    */
   protected boolean isBuiltInFeature(String name, TypeDescription td) {

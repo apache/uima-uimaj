@@ -30,12 +30,11 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
-
 /**
  * The Class XMLConfiguration.
  */
 public class XMLConfiguration extends SourceViewerConfiguration {
-  
+
   /** The double click strategy. */
   private XMLDoubleClickStrategy doubleClickStrategy;
 
@@ -51,14 +50,19 @@ public class XMLConfiguration extends SourceViewerConfiguration {
   /**
    * Instantiates a new XML configuration.
    *
-   * @param colorManager the color manager
+   * @param colorManager
+   *          the color manager
    */
   public XMLConfiguration(ColorManager colorManager) {
     this.colorManager = colorManager;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredContentTypes(org.eclipse.jface.text.source.ISourceViewer)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredContentTypes(org.eclipse.
+   * jface.text.source.ISourceViewer)
    */
   @Override
   public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
@@ -66,8 +70,12 @@ public class XMLConfiguration extends SourceViewerConfiguration {
         XMLPartitionScanner.XML_TAG };
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.
+   * jface.text.source.ISourceViewer, java.lang.String)
    */
   @Override
   public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,
@@ -85,8 +93,8 @@ public class XMLConfiguration extends SourceViewerConfiguration {
   protected XMLScanner getXMLScanner() {
     if (scanner == null) {
       scanner = new XMLScanner(colorManager);
-      scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
-              .getColor(IXMLColorConstants.DEFAULT))));
+      scanner.setDefaultReturnToken(
+              new Token(new TextAttribute(colorManager.getColor(IXMLColorConstants.DEFAULT))));
     }
     return scanner;
   }
@@ -99,14 +107,18 @@ public class XMLConfiguration extends SourceViewerConfiguration {
   protected XMLTagScanner getXMLTagScanner() {
     if (tagScanner == null) {
       tagScanner = new XMLTagScanner(colorManager);
-      tagScanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
-              .getColor(IXMLColorConstants.TAG))));
+      tagScanner.setDefaultReturnToken(
+              new Token(new TextAttribute(colorManager.getColor(IXMLColorConstants.TAG))));
     }
     return tagScanner;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.
+   * jface.text.source.ISourceViewer)
    */
   @Override
   public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
@@ -120,16 +132,20 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
     reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-    NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(
-            colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
+    NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(
+            new TextAttribute(colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
     reconciler.setDamager(ndr, XMLPartitionScanner.XML_COMMENT);
     reconciler.setRepairer(ndr, XMLPartitionScanner.XML_COMMENT);
 
     return reconciler;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getTabWidth(org.eclipse.jface.text.source.ISourceViewer)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.eclipse.jface.text.source.SourceViewerConfiguration#getTabWidth(org.eclipse.jface.text.
+   * source.ISourceViewer)
    */
   // these 2 functions don't seem to control indent
   @Override
@@ -137,8 +153,12 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     return MultiPageEditorContributor.getXMLindent();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getIndentPrefixes(org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.eclipse.jface.text.source.SourceViewerConfiguration#getIndentPrefixes(org.eclipse.jface.
+   * text.source.ISourceViewer, java.lang.String)
    */
   @Override
   public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
@@ -146,7 +166,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     int indent = getTabWidth(null);
     for (int i = 0; i < indent; i++)
       spaces.append(' ');
-    return new String[] { "\t", spaces.toString() /* , "" */}; //$NON-NLS-1$ 
+    return new String[] { "\t", spaces.toString() /* , "" */ }; //$NON-NLS-1$
   }
 
 }

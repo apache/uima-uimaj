@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddExternalResourceDependencyDialog.
  */
@@ -71,7 +70,8 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
   /**
    * Instantiates a new adds the external resource dependency dialog.
    *
-   * @param aSection the a section
+   * @param aSection
+   *          the a section
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection) {
     super(aSection, "Add External Resource Dependency", "Add an External Resource Dependency");
@@ -81,8 +81,10 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
   /**
    * Constructor for Editing an existing XRD.
    *
-   * @param aSection the a section
-   * @param aExistingXRD the a existing XRD
+   * @param aSection
+   *          the a section
+   * @param aExistingXRD
+   *          the a existing XRD
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection,
           ExternalResourceDependency aExistingXRD) {
@@ -90,23 +92,26 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     existingXRD = aExistingXRD;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingXRD);
-    createWideLabel(
-            mainArea,
+    createWideLabel(mainArea,
             "The only required field is the key name,\nwhich must be unique within this primitive Analysis Engine descriptor.");
 
     // This part of the form looks like this sketch
-    //   
+    //
     // keyName: Text field << in 2 grid composite
     // description: Text field << in 2 grid composite
     // impl Name: Text field << in 2 grid composite
     // (checkbox) is Optional
-    // 
+    //
 
     Composite twoCol = new2ColumnComposite(mainArea);
 
@@ -115,9 +120,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
 
     descriptionUI = newDescription(twoCol, "(Optional)Describes this resource dependency");
 
-    interfaceNameUI = newLabeledSingleLineStyledText(
-            twoCol,
-            "Interface",
+    interfaceNameUI = newLabeledSingleLineStyledText(twoCol, "Interface",
             "The fully qualified name of the Java Interface class used by the Analysis Engine to refer to the External Resource");
 
     newErrorMessage(twoCol, 2);
@@ -135,7 +138,9 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     return mainArea;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -146,7 +151,9 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     interfaceName = nullIf0lengthString(interfaceNameUI.getText());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
@@ -158,7 +165,9 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

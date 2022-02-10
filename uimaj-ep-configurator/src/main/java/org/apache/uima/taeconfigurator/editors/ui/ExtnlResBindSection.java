@@ -43,12 +43,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class ExtnlResBindSection.
  */
 public class ExtnlResBindSection extends AbstractSection {
-  
+
   /** The Constant boundHeader. */
   private final static String boundHeader = "Bound to: ";
 
@@ -82,19 +81,22 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Instantiates a new extnl res bind section.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
    */
   public ExtnlResBindSection(MultiPageEditor aEditor, Composite parent) {
-    super(
-            aEditor,
-            parent,
-            "Resources Needs, Definitions and Bindings",
+    super(aEditor, parent, "Resources Needs, Definitions and Bindings",
             "Specify External Resources; Bind them to dependencies on the right panel by selecting the corresponding dependency and clicking Bind.");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.
+   * IManagedForm)
    */
   @Override
   public void initialize(IManagedForm form) {
@@ -128,7 +130,9 @@ public class ExtnlResBindSection extends AbstractSection {
     tree.addListener(SWT.MouseDoubleClick, this);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
    */
   @Override
@@ -151,8 +155,10 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Adds the external resource description to GUI.
    *
-   * @param xrd the xrd
-   * @param bindings the bindings
+   * @param xrd
+   *          the xrd
+   * @param bindings
+   *          the bindings
    */
   private void addExternalResourceDescriptionToGUI(ExternalResourceDescription xrd,
           ExternalResourceBinding[] bindings) {
@@ -165,8 +171,10 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Fill xrd item.
    *
-   * @param item the item
-   * @param xrd the xrd
+   * @param item
+   *          the item
+   * @param xrd
+   *          the xrd
    */
   private void fillXrdItem(TreeItem item, ExternalResourceDescription xrd) {
     StringBuffer text = new StringBuffer();
@@ -193,9 +201,12 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Fill bindings.
    *
-   * @param parent the parent
-   * @param xrd the xrd
-   * @param bindings the bindings
+   * @param parent
+   *          the parent
+   * @param xrd
+   *          the xrd
+   * @param bindings
+   *          the bindings
    */
   private void fillBindings(TreeItem parent, ExternalResourceDescription xrd,
           ExternalResourceBinding[] bindings) {
@@ -211,9 +222,12 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Adds the binding to GUI.
    *
-   * @param parent the parent
-   * @param key the key
-   * @param xrb the xrb
+   * @param parent
+   *          the parent
+   * @param key
+   *          the key
+   * @param xrb
+   *          the xrb
    */
   private void addBindingToGUI(TreeItem parent, String key, ExternalResourceBinding xrb) {
     TreeItem item = new TreeItem(parent, SWT.NONE);
@@ -252,7 +266,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Gets the XR description from tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the XR description from tree item
    */
   public ExternalResourceDescription getXRDescriptionFromTreeItem(TreeItem item) {
@@ -272,9 +287,9 @@ public class ExtnlResBindSection extends AbstractSection {
     ExternalResourceDescription xrd = getXRDescriptionFromTreeItem(item);
     ResourceSpecifier rs = xrd.getResourceSpecifier();
     if (!((rs instanceof FileResourceSpecifier) || (rs instanceof FileLanguageResourceSpecifier))) {
-      Utility.popMessage("Can''t edit custom resource", "This resource is a '"
-              + rs.getClass().getName()
-              + "', and any edits have to be done directly in the XML in the Source view.",
+      Utility.popMessage("Can''t edit custom resource",
+              "This resource is a '" + rs.getClass().getName()
+                      + "', and any edits have to be done directly in the XML in the Source view.",
               MessageDialog.INFORMATION);
       return;
     }
@@ -303,18 +318,20 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Alter existing XRD.
    *
-   * @param dialog the dialog
-   * @param xrd the xrd
-   * @param item the item
+   * @param dialog
+   *          the dialog
+   * @param xrd
+   *          the xrd
+   * @param item
+   *          the item
    */
   private void alterExistingXRD(AddExternalResourceDialog dialog, ExternalResourceDescription xrd,
           TreeItem item) {
     valueChanged = false;
     xrd.setName(setValueChanged(dialog.xrName, xrd.getName()));
     xrd.setDescription(setValueChanged(dialog.xrDescription, xrd.getDescription()));
-    xrd
-            .setImplementationName(setValueChanged(dialog.xrImplementation, xrd
-                    .getImplementationName()));
+    xrd.setImplementationName(
+            setValueChanged(dialog.xrImplementation, xrd.getImplementationName()));
 
     ResourceSpecifier rs = xrd.getResourceSpecifier();
     if (null == dialog.xrUrlSuffix || "".equals(dialog.xrUrlSuffix)) {
@@ -377,10 +394,9 @@ public class ExtnlResBindSection extends AbstractSection {
       return;
     TreeItem item = tree.getSelection()[0];
     if (null == item.getParentItem()) { // case of removing a resource
-      if (Window.CANCEL == Utility
-              .popOkCancel("Removing Resource",
-                      "Removing an External Resource and all its bindings. Resource name:"
-                              + item.getText(), MessageDialog.WARNING))
+      if (Window.CANCEL == Utility.popOkCancel("Removing Resource",
+              "Removing an External Resource and all its bindings. Resource name:" + item.getText(),
+              MessageDialog.WARNING))
         return;
       removeAllBindings(item);
       removeResource(item);
@@ -392,7 +408,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Gets the XR binding from tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the XR binding from tree item
    */
   public ExternalResourceBinding getXRBindingFromTreeItem(TreeItem item) {
@@ -402,7 +419,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Removes the binding.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   private void removeBinding(TreeItem item) {
     ExternalResourceBinding xrb = getXRBindingFromTreeItem(item);
@@ -415,7 +433,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Removes the bound flag in dependency section.
    *
-   * @param xrb the xrb
+   * @param xrb
+   *          the xrb
    */
   private void removeBoundFlagInDependencySection(ExternalResourceBinding xrb) {
     String key = xrb.getKey();
@@ -429,7 +448,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Removes the all bindings.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   private void removeAllBindings(TreeItem item) {
     TreeItem[] items = item.getItems();
@@ -441,7 +461,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Removes the resource.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   private void removeResource(TreeItem item) {
     ExternalResourceDescription xrd = getXRDescriptionFromTreeItem(item);
@@ -450,7 +471,9 @@ public class ExtnlResBindSection extends AbstractSection {
     setFileDirty();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -469,7 +492,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Checks if is bound spec.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is bound spec
    */
   private boolean isBoundSpec(TreeItem item) {
@@ -479,7 +503,8 @@ public class ExtnlResBindSection extends AbstractSection {
   /**
    * Resource name already defined.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return true, if successful
    */
   public boolean resourceNameAlreadyDefined(String name) {
