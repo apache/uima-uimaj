@@ -19,6 +19,7 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -193,16 +194,17 @@ public class IntArrayRBTTest {
     for (int j = 0; j < 10; j++) {
 
       // insert values
-      int shadowSize = 0;
+      int expectedSize = 0;
       for (int i = 0; i < 1000; i++) {
         int k = rand.nextInt(1000);
         ks[i] = k;
         boolean wasInserted = ia.insertKeyShowNegative(k) >= 0;
         if (wasInserted) {
-          shadowSize++;
+          expectedSize++;
         }
       }
-      assertEquals(shadowSize, ia.size);
+
+      assertThat(ia.size).isEqualTo(expectedSize);
 
       // debug
       // int[] iv = new int[1000];
@@ -212,7 +214,6 @@ public class IntArrayRBTTest {
       // iv[iiv++] = it.next();
       // }
 
-      assertTrue(ia.size <= 1000 && ia.size > 600);
       // check all values are present
       // Set<Integer> presentValues = new HashSet<>();
       for (int i = 0; i < 1000; i++) {
@@ -252,7 +253,7 @@ public class IntArrayRBTTest {
       // iv[iiv++] = it.next();
       // }
 
-      assertEquals(0, ia.size);
+      assertThat(ia.size).isZero();
       System.gc();
       System.out.print(Runtime.getRuntime().freeMemory() + " ");
 
