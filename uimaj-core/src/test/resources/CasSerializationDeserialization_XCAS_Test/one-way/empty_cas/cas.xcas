@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text/plain" sofaString="Joe waited for the train . The train was late ."/>
+    <uima.cas.Sofa _indexed="0" _id="2" sofaNum="2" sofaID="EmptyView"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="3" _ref_sofa="1" begin="0" end="47" language="x-unspecified"/>
+</CAS>

@@ -28,7 +28,6 @@ import org.apache.uima.collection.impl.cpm.vinci.DATACasUtils;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.util.Level;
 
-
 /**
  * The Class CasMetaData.
  */
@@ -46,7 +45,8 @@ public class CasMetaData implements Serializable {
   /**
    * Sets the cas meta data.
    *
-   * @param aCas the new cas meta data
+   * @param aCas
+   *          the new cas meta data
    */
   public void setCasMetaData(Object aCas) {
     if (aCas != null && aCas instanceof CasData) {
@@ -76,7 +76,8 @@ public class CasMetaData implements Serializable {
   /**
    * Gets the value.
    *
-   * @param aName the a name
+   * @param aName
+   *          the a name
    * @return the value
    */
   public Object getValue(String aName) {

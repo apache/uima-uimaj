@@ -39,7 +39,7 @@ import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.CasLoadMode;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UimaV2CasCompatibilityTest {
 
@@ -49,7 +49,7 @@ public class UimaV2CasCompatibilityTest {
     // load("src/test/resources/uima-v2-serialized-cas/simpleCas.bins", REINIT);
     // load("src/test/resources/uima-v2-serialized-cas/simpleCas.bins0", REINIT);
     // load("src/test/resources/uima-v2-serialized-cas/simpleCas.binsp", REINIT);
-    
+
     // Loading these formats from UIMAv2 works
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins4", DEFAULT);
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins4", REINIT);
@@ -57,7 +57,8 @@ public class UimaV2CasCompatibilityTest {
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins6", REINIT);
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins6p", DEFAULT);
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins6p", REINIT);
-    assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins6pTs", DEFAULT);
+    assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins6pTs",
+            DEFAULT);
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.bins6pTs", REINIT);
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.xcas", DEFAULT);
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.xcas", REINIT);
@@ -81,8 +82,7 @@ public class UimaV2CasCompatibilityTest {
     assertCasMixedLoadingWorks("simpleCas.xmi", REINIT);
   }
 
-  private CAS makeCas() throws InvalidXMLException, IOException, ResourceInitializationException
-  {
+  private CAS makeCas() throws InvalidXMLException, IOException, ResourceInitializationException {
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
     FsIndexDescription[] indexes = UIMAFramework.getXMLParser()
             .parseFsIndexCollection(new XMLInputSource(indexesFile)).getFsIndexes();
@@ -130,11 +130,11 @@ public class UimaV2CasCompatibilityTest {
   private void assertCasLoadsCorrectly(String aFile, CasLoadMode aMode)
           throws IOException, InvalidXMLException, ResourceInitializationException {
     CAS cas = makeCas();
-    
+
     try (InputStream is = new FileInputStream(aFile)) {
       CasIOUtils.load(is, null, cas, aMode);
     }
-    
+
     assertThat(cas.getAnnotationIndex().size()).isEqualTo(7);
   }
 }

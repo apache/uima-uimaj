@@ -25,13 +25,12 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.cpm.engine.CPMEngine;
 import org.apache.uima.util.Level;
 
-
 /**
  * Facilitates cleaning up resources associated with chunking/sequencing logic.
  * 
  */
 public class ExpirationTimer extends Thread {
-  
+
   /** The time out. */
   private final long timeOut;
 
@@ -48,13 +47,16 @@ public class ExpirationTimer extends Thread {
    * Constructs a Timer that expires after a given interval. It keeps the map from growing
    * indefinitely. Its main purpose is to remove entries from a given map using a provided key.
    *
-   * @param aTimeout the a timeout
-   * @param aMap the a map
-   * @param aKey the a key
-   * @param aCpm the a cpm
+   * @param aTimeout
+   *          the a timeout
+   * @param aMap
+   *          the a map
+   * @param aKey
+   *          the a key
+   * @param aCpm
+   *          the a cpm
    */
   public ExpirationTimer(long aTimeout, HashMap aMap, String aKey, CPMEngine aCpm) {
-    super();
     timeOut = aTimeout;
     map = aMap;
     key = aKey;

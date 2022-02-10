@@ -29,10 +29,12 @@ public class AFrameLeaf extends FrameLeaf {
 
   private Attributes a = null;
 
+  @Override
   public void setAttributes(Attributes s) {
     a = s;
   }
 
+  @Override
   public Attributes getAttributes() {
     return a;
   }

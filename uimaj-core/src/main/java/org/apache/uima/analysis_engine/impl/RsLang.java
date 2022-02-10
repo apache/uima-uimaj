@@ -28,26 +28,27 @@ import org.apache.uima.cas.text.Language;
  */
 public class RsLang {
 
- /**
+  /**
    * global set for canonical language strings
    */
   private static final ConcurrentMap<String, String> canonicalLanguageStrings = new ConcurrentHashMap<>();
- 
+
   /**
    * 
    * @param language
    * @return x-unspecified if lang is null or a canonical version of the lang string
    */
-//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_STRING_CTOR")
+  // @edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_STRING_CTOR")
   static String getCanonicalLanguageString(String language) {
-    if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {  // represents x-unspecified
+    if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) { // represents
+                                                                              // x-unspecified
       return Language.UNSPECIFIED_LANGUAGE;
     }
     String cl = canonicalLanguageStrings.get(language), clOther;
     if (cl == null) {
       // make new string based on trimmed chars if needed, in case holding on to big string
-      // This strange construct is intended to drop references to big char arrays  
-      //   where only a part the big char arrays constitute this string.
+      // This strange construct is intended to drop references to big char arrays
+      // where only a part the big char arrays constitute this string.
       language = new StringBuilder(language.length()).append(language).toString();
       clOther = canonicalLanguageStrings.putIfAbsent(language, language);
       cl = (clOther != null) ? clOther : language;

@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.LongArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for Long Array
+ * V2 compatibility only The non-JCas cover class for Long Array
+ * 
  * @deprecated use LongArray instead
  */
 @Deprecated
 public interface LongArrayFSImpl extends LongArrayFS {
-  
+
 }

@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
  * 
  */
 public class I18nUtil {
-    
+
   /**
    * Localize a message to the default Locale.
    * 
@@ -112,7 +112,7 @@ public class I18nUtil {
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
           String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
     try {
-      ResourceBundle bundle =  resolveResourceBundle(aResourceBundleName, aLocale, aLoader);
+      ResourceBundle bundle = resolveResourceBundle(aResourceBundleName, aLocale, aLoader);
       return localizeMessage(bundle, aLocale, aMessageKey, aArguments);
     } catch (Exception e) {
       return "MESSAGE LOCALIZATION FAILED: " + e.getMessage();
@@ -134,11 +134,12 @@ public class I18nUtil {
    * @return localized message. If an exception occurs, returns "MESSAGE LOCALIZATION FAILED:"
    *         followed by the exception message.
    */
-  public static String localizeMessage(ResourceBundle aResourceBundle, Locale aLocale, String aMessageKey, Object[] aArguments) {
+  public static String localizeMessage(ResourceBundle aResourceBundle, Locale aLocale,
+          String aMessageKey, Object[] aArguments) {
     try {
-       String message = (aResourceBundle == null) 
-                        ? ("Null ResourceBundle, key = \"" + aMessageKey + "\"")
-                        : aResourceBundle.getString(aMessageKey);
+      String message = (aResourceBundle == null)
+              ? ("Null ResourceBundle, key = \"" + aMessageKey + "\"")
+              : aResourceBundle.getString(aMessageKey);
       // if arguments exist, use MessageFormat to include them
       if (aResourceBundle != null && aArguments != null && aArguments.length > 0) {
         MessageFormat fmt = new MessageFormat(message);
@@ -147,24 +148,28 @@ public class I18nUtil {
       } else
         return message;
     } catch (Exception e) {
-      return "MESSAGE LOCALIZATION FAILED: The key " + aMessageKey + " may be missing in the properties file " + e.getMessage();
-    }    
+      return "MESSAGE LOCALIZATION FAILED: The key " + aMessageKey
+              + " may be missing in the properties file " + e.getMessage();
+    }
   }
 
-  public static ResourceBundle resolveResourceBundle(String aResourceBundleName, Locale aLocale, ClassLoader aLoader) {
+  public static ResourceBundle resolveResourceBundle(String aResourceBundleName, Locale aLocale,
+          ClassLoader aLoader) {
     if (aLoader == null) {
-      aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
+      aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();
     }
     // locate the resource bundle for this exception's messages
     return ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
   }
 
   public static void setTccl(ClassLoader tccl) {
-    MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader.set(tccl);
+    MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader
+            .set(tccl);
   }
-  
+
   public static void removeTccl() {
-    MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader.remove();
+    MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader
+            .remove();
   }
-    
+
 }

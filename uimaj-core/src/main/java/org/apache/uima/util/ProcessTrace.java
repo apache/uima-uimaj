@@ -49,7 +49,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * @param aDescription
    *          description of the event
    */
-  public void startEvent(String aComponentName, String aEventType, String aDescription);
+  void startEvent(String aComponentName, String aEventType, String aDescription);
 
   /**
    * Records the end of an event. The event is identified by the component name and type. If there
@@ -68,7 +68,7 @@ public interface ProcessTrace extends java.io.Serializable {
    *           if there is no open event matching the <code>aComponentName</code> and
    *           <code>aEventType</code> arguments.
    */
-  public void endEvent(String aComponentName, String aEventType, String aResultMessage);
+  void endEvent(String aComponentName, String aEventType, String aResultMessage);
 
   /**
    * Adds an event with the specified parameters to this <code>ProcessTrace</code>.
@@ -85,7 +85,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * @param aResultMsg
    *          result message of event
    */
-  public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
+  void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
           String aResultMsg);
 
   /**
@@ -95,16 +95,16 @@ public interface ProcessTrace extends java.io.Serializable {
    * @param aEvent
    *          the event object to be added to this <code>ProcessTrace</code>
    */
-  public void addEvent(ProcessTraceEvent aEvent);
+  void addEvent(ProcessTraceEvent aEvent);
 
   /**
-   * Adds a list of completed event objects to this <code>ProcessTrace</code>. This method is
-   * useful for copying events from one ProcessTrace into another.
+   * Adds a list of completed event objects to this <code>ProcessTrace</code>. This method is useful
+   * for copying events from one ProcessTrace into another.
    * 
    * @param aEventList
    *          a List of event object to be added to this <code>ProcessTrace</code>
    */
-  public void addAll(List<ProcessTraceEvent> aEventList);
+  void addAll(List<ProcessTraceEvent> aEventList);
 
   /**
    * Gets a list of {@link ProcessTraceEvent}s, in the order in which they were created. This is
@@ -112,7 +112,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return an unmodifiable List of {@link ProcessTraceEvent}s
    */
-  public List<ProcessTraceEvent> getEvents();
+  List<ProcessTraceEvent> getEvents();
 
   /**
    * Gets all events that have the given Component name.
@@ -125,7 +125,8 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return a List of ProcessTraceEvents having the given component name
    */
-  public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseWithinMatch);
+  List<ProcessTraceEvent> getEventsByComponentName(String aComponentName,
+          boolean aRecurseWithinMatch);
 
   /**
    * Gets all events that have the given type
@@ -138,7 +139,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return a List of ProcessTraceEvents having the given type
    */
-  public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseWithinMatch);
+  List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseWithinMatch);
 
   /**
    * Get a specified event.
@@ -151,12 +152,12 @@ public interface ProcessTrace extends java.io.Serializable {
    * @return the first ProcessTraceEvent matching the parameters, <code>null</code> if there is no
    *         such event.
    */
-  public ProcessTraceEvent getEvent(String aComponentName, String aType);
+  ProcessTraceEvent getEvent(String aComponentName, String aType);
 
   /**
    * Resets this <code>ProcessTrace</code> by removing all events.
    */
-  public void clear();
+  void clear();
 
   /**
    * Aggregates the information in another <code>ProcessTrace</code> with this one. Events that
@@ -167,13 +168,14 @@ public interface ProcessTrace extends java.io.Serializable {
    *          the Process Trace object whose information will be combined with the information in
    *          this object
    */
-  public void aggregate(ProcessTrace aProcessTrace);
+  void aggregate(ProcessTrace aProcessTrace);
 
   /**
    * Generates a user-readable representation of all events in this <code>ProcessTrace</code>.
    * 
    * @return the String representation of all events in this <code>ProcessTrace</code>.
    */
-  public String toString();
+  @Override
+  String toString();
 
 }

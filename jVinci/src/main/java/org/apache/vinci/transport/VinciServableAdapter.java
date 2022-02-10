@@ -24,11 +24,14 @@ package org.apache.vinci.transport;
  * TransportableFactory that returns a VinciFrame.
  */
 public abstract class VinciServableAdapter implements VinciServable {
+  @Override
   public abstract Transportable eval(Transportable in) throws ServiceException;
 
+  @Override
   public void cleanExit() {
   }
 
+  @Override
   public Transportable makeTransportable() {
     return new VinciFrame();
   }

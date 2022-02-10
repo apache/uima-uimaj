@@ -49,17 +49,21 @@ public class DeployFactory {
 
   private DeployFactory() {
   }
-  
+
   /**
    * Returns a
    * {@link org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer} object
    * that specializes in deploying components as either local, remote, or integrated.
    * 
-   * @param aCpeFactory cpe factory
-   * @param aCasProcessorConfig cpe configuration reference
-   * @param aPca mode of deployment.
+   * @param aCpeFactory
+   *          cpe factory
+   * @param aCasProcessorConfig
+   *          cpe configuration reference
+   * @param aPca
+   *          mode of deployment.
    * @return appropriate deployer object for the mode of depolyment
-   * @throws ResourceConfigurationException missing protocol or other deployment error
+   * @throws ResourceConfigurationException
+   *           missing protocol or other deployment error
    */
 
   public static CasProcessorDeployer getDeployer(CPEFactory aCpeFactory,
@@ -73,8 +77,8 @@ public class DeployFactory {
       String protocol = getProtocol(aCasProcessorConfig, aCpeFactory.getResourceManager());
       if (protocol == null || protocol.trim().length() == 0) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_invalid_service_descriptor__SEVERE", new Object[] {
-                    Thread.currentThread().getName(), "<uriSpecifier>", "<protocol>" },
+                "UIMA_CPM_invalid_service_descriptor__SEVERE",
+                new Object[] { Thread.currentThread().getName(), "<uriSpecifier>", "<protocol>" },
                 new Exception(CpmLocalizedMessage.getLocalizedMessage(
                         CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                         "UIMA_CPM_EXP_invalid_service_descriptor__WARNING", new Object[] {
@@ -94,28 +98,32 @@ public class DeployFactory {
       return new CPEDeployerDefaultImpl(aCpeFactory);
     }
     throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-            new Object[] { "deployment", "casProcessor" }, new Exception(CpmLocalizedMessage
-                    .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_Exception_invalid_deployment__WARNING", new Object[] {
-                                Thread.currentThread().getName(), aCasProcessorConfig.getName(),
-                                deployMode })));
+            new Object[] { "deployment", "casProcessor" },
+            new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_Exception_invalid_deployment__WARNING",
+                    new Object[] { Thread.currentThread().getName(), aCasProcessorConfig.getName(),
+                        deployMode })));
   }
 
   /**
    * Retrieve protocol from the service descriptor
    * 
-   * @param aCasProcessorConfig Cas Processor configuration
-   * @param aResourceManager needed to resolve import by name        
+   * @param aCasProcessorConfig
+   *          Cas Processor configuration
+   * @param aResourceManager
+   *          needed to resolve import by name
    * @return - protocol as string (vinci, socket)
    * 
-   * @throws ResourceConfigurationException wraps Exception
+   * @throws ResourceConfigurationException
+   *           wraps Exception
    */
-  public static String getProtocol(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
-          throws ResourceConfigurationException {
+  public static String getProtocol(CpeCasProcessor aCasProcessorConfig,
+          ResourceManager aResourceManager) throws ResourceConfigurationException {
     try {
-      URL clientServiceDescriptor = aCasProcessorConfig.getCpeComponentDescriptor().findAbsoluteUrl(aResourceManager);
-      ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-              new XMLInputSource(clientServiceDescriptor));
+      URL clientServiceDescriptor = aCasProcessorConfig.getCpeComponentDescriptor()
+              .findAbsoluteUrl(aResourceManager);
+      ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser()
+              .parseResourceSpecifier(new XMLInputSource(clientServiceDescriptor));
       if (resourceSpecifier instanceof URISpecifier) {
         return ((URISpecifier) resourceSpecifier).getProtocol();
       }

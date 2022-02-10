@@ -31,7 +31,8 @@ import org.apache.uima.jcas.JCasRegistry;
 //*   for old v2 style _Type classes
 /**
  * for v2 compiling only
- * @deprecated 
+ * 
+ * @deprecated
  */
 @Deprecated
 public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
@@ -42,22 +43,23 @@ public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
   final Feature casFeat_sofa;
 
   final int casFeatCode_sofa;
-  
-  protected FSGenerator<?> getFSGenerator() {
-    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
-  }
 
+  @Override
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing
+                 // JCasGen'd cover classes that might extend this class
+  }
 
   public SofaFS getSofa(int addr) {
     throw new RuntimeException("not supported");
-//    if (featOkTst && casFeat_sofa == null)
-//      this.jcas.throwFeatMissing("sofa", "uima.cas.AnnotationBase");
-//    return (SofaFS) ll_cas.ll_getFSForRef(addr);
+    // if (featOkTst && casFeat_sofa == null)
+    // this.jcas.throwFeatMissing("sofa", "uima.cas.AnnotationBase");
+    // return (SofaFS) ll_cas.ll_getFSForRef(addr);
   }
 
   public CAS getView(int addr) {
     throw new RuntimeException("not supported");
-//    return casImpl.ll_getSofaCasView(addr);
+    // return casImpl.ll_getSofaCasView(addr);
   }
 
   // * initialize variables to correspond with Cas Type and Features
@@ -66,11 +68,11 @@ public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
     casFeat_sofa = null;
     casFeatCode_sofa = JCas.INVALID_FEATURE_CODE;
 
-//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+    // casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
     return;
-//    casFeat_sofa = jcas.getRequiredFeatureDE(casType, "sofa", "uima.cas.Sofa", featOkTst);
-//    casFeatCode_sofa = (null == casFeat_sofa) ? JCas.INVALID_FEATURE_CODE
-//            : ((FeatureImpl) casFeat_sofa).getCode();
+    // casFeat_sofa = jcas.getRequiredFeatureDE(casType, "sofa", "uima.cas.Sofa", featOkTst);
+    // casFeatCode_sofa = (null == casFeat_sofa) ? JCas.INVALID_FEATURE_CODE
+    // : ((FeatureImpl) casFeat_sofa).getCode();
   }
 
   protected AnnotationBase_Type() { // block default new operator

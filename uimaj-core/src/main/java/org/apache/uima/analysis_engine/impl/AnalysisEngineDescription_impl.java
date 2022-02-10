@@ -78,18 +78,19 @@ import org.xml.sax.SAXException;
 /**
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class contains two
  * attributes of class Map, which are not supported by the default XML input/output routines.
- * Therefore we override the {@link MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)} and
- * {@link MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, XMLParser.ParsingOptions)} methods.
- * 
- * 
+ * Therefore we override the
+ * {@link MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)} and
+ * {@link MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, XMLParser.ParsingOptions)}
+ * methods.
  */
-public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl implements
-        AnalysisEngineDescription {
+public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl
+        implements AnalysisEngineDescription {
 
   static final private Method getterForAEwImports;
-  static { 
+  static {
     try {
-      getterForAEwImports = AnalysisEngineDescription_impl.class.getDeclaredMethod("getDelegateAnalysisEngineSpecifiersWithImports");
+      getterForAEwImports = AnalysisEngineDescription_impl.class
+              .getDeclaredMethod("getDelegateAnalysisEngineSpecifiersWithImports");
     } catch (Exception e) {
       throw new UIMARuntimeException(e);
     }
@@ -98,7 +99,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * Name of the "delegateAnalysisEngineSpecifiers" property. Change this if interface changes.
    */
   final protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
-  
+
   /**
    * Name of the "delegateAnalysisEngineSpecifiersWithImports" property. Change this if interface
    * changes.
@@ -119,7 +120,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   // This holds delegates after imports have been resolved (merged from xmlComments 1187355)
   private Map<String, ResourceSpecifier> mDelegateAnalysisEngineSpecifiers = new LinkedHashMap<>();
 
-  // This holds delegates as they come from reading the descriptor, may have import elements (unresolved) (merged from xmlComments 1187355)
+  // This holds delegates as they come from reading the descriptor, may have import elements
+  // (unresolved) (merged from xmlComments 1187355)
   private Map<String, MetaDataObject> mDelegateAnalysisEngineSpecifiersWithImports = new LinkedHashMap<>();
 
   private Map<String, Import> mProcessedImports = new HashMap<>();
@@ -197,7 +199,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   @Override
-  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException {
+  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers()
+          throws InvalidXMLException {
     resolveDelegateAnalysisEngineImports(UIMAFramework.newDefaultResourceManager(), false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
@@ -206,8 +209,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   @Override
-  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
-          throws InvalidXMLException {
+  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers(
+          ResourceManager aResourceManager) throws InvalidXMLException {
     resolveDelegateAnalysisEngineImports(aResourceManager, false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
@@ -233,7 +236,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setFlowController(org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration)
+   * @see
+   * org.apache.uima.analysis_engine.AnalysisEngineDescription#setFlowController(org.apache.uima.
+   * analysis_engine.metadata.FlowControllerDeclaration)
    */
   @Override
   public void setFlowControllerDeclaration(FlowControllerDeclaration aFlowControllerDeclaration) {
@@ -241,15 +246,16 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   }
 
   @Override
-  public Map<String, ResourceSpecifier> getAllComponentSpecifiers(ResourceManager aResourceManager) throws InvalidXMLException {
+  public Map<String, ResourceSpecifier> getAllComponentSpecifiers(ResourceManager aResourceManager)
+          throws InvalidXMLException {
     if (aResourceManager == null) {
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
     resolveImports(aResourceManager);
     Map<String, ResourceSpecifier> map = new LinkedHashMap<>(mDelegateAnalysisEngineSpecifiers);
     if (getFlowControllerDeclaration() != null) {
-      map.put(getFlowControllerDeclaration().getKey(), getFlowControllerDeclaration()
-              .getSpecifier());
+      map.put(getFlowControllerDeclaration().getKey(),
+              getFlowControllerDeclaration().getSpecifier());
     }
     return Collections.unmodifiableMap(map);
   }
@@ -275,7 +281,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setSofaMappings(org.apache.uima.analysis_engine.metadata.SofaMapping[])
+   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setSofaMappings(org.apache.uima.
+   * analysis_engine.metadata.SofaMapping[])
    */
   @Override
   public void setSofaMappings(SofaMapping[] aSofaMappings) {
@@ -300,7 +307,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#doFullValidation(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.analysis_engine.AnalysisEngineDescription#doFullValidation(org.apache.uima.
+   * resource.ResourceManager)
    */
   @Override
   public void doFullValidation(ResourceManager aResourceManager)
@@ -321,14 +330,15 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @param aResourceManager
    *          a ResourceManager instance to use to resolve imports by name.
-   *  
+   * 
    * @throws ResourceInitializationException
    *           if <code>aDesc</code> is invalid
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
   @Override
-  public void validate(ResourceManager aResourceManager) throws ResourceInitializationException, ResourceConfigurationException {
+  public void validate(ResourceManager aResourceManager)
+          throws ResourceInitializationException, ResourceConfigurationException {
     // do validation common to all descriptor types (e.g. config parameters)
     super.validate(aResourceManager);
 
@@ -338,21 +348,21 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
               ResourceInitializationException.AGGREGATE_AE_TYPE_SYSTEM,
               new Object[] { getSourceUrlString() });
     }
-    
-    //Keys in FixedFlow or LanguageCapabilityFlow must be defined
+
+    // Keys in FixedFlow or LanguageCapabilityFlow must be defined
     FlowConstraints fc = getAnalysisEngineMetaData().getFlowConstraints();
     String[] keys = null;
     if (fc instanceof FixedFlow) {
-      keys = ((FixedFlow)fc).getFixedFlow();
-    }
-    else if (fc instanceof CapabilityLanguageFlow) {
-      keys = ((CapabilityLanguageFlow)fc).getCapabilityLanguageFlow();
+      keys = ((FixedFlow) fc).getFixedFlow();
+    } else if (fc instanceof CapabilityLanguageFlow) {
+      keys = ((CapabilityLanguageFlow) fc).getCapabilityLanguageFlow();
     }
     if (keys != null) {
       for (int i = 0; i < keys.length; i++) {
         if (!getDelegateAnalysisEngineSpecifiersWithImports().containsKey(keys[i])) {
-          throw new ResourceInitializationException(ResourceInitializationException.UNDEFINED_KEY_IN_FLOW,
-                  new Object[]{getAnalysisEngineMetaData().getName(), keys[i], getSourceUrlString()});
+          throw new ResourceInitializationException(
+                  ResourceInitializationException.UNDEFINED_KEY_IN_FLOW, new Object[] {
+                      getAnalysisEngineMetaData().getName(), keys[i], getSourceUrlString() });
         }
       }
     }
@@ -369,20 +379,21 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *          name of groups in which these parameters are contained. Null if no group
    * @param aResourceManager
    *          a ResourceManager instance to use to resolve imports by name.
-   *           
+   * 
    * @throws ResourceInitializationException
    *           if there is an invalid parameter override declaration
    */
   @Override
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
-          String aGroupName, ResourceManager aResourceManager) throws ResourceInitializationException {
-    //make sure delegate analysis engine specifiers are resolved using the correct resource manager
+          String aGroupName, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
+    // make sure delegate analysis engine specifiers are resolved using the correct resource manager
     try {
       resolveImports(aResourceManager);
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
-    
+
     for (int i = 0; i < aParams.length; i++) {
       String[] overrides = aParams[i].getOverrides();
       if (overrides.length > 0 && isPrimitive()) {
@@ -400,8 +411,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         int slashPos = overrides[j].indexOf('/');
         if (slashPos <= 0 || slashPos >= overrides[j].length()) {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.INVALID_PARAM_OVERRIDE_SYNTAX, new Object[] {
-                      overrides[j], aParams[i].getName(), getMetaData().getName(),
+                  ResourceInitializationException.INVALID_PARAM_OVERRIDE_SYNTAX,
+                  new Object[] { overrides[j], aParams[i].getName(), getMetaData().getName(),
                       getSourceUrlString() });
         }
         String delegateKey = overrides[j].substring(0, slashPos);
@@ -455,7 +466,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *           if there's a problem resolving imports
    */
   @Override
-  public ResourceSpecifier getComponentSpecifier(String key) throws ResourceInitializationException {
+  public ResourceSpecifier getComponentSpecifier(String key)
+          throws ResourceInitializationException {
     ResourceSpecifier componentSpecifier;
     if (getFlowControllerDeclaration() != null
             && key.equals(getFlowControllerDeclaration().getKey())) {
@@ -477,7 +489,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Validate SofA mappings and inputs/outputs for an aggregate AE.
-   * @throws ResourceInitializationException -
+   * 
+   * @throws ResourceInitializationException
+   *           -
    */
   protected void validateSofaMappings() throws ResourceInitializationException {
     if (this.isPrimitive()) {
@@ -517,9 +531,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         String existingMapping = sofamap.get(compoundKey);
         if (existingMapping != null && !existingMapping.equals(aggSofaName)) {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.SOFA_MAPPING_CONFLICT, new Object[] {
-                      sofaMappings[s].getComponentSofaName(), sofaMappings[s].getComponentKey(),
-                      aggName, existingMapping, aggSofaName, getSourceUrlString() });
+                  ResourceInitializationException.SOFA_MAPPING_CONFLICT,
+                  new Object[] { sofaMappings[s].getComponentSofaName(),
+                      sofaMappings[s].getComponentKey(), aggName, existingMapping, aggSofaName,
+                      getSourceUrlString() });
         } else {
           sofamap.put(compoundKey, aggSofaName);
         }
@@ -584,10 +599,11 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             {
               aggSofa = inputSofas[j];
             }
-            if (!capabilitiesContainSofa(aggSofa, false) && !capabilitiesContainSofa(aggSofa, true)) {
+            if (!capabilitiesContainSofa(aggSofa, false)
+                    && !capabilitiesContainSofa(aggSofa, true)) {
               throw new ResourceInitializationException(
-                      ResourceInitializationException.INPUT_SOFA_HAS_NO_SOURCE, new Object[] {
-                          inputSofas[j], componentKey, aggName, getSourceUrlString() });
+                      ResourceInitializationException.INPUT_SOFA_HAS_NO_SOURCE,
+                      new Object[] { inputSofas[j], componentKey, aggName, getSourceUrlString() });
             }
             correctlyMappedAggregateInputs.add(aggSofa);
           }
@@ -617,16 +633,16 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         for (int j = 0; j < sofas.length; j++) {
           if (!correctlyMappedAggregateOutputs.contains(sofas[j])) {
             throw new ResourceInitializationException(
-                    ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED, new Object[] {
-                        sofas[j], aggName, getSourceUrlString() });
+                    ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED,
+                    new Object[] { sofas[j], aggName, getSourceUrlString() });
           }
         }
         sofas = caps[i].getInputSofas();
         for (int j = 0; j < sofas.length; j++) {
           if (!correctlyMappedAggregateInputs.contains(sofas[j])) {
             throw new ResourceInitializationException(
-                    ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED, new Object[] {
-                        sofas[j], aggName, getSourceUrlString() });
+                    ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED,
+                    new Object[] { sofas[j], aggName, getSourceUrlString() });
           }
         }
       }
@@ -664,14 +680,12 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     }
     return false;
   }
-  
+
   @Override
   public List<MetaDataAttr> getAdditionalAttributes() {
-    return Collections.singletonList(
-        new MetaDataAttr(
-            PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS,
-            getterForAEwImports,
-            null,  // no writer
+    return Collections.singletonList(new MetaDataAttr(
+            PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS, getterForAEwImports, null, // no
+                                                                                              // writer
             Map.class));
   }
 
@@ -687,8 +701,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   @Deprecated
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
-    result.add(new NameClassPair(PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS, Map.class
-            .getName()));
+    result.add(new NameClassPair(PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS,
+            Map.class.getName()));
     return result;
   }
 
@@ -696,7 +710,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * (non-Javadoc)
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(java.io.OutputStream,
-   *      boolean)
+   * boolean)
    */
   @Override
   public void toXML(OutputStream aOutputStream, boolean aPreserveDelegateAnalysisEngineImports)
@@ -736,8 +750,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(org.xml.sax.ContentHandler,
-   *      boolean, boolean)
+   * @see
+   * org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(org.xml.sax.ContentHandler,
+   * boolean, boolean)
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute,
@@ -757,7 +772,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(org.apache.uima.resource.ResourceManager)
+   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(org.apache.uima.
+   * resource.ResourceManager)
    */
   @Override
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
@@ -767,8 +783,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(java.util.Collection,
-   *      org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(java.util.Collection,
+   * org.apache.uima.resource.ResourceManager)
    */
   @Override
   public void resolveImports(Collection<String> aAlreadyImportedDelegateAeUrls,
@@ -793,47 +810,54 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
       getResourceManagerConfiguration().resolveImports(aResourceManager);
     }
   }
-  
 
   /**
    * Resolves imports of delegate Analysis Engines. This reads from the
    * delegateAnalysisEngineSpecifiersWithImports map and populates the
-   * delegateAnalysisEngineSpecifiers map. 
+   * delegateAnalysisEngineSpecifiers map.
    * 
-   * @param aResourceManager -
-   * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
-   *   on each delegate. If a cirular import is found, an exception will be thrown.
-   * @throws InvalidXMLException -
+   * @param aResourceManager
+   *          -
+   * @param aRecursive
+   *          If true, this method will call {@link #resolveImports(Collection, ResourceManager)} on
+   *          each delegate. If a cirular import is found, an exception will be thrown.
+   * @throws InvalidXMLException
+   *           -
    */
-  protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager, boolean aRecursive) 
-          throws InvalidXMLException {
+  protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager,
+          boolean aRecursive) throws InvalidXMLException {
     // add our own URL, if known, to the collection of enclosing aggregate URLs
     Set<String> urls = new HashSet<>();
     if (getSourceUrl() != null) {
       urls.add(getSourceUrl().toString());
-    }   
+    }
     resolveDelegateAnalysisEngineImports(urls, aResourceManager, aRecursive);
-  }  
+  }
 
   /**
    * Resolves imports of delegate Analysis Engines. This reads from the
    * delegateAnalysisEngineSpecifiersWithImports map and populates the
-   * delegateAnalysisEngineSpecifiers map. 
+   * delegateAnalysisEngineSpecifiers map.
    * 
-   * @param aEnclosingAggregateAeUrls URLs of enclosing aggregate AEs.  Used to detect circular imports.
-   * @param aResourceManager - 
-   * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
-   *   on each delegate. If a circular import is found, an exception will be thrown.
-   * @throws InvalidXMLException -
+   * @param aEnclosingAggregateAeUrls
+   *          URLs of enclosing aggregate AEs. Used to detect circular imports.
+   * @param aResourceManager
+   *          -
+   * @param aRecursive
+   *          If true, this method will call {@link #resolveImports(Collection, ResourceManager)} on
+   *          each delegate. If a circular import is found, an exception will be thrown.
+   * @throws InvalidXMLException
+   *           -
    */
-  protected synchronized void resolveDelegateAnalysisEngineImports(Collection<String> aEnclosingAggregateAeUrls,
-          ResourceManager aResourceManager, boolean aRecursive) throws InvalidXMLException {
+  protected synchronized void resolveDelegateAnalysisEngineImports(
+          Collection<String> aEnclosingAggregateAeUrls, ResourceManager aResourceManager,
+          boolean aRecursive) throws InvalidXMLException {
     Set<String> keys = null;
     if (getDelegateAnalysisEngineSpecifiersWithImports().size() > 0) {
       keys = new HashSet<>(); // keep track of keys we've encountered
       // so we can remove stale entries
-      for (Map.Entry<String, MetaDataObject> entry : 
-      	getDelegateAnalysisEngineSpecifiersWithImports().entrySet()) {
+      for (Map.Entry<String, MetaDataObject> entry : getDelegateAnalysisEngineSpecifiersWithImports()
+              .entrySet()) {
         String key = entry.getKey();
         keys.add(key);
         if (entry.getValue() instanceof Import) {
@@ -850,14 +874,14 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           }
           // locate import target
           URL url = aeImport.findAbsoluteUrl(aResourceManager);
-  
+
           // check for recursive import
           if (aEnclosingAggregateAeUrls.contains(url.toString())) {
             String name = getMetaData() == null ? "<null>" : getMetaData().getName();
-            throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
-                name, url });
+            throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT,
+                    new Object[] { name, url });
           }
-  
+
           // parse import target
           XMLInputSource input;
           try {
@@ -867,34 +891,37 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
                     new Object[] { url, aeImport.getSourceUrlString() }, e);
           }
           ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
-  
+
           // update entry in derived mDelegateAnalysisEngineSpecifiers map.
           mDelegateAnalysisEngineSpecifiers.put(key, spec);
-  
+
           // add to processed imports map so we don't redo
           mProcessedImports.put(key, aeImport);
-  
+
           // now resolve imports in ths delegate
           if (spec instanceof AnalysisEngineDescription) {
             Set<String> alreadyImportedUrls = new HashSet<>(aEnclosingAggregateAeUrls);
             alreadyImportedUrls.add(url.toString());
-            ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
+            ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls,
+                    aResourceManager);
           }
         } else {
           // not an import -- copy directly to derived mDelegateAnalysisEngineSpecifiers map.
-          mDelegateAnalysisEngineSpecifiers.put(entry.getKey(), (ResourceSpecifier) entry.getValue());
+          mDelegateAnalysisEngineSpecifiers.put(entry.getKey(),
+                  (ResourceSpecifier) entry.getValue());
           // resolve imports recursively on the delegate
           if (entry.getValue() instanceof AnalysisEngineDescription) {
-            ((AnalysisEngineDescription) entry.getValue()).resolveImports(
-                    aEnclosingAggregateAeUrls, aResourceManager);
+            ((AnalysisEngineDescription) entry.getValue()).resolveImports(aEnclosingAggregateAeUrls,
+                    aResourceManager);
           }
         }
       }
     }
     // remove stale entries
-    
+
     if (mDelegateAnalysisEngineSpecifiers.size() > 0) {
-      final Set<Map.Entry<String, ResourceSpecifier>> staleEntries = mDelegateAnalysisEngineSpecifiers.entrySet();
+      final Set<Map.Entry<String, ResourceSpecifier>> staleEntries = mDelegateAnalysisEngineSpecifiers
+              .entrySet();
       List<String> staleKeys = new ArrayList<>();
       for (Map.Entry<String, ResourceSpecifier> entry : staleEntries) {
         String key = entry.getKey();
@@ -912,7 +939,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   @Override
   public Object clone() {
     AnalysisEngineDescription_impl clonedDescription = (AnalysisEngineDescription_impl) super.clone();
-    
+
     // Deeply clone fields which are internal state and not exposed as MetaDataObjects
     // to avoid having an unexpected hidden linked state between the clones
     clonedDescription.mDelegateAnalysisEngineSpecifiers = cloneMap(
@@ -921,24 +948,28 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     clonedDescription.mDelegateAnalysisEngineSpecifiersWithImports = cloneMap(
             clonedDescription.mDelegateAnalysisEngineSpecifiersWithImports);
 
-    clonedDescription.mProcessedImports = cloneMap(
-            clonedDescription.mProcessedImports);
+    clonedDescription.mProcessedImports = cloneMap(clonedDescription.mProcessedImports);
 
     return clonedDescription;
   }
-  
+
   /**
    * Overridden to handle XML export of the DelegateAnalysisEngineSpecifiers attribute. This
-   * attribute has a value of type <code>Map</code>, which is not handled by the default XML
-   * export logic.
+   * attribute has a value of type <code>Map</code>, which is not handled by the default XML export
+   * logic.
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)
-   * @param aPropInfo -
-   * @param aNamespace - 
-   * @throws SAXException -
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo,
+   *      String)
+   * @param aPropInfo
+   *          -
+   * @param aNamespace
+   *          -
+   * @throws SAXException
+   *           -
    */
   @Override
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
+          throws SAXException {
 
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(aPropInfo.propertyName)) {
       // special logic here -- if imports have been resolved, then we want
@@ -962,18 +993,19 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Overridden to handle XML import of the DelegateAnalysisEngineSpecifiers attribute. This
-   * attribute has a value of type <code>Map</code>, which is not handled by the default XML
-   * import logic.
+   * attribute has a value of type <code>Map</code>, which is not handled by the default XML import
+   * logic.
    * 
-   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, XMLParser.ParsingOptions)
+   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser,
+   *      XMLParser.ParsingOptions)
    */
   @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String propName = aPropXmlInfo.propertyName;
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(propName)) {
-      readMapPropertyFromXml(propName, aElement, "key", "delegateAnalysisEngine", aParser,
-              aOptions, false);
+      readMapPropertyFromXml(propName, aElement, "key", "delegateAnalysisEngine", aParser, aOptions,
+              false);
     } else {
       // for all other attributes, use the default superclass behavior
       super.readPropertyValueFromXMLElement(aPropXmlInfo, aElement, aParser, aOptions);
@@ -982,10 +1014,15 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Overridden to set default operational properties if they are not specified in descriptor.
-   * @param aElement -
-   * @param aParser - 
-   * @param aOptions -
-   * @throws InvalidXMLException - 
+   * 
+   * @param aElement
+   *          -
+   * @param aParser
+   *          -
+   * @param aOptions
+   *          -
+   * @throws InvalidXMLException
+   *           -
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
@@ -1007,6 +1044,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
+   * 
    * @return XmlizationInfo, used by subclasses to set up their own XmlizationInfo
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
@@ -1014,10 +1052,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "analysisEngineDescription", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("frameworkImplementation"),
-              new PropertyXmlInfo("primitive"),
-              new PropertyXmlInfo("annotatorImplementationName"),
+          "analysisEngineDescription",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
+              new PropertyXmlInfo("primitive"), new PropertyXmlInfo("annotatorImplementationName"),
               new PropertyXmlInfo("delegateAnalysisEngineSpecifiersWithImports",
                       "delegateAnalysisEngineSpecifiers"), // NOTE: custom
               // XMLization

@@ -20,28 +20,26 @@
 package org.apache.uima.cas.impl;
 
 /**
- * The implementation of jcas-only features in the type system.
- * JCas-only features are not real features in the type system, but are features inferred
- *   by the existence of JCas class information
- * They cannot be set or referenced, but exist in order to properly set up the
- *   "offsets" for the JCas class, so that 
- *   that same JCas class can be used with a different type system which **does** define that feature.
+ * The implementation of jcas-only features in the type system. JCas-only features are not real
+ * features in the type system, but are features inferred by the existence of JCas class information
+ * They cannot be set or referenced, but exist in order to properly set up the "offsets" for the
+ * JCas class, so that that same JCas class can be used with a different type system which **does**
+ * define that feature.
  */
 public class FeatureImpl_jcas_only extends FeatureImpl {
-        
+
   FeatureImpl_jcas_only(String shortName, TypeImpl rangeType) {
     super(null, shortName, rangeType, null, false, null);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
-    return String.format("FeatureImpl_jcas_only [%s, range:=%s]",
-        getShortName(), getRangeImpl());
+    return String.format("FeatureImpl_jcas_only [%s, range:=%s]", getShortName(), getRangeImpl());
   }
-  
-  
-        
+
 }

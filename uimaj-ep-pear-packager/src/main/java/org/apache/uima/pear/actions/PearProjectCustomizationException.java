@@ -42,7 +42,6 @@ public class PearProjectCustomizationException extends Exception {
    * Instantiates a new pear project customization exception.
    */
   public PearProjectCustomizationException() {
-    super();
   }
 
   /**

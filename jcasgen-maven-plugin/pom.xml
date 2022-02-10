@@ -30,7 +30,7 @@
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj-parent</artifactId>
-		<version>3.2.1-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 		<relativePath>../uimaj-parent/pom.xml</relativePath>
 	</parent>
   
@@ -107,6 +107,17 @@
 			<groupId>org.sonatype.plexus</groupId>
 			<artifactId>plexus-build-api</artifactId>
 			<version>0.0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugin-testing</groupId>

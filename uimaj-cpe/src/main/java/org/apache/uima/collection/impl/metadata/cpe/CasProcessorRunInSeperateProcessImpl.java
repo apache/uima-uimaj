@@ -25,12 +25,11 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-
 /**
  * The Class CasProcessorRunInSeperateProcessImpl.
  */
-public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl implements
-        CasProcessorRunInSeperateProcess {
+public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl
+        implements CasProcessorRunInSeperateProcess {
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1074137401279020375L;
@@ -47,7 +46,9 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorRunInSeperateProcess#setExecutable(org.apache.uima.collection.metadata.CasProcessorExecutable)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorRunInSeperateProcess#setExecutable(org.apache.
+   * uima.collection.metadata.CasProcessorExecutable)
    */
   @Override
   public void setExecutable(CasProcessorExecutable aExec) {
@@ -64,7 +65,9 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
     return exec;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -88,7 +91,8 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
   /**
    * Sets the exec.
    *
-   * @param executable the new exec
+   * @param executable
+   *          the new exec
    */
   public void setExec(CasProcessorExecutable executable) {
     exec = executable;

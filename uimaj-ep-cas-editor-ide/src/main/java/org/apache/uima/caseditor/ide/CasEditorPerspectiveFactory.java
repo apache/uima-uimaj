@@ -45,6 +45,7 @@ public class CasEditorPerspectiveFactory implements IPerspectiveFactory {
   /**
    * Define the initial layout of the Cas Editor Perspective
    */
+  @Override
   public void createInitialLayout(IPageLayout layout) {
     defineActions(layout);
     defineLayout(layout);

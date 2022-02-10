@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="one  two"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData _indexed="1" _id="2" _ref_sofa="1" begin="0" end="8" documentId="doc" isLastSegment="false"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="3" _ref_sofa="1" begin="0" end="3" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="4" _ref_sofa="1" begin="5" end="8" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="5" _ref_sofa="1" begin="0" end="8"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity _indexed="1" _id="6" _ref_sofa="1" begin="4" end="4"/>
+</CAS>

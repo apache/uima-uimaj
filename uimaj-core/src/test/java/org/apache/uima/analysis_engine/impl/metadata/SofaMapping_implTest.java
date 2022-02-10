@@ -30,10 +30,10 @@ import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class SofaMapping_implTest extends TestCase {
+public class SofaMapping_implTest {
   SofaMapping_impl sm1;
 
   SofaMapping_impl sm2;
@@ -43,8 +43,8 @@ public class SofaMapping_implTest extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     sm1 = new SofaMapping_impl();
     sm1.setAggregateSofaName("aggSofa");
     sm1.setComponentKey("myAnnotator");
@@ -55,6 +55,7 @@ public class SofaMapping_implTest extends TestCase {
     sm2.setComponentKey("myAnnotator2");
   }
 
+  @Test
   public void testXmlization() throws Exception {
     try {
       // write to XML
@@ -66,11 +67,11 @@ public class SofaMapping_implTest extends TestCase {
       String sm2Xml = writer.getBuffer().toString();
       // parse from XML
       InputStream is = new ByteArrayInputStream(sm1Xml.getBytes(encoding));
-      SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(is, null));
+      SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser()
+              .parse(new XMLInputSource(is, null));
       is = new ByteArrayInputStream(sm2Xml.getBytes(encoding));
-      SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(is, null));
+      SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser()
+              .parse(new XMLInputSource(is, null));
 
       Assert.assertEquals(sm1, newSm1);
       Assert.assertEquals(sm2, newSm2);

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><CAS version="2">
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text" sofaString="aaaaaa bbbbbb cccccc"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData _indexed="1" _id="2" _ref_sofa="1" begin="0" end="20" documentId="doc" isLastSegment="false"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="3" _ref_sofa="1" begin="0" end="6" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="4" _ref_sofa="1" begin="7" end="13" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token _indexed="1" _id="5" _ref_sofa="1" begin="14" end="20" order="0"/>
+    <de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence _indexed="1" _id="6" _ref_sofa="1" begin="0" end="20"/>
+    <webanno.custom.Span _indexed="1" _id="7" _ref_sofa="1" begin="0" end="13" value="2a"/>
+    <webanno.custom.Span _indexed="1" _id="8" _ref_sofa="1" begin="0" end="13" value="2b"/>
+    <webanno.custom.Span _indexed="1" _id="9" _ref_sofa="1" begin="0" end="10" value="7a"/>
+    <webanno.custom.Span _indexed="1" _id="10" _ref_sofa="1" begin="0" end="10" value="7b"/>
+    <webanno.custom.Span _indexed="1" _id="11" _ref_sofa="1" begin="0" end="6" value="1a"/>
+    <webanno.custom.Span _indexed="1" _id="12" _ref_sofa="1" begin="0" end="6" value="1b"/>
+    <webanno.custom.Span _indexed="1" _id="13" _ref_sofa="1" begin="3" end="17" value="9a"/>
+    <webanno.custom.Span _indexed="1" _id="14" _ref_sofa="1" begin="3" end="17" value="9b"/>
+    <webanno.custom.Span _indexed="1" _id="15" _ref_sofa="1" begin="3" end="13" value="6a"/>
+    <webanno.custom.Span _indexed="1" _id="16" _ref_sofa="1" begin="3" end="13" value="6b"/>
+    <webanno.custom.Span _indexed="1" _id="17" _ref_sofa="1" begin="3" end="10" value="8a"/>
+    <webanno.custom.Span _indexed="1" _id="18" _ref_sofa="1" begin="3" end="10" value="8b"/>
+    <webanno.custom.Span _indexed="1" _id="19" _ref_sofa="1" begin="7" end="10" value="4a"/>
+    <webanno.custom.Span _indexed="1" _id="20" _ref_sofa="1" begin="7" end="10" value="4b"/>
+    <webanno.custom.Span _indexed="1" _id="21" _ref_sofa="1" begin="7" end="7" value="11a"/>
+    <webanno.custom.Span _indexed="1" _id="22" _ref_sofa="1" begin="7" end="7" value="11b"/>
+    <webanno.custom.Span _indexed="1" _id="23" _ref_sofa="1" begin="9" end="13" value="5a"/>
+    <webanno.custom.Span _indexed="1" _id="24" _ref_sofa="1" begin="9" end="13" value="5b"/>
+    <webanno.custom.Span _indexed="1" _id="25" _ref_sofa="1" begin="9" end="10" value="3a"/>
+    <webanno.custom.Span _indexed="1" _id="26" _ref_sofa="1" begin="9" end="10" value="3b"/>
+    <webanno.custom.Span _indexed="1" _id="27" _ref_sofa="1" begin="10" end="10" value="10a"/>
+    <webanno.custom.Span _indexed="1" _id="28" _ref_sofa="1" begin="10" end="10" value="10b"/>
+    <webanno.custom.Span _indexed="1" _id="29" _ref_sofa="1" begin="13" end="13" value="12a"/>
+    <webanno.custom.Span _indexed="1" _id="30" _ref_sofa="1" begin="13" end="13" value="12b"/>
+</CAS>

@@ -31,7 +31,6 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-
 public class DescriptorMakeUtil {
   private static final String FS = System.getProperties().getProperty("file.separator");
 
@@ -81,12 +80,12 @@ public class DescriptorMakeUtil {
     CasConsumerDescription ccd = UIMAFramework.getXMLParser().parseCasConsumerDescription(in);
     // set the function to crash, if desired
     if (shouldCrash) {
-      ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorFunction", functionName);
-      ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorCount", errorCount);
-      ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorException", exceptionName);
+      ccd.getCasConsumerMetaData().getConfigurationParameterSettings()
+              .setParameterValue("ErrorFunction", functionName);
+      ccd.getCasConsumerMetaData().getConfigurationParameterSettings()
+              .setParameterValue("ErrorCount", errorCount);
+      ccd.getCasConsumerMetaData().getConfigurationParameterSettings()
+              .setParameterValue("ErrorException", exceptionName);
     }
     File baseDir = JUnitExtension.getFile("CpmTests" + FS + "CpeDesc");
 
@@ -115,16 +114,16 @@ public class DescriptorMakeUtil {
     XMLInputSource in = new XMLInputSource(descFileName);
     CollectionReaderDescription crd = UIMAFramework.getXMLParser()
             .parseCollectionReaderDescription(in);
-    crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-            "DocumentCount", documentCount);
+    crd.getCollectionReaderMetaData().getConfigurationParameterSettings()
+            .setParameterValue("DocumentCount", documentCount);
     // set the function to crash, if desired
     if (shouldCrash) {
-      crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorFunction", functionName);
-      crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorCount", errorCount);
-      crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-              "ErrorException", exceptionName);
+      crd.getCollectionReaderMetaData().getConfigurationParameterSettings()
+              .setParameterValue("ErrorFunction", functionName);
+      crd.getCollectionReaderMetaData().getConfigurationParameterSettings()
+              .setParameterValue("ErrorCount", errorCount);
+      crd.getCollectionReaderMetaData().getConfigurationParameterSettings()
+              .setParameterValue("ErrorException", exceptionName);
     }
     File baseDir = JUnitExtension.getFile("CpmTests" + FS + "CpeDesc");
 

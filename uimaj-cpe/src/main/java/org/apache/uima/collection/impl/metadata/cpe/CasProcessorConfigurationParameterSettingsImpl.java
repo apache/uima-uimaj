@@ -25,13 +25,12 @@ import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSet
 import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 
-
 /**
  * The Class CasProcessorConfigurationParameterSettingsImpl.
  */
-public class CasProcessorConfigurationParameterSettingsImpl implements
-        CasProcessorConfigurationParameterSettings {
-  
+public class CasProcessorConfigurationParameterSettingsImpl
+        implements CasProcessorConfigurationParameterSettings {
+
   /** The params. */
   private NameValuePair[] params = new NameValuePair[0];
 
@@ -48,7 +47,8 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
   /**
    * Instantiates a new cas processor configuration parameter settings impl.
    *
-   * @param aCps the a cps
+   * @param aCps
+   *          the a cps
    */
   protected CasProcessorConfigurationParameterSettingsImpl(ConfigurationParameterSettings aCps) {
     int size = 0;
@@ -57,8 +57,8 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
       params = new NameValuePair[size];
     }
     for (int i = 0; i < size; i++) {
-      paramList.add(new NameValuePairImpl(aCps.getParameterSettings()[i].getName(), aCps
-              .getParameterSettings()[i].getValue()));
+      paramList.add(new NameValuePairImpl(aCps.getParameterSettings()[i].getName(),
+              aCps.getParameterSettings()[i].getValue()));
     }
   }
 
@@ -78,7 +78,8 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
   /**
    * Gets the param value object.
    *
-   * @param aParamName the a param name
+   * @param aParamName
+   *          the a param name
    * @return the param value object
    */
   private NameValuePair getParamValueObject(String aParamName) {
@@ -94,7 +95,8 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings#getParameterValue(java.lang.String)
+   * @see org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings#
+   * getParameterValue(java.lang.String)
    */
   @Override
   public Object getParameterValue(String aParamName) {
@@ -108,8 +110,8 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings#setParameterValue(java.lang.String,
-   *      java.lang.Object)
+   * @see org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings#
+   * setParameterValue(java.lang.String, java.lang.Object)
    */
   @Override
   public void setParameterValue(String aParamName, Object aValue) {

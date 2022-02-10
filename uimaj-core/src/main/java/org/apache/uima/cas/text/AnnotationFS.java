@@ -48,7 +48,8 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * Set the start position of the annotation as character offset into the text. The smallest
    * possible start position is <code>0</code>, the offset of the first character in the text.
    * 
-   * @param begin The start position.
+   * @param begin
+   *          The start position.
    */
   void setBegin(int begin);
 
@@ -57,7 +58,8 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * points at the first character after the annotation, such that
    * <code>(getEnd()-getBegin()) == getCoveredText().length()</code>.
    * 
-   * @param end The end position position.
+   * @param end
+   *          The end position position.
    */
   void setEnd(int end);
 
@@ -72,132 +74,119 @@ public interface AnnotationFS extends AnnotationBaseFS {
   String getCoveredText();
 
   /**
-   * Strips leading and trailing whitespace by increasing/decreasing the begin/end offsets. This 
+   * Strips leading and trailing whitespace by increasing/decreasing the begin/end offsets. This
    * method is aware of Unicode codepoints. It expects that the begin/end offsets point to valid
    * codepoints.
    */
   default void trim() {
-      trim(Character::isWhitespace);
+    trim(Character::isWhitespace);
   }
-  
+
   /**
-   * Strips leading and trailing characters matching the given predicate by increasing/decreasing 
+   * Strips leading and trailing characters matching the given predicate by increasing/decreasing
    * the begin/end offsets.
    * 
    * @see #trim()
-   * @param aPredicate the predicate used to identify whether a given codepoint is whitespace.
+   * @param aPredicate
+   *          the predicate used to identify whether a given codepoint is whitespace.
    */
   void trim(IntPredicate aPredicate);
-  
+
   /**
    * @see AnnotationPredicates#covering(AnnotationFS, AnnotationFS)
    */
-  default boolean covering(int aBegin, int aEnd)
-  {
+  default boolean covering(int aBegin, int aEnd) {
     return AnnotationPredicates.covering(this, aBegin, aEnd);
   }
-  
+
   /**
    * @see AnnotationPredicates#covering(AnnotationFS, AnnotationFS)
    */
-  default boolean covering(AnnotationFS aOther)
-  {
+  default boolean covering(AnnotationFS aOther) {
     return AnnotationPredicates.covering(this, aOther);
   }
-  
+
   /**
    * @see AnnotationPredicates#coveredBy(AnnotationFS, AnnotationFS)
    */
-  default boolean coveredBy(int aBegin, int aEnd)
-  {
+  default boolean coveredBy(int aBegin, int aEnd) {
     return AnnotationPredicates.coveredBy(this, aBegin, aEnd);
   }
-  
+
   /**
    * @see AnnotationPredicates#coveredBy(AnnotationFS, AnnotationFS)
    */
-  default boolean coveredBy(AnnotationFS aOther)
-  {
+  default boolean coveredBy(AnnotationFS aOther) {
     return AnnotationPredicates.coveredBy(this, aOther);
   }
-  
+
   /**
    * @see AnnotationPredicates#overlapping(AnnotationFS, AnnotationFS)
    */
-  default boolean overlapping(int aBegin, int aEnd)
-  {
+  default boolean overlapping(int aBegin, int aEnd) {
     return AnnotationPredicates.overlapping(this, aBegin, aEnd);
   }
 
   /**
    * @see AnnotationPredicates#overlapping(AnnotationFS, AnnotationFS)
    */
-  default boolean overlapping(AnnotationFS aOther)
-  {
+  default boolean overlapping(AnnotationFS aOther) {
     return AnnotationPredicates.overlapping(this, aOther);
   }
 
   /**
    * @see AnnotationPredicates#overlappingAtBegin(AnnotationFS, AnnotationFS)
    */
-  default boolean overlappingAtBegin(int aBegin, int aEnd)
-  {
+  default boolean overlappingAtBegin(int aBegin, int aEnd) {
     return AnnotationPredicates.overlappingAtBegin(this, aBegin, aEnd);
   }
 
   /**
    * @see AnnotationPredicates#overlappingAtBegin(AnnotationFS, AnnotationFS)
    */
-  default boolean overlappingAtBegin(AnnotationFS aOther)
-  {
+  default boolean overlappingAtBegin(AnnotationFS aOther) {
     return AnnotationPredicates.overlappingAtBegin(this, aOther);
   }
 
   /**
    * @see AnnotationPredicates#overlappingAtEnd(AnnotationFS, AnnotationFS)
    */
-  default boolean overlappingAtEnd(int aBegin, int aEnd)
-  {
+  default boolean overlappingAtEnd(int aBegin, int aEnd) {
     return AnnotationPredicates.overlappingAtEnd(this, aBegin, aEnd);
   }
 
   /**
    * @see AnnotationPredicates#overlappingAtEnd(AnnotationFS, AnnotationFS)
    */
-  default boolean overlappingAtEnd(AnnotationFS aOther)
-  {
+  default boolean overlappingAtEnd(AnnotationFS aOther) {
     return AnnotationPredicates.overlappingAtEnd(this, aOther);
   }
 
   /**
    * @see AnnotationPredicates#following(AnnotationFS, AnnotationFS)
    */
-  default boolean following(int aBegin, int aEnd)
-  {
+  default boolean following(int aBegin, int aEnd) {
     return AnnotationPredicates.following(this, aBegin, aEnd);
   }
 
   /**
    * @see AnnotationPredicates#following(AnnotationFS, AnnotationFS)
    */
-  default boolean following(AnnotationFS aOther)
-  {
+  default boolean following(AnnotationFS aOther) {
     return AnnotationPredicates.following(this, aOther);
   }
 
   /**
    * @see AnnotationPredicates#preceding(AnnotationFS, AnnotationFS)
    */
-  default boolean preceding(int aBegin, int aEnd)
-  {
+  default boolean preceding(int aBegin, int aEnd) {
     return AnnotationPredicates.preceding(this, aBegin, aEnd);
   }
 
   /**
    * @see AnnotationPredicates#preceding(AnnotationFS, AnnotationFS)
    */
-  default boolean preceding(AnnotationFS aOther)
-  {
+  default boolean preceding(AnnotationFS aOther) {
     return AnnotationPredicates.preceding(this, aOther);
   }
 }

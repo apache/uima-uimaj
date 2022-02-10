@@ -44,6 +44,7 @@ public class CasEditorIdePreferencePage extends FieldEditorPreferencePage
     addField(mEditorRememberTypesystem);
   }
 
+  @Override
   public void init(IWorkbench workbench) {
   }
 }

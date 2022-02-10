@@ -524,7 +524,6 @@ public class MainFrame extends JFrame {
    * @throws HeadlessException -
    */
   public MainFrame(File iniFile) {
-    super();
     this.iniFile = iniFile;
     init();
   }

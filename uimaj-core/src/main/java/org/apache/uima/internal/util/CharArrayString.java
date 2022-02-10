@@ -50,7 +50,6 @@ public class CharArrayString {
    * @pre string != null
    */
   public CharArrayString(String string) {
-    super();
     this.len = string.length();
     this.start = 0;
     this.end = this.len;
@@ -85,7 +84,6 @@ public class CharArrayString {
    * @pre length &le; charArray.length - startPos
    */
   public CharArrayString(char[] charArray, int startPos, int length) {
-    super();
     this.start = startPos;
     this.len = length;
     this.end = this.start + this.len;
@@ -211,6 +209,7 @@ public class CharArrayString {
    * 
    * @return The string version of this CharArrayString.
    */
+  @Override
   public String toString() {
     return new String(this.chars, this.start, this.len);
   }
@@ -337,6 +336,7 @@ public class CharArrayString {
    * 
    * @return The hash code.
    */
+  @Override
   public int hashCode() {
     return hashCode(this.chars, this.start, this.end);
   }
@@ -344,9 +344,12 @@ public class CharArrayString {
   /**
    * A static method to compute the hash code for a character range in an array.
    * 
-   * @param charArray -
-   * @param startPos -
-   * @param endPos -
+   * @param charArray
+   *          -
+   * @param startPos
+   *          -
+   * @param endPos
+   *          -
    * @return The hash code.
    * @pre charArray != null
    * @pre startPos &ge; 0
@@ -395,6 +398,7 @@ public class CharArrayString {
    *          The other string.
    * @return <code>true</code> iff the two strings are equal.
    */
+  @Override
   public boolean equals(Object o) {
     if (o == this) {
       return true;

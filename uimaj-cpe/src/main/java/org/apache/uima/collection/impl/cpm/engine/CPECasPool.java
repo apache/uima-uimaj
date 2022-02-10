@@ -30,10 +30,9 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-
 /**
  * Implements object pooling mechanism to limit number of CAS instances. Cas'es are checked out,
- * used and checked back in when done. 
+ * used and checked back in when done.
  */
 public class CPECasPool {
 
@@ -52,11 +51,12 @@ public class CPECasPool {
   /**
    * Initialize the pool.
    * 
-   * @param aNumInstances -
-   *          max size of the pool
-   * @param aCasManager -
-   *          CAS Manager to use to create the CASes
-   * @throws ResourceInitializationException -
+   * @param aNumInstances
+   *          - max size of the pool
+   * @param aCasManager
+   *          - CAS Manager to use to create the CASes
+   * @throws ResourceInitializationException
+   *           -
    */
   public CPECasPool(int aNumInstances, CasManager aCasManager)
           throws ResourceInitializationException {
@@ -67,14 +67,17 @@ public class CPECasPool {
   /**
    * Initialize the pool.
    *
-   * @param aNumInstances -
-   *          max size of the pool
-   * @param aCasManager -
-   *          CAS Manager to use to create the CASes
-   * @param aPerformanceTuningSettings the a performance tuning settings
-   * @throws ResourceInitializationException -
+   * @param aNumInstances
+   *          - max size of the pool
+   * @param aCasManager
+   *          - CAS Manager to use to create the CASes
+   * @param aPerformanceTuningSettings
+   *          the a performance tuning settings
+   * @throws ResourceInitializationException
+   *           -
    */
-  public CPECasPool(int aNumInstances, CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+  public CPECasPool(int aNumInstances, CasManager aCasManager,
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
     fillPool(aCasManager, aPerformanceTuningSettings);
   }
@@ -82,12 +85,15 @@ public class CPECasPool {
   /**
    * Fills the pool with initialized instances of CAS.
    *
-   * @param aCasManager -
-   *          definition (type system, indexes, etc.) of CASes to create
-   * @param aPerformanceTuningSettings the a performance tuning settings
-   * @throws ResourceInitializationException -
+   * @param aCasManager
+   *          - definition (type system, indexes, etc.) of CASes to create
+   * @param aPerformanceTuningSettings
+   *          the a performance tuning settings
+   * @throws ResourceInitializationException
+   *           -
    */
-  protected void fillPool(CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+  protected void fillPool(CasManager aCasManager, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     for (int i = 0; i < mNumInstances; i++) {
       CAS c = aCasManager.createNewCas(aPerformanceTuningSettings);
       mAllInstances.add(c);
@@ -99,13 +105,13 @@ public class CPECasPool {
    * Returns a Cas instance from the pool. This routine waits for a free instance of Cas a given
    * amount of time. If free instance is not available this routine returns null.
    * 
-   * @param aTimeout -
-   *          max amount of time in millis to wait for CAS instance
+   * @param aTimeout
+   *          - max amount of time in millis to wait for CAS instance
    * @return - CAS instance, or null on timeout
    */
   public synchronized CAS getCas(long aTimeout) {
     CAS cas = getCas();
-    
+
     if (cas != null) {
       return cas;
     }
@@ -131,11 +137,8 @@ public class CPECasPool {
         // Add the cas to a list of checked-out cases
         checkedOutInstances.add(cas);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_add_cas_to_checkedout_list__FINEST",
                   new Object[] { Thread.currentThread().getName(),
                       String.valueOf(checkedOutInstances.size()) });
@@ -176,11 +179,8 @@ public class CPECasPool {
       if (index != -1) {
         checkedOutInstances.remove(index);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_removed_from_checkedout_list__FINEST",
                   new Object[] { Thread.currentThread().getName(),
                       String.valueOf(checkedOutInstances.size()) });
@@ -188,16 +188,12 @@ public class CPECasPool {
       }
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "process",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_return_cas_to_pool__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_cas_to_pool__FINEST",
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(checkedOutInstances.size()) });
       }
-      this.notifyAll();  // when CAS becomes available
+      this.notifyAll(); // when CAS becomes available
     }
 
   }
@@ -214,8 +210,8 @@ public class CPECasPool {
   /**
    * Returns a CAS found in a given position in the list.
    * 
-   * @param aIndex -
-   *          position of the CAS in the list
+   * @param aIndex
+   *          - position of the CAS in the list
    * 
    * @return CAS - reference to a CAS
    */
@@ -236,23 +232,23 @@ public class CPECasPool {
   }
 
   // never called and dangerous to expose
-//  /**
-//   * Returns pool capacity
-//   * 
-//   * @return - size of the pool
-//   */
-//  protected Vector getAllInstances() {
-//    return mAllInstances;
-//  }
+  // /**
+  // * Returns pool capacity
+  // *
+  // * @return - size of the pool
+  // */
+  // protected Vector getAllInstances() {
+  // return mAllInstances;
+  // }
 
   // Never called
-//  /**
-//   * Number of free Cas'es available in the pool
-//   * 
-//   * @return
-//   */
-//  protected synchronized Vector getFreeInstances() {
-//    return mFreeInstances;
-//  }
+  // /**
+  // * Number of free Cas'es available in the pool
+  // *
+  // * @return
+  // */
+  // protected synchronized Vector getFreeInstances() {
+  // return mFreeInstances;
+  // }
 
 }

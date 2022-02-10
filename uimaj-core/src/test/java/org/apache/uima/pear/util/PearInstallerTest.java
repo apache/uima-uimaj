@@ -31,16 +31,17 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
- * The PearInstallerTest tests the PEAR installation and checks some
- * parameters of the installed PEAR file
+ * The PearInstallerTest tests the PEAR installation and checks some parameters of the installed
+ * PEAR file
  * 
  */
-public class PearInstallerTest extends TestCase {
+public class PearInstallerTest {
 
   // Temporary working directory, used to install the pear package
   private File tempInstallDir = null;
@@ -48,8 +49,9 @@ public class PearInstallerTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    
+  @BeforeEach
+  public void setUp() throws Exception {
+
     // create temporary working directory
     File tempFile = File.createTempFile("pear_installer_test_", "tmp");
     if (tempFile.delete()) {
@@ -62,57 +64,56 @@ public class PearInstallerTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     if (this.tempInstallDir != null) {
       FileUtil.deleteDirectory(this.tempInstallDir);
     }
   }
-  
+
+  @Test
   public void testPearInstall() throws Exception {
-    
+
     // check temporary working directory
     if (this.tempInstallDir == null)
       throw new FileNotFoundException("temp directory not found");
     // check sample PEAR files
 
-    //get pear file to install
+    // get pear file to install
     File pearFile = JUnitExtension.getFile("pearTests/DateTime.pear");
     Assert.assertNotNull(pearFile);
-    
-    // Install PEAR package
-    PackageBrowser instPear = PackageInstaller.installPackage(
-            this.tempInstallDir, pearFile, true);
 
-    //check pear PackageBrowser object
+    // Install PEAR package
+    PackageBrowser instPear = PackageInstaller.installPackage(this.tempInstallDir, pearFile, true);
+
+    // check pear PackageBrowser object
     Assert.assertNotNull(instPear);
-    
-    //check PEAR component ID
+
+    // check PEAR component ID
     String componentID = instPear.getInstallationDescriptor().getMainComponentId();
     Assert.assertEquals("uima.example.DateTimeAnnotator", componentID);
-    
-    //check PEAR datapath setting
-    //pear file contains (uima.datapath = $main_root/my/test/data/path)
-    File datapath = new File(this.tempInstallDir, "uima.example.DateTimeAnnotator/my/test/data/path");
+
+    // check PEAR datapath setting
+    // pear file contains (uima.datapath = $main_root/my/test/data/path)
+    File datapath = new File(this.tempInstallDir,
+            "uima.example.DateTimeAnnotator/my/test/data/path");
     File pearDatapath = new File(instPear.getComponentDataPath());
     Assert.assertEquals(datapath, pearDatapath);
-        
+
     // Create resouce manager and set PEAR package classpath
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
     // Create analysis engine from the installed PEAR package
     XMLInputSource in = new XMLInputSource(instPear.getComponentPearDescPath());
-    ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-          .parseResourceSpecifier(in);
-    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(
-          specifier, rsrcMgr, null);
+    ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
     Assert.assertNotNull(ae);
-    
-    
-    // Create a CAS with a sample document text and process the CAS   
+
+    // Create a CAS with a sample document text and process the CAS
     CAS cas = ae.newCAS();
     cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM");
     cas.setDocumentLanguage("en");
     ae.process(cas);
- 
+
   }
 }

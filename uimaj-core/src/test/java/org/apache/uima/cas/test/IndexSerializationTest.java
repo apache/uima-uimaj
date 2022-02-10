@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -38,11 +40,11 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-
-public class IndexSerializationTest extends TestCase {
+public class IndexSerializationTest {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
@@ -88,17 +90,10 @@ public class IndexSerializationTest extends TestCase {
 
   private Feature endFeature;
 
-  public IndexSerializationTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     casMgr = initCAS();
-    cas = (CASImpl)casMgr;
+    cas = (CASImpl) casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -114,6 +109,7 @@ public class IndexSerializationTest extends TestCase {
     assertTrue(annotationType != null);
   }
 
+  @AfterEach
   public void tearDown() {
     casMgr = null;
     cas = null;
@@ -127,7 +123,7 @@ public class IndexSerializationTest extends TestCase {
     startFeature = null;
     endFeature = null;
   }
-  
+
   // Initialize the first CAS.
   private static CASMgr initCAS() {
     // // Create a CASMgr. Ensures existence of AnnotationFS type.
@@ -153,7 +149,7 @@ public class IndexSerializationTest extends TestCase {
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
-    tsa = casMgr.getTypeSystemMgr();  // because of type system consolidation
+    tsa = casMgr.getTypeSystemMgr(); // because of type system consolidation
     // assert(tsa.isCommitted());
     // // Create the CAS indexes.
     // tcas.initCASIndexes();
@@ -186,6 +182,7 @@ public class IndexSerializationTest extends TestCase {
   /**
    * Test driver.
    */
+  @Test
   public void testMain() throws Exception {
 
     for (int i = 0; i < 10; i++) {
@@ -226,8 +223,9 @@ public class IndexSerializationTest extends TestCase {
     CASCompleteSerializer cs;
     cs = Serialization.serializeCASComplete(casMgr);
     // casMgr = CASFactory.createCAS();
-    CASMgr realCasMgr = CASFactory.createCAS();  // creates base view, but no ts, so no ir
-    ((CASImpl) realCasMgr).commitTypeSystem();   // also makes index repo (which will be replaced), but doesn't init the built-in indexes
+    CASMgr realCasMgr = CASFactory.createCAS(); // creates base view, but no ts, so no ir
+    ((CASImpl) realCasMgr).commitTypeSystem(); // also makes index repo (which will be replaced),
+                                               // but doesn't init the built-in indexes
     Serialization.deserializeCASComplete(cs, realCasMgr);
     cas = ((CASImpl) realCasMgr).getCurrentView();
     casMgr = (CASMgr) cas;
@@ -253,9 +251,4 @@ public class IndexSerializationTest extends TestCase {
     assertTrue(index.size() == setSize);
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IndexSerializationTest.class);
-  }
-
 }

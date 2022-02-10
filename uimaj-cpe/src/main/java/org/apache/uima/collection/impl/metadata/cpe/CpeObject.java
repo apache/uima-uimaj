@@ -19,19 +19,19 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
-
 /**
  * The Class CpeObject.
  */
 public class CpeObject {
-  
+
   /** The internal object. */
   private Object internalObject = null;
 
   /**
    * Instantiates a new cpe object.
    *
-   * @param aObject the a object
+   * @param aObject
+   *          the a object
    */
   protected CpeObject(Object aObject) {
     internalObject = aObject;
@@ -40,7 +40,8 @@ public class CpeObject {
   /**
    * Sets the.
    *
-   * @param aObject the a object
+   * @param aObject
+   *          the a object
    */
   protected void set(Object aObject) {
     internalObject = aObject;

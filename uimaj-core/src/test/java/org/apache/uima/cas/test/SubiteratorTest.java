@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -36,9 +38,11 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
+//@formatter:off
 /**
  * The setup:
  *   Token (super = Annotation)
@@ -46,18 +50,16 @@ import junit.framework.TestCase;
  *   
  *   Annotator:  (in descr) SubIteratorAnnotator
  */
-public class SubiteratorTest extends TestCase {
+//@formatter:on
+public class SubiteratorTest {
 
   private AnalysisEngine ae = null;
 
-  public SubiteratorTest(String arg0) {
-    super(arg0);
-  }
-
+  @BeforeEach
   public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
-        .exists());
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+            descriptorFile.exists());
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
@@ -76,6 +78,7 @@ public class SubiteratorTest extends TestCase {
 
   }
 
+  @AfterEach
   public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
@@ -83,6 +86,7 @@ public class SubiteratorTest extends TestCase {
     }
   }
 
+  @Test
   public void testAnnotator() {
     File textFile = JUnitExtension.getFile("CASTests/verjuice.txt");
     String text = null;
@@ -102,9 +106,9 @@ public class SubiteratorTest extends TestCase {
     jcas.setDocumentText(text);
     try {
       this.ae.process(jcas);
-      
+
       iterateAndcheck(jcas);
-          
+
       iterateAndcheck(jcas);
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
@@ -114,23 +118,18 @@ public class SubiteratorTest extends TestCase {
       assertTrue(false);
     }
   }
-  
+
   private void iterateAndcheck(JCas jcas) {
     AnnotationIndex<Token> tokenIndex = jcas.getAnnotationIndex(Token.class);
     Annotation sentence = jcas.getAnnotationIndex(Sentence.class).iterator().next();
     FSIterator<Token> tokenIterator = tokenIndex.subiterator(sentence);
     Annotation token = tokenIndex.iterator().next();
     // debug token.toString();
-    tokenIterator.moveTo(token); //throws ClassCastException 
-    
+    tokenIterator.moveTo(token); // throws ClassCastException
+
     // check unambiguous iterator creation
-    
+
     FSIterator<Token> it = tokenIndex.iterator(false);
     it.moveTo(token);
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SubiteratorTest.class);
-  }
-
 }

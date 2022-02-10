@@ -21,8 +21,6 @@ package org.apache.uima.collection.impl.cpm;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -31,8 +29,11 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class SofaMixedCPE_Test extends TestCase {
+public class SofaMixedCPE_Test {
 
   private File cpeSpecifierFile = null;
 
@@ -50,15 +51,13 @@ public class SofaMixedCPE_Test extends TestCase {
 
   Throwable firstFailure;
 
-  public SofaMixedCPE_Test(String arg0) {
-    super(arg0);
-  }
-
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaMixedCPE.xml");
     // Use the specifier file to determine where the specifiers live.
-    System.setProperty("CPM_HOME", cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
+    System.setProperty("CPM_HOME",
+            cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
     cpeDesc = UIMAFramework.getXMLParser()
             .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
     // instantiate a cpe
@@ -69,7 +68,8 @@ public class SofaMixedCPE_Test extends TestCase {
     firstFailure = null;
   }
 
-  protected void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     cpeDesc = null;
     cpe = null;
     cpeSpecifierFile = null;
@@ -77,10 +77,11 @@ public class SofaMixedCPE_Test extends TestCase {
     System.gc();
   }
 
+  @Test
   public void testProcess() throws Throwable {
     try {
       cpe.process();
-      while ( cpe.isProcessing() ) {
+      while (cpe.isProcessing()) {
         // wait till cpe finishes
         synchronized (statCbL1) {
           statCbL1.wait(100);
@@ -93,13 +94,6 @@ public class SofaMixedCPE_Test extends TestCase {
       throw firstFailure;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SofaCPE_Test.class);
-  }
-
-  /**
-   * Callback Listener.
-   */
   class StatusCallbackListenerImpl1 implements StatusCallbackListener {
 
     int entityCount = 0;
@@ -108,30 +102,17 @@ public class SofaMixedCPE_Test extends TestCase {
 
     int statUnit = 100;
 
-    /**
-     * Called when the initialization is completed.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
-     */
+    @Override
     public void initializationComplete() {
       if (debug)
         System.out.println(" Collection Processsing managers initialization " + "is complete ");
     }
 
-    /**
-     * Called when the batchProcessing is completed.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
-     * 
-     */
+    @Override
     public synchronized void batchProcessComplete() {
     }
 
-    /**
-     * Called when the collection processing is completed.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
-     */
+    @Override
     public synchronized void collectionProcessComplete() {
       if (debug)
         System.out.println(" Completed " + entityCount + " documents  ; " + size / 1000 + " kB");
@@ -141,46 +122,25 @@ public class SofaMixedCPE_Test extends TestCase {
       notifyAll();
     }
 
-    /**
-     * Called when the CPM is paused.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
-     */
+    @Override
     public synchronized void paused() {
       if (debug)
         System.out.println("Paused");
     }
 
-    /**
-     * Called when the CPM is resumed after a pause.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
-     */
+    @Override
     public synchronized void resumed() {
       if (debug)
         System.out.println("Resumed");
     }
 
-    /**
-     * Called when the CPM is stopped abruptly due to errors.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
-     */
+    @Override
     public void aborted() {
       if (debug)
         System.out.println("Stopped");
     }
 
-    /**
-     * Called when the processing of a Document is completed. <br>
-     * The process status can be looked at and corresponding actions taken.
-     * 
-     * @param aCas
-     *          CAS corresponding to the completed processing
-     * @param aStatus
-     *          EntityProcessStatus that holds the status of all the events for aEntity
-     */
-
+    @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       // if there is an error, record and we will fail on CPE completion
       if (aStatus.getExceptions().size() > 0) {

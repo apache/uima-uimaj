@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeCasProcessors;
@@ -30,6 +30,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 import org.apache.uima.collection.metadata.CpeTimer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * this TestCase is testing the cpm API concerning the setting of CasProcessors
@@ -44,7 +46,7 @@ import org.apache.uima.collection.metadata.CpeTimer;
  * values or something else. The parameters are only set to be comparable for unit testing.
  * 
  */
-public class CpeCasProcessorAPI_Test extends TestCase {
+public class CpeCasProcessorAPI_Test {
 
   private static final String confLocation = "c://cpm/conf/";
 
@@ -55,15 +57,16 @@ public class CpeCasProcessorAPI_Test extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // Creates the Cpe Descriptor
     cpe = CpeDescriptorFactory.produceDescriptor();
     // Create CollectionReader and associate it with the descriptor
     CpeDescriptorFactory.produceCollectionReader(confLocation + "collectionReaders/WFReader.xml",
             cpe);
     // Crate CasInitializer and associate it with the CollectionReader
-    CpeDescriptorFactory.produceCollectionReaderCasInitializer(confLocation
-            + "casinitializers/WFReaderInitializer.xml", cpe);
+    CpeDescriptorFactory.produceCollectionReaderCasInitializer(
+            confLocation + "casinitializers/WFReaderInitializer.xml", cpe);
     // Create CasProcessors
     CpeCasProcessors processors = CpeDescriptorFactory.produceCasProcessors(2, 4, 3, cpe);
     // Create Detag CasProcessor
@@ -87,11 +90,11 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     processors.addCpeCasProcessor(remoteProcessor);
 
     // Create Detag CasProcessor
-    CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
-            "DupShingle Miner", "Detag:DetagContent");
+    CpeLocalCasProcessor localProcessor = CpeDescriptorFactory
+            .produceLocalCasProcessor("DupShingle Miner", "Detag:DetagContent");
     localProcessor.setDescriptor("c://cpm/annotators/wfminers/detag/descriptor.xml");
-    localProcessor
-            .setExecutable("/home/cwiklik/cpm/wfcp/annotators/wfminers/detagger/bin/runDetagger.sh");
+    localProcessor.setExecutable(
+            "/home/cwiklik/cpm/wfcp/annotators/wfminers/detagger/bin/runDetagger.sh");
     localProcessor.addDeployParam("Parm1", "Value1");
     localProcessor.addDeployParam("vnsHost", "Host1");
     localProcessor.addExecArg("-DVNS_HOST=127.0.0.1");
@@ -128,8 +131,10 @@ public class CpeCasProcessorAPI_Test extends TestCase {
   /**
    * test the config of a remote CasProcessor with all possible values set
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
+  @Test
   public void testAddRemoteCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
@@ -152,10 +157,10 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     assertEquals("Descriptor()", "c://cpm/annotators/dummy.xml", remoteProcessor.getDescriptor());
     assertEquals("DeploymentParam", "9999",
             ((remoteProcessor.getDeploymentParams()).get("vnsPort")).getParameterValue());
-    assertEquals("DeploymentParam", "localhost", ((remoteProcessor.getDeploymentParams())
-            .get("vnsHost")).getParameterValue());
-    assertEquals("CasProcessorFilter", "where Detag_colon_DetagContent_2", remoteProcessor
-            .getCasProcessorFilter());
+    assertEquals("DeploymentParam", "localhost",
+            ((remoteProcessor.getDeploymentParams()).get("vnsHost")).getParameterValue());
+    assertEquals("CasProcessorFilter", "where Detag_colon_DetagContent_2",
+            remoteProcessor.getCasProcessorFilter());
     assertEquals("BatchSize", 5, remoteProcessor.getBatchSize());
     assertEquals("MaxErrorCount", 51, remoteProcessor.getMaxErrorCount());
     assertEquals("MaxErrorSampleSize", 505, remoteProcessor.getMaxErrorSampleSize());
@@ -168,14 +173,16 @@ public class CpeCasProcessorAPI_Test extends TestCase {
   /**
    * test the config of a local CasProcessor with all possible values set
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
+  @Test
   public void testAddLocalCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
     // Create Detag CasProcessor
-    CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
-            "DupShingle Miner", "Detag:DetagContent");
+    CpeLocalCasProcessor localProcessor = CpeDescriptorFactory
+            .produceLocalCasProcessor("DupShingle Miner", "Detag:DetagContent");
     localProcessor.setDescriptor("c://cpm/annotators/example.xml");
     localProcessor.setExecutable("/some/path/executable.sh");
     localProcessor.addDeployParam("Parm1", "Value1x");
@@ -196,10 +203,10 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     assertEquals("Descriptor()", "c://cpm/annotators/example.xml", localProcessor.getDescriptor());
     assertEquals("DeploymentParam", "Value1x",
             ((localProcessor.getDeploymentParams()).get("Parm1")).getParameterValue());
-    assertEquals("DeploymentParam", "Host1x", ((localProcessor.getDeploymentParams())
-            .get("vnsHost")).getParameterValue());
-    assertEquals("CasProcessorFilter", "where Detag_colon_DetagContent", localProcessor
-            .getCasProcessorFilter());
+    assertEquals("DeploymentParam", "Host1x",
+            ((localProcessor.getDeploymentParams()).get("vnsHost")).getParameterValue());
+    assertEquals("CasProcessorFilter", "where Detag_colon_DetagContent",
+            localProcessor.getCasProcessorFilter());
     assertEquals("BatchSize", 4, localProcessor.getBatchSize());
     assertEquals("MaxErrorCount", 52, localProcessor.getMaxErrorCount());
     assertEquals("MaxErrorSampleSize", 503, localProcessor.getMaxErrorSampleSize());
@@ -212,8 +219,10 @@ public class CpeCasProcessorAPI_Test extends TestCase {
   /**
    * test the config of a integrated CasProcessor with all possible values set
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
+  @Test
   public void testAddIntegratedCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
@@ -236,10 +245,10 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     processors.addCpeCasProcessor(integratedProcessor);
 
     assertEquals("name", "special name", integratedProcessor.getName());
-    assertEquals("Descriptor()", confLocation + "consumers/bla.xml", integratedProcessor
-            .getDescriptor());
-    assertEquals("DeploymentParam", "V1.0", ((integratedProcessor.getDeploymentParams())
-            .get("testversion")).getParameterValue());
+    assertEquals("Descriptor()", confLocation + "consumers/bla.xml",
+            integratedProcessor.getDescriptor());
+    assertEquals("DeploymentParam", "V1.0",
+            ((integratedProcessor.getDeploymentParams()).get("testversion")).getParameterValue());
     assertEquals("CasProcessorFilter", "some filter", integratedProcessor.getCasProcessorFilter());
     assertEquals("BatchSize", 25, integratedProcessor.getBatchSize());
     assertEquals("MaxErrorCount", 300, integratedProcessor.getMaxErrorCount());

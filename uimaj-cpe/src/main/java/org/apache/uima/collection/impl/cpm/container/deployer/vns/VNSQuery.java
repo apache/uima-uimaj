@@ -40,13 +40,13 @@ public class VNSQuery {
   /**
    * Connects to a VNS server identified by host and port
    * 
-   * @param aVnsHost -
-   *          VNS host name
-   * @param aVnsPort -
-   *          VNS port number
+   * @param aVnsHost
+   *          - VNS host name
+   * @param aVnsPort
+   *          - VNS port number
    * 
-   * @throws Exception -
-   *           when unable to connect to VNS
+   * @throws Exception
+   *           - when unable to connect to VNS
    */
   public VNSQuery(String aVnsHost, int aVnsPort) throws Exception {
     vnsQuery = new VinciVNSQuery(aVnsHost, aVnsPort);
@@ -55,13 +55,13 @@ public class VNSQuery {
   /**
    * Returns a list of services registered in the VNS and bound to a given name.
    * 
-   * @param aName -
-   *          name of the service
+   * @param aName
+   *          - name of the service
    * 
    * @return - ArrayList of {@link VinciServiceInfo} instances
    * 
-   * @throws Exception -
-   *           unable to get a list
+   * @throws Exception
+   *           - unable to get a list
    */
   public ArrayList getServices(String aName) throws Exception {
     return vnsQuery.getVinciServices(aName);
@@ -71,16 +71,17 @@ public class VNSQuery {
    * Returns a list of services that have not yet been assigned to any CPM proxy. It diffs the
    * current list and a new list as returned from the VNS.
    * 
-   * @param aName -
-   *          name of the service
-   * @param assignedServices -
-   *          a list of services currently in use
+   * @param aName
+   *          - name of the service
+   * @param assignedServices
+   *          - a list of services currently in use
    * @return - ArrayList of {@link VinciServiceInfo} instances
    * 
-   * @throws Exception -
-   *           unable to get a list
+   * @throws Exception
+   *           - unable to get a list
    */
-  public ArrayList getUnassignedServices(String aName, ArrayList assignedServices) throws Exception {
+  public ArrayList getUnassignedServices(String aName, ArrayList assignedServices)
+          throws Exception {
     // Retrieve a new list from the VNS
     ArrayList newList = getServices(aName);
     // Do a diff between current and new service list
@@ -91,10 +92,10 @@ public class VNSQuery {
   /**
    * Diffs two lists of services and returns those that have not yet been assigned
    * 
-   * @param oldList -
-   *          current (in-use) list of services
-   * @param newList -
-   *          new list of services
+   * @param oldList
+   *          - current (in-use) list of services
+   * @param newList
+   *          - new list of services
    * 
    * @return - number of un-assigned services
    */
@@ -117,10 +118,10 @@ public class VNSQuery {
    * exists in the service list but is not assigned, that means that is available. If the service
    * does not exist in the list it is also considered available.
    * 
-   * @param aService -
-   *          {@link VinciServiceInfo} instance to locate in the list
-   * @param oldList -
-   *          list of current (in-use) services
+   * @param aService
+   *          - {@link VinciServiceInfo} instance to locate in the list
+   * @param oldList
+   *          - list of current (in-use) services
    * 
    * @return - true, if service is available. false, otherwise
    */
@@ -151,12 +152,12 @@ public class VNSQuery {
     /**
      * Establishes connection to a given VNS server
      * 
-     * @param aVnsHost -
-     *          name of the host where the VNS is running
-     * @param aVnsPort -
-     *          port on which the VNS is listening
-     * @throws Exception -
-     *           unable to connect to VNS
+     * @param aVnsHost
+     *          - name of the host where the VNS is running
+     * @param aVnsPort
+     *          - port on which the VNS is listening
+     * @throws Exception
+     *           - unable to connect to VNS
      */
     public VinciVNSQuery(String aVnsHost, int aVnsPort) throws Exception {
       vnsHost = aVnsHost;
@@ -168,12 +169,12 @@ public class VNSQuery {
      * Returns a list of services bound to a given name. It ONLY returns those services that are
      * actually running. The VNS may return services that are stale. Those will be filtered out.
      * 
-     * @param aVinciServiceName -
-     *          name of the service
+     * @param aVinciServiceName
+     *          - name of the service
      * @return - list of services bound to a given name.
      * 
-     * @throws Exception -
-     *           error while looking up the service
+     * @throws Exception
+     *           - error while looking up the service
      */
     public ArrayList getVinciServices(String aVinciServiceName) throws Exception {
       ArrayList serviceList = new ArrayList();
@@ -204,11 +205,8 @@ public class VNSQuery {
               client = new BaseClient(serviceInfo.getHost(), serviceInfo.getPort());
               if (client.isOpen()) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                  UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                          this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                           "UIMA_CPM_service_active_on_port__FINEST",
                           new Object[] { Thread.currentThread().getName(),
                               serviceInfo.getServiceName(), serviceInfo.getHost(),
@@ -219,11 +217,8 @@ public class VNSQuery {
               }
             } catch (ConnectException ce) {
               if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-                UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.WARNING,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
+                        this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                         "UIMA_CPM_service_not_active_on_port__WARNING",
                         new Object[] { Thread.currentThread().getName(),
                             serviceInfo.getServiceName(), serviceInfo.getHost(),
@@ -248,8 +243,8 @@ public class VNSQuery {
     /**
      * Copy service information from Vinci frame.
      * 
-     * @param aServiceFrame -
-     *          Vinci frame containing service info
+     * @param aServiceFrame
+     *          - Vinci frame containing service info
      * 
      * @return- instance of {@link VinciServiceInfo} containing service info
      */

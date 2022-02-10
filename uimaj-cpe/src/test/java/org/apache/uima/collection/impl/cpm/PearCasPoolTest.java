@@ -19,11 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -40,69 +39,65 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test insures that Pear compoents run in a cas pool switch classloaders properly
  * 
- * It installs a pear every time it runs, to insure the test works on Linux and Windows
- *   Note: install handles converting classpath separator characters, etc.
+ * It installs a pear every time it runs, to insure the test works on Linux and Windows Note:
+ * install handles converting classpath separator characters, etc.
  * 
  */
-public class PearCasPoolTest extends TestCase {
+public class PearCasPoolTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
-  
+
   // Temporary working directory, used to install the pear package
   private File pearInstallDir = null;
   private final String PEAR_INSTALL_DIR = "target/pearInCPM_install_dir";
   private PackageBrowser installedPear;
 
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
-    
+
     // create pear install directory in the target
     pearInstallDir = new File(PEAR_INSTALL_DIR);
     pearInstallDir.mkdirs();
   }
 
-  /**
-   * @throws Exception -
-   * @see junit.framework.TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @AfterEach
+  public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
-
 
   /**
    * Create multiple processors which have to process multiple documents
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
+  @Test
   public void testCasPool() throws Exception {
     ResourceManager rm = UIMAFramework.newDefaultResourceManager();
-    
+
     // check temporary working directory
     if (this.pearInstallDir == null)
       throw new FileNotFoundException("PEAR install directory not found");
-    
-    // get pear files to install 
+
+    // get pear files to install
     // relative resolved using class loader
     File pearFile = JUnitExtension.getFile("pearTests/pearForCPMtest.pear");
     Assert.assertNotNull(pearFile);
-    
+
     // Install PEAR packages
     installedPear = PackageInstaller.installPackage(this.pearInstallDir, pearFile, false);
     Assert.assertNotNull(installedPear);
 
-    
-   
     core(10, 2, 3, null);
     core(10, 2, 2, null);
     core(10, 3, 3, null);
@@ -117,17 +112,20 @@ public class PearCasPoolTest extends TestCase {
     core(10, 3, 5, rm);
     core(10, 4, 4, rm);
     core(10, 4, 5, rm);
-    System.out.println("");  //final new line
+    System.out.println(""); // final new line
   }
 
-  private void core(int documentCount, int threadCount, int poolSize, 
-      ResourceManager resourceManager) throws Exception {
-    // setup CPM to process  documents
-    CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, poolSize, resourceManager);
+  private void core(int documentCount, int threadCount, int poolSize,
+          ResourceManager resourceManager) throws Exception {
+    // setup CPM to process documents
+    CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, poolSize,
+            resourceManager);
 
     // create and register a status callback listener
     TestStatusCallbackListener listener = new TestStatusCallbackListener() {
       TypeSystem sts = null;
+
+      @Override
       public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
         super.entityProcessComplete(aCas, aStatus);
         if (sts == null) {
@@ -135,7 +133,7 @@ public class PearCasPoolTest extends TestCase {
         } else {
           Assert.assertTrue(sts == aCas.getTypeSystem());
         }
-      }      
+      }
     };
     cpe.addStatusCallbackListener(listener);
 
@@ -147,6 +145,7 @@ public class PearCasPoolTest extends TestCase {
       Thread.sleep(5);
     }
   }
+
   /**
    * setup the CPM with base functionality.
    * 
@@ -158,20 +157,22 @@ public class PearCasPoolTest extends TestCase {
    * @return CollectionProcessingEngine - initialized cpe
    */
   private CollectionProcessingEngine setupCpm(int documentCount, int threadCount, int poolSize,
-      ResourceManager resourceManager) throws Exception {
+          ResourceManager resourceManager) throws Exception {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCollectionReader.xml").getAbsolutePath();
-      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "aggrContainingPearSpecifier.xml").getAbsolutePath();
-      String casConsumerBase = JUnitExtension.getFile("CpmTests" + separator
-              + "ErrorTestCasConsumer.xml").getAbsolutePath();
+      String colReaderBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension
+              .getFile("CpmTests" + separator + "aggrContainingPearSpecifier.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension
+              .getFile("CpmTests" + separator + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
-//      String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
+      // String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
       String taeDesc = taeBase;
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
 

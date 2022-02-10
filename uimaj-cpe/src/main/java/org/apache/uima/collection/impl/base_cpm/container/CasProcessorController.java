@@ -27,63 +27,64 @@ import org.apache.uima.collection.base_cpm.CasProcessor;
  * 
  */
 public interface CasProcessorController {
-  public static final int NOTINITIALIZED = 0;
+  int NOTINITIALIZED = 0;
 
-  public static final int INITIALIZED = 1;
+  int INITIALIZED = 1;
 
-  public static final int RUNNING = 2;
+  int RUNNING = 2;
 
-  public static final int DISABLED = 3;
+  int DISABLED = 3;
 
-  public static final int KILLED = 4;
+  int KILLED = 4;
 
   /**
    * Returns instance of CasProcessor
    * 
    * @return CasProcessor
    */
-  public CasProcessor getCasProcessor();
+  CasProcessor getCasProcessor();
 
   /**
    * Returns status of CasProcessor
    * 
    * @return int status
    */
-  public int getStatus();
+  int getStatus();
 
   /**
    * Sets status of CasProcessor
    * 
-   * @param aStatus -
+   * @param aStatus
+   *          -
    */
-  public void setStatus(int aStatus);
+  void setStatus(int aStatus);
 
   /**
    * Returns true if this is a Locally Deployed CasProcessor ( Same machine, different JVM )
    * 
    * @return true if Local, false otherwise
    */
-  public boolean isLocal();
+  boolean isLocal();
 
   /**
    * Returns true if this is a Remotely Deployed CasProcessor
    * 
    * @return true if Remote, false otherwise
    */
-  public boolean isRemote();
+  boolean isRemote();
 
   /**
    * Returns true if this is a Integrated CasProcessor
    * 
    * @return true if Integrated, false otherwise
    */
-  public boolean isIntegrated();
+  boolean isIntegrated();
 
   /**
    * Returns true if CasProcessor can be Aborted/Disabled.
    * 
    * @return true if abortable, false otherwise
    */
-  public boolean isAbortable();
+  boolean isAbortable();
 
 }

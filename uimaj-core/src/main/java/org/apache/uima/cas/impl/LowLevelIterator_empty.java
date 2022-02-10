@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
@@ -31,38 +30,79 @@ import org.apache.uima.jcas.cas.TOP;
  * An empty Low-level FS iterator
  */
 public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLevelIterator<T> {
-  
-  @Override
-  public boolean isValid() { return false; }
-  @Override
-  public T getNvc() { throw new NoSuchElementException(); }
-  @Override
-  public void moveToFirstNoReinit() {}
-  @Override
-  public void moveToLastNoReinit() {}
-  @Override
-  public void moveToNoReinit(FeatureStructure fs) {}
 
   @Override
-  public LowLevelIterator_empty<T> copy() { return this; }
+  public boolean isValid() {
+    return false;
+  }
+
   @Override
-  public void moveToNextNvc() {}
+  public T getNvc() {
+    throw new NoSuchElementException();
+  }
+
   @Override
-  public void moveToPreviousNvc() {}
+  public void moveToFirstNoReinit() {
+  }
+
   @Override
-  public int ll_indexSizeMaybeNotCurrent() { return 0; }
+  public void moveToLastNoReinit() {
+  }
+
   @Override
-  public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
+  public void moveToNoReinit(FeatureStructure fs) {
+  }
+
   @Override
-  public LowLevelIndex<T> ll_getIndex() { return null; }
+  public LowLevelIterator_empty<T> copy() {
+    return this;
+  }
+
   @Override
-  public boolean isIndexesHaveBeenUpdated() { return false; }
+  public void moveToNextNvc() {
+  }
+
   @Override
-  public boolean maybeReinitIterator() { return false; }
+  public void moveToPreviousNvc() {
+  }
+
   @Override
-  public Comparator<TOP> getComparator() { return null; }
+  public int ll_indexSizeMaybeNotCurrent() {
+    return 0;
+  }
+
   @Override
-  public Type getType() { return TypeSystemImpl.staticTsi.getTopType(); }
+  public int ll_maxAnnotSpan() {
+    return Integer.MAX_VALUE;
+  }
+
   @Override
-  public int size() { return 0; }
+  public LowLevelIndex<T> ll_getIndex() {
+    return null;
+  }
+
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return false;
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return false;
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return null;
+  }
+
+  @Override
+  public Type getType() {
+    return TypeSystemImpl.staticTsi.getTopType();
+  }
+
+  @Override
+  public int size() {
+    return 0;
+  }
 }

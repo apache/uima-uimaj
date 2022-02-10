@@ -17,19 +17,21 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
-  
-	<artifactId>uimaj-core</artifactId>
-	<packaging>jar</packaging>
-	<name>Apache UIMA Base: ${project.artifactId}</name>
+
+  <artifactId>uimaj-core</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache UIMA Base: ${project.artifactId}</name>
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
 
@@ -40,7 +42,7 @@
        from the chain of parent poms, if this is omitted. 
        
        Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->  
+       element, and just changing the following two properties -->
   <scm>
     <connection>
       scm:git:https://github.com/apache/uima-uimaj/
@@ -53,14 +55,14 @@
     </url>
     <tag>uimaj-3.2.0</tag>
   </scm>
-  
+
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <maven.surefire.heap>650M</maven.surefire.heap>
   </properties>
-  
-	<dependencies>
+
+  <dependencies>
     
     <!-- Loggers -->
     <dependency>
@@ -87,7 +89,7 @@
       <version>${log4j.version}</version>
       <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
             "test" fails in maven compile - cannot compile -->
-      <scope>provided</scope>  
+      <scope>provided</scope>
     </dependency>
 
      <!-- dependency>  moved to surefire configuration
@@ -96,20 +98,20 @@
       <version>${log4j.version}</version>
       <scope>test</scope>  
     </dependency-->
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
     
     <!-- needed to convert slf4j markers into log4j markers 
-         and for running the test --> 
+         and for running the test -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>${log4j.version}</version>
       <!-- scope provided: put in compile classpath, excluded from test classpath, not passed along -->
-      <scope>provided</scope> 
+      <scope>provided</scope>
     </dependency>
 
      <!-- dependency>  moved to surefire configuration  
@@ -127,54 +129,76 @@
       <scope>test</scope>
     </dependency>
                      -->
-    
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-test-util</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.7</version>
-			<scope>test</scope>
-		</dependency>
 
-		<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests.
-		      1 fails due to different formatting and a dropped xmlns attribute, 
-		      5 work when run separately or by mvn, but fail when running all tests from Eclipse:
-		          Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
-	    -->
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-test-util</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests.
+          1 fails due to different formatting and a dropped xmlns attribute, 
+          5 work when run separately or by mvn, but fail when running all tests from Eclipse:
+              Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
+      -->
 
    <!--
-		<dependency>
-		  <groupId>net.sf.saxon</groupId>
-		  <artifactId>Saxon-HE</artifactId>
-		  <version>9.7.0-14</version>
-		  <scope>test</scope>
-		</dependency>
-    	
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>9.7.0-14</version>
+      <scope>test</scope>
+    </dependency>
+      
  
-		<dependency>
-		  <groupId>net.sf.saxon</groupId>
-    	  <artifactId>saxon</artifactId>
-    	  <version>8.7</version>
-    	  <scope>test</scope>
-		</dependency>
-		<dependency>
-		  <groupId>net.sf.saxon</groupId>
-    	  <artifactId>saxon-dom</artifactId>
-    	  <version>8.7</version>
-    	  <scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon</artifactId>
+        <version>8.7</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon-dom</artifactId>
+        <version>8.7</version>
+        <scope>test</scope>
+    </dependency>
   -->
-		
+    
     <!-- For decompiling recompiling jcas experiments -->
     <!--
     <dependency>
@@ -193,7 +217,7 @@
     
     <!-- Apache v2 license  2016 checked. Also transitive include from above, 
          listed here so that binary assembly for distribution includes the jar -->
-    <dependency>  
+    <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-core</artifactId>
       <version>0.5.32</version>
@@ -212,14 +236,25 @@
       <version>5.0.4</version>
     </dependency>
  -->
-	</dependencies>
-	
-	<build>
-		<finalName>uima-core</finalName>
+  </dependencies>
+
+  <build>
+    <finalName>uima-core</finalName>
     <pluginManagement>
       <plugins>
-      
-        <!-- Uncomment the next to run with -Xlint:unchecked  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Uncomment the next to run with -Xlint:unchecked -->
         <!--plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -227,7 +262,7 @@
             <compilerArgument>-Xlint:unchecked</compilerArgument>
           </configuration>
         </plugin-->
-                
+
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
@@ -236,6 +271,7 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
+                  <!-- test data -->
                   <exclude>src/test/resources/uima-v2-serialized-cas/README</exclude>
                   <exclude>src/test/resources/uima-v2-serialized-cas/*.xcas</exclude>
                   <exclude>src/test/resources/uima-v2-serialized-cas/*.xmi</exclude>
@@ -244,32 +280,45 @@
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.xcas</exclude>
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.xmi</exclude>
                   <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
-                  <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
+                  <exclude>src/test/resources/CASTests/verjuice.txt</exclude>
+                  <exclude>src/test/resources/CASTests/CasTypeOrderTestRef.txt</exclude>
+                  <exclude>src/test/resources/CASTests/english.txt</exclude>
+                  <exclude>src/test/resources/XmiFileDataSuite/README.md</exclude>
+                  <exclude>src/test/resources/XmiFileDataSuite/**/*.xmi</exclude>
+                  <exclude>src/test/resources/XmiFileDataSuite/**/typesystem.xml</exclude> 
+                  <exclude>src/test/resources/ProgrammaticallyCreatedCasDataSuite/**/*</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/cas.*</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/data.*</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/typesystem.xml</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug.xmi</exclude>
+                  <exclude>src/test/resources/CasSerializationDeserialization_*_Test/**/debug-typesystem.xml</exclude>
                   <exclude>src/test/resources/data/moby.txt</exclude>
-                  <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
-                  <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
-                  <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
-                  <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
-                  <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude> <!-- test data -->
-                  <exclude>src/test/java/aa/*.java</exclude> <!-- jcas classes generated -->
-                  <exclude>src/test/java/org/apache/uima/cas/test/*.java</exclude> <!-- jcas classes generated -->
-                  <exclude>src/test/java/org/apache/lang/LanguagePair.java</exclude> <!-- jcas classes generated -->
-                  <exclude>src/test/java/sofa/test/CrossAnnotation.java</exclude> <!-- jcas classes generated -->
-                  <exclude>src/test/java/x/y/z/*.java</exclude> <!-- jcas classes generated -->
-                </excludes>              
+                  <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> 
+                  <exclude>src/test/resources/pearTests/*.pear</exclude> 
+                  <exclude>src/test/resources/pearTests/encodingTests/*</exclude> 
+                  <exclude>src/test/resources/SequencerTest/*.txt</exclude> 
+                  <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude> 
+                  <!-- jcas classes generated -->
+                  <exclude>src/test/java/aa/*.java</exclude> 
+                  <exclude>src/test/java/org/apache/uima/cas/test/*.java</exclude> 
+                  <exclude>src/test/java/org/apache/lang/LanguagePair.java</exclude>
+                  <exclude>src/test/java/sofa/test/CrossAnnotation.java</exclude>
+                  <exclude>src/test/java/x/y/z/*.java</exclude>
+                </excludes>
               </configuration>
             </execution>
           </executions>
-        </plugin>         
+        </plugin>
       </plugins>
     </pluginManagement>
-    
-		<plugins>
-		  <!-- experiment with CLIRR
-		    gets fatal error: 
-		    
-		    net.sf.clirr.core.CheckerException: Unable to find information in class org.apache.uima.cas.impl.AnnotationBaseImpl 
-		    referring back to nested class org.apache.uima.cas.impl.AnnotationBaseImpl$1
+
+    <plugins>
+      <!-- experiment with CLIRR
+        gets fatal error: 
+        
+        net.sf.clirr.core.CheckerException: Unable to find information in class org.apache.uima.cas.impl.AnnotationBaseImpl 
+        referring back to nested class org.apache.uima.cas.impl.AnnotationBaseImpl$1
         at net.sf.clirr.core.internal.bcel.BcelScopeHelper.getClassScope(BcelScopeHelper.java:127)
         at net.sf.clirr.core.internal.bcel.BcelJavaType.getDeclaredScope(BcelJavaType.java:141)
         at net.sf.clirr.core.internal.bcel.BcelJavaType.getEffectiveScope(BcelJavaType.java:145)
@@ -277,13 +326,13 @@
         at net.sf.clirr.core.Checker.runClassChecks(Checker.java:190)
         at net.sf.clirr.core.Checker.reportDiffs(Checker.java:136)
         at org.codehaus.mojo.clirr.AbstractClirrMojo.executeClirr(AbstractClirrMojo.java:236) 
-		  -->
-		  <!--plugin>  
-		    <artifactId>clirr-maven-plugin</artifactId>
-		    <groupId>org.codehaus.mojo</groupId>
-		    <version>2.2.3-SNAPSHOT</version>
-		    
-		  </plugin-->
+      -->
+      <!--plugin>  
+        <artifactId>clirr-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>2.2.3-SNAPSHOT</version>
+        
+      </plugin-->
       
       <!-- filter the template for the version java code
            to insert the version from properties -->
@@ -292,7 +341,9 @@
         <executions>
           <execution>
             <id>setVersions</id>
-            <goals><goal>copy-resources</goal></goals>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
             <phase>generate-sources</phase>
             <configuration>
               <outputDirectory>${project.build.directory}/generated-sources/releaseVersion</outputDirectory>
@@ -318,7 +369,9 @@
         <executions>
           <execution>
             <id>addVersionSrc</id>
-            <goals><goal>add-source</goal></goals>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
             <configuration>
               <sources>
                 <source>${project.build.directory}/generated-sources/releaseVersion</source>
@@ -327,11 +380,11 @@
           </execution>
         </executions>
       </plugin>
-      
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
           <systemProperties>
             <uima.enable_strict_type_source_check>true</uima.enable_strict_type_source_check>
           </systemProperties>
@@ -345,9 +398,8 @@
           <classpathDependencyExcludes>
             <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
           </classpathDependencyExcludes>          -->
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-  
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

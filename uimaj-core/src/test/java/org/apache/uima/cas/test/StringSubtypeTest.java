@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -36,10 +38,11 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class StringSubtypeTest extends TestCase {
+public class StringSubtypeTest {
 
   private static final String specifier = "./CASTests/desc/StringSubtypeTest.xml";
 
@@ -61,18 +64,15 @@ public class StringSubtypeTest extends TestCase {
 
   public static class Annotator extends JCasAnnotator_ImplBase {
 
+    @Override
     public void process(JCas aJCas) {
       // Does nothing, not used in this test.
     }
 
   }
 
-  public StringSubtypeTest(String arg0) {
-    super(arg0);
-  }
-
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     File specifierFile = JUnitExtension.getFile(specifier);
     XMLInputSource in = new XMLInputSource(specifierFile);
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
@@ -80,12 +80,13 @@ public class StringSubtypeTest extends TestCase {
     this.jcas = this.ae.newJCas();
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @AfterEach
+  public void tearDown() throws Exception {
     this.ae.destroy();
     this.jcas = null;
   }
 
+  @Test
   public void testJcas() {
     StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
     annot.setStringSetFeature(definedValue1);
@@ -100,18 +101,19 @@ public class StringSubtypeTest extends TestCase {
     assertTrue(exCaught);
   }
 
+  @Test
   public void testLowLevelCas() {
     LowLevelCAS cas = this.jcas.getLowLevelCas();
     LowLevelTypeSystem ts = cas.ll_getTypeSystem();
     final int annotType = ts.ll_getCodeForTypeName(annotationTypeName);
     final int addr = cas.ll_createFS(annotType);
-    final int stringSetFeat = ts.ll_getCodeForFeatureName(annotationTypeName
-	+ TypeSystem.FEATURE_SEPARATOR + stringSetFeatureName);
+    final int stringSetFeat = ts.ll_getCodeForFeatureName(
+            annotationTypeName + TypeSystem.FEATURE_SEPARATOR + stringSetFeatureName);
     cas.ll_setStringValue(addr, stringSetFeat, definedValue1);
     cas.ll_setStringValue(addr, stringSetFeat, definedValue2);
     cas.ll_setStringValue(addr, stringSetFeat, definedValue3);
     // next should be ok https://issues.apache.org/jira/browse/UIMA-1839
-    cas.ll_setStringValue(addr, stringSetFeat, null); 
+    cas.ll_setStringValue(addr, stringSetFeat, null);
     boolean exCaught = false;
     try {
       cas.ll_setStringValue(addr, stringSetFeat, undefinedValue);
@@ -121,13 +123,14 @@ public class StringSubtypeTest extends TestCase {
     assertTrue(exCaught);
   }
 
+  @Test
   public void testCas() {
     CAS cas = this.jcas.getCas();
     TypeSystem ts = cas.getTypeSystem();
     Type annotType = ts.getType(annotationTypeName);
     FeatureStructure fs = cas.createFS(annotType);
-    Feature stringSetFeat = ts.getFeatureByFullName(annotationTypeName
-	+ TypeSystem.FEATURE_SEPARATOR + stringSetFeatureName);
+    Feature stringSetFeat = ts.getFeatureByFullName(
+            annotationTypeName + TypeSystem.FEATURE_SEPARATOR + stringSetFeatureName);
     fs.setStringValue(stringSetFeat, definedValue1);
     fs.setStringValue(stringSetFeat, definedValue2);
     fs.setStringValue(stringSetFeat, definedValue3);

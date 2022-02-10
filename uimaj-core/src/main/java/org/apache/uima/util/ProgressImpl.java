@@ -45,14 +45,17 @@ public class ProgressImpl implements Progress, Cloneable {
     this(aCompleted, aTotal, aUnit, false);
   }
 
+  @Override
   public long getCompleted() {
     return mCompleted;
   }
 
+  @Override
   public long getTotal() {
     return mTotal;
   }
 
+  @Override
   public String getUnit() {
     return mUnitType;
   }
@@ -65,6 +68,7 @@ public class ProgressImpl implements Progress, Cloneable {
     mTotal = aTotal;
   }
 
+  @Override
   public boolean isApproximate() {
     return mApproximate;
   }
@@ -73,11 +77,13 @@ public class ProgressImpl implements Progress, Cloneable {
     mCompleted += aIncrement;
   }
 
+  @Override
   public Object clone() throws CloneNotSupportedException {
 
     return super.clone();
   }
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getCompleted());

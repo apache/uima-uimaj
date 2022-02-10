@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -38,8 +37,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.test.junit_extension.FileCompare;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
@@ -118,19 +115,15 @@ public class AnnotatorTester {
     * @throws Exception passthru
     */
    private void setup() throws Exception {
-      try {
-         this.ae = null;
-         // Create an XML input source from the specifier file.
-         XMLInputSource in = new XMLInputSource(this.descFile);
-         // Parse the specifier.
-         ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-               .parseResourceSpecifier(in);
-         // Create the Text Analysis Engine.
-         this.ae = UIMAFramework.produceAnalysisEngine(specifier, this.mgr,
-               null);
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
+      this.ae = null;
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(this.descFile);
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      this.ae = UIMAFramework.produceAnalysisEngine(specifier, this.mgr,
+            null);
    }
 
    /**
@@ -204,7 +197,6 @@ public class AnnotatorTester {
     */
    public static AnalysisEngine doConfigurationTest(String configDescFilePath)
          throws Exception {
-      try {
          AnalysisEngine ae = null;
          // Create an XML input source from the specifier file.
          XMLInputSource in = new XMLInputSource(configDescFilePath);
@@ -224,12 +216,6 @@ public class AnnotatorTester {
          ae.process(cas);
 
          return ae;
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
-      return null;
-
    }
 
    /**
@@ -238,12 +224,7 @@ public class AnnotatorTester {
     * @throws Exception passthru
     */
     public CAS createCAS()  throws Exception {
-        try {
             return ae.newCAS();
-        } catch (Exception ex) {
-            JUnitExtension.handleException(ex);
-            return null;
-        }
     }
 	
    /**
@@ -258,7 +239,6 @@ public class AnnotatorTester {
     * @throws Exception passthru
     */
    public CAS performTest(String text, String language) throws Exception {
-      try {
          // Create a new CAS.
          CAS cas = this.ae.newCAS();
          // Set the document text on the CAS.
@@ -268,12 +248,6 @@ public class AnnotatorTester {
          this.ae.process(cas);
 
          return cas;
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
-      return null;
-
    }
 
    /**
@@ -286,17 +260,10 @@ public class AnnotatorTester {
     * @throws Exception passthru
     */
    public CAS performTest(CAS cas) throws Exception {
-      try {
          // Process the sample document.
          this.ae.process(cas);
 
          return cas;
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
-      return null;
-
    }
 
    /**
@@ -315,7 +282,6 @@ public class AnnotatorTester {
     */
    public static CAS performTest(String descFilePath, String text,
          String language) throws Exception {
-      try {
          AnalysisEngine ae = null;
          // Create an XML input source from the specifier file.
          XMLInputSource in = new XMLInputSource(descFilePath);
@@ -334,12 +300,6 @@ public class AnnotatorTester {
          ae.process(cas);
 
          return cas;
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
-      return null;
-
    }
 
    /**
@@ -354,7 +314,6 @@ public class AnnotatorTester {
     */
    public static CAS getCASfromXCAS(File tsFile, File xcasFile)
          throws Exception {
-      try {
          Object tsDescriptor = UIMAFramework.getXMLParser().parse(
                new XMLInputSource(tsFile));
          TypeSystemDescription tsDesc = (TypeSystemDescription) tsDescriptor;
@@ -367,11 +326,6 @@ public class AnnotatorTester {
          parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));
 
          return cas;
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
-      return null;
    }
 
    /**
@@ -387,13 +341,7 @@ public class AnnotatorTester {
     */
    public static String readFileContent(File file, String encoding)
          throws Exception {
-      try {
          return FileUtils.file2String(file, encoding);
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
-      return null;
    }
 
    /**
@@ -411,8 +359,6 @@ public class AnnotatorTester {
     */
    public static void checkResult(CAS cas, String[] AnnotationTypes,
          File refFile, File testFile) throws Exception {
-
-      try {
 
          testFile.delete(); // delete file if exist
          testFile.createNewFile(); // create new file
@@ -444,10 +390,5 @@ public class AnnotatorTester {
          }
 
          Assert.assertTrue(isIdentical);
-
-      } catch (Exception ex) {
-         JUnitExtension.handleException(ex);
-      }
-
    }
 }

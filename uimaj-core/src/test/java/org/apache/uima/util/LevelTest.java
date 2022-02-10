@@ -20,18 +20,14 @@
 package org.apache.uima.util;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * class Level provides the message level constants for logging and tracing
  * 
  */
-public class LevelTest extends TestCase {
-
-  public LevelTest(String arg0) {
-    super(arg0);
-  }
-
+public class LevelTest {
+  @Test
   public void testLevelOff() throws Exception {
     Level level = Level.OFF;
 
@@ -67,6 +63,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testLevelALL() throws Exception {
     Level level = Level.ALL;
 
@@ -101,6 +98,7 @@ public class LevelTest extends TestCase {
     Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
   }
 
+  @Test
   public void testLevelFINEST() throws Exception {
     Level level = Level.FINEST;
 
@@ -136,6 +134,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testLevelFINER() throws Exception {
     Level level = Level.FINER;
 
@@ -171,6 +170,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testLevelFINE() throws Exception {
     Level level = Level.FINE;
 
@@ -206,6 +206,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testLevelCONFIG() throws Exception {
     Level level = Level.CONFIG;
 
@@ -241,6 +242,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testLevelINFO() throws Exception {
     Level level = Level.INFO;
 
@@ -275,6 +277,7 @@ public class LevelTest extends TestCase {
     Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
   }
 
+  @Test
   public void testLevelWARNING() throws Exception {
     Level level = Level.WARNING;
 
@@ -310,6 +313,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testLevelSEVERE() throws Exception {
     Level level = Level.SEVERE;
 
@@ -345,6 +349,7 @@ public class LevelTest extends TestCase {
 
   }
 
+  @Test
   public void testEquals() throws Exception {
     Level level = Level.SEVERE;
     Integer myInt = 70000;
@@ -357,6 +362,7 @@ public class LevelTest extends TestCase {
     Assert.assertFalse(level.equals(null));
   }
 
+  @Test
   public void testisGreaterOrEqual() throws Exception {
     Level level = Level.INFO;
 

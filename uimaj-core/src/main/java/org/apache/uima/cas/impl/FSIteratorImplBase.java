@@ -21,41 +21,42 @@ package org.apache.uima.cas.impl;
 
 import java.util.Comparator;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * Version 2 compatibility only, not used internally in version 3 
- * Base class for FSIterator implementations. Defines the hasNext, next, and remove methods required
- * by java.util.Iterator.
+ * Version 2 compatibility only, not used internally in version 3 Base class for FSIterator
+ * implementations. Defines the hasNext, next, and remove methods required by java.util.Iterator.
  * Users writing their own iterator implementations may extend this class
  */
-public abstract class FSIteratorImplBase<T extends FeatureStructure> implements LowLevelIterator<T> {
+public abstract class FSIteratorImplBase<T extends FeatureStructure>
+        implements LowLevelIterator<T> {
 
   // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
   // annotation list.
-//  protected static class AnnotationComparator<T extends FeatureStructure> implements Comparator<T> {
-//
-//    private AnnotationIndex<? extends AnnotationFS> index;  // used only to support compare
-//
-//    protected AnnotationComparator(AnnotationIndex<? extends FeatureStructure> index) {
-//      super();
-//      this.index = index;
-//    }
-//
-//    public int compare(T fs1, T fs2) {
-//      return this.index.compare(fs1, fs2);
-//    }
-//
-//  }
+  // protected static class AnnotationComparator<T extends FeatureStructure> implements
+  // Comparator<T> {
+  //
+  // private AnnotationIndex<? extends AnnotationFS> index; // used only to support compare
+  //
+  // protected AnnotationComparator(AnnotationIndex<? extends FeatureStructure> index) {
+  // super();
+  // this.index = index;
+  // }
+  //
+  // public int compare(T fs1, T fs2) {
+  // return this.index.compare(fs1, fs2);
+  // }
+  //
+  // }
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.Iterator#hasNext()
    */
+  @Override
   public boolean hasNext() {
     return isValid();
   }
@@ -65,6 +66,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * 
    * @see java.util.Iterator#next()
    */
+  @Override
   public T next() {
     T result = get();
     moveToNext();
@@ -76,32 +78,37 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * 
    * @see java.util.Iterator#remove()
    */
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }
-  
+
   // methods to be overridden that can speed up this operation
   int getBegin() {
-    return ((AnnotationFS)get()).getBegin();
+    return ((AnnotationFS) get()).getBegin();
   }
-  
+
   int getEnd() {
-    return ((AnnotationFS)get()).getEnd();
+    return ((AnnotationFS) get()).getEnd();
   }
-  
+
   /**
    * A special version of moveTo for subtypes of AnnotationFS, which moves to a particular begin/end
-   * (no type priority). 
-   * @param begin the starting point (inclusive)
-   * @param end the ending point (inclusive)
+   * (no type priority).
+   * 
+   * @param begin
+   *          the starting point (inclusive)
+   * @param end
+   *          the ending point (inclusive)
    */
   <TT extends AnnotationFS> void moveTo(int begin, int end) {
     throw new UnsupportedOperationException();
   }
-  
+
   /**
    * default implementation of getComparator
    */
+  @Override
   public Comparator<TOP> getComparator() {
     return ll_getIndex().getComparator();
   }

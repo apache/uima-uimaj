@@ -18,34 +18,41 @@
  */
 package org.apache.uima.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.Collections;
 
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.impl.CasConsumerDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+public class CasConsumerFactory_implTest {
 
-
-public class CasConsumerFactory_implTest extends TestCase {
- 
   private CasConsumerFactory_impl ccFactory;
 
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     ccFactory = new CasConsumerFactory_impl();
   }
 
+  @Test
   public void testInvalidFrameworkImplementation() {
     CasConsumerDescription desc = new CasConsumerDescription_impl();
-    desc.setFrameworkImplementation("foo");    
+    desc.setFrameworkImplementation("foo");
     try {
       ccFactory.produceResource(CasConsumer.class, desc, Collections.EMPTY_MAP);
       fail();
     } catch (ResourceInitializationException e) {
       assertNotNull(e.getMessage());
       assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
-      assertEquals(e.getMessageKey(), ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
+      assertEquals(e.getMessageKey(),
+              ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
     }
   }
 

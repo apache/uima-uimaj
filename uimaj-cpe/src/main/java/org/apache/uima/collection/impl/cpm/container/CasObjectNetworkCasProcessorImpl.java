@@ -46,7 +46,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 
-
 /**
  * Implementation of the {@link CasObjectProcessor} interface used for both Local and Remote
  * CasObjectProcessors. This objects plugs in a transport object defined in the CPE Descriptor and
@@ -54,7 +53,7 @@ import org.apache.uima.util.ProcessTrace;
  * 
  */
 public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
-  
+
   /** The transport. */
   private SocketTransport transport = null;
 
@@ -74,9 +73,10 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * Using information from the CPE descriptor creates an instance of Transport class. The transport
    * class will delegate analysis of CAS to a remote object.
    *
-   * @param aCasProcessor -
-   *          Cas Process configuration from the CPE descriptor
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aCasProcessor
+   *          - Cas Process configuration from the CPE descriptor
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   public CasObjectNetworkCasProcessorImpl(CpeCasProcessor aCasProcessor)
           throws ResourceConfigurationException {
@@ -106,7 +106,8 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
       }
     } else {
       throw new ResourceConfigurationException(InvalidXMLException.INVALID_CPE_DESCRIPTOR,
-              new Object[] { "transport" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+              new Object[] { "transport" },
+              new Exception(CpmLocalizedMessage.getLocalizedMessage(
                       CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_transport__WARNING",
                       new Object[] { Thread.currentThread().getName() })));
 
@@ -122,10 +123,11 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /**
    * Create Transport object from a given class and associate it with this CasProcessor.
    *
-   * @param aTransportClass -
-   *          name of the Transport class
+   * @param aTransportClass
+   *          - name of the Transport class
    * @return - instance of SocketTransport
-   * @throws Exception passthru
+   * @throws Exception
+   *           passthru
    */
   private SocketTransport pluginTransport(String aTransportClass) throws Exception {
     Object instance = Class.forName(aTransportClass).newInstance();
@@ -154,9 +156,10 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /**
    * Connects to a service endpoint defined in the given URL.
    *
-   * @param aURL -
-   *          contains service endpoint info (hots and port)
-   * @throws ResourceInitializationException wraps SocketException
+   * @param aURL
+   *          - contains service endpoint info (hots and port)
+   * @throws ResourceInitializationException
+   *           wraps SocketException
    */
   public void connect(URL aURL) throws ResourceInitializationException {
     try {
@@ -170,8 +173,10 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /**
    * Uses configured transport to delegate given CAS to the remote service.
    * 
-   * @param aCAS CAS to be analyzed
-   * @throws ResourceProcessException wraps Exception, SocketException
+   * @param aCAS
+   *          CAS to be analyzed
+   * @throws ResourceProcessException
+   *           wraps Exception, SocketException
    */
   @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
@@ -188,8 +193,10 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /**
    * Uses configured transport to delegate given CASes to the remote service.
    *
-   * @param aCASes - an array of CASes to be analyzed
-   * @throws ResourceProcessException wraps SocketException, SocketTimeoutException
+   * @param aCASes
+   *          - an array of CASes to be analyzed
+   * @throws ResourceProcessException
+   *           wraps SocketException, SocketTimeoutException
    */
   @Override
   public void processCas(CAS[] aCASes) throws ResourceProcessException {
@@ -208,7 +215,8 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.
+   * TypeSystem)
    */
   @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
@@ -264,11 +272,13 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
+   * @see
+   * org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.
+   * ProcessTrace)
    */
   @Override
-  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  public void batchProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     // noop
 
   }
@@ -276,13 +286,16 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /**
    * Closes the connection to the remote service.
    *
-   * @param aTrace the a trace
-   * @throws ResourceProcessException the resource process exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param aTrace
+   *          the a trace
+   * @throws ResourceProcessException
+   *           the resource process exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   @Override
-  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  public void collectionProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopping_cp__FINEST",

@@ -29,13 +29,12 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * The Class CasProcessorErrorRateThresholdImpl.
  */
-public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl implements
-        CasProcessorErrorRateThreshold {
-  
+public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl
+        implements CasProcessorErrorRateThreshold {
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -9214395691914383261L;
 
@@ -51,7 +50,9 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
   public CasProcessorErrorRateThresholdImpl() {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold#setMaxErrorCount(int)
    */
   @Override
@@ -87,8 +88,11 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
     return Integer.parseInt(errorCount);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold#setMaxErrorSampleSize(int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold#setMaxErrorSampleSize(int)
    */
   @Override
   public void setMaxErrorSampleSize(int aSampleSize) {
@@ -103,7 +107,9 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold#getMaxErrorSampleSize()
    */
   @Override
@@ -123,7 +129,8 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold#setAction(java.lang.String)
+   * @see
+   * org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold#setAction(java.lang.String)
    */
   @Override
   public void setAction(String aAction) {
@@ -143,10 +150,14 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
   /**
    * Overridden to read "name" and "value" attributes.
    *
-   * @param aElement the a element
-   * @param aParser the a parser
-   * @param aOptions the a options
-   * @throws InvalidXMLException the invalid XML exception
+   * @param aElement
+   *          the a element
+   * @param aParser
+   *          the a parser
+   * @param aOptions
+   *          the a options
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -171,7 +182,9 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
     return attrs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -195,7 +208,8 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
   /**
    * Sets the value.
    *
-   * @param string the new value
+   * @param string
+   *          the new value
    */
   public void setValue(String string) {
     value = string;

@@ -25,38 +25,38 @@ import java.io.StringWriter;
 
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CapabilityLanguageFlowControllerTest {
 
   @Test
-  public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception
-  {
+  public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception {
     FlowControllerDescription desc1 = CapabilityLanguageFlowController.getDescription();
-    
-    FlowControllerDescription desc2 = getXMLParser().parseFlowControllerDescription(
-        new XMLInputSource("src/test/resources/CapabilityLanguageFlowControllerTest/CapabilityLanguageFlowController.xml"));
+
+    FlowControllerDescription desc2 = getXMLParser()
+            .parseFlowControllerDescription(new XMLInputSource(
+                    "src/test/resources/CapabilityLanguageFlowControllerTest/CapabilityLanguageFlowController.xml"));
 
     StringWriter desc1Writer = new StringWriter();
     desc1.toXML(desc1Writer);
-    
+
     StringWriter desc2Writer = new StringWriter();
     desc2.toXML(desc2Writer);
-    
+
     assertThat(desc2.toString()).isEqualTo(desc1.toString());
   }
 
   @Test
-  public void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception
-  {
+  public void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception {
     FlowControllerDescription desc1 = CapabilityLanguageFlowController.getDescription();
-    
+
     desc1.setImplementationName("otherImplementation");
     desc1.getMetaData().setName("otherName");
 
     FlowControllerDescription desc2 = CapabilityLanguageFlowController.getDescription();
-    
-    assertThat(desc2.getImplementationName()).isEqualTo(CapabilityLanguageFlowController.class.getName());
+
+    assertThat(desc2.getImplementationName())
+            .isEqualTo(CapabilityLanguageFlowController.class.getName());
     assertThat(desc2.getMetaData().getName()).isEqualTo("Capability Language Flow Controller");
   }
 }

@@ -42,30 +42,25 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.test.junit_extension.PrintExceptionsWhenRunFromCommandLineRule;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TypeSystemDescription_implTest {
-  public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
-
   private XMLParser xmlParser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.

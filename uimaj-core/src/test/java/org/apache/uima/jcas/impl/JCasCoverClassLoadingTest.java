@@ -24,20 +24,20 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JCasCoverClassLoadingTest {
-  
+
   /**
    * This test failed when we were using {@link TypeSystemImpl#createCallSite(Class, String)}
-   * instead of {@link TypeSystemImpl#createCallSiteForBuiltIn(Class, String)} to initialize 
+   * instead of {@link TypeSystemImpl#createCallSiteForBuiltIn(Class, String)} to initialize
    * built-in JCas cover classes.
    * 
    * @see <a href="https://issues.apache.org/jira/browse/UIMA-6274">UIMA-6274</a>
    */
   @Test
-  public void thatLoadingABuiltInCoverClassBeforeTypeSystemImplDoesNotBreakTheClass() throws Exception
-  {
+  public void thatLoadingABuiltInCoverClassBeforeTypeSystemImplDoesNotBreakTheClass()
+          throws Exception {
     Class.forName(Sofa.class.getName());
 
     TypeSystemDescription tsd = new TypeSystemDescription_impl();

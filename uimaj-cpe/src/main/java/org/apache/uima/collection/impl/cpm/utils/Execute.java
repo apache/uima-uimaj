@@ -19,26 +19,23 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-
 /**
  * Contains command line and environment for launching a separate process.
  * 
  * 
  */
 public class Execute {
-  
+
   /** The environment. */
   private String[] environment;
 
   /** The cmd line. */
   private String[] cmdLine;
 
-  
   /**
    * Instantiates a new execute.
    */
   public Execute() {
-    super();
   }
 
   /**
@@ -62,8 +59,8 @@ public class Execute {
   /**
    * Copies Cas Processor command line.
    *
-   * @param strings -
-   *          command line
+   * @param strings
+   *          - command line
    */
   public void setCmdLine(String[] strings) {
     cmdLine = strings;
@@ -72,7 +69,8 @@ public class Execute {
   /**
    * Copies Cas Processor environment.
    *
-   * @param strings the new environment
+   * @param strings
+   *          the new environment
    */
   public void setEnvironment(String[] strings) {
     environment = strings;

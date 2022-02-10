@@ -47,8 +47,10 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
   }
 
   /**
-   * @param aSyntax -
-   * @param aExpression -
+   * @param aSyntax
+   *          -
+   * @param aExpression
+   *          -
    */
   public Filter_impl(String aSyntax, String aExpression) {
     setSyntax(aSyntax);
@@ -60,6 +62,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * 
    * @see org.apache.uima.search.Filter#getSyntax()
    */
+  @Override
   public String getSyntax() {
     return mSyntax;
   }
@@ -69,6 +72,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * 
    * @see org.apache.uima.search.Filter#setSyntax(java.lang.String)
    */
+  @Override
   public void setSyntax(String aSyntax) {
     mSyntax = aSyntax;
   }
@@ -78,6 +82,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * 
    * @see org.apache.uima.search.Filter#getExpression()
    */
+  @Override
   public String getExpression() {
     return mExpression;
   }
@@ -87,6 +92,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * 
    * @see org.apache.uima.search.Filter#setExpression(java.lang.String)
    */
+  @Override
   public void setExpression(String aExpression) {
     mExpression = aExpression;
   }
@@ -95,8 +101,9 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
-   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   * org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
@@ -109,6 +116,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * 
    * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
    */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     // write the element's start tag
@@ -131,6 +139,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

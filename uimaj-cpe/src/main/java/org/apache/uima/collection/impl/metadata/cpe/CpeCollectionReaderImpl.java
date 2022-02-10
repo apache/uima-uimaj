@@ -29,12 +29,11 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-
 /**
  * The Class CpeCollectionReaderImpl.
  */
 public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeCollectionReader {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -7663775553359776495L;
 
@@ -53,7 +52,8 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeCollectionReader#setCasInitializer(org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer)
+   * @see org.apache.uima.collection.metadata.CpeCollectionReader#setCasInitializer(org.apache.uima.
+   * collection.metadata.CpeCollectionReaderCasInitializer)
    */
   @Override
   public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
@@ -84,7 +84,9 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
+   * @see
+   * org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.
+   * lang.String)
    */
   @Override
   public void setDescriptor(CpeComponentDescriptor aDescriptor) {
@@ -114,8 +116,10 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
   /**
    * Sets configuration parameter settings for this CollectionReader.
    *
-   * @param aParams the new configuration parameter settings
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aParams
+   *          the new configuration parameter settings
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aParams)
@@ -123,7 +127,9 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
     collectionIterator.setConfigurationParameterSettings(aParams);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
@@ -139,14 +145,17 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
   /**
    * Sets the collection iterator.
    *
-   * @param iterator the new collection iterator
+   * @param iterator
+   *          the new collection iterator
    */
   @Override
   public void setCollectionIterator(CpeCollectionReaderIterator iterator) {
     collectionIterator = iterator;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReader#getCollectionIterator()
    */
   @Override

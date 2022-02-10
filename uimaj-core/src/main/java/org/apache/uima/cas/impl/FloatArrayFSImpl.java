@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FloatArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for Float Array
+ * V2 compatibility only The non-JCas cover class for Float Array
+ * 
  * @deprecated use FloatArray instead
  */
 @Deprecated
 public interface FloatArrayFSImpl extends FloatArrayFS {
- 
+
 }

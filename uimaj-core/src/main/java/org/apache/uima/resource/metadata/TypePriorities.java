@@ -41,9 +41,9 @@ import org.apache.uima.util.InvalidXMLException;
  * resolution is done automatically when a CAS is created using a TypePriorities object.
  * <p>
  * TypePriorities declarations can optionally be assigned a {@link #getName() name},
- * {@link #getDescription() description}, {@link #getVendor() vendor}, and
- * {@link #getVersion() version}. It is recommended that these properties be set on any
- * TypePriorities declaration that is meant to be shared by (imported by) multiple components.
+ * {@link #getDescription() description}, {@link #getVendor() vendor}, and {@link #getVersion()
+ * version}. It is recommended that these properties be set on any TypePriorities declaration that
+ * is meant to be shared by (imported by) multiple components.
  * 
  * 
  */
@@ -225,6 +225,7 @@ public interface TypePriorities extends MetaDataObject {
    * @deprecated Method is deprecated because it should only be used internally. Scheduled for
    *             removal in UIMA 4.0.
    */
-  @Deprecated void resolveImports(Collection<String> aAlreadyImportedPriorityListURLs,
+  @Deprecated
+  void resolveImports(Collection<String> aAlreadyImportedPriorityListURLs,
           ResourceManager aResourceManager) throws InvalidXMLException;
 }

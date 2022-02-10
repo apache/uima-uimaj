@@ -39,7 +39,6 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    * Creates a new exception with a null message.
    */
   public CasProcessorDeploymentException() {
-    super();
   }
 
   /**
@@ -60,8 +59,8 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -79,8 +78,8 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -97,8 +96,8 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -113,15 +112,16 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
    * @param aCause
    *          the original exception that caused this exception to be thrown, if any
    */
-  public CasProcessorDeploymentException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+  public CasProcessorDeploymentException(String aMessageKey, Object[] aArguments,
+          Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }
 }

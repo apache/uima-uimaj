@@ -27,17 +27,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * Serialize and Deserialize arbitrary objects to/from byte arrays, 
- * using standard Java object serialization/deserialization support.
+ * Serialize and Deserialize arbitrary objects to/from byte arrays, using standard Java object
+ * serialization/deserialization support.
  * 
- * Used in the Vinci and Soap transports to serialize/deserialize 
- * CASSerializer objects or
- * CASCompleteSerializer objects (includes type system and index definitions) or
- * (for SOAP) arbitrary objects
+ * Used in the Vinci and Soap transports to serialize/deserialize CASSerializer objects or
+ * CASCompleteSerializer objects (includes type system and index definitions) or (for SOAP)
+ * arbitrary objects
  * 
  * 
- * This class is abstract only to prevent instantiation.
- * All the methods are static.
+ * This class is abstract only to prevent instantiation. All the methods are static.
  */
 public abstract class SerializationUtils {
 
@@ -72,8 +70,8 @@ public abstract class SerializationUtils {
    * @param aBytes
    *          byte array to read from
    * 
-   * @return The <code>Object</code> deserialized from <code>aBytes</code>. If
-   *         <code>aBytes</code> is <code>null</code>, <code>null</code> is returned.
+   * @return The <code>Object</code> deserialized from <code>aBytes</code>. If <code>aBytes</code>
+   *         is <code>null</code>, <code>null</code> is returned.
    * 
    * @throws IOException
    *           if an I/O error occurs
