@@ -19,7 +19,6 @@
 
 package org.apache.uima.pear.insd.edit.vars;
 
-
 /**
  * Represents a table row in a two column table (of environment variables).
  */
@@ -45,8 +44,10 @@ public class VarVal {
   /**
    * Create a VarVal instance.
    *
-   * @param varName the var name
-   * @param varValue the var value
+   * @param varName
+   *          the var name
+   * @param varValue
+   *          the var value
    */
   public VarVal(String varName, String varValue) {
     this.varName = varName;
@@ -83,7 +84,8 @@ public class VarVal {
   /**
    * Sets the variable name.
    *
-   * @param string          the variable name
+   * @param string
+   *          the variable name
    */
   public void setVarName(String string) {
     varName = string;
@@ -92,7 +94,8 @@ public class VarVal {
   /**
    * Sets the variable value.
    *
-   * @param string          the variable value
+   * @param string
+   *          the variable value
    */
   public void setVarValue(String string) {
     varValue = string;

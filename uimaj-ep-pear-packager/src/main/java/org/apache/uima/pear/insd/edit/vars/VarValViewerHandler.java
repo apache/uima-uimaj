@@ -29,7 +29,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 
-
 /**
  * Handles the display and management of an environment variables table.
  */
@@ -38,17 +37,23 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
   /**
    * Instantiates a new var val viewer handler.
    *
-   * @param parent the parent
-   * @param columnNames the column names
-   * @param numParentColumns the num parent columns
-   * @param tableRowList the table row list
+   * @param parent
+   *          the parent
+   * @param columnNames
+   *          the column names
+   * @param numParentColumns
+   *          the num parent columns
+   * @param tableRowList
+   *          the table row list
    */
   public VarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
           VarValList tableRowList) {
     super(parent, columnNames, numParentColumns, tableRowList, new VarValLabelProvider());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createCellModifiers()
    */
   @Override
@@ -56,7 +61,9 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
     return new VarValCellModifier(this, columnNames, tableRowList);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createSorter()
    */
   @Override
@@ -64,7 +71,9 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
     return new VarValSorter(VarValSorter.VAR_NAME);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createTableColumns()
    */
   @Override
@@ -95,7 +104,9 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.pear.insd.edit.vars.AbstractVarValViewerHandler#createCellEditors()
    */
   @Override

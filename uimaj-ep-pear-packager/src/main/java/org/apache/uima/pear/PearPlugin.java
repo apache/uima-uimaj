@@ -25,7 +25,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * The main plugin class.
  * 
@@ -81,7 +80,8 @@ public class PearPlugin extends AbstractUIPlugin {
   /**
    * Returns the image descriptor with the given path relative to the icons/ directory.
    *
-   * @param relativePath the relative path
+   * @param relativePath
+   *          the relative path
    * @return the image descriptor
    */
   public static ImageDescriptor getImageDescriptor(final String relativePath) {

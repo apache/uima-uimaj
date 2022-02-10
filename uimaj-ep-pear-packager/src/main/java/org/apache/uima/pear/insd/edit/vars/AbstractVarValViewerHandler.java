@@ -74,11 +74,16 @@ abstract class AbstractVarValViewerHandler {
   /**
    * Instantiates a new abstract var val viewer handler.
    *
-   * @param parent the parent
-   * @param columnNames the column names
-   * @param numParentColumns the num parent columns
-   * @param tableRowList the table row list
-   * @param labelProvider the label provider
+   * @param parent
+   *          the parent
+   * @param columnNames
+   *          the column names
+   * @param numParentColumns
+   *          the num parent columns
+   * @param tableRowList
+   *          the table row list
+   * @param labelProvider
+   *          the label provider
    */
   public AbstractVarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
           VarValList tableRowList, ITableLabelProvider labelProvider) {
@@ -126,8 +131,10 @@ abstract class AbstractVarValViewerHandler {
   /**
    * Create a new shell, add the widgets, open the shell.
    *
-   * @param composite the composite
-   * @param numColumns the num columns
+   * @param composite
+   *          the composite
+   * @param numColumns
+   *          the num columns
    */
   protected void addChildControls(Composite composite, int numColumns) {
 
@@ -152,7 +159,8 @@ abstract class AbstractVarValViewerHandler {
   /**
    * Create the Table.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   protected void createTable(Composite parent) {
     int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
@@ -200,7 +208,7 @@ abstract class AbstractVarValViewerHandler {
     Shell shell = table.getShell();
 
     if (shell != null && !shell.isDisposed()) {
-        shell.dispose();
+      shell.dispose();
     }
   }
 
@@ -211,20 +219,26 @@ abstract class AbstractVarValViewerHandler {
    */
   class ExampleContentProvider implements IStructuredContentProvider, IVarValListViewer {
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+     * java.lang.Object, java.lang.Object)
      */
     @Override
     public void inputChanged(Viewer v, Object oldInput, Object newInput) {
       if (newInput != null) {
         ((VarValList) newInput).addChangeListener(this);
-    }
+      }
       if (oldInput != null) {
         ((VarValList) oldInput).removeChangeListener(this);
-    }
+      }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     @Override
@@ -232,7 +246,9 @@ abstract class AbstractVarValViewerHandler {
       tableRowList.removeChangeListener(this);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
      */
     // Return the tableRows as an array of Objects
@@ -275,7 +291,8 @@ abstract class AbstractVarValViewerHandler {
   /**
    * Add the "Add", "Delete" and "Close" buttons.
    *
-   * @param parent          the parent composite
+   * @param parent
+   *          the parent composite
    */
   protected void createButtons(Composite parent) {
 

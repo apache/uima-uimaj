@@ -19,7 +19,6 @@
 
 package org.apache.uima.pear.insd.edit.vars;
 
-
 /**
  * The Interface IVarValListViewer.
  */
@@ -28,21 +27,24 @@ interface IVarValListViewer {
   /**
    * Update the view to reflect the fact that a VarVal was added to the VarVal list.
    *
-   * @param tableRow the table row
+   * @param tableRow
+   *          the table row
    */
   void addTableRow(VarVal tableRow);
 
   /**
    * Update the view to reflect the fact that a VarVal was removed from the VarVal list.
    *
-   * @param tableRow the table row
+   * @param tableRow
+   *          the table row
    */
   void removeTableRow(VarVal tableRow);
 
   /**
    * Update the view to reflect the fact that one of the TableRows was modified.
    *
-   * @param tableRow the table row
+   * @param tableRow
+   *          the table row
    */
   void updateTableRow(VarVal tableRow);
 }

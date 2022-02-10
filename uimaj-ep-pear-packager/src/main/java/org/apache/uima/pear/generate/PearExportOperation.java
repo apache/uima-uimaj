@@ -38,33 +38,36 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-
 /**
  * {@link IRunnableWithProgress} that creates a zip file containing a given set of resources *.
  */
 public class PearExportOperation implements IRunnableWithProgress {
 
-  /**  An array of files that should be included in the zip file. */
+  /** An array of files that should be included in the zip file. */
   protected final IFile[] fExports;
 
-  /**  Prefix to strip off from the provided files paths. */
+  /** Prefix to strip off from the provided files paths. */
   protected final IContainer fRoot;
 
-  /**  Filename for the destination zip file. */
+  /** Filename for the destination zip file. */
   protected final String fFilename;
 
-  /**  whether zip contents should be compressed. */
+  /** whether zip contents should be compressed. */
   protected final boolean fCompress;
 
   /**
    * Constructor.
    *
-   * @param exports          An array of files that should be included in the zip file
-   * @param virtualRoot          Prefix to strip off from the provided files paths, e.g. if '/foo/bar/baz.txt' is
+   * @param exports
+   *          An array of files that should be included in the zip file
+   * @param virtualRoot
+   *          Prefix to strip off from the provided files paths, e.g. if '/foo/bar/baz.txt' is
    *          included and '/foo' is the virtual root, than '/bar/baz.txt' will be created in the
    *          zip file
-   * @param filename          Filename for the destination zip file
-   * @param compress          <code>true</code> if the zip contents should be compressed, <code>false</code>
+   * @param filename
+   *          Filename for the destination zip file
+   * @param compress
+   *          <code>true</code> if the zip contents should be compressed, <code>false</code>
    *          otherwise
    */
   public PearExportOperation(final IFile[] exports, final IContainer virtualRoot,
@@ -78,11 +81,12 @@ public class PearExportOperation implements IRunnableWithProgress {
   /*
    * (non-Javadoc)
    * 
-   * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+   * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.
+   * IProgressMonitor)
    */
   @Override
-  public void run(final IProgressMonitor monitor) throws InvocationTargetException,
-          InterruptedException {
+  public void run(final IProgressMonitor monitor)
+          throws InvocationTargetException, InterruptedException {
     try {
       final int SCALE = 100;
       final String jobName = "Exporting " + fExports.length + " files to Pear file " + fFilename
@@ -161,10 +165,13 @@ public class PearExportOperation implements IRunnableWithProgress {
   /**
    * Read contents.
    *
-   * @param file          The file to read
-   * @param monitor the monitor
+   * @param file
+   *          The file to read
+   * @param monitor
+   *          the monitor
    * @return A byte array with the file contents
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   private byte[] readContents(final IFile file, IProgressMonitor monitor) throws IOException {
     final ByteArrayOutputStream output = new ByteArrayOutputStream();
