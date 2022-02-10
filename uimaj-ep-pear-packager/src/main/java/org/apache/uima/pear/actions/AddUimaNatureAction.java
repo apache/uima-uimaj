@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-
 /**
  * This class handles the "Add UIMA Nature" action, which appear in the context menu of a project.
  */
@@ -51,8 +50,10 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
   /**
    * Sets the active part.
    *
-   * @param action the action
-   * @param targetPart the target part
+   * @param action
+   *          the action
+   * @param targetPart
+   *          the target part
    * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
    */
   @Override
@@ -62,7 +63,8 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
   /**
    * See IActionDelegate#run(IAction).
    *
-   * @param action the action
+   * @param action
+   *          the action
    */
   @Override
   public void run(IAction action) {
@@ -76,13 +78,9 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
       if (currentProject != null) {
         boolean addNature = false;
         if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
-          addNature = MessageDialog
-                  .openQuestion(
-                          shell,
-                          "UIMA Nature",
-                          "The UIMA Nature was previously added to '"
-                                  + currentProject.getName()
-                                  + "'.\nWould you like to rebuild it without overwriting existing files and folders?");
+          addNature = MessageDialog.openQuestion(shell, "UIMA Nature",
+                  "The UIMA Nature was previously added to '" + currentProject.getName()
+                          + "'.\nWould you like to rebuild it without overwriting existing files and folders?");
         } else {
           addNature = MessageDialog.openQuestion(shell, "Adding UIMA custom Nature",
                   "Would you like to add a UIMA Nature to the project '" + currentProject.getName()
@@ -126,8 +124,10 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
   /**
    * See IActionDelegate#selectionChanged(IAction, ISelection).
    *
-   * @param action the action
-   * @param selection the selection
+   * @param action
+   *          the action
+   * @param selection
+   *          the selection
    */
   @Override
   public void selectionChanged(IAction action, ISelection selection) {

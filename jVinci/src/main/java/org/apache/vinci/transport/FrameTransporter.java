@@ -39,8 +39,10 @@ public interface FrameTransporter {
    * @param f
    *          The Frame to be marshalled.
    * @return -
-   * @throws IOException -
-   * @throws EOFException -
+   * @throws IOException
+   *           -
+   * @throws EOFException
+   *           -
    */
   KeyValuePair fromStream(InputStream is, Frame f) throws IOException, EOFException;
 
@@ -51,7 +53,8 @@ public interface FrameTransporter {
    *          The stream from where the data is read.
    * @param f
    *          The Frame to be populated from the stream.
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   void toStream(OutputStream os, Frame f) throws IOException;
 }

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -27,7 +26,6 @@ import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * Undo manager for text area.
@@ -40,7 +38,8 @@ public class UndoMgr extends UndoManager implements ActionListener {
   /**
    * Instantiates a new undo mgr.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public UndoMgr(MainFrame frame) {
     this.main = frame;
@@ -49,7 +48,9 @@ public class UndoMgr extends UndoManager implements ActionListener {
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7677701629555379146L;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -60,7 +61,9 @@ public class UndoMgr extends UndoManager implements ActionListener {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.undo.UndoManager#addEdit(javax.swing.undo.UndoableEdit)
    */
   @Override
@@ -69,7 +72,9 @@ public class UndoMgr extends UndoManager implements ActionListener {
     return super.addEdit(arg0);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.undo.UndoManager#discardAllEdits()
    */
   @Override

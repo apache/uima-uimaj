@@ -29,11 +29,12 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
   @Override
   public void added(Collection<FeatureStructure> newFeatureStructure) {
   }
-  
+
   /**
    * Forwards the call.
    *
-   * @param newAnnotation the new annotation
+   * @param newAnnotation
+   *          the new annotation
    */
   @Override
   public void added(FeatureStructure newAnnotation) {
@@ -43,11 +44,12 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
   @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
   }
-  
+
   /**
    * Forwards the call.
    *
-   * @param deletedAnnotation the deleted annotation
+   * @param deletedAnnotation
+   *          the deleted annotation
    */
   @Override
   public void removed(FeatureStructure deletedAnnotation) {
@@ -57,11 +59,12 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
   @Override
   public void updated(Collection<FeatureStructure> featureStructure) {
   }
-  
+
   /**
    * Forwards the call.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void updated(FeatureStructure annotation) {
@@ -71,7 +74,7 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
   @Override
   public void changed() {
   }
-  
+
   @Override
   public void viewChanged(String oldViewName, String newViewName) {
   }

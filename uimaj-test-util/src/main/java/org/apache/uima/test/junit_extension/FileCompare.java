@@ -31,8 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * FileCompare class provides a several methods, which compare two files or input streams.
- * Most methods are static.
+ * FileCompare class provides a several methods, which compare two files or input streams. Most
+ * methods are static.
  * 
  * It has a facility to incorporate a regex ignore-differences filter
  * 
@@ -43,11 +43,11 @@ public class FileCompare {
    * TODO Currently only tags containing word characters [a-zA-Z_0-9] are recognised.
    */
   // match "<" followed by 1 or more word_chars followed by ">" followed by "</" followed by
-  //   (presumably) the same 1 or more word_chars followed by ">"
+  // (presumably) the same 1 or more word_chars followed by ">"
   private static final String EMPTY_TAG_REGEX = "(<([\\w]+)>[\\s]*</[\\w]+>)";
 
   private static Pattern emptyTagPattern = Pattern.compile(EMPTY_TAG_REGEX);
-  
+
   // matches cr if it is followed by a new-line, will be repl with just a new line
   private static Pattern crnlPattern = Pattern.compile("\\r(?=\\n)");
 
@@ -60,12 +60,13 @@ public class FileCompare {
    *          filename of the second file
    * @return - true if the files have the same content
    * 
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static boolean compare(String filename1, String filename2) throws IOException {
 
     try (InputStream file1 = new FileInputStream(filename1);
-         InputStream file2 = new FileInputStream(filename2)) {
+            InputStream file2 = new FileInputStream(filename2)) {
       // create file input stream of the two bytes
 
       return compare(file1, file2);
@@ -82,18 +83,18 @@ public class FileCompare {
    *          second file
    * @return - true if the files have the same content
    * 
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static boolean compare(File file1, File file2) throws IOException {
 
     try (InputStream inputStream1 = new FileInputStream(file1);
-         InputStream inputStream2 = new FileInputStream(file2)) {
+            InputStream inputStream2 = new FileInputStream(file2)) {
       // create file input stream of the two bytes
       return compare(inputStream1, inputStream2);
     }
   }
 
-  
   /**
    * compares two files and return true if the files have the same content.
    * 
@@ -104,7 +105,8 @@ public class FileCompare {
    * 
    * @return - true if the content is the same
    * 
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static boolean compare(String filename1, InputStream in) throws IOException {
     try (InputStream file1 = new FileInputStream(filename1)) {
@@ -145,7 +147,7 @@ public class FileCompare {
         }
       }
     }
-    
+
     // eof on in1
     in2byte = in2.read();
     while (in2byte != -1) {
@@ -156,16 +158,19 @@ public class FileCompare {
         in2byte = in2.read();
       }
       if (in2byte != -1) {
-        return false;  // in2 had more non-whitespace chars after in1 end of file
+        return false; // in2 had more non-whitespace chars after in1 end of file
       }
     }
     return true;
   }
-  
+
   /**
    * Compare 2 strings, ignoring whitespace characters
-   * @param in1 -
-   * @param in2 -
+   * 
+   * @param in1
+   *          -
+   * @param in2
+   *          -
    * @return -
    */
   public static boolean compareStrings(String in1, String in2) {
@@ -173,27 +178,27 @@ public class FileCompare {
 
     int i1 = 0;
     int i2 = 0;
-    
+
     while (i1 < in1.length()) {
-      
-      c1 = in1.charAt(i1 ++);
+
+      c1 = in1.charAt(i1++);
 
       // check if char is whitespace, and skip it
       if (Character.isWhitespace(c1)) {
         continue;
       }
-      
+
       while (true) {
         if (i2 >= in2.length()) {
-          return false;  // ran off the end of string 2
+          return false; // ran off the end of string 2
         }
 
-        c2 = in2.charAt(i2 ++);
+        c2 = in2.charAt(i2++);
         if (!Character.isWhitespace(c2)) {
           break;
         }
       }
-      
+
       if (c1 != c2) {
         return false;
       }
@@ -210,7 +215,8 @@ public class FileCompare {
    * @param filename2
    *          Filename of the second XML file.
    * @return -
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static boolean compareXML(String filename1, String filename2) throws IOException {
     File file1 = null;
@@ -248,23 +254,26 @@ public class FileCompare {
   }
 
   /**
-   * Compares two files and returns true, if both have the same content, after
-   * filtering using the supplied Pattern.  
-   * In addition, 
-   *   \r\n is normalized to \n,
-   *   multiple spaces and tabs are normalized to a single space 
+   * Compares two files and returns true, if both have the same content, after filtering using the
+   * supplied Pattern. In addition,
+   * <ul>
+   * <li>\r\n is normalized to \n,</li>
+   * <li>multiple spaces and tabs are normalized to a single space</li>
+   * </ul>
    * 
    * @param filename1
    *          Filename of the first XML file.
    * @param filename2
    *          Filename of the second XML file.
-   * @param pattern 
-   *          an instance of Pattern which matches all substrings which should be filtered out of the match
+   * @param pattern
+   *          an instance of Pattern which matches all substrings which should be filtered out of
+   *          the match
    * @return true, if both have the same content, after filtering using the supplied Pattern.
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static boolean compareWithFilter(String filename1, String filename2, Pattern pattern)
-      throws IOException {
+          throws IOException {
     File file1 = null;
     File file2 = null;
 
@@ -277,29 +286,34 @@ public class FileCompare {
     // read files into strings
     s1 = file2String(file1);
     s2 = file2String(file2);
- 
+
     return compareStringsWithFilter(s1, s2, pattern);
-  }  
+  }
 
   // match at least 2 spaces
   private static final Pattern multipleWhiteSpace = Pattern.compile("[ \\t]{2,}");
-  
+
   // match nl space nl
   private static final Pattern emptyLinePattern = Pattern.compile("(?m)^ $");
-  
+
   // match 2 or more nl's in a row
   private static final Pattern multipleNlPattern = Pattern.compile("\\n{2,}");
-  
+
   /**
-   * Compare 2 strings, showing where they differ in output to system.out, after
-   * doing filtering:
-   *   normalize cr nl to nl
-   *   normalize &lt;xmltag:&gt;   &lt;/xmltag&gt;  to &lt;xmltag/&gt;
-   *   normalize by applying supplied Pattern and deleting anything it matches
-   *   normalize by converting all 2 or more spaces/tabs to just 1 space
-   * @param s1 -
-   * @param s2 -
-   * @param pattern -
+   * Compare 2 strings, showing where they differ in output to system.out, after doing filtering:
+   * <ul>
+   * <li>normalize cr nl to nl</li>
+   * <li>normalize &lt;xmltag:&gt; &lt;/xmltag&gt; to &lt;xmltag/&gt;</li>
+   * <li>normalize by applying supplied Pattern and deleting anything it matches</li>
+   * <li>normalize by converting all 2 or more spaces/tabs to just 1 space</li>
+   * </ul>
+   * 
+   * @param s1
+   *          -
+   * @param s2
+   *          -
+   * @param pattern
+   *          -
    * @return -
    */
 
@@ -323,20 +337,20 @@ public class FileCompare {
     // apply nl + spaces + nl -> nl nl
     s1 = emptyLinePattern.matcher(s1).replaceAll("");
     s2 = emptyLinePattern.matcher(s2).replaceAll("");
-    
+
     // apply nl nl -> nl
-    
+
     s1 = multipleNlPattern.matcher(s1).replaceAll("\n");
     s2 = multipleNlPattern.matcher(s2).replaceAll("\n");
-    
+
     // apply get rid of trailing nl
-    
+
     s1 = removeTrailingNl(s1);
     s2 = removeTrailingNl(s2);
 
     return compareStringsWithMsg(s1, s2);
   }
-  
+
   private static String removeTrailingNl(String s) {
     int i = s.length() - 1;
     if (i >= 0 && s.charAt(i) == '\n') {
@@ -344,13 +358,16 @@ public class FileCompare {
     }
     return s;
   }
-  
+
   /**
-   * Compare two strings, give message indicating where they miscompare, including
-   *   approx 10 chars before and after the first miscompare, for context
-   * @param s1  first string to compare
-   * @param s2  second string to compare
-   * @return  true if strings have the same charactersS
+   * Compare two strings, give message indicating where they miscompare, including approx 10 chars
+   * before and after the first miscompare, for context
+   * 
+   * @param s1
+   *          first string to compare
+   * @param s2
+   *          second string to compare
+   * @return true if strings have the same charactersS
    */
   public static boolean compareStringsWithMsg(String s1, String s2) {
 
@@ -358,29 +375,29 @@ public class FileCompare {
     for (int i = 0; i < maxI; i++) {
       if (s1.charAt(i) != s2.charAt(i)) {
         System.out.println("Error: strings differ starting at char: " + i);
-        System.out.println("Error:   string 1 = " + s1.substring(Math.max(0, i-100), Math.min(s1.length(), i+100)));
-        System.out.println("Error:   string 2 = " + s2.substring(Math.max(0, i-100), Math.min(s2.length(), i+100)));
+        System.out.println("Error:   string 1 = "
+                + s1.substring(Math.max(0, i - 100), Math.min(s1.length(), i + 100)));
+        System.out.println("Error:   string 2 = "
+                + s2.substring(Math.max(0, i - 100), Math.min(s2.length(), i + 100)));
         return false;
       }
     }
-    
-    
-    
-    
+
     if (s1.length() != s2.length()) {
       System.out.println("Error: strings are different length");
       System.out.println("  s1 length = " + s1.length() + "; s2 length = " + s2.length());
       return false;
-    } 
+    }
     return true;
   }
-  
+
   /**
    * Helper method that replaces empty XML tags in long notation with the corresponding short form.
    * 
    * @param xml
    *          The XML file where the empty tags are to be replaced as string.
-   * @param filename -
+   * @param filename
+   *          -
    * @return The XML file with short empty tags as string.
    */
   private static String shortenEmptyTags(String xml, String filename) {
@@ -419,29 +436,29 @@ public class FileCompare {
    * @throws IOException
    *           Various I/O errors. '
    * 
-   * TODO: This is duplicated from org.apache.uima.internal.util.FileUtils in the uimaj-core
-   * package. We can't have a compile dependency on uimaj-core since that introduces a cycle. Not
-   * sure what the best way of handling this is.
+   *           TODO: This is duplicated from org.apache.uima.internal.util.FileUtils in the
+   *           uimaj-core package. We can't have a compile dependency on uimaj-core since that
+   *           introduces a cycle. Not sure what the best way of handling this is.
    */
   public static String file2String(File file) throws IOException {
-    return reader2String(
-            new FileReader(file),
-            (int) file.length());   
+    return reader2String(new FileReader(file), (int) file.length());
   }
-  
+
   /**
    * Read a bufferedReader into a string, using the default platform encoding.
    * 
-   * @param reader to be read in
-   * @param bufSize - size of stream, in bytes.  Size in chars is &le; size in bytes, because
-   * chars take 1 or more bytes to encode.
+   * @param reader
+   *          to be read in
+   * @param bufSize
+   *          - size of stream, in bytes. Size in chars is &le; size in bytes, because chars take 1
+   *          or more bytes to encode.
    * @return String The contents of the stream.
    * @throws IOException
    *           Various I/O errors.
-   *           
-   * TODO: This is duplicated from org.apache.uima.internal.util.FileUtils in the uimaj-core
-   * package. We can't have a compile dependency on uimaj-core since that introduces a cycle. Not
-   * sure what the best way of handling this is.
+   * 
+   *           TODO: This is duplicated from org.apache.uima.internal.util.FileUtils in the
+   *           uimaj-core package. We can't have a compile dependency on uimaj-core since that
+   *           introduces a cycle. Not sure what the best way of handling this is.
    */
   public static String reader2String(Reader reader, int bufSize) throws IOException {
     char[] buf = new char[bufSize];

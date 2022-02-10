@@ -22,25 +22,19 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-public class PrintExceptionsWhenRunFromCommandLineRule
-    implements TestRule
-{
+public class PrintExceptionsWhenRunFromCommandLineRule implements TestRule {
 
-    @Override
-    public Statement apply(Statement aBase, Description aDescription)
-    {
-        return new Statement()
-        {
-            @Override
-            public void evaluate() throws Throwable
-            {
-                try {
-                    aBase.evaluate();
-                }
-                catch (Exception e) {
-                    JUnitExtension.handleException(e);
-                }
-            }
-        };
-    }
+  @Override
+  public Statement apply(Statement aBase, Description aDescription) {
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        try {
+          aBase.evaluate();
+        } catch (Exception e) {
+          JUnitExtension.handleException(e);
+        }
+      }
+    };
+  }
 }

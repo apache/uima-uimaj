@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class ParameterDelegatesSection.
  */
@@ -69,14 +68,13 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Instantiates a new parameter delegates section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public ParameterDelegatesSection(MultiPageEditor editor, Composite parent) {
-    super(
-            editor,
-            parent,
-            "Delegate Component Parameters",
+    super(editor, parent, "Delegate Component Parameters",
             "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
   }
 
@@ -125,9 +123,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
       getSection().setDescription("This part is only used for Aggregate Descriptors");
     } else {
       getSection().setText("Delegate Component Parameters");
-      getSection()
-              .setDescription(
-                      "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
+      getSection().setDescription(
+              "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
 
       cpd = getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
       for (Iterator it = editor.getResolvedDelegates().entrySet().iterator(); it.hasNext();) {
@@ -145,7 +142,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the delegate to GUI.
    *
-   * @param entry the entry
+   * @param entry
+   *          the entry
    */
   private void addDelegateToGUI(Map.Entry entry) {
     addDelegateToGUI((String) entry.getKey(), (ResourceSpecifier) entry.getValue());
@@ -164,16 +162,18 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the delegate to GUI.
    *
-   * @param key the key
-   * @param delegate the delegate
+   * @param key
+   *          the key
+   * @param delegate
+   *          the delegate
    */
   private void addDelegateToGUI(String key, ResourceSpecifier delegate) {
     if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription
             || delegate instanceof FlowControllerDescription) {
       TreeItem d = new TreeItem(tree, SWT.NONE);
-      d.setText(((delegate instanceof FlowControllerDescription) ? FLOWCTLR_HEADER
-              : DELEGATE_HEADER)
-              + key);
+      d.setText(
+              ((delegate instanceof FlowControllerDescription) ? FLOWCTLR_HEADER : DELEGATE_HEADER)
+                      + key);
       d.setData(key);
       addDelegateGroupsToGUI(d, (ResourceCreationSpecifier) delegate);
       d.setExpanded(true);
@@ -183,8 +183,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the delegate groups to GUI.
    *
-   * @param parent the parent
-   * @param delegate the delegate
+   * @param parent
+   *          the parent
+   * @param delegate
+   *          the delegate
    */
   private void addDelegateGroupsToGUI(TreeItem parent, ResourceCreationSpecifier delegate) {
     ConfigurationParameterDeclarations cpd1 = delegate.getMetaData()
@@ -214,8 +216,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the delegate group to GUI.
    *
-   * @param parent the parent
-   * @param cg the cg
+   * @param parent
+   *          the parent
+   * @param cg
+   *          the cg
    */
   private void addDelegateGroupToGUI(TreeItem parent, ConfigGroup cg) {
     ConfigurationParameter[] cps = cg.getConfigParms();
@@ -231,8 +235,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the delegate parms to GUI.
    *
-   * @param parent the parent
-   * @param cps the cps
+   * @param parent
+   *          the parent
+   * @param cps
+   *          the cps
    */
   private void addDelegateParmsToGUI(TreeItem parent, ConfigurationParameter[] cps) {
     if (null != cps) {
@@ -252,8 +258,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the delegate parm overrides to GUI.
    *
-   * @param parent the parent
-   * @param overrides the overrides
+   * @param parent
+   *          the parent
+   * @param overrides
+   *          the overrides
    */
   private void addDelegateParmOverridesToGUI(TreeItem parent, String[] overrides) {
     for (int i = 0; i < overrides.length; i++) {
@@ -283,7 +291,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the overrides.
    *
-   * @param nonShared the non shared
+   * @param nonShared
+   *          the non shared
    */
   private void addOverrides(boolean nonShared) {
     TreeItem item = tree.getSelection()[0];
@@ -299,7 +308,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the configuration parameter from tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the configuration parameter from tree item
    */
   public ConfigurationParameter getConfigurationParameterFromTreeItem(TreeItem item) {
@@ -309,7 +319,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the config group from tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the config group from tree item
    */
   public ConfigGroup getConfigGroupFromTreeItem(TreeItem item) {
@@ -319,7 +330,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the key name from tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the key name from tree item
    */
   private String getKeyNameFromTreeItem(TreeItem item) {
@@ -329,17 +341,20 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the new parameter.
    *
-   * @param item the item
+   * @param item
+   *          the item
    */
   private void addNewParameter(TreeItem item) {
-    addNewParameter(getConfigurationParameterFromTreeItem(item), getConfigGroupFromTreeItem(item
-            .getParentItem()), getKeyNameFromTreeItem(item.getParentItem().getParentItem()));
+    addNewParameter(getConfigurationParameterFromTreeItem(item),
+            getConfigGroupFromTreeItem(item.getParentItem()),
+            getKeyNameFromTreeItem(item.getParentItem().getParentItem()));
   }
 
   /**
    * Adds the all parameters.
    *
-   * @param items the items
+   * @param items
+   *          the items
    */
   private void addAllParameters(TreeItem[] items) {
     for (int i = 0; i < items.length; i++) {
@@ -350,7 +365,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the all groups.
    *
-   * @param items the items
+   * @param items
+   *          the items
    */
   private void addAllGroups(TreeItem[] items) {
     for (int i = 0; i < items.length; i++) {
@@ -361,9 +377,12 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the new parameter.
    *
-   * @param parm the parm
-   * @param delegateGroup the delegate group
-   * @param key the key
+   * @param parm
+   *          the parm
+   * @param delegateGroup
+   *          the delegate group
+   * @param key
+   *          the key
    */
   private void addNewParameter(ConfigurationParameter parm, ConfigGroup delegateGroup, String key) {
 
@@ -404,17 +423,18 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the overriding parm name.
    *
-   * @param override the override
-   * @param cgset the cgset
+   * @param override
+   *          the override
+   * @param cgset
+   *          the cgset
    * @return the overriding parm name
    */
   /*
-   * Check if already have an override for this delegate parameter
-   * If parameter is in a group-set with multiple groups, check if override is in 
-   * any group-set that has a matching group.
-   * i.e. if already have an override for "P" in an aggregate group-set for groups "A B" 
-   * cannot add an override for "P" in the delegate group-set for groups "B C" as
-   * this would produce 2 overrides for "P" in group "B"
+   * Check if already have an override for this delegate parameter If parameter is in a group-set
+   * with multiple groups, check if override is in any group-set that has a matching group. i.e. if
+   * already have an override for "P" in an aggregate group-set for groups "A B" cannot add an
+   * override for "P" in the delegate group-set for groups "B C" as this would produce 2 overrides
+   * for "P" in group "B"
    */
   public static String getOverridingParmName(String override, ConfigGroup cgset) {
     ConfigurationParameterDeclarations cpd = cgset.getCPD();
@@ -426,12 +446,12 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     if (result != null) {
       return result;
     }
-    
-    // If in the delegate COMMON group check all aggregate named group-sets, 
+
+    // If in the delegate COMMON group check all aggregate named group-sets,
     // otherwise check only the group-sets that share a group name
-    for (ConfigurationGroup  cg : cpd.getConfigurationGroups()) {
-      if (cgset.getKind() == ConfigGroup.COMMON || 
-              ParameterSection.haveSharedGroup(cgset.getNameArray(), cg.getNames())) {
+    for (ConfigurationGroup cg : cpd.getConfigurationGroups()) {
+      if (cgset.getKind() == ConfigGroup.COMMON
+              || ParameterSection.haveSharedGroup(cgset.getNameArray(), cg.getNames())) {
         result = getOverridingParmName(override, cg.getConfigurationParameters());
         if (result != null) {
           return result;
@@ -444,8 +464,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the overriding parm name.
    *
-   * @param override the override
-   * @param cps the cps
+   * @param override
+   *          the override
+   * @param cps
+   *          the cps
    * @return the overriding parm name
    */
   private static String getOverridingParmName(String override, ConfigurationParameter[] cps) {
@@ -464,7 +486,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Add a suffix to the name to make it unique within all parameters defined for the cpd.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return name with suffix making it unique
    */
   private String generateUniqueName(String name) {
@@ -487,8 +510,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Adds the parm names.
    *
-   * @param list the list
-   * @param parms the parms
+   * @param list
+   *          the list
+   * @param parms
+   *          the parms
    */
   private void addParmNames(List list, ConfigurationParameter[] parms) {
     if (null != parms) {
@@ -501,8 +526,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the override index.
    *
-   * @param parm the parm
-   * @param override the override
+   * @param parm
+   *          the parm
+   * @param override
+   *          the override
    * @return the override index
    */
   private int getOverrideIndex(ConfigurationParameter parm, String override) {
@@ -519,8 +546,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the same named parm in group.
    *
-   * @param parm the parm
-   * @param group the group
+   * @param parm
+   *          the parm
+   * @param group
+   *          the group
    * @return the same named parm in group
    */
   private ConfigurationParameter getSameNamedParmInGroup(ConfigurationParameter parm,
@@ -537,8 +566,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Parm spec matches.
    *
-   * @param p the p
-   * @param q the q
+   * @param p
+   *          the p
+   * @param q
+   *          the q
    * @return true, if successful
    */
   private boolean parmSpecMatches(ConfigurationParameter p, ConfigurationParameter q) {
@@ -554,7 +585,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the corresponding model group.
    *
-   * @param delegateGroup the delegate group
+   * @param delegateGroup
+   *          the delegate group
    * @return the corresponding model group
    */
   private ConfigGroup getCorrespondingModelGroup(ConfigGroup delegateGroup) {
@@ -572,7 +604,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Gets the corresponding model group.
    *
-   * @param nameArray the name array
+   * @param nameArray
+   *          the name array
    * @return the corresponding model group
    */
   private ConfigGroup getCorrespondingModelGroup(String[] nameArray) {
@@ -588,8 +621,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   /**
    * Compare for set equals, assuming sets have no duplicates.
    *
-   * @param a the a
-   * @param b the b
+   * @param a
+   *          the a
+   * @param b
+   *          the b
    * @return true, if successful
    */
   private boolean setEquals(Object[] a, Object[] b) {
@@ -613,7 +648,9 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm#enable()
    */
   @Override

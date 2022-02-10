@@ -79,7 +79,7 @@ public class Constants {
 
   /** The Constant GET_SUPPORTED_XCAS_VERSIONS. */
   public static final String GET_SUPPORTED_XCAS_VERSIONS = "GetSupportedXCasVersions";
-  
+
   /** The Constant SUPPORTED_XCAS_VERSIONS_RESPONSE. */
   public static final String SUPPORTED_XCAS_VERSIONS_RESPONSE = "2";
 }

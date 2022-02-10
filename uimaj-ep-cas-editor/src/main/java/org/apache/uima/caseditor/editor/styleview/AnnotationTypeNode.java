@@ -23,29 +23,30 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.eclipse.core.runtime.IAdaptable;
 
-
 /**
  * The Class AnnotationTypeNode.
  */
-public class AnnotationTypeNode implements IAdaptable{
+public class AnnotationTypeNode implements IAdaptable {
 
   /** The editor. */
   private AnnotationEditor editor;
-  
+
   /** The type. */
   private Type type;
-  
+
   /**
    * Instantiates a new annotation type node.
    *
-   * @param editor the editor
-   * @param type the type
+   * @param editor
+   *          the editor
+   * @param type
+   *          the type
    */
   AnnotationTypeNode(AnnotationEditor editor, Type type) {
     this.editor = editor;
     this.type = type;
   }
-  
+
   /**
    * Gets the editor.
    *
@@ -54,7 +55,7 @@ public class AnnotationTypeNode implements IAdaptable{
   public AnnotationEditor getEditor() {
     return editor;
   }
-  
+
   /**
    * Gets the annotation type.
    *
@@ -66,14 +67,14 @@ public class AnnotationTypeNode implements IAdaptable{
 
   @Override
   public boolean equals(Object obj) {
-    
+
     if (obj instanceof AnnotationTypeNode) {
-      
+
       AnnotationTypeNode typeNode = (AnnotationTypeNode) obj;
-      
+
       return type.equals(typeNode.type);
     }
-    
+
     return false;
   }
 
@@ -83,12 +84,13 @@ public class AnnotationTypeNode implements IAdaptable{
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-    
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
+
     if (AnnotationTypeNode.class.equals(adapter)) {
       return this;
     }
-    
+
     return null;
   }
 }

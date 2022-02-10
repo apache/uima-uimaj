@@ -21,22 +21,18 @@ package org.apache.uima.caseditor.editor;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
 
-
 /**
  * The Class AnnotationEditorPreferenceConstants.
  */
 public class AnnotationEditorPreferenceConstants {
 
   /** The Constant ANNOTATION_EDITOR_TEXT_SIZE. */
-  public static final String ANNOTATION_EDITOR_TEXT_SIZE =
-          CasEditorPlugin.ID + ".editor-text-size";
-  
+  public static final String ANNOTATION_EDITOR_TEXT_SIZE = CasEditorPlugin.ID + ".editor-text-size";
+
   /** The Constant EDITOR_LINE_LENGTH_HINT. */
-  public static final String EDITOR_LINE_LENGTH_HINT = 
-          "EDITOR_LINE_LENGTH_HINT";
+  public static final String EDITOR_LINE_LENGTH_HINT = "EDITOR_LINE_LENGTH_HINT";
 
   /** The Constant ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM. */
   public static final String ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM = "ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM";
-
 
 }

@@ -25,7 +25,6 @@ import org.apache.uima.caseditor.editor.FeatureValue;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
-
 /**
  * The Class FeatureColumnLabelProvider.
  */
@@ -41,13 +40,11 @@ final class FeatureColumnLabelProvider extends CellLabelProvider {
 
       cell.setText(featureValue.getFeature().getShortName());
 
-    }
-    else if (element instanceof ArrayValue) {
+    } else if (element instanceof ArrayValue) {
       ArrayValue arrayValue = (ArrayValue) cell.getElement();
 
       cell.setText(Integer.toString(arrayValue.slot()));
-    }
-    else {
+    } else {
       throw new CasEditorError("Unkown element!");
     }
   }

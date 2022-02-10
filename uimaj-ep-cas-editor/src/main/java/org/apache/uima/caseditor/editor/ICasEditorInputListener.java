@@ -21,29 +21,30 @@ package org.apache.uima.caseditor.editor;
 
 import org.eclipse.ui.IEditorInput;
 
-
 /**
- * The listener interface for receiving ICasEditorInput events.
- * The class that is interested in processing a ICasEditorInput
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addICasEditorInputListener</code> method. When
- * the ICasEditorInput event occurs, that object's appropriate
- * method is invoked.
+ * The listener interface for receiving ICasEditorInput events. The class that is interested in
+ * processing a ICasEditorInput event implements this interface, and the object created with that
+ * class is registered with a component using the component's
+ * <code>addICasEditorInputListener</code> method. When the ICasEditorInput event occurs, that
+ * object's appropriate method is invoked.
  */
 public interface ICasEditorInputListener {
 
   /**
-   * This method is called if an {@link ICasDocument} is exchanged.
-   * The arguments of this methods can be null under certain circumstances.
-   * For example, if a document is opened where the type system cannot be found 
-   * for, then the new document will be null.
+   * This method is called if an {@link ICasDocument} is exchanged. The arguments of this methods
+   * can be null under certain circumstances. For example, if a document is opened where the type
+   * system cannot be found for, then the new document will be null.
    *
-   * @param oldInput the old input
-   * @param oldDocument          - the replaced, old document {@link ICasDocument}.
-   * @param newInput the new input
-   * @param newDocument          - the new, current document {@link ICasDocument}.
+   * @param oldInput
+   *          the old input
+   * @param oldDocument
+   *          - the replaced, old document {@link ICasDocument}.
+   * @param newInput
+   *          the new input
+   * @param newDocument
+   *          - the new, current document {@link ICasDocument}.
    */
-  void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument);
-  
+  void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput,
+          ICasDocument newDocument);
+
 }

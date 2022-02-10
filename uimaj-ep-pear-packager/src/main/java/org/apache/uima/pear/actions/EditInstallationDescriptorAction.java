@@ -31,7 +31,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-
 /**
  * 
  * This class handles the "Edit Installation Descriptor" action, which appear in the context menu of
@@ -54,8 +53,10 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
   /**
    * Sets the active part.
    *
-   * @param action the action
-   * @param targetPart the target part
+   * @param action
+   *          the action
+   * @param targetPart
+   *          the target part
    * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
    */
   @Override
@@ -65,7 +66,8 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
   /**
    * See IActionDelegate#run(IAction).
    *
-   * @param action the action
+   * @param action
+   *          the action
    */
   @Override
   public void run(IAction action) {
@@ -76,8 +78,8 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
       IFile installFile = (IFile) ssel.getFirstElement();
 
       // create the wizard
-      EditInstallationDescriptorWizard wizard = new EditInstallationDescriptorWizard(installFile
-              .getProject());
+      EditInstallationDescriptorWizard wizard = new EditInstallationDescriptorWizard(
+              installFile.getProject());
 
       // Initialize the wizard
       wizard.init(PlatformUI.getWorkbench(), ssel);
@@ -98,8 +100,10 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
   /**
    * See IActionDelegate#selectionChanged(IAction, ISelection).
    *
-   * @param action the action
-   * @param selection the selection
+   * @param action
+   *          the action
+   * @param selection
+   *          the selection
    */
   @Override
   public void selectionChanged(IAction action, ISelection selection) {

@@ -55,7 +55,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class AggregateSection.
  */
@@ -97,8 +96,10 @@ public class AggregateSection extends AbstractSection {
   /**
    * Creates a section for aggregate specifiers to add their delegates.
    *
-   * @param aEditor          backpointer to the main multipage editor
-   * @param parent          the Composite where this section lives
+   * @param aEditor
+   *          backpointer to the main multipage editor
+   * @param parent
+   *          the Composite where this section lives
    */
   public AggregateSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Component Engines",
@@ -131,12 +132,13 @@ public class AggregateSection extends AbstractSection {
 
     // This little code fragment is an attempt to get the right sizing for the buttons
     // Was wrong on Mac platforms
-    //   Word below is the longer of the two words in the button container
+    // Word below is the longer of the two words in the button container
     Button tempForSize = toolkit.createButton(tableContainer, "Remove", SWT.PUSH);
     Point p = tempForSize.computeSize(SWT.DEFAULT, SWT.DEFAULT);
     tempForSize.dispose();
-    
-    Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 3* p.x);
+
+    Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS,
+            3 * p.x);
 
     addButton = newPushButton(bottomButtonContainer, S_ADD,
             "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
@@ -252,14 +254,13 @@ public class AggregateSection extends AbstractSection {
         boolean bEnableButtons = (filesTable.getSelectionCount() > 0);
         removeButton.setEnabled(bEnableButtons);
         addToFlowButton.setEnabled(bEnableButtons);
-      } else if (event.type == SWT.MouseDown && 
-                  (event.button == 3  || 
-                          // this is for Macintosh - they just have one button
-                   (event.button == 1 && (0 != (event.stateMask & SWT.CTRL))))) {
+      } else if (event.type == SWT.MouseDown && (event.button == 3 ||
+      // this is for Macintosh - they just have one button
+              (event.button == 1 && (0 != (event.stateMask & SWT.CTRL))))) {
         handleTableContextMenuRequest(event);
       } else if (event.type == SWT.MouseHover && !bDisableToolTipHelp) {
         handleTableHoverHelp(event);
-      } 
+      }
       // Don't need this. Next mouse hover kills tool tip anyway
       // else if (event.type == SWT.MouseMove) {
       // filesTable.setToolTipText("");
@@ -294,10 +295,14 @@ public class AggregateSection extends AbstractSection {
   /**
    * Produce key add delegate.
    *
-   * @param shortName the short name
-   * @param fullPathFileName the full path file name
-   * @param addToFlow the add to flow
-   * @param isImportByName the is import by name
+   * @param shortName
+   *          the short name
+   * @param fullPathFileName
+   *          the full path file name
+   * @param addToFlow
+   *          the add to flow
+   * @param isImportByName
+   *          the is import by name
    */
   private void produceKeyAddDelegate(String shortName, String fullPathFileName, boolean addToFlow,
           boolean isImportByName) {
@@ -356,7 +361,7 @@ public class AggregateSection extends AbstractSection {
 
     FlowNodes flow = new FlowNodes(getAnalysisEngineMetaData().getFlowConstraints());
     String[] savedFlowNodes = flow.getFlow();
-    if (null == savedFlowNodes) 
+    if (null == savedFlowNodes)
       savedFlowNodes = stringArray0;
 
     // item may be in the flow 0, 1 or more times
@@ -423,12 +428,13 @@ public class AggregateSection extends AbstractSection {
   /**
    * Adds the node to flow.
    *
-   * @param node the node
+   * @param node
+   *          the node
    */
   private void addNodeToFlow(String node) {
     FlowSection fs = editor.getAggregatePage().getFlowSection();
     fs.addNode(node);
-//    fs.refresh();  // the fs.addNode does a refresh
+    // fs.refresh(); // the fs.addNode does a refresh
   }
 
   /**
@@ -457,17 +463,14 @@ public class AggregateSection extends AbstractSection {
           "  <protocol>{2}</protocol>\n" + // SOAP or Vinci
           "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
           "\n</uriSpecifier>";
-  
+
   /** The Constant REMOTE_JMS_TEMPLATE. */
-  private final static String REMOTE_JMS_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
-    + "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
-    + "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n"
-    + "  <parameters>\n"
-    + "    <parameter name=\"brokerURL\" value=\"{0}\"/>\n"
-    + "    <parameter name=\"endpoint\"  value=\"{1}\"/>\n"
-    + "{2}" 
-    + "  </parameters>\n"
-    + "</customResourceSpecifier>";
+  private final static String REMOTE_JMS_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+          + "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
+          + "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n"
+          + "  <parameters>\n" + "    <parameter name=\"brokerURL\" value=\"{0}\"/>\n"
+          + "    <parameter name=\"endpoint\"  value=\"{1}\"/>\n" + "{2}" + "  </parameters>\n"
+          + "</customResourceSpecifier>";
 
   /**
    * Handle add remote.
@@ -480,10 +483,8 @@ public class AggregateSection extends AbstractSection {
       return;
 
     String sServiceType = dialog.getSelectedServiceTypeName();
-    if (sServiceType != null &&
-        !sServiceType.equals("UIMA-AS JMS") &&
-        !sServiceType.equals("SOAP") && 
-        !sServiceType.equals("Vinci")) {
+    if (sServiceType != null && !sServiceType.equals("UIMA-AS JMS") && !sServiceType.equals("SOAP")
+            && !sServiceType.equals("Vinci")) {
       return;
     }
     String sURI = dialog.getSelectedUri();
@@ -501,20 +502,19 @@ public class AggregateSection extends AbstractSection {
         String vnsHostPort = "";
         if (dialog.vnsHost.length() > 0) {
           vnsHostPort = MessageFormat.format("    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
-                    new Object[] { dialog.vnsHost });
+                  new Object[] { dialog.vnsHost });
         }
         if (dialog.vnsPort.length() > 0) {
           vnsHostPort += MessageFormat.format("    <parameter name=\"VNS_PORT\" value=\"{0}\"/>\n",
                   new Object[] { dialog.vnsPort });
         }
-        
+
         if (vnsHostPort.length() > 0)
           vnsHostPort = "\n  <parameters>" + vnsHostPort + "  </parameters>";
-      
-      
-        printWriter.println(MessageFormat.format(REMOTE_TEMPLATE, new Object[] { dialog.aeOrCc, sURI,
-            sServiceType, dialog.timeout, vnsHostPort }));
-      } else { 
+
+        printWriter.println(MessageFormat.format(REMOTE_TEMPLATE,
+                new Object[] { dialog.aeOrCc, sURI, sServiceType, dialog.timeout, vnsHostPort }));
+      } else {
         // is UIMA-AS JMS
         StringBuilder sb = new StringBuilder();
         addParam(sb, "timeout", dialog.timeout);
@@ -522,11 +522,9 @@ public class AggregateSection extends AbstractSection {
         addParam(sb, "cpctimeout", dialog.cpcTimeout);
         addParam(sb, "binary_serialization", dialog.binary_serialization);
         addParam(sb, "ignore_process_errors", dialog.ignore_process_errors);
-        printWriter.println(MessageFormat.format(REMOTE_JMS_TEMPLATE, new Object[] {
-            sURI, // brokerUrl
+        printWriter.println(MessageFormat.format(REMOTE_JMS_TEMPLATE, new Object[] { sURI, // brokerUrl
             dialog.endpoint, // endpoint
-            sb.toString()
-        }));   
+            sb.toString() }));
       }
       printWriter.close();
 
@@ -540,18 +538,22 @@ public class AggregateSection extends AbstractSection {
       }
     }
   }
-  
+
   /**
    * Adds the param.
    *
-   * @param sb the sb
-   * @param name the name
-   * @param value the value
+   * @param sb
+   *          the sb
+   * @param name
+   *          the name
+   * @param value
+   *          the value
    * @return the string builder
    */
   private StringBuilder addParam(StringBuilder sb, String name, String value) {
     if (value != null && value.length() > 0) {
-      sb = sb.append("      <parameter name=\"").append(name).append("\" value=\"").append(value).append("\"/>\n");
+      sb = sb.append("      <parameter name=\"").append(name).append("\" value=\"").append(value)
+              .append("\"/>\n");
     }
     return sb;
   }
@@ -564,8 +566,7 @@ public class AggregateSection extends AbstractSection {
    * Handle find analysis engine.
    */
   private void handleFindAnalysisEngine() {
-    FindComponentDialog dialog1 = new FindComponentDialog(
-            this,
+    FindComponentDialog dialog1 = new FindComponentDialog(this,
             "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor",
             "Specify a name pattern and/or additional constraints, and then push the Search button",
             delegateComponentStringHeadersLC);
@@ -605,7 +606,7 @@ public class AggregateSection extends AbstractSection {
         shortName = fileName.substring(nLastSlashLoc + 1);
       }
       produceKeyAddDelegate(shortName, editor.getFullPathFromDescriptorRelativePath(fileName),
-      // dialog2.getAutoAddToFlow(),
+              // dialog2.getAutoAddToFlow(),
               true, dialog2.isImportByName);
     }
     finishAggregateChangeAction();
@@ -614,7 +615,8 @@ public class AggregateSection extends AbstractSection {
   /**
    * Handle table context menu request.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   private void handleTableContextMenuRequest(Event event) {
     TableItem item = filesTable.getItem(new Point(event.x, event.y));
@@ -633,7 +635,8 @@ public class AggregateSection extends AbstractSection {
   /**
    * Handle table hover help.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   private void handleTableHoverHelp(Event event) {
     TableItem item = filesTable.getItem(new Point(event.x, event.y));
@@ -641,8 +644,8 @@ public class AggregateSection extends AbstractSection {
     if (null != item) {
       Map dels = editor.getResolvedDelegates();
       if (null != dels) {
-        sDesc = getDescriptionForDescriptor(item.getText(0), (ResourceSpecifier) dels.get(item
-                .getText(1)));
+        sDesc = getDescriptionForDescriptor(item.getText(0),
+                (ResourceSpecifier) dels.get(item.getText(1)));
       }
     }
     filesTable.setToolTipText(sDesc);
@@ -651,10 +654,14 @@ public class AggregateSection extends AbstractSection {
   /**
    * Adds the delegate.
    *
-   * @param fileName the file name
-   * @param shortName the short name
-   * @param keyName the key name
-   * @param isImportByName the is import by name
+   * @param fileName
+   *          the file name
+   * @param shortName
+   *          the short name
+   * @param keyName
+   *          the key name
+   * @param isImportByName
+   *          the is import by name
    * @return true, if successful
    */
   private boolean addDelegate(String fileName, String shortName, String keyName,
@@ -679,16 +686,10 @@ public class AggregateSection extends AbstractSection {
             && !(inputDescription instanceof CasConsumerDescription)
             && !(inputDescription instanceof URISpecifier)
             && !(inputDescription instanceof PearSpecifier)
-            && !(isJmsDescriptor(inputDescription))
-       ) {
-      Utility
-              .popMessage(
-                      "Invalid kind of descriptor",
-                      MessageFormat
-                              .format(
-                                      "Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
-                                      new Object[] { maybeShortenFileName(fileName) }),
-                      MessageDialog.ERROR);
+            && !(isJmsDescriptor(inputDescription))) {
+      Utility.popMessage("Invalid kind of descriptor", MessageFormat.format(
+              "Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
+              new Object[] { maybeShortenFileName(fileName) }), MessageDialog.ERROR);
       return false;
     }
 
@@ -706,11 +707,12 @@ public class AggregateSection extends AbstractSection {
     finishAggregateChangeAction();
     return true;
   }
-  
+
   /**
    * Checks if is new key.
    *
-   * @param keyName the key name
+   * @param keyName
+   *          the key name
    * @return true, if is new key
    */
   private boolean isNewKey(String keyName) {
@@ -725,7 +727,8 @@ public class AggregateSection extends AbstractSection {
   /**
    * Adds the parameters for delegate.
    *
-   * @param tae the tae
+   * @param tae
+   *          the tae
    */
   public void addParametersForDelegate(AnalysisEngineDescription tae) {
     ConfigurationParameter[] candidateNewParams = tae.getAnalysisEngineMetaData()
@@ -747,8 +750,8 @@ public class AggregateSection extends AbstractSection {
     if (oldParams == null || oldParams.length == 0) {
       getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
               .setConfigurationParameters(candidateNewParams);
-      getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
-              candidateSettings);
+      getAnalysisEngineMetaData().getConfigurationParameterSettings()
+              .setParameterSettings(candidateSettings);
     } else {
       // first do parameters
       Vector newParams = new Vector();
@@ -800,12 +803,14 @@ public class AggregateSection extends AbstractSection {
       for (int i = 0; i < newSettings.size(); i++) {
         newPlusOldSettings[oldSettings.length + i] = (NameValuePair) newSettings.elementAt(i);
       }
-      getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
-              newPlusOldSettings);
+      getAnalysisEngineMetaData().getConfigurationParameterSettings()
+              .setParameterSettings(newPlusOldSettings);
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -823,8 +828,10 @@ public class AggregateSection extends AbstractSection {
   /**
    * adds a tableItem to the table.
    *
-   * @param o the o
-   * @param keyName the key name
+   * @param o
+   *          the o
+   * @param keyName
+   *          the key name
    */
   private void addFile(Object o, String keyName) {
     Import impItem = (Import) o;

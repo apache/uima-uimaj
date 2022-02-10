@@ -69,20 +69,24 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
    * UIMA logger instance we will use to log messages when flow decisions are made.
    */
   private Logger mLogger;
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.flow.FlowController_ImplBase#initialize(org.apache.uima.flow.FlowControllerContext)
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.flow.FlowController_ImplBase#initialize(org.apache.uima.flow.
+   * FlowControllerContext)
    */
   @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mLogger = aContext.getLogger();
   }
-  
+
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.flow.CasFlowController_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
+   * @see
+   * org.apache.uima.flow.CasFlowController_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   @Override
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
@@ -128,8 +132,8 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
     // No need to do the following as of release 2.3.0
-    //  because the framework automatically does this
-//    flow.setCas(aCAS);
+    // because the framework automatically does this
+    // flow.setCas(aCAS);
     return flow;
   }
 

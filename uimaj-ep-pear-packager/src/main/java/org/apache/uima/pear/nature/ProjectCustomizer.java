@@ -188,7 +188,8 @@ public class ProjectCustomizer {
       is = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
       return createFile(project, fileName, is, overrideContentIfExist);
     } catch (Throwable e) {
-      PearException subEx = new PearException(fileName + " could not be created/saved properly.", e);
+      PearException subEx = new PearException(fileName + " could not be created/saved properly.",
+              e);
       throw subEx;
     }
   }
@@ -230,7 +231,8 @@ public class ProjectCustomizer {
         // return null as there is no container to place a file in
         return null;
     } catch (Throwable e) {
-      PearException subEx = new PearException(fileName + " could not be created/saved properly.", e);
+      PearException subEx = new PearException(fileName + " could not be created/saved properly.",
+              e);
       throw subEx;
     }
   }

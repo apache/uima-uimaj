@@ -28,7 +28,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-
 /**
  * An example annotator that annotates Tokens and Sentences.
  */
@@ -38,13 +37,16 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
    * The Class Maker.
    */
   static abstract class Maker {
-    
+
     /**
      * New annotation.
      *
-     * @param jcas the jcas
-     * @param start the start
-     * @param end the end
+     * @param jcas
+     *          the jcas
+     * @param start
+     *          the start
+     * @param end
+     *          the end
      * @return the annotation
      */
     abstract Annotation newAnnotation(JCas jcas, int start, int end);
@@ -89,8 +91,11 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
 
   // *************************************************************
   // * process *
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_component.JCasAnnotator_ImplBase#process(org.apache.uima.jcas.JCas)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_component.JCasAnnotator_ImplBase#process(org.apache.uima.jcas.JCas)
    */
   // *************************************************************
   @Override
@@ -108,14 +113,16 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
   /**
    * Make annotations.
    *
-   * @param m the m
-   * @param b the b
+   * @param m
+   *          the m
+   * @param b
+   *          the b
    */
   // *************************************************************
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
-    for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
-            .next()) {
+    for (int end = b.next(),
+            start = b.first(); end != BreakIterator.DONE; start = end, end = b.next()) {
       // eliminate all-whitespace tokens
       boolean isWhitespace = true;
       for (int i = start; i < end; i++) {

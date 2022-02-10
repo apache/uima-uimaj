@@ -24,13 +24,12 @@ import java.util.Arrays;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
-
 /**
- * This class is able to transfer an {@link Object} object. The object gets
- * saved and only an Id is transfered.
+ * This class is able to transfer an {@link Object} object. The object gets saved and only an Id is
+ * transfered.
  */
 public abstract class ObjectTransfer extends ByteArrayTransfer {
-    
+
   /** The m id generator. */
   private IDGenerator mIdGenerator = IDGenerator.getInstance();
 
@@ -49,7 +48,8 @@ public abstract class ObjectTransfer extends ByteArrayTransfer {
   /**
    * Initializes a new instance with a name.
    *
-   * @param name - the name of current instance.
+   * @param name
+   *          - the name of current instance.
    */
   protected ObjectTransfer(String name) {
     mTransferName = name;
@@ -74,11 +74,11 @@ public abstract class ObjectTransfer extends ByteArrayTransfer {
 
   @Override
   protected int[] getTypeIds() {
-    return new int[] {mTransferID};
+    return new int[] { mTransferID };
   }
 
   @Override
   protected String[] getTypeNames() {
-    return new String[] {mTransferName};
+    return new String[] { mTransferName };
   }
 }

@@ -29,12 +29,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
-
 /**
  * The Class ColorEditor.
  */
 class ColorEditor extends DefaultCellEditor {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 4766162815461077066L;
 
@@ -44,7 +43,8 @@ class ColorEditor extends DefaultCellEditor {
   /**
    * Instantiates a new color editor.
    *
-   * @param button the button
+   * @param button
+   *          the button
    */
   public ColorEditor(JButton button) {
     super(new JCheckBox());
@@ -61,7 +61,9 @@ class ColorEditor extends DefaultCellEditor {
     });
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.AbstractCellEditor#fireEditingStopped()
    */
   @Override
@@ -69,7 +71,9 @@ class ColorEditor extends DefaultCellEditor {
     super.fireEditingStopped();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.DefaultCellEditor#getCellEditorValue()
    */
   @Override
@@ -77,8 +81,11 @@ class ColorEditor extends DefaultCellEditor {
     return currentColor;
   }
 
-  /* (non-Javadoc)
-   * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable,
+   * java.lang.Object, boolean, int, int)
    */
   @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,

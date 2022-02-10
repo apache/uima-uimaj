@@ -32,22 +32,22 @@ import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.swt.custom.StyleRange;
 
-
 /**
  * The Class NonRuleBasedDamagerRepairer.
  */
 public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPresentationRepairer {
 
-  /**  The document this object works on. */
+  /** The document this object works on. */
   protected IDocument fDocument;
 
-  /**  The default text attribute if non is returned as data by the current token. */
+  /** The default text attribute if non is returned as data by the current token. */
   protected TextAttribute fDefaultTextAttribute;
 
   /**
    * Constructor for NonRuleBasedDamagerRepairer.
    *
-   * @param defaultTextAttribute the default text attribute
+   * @param defaultTextAttribute
+   *          the default text attribute
    */
   public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
     Assert.isNotNull(defaultTextAttribute);
@@ -58,7 +58,8 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   /**
    * Sets the document.
    *
-   * @param document the new document
+   * @param document
+   *          the new document
    * @see IPresentationRepairer#setDocument(IDocument)
    */
   @Override
@@ -80,7 +81,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
 
     IRegion info = fDocument.getLineInformationOfOffset(offset);
     if (offset <= info.getOffset() + info.getLength()) {
-        return info.getOffset() + info.getLength();
+      return info.getOffset() + info.getLength();
     }
 
     int line = fDocument.getLineOfOffset(offset);
@@ -95,9 +96,12 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   /**
    * Gets the damage region.
    *
-   * @param partition the partition
-   * @param event the event
-   * @param documentPartitioningChanged the document partitioning changed
+   * @param partition
+   *          the partition
+   * @param event
+   *          the event
+   * @param documentPartitioningChanged
+   *          the document partitioning changed
    * @return the damage region
    * @see IPresentationDamager#getDamageRegion(ITypedRegion, DocumentEvent, boolean)
    */
@@ -116,9 +120,8 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
         if (info.getOffset() <= end && end <= info.getOffset() + info.getLength()) {
           // optimize the case of the same line
           end = info.getOffset() + info.getLength();
-        }
-        else {
-            end = endOfLineOf(end);
+        } else {
+          end = endOfLineOf(end);
         }
 
         end = Math.min(partition.getOffset() + partition.getLength(), end);
@@ -134,8 +137,10 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   /**
    * Creates the presentation.
    *
-   * @param presentation the presentation
-   * @param region the region
+   * @param presentation
+   *          the presentation
+   * @param region
+   *          the region
    * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
    */
   @Override
@@ -155,10 +160,11 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
    * @param attr
    *          the attribute describing the style of the range to be styled
    */
-  protected void addRange(TextPresentation presentation, int offset, int length, TextAttribute attr) {
+  protected void addRange(TextPresentation presentation, int offset, int length,
+          TextAttribute attr) {
     if (attr != null) {
-        presentation.addStyleRange(new StyleRange(offset, length, attr.getForeground(), attr
-                  .getBackground(), attr.getStyle()));
+      presentation.addStyleRange(new StyleRange(offset, length, attr.getForeground(),
+              attr.getBackground(), attr.getStyle()));
     }
   }
 }

@@ -32,91 +32,96 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
  * The Class OutlineContentProviderBase.
  */
 abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentListener
-		implements ITreeContentProvider {
-	
-	/** The m editor. */
-	protected AnnotationEditor mEditor;
-	  
-	/** The m input document. */
-	protected ICasDocument mInputDocument;
+        implements ITreeContentProvider {
 
-    /** The viewer. */
-    protected TreeViewer viewer;
+  /** The m editor. */
+  protected AnnotationEditor mEditor;
 
-    /**
-     * Instantiates a new outline content provider base.
-     *
-     * @param editor the editor
-     * @param viewer the viewer
-     */
-    protected OutlineContentProviderBase(AnnotationEditor editor, TreeViewer viewer) {
-    	this.viewer = viewer;
-    	this.mEditor = editor;
-    }
-    
-    /**
-     * not implemented.
-     */
-    @Override
-    public void dispose() {
-      // currently not implemented
-    }
+  /** The m input document. */
+  protected ICasDocument mInputDocument;
 
-	/**
-	 * Gets called if the viewer input was changed. In this case, this only happens once if the
-	 * {@link AnnotationOutline} is initialized.
-	 *
-	 * @param viewer the viewer
-	 * @param oldInput the old input
-	 * @param newInput the new input
-	 */
-	@Override
+  /** The viewer. */
+  protected TreeViewer viewer;
+
+  /**
+   * Instantiates a new outline content provider base.
+   *
+   * @param editor
+   *          the editor
+   * @param viewer
+   *          the viewer
+   */
+  protected OutlineContentProviderBase(AnnotationEditor editor, TreeViewer viewer) {
+    this.viewer = viewer;
+    this.mEditor = editor;
+  }
+
+  /**
+   * not implemented.
+   */
+  @Override
+  public void dispose() {
+    // currently not implemented
+  }
+
+  /**
+   * Gets called if the viewer input was changed. In this case, this only happens once if the
+   * {@link AnnotationOutline} is initialized.
+   *
+   * @param viewer
+   *          the viewer
+   * @param oldInput
+   *          the old input
+   * @param newInput
+   *          the new input
+   */
+  @Override
   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	  if (oldInput != null) {
-	    ((ICasDocument) oldInput).removeChangeListener(this);
-	  }
-	
-	  if (newInput != null) {
-	    ((ICasDocument) newInput).addChangeListener(this);
-	
-	    mInputDocument = (ICasDocument) newInput;
-	    
-	    changed();
-	  }
-	}
+    if (oldInput != null) {
+      ((ICasDocument) oldInput).removeChangeListener(this);
+    }
 
-	/**
-	 * Updates the given annotation in the viewer.
-	 *
-	 * @param featureStructres the feature structres
-	 */
-	@Override
-	protected void updatedAnnotation(Collection<AnnotationFS> featureStructres) {
-	  Collection<AnnotationFS> annotations = new ArrayList<>(featureStructres.size());
-	
-	  for (FeatureStructure structure : featureStructres) {
-	    if (structure instanceof AnnotationFS) {
-	      annotations.add((AnnotationFS) structure);
-	    }
-	  }
-	
-	  final Object[] items = new Object[annotations.size()];
-	
-	  int i = 0;
-	  for (AnnotationFS annotation : annotations) {
-	    items[i++] = new AnnotationTreeNode(mEditor.getDocument(), annotation);
-	  }
-	
-	  Display.getDefault().syncExec(new Runnable() {
-	    @Override
+    if (newInput != null) {
+      ((ICasDocument) newInput).addChangeListener(this);
+
+      mInputDocument = (ICasDocument) newInput;
+
+      changed();
+    }
+  }
+
+  /**
+   * Updates the given annotation in the viewer.
+   *
+   * @param featureStructres
+   *          the feature structres
+   */
+  @Override
+  protected void updatedAnnotation(Collection<AnnotationFS> featureStructres) {
+    Collection<AnnotationFS> annotations = new ArrayList<>(featureStructres.size());
+
+    for (FeatureStructure structure : featureStructres) {
+      if (structure instanceof AnnotationFS) {
+        annotations.add((AnnotationFS) structure);
+      }
+    }
+
+    final Object[] items = new Object[annotations.size()];
+
+    int i = 0;
+    for (AnnotationFS annotation : annotations) {
+      items[i++] = new AnnotationTreeNode(mEditor.getDocument(), annotation);
+    }
+
+    Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
-	    	viewer.update(items, null);
-	    }
-	  });
-	}
+        viewer.update(items, null);
+      }
+    });
+  }
 }

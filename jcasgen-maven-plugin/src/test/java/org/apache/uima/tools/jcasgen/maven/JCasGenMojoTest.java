@@ -35,8 +35,8 @@ import org.junit.Test;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
-    @Test
-    public void testInvalidFeature() throws Exception {
+  @Test
+  public void testInvalidFeature() throws Exception {
     Exception ee = null;
     try {
       this.test("invalidFeature");
@@ -44,38 +44,40 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
       ee = e;
     }
     assertTrue(ee != null);
-    assertEquals("JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.", ee.getMessage());
+    assertEquals(
+            "JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.",
+            ee.getMessage());
   }
-  
-    @Test
-    public void testSimple() throws Exception {
+
+  @Test
+  public void testSimple() throws Exception {
     this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
-    @Test
-    public void testClasspath() throws Exception {
+  @Test
+  public void testClasspath() throws Exception {
     this.test("classpath", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
-    @Test
-    public void testWildcard() throws Exception {
+  @Test
+  public void testWildcard() throws Exception {
     this.test("wildcard", "type.span.Sentence", "type.span.Token");
   }
 
-    @Test
-    public void testExclude() throws Exception {
+  @Test
+  public void testExclude() throws Exception {
     this.test("exclude", "type.span.Sentence");
   }
 
-    @Test
-    public void test(String projectName, String... types) throws Exception {
+  @Test
+  public void test(String projectName, String... types) throws Exception {
 
     File projectSourceDirectory = getTestFile("src/test/resources/" + projectName);
     File projectDirectory = getTestFile("target/project-" + projectName + "-test");
 
     // Stage project to target folder
     FileUtils.copyDirectoryStructure(projectSourceDirectory, projectDirectory);
-    
+
     File pomFile = new File(projectDirectory, "/pom.xml");
     assertNotNull(pomFile);
     assertTrue(pomFile.exists());
@@ -92,7 +94,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     if (source.exists()) {
       FileUtils.copyDirectoryStructure(source, new File(project.getBuild().getOutputDirectory()));
     }
-    
+
     // load the Mojo
     JCasGenMojo generate = (JCasGenMojo) this.lookupConfiguredMojo(project, "generate");
     assertNotNull(generate);
@@ -105,7 +107,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
 
     // check that the Java files have been generated
     File jCasGenDirectory = new File(project.getBasedir(), "target/generated-sources/jcasgen");
-    
+
     // Record all the files that were generated
     DirectoryScanner ds = new DirectoryScanner();
     ds.setBasedir(jCasGenDirectory);
@@ -115,20 +117,20 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     for (String scannedFile : ds.getIncludedFiles()) {
       files.add(new File(ds.getBasedir(), scannedFile));
     }
-    
+
     for (String type : types) {
       File wrapperFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + ".java");
       // no _type files in v3
-//      File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
-      
+      // File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
+
       Assert.assertTrue(files.contains(wrapperFile));
       // no _type files in v3
-//      Assert.assertTrue(files.contains(typeFile));
-      
+      // Assert.assertTrue(files.contains(typeFile));
+
       files.remove(wrapperFile);
-//      files.remove(typeFile);
+      // files.remove(typeFile);
     }
-    
+
     // check that no extra files were generated
     Assert.assertTrue(files.isEmpty());
 

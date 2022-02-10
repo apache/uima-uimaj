@@ -29,16 +29,15 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-
 /**
  * The Class OutlinePageBook.
  */
-public class OutlinePageBook extends CasEditorViewPage 
+public class OutlinePageBook extends CasEditorViewPage
         implements IContentOutlinePage, ISelectionChangedListener {
 
   /** The viewer. */
   private Viewer viewer;
-  
+
   /**
    * Instantiates a new outline page book.
    */
@@ -48,10 +47,10 @@ public class OutlinePageBook extends CasEditorViewPage
 
   @Override
   protected void initializeAndShowPage(final IPageBookViewPage page) {
-    
+
     if (viewer != null)
       viewer.removeSelectionChangedListener(this);
-    
+
     IPageSite site = new SubPageSite(getSite());
 
     if (book != null && page != null) {
@@ -63,18 +62,17 @@ public class OutlinePageBook extends CasEditorViewPage
     }
 
     super.initializeAndShowPage(page);
-    
+
     if (book != null) {
       if (page != null) {
         viewer = ((AnnotationOutline) page).getViewer();
         viewer.addSelectionChangedListener(this);
-      }
-      else {
+      } else {
         viewer = null;
       }
     }
   }
-  
+
   /**
    * Gets the cas view page.
    *

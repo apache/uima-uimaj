@@ -19,7 +19,6 @@
 
 package org.apache.uima.pear.insd.edit;
 
-
 /**
  * 
  * this interface defines common constants used in classes related to handling PEAR Installation

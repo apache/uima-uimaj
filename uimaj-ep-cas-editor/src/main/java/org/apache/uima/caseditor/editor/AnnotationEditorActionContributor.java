@@ -25,7 +25,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
-
 /**
  * The <code>AnnotationEditor</code> action contributor.
  *
@@ -46,7 +45,8 @@ public class AnnotationEditorActionContributor extends EditorActionBarContributo
   /**
    * Sets the active editor.
    *
-   * @param part the new active editor
+   * @param part
+   *          the new active editor
    */
   @Override
   public void setActiveEditor(IEditorPart part) {
@@ -68,7 +68,8 @@ public class AnnotationEditorActionContributor extends EditorActionBarContributo
   /**
    * Contributes the status item to the status line.
    *
-   * @param statusLineManager the status line manager
+   * @param statusLineManager
+   *          the status line manager
    */
   @Override
   public void contributeToStatusLine(IStatusLineManager statusLineManager) {

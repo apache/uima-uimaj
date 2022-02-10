@@ -24,12 +24,11 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDropEvent;
 
-
 /**
  * The Class TableDropAdapter.
  */
 class TableDropAdapter extends DropTargetAdapter {
-  
+
   /** The annotation features viewer. */
   private AnnotationFeaturesViewer annotationFeaturesViewer;
 
@@ -39,15 +38,19 @@ class TableDropAdapter extends DropTargetAdapter {
   /**
    * Instantiates a new table drop adapter.
    *
-   * @param av the av
-   * @param edit the edit
+   * @param av
+   *          the av
+   * @param edit
+   *          the edit
    */
   public TableDropAdapter(AnnotationFeaturesViewer av, StyleMapEditor edit) {
     annotationFeaturesViewer = av;
     this.edit = edit;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
    */
   @Override

@@ -49,13 +49,13 @@ import org.apache.uima.util.CasCopier;
  * that would also make this example more complicated.
  */
 public class SimpleTextMerger extends JCasMultiplier_ImplBase {
-  
+
   public static final String MESSAGE_DIGEST = "org.apache.uima.examples.casMultiplier.ExampleCasMultiplierMessages";
-  
+
   public static final String MISSING_SOURCE_DOCUMENT_INFO = "missing_source_document_info";
-  
+
   public static final String NO_NEXT_CAS = "no_next_cas";
-  
+
   private StringBuffer mDocBuf = new StringBuffer();
 
   private JCas mMergedCas;
@@ -67,7 +67,8 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.UimaContext)
+   * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.
+   * UimaContext)
    */
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {

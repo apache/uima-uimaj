@@ -69,15 +69,14 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
- * Main Annotation Viewer GUI. Allows user to choose directory of XCAS or XMI files, then
- * launches the AnnotationViewerDialog.
+ * Main Annotation Viewer GUI. Allows user to choose directory of XCAS or XMI files, then launches
+ * the AnnotationViewerDialog.
  * 
  * 
  */
 public class AnnotationViewerMain extends JFrame {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -3201723535833938833L;
 
@@ -111,7 +110,7 @@ public class AnnotationViewerMain extends JFrame {
   /** The about dialog. */
   private JDialog aboutDialog;
 
-  /**  Stores user preferences. */
+  /** Stores user preferences. */
   private Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/AnnotationViewer");
 
   /**
@@ -183,8 +182,8 @@ public class AnnotationViewerMain extends JFrame {
             inputDir);
     inputFileSelector.setSelected(inputDir.getAbsolutePath());
 
-    taeDescriptorFileSelector = new FileSelector("", "TAE Descriptor File",
-            JFileChooser.FILES_ONLY, uimaHomeDir);
+    taeDescriptorFileSelector = new FileSelector("", "TAE Descriptor File", JFileChooser.FILES_ONLY,
+            uimaHomeDir);
 
     File descriptorFile = new File(uimaHomeDir,
             "examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
@@ -264,12 +263,15 @@ public class AnnotationViewerMain extends JFrame {
   /**
    * View documents.
    *
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
-  public void viewDocuments() throws InvalidXMLException, IOException,
-          ResourceInitializationException {
+  public void viewDocuments()
+          throws InvalidXMLException, IOException, ResourceInitializationException {
     File descriptorFile = new File(taeDescriptorFileSelector.getSelected());
     if (!descriptorFile.exists() || descriptorFile.isDirectory()) {
       displayError("Descriptor File \"" + descriptorFile.getPath() + "\" does not exist.");
@@ -288,8 +290,8 @@ public class AnnotationViewerMain extends JFrame {
     File styleMapFile;
     if (descriptor instanceof AnalysisEngineDescription) {
       cas = CasCreationUtils.createCas((AnalysisEngineDescription) descriptor);
-      styleMapFile = getStyleMapFile((AnalysisEngineDescription) descriptor, descriptorFile
-              .getPath());
+      styleMapFile = getStyleMapFile((AnalysisEngineDescription) descriptor,
+              descriptorFile.getPath());
     } else if (descriptor instanceof TypeSystemDescription) {
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
       tsDesc.resolveImports();
@@ -307,9 +309,8 @@ public class AnnotationViewerMain extends JFrame {
     // PrefsMediator is also used in DocumentAnalyzer, where the
     // output dir is the directory containing XCAS files.
     prefsMed.setOutputDir(inputDir.toString());
-    AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this,
-            "Analyzed Documents", prefsMed, styleMapFile, null, cas.getTypeSystem(), null, false,
-            cas);
+    AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this, "Analyzed Documents",
+            prefsMed, styleMapFile, null, cas.getTypeSystem(), null, false, cas);
     viewerDialog.pack();
     viewerDialog.setModal(true);
     viewerDialog.setVisible(true);
@@ -318,10 +319,13 @@ public class AnnotationViewerMain extends JFrame {
   /**
    * Gets the style map file.
    *
-   * @param tad the tad
-   * @param descFileName the desc file name
+   * @param tad
+   *          the tad
+   * @param descFileName
+   *          the desc file name
    * @return the style map file
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   private File getStyleMapFile(AnalysisEngineDescription tad, String descFileName)
           throws IOException {
@@ -341,10 +345,13 @@ public class AnnotationViewerMain extends JFrame {
   /**
    * Gets the style map file.
    *
-   * @param tsd the tsd
-   * @param descFileName the desc file name
+   * @param tsd
+   *          the tsd
+   * @param descFileName
+   *          the desc file name
    * @return the style map file
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   private File getStyleMapFile(TypeSystemDescription tsd, String descFileName) throws IOException {
     File styleMapFile = getStyleMapFileName(descFileName);
@@ -363,7 +370,8 @@ public class AnnotationViewerMain extends JFrame {
   /**
    * Gets the name of the style map file for the given AE or TypeSystem descriptor filename.
    *
-   * @param aDescriptorFileName the a descriptor file name
+   * @param aDescriptorFileName
+   *          the a descriptor file name
    * @return the style map file name
    */
   public File getStyleMapFileName(String aDescriptorFileName) {
@@ -380,7 +388,8 @@ public class AnnotationViewerMain extends JFrame {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     final AnnotationViewerMain frame = new AnnotationViewerMain();
@@ -415,8 +424,8 @@ public class AnnotationViewerMain extends JFrame {
 
     // restore preferences
     inputFileSelector.setSelected(prefs.get("inDir", defaultInputDir.toString()));
-    taeDescriptorFileSelector.setSelected(prefs.get("taeDescriptorFile", defaultTaeDescriptorFile
-            .toString()));
+    taeDescriptorFileSelector
+            .setSelected(prefs.get("taeDescriptorFile", defaultTaeDescriptorFile.toString()));
   }
 
   /**
@@ -480,7 +489,7 @@ public class AnnotationViewerMain extends JFrame {
 
     displayError(message);
   }
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -489,5 +498,5 @@ public class AnnotationViewerMain extends JFrame {
   @Override
   public Dimension getPreferredSize() {
     return new Dimension(640, 200);
-  }  
+  }
 }

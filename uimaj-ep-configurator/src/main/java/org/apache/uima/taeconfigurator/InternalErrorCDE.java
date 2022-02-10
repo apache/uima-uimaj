@@ -24,7 +24,6 @@ package org.apache.uima.taeconfigurator;
  */
 public class InternalErrorCDE extends RuntimeException {
 
-  
   /**
    * Instantiates a new internal error CDE.
    */
@@ -34,7 +33,8 @@ public class InternalErrorCDE extends RuntimeException {
   /**
    * Instantiates a new internal error CDE.
    *
-   * @param message the message
+   * @param message
+   *          the message
    */
   public InternalErrorCDE(String message) {
     super(message + " - Please see Eclipse Error Log for more information.");
@@ -43,8 +43,10 @@ public class InternalErrorCDE extends RuntimeException {
   /**
    * Instantiates a new internal error CDE.
    *
-   * @param message the message
-   * @param cause the cause
+   * @param message
+   *          the message
+   * @param cause
+   *          the cause
    */
   public InternalErrorCDE(String message, Throwable cause) {
     super(message + " - Please see Eclipse Error Log for more information.", cause);
@@ -53,7 +55,8 @@ public class InternalErrorCDE extends RuntimeException {
   /**
    * Instantiates a new internal error CDE.
    *
-   * @param cause the cause
+   * @param cause
+   *          the cause
    */
   public InternalErrorCDE(Throwable cause) {
     super(cause);

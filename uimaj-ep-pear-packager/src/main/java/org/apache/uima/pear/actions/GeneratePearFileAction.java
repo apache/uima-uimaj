@@ -38,7 +38,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-
 /**
  * 
  * This class handles the "Generate PEAR" action, which appear in the context menu of a project with
@@ -61,8 +60,10 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
   /**
    * Sets the active part.
    *
-   * @param action the action
-   * @param targetPart the target part
+   * @param action
+   *          the action
+   * @param targetPart
+   *          the target part
    * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
    */
   @Override
@@ -72,7 +73,8 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
   /**
    * See IActionDelegate#run(IAction).
    *
-   * @param action the action
+   * @param action
+   *          the action
    */
   @Override
   public void run(IAction action) {
@@ -113,8 +115,10 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
   /**
    * See IActionDelegate#selectionChanged(IAction, ISelection).
    *
-   * @param action the action
-   * @param selection the selection
+   * @param action
+   *          the action
+   * @param selection
+   *          the selection
    */
   @Override
   public void selectionChanged(IAction action, ISelection selection) {

@@ -161,7 +161,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /**
  * Main class implementing the multi page editor. In Eclipse 3, we extend FormEditor, which extends
  * in turn MultiPageEditorPart.
@@ -176,13 +175,13 @@ import org.xml.sax.SAXException;
  * SuperSuperclass (MultiPageEditorPart) holds array of editors (we only have 1 "editor" - the xml
  * source editor - the rest are views into that model / data).
  * 
- * Stale = model (on disk, saved) is ahead of widgets Dirty = widgets are ahead of model 
+ * Stale = model (on disk, saved) is ahead of widgets Dirty = widgets are ahead of model
  * &lt;&lt;&lt; NOT USED HERE
  * 
- * Each page of the multipage editor has its own class. ownclass -%gt; HeaderPage -%gt; FormPage (impl
- * IFormPage) has instance of PageForm -%gt; ManagedForm ManagedForm (impl IManagedForm): has instance
- * of ScrolledForm has subparts (IFormPart - which live on the scrolled form) A part can be a
- * section. A part can implement IPartSelectionListener to get selectionChanged(IFormPart,
+ * Each page of the multipage editor has its own class. ownclass -%gt; HeaderPage -%gt; FormPage
+ * (impl IFormPage) has instance of PageForm -%gt; ManagedForm ManagedForm (impl IManagedForm): has
+ * instance of ScrolledForm has subparts (IFormPart - which live on the scrolled form) A part can be
+ * a section. A part can implement IPartSelectionListener to get selectionChanged(IFormPart,
  * ISelection) calls. initialize() call propagated to all parts. dispose() call propagated to all
  * parts. refresh() propagated to all parts (if part.isStale()) (Not Used) commit() propagated to
  * all parts (if part.isDirty()) setInput() propagated to all parts setFocus() propagated to 1st
@@ -191,7 +190,7 @@ import org.xml.sax.SAXException;
  * fireSelectionChanged(IFormPart, ISelection) - can be used to notify other parts that implement
  * IPartSelectionListener about selection changes
  * 
- * Each page has one or more sections. sectionSpecific -&gt; (AbstractTableSection) -&gt; 
+ * Each page has one or more sections. sectionSpecific -&gt; (AbstractTableSection) -&gt;
  * AbstractSection -&gt; SectionPart -&gt; AbstractFormPart (impl IFormPart, see above)
  * 
  * AbstractFormPart holds back ref to managed form, a dirty and stale bit. Stale = model is ahead of
@@ -212,7 +211,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   /** The initial size feature collections. */
   public final int INITIAL_SIZE_FEATURE_COLLECTIONS = 40;
-  
+
   /** The preserve comments. */
   public final boolean PRESERVE_COMMENTS = true;
 
@@ -230,7 +229,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   /** The merged type system description. */
   private TypeSystemDescription mergedTypeSystemDescription = null;
-  
+
   /** The merged types adding features. */
   private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<>();
 
@@ -238,7 +237,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private TypeSystemDescription importedTypeSystemDescription = null;
 
   /** The xml infoset. */
-  private Node xmlInfoset = null;  // captures comments and ignorableWhitespace
+  private Node xmlInfoset = null; // captures comments and ignorableWhitespace
   /**
    * Key = unique ID of included AE in aggregate Value = AnalysisEngineSpecification or URISpecifier
    * if remote This value is obtained from aeDescription.getDelegateAnalysisEngineSpecifiers() for
@@ -424,8 +423,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   }
 
   /** The limit J cas gen to project scope. */
-  private boolean limitJCasGenToProjectScope = MultiPageEditorContributor.getLimitJCasGenToProjectScope();
-  
+  private boolean limitJCasGenToProjectScope = MultiPageEditorContributor
+          .getLimitJCasGenToProjectScope();
+
   /**
    * Gets the limit J cas gen to project scope.
    *
@@ -434,11 +434,12 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   public boolean getLimitJCasGenToProjectScope() {
     return limitJCasGenToProjectScope;
   }
-  
+
   /**
    * Sets the limit J cas gen to project scope.
    *
-   * @param v the new limit J cas gen to project scope
+   * @param v
+   *          the new limit J cas gen to project scope
    */
   public void setLimitJCasGenToProjectScope(boolean v) {
     limitJCasGenToProjectScope = v;
@@ -487,28 +488,37 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Descriptor type string.
    *
-   * @param pDescriptorType the descriptor type
+   * @param pDescriptorType
+   *          the descriptor type
    * @return the string
    */
   public String descriptorTypeString(int pDescriptorType) {
     String r;
     switch (pDescriptorType) {
       case DESCRIPTOR_AE:
-        r = Messages.getString("MultiPageEditor.0");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.0"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_TYPESYSTEM:
-        r = Messages.getString("MultiPageEditor.1");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.1"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_INDEX:
-        r = Messages.getString("MultiPageEditor.2");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.2"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_TYPEPRIORITY:
-        r = Messages.getString("MultiPageEditor.3");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.3"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_EXTRESANDBINDINGS:
-        r = Messages.getString("MultiPageEditor.4");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.4"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_COLLECTIONREADER:
-        r = Messages.getString("MultiPageEditor.5");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.5"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_CASINITIALIZER:
-        r = Messages.getString("MultiPageEditor.6");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.6"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_CASCONSUMER:
-        r = Messages.getString("MultiPageEditor.7");break; //$NON-NLS-1$
+        r = Messages.getString("MultiPageEditor.7"); //$NON-NLS-1$
+        break;
       case DESCRIPTOR_FLOWCONTROLLER:
         r = "Flow Controller";
         break;
@@ -650,42 +660,42 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   /** The Constant typeDescriptionArray0. */
   public static final TypeDescription[] typeDescriptionArray0 = new TypeDescription[0];
-  
+
   /** The type systems to merge. */
   private List typeSystemsToMerge;
-  
+
   /** The type priorities to merge. */
   private List typePrioritiesToMerge;
-  
+
   /** The fs indexes to merge. */
   private List fsIndexesToMerge;
-  
+
   /** The failed remotes. */
   private Map failedRemotes = new TreeMap();
-  
+
   /** The failed remotes already known. */
   private Set failedRemotesAlreadyKnown = new TreeSet();
 
   /** The external editor configurations. */
   private static List<IConfigurationElement> externalEditorConfigurations = null;
-  
+
   /** The current editor. */
   private IUimaMultiPageEditor currentEditor; // can be CDE or another editor
-  
+
   /**
    * Instantiates a new multi page editor.
    */
   public MultiPageEditor() {
     currentEditor = this; // default
-    initCDE (); // specific for CDE
+    initCDE(); // specific for CDE
   }
-  
+
   /**
    * 
-   * Note: Try to move these codes out of constructor MultiPageEditor().
-   *       Too much of impacts. Put it back into constructor MultiPageEditor()
+   * Note: Try to move these codes out of constructor MultiPageEditor(). Too much of impacts. Put it
+   * back into constructor MultiPageEditor()
    */
-  private void initCDE () {
+  private void initCDE() {
     // Model initialization
     fileDirty = false;
     dirtyTypeNameHash = new HashSet();
@@ -705,23 +715,24 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   }
 
   /** The Constant EXTENSION_TAG_CLASS_ATTRIB. */
-  private static final String EXTENSION_TAG_CLASS_ATTRIB  = "class";
+  private static final String EXTENSION_TAG_CLASS_ATTRIB = "class";
 
-  
   /**
    * Gets the required editor.
    *
-   * @param parsedResult the parsed result
+   * @param parsedResult
+   *          the parsed result
    * @return the required editor
    */
   private IUimaEditorExtension getRequiredEditor(XMLizable parsedResult) {
     return getRequiredEditor(null, parsedResult.getClass().getName());
   }
- 
+
   /**
    * Gets the required editor.
    *
-   * @param topElementName the top element name
+   * @param topElementName
+   *          the top element name
    * @return the required editor
    */
   private IUimaEditorExtension getRequiredEditor(String topElementName) {
@@ -732,29 +743,35 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the required editor.
    *
-   * @param topElementName the top element name
-   * @param parsedResultClassName the parsed result class name
+   * @param topElementName
+   *          the top element name
+   * @param parsedResultClassName
+   *          the parsed result class name
    * @return the required editor
    */
   // otherwise instantiates a new editor
-  private  IUimaEditorExtension getRequiredEditor(String topElementName, String parsedResultClassName) {
+  private IUimaEditorExtension getRequiredEditor(String topElementName,
+          String parsedResultClassName) {
     IUimaEditorExtension editor;
     // load external editor configurations if not already loaded
     if (null == externalEditorConfigurations) {
       getExternalEditorConfigurations();
     }
-    
+
     for (IConfigurationElement xeditor : externalEditorConfigurations) {
       for (IConfigurationElement canEdit : xeditor.getChildren()) {
         String elementName = canEdit.getAttribute("elementName");
         String parseResultName = canEdit.getAttribute("internalParseClass");
-        if ( ( (null != topElementName) && topElementName.equals(elementName)) ||
-             ( (null != parsedResultClassName) && parsedResultClassName.equals(parseResultName)) ) {            
+        if (((null != topElementName) && topElementName.equals(elementName))
+                || ((null != parsedResultClassName)
+                        && parsedResultClassName.equals(parseResultName))) {
           try {
-            editor = (IUimaEditorExtension) xeditor.createExecutableExtension(EXTENSION_TAG_CLASS_ATTRIB); 
+            editor = (IUimaEditorExtension) xeditor
+                    .createExecutableExtension(EXTENSION_TAG_CLASS_ATTRIB);
           } catch (CoreException e) {
-            Utility.popMessage("Unexpected Exception", "While trying to load an editor extension"
-                + getMessagesToRootCause(e), MessageDialog.ERROR);
+            Utility.popMessage("Unexpected Exception",
+                    "While trying to load an editor extension" + getMessagesToRootCause(e),
+                    MessageDialog.ERROR);
             return null;
           }
           editor.init();
@@ -764,33 +781,33 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
     return null;
   }
-    
+
   /** The Constant EXTENSION_POINT_ID. */
-  private static final String EXTENSION_POINT_ID         = "externalEditor";
- 
+  private static final String EXTENSION_POINT_ID = "externalEditor";
+
   // load all of the external editor xml data
   /**
    * Gets the external editor configurations.
    *
    * @return the external editor configurations
    */
-  //   (but don't load the actual editors, yet)
-  private void getExternalEditorConfigurations () {
+  // (but don't load the actual editors, yet)
+  private void getExternalEditorConfigurations() {
     // Get extension point from Registry
     IExtensionPoint point = Platform.getExtensionRegistry()
-                .getExtensionPoint(TAEConfiguratorPlugin.pluginId, EXTENSION_POINT_ID);
-    
+            .getExtensionPoint(TAEConfiguratorPlugin.pluginId, EXTENSION_POINT_ID);
+
     externalEditorConfigurations = new ArrayList<>();
-    
+
     // check: Any <extension> tags for our extension-point?
     if (point != null) {
       for (IExtension extension : point.getExtensions()) {
         Bundle b = Platform.getBundle(extension.getContributor().getName());
         if (b == null) {
-          Utility.popMessage(
-              "Problem with Editor Extension",
-              "Editor '" + extension.getContributor().getName() + "' is present, but can't be loaded, probably because of unsatisfied dependencies\n",
-              MessageDialog.ERROR);
+          Utility.popMessage("Problem with Editor Extension", "Editor '"
+                  + extension.getContributor().getName()
+                  + "' is present, but can't be loaded, probably because of unsatisfied dependencies\n",
+                  MessageDialog.ERROR);
           continue;
         }
         for (IConfigurationElement ces : extension.getConfigurationElements()) {
@@ -799,39 +816,40 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       }
     } else {
       // Error - no such extension point
-      Utility.popMessage(
-          "Internal Error",
-          "CDE's extension point is missing",
-          MessageDialog.ERROR);
+      Utility.popMessage("Internal Error", "CDE's extension point is missing", MessageDialog.ERROR);
     }
   }
 
   // *************************************************************************
-  //            Expose "protected" methods and methods from Super             
-  // *************************************************************************  
-  
+  // Expose "protected" methods and methods from Super
+  // *************************************************************************
+
   /**
-   * @param site the site
-   * @param editorInput the editor input
-   * @throws PartInitException the part init exception
+   * @param site
+   *          the site
+   * @param editorInput
+   *          the editor input
+   * @throws PartInitException
+   *           the part init exception
    */
   public void initSuper(IEditorSite site, IEditorInput editorInput) throws PartInitException {
     super.init(site, editorInput);
   }
-  
+
   /**
    * Gets the current page super.
    *
    * @return the current page super
    */
-  public int getCurrentPageSuper () {
+  public int getCurrentPageSuper() {
     return getCurrentPage();
   }
-  
+
   /**
    * Sets the part name super.
    *
-   * @param partName the new part name super
+   * @param partName
+   *          the new part name super
    */
   public void setPartNameSuper(String partName) {
     super.setPartName(partName);
@@ -840,17 +858,20 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the page text super.
    *
-   * @param pageIndex the page index
-   * @param text the text
+   * @param pageIndex
+   *          the page index
+   * @param text
+   *          the text
    */
   public void setPageTextSuper(int pageIndex, String text) {
     super.setPageText(pageIndex, text);
   }
-  
+
   /**
    * Page change super.
    *
-   * @param newPageIndex the new page index
+   * @param newPageIndex
+   *          the new page index
    */
   public void pageChangeSuper(int newPageIndex) {
     super.pageChange(newPageIndex);
@@ -859,30 +880,33 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the active page super.
    *
-   * @param pageIndex the new active page super
+   * @param pageIndex
+   *          the new active page super
    */
-  public void setActivePageSuper (int pageIndex) {
+  public void setActivePageSuper(int pageIndex) {
     super.setActivePage(pageIndex);
   }
-  
+
   /**
    * Fire property change super.
    *
-   * @param propertyId the property id
+   * @param propertyId
+   *          the property id
    */
   public void firePropertyChangeSuper(final int propertyId) {
     super.firePropertyChange(propertyId);
   }
-  
+
   /**
    * Sets the input super.
    *
-   * @param input the new input super
+   * @param input
+   *          the new input super
    */
   public void setInputSuper(IEditorInput input) {
     super.setInput(input);
   }
-  
+
   // XML source editor is opened by CDE when the source is "initially" invalid.
   /**
    * Gets the source editor.
@@ -890,17 +914,18 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * @return the source editor
    */
   // Called by DDE when the source becomes valid and it is DD.
-  public XMLEditor getSourceEditor () {
+  public XMLEditor getSourceEditor() {
     return sourceTextEditor;
   }
-  
+
   /**
    * ************************************************************************.
    *
-   * @param display the display
+   * @param display
+   *          the display
    * @return the form toolkit
    */
-  
+
   /**
    * override the createToolkit method in FormEditor - to use a shared colors resource.
    * 
@@ -918,15 +943,19 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Adds the page and set tab title.
    *
-   * @param page the page
-   * @param keyTabTitle the key tab title
+   * @param page
+   *          the page
+   * @param keyTabTitle
+   *          the key tab title
    * @return the int
-   * @throws PartInitException the part init exception
+   * @throws PartInitException
+   *           the part init exception
    */
   /*
    * Two forms of addPage - one for non-source-editors, and one for source-editor
    */
-  protected int addPageAndSetTabTitle(HeaderPage page, String keyTabTitle) throws PartInitException {
+  protected int addPageAndSetTabTitle(HeaderPage page, String keyTabTitle)
+          throws PartInitException {
     int pageIndex = addPage(page);
     // set the text on the tab used to select the page in the multipage editor
     setPageText(pageIndex, keyTabTitle);
@@ -936,11 +965,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Adds the page and set tab title.
    *
-   * @param page the page
-   * @param input the input
-   * @param keyTabTitle the key tab title
+   * @param page
+   *          the page
+   * @param input
+   *          the input
+   * @param keyTabTitle
+   *          the key tab title
    * @return the int
-   * @throws PartInitException the part init exception
+   * @throws PartInitException
+   *           the part init exception
    */
   protected int addPageAndSetTabTitle(IEditorPart page, IEditorInput input, String keyTabTitle)
           throws PartInitException {
@@ -963,47 +996,49 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   protected void addPages() {
     currentEditor.addPagesForCurrentEditor();
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#addPagesForCurrentEditor()
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#addPagesForCurrentEditor()
    */
   @Override
   public void addPagesForCurrentEditor() {
     boolean allPages = isLocalProcessingDescriptor();
     try {
-        overviewIndex = addPageAndSetTabTitle(overviewPage = new OverviewPage(this), Messages
-              .getString("MultiPageEditor.overviewTab")); //$NON-NLS-1$
-      
+      overviewIndex = addPageAndSetTabTitle(overviewPage = new OverviewPage(this),
+              Messages.getString("MultiPageEditor.overviewTab")); //$NON-NLS-1$
+
       if (allPages) {
-        if (isAeDescriptor())
-         {
-            aggregateIndex = addPageAndSetTabTitle(aggregatePage = new AggregatePage(this), Messages
-                      .getString("MultiPageEditor.aggregateTab")); //$NON-NLS-1$
+        if (isAeDescriptor()) {
+          aggregateIndex = addPageAndSetTabTitle(aggregatePage = new AggregatePage(this),
+                  Messages.getString("MultiPageEditor.aggregateTab")); //$NON-NLS-1$
         }
-        parameterIndex = addPageAndSetTabTitle(parameterPage = new ParameterPage(this), Messages
-                .getString("MultiPageEditor.parameterTab")); //$NON-NLS-1$
-        settingsIndex = addPageAndSetTabTitle(settingsPage = new SettingsPage(this), Messages
-                .getString("MultiPageEditor.settingsTab")); //$NON-NLS-1$
+        parameterIndex = addPageAndSetTabTitle(parameterPage = new ParameterPage(this),
+                Messages.getString("MultiPageEditor.parameterTab")); //$NON-NLS-1$
+        settingsIndex = addPageAndSetTabTitle(settingsPage = new SettingsPage(this),
+                Messages.getString("MultiPageEditor.settingsTab")); //$NON-NLS-1$
       }
 
       if (allPages || isTypeSystemDescriptor()) {
-        typeIndex = addPageAndSetTabTitle(typePage = new TypePage(this), Messages
-                .getString("MultiPageEditor.typeTab")); //$NON-NLS-1$
+        typeIndex = addPageAndSetTabTitle(typePage = new TypePage(this),
+                Messages.getString("MultiPageEditor.typeTab")); //$NON-NLS-1$
       }
 
       if (allPages) {
-        capabilityIndex = addPageAndSetTabTitle(capabilityPage = new CapabilityPage(this), Messages
-                .getString("MultiPageEditor.capabilityTab")); //$NON-NLS-1$
+        capabilityIndex = addPageAndSetTabTitle(capabilityPage = new CapabilityPage(this),
+                Messages.getString("MultiPageEditor.capabilityTab")); //$NON-NLS-1$
       }
 
       if (allPages || isTypePriorityDescriptor() || isFsIndexCollection()) {
-        indexesIndex = addPageAndSetTabTitle(indexesPage = new IndexesPage(this), Messages
-                .getString("MultiPageEditor.indexesTab")); //$NON-NLS-1$
+        indexesIndex = addPageAndSetTabTitle(indexesPage = new IndexesPage(this),
+                Messages.getString("MultiPageEditor.indexesTab")); //$NON-NLS-1$
       }
 
       if (allPages || isExtResAndBindingsDescriptor()) {
-        resourcesIndex = addPageAndSetTabTitle(resourcesPage = new ResourcesPage(this), Messages
-                .getString("MultiPageEditor.resourcesTab")); //$NON-NLS-1$
+        resourcesIndex = addPageAndSetTabTitle(resourcesPage = new ResourcesPage(this),
+                Messages.getString("MultiPageEditor.resourcesTab")); //$NON-NLS-1$
       }
 
       sourceIndex = addPageAndSetTabTitle(sourceTextEditor = new XMLEditor(this), getEditorInput(),
@@ -1020,7 +1055,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Jcas gen.
    *
-   * @param monitor the monitor
+   * @param monitor
+   *          the monitor
    */
   public void jcasGen(IProgressMonitor monitor) {
     if (MultiPageEditorContributor.getAutoJCasGen()) {
@@ -1031,11 +1067,12 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Do J cas gen chk src.
    *
-   * @param monitor the monitor
+   * @param monitor
+   *          the monitor
    */
   public void doJCasGenChkSrc(IProgressMonitor monitor) {
     if (isSourceFolderValid()) {
-        doJCasGen(monitor);
+      doJCasGen(monitor);
     }
   }
 
@@ -1076,7 +1113,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Checks if is valid AE.
    *
-   * @param aAe the a ae
+   * @param aAe
+   *          the a ae
    * @return true, if is valid AE
    */
   public boolean isValidAE(AnalysisEngineDescription aAe) {
@@ -1092,11 +1130,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (Throwable e) { // all these are Throwable to catch errors like
         // UnsupportedClassVersionError, which happens if the annotator
         // class is compiled for Java 5.0, but the CDE is running Java 1.4.2
-        Utility
-                .popMessage(
-                        Messages.getString("MultiPageEditor.failedCollRdrValidation"), //$NON-NLS-1$
-                        Messages.getString("MultiPageEditor.failedCollRdrValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                        MessageDialog.ERROR);
+        Utility.popMessage(Messages.getString("MultiPageEditor.failedCollRdrValidation"), //$NON-NLS-1$
+                Messages.getString("MultiPageEditor.failedCollRdrValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + getMessagesToRootCause(e), MessageDialog.ERROR);
         return false;
       }
     } else if (isCasInitializerDescriptor()) {
@@ -1105,11 +1141,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       try {
         casInit.doFullValidation(createResourceManager());
       } catch (Throwable e) {
-        Utility
-                .popMessage(
-                        Messages.getString("MultiPageEditor.failedCasInitValidation"), //$NON-NLS-1$
-                        Messages.getString("MultiPageEditor.failedCasInitValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                        MessageDialog.ERROR);
+        Utility.popMessage(Messages.getString("MultiPageEditor.failedCasInitValidation"), //$NON-NLS-1$
+                Messages.getString("MultiPageEditor.failedCasInitValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + getMessagesToRootCause(e), MessageDialog.ERROR);
         return false;
       }
     } else if (isCasConsumerDescriptor()) {
@@ -1117,11 +1151,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       try {
         casCons.doFullValidation(createResourceManager());
       } catch (Throwable e) {
-        Utility
-                .popMessage(
-                        Messages.getString("MultiPageEditor.failedCasConsValidation"), //$NON-NLS-1$
-                        Messages.getString("MultiPageEditor.failedCasConsValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                        MessageDialog.ERROR);
+        Utility.popMessage(Messages.getString("MultiPageEditor.failedCasConsValidation"), //$NON-NLS-1$
+                Messages.getString("MultiPageEditor.failedCasConsValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + getMessagesToRootCause(e), MessageDialog.ERROR);
         return false;
       }
 
@@ -1132,7 +1164,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (Throwable e) {
         Utility.popMessage("Error in Flow Controller Descriptor",
                 "The Descriptor is invalid for the following reason:" + "\n"
-                        + getMessagesToRootCause(e), MessageDialog.ERROR);
+                        + getMessagesToRootCause(e),
+                MessageDialog.ERROR);
         return false;
       }
     } else {
@@ -1151,11 +1184,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       try {
         ae.doFullValidation(createResourceManager());
       } catch (Throwable e) {
-        Utility
-                .popMessage(
-                        Messages.getString("MultiPageEditor.failedAeValidation"), //$NON-NLS-1$
-                        Messages.getString("MultiPageEditor.failedAeValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                        MessageDialog.ERROR);
+        Utility.popMessage(Messages.getString("MultiPageEditor.failedAeValidation"), //$NON-NLS-1$
+                Messages.getString("MultiPageEditor.failedAeValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + getMessagesToRootCause(e), MessageDialog.ERROR);
         return false;
       }
     }
@@ -1165,15 +1196,20 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Saves the multi-page editor's document.
    *
-   * @param monitor the monitor
+   * @param monitor
+   *          the monitor
    */
   @Override
   public void doSave(IProgressMonitor monitor) {
     currentEditor.doSaveForCurrentEditor(monitor);
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#doSaveForCurrentEditor(org.eclipse.core.runtime.IProgressMonitor)
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#doSaveForCurrentEditor(org.
+   * eclipse.core.runtime.IProgressMonitor)
    */
   @Override
   public void doSaveForCurrentEditor(IProgressMonitor monitor) {
@@ -1185,14 +1221,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Finish save.
    *
-   * @param monitor the monitor
-   * @param modelOK the model OK
+   * @param monitor
+   *          the monitor
+   * @param modelOK
+   *          the model OK
    */
   private void finishSave(IProgressMonitor monitor, boolean modelOK) {
     if (modelOK) {
       if (dirtyTypeNameHash.size() > 0) {
         jcasGen(monitor);
-    }
+      }
       dirtyTypeNameHash.clear();
     }
     fileDirty = false;
@@ -1210,9 +1248,12 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   public void doSaveAs() {
     currentEditor.doSaveAsForCurrentEditor();
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#doSaveAsForCurrentEditor()
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#doSaveAsForCurrentEditor()
    */
   @Override
   public void doSaveAsForCurrentEditor() {
@@ -1238,7 +1279,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     finishSave(null, modelOK);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
    */
   @Override
@@ -1246,7 +1289,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     return fileDirty;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.part.EditorPart#isSaveOnCloseNeeded()
    */
   @Override
@@ -1264,11 +1309,12 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       this.firePropertyChange(ISaveablePart.PROP_DIRTY);
     }
   }
-  
+
   /**
    * Sets the file dirty flag.
    *
-   * @param value the new file dirty flag
+   * @param value
+   *          the new file dirty flag
    */
   // Called by External Editor extensions when doSave or doSaveAs is called
   public void setFileDirtyFlag(boolean value) {
@@ -1284,9 +1330,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
     XMLInputSource input;
 
-    if (!(editorInput instanceof IFileEditorInput))
-     {
-        throw new PartInitException(Messages.getString("MultiPageEditor.invalidInputClass")); //$NON-NLS-1$
+    if (!(editorInput instanceof IFileEditorInput)) {
+      throw new PartInitException(Messages.getString("MultiPageEditor.invalidInputClass")); //$NON-NLS-1$
     }
     fileNeedingContext = file = ((IFileEditorInput) editorInput).getFile();
     String filePathName = file.getLocation().toOSString();
@@ -1303,7 +1348,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
 
     super.init(site, editorInput); // to allow other editors to get site and editorInput
-        
+
     // leaves isBadXML set, if it can't parse but isn't throwing
     isContextLoaded = false;
     try {
@@ -1324,29 +1369,39 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   /** The extension editor. */
   private IUimaEditorExtension extensionEditor;
-  
+
   /**
    * Parses the source.
    *
-   * @param input the input
-   * @param filePathName the file path name
-   * @param preserveComments the preserve comments
-   * @throws PartInitException the part init exception
+   * @param input
+   *          the input
+   * @param filePathName
+   *          the file path name
+   * @param preserveComments
+   *          the preserve comments
+   * @throws PartInitException
+   *           the part init exception
    */
-  private void parseSource(XMLInputSource input, String filePathName, boolean preserveComments) throws PartInitException {
+  private void parseSource(XMLInputSource input, String filePathName, boolean preserveComments)
+          throws PartInitException {
     extensionEditor = null;
     parseSourceInner(input, filePathName, preserveComments);
   }
-  
+
   /**
    * Parses the source inner.
    *
-   * @param input the input
-   * @param filePathName the file path name
-   * @param preserveComments the preserve comments
-   * @throws PartInitException the part init exception
+   * @param input
+   *          the input
+   * @param filePathName
+   *          the file path name
+   * @param preserveComments
+   *          the preserve comments
+   * @throws PartInitException
+   *           the part init exception
    */
-  private void parseSourceInner(XMLInputSource input, String filePathName, boolean preserveComments) throws PartInitException {
+  private void parseSourceInner(XMLInputSource input, String filePathName, boolean preserveComments)
+          throws PartInitException {
     XMLizable inputDescription = null;
     try {
       inputDescription = AbstractSection.parseDescriptor(input, preserveComments);
@@ -1382,36 +1437,37 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
           extensionEditor = getRequiredEditor(inputDescription);
         }
         if (null == extensionEditor) {
-          throw new PartInitException(Messages.getFormattedString(
-                  "MultiPageEditor.unrecognizedDescType", //$NON-NLS-1$
-                  new String[] { AbstractSection.maybeShortenFileName(filePathName) })
-                  + Messages.getString("MultiPageEditor.11")); //$NON-NLS-1$
+          throw new PartInitException(
+                  Messages.getFormattedString("MultiPageEditor.unrecognizedDescType", //$NON-NLS-1$
+                          new String[] { AbstractSection.maybeShortenFileName(filePathName) })
+                          + Messages.getString("MultiPageEditor.11")); //$NON-NLS-1$
         } else {
           extensionEditor.activateEditor(getEditorSite(), getEditorInput(), this, inputDescription);
-          currentEditor = (IUimaMultiPageEditor)extensionEditor;
+          currentEditor = (IUimaMultiPageEditor) extensionEditor;
         }
       }
       isBadXML = false;
     } catch (InvalidXMLException e) {
       if (InvalidXMLException.INVALID_DESCRIPTOR_FILE.equals(e.getMessageKey())) {
         Throwable cause = e.getCause();
-        if ((cause instanceof InvalidXMLException) &&
-            InvalidXMLException.UNKNOWN_ELEMENT.equals(((InvalidXMLException)cause).getMessageKey()) &&
-            (null == extensionEditor)) {
+        if ((cause instanceof InvalidXMLException)
+                && InvalidXMLException.UNKNOWN_ELEMENT
+                        .equals(((InvalidXMLException) cause).getMessageKey())
+                && (null == extensionEditor)) {
           // try loading extension editors and reparsing
-          extensionEditor = getRequiredEditor((String)((InvalidXMLException)cause).getArguments()[0]);
+          extensionEditor = getRequiredEditor(
+                  (String) ((InvalidXMLException) cause).getArguments()[0]);
           if (null != extensionEditor) {
             // the act of finding the right editor calls that editors init() method
             // which could install another parse target result, which would make this
             // exception go away - so try reparsing.
-                        
+
             try {
               parseSourceInner(new XMLInputSource(input.getURL()), filePathName, preserveComments);
             } catch (IOException e1) {
-              Utility.popMessage(
-                  "Internal Error",
-                  "While parsing input for extension editor: " + getMessagesToRootCause(e1),
-                  MessageDialog.ERROR);
+              Utility.popMessage("Internal Error",
+                      "While parsing input for extension editor: " + getMessagesToRootCause(e1),
+                      MessageDialog.ERROR);
               throw new InternalErrorCDE(e1);
             }
             return;
@@ -1420,8 +1476,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       }
       e.printStackTrace();
       Utility.popMessage(Messages.getString("MultiPageEditor.XMLerrorInDescriptorTitle"), //$NON-NLS-1$
-              Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-              MessageDialog.ERROR);
+              Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                      + getMessagesToRootCause(e), MessageDialog.ERROR);
 
     } catch (ResourceInitializationException e) {
       // occurs if bad xml
@@ -1435,17 +1491,20 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Validate descriptor type.
    *
-   * @param newDescriptorType the new descriptor type
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param newDescriptorType
+   *          the new descriptor type
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
-  private void validateDescriptorType(int newDescriptorType) throws ResourceInitializationException {
+  private void validateDescriptorType(int newDescriptorType)
+          throws ResourceInitializationException {
     if (0 != descriptorType && !openingContext && ((descriptorType & newDescriptorType) == 0)) {
-        throw new ResourceInitializationException(Messages.getString("MultiPageEditor.12"), //$NON-NLS-1$
-                  Messages.getString("MultiPageEditor.13"), //$NON-NLS-1$
-                  new String[] { descriptorTypeString(), descriptorTypeString(newDescriptorType) });
+      throw new ResourceInitializationException(Messages.getString("MultiPageEditor.12"), //$NON-NLS-1$
+              Messages.getString("MultiPageEditor.13"), //$NON-NLS-1$
+              new String[] { descriptorTypeString(), descriptorTypeString(newDescriptorType) });
     }
     if (!openingContext) {
-        descriptorType = newDescriptorType;
+      descriptorType = newDescriptorType;
     }
   }
 
@@ -1457,7 +1516,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * have made to any classes that could have been loaded.
    * 
    * @return a resource manager that has a class loader that will search the compiled output of the
-   * current project, in addition to the plug-in's classpath
+   *         current project, in addition to the plug-in's classpath
    */
   public ResourceManager createResourceManager() {
     // long time = System.currentTimeMillis();
@@ -1467,15 +1526,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   }
 
   /** The cached R mclass path. */
-  private String cachedRMclassPath = null; 
-  
+  private String cachedRMclassPath = null;
+
   /** The cached R mcl. */
   private SoftReference<UIMAClassLoader> cachedRMcl = new SoftReference<>(null);
 
   /**
    * Creates the resource manager.
    *
-   * @param classPath the class path
+   * @param classPath
+   *          the class path
    * @return the resource manager
    */
   public ResourceManager createResourceManager(String classPath) {
@@ -1484,33 +1544,31 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     try {
       if (null == classPath) {
         classPath = getProjectClassPath();
-      }      
+      }
       String dataPath = CDEpropertyPage.getDataPath(getProject());
-      
+
       // first try to get the value of the class loader from the last (cached)
       // value - should succeed frequently because the class loader is only dependent
       // on the value of the classpath
-      
+
       UIMAClassLoader uimaCL = null;
-      if (cachedRMclassPath != null &&
-          cachedRMclassPath.equals(classPath)) {
+      if (cachedRMclassPath != null && cachedRMclassPath.equals(classPath)) {
         uimaCL = cachedRMcl.get();
       }
-      
+
       if (uimaCL != null) {
-        ((ResourceManager_impl)resourceManager).setExtensionClassPath(uimaCL, true);
+        ((ResourceManager_impl) resourceManager).setExtensionClassPath(uimaCL, true);
       } else {
-        // first arg in next is the parent of the class loader.  Make it be the
-        //   uima framework's class loader (not this class's class loader)
-        //   so the validation tests work properly (that test isAssignableFrom)
-        resourceManager.setExtensionClassPath(
-            Class_TCCL.get_parent_cl(), // UIMAFramework.class.getClassLoader(), 
-            classPath, 
-            true);
+        // first arg in next is the parent of the class loader. Make it be the
+        // uima framework's class loader (not this class's class loader)
+        // so the validation tests work properly (that test isAssignableFrom)
+        resourceManager.setExtensionClassPath(Class_TCCL.get_parent_cl(), // UIMAFramework.class.getClassLoader(),
+                classPath, true);
         cachedRMclassPath = classPath;
-        cachedRMcl = new SoftReference<>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
+        cachedRMcl = new SoftReference<>(
+                (UIMAClassLoader) resourceManager.getExtensionClassLoader());
       }
-      
+
       // in any case, set the data path
       resourceManager.setDataPath(dataPath);
     } catch (MalformedURLException e1) {
@@ -1529,16 +1587,22 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.forms.editor.FormEditor#pageChange(int)
    */
   @Override
   protected void pageChange(int newPageIndex) {
     currentEditor.pageChangeForCurrentEditor(newPageIndex);
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#pageChangeForCurrentEditor(int)
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor#pageChangeForCurrentEditor(
+   * int)
    */
   @Override
   public void pageChangeForCurrentEditor(int newPageIndex) {
@@ -1555,16 +1619,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         }
       } else if (oldPageIndex == indexesIndex &&
       // could be the same page if users chose to
-              // edit current descriptor when validateIndexes detected a
-              // bad type priorities set
+      // edit current descriptor when validateIndexes detected a
+      // bad type priorities set
               newPageIndex != indexesIndex) {
         if (!validateIndexes()) {
-            return;
-        }
-        else if (newPageIndex != indexesIndex) {
+          return;
+        } else if (newPageIndex != indexesIndex) {
           saveGoodVersionOfTypePriorities();
         }
-    }
+      }
     }
 
     super.pageChange(newPageIndex);
@@ -1578,10 +1641,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     } else if (newPageIndex == sourceIndex) {
       if (!isBadXML) {
         updateSourceFromModel();
-    }
-    else {
+      } else {
         setActivePageWhileBlockingRecursion(sourceIndex);
-    }
+      }
       // set sourceChanged if badXML to redo error notification if nothing changed
       // in case XML was bad
       sourceChanged = (isBadXML || isRevertingIndex) ? true : false;
@@ -1591,7 +1653,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the active page while blocking recursion.
    *
-   * @param sourceIndex the new active page while blocking recursion
+   * @param sourceIndex
+   *          the new active page while blocking recursion
    */
   protected void setActivePageWhileBlockingRecursion(int sourceIndex) {
     try {
@@ -1618,8 +1681,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Revert to last valid.
    *
-   * @param msg the msg
-   * @param msgDetails the msg details
+   * @param msg
+   *          the msg
+   * @param msgDetails
+   *          the msg details
    * @return true, if successful
    */
   private boolean revertToLastValid(String msg, String msgDetails) {
@@ -1673,15 +1738,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the char set.
    *
-   * @param text the text
+   * @param text
+   *          the text
    * @return the char set
    */
   public String getCharSet(String text) {
     final String key = Messages.getString("MultiPageEditor.16"); //$NON-NLS-1$
     int i = text.indexOf(key);
-    if (i == -1)
-     {
-        return Messages.getString("MultiPageEditor.17"); //$NON-NLS-1$
+    if (i == -1) {
+      return Messages.getString("MultiPageEditor.17"); //$NON-NLS-1$
     }
     i += key.length();
     int end = text.indexOf(Messages.getString("MultiPageEditor.18"), i); //$NON-NLS-1$
@@ -1696,10 +1761,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private boolean validateSource() {
     if (!sourceChanged)
       return true;
-    
+
     isBadXML = true; // preset
-    IDocument doc = sourceTextEditor.getDocumentProvider().getDocument(
-            sourceTextEditor.getEditorInput());
+    IDocument doc = sourceTextEditor.getDocumentProvider()
+            .getDocument(sourceTextEditor.getEditorInput());
     String text = doc.get();
     InputStream is;
     try {
@@ -1727,15 +1792,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
 
     if (isBadXML) {
-        return false;
+      return false;
     }
 
     if (isPrimitive()) {
-        checkForNewlyDirtyTypes(oldTsdWithResolvedImports);
+      checkForNewlyDirtyTypes(oldTsdWithResolvedImports);
     }
 
-    checkForNewlyStaleSections(oldAe.getAnalysisEngineMetaData(), aeDescription
-            .getAnalysisEngineMetaData());
+    checkForNewlyStaleSections(oldAe.getAnalysisEngineMetaData(),
+            aeDescription.getAnalysisEngineMetaData());
     return true;
   }
 
@@ -1749,8 +1814,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Check for newly stale sections.
    *
-   * @param previous the previous
-   * @param current the current
+   * @param previous
+   *          the previous
+   * @param current
+   *          the current
    */
   private void checkForNewlyStaleSections(MetaDataObject previous, MetaDataObject current) {
 
@@ -1761,40 +1828,42 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     // for now, mark everything as stale
     // index tests during development - some pages not done
     if (overviewIndex >= 0) {
-        ((HeaderPage) pages.get(overviewIndex)).markStale();
+      ((HeaderPage) pages.get(overviewIndex)).markStale();
     }
     if (aggregateIndex >= 0) {
-        ((HeaderPage) pages.get(aggregateIndex)).markStale();
+      ((HeaderPage) pages.get(aggregateIndex)).markStale();
     }
     if (parameterIndex >= 0) {
-        ((HeaderPage) pages.get(parameterIndex)).markStale();
+      ((HeaderPage) pages.get(parameterIndex)).markStale();
     }
     if (settingsIndex >= 0) {
-        ((HeaderPage) pages.get(settingsIndex)).markStale();
+      ((HeaderPage) pages.get(settingsIndex)).markStale();
     }
     if (typeIndex >= 0) {
-        ((HeaderPage) pages.get(typeIndex)).markStale();
+      ((HeaderPage) pages.get(typeIndex)).markStale();
     }
     if (capabilityIndex >= 0) {
-        ((HeaderPage) pages.get(capabilityIndex)).markStale();
+      ((HeaderPage) pages.get(capabilityIndex)).markStale();
     }
     if (indexesIndex >= 0) {
-        ((HeaderPage) pages.get(indexesIndex)).markStale();
+      ((HeaderPage) pages.get(indexesIndex)).markStale();
     }
     if (resourcesIndex >= 0) {
-        ((HeaderPage) pages.get(resourcesIndex)).markStale();
+      ((HeaderPage) pages.get(resourcesIndex)).markStale();
     }
   }
 
   /**
    * Check for newly dirty types.
    *
-   * @param oldTsd the old tsd
+   * @param oldTsd
+   *          the old tsd
    */
   private void checkForNewlyDirtyTypes(TypeSystemDescription oldTsd) {
 
     // an array of TypeDescription objects (not CAS), including imported ones
-    TypeDescription[] oldTypes = (null == oldTsd || null == oldTsd.getTypes()) ? new TypeDescription[0]
+    TypeDescription[] oldTypes = (null == oldTsd || null == oldTsd.getTypes())
+            ? new TypeDescription[0]
             : oldTsd.getTypes();
     HashMap oldTypeHash = new HashMap(oldTypes.length);
 
@@ -1838,21 +1907,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private XMLizable getTrueDescriptor() {
     XMLizable thing;
     if (isAeDescriptor()) {
-        thing = aeDescription;
-    }
-    else if (isTypeSystemDescriptor()) {
-        thing = typeSystemDescription;
-    }
-    else if (isTypePriorityDescriptor()) {
-        thing = aeDescription.getAnalysisEngineMetaData().getTypePriorities();
-    }
-    else if (isExtResAndBindingsDescriptor()) {
-        thing = aeDescription.getResourceManagerConfiguration();
-    }
-    else if (isFsIndexCollection()) {
-        thing = aeDescription.getAnalysisEngineMetaData().getFsIndexCollection();
-    }
-    else if (isCollectionReaderDescriptor()) {
+      thing = aeDescription;
+    } else if (isTypeSystemDescriptor()) {
+      thing = typeSystemDescription;
+    } else if (isTypePriorityDescriptor()) {
+      thing = aeDescription.getAnalysisEngineMetaData().getTypePriorities();
+    } else if (isExtResAndBindingsDescriptor()) {
+      thing = aeDescription.getResourceManagerConfiguration();
+    } else if (isFsIndexCollection()) {
+      thing = aeDescription.getAnalysisEngineMetaData().getFsIndexCollection();
+    } else if (isCollectionReaderDescriptor()) {
       thing = collectionReaderDescription;
       linkLocalProcessingDescriptorsFromAe(collectionReaderDescription);
     } else if (isCasInitializerDescriptor()) {
@@ -1864,9 +1928,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     } else if (isFlowControllerDescriptor()) {
       thing = flowControllerDescription;
       linkLocalProcessingDescriptorsFromAe(flowControllerDescription);
-    }
-    else {
-        throw new InternalErrorCDE(Messages.getString("MultiPageEditor.21")); //$NON-NLS-1$
+    } else {
+      throw new InternalErrorCDE(Messages.getString("MultiPageEditor.21")); //$NON-NLS-1$
     }
     return thing;
   }
@@ -1881,8 +1944,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     String parsedText = null;
     try {
       XMLSerializer xmlSerializer = new XMLSerializer(true);
-      xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.valueOf(
-            MultiPageEditorContributor.getXMLindent()).toString());
+      xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+              Integer.valueOf(MultiPageEditorContributor.getXMLindent()).toString());
       xmlSerializer.setIndent(true);
       xmlSerializer.setWriter(writer);
       ContentHandler contentHandler = xmlSerializer.getContentHandler();
@@ -1891,10 +1954,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       if (trueDescriptor instanceof AnalysisEngineDescription) {
         AnalysisEngineDescription aed = (AnalysisEngineDescription) trueDescriptor;
         aed.toXML(contentHandler, true, true);
-      }
-    else {
+      } else {
         trueDescriptor.toXML(contentHandler, true);
-    }
+      }
       contentHandler.endDocument();
       writer.close();
       parsedText = writer.toString();
@@ -1912,8 +1974,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public void updateSourceFromModel() {
     sourceTextEditor.setIgnoreTextEvent(true);
-    IDocument doc = sourceTextEditor.getDocumentProvider().getDocument(
-            sourceTextEditor.getEditorInput());
+    IDocument doc = sourceTextEditor.getDocumentProvider()
+            .getDocument(sourceTextEditor.getEditorInput());
     doc.set(prettyPrintModel());
     sourceTextEditor.setIgnoreTextEvent(false);
   }
@@ -1930,26 +1992,27 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the ae description.
    *
-   * @param aAnalysisEngineDescription the new ae description
-   * @throws ResourceInitializationException -
+   * @param aAnalysisEngineDescription
+   *          the new ae description
+   * @throws ResourceInitializationException
+   *           -
    */
   public void setAeDescription(AnalysisEngineDescription aAnalysisEngineDescription)
           throws ResourceInitializationException {
-    if (null == aAnalysisEngineDescription)
-     {
-        throw new InternalErrorCDE(Messages.getString("MultiPageEditor.24")); //$NON-NLS-1$
+    if (null == aAnalysisEngineDescription) {
+      throw new InternalErrorCDE(Messages.getString("MultiPageEditor.24")); //$NON-NLS-1$
     }
     aeDescription = aAnalysisEngineDescription;
 
     try {
       // we do this to keep resolvedDelegates update-able
       // The value from getDeletageAESpecs is an unmodifiable hash map
-      resolvedDelegates.putAll(aeDescription
-              .getDelegateAnalysisEngineSpecifiers(createResourceManager()));
+      resolvedDelegates
+              .putAll(aeDescription.getDelegateAnalysisEngineSpecifiers(createResourceManager()));
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
-    // get the metadata once, because it can be expensive to do     
+    // get the metadata once, because it can be expensive to do
     AnalysisEngineMetaData md = aeDescription.getAnalysisEngineMetaData();
 
     // These come before setTypeSystemDescription call because that call
@@ -1960,8 +2023,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     resolvedExternalResourcesAndBindings = aeDescription.getResourceManagerConfiguration();
     resolvedFlowControllerDeclaration = aeDescription.getFlowControllerDeclaration();
 
-    setTypeSystemDescription(aeDescription.isPrimitive() ? md.getTypeSystem() : null); 
-    // aggregates have null type system descriptors. 
+    setTypeSystemDescription(aeDescription.isPrimitive() ? md.getTypeSystem() : null);
+    // aggregates have null type system descriptors.
     // If passed in one that isn't null, make it null.
 
     // These come after setTypeSystemDescription call, even though
@@ -1988,8 +2051,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the type system description.
    *
-   * @param typeSystemDescription the new type system description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param typeSystemDescription
+   *          the new type system description
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   // Also called for aggregate TAEs
   public void setTypeSystemDescription(TypeSystemDescription typeSystemDescription)
@@ -2009,16 +2074,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
 
     setMergedTypeSystemDescription();
-      
+
     // setImportedTypeSystemDescription(); // done in above call
 
     if (aeDescription == null) {
-        aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
+      aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
     }
     aeDescription.getAnalysisEngineMetaData().setTypeSystem(this.typeSystemDescription);
 
     if (doValidation) {
-        descriptorCAS.validate();
+      descriptorCAS.validate();
     }
   }
 
@@ -2027,7 +2092,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Link local processing descriptors from ae.
    *
-   * @param d the d
+   * @param d
+   *          the d
    */
   // **************************************************************
   private void linkLocalProcessingDescriptorsFromAe(CollectionReaderDescription d) {
@@ -2039,7 +2105,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Link local processing descriptors from ae.
    *
-   * @param d the d
+   * @param d
+   *          the d
    */
   private void linkLocalProcessingDescriptorsFromAe(CasInitializerDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
@@ -2050,7 +2117,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Link local processing descriptors from ae.
    *
-   * @param d the d
+   * @param d
+   *          the d
    */
   private void linkLocalProcessingDescriptorsFromAe(CasConsumerDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
@@ -2061,7 +2129,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Link local processing descriptors from ae.
    *
-   * @param d the d
+   * @param d
+   *          the d
    */
   private void linkLocalProcessingDescriptorsFromAe(FlowControllerDescription d) {
     d.setImplementationName(aeDescription.getAnnotatorImplementationName());
@@ -2072,7 +2141,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Link common collection descriptors from ae.
    *
-   * @param r the r
+   * @param r
+   *          the r
    */
   private void linkCommonCollectionDescriptorsFromAe(ResourceCreationSpecifier r) {
     r.setExternalResourceDependencies(aeDescription.getExternalResourceDependencies());
@@ -2087,8 +2157,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Creates the and link local processing descriptors to ae.
    *
-   * @param d the d
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the d
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void createAndLinkLocalProcessingDescriptorsToAe(CollectionReaderDescription d)
           throws ResourceInitializationException {
@@ -2101,8 +2173,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Creates the and link local processing descriptors to ae.
    *
-   * @param d the d
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the d
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void createAndLinkLocalProcessingDescriptorsToAe(CasInitializerDescription d)
           throws ResourceInitializationException {
@@ -2115,8 +2189,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Creates the and link local processing descriptors to ae.
    *
-   * @param d the d
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the d
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void createAndLinkLocalProcessingDescriptorsToAe(CasConsumerDescription d)
           throws ResourceInitializationException {
@@ -2129,8 +2205,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Creates the and link local processing descriptors to ae.
    *
-   * @param d the d
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the d
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void createAndLinkLocalProcessingDescriptorsToAe(FlowControllerDescription d)
           throws ResourceInitializationException {
@@ -2143,8 +2221,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Link local processing descriptors to ae.
    *
-   * @param r the r
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param r
+   *          the r
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void linkLocalProcessingDescriptorsToAe(ResourceCreationSpecifier r)
           throws ResourceInitializationException {
@@ -2158,7 +2238,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Convert to ae meta data.
    *
-   * @param r the r
+   * @param r
+   *          the r
    * @return the analysis engine meta data
    */
   private AnalysisEngineMetaData convertToAeMetaData(ResourceMetaData r) {
@@ -2177,14 +2258,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     d.setVendor(p.getVendor());
     d.setVersion(p.getVersion());
     d.setOperationalProperties(p.getOperationalProperties());
-    ((AnalysisEngineMetaData_impl)d).setInfoset(((MetaDataObject_impl)r).getInfoset());
+    ((AnalysisEngineMetaData_impl) d).setInfoset(((MetaDataObject_impl) r).getInfoset());
     return d;
   }
 
   /**
    * Convert from ae meta data.
    *
-   * @param p the p
+   * @param p
+   *          the p
    * @return the processing resource meta data
    */
   private ProcessingResourceMetaData convertFromAeMetaData(AnalysisEngineMetaData p) {
@@ -2202,15 +2284,17 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     d.setVendor(p.getVendor());
     d.setVersion(p.getVersion());
     d.setOperationalProperties(p.getOperationalProperties());
-    ((MetaDataObject_impl)d).setInfoset(((MetaDataObject_impl)p).getInfoset());
+    ((MetaDataObject_impl) d).setInfoset(((MetaDataObject_impl) p).getInfoset());
     return d;
   }
 
   /**
    * Sets the collection reader description.
    *
-   * @param d the new collection reader description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the new collection reader description
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setCollectionReaderDescription(CollectionReaderDescription d)
           throws ResourceInitializationException {
@@ -2221,8 +2305,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the cas initializer description.
    *
-   * @param d the new cas initializer description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the new cas initializer description
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setCasInitializerDescription(CasInitializerDescription d)
           throws ResourceInitializationException {
@@ -2233,8 +2319,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the cas consumer description.
    *
-   * @param d the new cas consumer description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the new cas consumer description
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setCasConsumerDescription(CasConsumerDescription d)
           throws ResourceInitializationException {
@@ -2245,8 +2333,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the flow controller description.
    *
-   * @param d the new flow controller description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param d
+   *          the new flow controller description
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setFlowControllerDescription(FlowControllerDescription d)
           throws ResourceInitializationException {
@@ -2257,8 +2347,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the type priorities.
    *
-   * @param typePriorities the new type priorities
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param typePriorities
+   *          the new type priorities
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setTypePriorities(TypePriorities typePriorities)
           throws ResourceInitializationException {
@@ -2273,7 +2365,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * The Class MultilevelCancel.
    */
   private static class MultilevelCancel extends RuntimeException {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
   }
@@ -2281,12 +2373,13 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Load context.
    *
-   * @param thing the thing
+   * @param thing
+   *          the thing
    */
   private void loadContext(XMLizable thing) {
     // try to load a context that has the types
     if (isContextLoaded) {
-        return;
+      return;
     }
     String contextFile = null;
     XMLInputSource input = null;
@@ -2299,22 +2392,21 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (CoreException e) {
         throw new InternalErrorCDE("unexpected exception", e);
       }
-      ContextForPartDialog dialog = new ContextForPartDialog(PlatformUI.getWorkbench().getDisplay()
-              .getShells()[0], // ok in Eclipse 3.0
-              getFile().getProject().getParent(), thing, getFile().getLocation(), this, contextFile);
+      ContextForPartDialog dialog = new ContextForPartDialog(
+              PlatformUI.getWorkbench().getDisplay().getShells()[0], // ok in Eclipse 3.0
+              getFile().getProject().getParent(), thing, getFile().getLocation(), this,
+              contextFile);
       dialog.setTitle("File specifying context for editing importable part");
       if (dialog.open() == Window.CANCEL) {
         throw new MultilevelCancel();
-    }
+      }
 
       contextFile = dialog.contextPath;
 
       if (null == contextFile) {
-        Utility
-                .popMessage(
-                        "Context Info",
-                        "A context is required to edit this part.  However no context was supplied.  Editing will be cancelled",
-                        MessageDialog.INFORMATION);
+        Utility.popMessage("Context Info",
+                "A context is required to edit this part.  However no context was supplied.  Editing will be cancelled",
+                MessageDialog.INFORMATION);
         throw new MultilevelCancel();
       } else {
         try {
@@ -2324,12 +2416,12 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
           throw new MultilevelCancel();
         }
         if (null != input) {
-            try {
-                parseSource(input, contextFile, !PRESERVE_COMMENTS);
-              } catch (PartInitException e) {
-                showContextLoadFailureMessage(e, contextFile);
-                throw new MultilevelCancel();
-              }
+          try {
+            parseSource(input, contextFile, !PRESERVE_COMMENTS);
+          } catch (PartInitException e) {
+            showContextLoadFailureMessage(e, contextFile);
+            throw new MultilevelCancel();
+          }
         }
       }
     } finally {
@@ -2342,8 +2434,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         file.setPersistentProperty(new QualifiedName(AbstractSection.PLUGIN_ID,
                 AbstractSection.IMPORTABLE_PART_CONTEXT), contextFile);
       } catch (CoreException e) {
-        Utility.popMessage("Unexpected Exception", "While loading Context"
-                + getMessagesToRootCause(e), MessageDialog.ERROR);
+        Utility.popMessage("Unexpected Exception",
+                "While loading Context" + getMessagesToRootCause(e), MessageDialog.ERROR);
         throw new InternalErrorCDE("Unexpected Exception:" + getMessagesToRootCause(e), e);
       }
     }
@@ -2352,8 +2444,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the fs index collection.
    *
-   * @param indexCollection the new fs index collection
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param indexCollection
+   *          the new fs index collection
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setFsIndexCollection(FsIndexCollection indexCollection)
           throws ResourceInitializationException {
@@ -2367,23 +2461,28 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Show context load failure message.
    *
-   * @param e the e
-   * @param contextFile the context file
+   * @param e
+   *          the e
+   * @param contextFile
+   *          the context file
    */
   private void showContextLoadFailureMessage(Exception e, String contextFile) {
     String m = Messages.getFormattedString("MultiPageEditor.IOError", //$NON-NLS-1$
             new String[] { AbstractSection.maybeShortenFileName(contextFile) })
             + Messages.getString("MultiPageEditor.10") + getMessagesToRootCause(e); //$NON-NLS-1$
-    Utility.popMessage("Cannot load context", m
-            + "\nCannot load the context file for this importable part due to an I/O exception"
-            + " - proceeding without context", MessageDialog.WARNING);
+    Utility.popMessage("Cannot load context",
+            m + "\nCannot load the context file for this importable part due to an I/O exception"
+                    + " - proceeding without context",
+            MessageDialog.WARNING);
   }
 
   /**
    * Only called when editing a resources/bindings descriptor.
    *
-   * @param rb the new ext res and bindings
-   * @throws ResourceInitializationException -
+   * @param rb
+   *          the new ext res and bindings
+   * @throws ResourceInitializationException
+   *           -
    */
   private void setExtResAndBindings(ResourceManagerConfiguration rb)
           throws ResourceInitializationException {
@@ -2401,7 +2500,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the absolute path from import.
    *
-   * @param importItem the import item
+   * @param importItem
+   *          the import item
    * @return the absolute path from import
    */
   public String getAbsolutePathFromImport(Import importItem) {
@@ -2412,7 +2512,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the absolute UR lfrom import.
    *
-   * @param importItem the import item
+   * @param importItem
+   *          the import item
    * @return the absolute UR lfrom import
    */
   private URL getAbsoluteURLfromImport(Import importItem) {
@@ -2529,7 +2630,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * gets the Hash Map of resolved AE delegates Clones the description first because the getting
    * updates it in some cases.
    *
-   * @param aed the aed
+   * @param aed
+   *          the aed
    * @return the Map of resolved AE delegates
    */
   public Map getDelegateAEdescriptions(AnalysisEngineDescription aed) {
@@ -2570,8 +2672,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   public IProject getProject() {
     IFile iFile = getFile();
     if (null == iFile) {
-        // call
-          return null;
+      // call
+      return null;
     }
     return getFile().getProject();
   }
@@ -2592,7 +2694,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the descriptor relative path.
    *
-   * @param aFullOrRelativePath the a full or relative path
+   * @param aFullOrRelativePath
+   *          the a full or relative path
    * @return the descriptor relative path
    */
   public String getDescriptorRelativePath(String aFullOrRelativePath) {
@@ -2628,8 +2731,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the common parent folder.
    *
-   * @param sFile1 the s file 1
-   * @param sFile2 the s file 2
+   * @param sFile1
+   *          the s file 1
+   * @param sFile2
+   *          the s file 2
    * @return the common parent folder
    */
   private static String getCommonParentFolder(String sFile1, String sFile2) {
@@ -2658,7 +2763,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Checks if is file in workspace.
    *
-   * @param aFileRelPath the a file rel path
+   * @param aFileRelPath
+   *          the a file rel path
    * @return true, if is file in workspace
    */
   public boolean isFileInWorkspace(String aFileRelPath) {
@@ -2669,7 +2775,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the full path from descriptor relative path.
    *
-   * @param aDescRelPath the a desc rel path
+   * @param aDescRelPath
+   *          the a desc rel path
    * @return the full path from descriptor relative path
    */
   public String getFullPathFromDescriptorRelativePath(String aDescRelPath) {
@@ -2723,14 +2830,14 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
 
     return sEditorFileFullPath.substring(0,
-            subDirMarkerLocs[nSubDirCount - nCountDirsToBackup - 1] + 1)
-            + sFinalFragment;
+            subDirMarkerLocs[nSubDirCount - nCountDirsToBackup - 1] + 1) + sFinalFragment;
   }
 
   /**
    * Open.
    *
-   * @param fileToOpen the file to open
+   * @param fileToOpen
+   *          the file to open
    */
   public void open(IFile fileToOpen) {
     final IFile ffile = fileToOpen;
@@ -2751,7 +2858,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Open text editor.
    *
-   * @param fileToOpen the file to open
+   * @param fileToOpen
+   *          the file to open
    */
   public void openTextEditor(IFile fileToOpen) {
     final IFile ffile = fileToOpen;
@@ -2772,7 +2880,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the i file or file.
    *
-   * @param relOrAbsPath the rel or abs path
+   * @param relOrAbsPath
+   *          the rel or abs path
    * @return the i file or file
    */
   public Object getIFileOrFile(String relOrAbsPath) {
@@ -2790,7 +2899,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Open.
    *
-   * @param fullPath the full path
+   * @param fullPath
+   *          the full path
    */
   public void open(String fullPath) {
     Path path = new Path(fullPath);
@@ -2801,7 +2911,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Open text editor.
    *
-   * @param fullPath the full path
+   * @param fullPath
+   *          the full path
    */
   public void openTextEditor(String fullPath) {
     Path path = new Path(fullPath);
@@ -2812,7 +2923,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Adds the dirty type name.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    */
   public void addDirtyTypeName(String typeName) {
     dirtyTypeNameHash.add(typeName);
@@ -2831,7 +2943,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Removes the dirty type name.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    */
   public void removeDirtyTypeName(String typeName) {
     dirtyTypeNameHash.remove(typeName);
@@ -2841,22 +2954,22 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Do J cas gen.
    *
-   * @param monitor the monitor
+   * @param monitor
+   *          the monitor
    */
   public void doJCasGen(IProgressMonitor monitor) {
     if (0 < mergedTypesAddingFeatures.size()) {
-      if (Window.CANCEL == 
-      Utility.popOkCancel("Type feature merging extended features",
-              "Before generating the JCas classes for the CAS types, please note that " +
-              "the following types were generated by merging different type descriptors, " +
-              "where the resulting number of features is larger than that of the components. " +
-              "Although the resulting generated JCas classes are correct, " +
-              "doing this kind of merging makes reuse of this component more difficult." +
-              makeMergeMessage(mergedTypesAddingFeatures) +
-              "\n   Press OK to generate the JCas classes anyway, or cancel to skip generating the JCas classes.", 
+      if (Window.CANCEL == Utility.popOkCancel("Type feature merging extended features",
+              "Before generating the JCas classes for the CAS types, please note that "
+                      + "the following types were generated by merging different type descriptors, "
+                      + "where the resulting number of features is larger than that of the components. "
+                      + "Although the resulting generated JCas classes are correct, "
+                      + "doing this kind of merging makes reuse of this component more difficult."
+                      + makeMergeMessage(mergedTypesAddingFeatures)
+                      + "\n   Press OK to generate the JCas classes anyway, or cancel to skip generating the JCas classes.",
               MessageDialog.WARNING)) {
         return;
-    }
+      }
     }
     final JCasGenThrower jCasGenThrower = new JCasGenThrower();
 
@@ -2873,14 +2986,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
           try {
             jg.mainForCde(new MergerImpl(), new JCasGenProgressMonitor(progressMonitor),
                     jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getCurrentView(),
-                    getProject().getLocation().toString(),  // https://issues.apache.org/jira/browse/UIMA-5715
-                         // getLocationURI().getPath(),  // on linux/mars, was returning /default/project.name etc
-                    limitJCasGenToProjectScope,
-                    mergedTypesAddingFeatures);
+                    getProject().getLocation().toString(), // https://issues.apache.org/jira/browse/UIMA-5715
+                    // getLocationURI().getPath(), // on linux/mars, was returning
+                    // /default/project.name etc
+                    limitJCasGenToProjectScope, mergedTypesAddingFeatures);
           } catch (IOException e) {
             Utility.popMessage(Messages.getString("MultiPageEditor.25"), //$NON-NLS-1$
                     Messages.getString("MultiPageEditor.26") //$NON-NLS-1$
-                            + getMessagesToRootCause(e), MessageDialog.ERROR);
+                            + getMessagesToRootCause(e),
+                    MessageDialog.ERROR);
           }
         }
       };
@@ -2891,13 +3005,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       if (null != jcasMsg && jcasMsg.length() > 0) {
         Utility.popMessage(Messages.getString("MultiPageEditor.JCasGenErrorTitle"), //$NON-NLS-1$
                 Messages.getFormattedString("MultiPageEditor.jcasGenErr", //$NON-NLS-1$
-                        new String[] { jcasMsg }), MessageDialog.ERROR);
+                        new String[] { jcasMsg }),
+                MessageDialog.ERROR);
         System.out.println(jcasMsg);
       }
     } catch (Exception ex) {
       Utility.popMessage(Messages.getString("MultiPageEditor.JCasGenErrorTitle"), //$NON-NLS-1$
               Messages.getFormattedString("MultiPageEditor.jcasGenErr", //$NON-NLS-1$
-                      new String[] { jCasGenThrower.getMessage() }), MessageDialog.ERROR);
+                      new String[] { jCasGenThrower.getMessage() }),
+              MessageDialog.ERROR);
       ex.printStackTrace();
     }
   }
@@ -2905,25 +3021,26 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Make merge message.
    *
-   * @param m the m
+   * @param m
+   *          the m
    * @return the string
    */
   // message: TypeName = ".....", URLs defining this type = "xxxx", "xxxx", ....
   private String makeMergeMessage(Map m) {
-    StringBuffer sb = new StringBuffer();  
+    StringBuffer sb = new StringBuffer();
     for (Iterator it = m.entrySet().iterator(); it.hasNext();) {
-      Map.Entry entry = (Map.Entry)it.next();
-      String typeName =(String)entry.getKey();
+      Map.Entry entry = (Map.Entry) it.next();
+      String typeName = (String) entry.getKey();
       sb.append("\n  ");
-      sb.append("TypeName having merged features = ").append(typeName).append("\n    URLs defining this type =");
-      Set urls = (Set)entry.getValue();
+      sb.append("TypeName having merged features = ").append(typeName)
+              .append("\n    URLs defining this type =");
+      Set urls = (Set) entry.getValue();
       boolean afterFirst = false;
       for (Iterator itUrls = urls.iterator(); itUrls.hasNext();) {
         if (afterFirst) {
-            sb.append(",\n        ");
-        }
-        else {
-            sb.append("\n        ");
+          sb.append(",\n        ");
+        } else {
+          sb.append("\n        ");
         }
         afterFirst = true;
         String url = (String) itUrls.next();
@@ -2946,18 +3063,21 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * Gets the project class path.
    *
    * @return the project class path
-   * @throws CoreException the core exception
+   * @throws CoreException
+   *           the core exception
    */
   public String getProjectClassPath() throws CoreException {
     return getFilteredProjectClassPath(true);
   }
-  
+
   /**
    * Gets the filtered project class path.
    *
-   * @param filterCoreResources the filter core resources
+   * @param filterCoreResources
+   *          the filter core resources
    * @return the filtered project class path
-   * @throws CoreException the core exception
+   * @throws CoreException
+   *           the core exception
    */
   public String getFilteredProjectClassPath(boolean filterCoreResources) throws CoreException {
     IProject project = getProject();
@@ -2971,7 +3091,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     IResource classFileResource = projectRoot.findMember(".classpath"); //$NON-NLS-1$
     long stamp = classFileResource.getModificationStamp();
     if (stamp == cachedStamp && filterCoreResources) {
-        return cachedClassPath;
+      return cachedClassPath;
     }
 
     StringBuffer result = new StringBuffer(1000);
@@ -2993,13 +3113,13 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         if (null == checker ||
         // || null != checker.findResource("java/lang/Object.class")
         // //$NON-NLS-1$
-            null != checker.findResource("org/apache/uima/impl/UIMAFramework_impl.class")) { //$NON-NLS-1$
+                null != checker.findResource("org/apache/uima/impl/UIMAFramework_impl.class")) { //$NON-NLS-1$
           continue;
         }
       }
       if (result.length() > 0) {
         result = result.append(PATH_SEPARATOR);
-    }
+      }
       result = result.append(classPath);
     }
     if (filterCoreResources) {
@@ -3008,7 +3128,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       return cachedClassPath;
     }
     return result.toString();
-    
+
   }
 
   /**
@@ -3042,7 +3162,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the save as status.
    *
-   * @param nStatus the new save as status
+   * @param nStatus
+   *          the new save as status
    */
   public void setSaveAsStatus(int nStatus) {
     m_nSaveAsStatus = nStatus;
@@ -3090,7 +3211,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Validate inputs.
    *
-   * @param typeNameHash the type name hash
+   * @param typeNameHash
+   *          the type name hash
    * @return true, if successful
    */
   // returns true if no inputs were removed, false otherwise
@@ -3101,7 +3223,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Validate outputs.
    *
-   * @param typeNameHash the type name hash
+   * @param typeNameHash
+   *          the type name hash
    * @return true, if successful
    */
   // returns true if no outputs were removed, false otherwise
@@ -3112,8 +3235,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Validate I os.
    *
-   * @param isValidateInputs the is validate inputs
-   * @param typeNameHash the type name hash
+   * @param isValidateInputs
+   *          the is validate inputs
+   * @param typeNameHash
+   *          the type name hash
    * @return true, if successful
    */
   public boolean validateIOs(boolean isValidateInputs, Map typeNameHash) {
@@ -3125,8 +3250,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         return true;
       }
 
-      TypeOrFeature[] oldIOs = (isValidateInputs) ? capabilities[0].getInputs() : capabilities[0]
-              .getOutputs();
+      TypeOrFeature[] oldIOs = (isValidateInputs) ? capabilities[0].getInputs()
+              : capabilities[0].getOutputs();
       Vector validIOs = new Vector();
       for (int i = 0; i < oldIOs.length; i++) {
         String typeName;
@@ -3150,10 +3275,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         }
 
         if (isValidateInputs) {
-            capabilities[0].setInputs(newIOs);
-        }
-        else {
-            capabilities[0].setOutputs(newIOs);
+          capabilities[0].setInputs(newIOs);
+        } else {
+          capabilities[0].setOutputs(newIOs);
         }
       }
     }
@@ -3164,7 +3288,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Validate type priorities.
    *
-   * @param typeNameHash the type name hash
+   * @param typeNameHash
+   *          the type name hash
    * @return true, if successful
    */
   // returns true if no type priorities were modified, false otherwise
@@ -3204,12 +3329,14 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   /** The Constant previewSize. */
   private static final int previewSize = 1024 * 16;
-  
+
   /**
    * Used by code to get lists of delegate components by input/output type specs.
    *
-   * @param iFile the i file
-   * @param componentHeaders the component headers
+   * @param iFile
+   *          the i file
+   * @param componentHeaders
+   *          the component headers
    * @return the delegate resource specifier
    */
   public static ResourceSpecifier getDelegateResourceSpecifier(IFile iFile,
@@ -3230,11 +3357,11 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       while (true) {
         int tempCharsRead = fileReader.read(acBuffer, nCharsRead, previewSize - nCharsRead);
         if (-1 == tempCharsRead) {
-            break;
+          break;
         }
         nCharsRead = nCharsRead + tempCharsRead;
         if (nCharsRead >= previewSize) {
-            break;
+          break;
         }
       }
     } catch (FileNotFoundException e) {
@@ -3247,19 +3374,19 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
           fileReader.close();
         } catch (IOException e1) {
         }
-    }
+      }
     }
     if (-1 == nCharsRead) {
-        return null;
+      return null;
     }
     String sBuffer = (new String(acBuffer, 0, nCharsRead)).toLowerCase();
     for (int i = 0; i < componentHeaders.length; i++) {
       if (-1 != sBuffer.indexOf(componentHeaders[i])) {
         break;
-    }
+      }
       if (i == (componentHeaders.length - 1)) {
         return null;
-    }
+      }
     }
 
     try {
@@ -3269,10 +3396,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
               || inputDescription instanceof CasConsumerDescription
               || inputDescription instanceof FlowControllerDescription) {
         return (ResourceCreationSpecifier) inputDescription;
-    }
-    else if (inputDescription instanceof ResourceServiceSpecifier) {
+      } else if (inputDescription instanceof ResourceServiceSpecifier) {
         return (ResourceSpecifier) inputDescription;
-    }
+      }
       return null;
     } catch (IOException e) {
       return null;
@@ -3286,7 +3412,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the messages to root cause.
    *
-   * @param e the e
+   * @param e
+   *          the e
    * @return the messages to root cause
    */
   // **************************************************
@@ -3294,19 +3421,19 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     boolean wantStackTrace = false;
     StringBuffer b = new StringBuffer(200);
     String messagePart = e.getMessage();
-    
+
     // messages for noClassDef found and NPE don't say what the problem was,
     // so always include the exception class also
-    
+
     formatMessageWithClass(e, b, messagePart);
     if (null == messagePart) {
       wantStackTrace = true;
     }
-//    if (null == messagePart) {
-//      b.append(e.getClass().getName());
-//      wantStackTrace = true;
-//    } else
-//      b.append(messagePart);
+    // if (null == messagePart) {
+    // b.append(e.getClass().getName());
+    // wantStackTrace = true;
+    // } else
+    // b.append(messagePart);
     Throwable cur = e;
     Throwable next;
 
@@ -3338,15 +3465,18 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Format message with class.
    *
-   * @param e the e
-   * @param b the b
-   * @param messagePart the message part
+   * @param e
+   *          the e
+   * @param b
+   *          the b
+   * @param messagePart
+   *          the message part
    */
   private void formatMessageWithClass(Throwable e, StringBuffer b, String messagePart) {
     String name = e.getClass().getName();
-    //because this is a message for ordinary users, and
+    // because this is a message for ordinary users, and
     // because the exceptions are more easily readable without their package prefixes,
-    //  remove the package prefix from the displayed name
+    // remove the package prefix from the displayed name
     int lastDot = name.lastIndexOf('.');
     if (lastDot >= 0) {
       name = name.substring(lastDot + 1);
@@ -3356,20 +3486,21 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       b.append(": ").append(messagePart);
     }
   }
-  
+
   /**
    * The Class JCasGenProgressMonitor.
    */
-  public static class JCasGenProgressMonitor implements
-          org.apache.uima.tools.jcasgen.IProgressMonitor {
-    
+  public static class JCasGenProgressMonitor
+          implements org.apache.uima.tools.jcasgen.IProgressMonitor {
+
     /** The m progress monitor. */
     IProgressMonitor m_progressMonitor;
 
     /**
      * Instantiates a new j cas gen progress monitor.
      *
-     * @param progressMonitor the progress monitor
+     * @param progressMonitor
+     *          the progress monitor
      */
     public JCasGenProgressMonitor(IProgressMonitor progressMonitor) {
       m_progressMonitor = progressMonitor;
@@ -3441,7 +3572,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
               + message);
       if (null != ex) {
         ex.printStackTrace();
-    }
+      }
       if (IError.WARN < severity) {
         m_message = message;
         throw new Jg.ErrorExit();
@@ -3465,8 +3596,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public Color getFadeColor() {
     if (null == fadeColor) {
-        // COLOR_WIDGET_DARK_SHADOW is the same as black on SUSE KDE
-          fadeColor = getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
+      // COLOR_WIDGET_DARK_SHADOW is the same as black on SUSE KDE
+      fadeColor = getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
     }
     return fadeColor;
   }
@@ -3476,7 +3607,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the merged type system description.
    *
-   * @param saved the new merged type system description
+   * @param saved
+   *          the new merged type system description
    */
   // **********************
   public void setMergedTypeSystemDescription(TypeSystemDescription saved) {
@@ -3486,7 +3618,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the imported type system description.
    *
-   * @param saved the new imported type system description
+   * @param saved
+   *          the new imported type system description
    */
   public void setImportedTypeSystemDescription(TypeSystemDescription saved) {
     importedTypeSystemDescription = saved;
@@ -3495,7 +3628,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the imported type system description.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setImportedTypeSystemDescription() throws ResourceInitializationException {
     Collection tsdc = new ArrayList(1);
@@ -3506,23 +3640,23 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
     tsdc.clear();
     tsdc.add(tsd);
-    importedTypeSystemDescription = CasCreationUtils
-            .mergeTypeSystems(tsdc, createResourceManager());
+    importedTypeSystemDescription = CasCreationUtils.mergeTypeSystems(tsdc,
+            createResourceManager());
   }
 
   /**
    * Sets the merged type system description.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public void setMergedTypeSystemDescription() throws ResourceInitializationException {
     mergedTypesAddingFeatures.clear();
     if (isAggregate()) {
-        mergedTypeSystemDescription = mergeDelegateAnalysisEngineTypeSystems(
-                  (AnalysisEngineDescription) aeDescription.clone(), createResourceManager(),
-                  mergedTypesAddingFeatures);
-    }
-    else {
+      mergedTypeSystemDescription = mergeDelegateAnalysisEngineTypeSystems(
+              (AnalysisEngineDescription) aeDescription.clone(), createResourceManager(),
+              mergedTypesAddingFeatures);
+    } else {
       if (null == typeSystemDescription) {
         mergedTypeSystemDescription = null;
       } else {
@@ -3561,7 +3695,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the merged fs index collection.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public void setMergedFsIndexCollection() throws ResourceInitializationException {
     mergedFsIndexCollection = mergeDelegateAnalysisEngineFsIndexCollections(
@@ -3571,7 +3706,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the merged fs index collection.
    *
-   * @param saved the new merged fs index collection
+   * @param saved
+   *          the new merged fs index collection
    */
   public void setMergedFsIndexCollection(FsIndexCollection saved) {
     mergedFsIndexCollection = saved;
@@ -3589,11 +3725,12 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the merged type priorities.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   // full merge - including locally defined and imported ones
   public void setMergedTypePriorities() throws ResourceInitializationException {
-    
+
     mergedTypePriorities = mergeDelegateAnalysisEngineTypePriorities(
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
@@ -3601,7 +3738,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the merged type priorities.
    *
-   * @param saved the new merged type priorities
+   * @param saved
+   *          the new merged type priorities
    */
   public void setMergedTypePriorities(TypePriorities saved) {
     mergedTypePriorities = saved;
@@ -3619,16 +3757,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the resolved flow controller declaration.
    *
-   * @throws InvalidXMLException the invalid XML exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    */
   public void setResolvedFlowControllerDeclaration() throws InvalidXMLException {
     FlowControllerDeclaration fcDecl = aeDescription.getFlowControllerDeclaration();
     if (null != fcDecl) {
       resolvedFlowControllerDeclaration = (FlowControllerDeclaration) fcDecl.clone();
       resolvedFlowControllerDeclaration.resolveImports(createResourceManager());
-    }
-    else {
-        resolvedFlowControllerDeclaration = null;
+    } else {
+      resolvedFlowControllerDeclaration = null;
     }
   }
 
@@ -3647,13 +3785,14 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * 
    * But: resolving does fit. So we name this differently
    * 
-   * @throws InvalidXMLException -
+   * @throws InvalidXMLException
+   *           -
    */
   public void setResolvedExternalResourcesAndBindings() throws InvalidXMLException {
     AnalysisEngineDescription clonedAe = (AnalysisEngineDescription) aeDescription.clone();
     ResourceManagerConfiguration rmc = clonedAe.getResourceManagerConfiguration();
     if (null != rmc) {
-        rmc.resolveImports(createResourceManager());
+      rmc.resolveImports(createResourceManager());
     }
     resolvedExternalResourcesAndBindings = rmc;
   }
@@ -3661,7 +3800,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the resolved external resources and bindings.
    *
-   * @param saved the new resolved external resources and bindings
+   * @param saved
+   *          the new resolved external resources and bindings
    */
   public void setResolvedExternalResourcesAndBindings(ResourceManagerConfiguration saved) {
     resolvedExternalResourcesAndBindings = saved;
@@ -3679,13 +3819,14 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the imported fs index collection.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private void setImportedFsIndexCollection() throws ResourceInitializationException {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setFsIndexCollection(null);
-    importedFsIndexCollection = CasCreationUtils.mergeDelegateAnalysisEngineFsIndexCollections(
-            localAe, createResourceManager());
+    importedFsIndexCollection = CasCreationUtils
+            .mergeDelegateAnalysisEngineFsIndexCollections(localAe, createResourceManager());
   }
 
   /**
@@ -3702,7 +3843,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Sets the imported type priorities.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   // (only locally defined ones can be edited)
   private void setImportedTypePriorities() throws ResourceInitializationException {
@@ -3749,9 +3891,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   public ITextEditor getSourcePageEditor() {
     if (getCurrentPage() == sourceIndex) {
       return sourceTextEditor;
-    }
-    else {
-        return null;
+    } else {
+      return null;
     }
   }
 
@@ -3773,7 +3914,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Gets the type from project.
    *
-   * @param typename the typename
+   * @param typename
+   *          the typename
    * @return the type from project
    */
   public IType getTypeFromProject(String typename) {
@@ -3782,9 +3924,11 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       try {
         return jp.findType(typename);
       } catch (JavaModelException e) {
-        Utility.popMessage("Unexpected Exception", MessageFormat.format(
-                "Unexpected exception while getting type information for type ''{0}''. {1}",
-                new Object[] { typename, getMessagesToRootCause(e) }), MessageDialog.ERROR);
+        Utility.popMessage("Unexpected Exception",
+                MessageFormat.format(
+                        "Unexpected exception while getting type information for type ''{0}''. {1}",
+                        new Object[] { typename, getMessagesToRootCause(e) }),
+                MessageDialog.ERROR);
         throw new InternalErrorCDE("unexpected exception", e);
       }
     return null;
@@ -3815,7 +3959,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public IType getAnalysisComponentIType() {
     if (null == analysisComponentIType) {
-        analysisComponentIType = getTypeFromProject("org.apache.uima.analysis_component.AnalysisComponent");
+      analysisComponentIType = getTypeFromProject(
+              "org.apache.uima.analysis_component.AnalysisComponent");
     }
     return analysisComponentIType;
   }
@@ -3827,7 +3972,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public IType getBaseAnnotatorIType() {
     if (null == baseAnnotatorIType) {
-        baseAnnotatorIType = getTypeFromProject("org.apache.uima.analysis_engine.annotator.BaseAnnotator");
+      baseAnnotatorIType = getTypeFromProject(
+              "org.apache.uima.analysis_engine.annotator.BaseAnnotator");
     }
     return baseAnnotatorIType;
   }
@@ -3839,7 +3985,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public IType getCollectionReaderIType() {
     if (null == collectionReaderIType) {
-        collectionReaderIType = getTypeFromProject("org.apache.uima.collection.CollectionReader");
+      collectionReaderIType = getTypeFromProject("org.apache.uima.collection.CollectionReader");
     }
     return collectionReaderIType;
   }
@@ -3851,7 +3997,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public IType getCasInitializerIType() {
     if (null == casInitializerIType) {
-        casInitializerIType = getTypeFromProject("org.apache.uima.collection.CasInitializer");
+      casInitializerIType = getTypeFromProject("org.apache.uima.collection.CasInitializer");
     }
     return casInitializerIType;
   }
@@ -3863,7 +4009,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public IType getCasConsumerIType() {
     if (null == casConsumerIType) {
-        casConsumerIType = getTypeFromProject("org.apache.uima.collection.CasConsumer");
+      casConsumerIType = getTypeFromProject("org.apache.uima.collection.CasConsumer");
     }
     return casConsumerIType;
   }
@@ -3875,7 +4021,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    */
   public IType getFlowControllerIType() {
     if (null == flowControllerIType) {
-        flowControllerIType = getTypeFromProject("org.apache.uima.flow.FlowController");
+      flowControllerIType = getTypeFromProject("org.apache.uima.flow.FlowController");
     }
     return flowControllerIType;
   }
@@ -3903,13 +4049,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     /**
      * Adds the scope.
      *
-     * @param newScope the new scope
+     * @param newScope
+     *          the new scope
      */
     public void addScope(IJavaSearchScope newScope) {
       subScopes[nbrScopes++] = newScope;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#encloses(java.lang.String)
      */
     @Override
@@ -3922,11 +4071,13 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       if (!resourcePath.startsWith("C:\\p\\j")) {
         System.out.println(MessageFormat.format(" FALSE encloses resourcepath: ''{0}''",
                 new Object[] { resourcePath }));
-    }
+      }
       return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#encloses(org.eclipse.jdt.core.IJavaElement)
      */
     @Override
@@ -3934,13 +4085,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
       for (int i = 0; i < nbrScopes; i++) {
         if (subScopes[i].encloses(element)) {
-            return true;
+          return true;
         }
       }
       return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#enclosingProjectsAndJars()
      */
     @Override
@@ -3949,17 +4102,19 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       for (int i = 0; i < nbrScopes; i++) {
         IPath[] pjs = subScopes[i].enclosingProjectsAndJars();
         if (null != pjs) {
-            for (int j = 0; j < pjs.length; j++) {
-                if (!result.contains(pjs[j])) {
-                    result.add(pjs[j]);
-                }
-              }
+          for (int j = 0; j < pjs.length; j++) {
+            if (!result.contains(pjs[j])) {
+              result.add(pjs[j]);
+            }
+          }
         }
       }
       return (IPath[]) result.toArray(new IPath[result.size()]);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#includesBinaries()
      */
     @Override
@@ -3968,7 +4123,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#includesClasspaths()
      */
     @Override
@@ -3977,7 +4134,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#setIncludesBinaries(boolean)
      */
     @Override
@@ -3985,7 +4144,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       // implements interface method
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.core.search.IJavaSearchScope#setIncludesClasspaths(boolean)
      */
     @Override
@@ -4023,52 +4184,63 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
     return null;
   }
-  
+
   /**
    * Merge delegate analysis engine type systems.
    *
-   * @param aAeDescription the a ae description
-   * @param aResourceManager the a resource manager
-   * @param aOutputMergedTypes the a output merged types
+   * @param aAeDescription
+   *          the a ae description
+   * @param aResourceManager
+   *          the a resource manager
+   * @param aOutputMergedTypes
+   *          the a output merged types
    * @return the type system description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
           AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager,
           Map aOutputMergedTypes) throws ResourceInitializationException {
-    
+
     getMergeInput(aAeDescription, aResourceManager);
-    return CasCreationUtils.mergeTypeSystems(typeSystemsToMerge, aResourceManager, aOutputMergedTypes);
+    return CasCreationUtils.mergeTypeSystems(typeSystemsToMerge, aResourceManager,
+            aOutputMergedTypes);
   }
-  
+
   /**
    * Merge delegate analysis engine type priorities.
    *
-   * @param aAeDescription the a ae description
-   * @param aResourceManager the a resource manager
+   * @param aAeDescription
+   *          the a ae description
+   * @param aResourceManager
+   *          the a resource manager
    * @return the type priorities
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private TypePriorities mergeDelegateAnalysisEngineTypePriorities(
-          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager) 
-        throws ResourceInitializationException {
-    
-    getMergeInput(aAeDescription, aResourceManager);    
+          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
+
+    getMergeInput(aAeDescription, aResourceManager);
     return CasCreationUtils.mergeTypePriorities(typePrioritiesToMerge, aResourceManager);
   }
 
   /**
    * Merge delegate analysis engine fs index collections.
    *
-   * @param aAeDescription the a ae description
-   * @param aResourceManager the a resource manager
+   * @param aAeDescription
+   *          the a ae description
+   * @param aResourceManager
+   *          the a resource manager
    * @return the fs index collection
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private FsIndexCollection mergeDelegateAnalysisEngineFsIndexCollections(
-          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager) 
-            throws ResourceInitializationException {
-    
+          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
+
     getMergeInput(aAeDescription, aResourceManager);
     return CasCreationUtils.mergeFsIndexes(fsIndexesToMerge, aResourceManager);
   }
@@ -4076,47 +4248,55 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   /**
    * Creates the cas.
    *
-   * @param aAeDescription the a ae description
-   * @param aPerformanceTuningSettings the a performance tuning settings
-   * @param aResourceManager the a resource manager
+   * @param aAeDescription
+   *          the a ae description
+   * @param aPerformanceTuningSettings
+   *          the a performance tuning settings
+   * @param aResourceManager
+   *          the a resource manager
    * @return the cas
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public CAS createCas(AnalysisEngineDescription aAeDescription,
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
-    
+
     getMergeInput(aAeDescription, aResourceManager);
 
     // merge
-    TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystemsToMerge, aResourceManager);
-    TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesToMerge, aResourceManager);
-    FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexesToMerge, aResourceManager);
+    TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystemsToMerge,
+            aResourceManager);
+    TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesToMerge,
+            aResourceManager);
+    FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexesToMerge,
+            aResourceManager);
 
     return CasCreationUtils.createCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
             aPerformanceTuningSettings, aResourceManager);
   }
-  
+
   /**
    * Gets the merge input.
    *
-   * @param aAggregateDescription the a aggregate description
-   * @param aResourceManager the a resource manager
+   * @param aAggregateDescription
+   *          the a aggregate description
+   * @param aResourceManager
+   *          the a resource manager
    * @return the merge input
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
-  private void getMergeInput (
-          AnalysisEngineDescription aAggregateDescription, 
-          ResourceManager aResourceManager) 
-               throws ResourceInitializationException {
-    
+  private void getMergeInput(AnalysisEngineDescription aAggregateDescription,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
+
     // expand the aggregate AE description into the individual delegates
     ArrayList l = new ArrayList();
     l.add(aAggregateDescription);
     List mdList = CasCreationUtils.getMetaDataList(l, aResourceManager, failedRemotes);
-    
+
     maybeShowRemoteFailure();
-    
+
     // extract type systems and merge
     typeSystemsToMerge = new ArrayList();
     typePrioritiesToMerge = new ArrayList();
@@ -4126,16 +4306,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
       if (md.getTypeSystem() != null) {
         typeSystemsToMerge.add(md.getTypeSystem());
-    }
+      }
       if (md.getTypePriorities() != null) {
         typePrioritiesToMerge.add(md.getTypePriorities());
-    }
+      }
       if (md.getFsIndexCollection() != null) {
         fsIndexesToMerge.add(md.getFsIndexCollection());
-    }
+      }
     }
   }
-  
+
   /**
    * Maybe show remote failure.
    */
@@ -4143,46 +4323,45 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     if (failedRemotes.size() == 0) {
       return;
     }
-    
+
     List names = new ArrayList();
     List exceptions = new ArrayList();
-    
+
     for (Iterator it = failedRemotes.entrySet().iterator(); it.hasNext();) {
       Map.Entry entry = (Map.Entry) it.next();
-      String component = (String)entry.getKey();
-      
+      String component = (String) entry.getKey();
+
       if (failedRemotesAlreadyKnown.contains(component)) {
         continue;
       }
-      
+
       failedRemotesAlreadyKnown.add(component);
       names.add(component);
       exceptions.add(entry.getValue());
     }
-    
+
     if (names.size() == 0) {
       return;
     }
-    
+
     StringBuffer sb = new StringBuffer(100);
     for (int i = 0; i < names.size(); i++) {
-      sb.append("Component key-name(s): ").append(names.get(i))
-        .append(": ")
-        .append(getMessagesToRootCause((Exception)exceptions.get(i)))
-        .append("\n---------------\n");
+      sb.append("Component key-name(s): ").append(names.get(i)).append(": ")
+              .append(getMessagesToRootCause((Exception) exceptions.get(i)))
+              .append("\n---------------\n");
     }
-    
-    Utility.popMessage("Remotes Unavailable", "Note: This message is only shown once.\n\n" +
-    		"Some Remote components (see error message below) could not be accessed.\n" +
-        "This is not an error; perhaps the remote components are not currently running.\n\n" +
-        "WARNING: The Types, Type Priorities, and Indexes created by \"merging\"\n" +
-        "information from the imported remote types may be incomplete\n" +
-        "(because the editor can't read this information at the moment).\n" +
-        "However, this doesn't affect the editing operations; you can continue\n" +
-        "(but with perhaps less complete error checking in the editor,\n" +
-        "and JCasGen, if used, may be missing some type information that\n" +
-        "would have come from the remote components, had they been available.\n\n" +
-        sb, MessageDialog.WARNING);
+
+    Utility.popMessage("Remotes Unavailable", "Note: This message is only shown once.\n\n"
+            + "Some Remote components (see error message below) could not be accessed.\n"
+            + "This is not an error; perhaps the remote components are not currently running.\n\n"
+            + "WARNING: The Types, Type Priorities, and Indexes created by \"merging\"\n"
+            + "information from the imported remote types may be incomplete\n"
+            + "(because the editor can't read this information at the moment).\n"
+            + "However, this doesn't affect the editing operations; you can continue\n"
+            + "(but with perhaps less complete error checking in the editor,\n"
+            + "and JCasGen, if used, may be missing some type information that\n"
+            + "would have come from the remote components, had they been available.\n\n" + sb,
+            MessageDialog.WARNING);
   }
-  
+
 }

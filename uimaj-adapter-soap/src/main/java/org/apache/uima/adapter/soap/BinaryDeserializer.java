@@ -38,7 +38,6 @@ import org.apache.uima.internal.util.SerializationUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * An Axis deserializer for {@link Serializable} objects. The serialized bytes are Base-64 encoded
  * for transport via SOAP.
@@ -53,12 +52,15 @@ public class BinaryDeserializer extends DeserializerImpl {
   /** The buf. */
   private StringBuffer buf = new StringBuffer();
 
-  /* (non-Javadoc)
-   * @see org.apache.axis.encoding.DeserializerImpl#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.axis.encoding.DeserializerImpl#startElement(java.lang.String, java.lang.String,
+   * java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
    */
   @Override
-  public void startElement(String namespace, String localName, String prefix,
-          Attributes attributes, DeserializationContext context) throws SAXException {
+  public void startElement(String namespace, String localName, String prefix, Attributes attributes,
+          DeserializationContext context) throws SAXException {
 
     // System.out.println("startElement(" + namespace + "," + localName + "," + prefix + ")");
     if (!context.isDoneParsing()) {
@@ -122,13 +124,20 @@ public class BinaryDeserializer extends DeserializerImpl {
   /**
    * On start element.
    *
-   * @param namespace the namespace
-   * @param localName the local name
-   * @param prefix the prefix
-   * @param attributes the attributes
-   * @param context the context
-   * @throws SAXException the SAX exception
-   * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes, DeserializationContext)
+   * @param namespace
+   *          the namespace
+   * @param localName
+   *          the local name
+   * @param prefix
+   *          the prefix
+   * @param attributes
+   *          the attributes
+   * @param context
+   *          the context
+   * @throws SAXException
+   *           the SAX exception
+   * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes,
+   *      DeserializationContext)
    */
   @Override
   public void onStartElement(String namespace, String localName, String prefix,
@@ -139,10 +148,14 @@ public class BinaryDeserializer extends DeserializerImpl {
   /**
    * On end element.
    *
-   * @param arg0 the arg 0
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
-   * @throws SAXException the SAX exception
+   * @param arg0
+   *          the arg 0
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
+   * @throws SAXException
+   *           the SAX exception
    * @see org.apache.axis.encoding.Deserializer#onEndElement(java.lang.String, java.lang.String,
    *      org.apache.axis.encoding.DeserializationContext)
    */
@@ -171,10 +184,14 @@ public class BinaryDeserializer extends DeserializerImpl {
   /**
    * Characters.
    *
-   * @param ch the ch
-   * @param start the start
-   * @param length the length
-   * @throws SAXException the SAX exception
+   * @param ch
+   *          the ch
+   * @param start
+   *          the start
+   * @param length
+   *          the length
+   * @throws SAXException
+   *           the SAX exception
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
   @Override

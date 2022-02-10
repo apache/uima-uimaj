@@ -62,7 +62,8 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   /**
    * Start document.
    *
-   * @throws SAXException the SAX exception
+   * @throws SAXException
+   *           the SAX exception
    * @see org.xml.sax.ContentHandler#startDocument()
    */
   @Override
@@ -75,13 +76,18 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   /**
    * Called for each start tag encountered.
    *
-   * @param namespaceURI          Required if the namespaces property is true.
-   * @param localName          The local name (without prefix), or the empty string if Namespace processing is not
+   * @param namespaceURI
+   *          Required if the namespaces property is true.
+   * @param localName
+   *          The local name (without prefix), or the empty string if Namespace processing is not
    *          being performed.
-   * @param qualifiedName          The qualified name (with prefix), or the empty string if qualified names are not
+   * @param qualifiedName
+   *          The qualified name (with prefix), or the empty string if qualified names are not
    *          available.
-   * @param attributes          The specified or defaulted attributes.
-   * @throws SAXException the SAX exception
+   * @param attributes
+   *          The specified or defaulted attributes.
+   * @throws SAXException
+   *           the SAX exception
    */
   @Override
   public void startElement(String namespaceURI, String localName, String qualifiedName,
@@ -106,8 +112,8 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
       // set attributes
       if (mCurrentFrameAttrs != null) {
         for (int i = 0; i < mCurrentFrameAttrs.getLength(); i++) {
-          String attrName = getName(mCurrentFrameAttrs.getLocalName(i), mCurrentFrameAttrs
-                  .getQName(i));
+          String attrName = getName(mCurrentFrameAttrs.getLocalName(i),
+                  mCurrentFrameAttrs.getQName(i));
           vinciAttrs.fadd(attrName, mCurrentFrameAttrs.getValue(i));
         }
       }
@@ -125,9 +131,12 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   /**
    * Characters.
    *
-   * @param ch the ch
-   * @param start the start
-   * @param length the length
+   * @param ch
+   *          the ch
+   * @param start
+   *          the start
+   * @param length
+   *          the length
    * @see org.xml.sax.ContentHandler#characters(char[],int,int)
    */
   @Override
@@ -138,9 +147,12 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
   /**
    * End element.
    *
-   * @param namespaceURI the namespace URI
-   * @param localName the local name
-   * @param qualifiedName the qualified name
+   * @param namespaceURI
+   *          the namespace URI
+   * @param localName
+   *          the local name
+   * @param qualifiedName
+   *          the qualified name
    * @see org.xml.sax.ContentHandler#endElement(String,String,String)
    */
   @Override
@@ -152,18 +164,19 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
       // the getLeafContent method just returns the contents of the
       // mCharContentBuffer, but exists so subclasses can override for
       // specialized behavior (such as supressing certain content).
-      String leafContent = getLeafContent(mCurrentFrameName, mCurrentFrameAttrs, mCharContentBuffer);
+      String leafContent = getLeafContent(mCurrentFrameName, mCurrentFrameAttrs,
+              mCharContentBuffer);
 
       // add leaf to parent frame
       AFrame parent = (AFrame) mOpenFrames.peek();
-      org.apache.vinci.transport.Attributes vinciAttrs = parent
-              .aadd(mCurrentFrameName, leafContent);
+      org.apache.vinci.transport.Attributes vinciAttrs = parent.aadd(mCurrentFrameName,
+              leafContent);
 
       // set attributes
       if (mCurrentFrameAttrs != null) {
         for (int i = 0; i < mCurrentFrameAttrs.getLength(); i++) {
-          String attrName = getName(mCurrentFrameAttrs.getLocalName(i), mCurrentFrameAttrs
-                  .getQName(i));
+          String attrName = getName(mCurrentFrameAttrs.getLocalName(i),
+                  mCurrentFrameAttrs.getQName(i));
           vinciAttrs.fadd(attrName, mCurrentFrameAttrs.getValue(i));
         }
       }

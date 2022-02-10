@@ -28,7 +28,6 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
-
 /**
  * The Class ColorRenderer.
  */
@@ -46,7 +45,8 @@ class ColorRenderer extends JLabel implements TableCellRenderer {
   /**
    * Instantiates a new color renderer.
    *
-   * @param sTable the s table
+   * @param sTable
+   *          the s table
    */
   public ColorRenderer(StyleMapTable sTable) {
     setOpaque(true);
@@ -59,8 +59,11 @@ class ColorRenderer extends JLabel implements TableCellRenderer {
       unselectedBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, sTable.getBackground());
   }
 
-  /* (non-Javadoc)
-   * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
+   * java.lang.Object, boolean, boolean, int, int)
    */
   @Override
   public Component getTableCellRendererComponent(JTable table, Object color, boolean isSelected,

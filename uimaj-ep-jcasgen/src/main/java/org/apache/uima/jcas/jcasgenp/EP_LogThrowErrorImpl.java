@@ -41,7 +41,7 @@ public class EP_LogThrowErrorImpl implements IError {
    */
   @Override
   public void newError(int severity, String message, Exception exception) {
-    String pluginId = JgPlugin.getUniqueIdentifier();        
+    String pluginId = JgPlugin.getUniqueIdentifier();
     ILog log = JgPlugin.getDefault().getLog();
     log.log(new Status(logLevels[severity], pluginId, IStatus.OK, message, exception));
     if (IError.WARN < severity)

@@ -26,20 +26,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * The Class ProgressMonitorImpl.
  */
 public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgressMonitor {
-  
+
   /** The fwd. */
   private IProgressMonitor fwd;
 
   /**
    * Instantiates a new progress monitor impl.
    *
-   * @param pm the pm
+   * @param pm
+   *          the pm
    */
   ProgressMonitorImpl(IProgressMonitor pm) {
     fwd = pm;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#done()
    */
   @Override
@@ -47,7 +50,9 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
     fwd.done();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#beginTask(java.lang.String, int)
    */
   @Override
@@ -55,7 +60,9 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
     fwd.beginTask(name, totalWorked);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#subTask(java.lang.String)
    */
   @Override
@@ -63,7 +70,9 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
     fwd.subTask(name);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#worked(int)
    */
   @Override
@@ -74,7 +83,8 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
   /**
    * Internal worked.
    *
-   * @param work the work
+   * @param work
+   *          the work
    */
   /*
    * (non-Javadoc)
@@ -101,7 +111,8 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
   /**
    * Sets the canceled.
    *
-   * @param value the new canceled
+   * @param value
+   *          the new canceled
    */
   /*
    * (non-Javadoc)
@@ -114,7 +125,8 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
   /**
    * Sets the task name.
    *
-   * @param name the new task name
+   * @param name
+   *          the new task name
    */
   /*
    * (non-Javadoc)

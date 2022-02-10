@@ -39,7 +39,6 @@ import org.apache.uima.util.ProcessTrace;
 
 import example.PersonTitle;
 
-
 /**
  * A simple CAS consumer that creates a Derby (Cloudscape) database in the file system. You can
  * obtain this database from http://incubator.apache.org/derby/ *
@@ -47,7 +46,7 @@ import example.PersonTitle;
  * This CAS Consumer takes one parameters:
  * <ul>
  * <li><code>OutputDirectory</code> - path to directory which is the "System" directory for the
- * derby DB. </li>
+ * derby DB.</li>
  * </ul>
  * 
  * It deletes all the databases at the system location (!!!), Creates a new database (takes the most
@@ -106,7 +105,9 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   /** The start time. */
   private long startTime;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
    */
   @Override
@@ -140,8 +141,8 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
    */
   @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
-    System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-            + " DB Writer: ProcessCas called");
+    System.out.println(
+            "Time: " + (System.currentTimeMillis() - startTime) + " DB Writer: ProcessCas called");
     JCas jcas;
     try {
       jcas = aCAS.getJCas();
@@ -166,10 +167,8 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         // (derby also has a network accessed database driver)
         if (firstEverCall) {
           firstEverCall = false;
-          System.out
-                  .println("Time: "
-                          + (System.currentTimeMillis() - startTime)
-                          + " DB Writer: Doing first process call ever (even during re-runs) initialization");
+          System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+                  + " DB Writer: Doing first process call ever (even during re-runs) initialization");
           try {
             // note: newInstance() call is needed to reinitialize properly after
             // derby has been shutdown
@@ -212,10 +211,8 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         }
 
         con = DriverManager.getConnection("jdbc:derby:ExamplePersonTitleDB;create=true");
-        System.out
-                .println("Time: "
-                        + (System.currentTimeMillis() - startTime)
-                        + " DB Writer: First Time Initiailization: Created the ExamplePersonTitleDB and connected to it.");
+        System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+                + " DB Writer: First Time Initiailization: Created the ExamplePersonTitleDB and connected to it.");
 
         // Databases typically use user-names and passwords; these can
         // be passed as //properties to the getConnection method.
@@ -245,15 +242,15 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
       }
 
       // get the singleton instance of the SourceDocumentInformation
-      SourceDocumentInformation sdi = (SourceDocumentInformation) 
-              jcas.getAnnotationIndex(SourceDocumentInformation.type).iterator().next();
+      SourceDocumentInformation sdi = (SourceDocumentInformation) jcas
+              .getAnnotationIndex(SourceDocumentInformation.type).iterator().next();
 
       System.out.println("Time: " + (System.currentTimeMillis() - startTime)
               + " DB Writer: Processing doc: '" + sdi.getUri() + "'");
 
       stmt.setString(1, truncate(sdi.getUri(), MAX_URI_LENGTH));
-      for (FSIterator iter = jcas.getAnnotationIndex(PersonTitle.type).iterator(); 
-           iter.hasNext();) {
+      for (FSIterator iter = jcas.getAnnotationIndex(PersonTitle.type).iterator(); iter
+              .hasNext();) {
         PersonTitle pt = (PersonTitle) iter.next();
         stmt.setString(2, truncate(pt.getCoveredText(), MAX_TITLE_LENGTH));
         stmt.setInt(3, pt.getBegin());
@@ -293,12 +290,16 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.
+   * ProcessTrace)
    */
   @Override
-  public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
-          IOException {
+  public void collectionProcessComplete(ProcessTrace arg0)
+          throws ResourceProcessException, IOException {
     firstCall = true;
 
     try {
@@ -335,7 +336,8 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   /**
    * Delete dir.
    *
-   * @param f the f
+   * @param f
+   *          the f
    */
   private void deleteDir(File f) {
     if (f.isDirectory()) {
@@ -350,8 +352,10 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   /**
    * Truncate.
    *
-   * @param s the s
-   * @param length the length
+   * @param s
+   *          the s
+   * @param length
+   *          the length
    * @return the string
    */
   private String truncate(String s, int length) {

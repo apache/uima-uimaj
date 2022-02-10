@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class ExportImportablePartDialog.
  */
@@ -69,19 +68,18 @@ public class ExportImportablePartDialog extends AbstractDialog {
   public String baseFileName;
 
   /**
-   * The listener interface for receiving dialogModify events.
-   * The class that is interested in processing a dialogModify
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addDialogModifyListener</code> method. When
-   * the dialogModify event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving dialogModify events. The class that is interested in
+   * processing a dialogModify event implements this interface, and the object created with that
+   * class is registered with a component using the component's <code>addDialogModifyListener</code>
+   * method. When the dialogModify event occurs, that object's appropriate method is invoked.
    *
    * @see DialogModifyEvent
    */
   private class DialogModifyListener implements ModifyListener {
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
      */
     @Override
@@ -98,26 +96,25 @@ public class ExportImportablePartDialog extends AbstractDialog {
   }
 
   /**
-   * The listener interface for receiving dialogVerify events.
-   * The class that is interested in processing a dialogVerify
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addDialogVerifyListener</code> method. When
-   * the dialogVerify event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving dialogVerify events. The class that is interested in
+   * processing a dialogVerify event implements this interface, and the object created with that
+   * class is registered with a component using the component's <code>addDialogVerifyListener</code>
+   * method. When the dialogVerify event occurs, that object's appropriate method is invoked.
    *
    * @see DialogVerifyEvent
    */
   private class DialogVerifyListener implements VerifyListener {
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.swt.events.VerifyListener#verifyText(org.eclipse.swt.events.VerifyEvent)
      */
     @Override
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
-        setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
-                new Object[] { e.text }));
+        setErrorMessage(
+                MessageFormat.format("invalid character(s): ''{0}''", new Object[] { e.text }));
         e.doit = false;
       } else
         setErrorMessage("");
@@ -127,7 +124,8 @@ public class ExportImportablePartDialog extends AbstractDialog {
   /**
    * Instantiates a new export importable part dialog.
    *
-   * @param aSection the a section
+   * @param aSection
+   *          the a section
    */
   public ExportImportablePartDialog(AbstractSection aSection) {
     super(aSection, "Export an importable part",
@@ -135,8 +133,12 @@ public class ExportImportablePartDialog extends AbstractDialog {
     rootPath = aSection.editor.getFile().getParent().getLocation().toString() + '/';
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -182,7 +184,9 @@ public class ExportImportablePartDialog extends AbstractDialog {
     return composite;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override
@@ -203,7 +207,9 @@ public class ExportImportablePartDialog extends AbstractDialog {
     CDEpropertyPage.setImportByDefault(editor.getProject(), isImportByName ? "name" : "location");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override

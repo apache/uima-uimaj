@@ -24,7 +24,6 @@ import java.awt.event.FocusListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * The Class TextFocusHandler.
  */
@@ -36,7 +35,8 @@ public class TextFocusHandler implements FocusListener {
   /**
    * Instantiates a new text focus handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public TextFocusHandler(MainFrame frame) {
     this.main = frame;

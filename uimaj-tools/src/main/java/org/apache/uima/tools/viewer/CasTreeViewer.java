@@ -62,7 +62,6 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * A GUI that displays annotation results in a Swing tree viewer. This class extends {@link JPanel}
  * and so can be reused within any Swing application.
@@ -76,8 +75,10 @@ public class CasTreeViewer extends JPanel {
   /**
    * Creates a CAS Tree Viewer.
    *
-   * @param aCAS          the CAS containing the annotations to be displayed in the tree viewer GUI
-   * @throws CASException the CAS exception
+   * @param aCAS
+   *          the CAS containing the annotations to be displayed in the tree viewer GUI
+   * @throws CASException
+   *           the CAS exception
    */
   public CasTreeViewer(CAS aCAS) throws CASException {
     // build tree from annotations in CAS
@@ -165,10 +166,10 @@ public class CasTreeViewer extends JPanel {
         tableModel.addRow(new Object[] { featName, strVal });
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         int intVal = aAnnotation.getIntValue(feat);
-        tableModel.addRow(new Object[] { featName, intVal});
+        tableModel.addRow(new Object[] { featName, intVal });
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
         float floatVal = aAnnotation.getFloatValue(feat);
-        tableModel.addRow(new Object[] { featName, floatVal});
+        tableModel.addRow(new Object[] { featName, floatVal });
       } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
         StringArrayFS arrayFS = (StringArrayFS) aAnnotation.getFeatureValue(feat);
         StringBuffer displayVal = new StringBuffer();
@@ -230,9 +231,11 @@ public class CasTreeViewer extends JPanel {
   /**
    * Builds a tree from a CAS.
    *
-   * @param aCAS          CAS from which annotations will be extracted
+   * @param aCAS
+   *          CAS from which annotations will be extracted
    * @return the tree node
-   * @throws CASException the CAS exception
+   * @throws CASException
+   *           the CAS exception
    */
   private TreeNode buildTree(CAS aCAS) throws CASException {
     // get iterator over all annotations
@@ -271,8 +274,8 @@ public class CasTreeViewer extends JPanel {
         if (curAnnotStart < curAnnotEnd) // account for bug in JTalent
         {
           // add this annotation as a child of aParentNode
-          DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new AnnotationTreeNodeObject(
-                  curAnnot));
+          DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(
+                  new AnnotationTreeNodeObject(curAnnot));
           aParentNode.add(newNode);
           // recursively add children to this node
           _buildTree(newNode, aIterator, curAnnotStart, curAnnotEnd);
@@ -315,9 +318,9 @@ public class CasTreeViewer extends JPanel {
         CAS CAS = ae.newCAS();
 
         // read document from file
-        
+
         String document = FileUtils.file2String(inputFile);
-        
+
         CAS.setDocumentText(getText(document).trim());
 
         // analyze
@@ -371,10 +374,11 @@ public class CasTreeViewer extends JPanel {
 
   /**
    * Gets text to be processed by the TAE. If the document contains XML tags named TEXT like this:
-   * <code>&lt;TEXT%gt;Process this text.&lt;/TEXT%gt;</code>, then only the text within those
-   * tags is returned. Otherwise the whole document is returned.
+   * <code>&lt;TEXT%gt;Process this text.&lt;/TEXT%gt;</code>, then only the text within those tags
+   * is returned. Otherwise the whole document is returned.
    *
-   * @param text the text
+   * @param text
+   *          the text
    * @return the text
    */
   static private String getText(String text) {
@@ -391,22 +395,23 @@ public class CasTreeViewer extends JPanel {
    * Prints usage message.
    */
   private static void printUsageMessage() {
-    System.err.println("Usage: UimaFrameworkTreeViewer "
-            + "<TAE descriptor or TEAR file name> <input file>");
+    System.err.println(
+            "Usage: UimaFrameworkTreeViewer " + "<TAE descriptor or TEAR file name> <input file>");
   }
 
   /**
    * Sets the size.
    *
-   * @param d the new size
+   * @param d
+   *          the new size
    * @see java.awt.Component#setSize(Dimension)
    */
   @Override
   public void setSize(Dimension d) {
     super.setSize(d);
     Insets insets = getInsets();
-    Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
-            - insets.bottom);
+    Dimension paneSize = new Dimension(d.width - insets.left - insets.right,
+            d.height - insets.top - insets.bottom);
 
     splitPane.setPreferredSize(paneSize);
     splitPane.setSize(paneSize);
@@ -435,11 +440,12 @@ public class CasTreeViewer extends JPanel {
    * Inner class containing data for a node in the tree.
    */
   static class AnnotationTreeNodeObject {
-    
+
     /**
      * Instantiates a new annotation tree node object.
      *
-     * @param aAnnotation the a annotation
+     * @param aAnnotation
+     *          the a annotation
      */
     public AnnotationTreeNodeObject(AnnotationFS aAnnotation) {
       mAnnotation = aAnnotation;
@@ -458,7 +464,9 @@ public class CasTreeViewer extends JPanel {
       return mAnnotation;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override

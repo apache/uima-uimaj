@@ -28,9 +28,8 @@ import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
- * Window closing handler for annotation viewer.  Remember window position on close.
+ * Window closing handler for annotation viewer. Remember window position on close.
  */
 public class CloseAnnotationViewHandler extends WindowAdapter implements WindowListener {
 
@@ -40,13 +39,16 @@ public class CloseAnnotationViewHandler extends WindowAdapter implements WindowL
   /**
    * Instantiates a new close annotation view handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   CloseAnnotationViewHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
    */
   @Override
@@ -55,9 +57,9 @@ public class CloseAnnotationViewHandler extends WindowAdapter implements WindowL
     final int x = tsContentPane.getWidth();
     final int y = tsContentPane.getHeight();
     this.main.getPreferences().setProperty(MainFrame.annotViewSizePref + MainFrame.widthSuffix,
-        Integer.toString(x));
+            Integer.toString(x));
     this.main.getPreferences().setProperty(MainFrame.annotViewSizePref + MainFrame.heightSuffix,
-        Integer.toString(y));
+            Integer.toString(y));
   }
 
 }

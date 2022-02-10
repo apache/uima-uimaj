@@ -32,7 +32,6 @@ import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.service.impl.ResourceService_impl;
 
-
 /**
  * Proxy to a {@link ResourceService_impl} that uses Axis SOAP to communicate with the service.
  * 
@@ -70,7 +69,8 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
    * Call get meta data.
    *
    * @return the resource meta data
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see ResourceService_impl#getMetaData()
    */
   @Override

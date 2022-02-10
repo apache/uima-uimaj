@@ -58,7 +58,7 @@ import org.apache.vinci.transport.document.AFrame;
  * The main method takes one argument - the path to the service deployment descriptor.
  */
 public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
-  
+
   /** The server. */
   private VinciServer _server = null;
 
@@ -81,10 +81,14 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Instantiate Analysis Engine from a given descriptor, debug mode, and instance Id.
    *
-   * @param serviceConfigPath descriptor location
-   * @param debug the debug
-   * @param instanceId the instance id
-   * @throws Exception passthru
+   * @param serviceConfigPath
+   *          descriptor location
+   * @param debug
+   *          the debug
+   * @param instanceId
+   *          the instance id
+   * @throws Exception
+   *           passthru
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug, String instanceId)
           throws Exception {
@@ -95,9 +99,12 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Instantiate Analysis Engine service from a given descriptor - possibly in debug mode.
    *
-   * @param serviceConfigPath descriptor location
-   * @param debug the debug
-   * @throws Exception the exception
+   * @param serviceConfigPath
+   *          descriptor location
+   * @param debug
+   *          the debug
+   * @throws Exception
+   *           the exception
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug) throws Exception {
     this.debug = debug;
@@ -111,15 +118,15 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
     UIMAFramework.getLogger().log(Level.CONFIG,
             "Resource Specifier Path::" + aResourceSpecifierPath);
 
-    ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            new XMLInputSource(aResourceSpecifierPath));
+    ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(new XMLInputSource(aResourceSpecifierPath));
 
     // create CAS Object Processor
     if (mAE == null) {
       UIMAFramework.getLogger().log(Level.FINE,
               "VinciAnalysisEngineService_impl: creating CAS Processor");
-      mAE = UIMAFramework
-              .produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(), 0);
+      mAE = UIMAFramework.produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(),
+              0);
     }
     // create pool of CASes
     if (mCasPool == null) {
@@ -138,8 +145,10 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Instantiate Analysis Engine service from a given descriptor.
    *
-   * @param serviceConfigPath descriptor location
-   * @throws Exception the exception
+   * @param serviceConfigPath
+   *          descriptor location
+   * @throws Exception
+   *           the exception
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
@@ -149,7 +158,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * Extracts AE metadata.
    *
    * @return Frame containing extracted meta data
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   private Frame getMetaData() throws Exception {
     UIMAFramework.getLogger().log(Level.FINEST, "VinciAnalysisEngineService.getMetaData()");
@@ -179,9 +189,11 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * containing XCAS translated into a set of Vinci subFrames. Each subframe containing one
    * annotation with all its attributes.
    *
-   * @param ct the ct
+   * @param ct
+   *          the ct
    * @return VinciFrame containing XCAS translated into a set of Vinci subframes.
-   * @exception Exception              if there is an error during processing
+   * @exception Exception
+   *              if there is an error during processing
    */
   private Transportable analyze(CASTransportable ct) throws Exception {
     CAS cas = ct.getCas();
@@ -219,11 +231,13 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * VINCI:COMMAND. Currently, two such operations are supported: 1) Annotate - triggers document
    * analysis 2) GetData - triggers return of the AE meta data ( descriptor)
    *
-   * @param doc {@link org.apache.vinci.transport.Transportable} -
-   *          a VinciFrame containing client request
+   * @param doc
+   *          {@link org.apache.vinci.transport.Transportable} - a VinciFrame containing client
+   *          request
    * @return {@link org.apache.vinci.transport.Transportable} - a VinciFrame containg result of
    *         performing the service
-   * @throws ServiceException the service exception
+   * @throws ServiceException
+   *           the service exception
    */
   @Override
   public Transportable eval(Transportable doc) throws ServiceException {
@@ -293,15 +307,14 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
 
         _server = new VinciServer(serviceName, serviceHost, this);
       }
-      UIMAFramework.getLogger().log(
-              Level.FINEST,
+      UIMAFramework.getLogger().log(Level.FINEST,
               "VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
-      System.out
-              .println("VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
-                      + descriptor.getServerSocketTimeout());
+      System.out.println("VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
+              + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
-      _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(), descriptor.getThreadPoolMaxSize());
+      _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(),
+              descriptor.getThreadPoolMaxSize());
 
       _server.serve();
     } catch (ServiceDownException e) {
@@ -334,7 +347,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     try {
@@ -385,7 +399,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Redirects all logger output for this JVM to the given output stream.
    *
-   * @param out the out
+   * @param out
+   *          the out
    */
   private static void redirectLoggerOutput(OutputStream out) {
     // get root logger handlers - root logger is parent of all loggers
@@ -406,20 +421,23 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * Class that handles service shutdowns (including Ctrl-C).
    */
   static class ShutdownHook extends Thread {
-    
+
     /** The server. */
     VinciAnalysisEngineService_impl server;
 
     /**
      * Instantiates a new shutdown hook.
      *
-     * @param instance the instance
+     * @param instance
+     *          the instance
      */
     public ShutdownHook(VinciAnalysisEngineService_impl instance) {
       server = instance;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Thread#run()
      */
     @Override

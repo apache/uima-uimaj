@@ -39,7 +39,6 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.resource.metadata.Capability;
 
-
 /**
  * A tree view of Annotations and associated features.
  * 
@@ -94,8 +93,10 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   /**
    * Populate.
    *
-   * @param analysisEngine the analysis engine
-   * @param aeMetaData the ae meta data
+   * @param analysisEngine
+   *          the analysis engine
+   * @param aeMetaData
+   *          the ae meta data
    */
   public void populate(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData) {
     tree = generateTreeView(analysisEngine, aeMetaData);
@@ -119,8 +120,10 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   /**
    * Generate tree view.
    *
-   * @param analysisEngine the analysis engine
-   * @param aeMetaData the ae meta data
+   * @param analysisEngine
+   *          the analysis engine
+   * @param aeMetaData
+   *          the ae meta data
    * @return the j tree
    */
   private JTree generateTreeView(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData) {
@@ -176,7 +179,9 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
       return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

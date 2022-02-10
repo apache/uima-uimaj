@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * display parameters on the settings page. If groups, show by groups (using Tree metaphor) Note:
  * The tree displayed here is an expanded version of the ParameterSection Tree. It differs in 3
@@ -43,14 +42,13 @@ public class ParameterSettingsSection extends AbstractSectionParm {
   /**
    * Instantiates a new parameter settings section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public ParameterSettingsSection(MultiPageEditor editor, Composite parent) {
-    super(
-            editor,
-            parent,
-            "Configuration Parameters",
+    super(editor, parent, "Configuration Parameters",
             "This section list all configuration parameters, either as plain parameters, or as part of one or more groups.  Select one to show, or set the value in the right hand panel.");
   }
 
@@ -87,7 +85,7 @@ public class ParameterSettingsSection extends AbstractSectionParm {
     // only called at beginning.
     // Subsequently, incrementally updated as parameters and groups
     // change.
-    // 
+    //
     showOverrides = false;
     splitGroupNames = true;
     clearAndRefillTree(isParmGroup());

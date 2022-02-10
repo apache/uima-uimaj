@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * Imports - used by aggregates types type priorities indexes external resource specifications.
  */
@@ -63,15 +62,18 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Sets the model import array.
    *
-   * @param newImports the new model import array
+   * @param newImports
+   *          the new model import array
    */
   protected abstract void setModelImportArray(Import[] newImports);
 
   /**
    * Checks if is valid import.
    *
-   * @param title the title
-   * @param message the message
+   * @param title
+   *          the title
+   * @param message
+   *          the message
    * @return true, if is valid import
    */
   protected abstract boolean isValidImport(String title, String message);
@@ -84,13 +86,16 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Gets the description from import.
    *
-   * @param source the source
+   * @param source
+   *          the source
    * @return the description from import
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
-  protected abstract String getDescriptionFromImport(String source) throws InvalidXMLException,
-          IOException;
+  protected abstract String getDescriptionFromImport(String source)
+          throws InvalidXMLException, IOException;
 
   /**
    * Checks if is appropriate.
@@ -140,17 +145,26 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Instantiates a new import section.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
-   * @param title the title
-   * @param description the description
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
+   * @param title
+   *          the title
+   * @param description
+   *          the description
    */
-  public ImportSection(MultiPageEditor aEditor, Composite parent, String title, String description) {
+  public ImportSection(MultiPageEditor aEditor, Composite parent, String title,
+          String description) {
     super(aEditor, parent, title, description);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.
+   * IManagedForm)
    */
   @Override
   public void initialize(IManagedForm form) {
@@ -185,7 +199,9 @@ public abstract class ImportSection extends AbstractSection {
     toolkit.paintBordersFor(sectionClient);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
    */
   @Override
@@ -219,7 +235,9 @@ public abstract class ImportSection extends AbstractSection {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.widgets.Event)
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.
+   * widgets.Event)
    */
   @Override
   public void handleEvent(Event event) {
@@ -271,9 +289,7 @@ public abstract class ImportSection extends AbstractSection {
    * Handle set data path.
    */
   private void handleSetDataPath() {
-    CommonInputDialog dialog = new CommonInputDialog(
-            this,
-            "Set DataPath",
+    CommonInputDialog dialog = new CommonInputDialog(this, "Set DataPath",
             "The DataPath is a series of locations which will be used when looking up imports and external resources.\nEnter a series of absolute path names, separated by the character used to separate classpath names on this platform.",
             CommonInputDialog.ALLOK, CDEpropertyPage.getDataPath(editor.getProject()));
     if (dialog.open() == Window.CANCEL)
@@ -286,9 +302,10 @@ public abstract class ImportSection extends AbstractSection {
    */
   private void handleAdd() {
     Shell shell = getSection().getShell();
-    MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(shell, editor.getFile()
-            .getProject().getParent(), "Select one or more descriptor files to import:", editor
-            .getFile().getLocation(), editor);
+    MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(shell,
+            editor.getFile().getProject().getParent(),
+            "Select one or more descriptor files to import:", editor.getFile().getLocation(),
+            editor);
     dialog.setTitle("Import File(s) Selection");
     if (dialog.open() == Window.CANCEL)
       return;
@@ -312,9 +329,10 @@ public abstract class ImportSection extends AbstractSection {
    * Called with either byLocation non-null or byName non-null Adds multiple (by location) or one
    * (by name).
    *
-   * @param locations          objects returned from dialog
-   * @param isByName true
-   *          if imports should be done by name
+   * @param locations
+   *          objects returned from dialog
+   * @param isByName
+   *          true if imports should be done by name
    * @return false if any import caused an error, true of all OK
    */
   public boolean addImports(Object[] locations, boolean isByName) {
@@ -338,8 +356,7 @@ public abstract class ImportSection extends AbstractSection {
 
     setModelImportArray(newImports);
 
-    if (!isValidImport(
-            "Error Adding Import(s)",
+    if (!isValidImport("Error Adding Import(s)",
             "An error was caused by adding Import(s); operation cancelled.  Please correct the error and retry.")) {
       setModelImportArray(currentImports);
       return false;
@@ -350,20 +367,17 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Already imported.
    *
-   * @param imp the imp
+   * @param imp
+   *          the imp
    * @return true, if successful
    */
   private boolean alreadyImported(Import imp) {
     String currentFileBeingEdited = editor.getFile().getLocation().toString();
     currentFileBeingEdited = editor.getDescriptorRelativePath(currentFileBeingEdited);
     if (currentFileBeingEdited.equals(imp.getLocation())) {
-      Utility
-              .popMessage(
-                      "Error - importing self",
-                      MessageFormat
-                              .format(
-                                      "The import {0} is the same as the current file being edited. A file can''t be imported into itself.",
-                                      new Object[] { imp.getLocation() }), MessageDialog.ERROR);
+      Utility.popMessage("Error - importing self", MessageFormat.format(
+              "The import {0} is the same as the current file being edited. A file can''t be imported into itself.",
+              new Object[] { imp.getLocation() }), MessageDialog.ERROR);
       return true;
     }
 
@@ -372,16 +386,19 @@ public abstract class ImportSection extends AbstractSection {
       return false;
     for (int i = 0; i < currentImports.length; i++) {
       if (currentImports[i].equals(imp)) {
-        Utility.popMessage("Error - duplicate import", MessageFormat.format(
-                "The import {0} is already present", new Object[] { null != imp.getName() ? imp
-                        .getName() : imp.getLocation() }), MessageDialog.ERROR);
+        Utility.popMessage("Error - duplicate import",
+                MessageFormat.format("The import {0} is already present",
+                        new Object[] { null != imp.getName() ? imp.getName() : imp.getLocation() }),
+                MessageDialog.ERROR);
         return true;
       }
     }
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -396,7 +413,8 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Handle table context menu request.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   private void handleTableContextMenuRequest(Event event) {
     TableItem item = importTable.getItem(new Point(event.x, event.y));
@@ -409,7 +427,8 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Handle table hover help.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   private void handleTableHoverHelp(Event event) {
     TableItem item = importTable.getItem(new Point(event.x, event.y));
@@ -464,8 +483,10 @@ public abstract class ImportSection extends AbstractSection {
   /**
    * Export importable part.
    *
-   * @param xmlStartElement          first element exported
-   * @param partTemplate the part template
+   * @param xmlStartElement
+   *          first element exported
+   * @param partTemplate
+   *          the part template
    */
   protected void exportImportablePart(String xmlStartElement, String partTemplate) {
     String xmlEndElement = xmlStartElement.replaceFirst("<", "</");
@@ -480,15 +501,15 @@ public abstract class ImportSection extends AbstractSection {
       if (start < 0 || end < 0)
         throw new InternalErrorCDE("invalid state");
       start += xmlStartElement.length();
-      printWriter.println(MessageFormat.format(partTemplate, new Object[] { dialog.baseFileName,
-          wholeModel.substring(start, end) + "\n" }));
+      printWriter.println(MessageFormat.format(partTemplate,
+              new Object[] { dialog.baseFileName, wholeModel.substring(start, end) + "\n" }));
       printWriter.close();
       clearModelBaseValue();
 
       setFileDirty(); // do as soon as file changes, in case later error aborts processing
       Import imp = createImport(dialog.genFilePath, dialog.isImportByName);
-      setModelImportArray((Import[]) Utility.addElementToArray(getModelImportArray(), imp,
-              Import.class));
+      setModelImportArray(
+              (Import[]) Utility.addElementToArray(getModelImportArray(), imp, Import.class));
       isValidImport("Error Exporting a part and Importing it",
               "An unexpected error was caused by the export operation");
       refresh();
@@ -498,8 +519,8 @@ public abstract class ImportSection extends AbstractSection {
           IFile ifile = (IFile) file;
           ifile.refreshLocal(1, null);
           ((IFile) file).setPersistentProperty(
-                  new QualifiedName(PLUGIN_ID, IMPORTABLE_PART_CONTEXT), editor.getFile()
-                          .getLocation().toString());
+                  new QualifiedName(PLUGIN_ID, IMPORTABLE_PART_CONTEXT),
+                  editor.getFile().getLocation().toString());
         } catch (CoreException e) {
           throw new InternalErrorCDE("unexpected exception", e);
         }

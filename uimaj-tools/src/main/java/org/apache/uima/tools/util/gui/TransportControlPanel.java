@@ -34,12 +34,11 @@ import javax.swing.border.BevelBorder;
 
 import org.apache.uima.tools.images.Images;
 
-
 /**
  * The Class TransportControlPanel.
  */
 public class TransportControlPanel extends JPanel implements ActionListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -2176626241850938032L;
 
@@ -78,7 +77,8 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   /**
    * Instantiates a new transport control panel.
    *
-   * @param controlListener the control listener
+   * @param controlListener
+   *          the control listener
    */
   public TransportControlPanel(TransportControlListener controlListener) {
     this.controlListener = controlListener;
@@ -113,7 +113,9 @@ public class TransportControlPanel extends JPanel implements ActionListener {
     stopButton.setEnabled(false);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -178,7 +180,8 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   /**
    * Stop.
    *
-   * @param invokeListener the invoke listener
+   * @param invokeListener
+   *          the invoke listener
    */
   private void stop(boolean invokeListener) {
     if (invokeListener)
@@ -203,8 +206,10 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   /**
    * Sets the button tooltip text.
    *
-   * @param buttonIndex the button index
-   * @param tooltip the tooltip
+   * @param buttonIndex
+   *          the button index
+   * @param tooltip
+   *          the tooltip
    */
   public void setButtonTooltipText(int buttonIndex, String tooltip) {
     if (buttonIndex == PLAY_BUTTON)
@@ -218,7 +223,8 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   /**
    * Gets the button.
    *
-   * @param buttonIndex the button index
+   * @param buttonIndex
+   *          the button index
    * @return the button
    */
   public AbstractButton getButton(int buttonIndex) {
@@ -235,7 +241,8 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   /**
    * Sets the allow stop.
    *
-   * @param allowStop the new allow stop
+   * @param allowStop
+   *          the new allow stop
    */
   public void setAllowStop(boolean allowStop) {
     this.allowStop = allowStop;
@@ -252,13 +259,16 @@ public class TransportControlPanel extends JPanel implements ActionListener {
     /**
      * Instantiates a new toggle button.
      *
-     * @param imageIcon the image icon
+     * @param imageIcon
+     *          the image icon
      */
     public ToggleButton(ImageIcon imageIcon) {
       super(imageIcon);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.JComponent#getInsets()
      */
     @Override

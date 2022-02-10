@@ -27,12 +27,11 @@ import org.apache.uima.tools.jcasgen.Jg.ErrorExit;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-
 /**
  * The Class GuiErrorImpl.
  */
 public class GuiErrorImpl implements IError {
-  
+
   /** The sev msg. */
   private static String[] sevMsg = new String[] { "Info", "Warning", "Error" };
 
@@ -47,8 +46,8 @@ public class GuiErrorImpl implements IError {
   @Override
   public void newError(int severity, String message, Exception exception) {
     Logger log = UIMAFramework.getLogger();
-    log.log(logLevels[severity], GUI.theGUI.pnG.showInStatus("JCasGen " + sevMsg[severity] + ": "
-            + message), exception);
+    log.log(logLevels[severity],
+            GUI.theGUI.pnG.showInStatus("JCasGen " + sevMsg[severity] + ": " + message), exception);
     if (null != exception) {
       ByteArrayOutputStream b = new ByteArrayOutputStream();
       PrintStream ps = new PrintStream(b);

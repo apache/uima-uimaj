@@ -22,15 +22,15 @@
 package org.apache.uima.cas.test;
 
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP;
-
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
 
 
 /** Feature record holding name and real value of named feature.

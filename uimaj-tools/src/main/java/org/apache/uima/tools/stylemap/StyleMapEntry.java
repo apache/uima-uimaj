@@ -21,7 +21,6 @@ package org.apache.uima.tools.stylemap;
 
 import java.awt.Color;
 
-
 /**
  * The Class StyleMapEntry.
  */
@@ -59,7 +58,9 @@ public class StyleMapEntry {
   /** The is hidden. */
   private boolean isHidden;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
@@ -83,7 +84,8 @@ public class StyleMapEntry {
   /**
    * Sets the hidden.
    *
-   * @param hid the new hidden
+   * @param hid
+   *          the new hidden
    */
   public void setHidden(Boolean hid) {
     isHidden = hid;
@@ -101,7 +103,8 @@ public class StyleMapEntry {
   /**
    * Sets the checked.
    *
-   * @param chk the new checked
+   * @param chk
+   *          the new checked
    */
   public void setChecked(Boolean chk) {
     isChecked = chk;
@@ -138,7 +141,8 @@ public class StyleMapEntry {
   /**
    * Sets the background.
    *
-   * @param background          The background to set.
+   * @param background
+   *          The background to set.
    */
   public void setBackground(Color background) {
     this.background = background;
@@ -156,7 +160,8 @@ public class StyleMapEntry {
   /**
    * Sets the feature value.
    *
-   * @param featureValue          The featureValue to set.
+   * @param featureValue
+   *          The featureValue to set.
    */
   public void setFeatureValue(String featureValue) {
     this.featureValue = featureValue;
@@ -174,7 +179,8 @@ public class StyleMapEntry {
   /**
    * Sets the foreground.
    *
-   * @param foreground          The foreground to set.
+   * @param foreground
+   *          The foreground to set.
    */
   public void setForeground(Color foreground) {
     this.foreground = foreground;
@@ -192,7 +198,8 @@ public class StyleMapEntry {
   /**
    * Sets the label.
    *
-   * @param label          The label to set.
+   * @param label
+   *          The label to set.
    */
   public void setLabel(String label) {
     this.label = label;
@@ -210,7 +217,8 @@ public class StyleMapEntry {
   /**
    * Sets the annotation type name.
    *
-   * @param annotationTypeName          The annotationTypeName to set.
+   * @param annotationTypeName
+   *          The annotationTypeName to set.
    */
   public void setAnnotationTypeName(String annotationTypeName) {
     this.annotationTypeName = annotationTypeName;

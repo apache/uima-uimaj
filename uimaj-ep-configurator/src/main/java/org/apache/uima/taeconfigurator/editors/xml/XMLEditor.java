@@ -45,7 +45,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
-
 /**
  * The Class XMLEditor.
  */
@@ -67,13 +66,10 @@ public class XMLEditor extends TextEditor {
   boolean m_bIgnoreTextEvent = false;
 
   /**
-   * The listener interface for receiving editorsText events.
-   * The class that is interested in processing a editorsText
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addEditorsTextListener</code> method. When
-   * the editorsText event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving editorsText events. The class that is interested in
+   * processing a editorsText event implements this interface, and the object created with that
+   * class is registered with a component using the component's <code>addEditorsTextListener</code>
+   * method. When the editorsText event occurs, that object's appropriate method is invoked.
    *
    */
   public class EditorsTextListener implements ITextListener {
@@ -95,7 +91,8 @@ public class XMLEditor extends TextEditor {
   /**
    * Instantiates a new XML editor.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public XMLEditor(MultiPageEditor editor) {
     colorManager = new ColorManager();
@@ -104,8 +101,12 @@ public class XMLEditor extends TextEditor {
     this.editor = editor;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets
+   * .Composite)
    */
   @Override
   public void createPartControl(Composite parent) {
@@ -113,7 +114,9 @@ public class XMLEditor extends TextEditor {
     getSourceViewer().addTextListener(m_textListener);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.editors.text.TextEditor#dispose()
    */
   @Override
@@ -122,7 +125,9 @@ public class XMLEditor extends TextEditor {
     super.dispose();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.texteditor.AbstractTextEditor#doSaveAs()
    */
   @Override
@@ -234,7 +239,8 @@ public class XMLEditor extends TextEditor {
   /**
    * Sets the ignore text event.
    *
-   * @param bIgnoreTextEvent the new ignore text event
+   * @param bIgnoreTextEvent
+   *          the new ignore text event
    */
   public void setIgnoreTextEvent(boolean bIgnoreTextEvent) {
     m_bIgnoreTextEvent = bIgnoreTextEvent;

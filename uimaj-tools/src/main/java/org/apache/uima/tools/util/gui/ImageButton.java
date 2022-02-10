@@ -25,25 +25,27 @@ import javax.swing.JButton;
 
 import org.apache.uima.tools.images.Images;
 
-
 /**
  * The Class ImageButton.
  */
 public class ImageButton extends JButton {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8908984308731809496L;
 
   /**
    * Instantiates a new image button.
    *
-   * @param imageFile the image file
+   * @param imageFile
+   *          the image file
    */
   public ImageButton(String imageFile) {
     super(Images.getImageIcon(imageFile));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.JComponent#getInsets()
    */
   @Override

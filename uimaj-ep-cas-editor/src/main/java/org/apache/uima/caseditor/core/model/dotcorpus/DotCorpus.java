@@ -28,13 +28,12 @@ import java.util.Set;
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 
-
 /**
  * This class contains all project specific configuration parameters. Note: Use DotCorpusSerialzer
  * to read or write an instance of this class to or from a byte stream.
  */
 public class DotCorpus {
-  
+
   /** The default value for editor line length hint. */
   public static final int EDITOR_LINE_LENGTH_HINT_DEFAULT = 80;
 
@@ -61,7 +60,7 @@ public class DotCorpus {
    * Contains names of types which are visible/shown.
    */
   private Set<String> shownTypes = new HashSet<>();
-  
+
   /**
    * Retrieves type system name parameter.
    * 
@@ -107,7 +106,8 @@ public class DotCorpus {
   /**
    * Removes the cas processor folder.
    *
-   * @param folder the folder
+   * @param folder
+   *          the folder
    */
   @Deprecated
   public void removeCasProcessorFolder(String folder) {
@@ -117,7 +117,8 @@ public class DotCorpus {
   /**
    * Adds a corpus folder.
    *
-   * @param name the name
+   * @param name
+   *          the name
    */
   @Deprecated
   public void addCorpusFolder(String name) {
@@ -127,7 +128,8 @@ public class DotCorpus {
   /**
    * Removes the given corpus folder.
    *
-   * @param name the name
+   * @param name
+   *          the name
    */
   @Deprecated
   public void removeCorpusFolder(String name) {
@@ -159,7 +161,8 @@ public class DotCorpus {
   /**
    * Sets the editor line length hint parameter.
    *
-   * @param lineLengthHint the new editor line length
+   * @param lineLengthHint
+   *          the new editor line length
    * @deprecated setting was moved to preference store
    */
   @Deprecated
@@ -175,7 +178,7 @@ public class DotCorpus {
   public Collection<AnnotationStyle> getAnnotationStyles() {
     return Collections.unmodifiableCollection(mStyleMap.values());
   }
-  
+
   /**
    * Gets the shown types.
    *
@@ -184,29 +187,32 @@ public class DotCorpus {
   public Collection<String> getShownTypes() {
     return Collections.unmodifiableCollection(shownTypes);
   }
-  
+
   /**
    * Sets the shown type.
    *
-   * @param type the new shown type
+   * @param type
+   *          the new shown type
    */
   public void setShownType(String type) {
     shownTypes.add(type);
   }
-  
+
   /**
    * Removes the shown type.
    *
-   * @param type the type
+   * @param type
+   *          the type
    */
   public void removeShownType(String type) {
     shownTypes.remove(type);
   }
-  
+
   /**
    * Adds an AnnotationStyle. TODO: move style stuff to nlp project
    *
-   * @param style the new style
+   * @param style
+   *          the new style
    */
   public void setStyle(AnnotationStyle style) {
 
@@ -224,7 +230,8 @@ public class DotCorpus {
   /**
    * Removes an AnnotationStyle for the given name, does nothing if not existent.
    *
-   * @param name the name
+   * @param name
+   *          the name
    */
   public void removeStyle(String name) {
     mStyleMap.remove(name);
@@ -233,7 +240,8 @@ public class DotCorpus {
   /**
    * Retrieves the AnnotationStyle for the given type or null if not available.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return the requested style or null if none
    */
   public AnnotationStyle getAnnotation(Type type) {
@@ -256,11 +264,12 @@ public class DotCorpus {
   public int hashCode() {
     return 0;
   }
-  
+
   /**
    * Checks if the given object is equal to the current instance.
    *
-   * @param obj the obj
+   * @param obj
+   *          the obj
    * @return true, if successful
    */
   @Override

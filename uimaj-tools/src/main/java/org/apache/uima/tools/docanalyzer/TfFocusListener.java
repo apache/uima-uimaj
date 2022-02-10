@@ -22,22 +22,22 @@ package org.apache.uima.tools.docanalyzer;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-
 /**
  * This class tells the Mediator to check the lenght of the 3 text fields and adjust whether the 3
  * buttons are enabeld or not.
  * 
-// * @see TfFocusEvent
+ * // * @see TfFocusEvent
  */
 public class TfFocusListener implements FocusListener {
-  
+
   /** The med. */
   private PrefsMediator med;
 
   /**
    * Instantiates a new tf focus listener.
    *
-   * @param med the med
+   * @param med
+   *          the med
    */
   public TfFocusListener(PrefsMediator med) {
     this.med = med;

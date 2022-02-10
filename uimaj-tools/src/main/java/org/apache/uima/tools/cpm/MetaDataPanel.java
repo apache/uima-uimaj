@@ -41,7 +41,6 @@ import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.FormPanel;
 import org.apache.uima.tools.util.gui.ListSelector;
 
-
 /**
  * 
  * A dynamically generated form panel with components generated from configuration parameters
@@ -52,7 +51,7 @@ import org.apache.uima.tools.util.gui.ListSelector;
  */
 
 public class MetaDataPanel extends FormPanel {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 2002216386886772644L;
 
@@ -73,7 +72,8 @@ public class MetaDataPanel extends FormPanel {
   /**
    * Instantiates a new meta data panel.
    *
-   * @param nrColumns the nr columns
+   * @param nrColumns
+   *          the nr columns
    */
   public MetaDataPanel(int nrColumns) {
     super(nrColumns);
@@ -82,8 +82,10 @@ public class MetaDataPanel extends FormPanel {
   /**
    * Populate.
    *
-   * @param md the md
-   * @param overrides the overrides
+   * @param md
+   *          the md
+   * @param overrides
+   *          the overrides
    */
   public void populate(ResourceMetaData md, CasProcessorConfigurationParameterSettings overrides) {
     metaData = md;
@@ -105,9 +107,8 @@ public class MetaDataPanel extends FormPanel {
       boolean multiValued = parameters[i].isMultiValued();
 
       boolean requiresFileSelector = false;
-      if ((name.endsWith("Dir") || name.endsWith("Directory") || name.endsWith("Descriptor") || name
-              .indexOf("File") != -1)
-              && type.equals("String"))
+      if ((name.endsWith("Dir") || name.endsWith("Directory") || name.endsWith("Descriptor")
+              || name.indexOf("File") != -1) && type.equals("String"))
         requiresFileSelector = true;
 
       boolean justDirectories = false;
@@ -123,8 +124,8 @@ public class MetaDataPanel extends FormPanel {
       Object parameterValue = cps.getParameterValue(name);
 
       if (type.equals("Boolean"))
-        field = new JCheckBox((String) null, (parameterValue == null) ? false
-                : (Boolean) parameterValue);
+        field = new JCheckBox((String) null,
+                (parameterValue == null) ? false : (Boolean) parameterValue);
       else if (multiValued == false) {
         if (requiresFileSelector == false) {
           String stringValue = (parameterValue == null) ? "" : parameterValue.toString();
@@ -186,8 +187,10 @@ public class MetaDataPanel extends FormPanel {
   /**
    * Sets the value.
    *
-   * @param fieldName          Configuration parameter field name
-   * @param fieldValue          Field value
+   * @param fieldName
+   *          Configuration parameter field name
+   * @param fieldValue
+   *          Field value
    */
   public void setValue(String fieldName, Object fieldValue) {
     // Find fieldName in fieldList:
@@ -201,7 +204,7 @@ public class MetaDataPanel extends FormPanel {
   }
 
   /**
-   *  Removes all fields.
+   * Removes all fields.
    */
   public void clearAll() {
     Component components[] = gridBagPanel.getComponents();

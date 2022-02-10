@@ -41,7 +41,6 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 
-
 /**
  * The Class CasEditorViewPage.
  */
@@ -49,31 +48,32 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
 
   /** The selection changed listeners. */
   private ListenerList selectionChangedListeners = new ListenerList();
-  
+
   /** The not available message. */
   private final String notAvailableMessage;
-  
+
   /** The book. */
   protected PageBook book;
-  
+
   /** The cas view page. */
   protected IPageBookViewPage casViewPage;
 
   /** The sub action bar. */
   private SubActionBars subActionBar;
-  
+
   /** The message text. */
   private Text messageText;
-  
+
   /**
    * Instantiates a new cas editor view page.
    *
-   * @param notAvailableMessage the not available message
+   * @param notAvailableMessage
+   *          the not available message
    */
   protected CasEditorViewPage(String notAvailableMessage) {
     this.notAvailableMessage = notAvailableMessage;
   }
-  
+
   /**
    * Refresh action handlers.
    */
@@ -87,8 +87,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     if (newActionHandlers != null) {
       Set<Map.Entry> keys = newActionHandlers.entrySet();
       for (Map.Entry entry : keys) {
-        actionBars.setGlobalActionHandler((String) entry.getKey(),
-            (IAction) entry.getValue());
+        actionBars.setGlobalActionHandler((String) entry.getKey(), (IAction) entry.getValue());
       }
     }
   }
@@ -104,19 +103,19 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
     selectionChangedListeners.remove(listener);
   }
-  
+
   /**
    * Selection changed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   public void selectionChanged(final SelectionChangedEvent event) {
-    
+
     for (Object listener : selectionChangedListeners.getListeners()) {
-      
-      final ISelectionChangedListener selectionChangedListener = 
-              (ISelectionChangedListener) listener;
-      
+
+      final ISelectionChangedListener selectionChangedListener = (ISelectionChangedListener) listener;
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -125,13 +124,12 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
       });
     }
   }
-  
+
   @Override
   public ISelection getSelection() {
     if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
       return casViewPage.getSite().getSelectionProvider().getSelection();
-    }
-    else {
+    } else {
       return StructuredSelection.EMPTY;
     }
   }
@@ -142,72 +140,72 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
       casViewPage.getSite().getSelectionProvider().setSelection(selection);
     }
   }
-  
+
   @Override
   public void createControl(Composite parent) {
     book = new PageBook(parent, SWT.NONE);
-    
+
     messageText = new Text(book, SWT.WRAP | SWT.READ_ONLY);
     messageText.setBackground(parent.getShell().getBackground());
     messageText.setText(notAvailableMessage);
-    
+
     getSite().setSelectionProvider(this);
-    
+
     // Page might be set before the page is initialized
     initializeAndShowPage(casViewPage);
   }
-  
+
   /**
-   * Creates and shows the page, if page is null
-   * the not available message will be shown.
+   * Creates and shows the page, if page is null the not available message will be shown.
    *
-   * @param page the page
+   * @param page
+   *          the page
    */
   protected void initializeAndShowPage(IPageBookViewPage page) {
     if (book != null) {
       if (page != null) {
         page.createControl(book);
         casViewPage = page;
-        
+
         // Note: If page is in background event listening must be disabled!
         ISelectionProvider selectionProvider = page.getSite().getSelectionProvider();
         selectionProvider.addSelectionChangedListener(CasEditorViewPage.this::selectionChanged);
-        
+
         subActionBar = (SubActionBars) casViewPage.getSite().getActionBars();
-        
+
         casViewPage.setActionBars(subActionBar);
 
         subActionBar.activate();
         subActionBar.updateActionBars();
 
         refreshActionHandlers();
-        
+
         book.showPage(page.getControl());
-      }
-      else {
+      } else {
         book.showPage(messageText);
         getSite().getActionBars().updateActionBars();
       }
     }
   }
-  
+
   /**
    * Sets the CAS view page.
    *
-   * @param page the new CAS view page
+   * @param page
+   *          the new CAS view page
    */
   public void setCASViewPage(IPageBookViewPage page) {
-    
+
     if (book != null && casViewPage != null) {
       casViewPage.dispose();
       subActionBar.dispose();
     }
-    
+
     casViewPage = page;
-    
+
     initializeAndShowPage(page);
   }
-  
+
   @Override
   public Control getControl() {
     return book;
@@ -217,7 +215,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
   public void setFocus() {
     book.setFocus();
   }
-  
+
   @Override
   public void dispose() {
     super.dispose();

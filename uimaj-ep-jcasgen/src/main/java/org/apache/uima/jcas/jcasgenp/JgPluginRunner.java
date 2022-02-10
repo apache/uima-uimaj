@@ -41,7 +41,9 @@ public class JgPluginRunner implements IPlatformRunnable {
   public JgPluginRunner() {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.core.runtime.IPlatformRunnable#run(java.lang.Object)
    */
   @Override

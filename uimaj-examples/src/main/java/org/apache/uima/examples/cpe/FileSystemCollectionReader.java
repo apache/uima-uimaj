@@ -35,7 +35,6 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
-
 /**
  * A simple collection reader that reads documents from a directory in the filesystem. It can be
  * configured with the following parameters:
@@ -67,11 +66,11 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   public static final String PARAM_LANGUAGE = "Language";
 
   /**
-   * Name of optional configuration parameter that indicates including
-   * the subdirectories (recursively) of the current input directory.
+   * Name of optional configuration parameter that indicates including the subdirectories
+   * (recursively) of the current input directory.
    */
   public static final String PARAM_SUBDIR = "BrowseSubdirectories";
-  
+
   /** The m files. */
   private ArrayList<File> mFiles;
 
@@ -80,7 +79,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
   /** The m language. */
   private String mLanguage;
-  
+
   /** The m recursive. */
   private Boolean mRecursive;
 
@@ -90,14 +89,15 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * Initialize.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
   @Override
   public void initialize() throws ResourceInitializationException {
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
-    mEncoding  = (String) getConfigParameterValue(PARAM_ENCODING);
-    mLanguage  = (String) getConfigParameterValue(PARAM_LANGUAGE);
+    mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
+    mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
     mRecursive = (Boolean) getConfigParameterValue(PARAM_SUBDIR);
     if (null == mRecursive) { // could be null if not set, it is optional
       mRecursive = Boolean.FALSE;
@@ -115,13 +115,13 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     mFiles = new ArrayList<>();
     addFilesFromDir(directory);
   }
-  
+
   /**
-   * This method adds files in the directory passed in as a parameter to mFiles.
-   * If mRecursive is true, it will include all files in all
-   * subdirectories (recursively), as well. 
+   * This method adds files in the directory passed in as a parameter to mFiles. If mRecursive is
+   * true, it will include all files in all subdirectories (recursively), as well.
    *
-   * @param dir the dir
+   * @param dir
+   *          the dir
    */
   private void addFilesFromDir(File dir) {
     File[] files = dir.listFiles();
@@ -148,9 +148,12 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * Gets the next.
    *
-   * @param aCAS the a CAS
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws CollectionException the collection exception
+   * @param aCAS
+   *          the a CAS
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws CollectionException
+   *           the collection exception
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
   @Override
@@ -165,7 +168,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
     String text = FileUtils.file2String(file, mEncoding);
-      // put document in CAS
+    // put document in CAS
     jcas.setDocumentText(text);
 
     // set language if it was explicitly specified as a configuration parameter
@@ -189,7 +192,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   /**
    * Close.
    *
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
   @Override

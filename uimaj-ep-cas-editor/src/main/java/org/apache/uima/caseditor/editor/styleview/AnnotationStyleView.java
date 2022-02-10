@@ -24,7 +24,6 @@ import org.apache.uima.caseditor.editor.CasEditorView;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-
 // Tree Table, one column contains a tree, representing the tree structure
 /**
  * The Class AnnotationStyleView.
@@ -36,7 +35,7 @@ public class AnnotationStyleView extends CasEditorView {
    * The ID of the type view.
    */
   public static final String ID = "org.apache.uima.caseditor.styleview";
-  
+
   /**
    * Instantiates a new annotation style view.
    */

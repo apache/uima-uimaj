@@ -25,23 +25,22 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
-
 /**
- * Annotation Style Change Listener base class which converts annotation style change events from
- * a Preference Store to AnnotationStyle object change events.
+ * Annotation Style Change Listener base class which converts annotation style change events from a
+ * Preference Store to AnnotationStyle object change events.
  * <p>
  * An implementing class needs to override the annotationStylesChanged method.
  */
 public abstract class AnnotationStyleChangeListener
-    implements IPropertyChangeListener, IAnnotationStyleListener {
+        implements IPropertyChangeListener, IAnnotationStyleListener {
 
   @Override
   public void propertyChange(PropertyChangeEvent event) {
     if (event.getProperty().endsWith(".style")) {
       // extract type name ...
       String typeName = event.getProperty().substring(0, event.getProperty().lastIndexOf(".style"));
-      AnnotationStyle style = AnnotationStyle.getAnnotationStyleFromStore(
-              (IPreferenceStore) event.getSource(), typeName);
+      AnnotationStyle style = AnnotationStyle
+              .getAnnotationStyleFromStore((IPreferenceStore) event.getSource(), typeName);
       annotationStylesChanged(Collections.singleton(style));
     }
   }

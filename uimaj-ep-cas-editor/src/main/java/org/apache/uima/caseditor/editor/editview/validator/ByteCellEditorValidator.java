@@ -21,9 +21,9 @@ package org.apache.uima.caseditor.editor.editview.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
-
 /**
- * This {@link ICellEditorValidator} validates {@link String} values which represents a {@link Byte}.
+ * This {@link ICellEditorValidator} validates {@link String} values which represents a
+ * {@link Byte}.
  *
  * For validation {@link Byte#parseByte(String)} is used.
  */
@@ -32,7 +32,8 @@ public class ByteCellEditorValidator implements ICellEditorValidator {
   /**
    * Checks if the given value is a valid {@link Byte}.
    *
-   * @param value the value
+   * @param value
+   *          the value
    * @return null if valid otherwise an error message
    */
   @Override

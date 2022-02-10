@@ -23,7 +23,6 @@ import java.text.MessageFormat;
 
 import org.eclipse.ui.INewWizard;
 
-
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target
@@ -34,29 +33,31 @@ import org.eclipse.ui.INewWizard;
 public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard implements INewWizard {
 
   /** The Constant RESOURCEMANGERCONFIGURATION_TEMPLATE. */
-  public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = 
-    MessageFormat.format(COMMON_PARTIAL_DESCRIPTOR,
-        "{0}",       // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
-        "{1}",       // 1 = parts at end of partial descriptor
-        "resourceManagerConfiguration");  // 2 = outer descriptor name
-        
-//    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-//          + "<resourceManagerConfiguration "
-//          + XMLNS_PART
-//          + "<name>{0}</name>\n"
-//          + "<description></description>\n"
-//          + "<version>1.0</version>\n"
-//          + "{1}"
-//          + "</resourceManagerConfiguration>\n";
+  public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = MessageFormat.format(
+          COMMON_PARTIAL_DESCRIPTOR, "{0}", // 0 = name of component (e.g. type name, type priority
+                                            // name, ae descriptor name)
+          "{1}", // 1 = parts at end of partial descriptor
+          "resourceManagerConfiguration"); // 2 = outer descriptor name
+
+  // "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+  // + "<resourceManagerConfiguration "
+  // + XMLNS_PART
+  // + "<name>{0}</name>\n"
+  // + "<description></description>\n"
+  // + "<version>1.0</version>\n"
+  // + "{1}"
+  // + "</resourceManagerConfiguration>\n";
 
   /**
- * Instantiates a new resource manager configuration new wizard.
- */
-public ResourceManagerConfigurationNewWizard() {
+   * Instantiates a new resource manager configuration new wizard.
+   */
+  public ResourceManagerConfigurationNewWizard() {
     super("External Resource and Bindings (Resource Manager Configuration) Descriptor File");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.wizard.Wizard#addPages()
    */
   @Override
@@ -65,15 +66,18 @@ public ResourceManagerConfigurationNewWizard() {
     addPage(page);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.wizards.AbstractNewWizard#getPrototypeDescriptor(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.wizards.AbstractNewWizard#getPrototypeDescriptor(java.lang.
+   * String)
    */
   @Override
   public String getPrototypeDescriptor(String name) {
-    return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE,
-        name,
-        "  <externalResources></externalResources>\n"
-      + "  <externalResourceBindings></externalResourceBindings>\n");
+    return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE, name,
+            "  <externalResources></externalResources>\n"
+                    + "  <externalResourceBindings></externalResourceBindings>\n");
   }
 
 }

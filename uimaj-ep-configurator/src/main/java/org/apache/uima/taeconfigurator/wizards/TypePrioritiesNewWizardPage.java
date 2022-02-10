@@ -21,7 +21,6 @@ package org.apache.uima.taeconfigurator.wizards;
 
 import org.eclipse.jface.viewers.ISelection;
 
-
 /**
  * The "New" wizard page allows setting the container for the new file as well as the file name.
  * Will only accept file name without the extension OR with the extension that matches the expected
@@ -33,7 +32,8 @@ public class TypePrioritiesNewWizardPage extends AbstractNewWizardPage {
   /**
    * Instantiates a new type priorities new wizard page.
    *
-   * @param selection the selection
+   * @param selection
+   *          the selection
    */
   public TypePrioritiesNewWizardPage(ISelection selection) {
     super(selection, "big_t_s_.gif", "Type Priorities Descriptor File",

@@ -45,7 +45,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-
 /**
  * Wizard to generate a PEAR file.
  * 
@@ -53,7 +52,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * 
  */
 public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants {
-  
+
   /** The current container. */
   private IContainer currentContainer;
 
@@ -77,7 +76,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
   /**
    * Constructor.
    *
-   * @param container the container
+   * @param container
+   *          the container
    */
   public GeneratePearWizard(IContainer container) {
     try {
@@ -96,10 +96,9 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       AbstractUIPlugin plugin = PearPlugin.getDefault();
       IDialogSettings workbenchSettings = plugin.getDialogSettings();
       IDialogSettings section = workbenchSettings.getSection("PearFileExportWizard");//$NON-NLS-1$
-      if (section == null)
-     {
+      if (section == null) {
         section = workbenchSettings.addNewSection("PearFileExportWizard");//$NON-NLS-1$
-    }
+      }
       setDialogSettings(section);
     } catch (Throwable e) {
       e.printStackTrace();
@@ -134,8 +133,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
 
       environmentPage = new INSDEnvironmentPage(currentContainer, insd, wizardData);
       addPage(environmentPage);
-      pearExportPage = new PearFileResourceExportPage(new StructuredSelection(currentContainer
-              .members()), currentContainer);
+      pearExportPage = new PearFileResourceExportPage(
+              new StructuredSelection(currentContainer.members()), currentContainer);
       addPage(pearExportPage);
 
     } catch (Throwable e) {
@@ -158,9 +157,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       // currentContainer.refreshLocal(IResource.DEPTH_INFINITE,null);
       editInstallationDescriptor();
       final String file = pearExportPage.getDestinationValue();
-      if (new File(file).exists()
-              && !MessageDialog.openConfirm(getShell(), "File exists", "The file " + file
-                      + " already exists. Do you want to overwrite it?")) {
+      if (new File(file).exists() && !MessageDialog.openConfirm(getShell(), "File exists",
+              "The file " + file + " already exists. Do you want to overwrite it?")) {
         return false;
       }
       getContainer().run(false, true, pearExportPage.getExportRunnable());
@@ -175,8 +173,10 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
   /**
    * Edits the installation descriptor.
    *
-   * @throws CoreException the core exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws CoreException
+   *           the core exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   private void editInstallationDescriptor() throws CoreException, IOException {
     handleComponentInformation();
@@ -190,9 +190,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
    */
   private void handleComponentInformation() {
     insd.setMainComponent(componentPage.compID);
-    insd
-            .setMainComponentDesc(PearInstallationDescriptor
-                    .addMacro(componentPage.compDescriptorPath));
+    insd.setMainComponentDesc(
+            PearInstallationDescriptor.addMacro(componentPage.compDescriptorPath));
   }
 
   /**
@@ -205,12 +204,12 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
 
     String os = environmentPage.osCombo.getText();
     if (os != null && os.trim().length() > 0) {
-        insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+      insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
     }
 
     String jdkVersion = environmentPage.jdkVersionCombo.getText();
     if (jdkVersion != null && jdkVersion.trim().length() > 0) {
-        insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+      insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
     }
 
   }
@@ -242,12 +241,14 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
   /**
    * Inits the.
    *
-   * @param workbench the workbench
-   * @param selection the selection
+   * @param workbench
+   *          the workbench
+   * @param selection
+   *          the selection
    */
   /*
    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-   *      org.eclipse.jface.viewers.IStructuredSelection)
+   * org.eclipse.jface.viewers.IStructuredSelection)
    */
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     // nothing to do

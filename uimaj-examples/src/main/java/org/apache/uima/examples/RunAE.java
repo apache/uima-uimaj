@@ -46,7 +46,6 @@ import org.apache.uima.tools.components.InlineXmlCasConsumer;
 import org.apache.uima.tools.components.XmlDetagger;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 
-
 /**
  * An example application that reads documents from the file system, sends them though an Analysis
  * Engine(AE), and produces XML files with inline annotations. This application uses a
@@ -57,8 +56,8 @@ import org.apache.uima.util.AnalysisEnginePerformanceReports;
  * &lt;AE descriptor or JAR file name&gt; &lt;input dir&gt; 
  * [&lt;output dir&gt;]</code>
  * <p>
- * If <code>output dir</code> is not specified, the analysis results will not be output. This can
- * be useful when only interested in performance statistics.
+ * If <code>output dir</code> is not specified, the analysis results will not be output. This can be
+ * useful when only interested in performance statistics.
  * <p>
  * <u>OPTIONS</u>
  * <p>
@@ -107,7 +106,7 @@ public class RunAE implements StatusCallbackListener {
 
   /** The xmi input. */
   private boolean xmiInput = false;
-  
+
   /** The x lenient. */
   private boolean xLenient = false;
 
@@ -120,7 +119,8 @@ public class RunAE implements StatusCallbackListener {
   /**
    * Constructor. Sets up and runs an Analysis Engine.
    *
-   * @param args the args
+   * @param args
+   *          the args
    */
   public RunAE(String[] args) {
     try {
@@ -143,8 +143,8 @@ public class RunAE implements StatusCallbackListener {
               .produceCasProcessorConfigurationParameterSettings();
       CpeCollectionReader cpeCollRdr = cpeDesc.getAllCollectionCollectionReaders()[0];
       cpeCollRdr.setConfigurationParameterSettings(crSettings);
-      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
-              .getAbsolutePath());
+      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR,
+              inputDir.getAbsolutePath());
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
       if (xcasInput) {
@@ -160,8 +160,8 @@ public class RunAE implements StatusCallbackListener {
       CpeCasProcessor xmlDetaggerCasProc = null;
       if (xmlTagName != null && xmlTagName.length() > 0) {
         xmlDetaggerCasProc = CpeDescriptorFactory.produceCasProcessor("XmlDetagger");
-        CpeComponentDescriptor cpeComponentDescriptor = 
-          CpeDescriptorFactory.produceComponentDescriptor(XmlDetagger.getDescriptorURL().toString());
+        CpeComponentDescriptor cpeComponentDescriptor = CpeDescriptorFactory
+                .produceComponentDescriptor(XmlDetagger.getDescriptorURL().toString());
         xmlDetaggerCasProc.setCpeComponentDescriptor(cpeComponentDescriptor);
         CasProcessorConfigurationParameterSettings detaggerSettings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
@@ -173,8 +173,8 @@ public class RunAE implements StatusCallbackListener {
 
       // add user's AE to CPE
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor("UserAE");
-      CpeComponentDescriptor cpeComponentDescriptor = 
-        CpeDescriptorFactory.produceComponentDescriptor(aeSpecifierFile.getAbsolutePath());
+      CpeComponentDescriptor cpeComponentDescriptor = CpeDescriptorFactory
+              .produceComponentDescriptor(aeSpecifierFile.getAbsolutePath());
       casProc.setCpeComponentDescriptor(cpeComponentDescriptor);
       casProc.setMaxErrorCount(0);
       cpeDesc.addCasProcessor(casProc);
@@ -184,14 +184,14 @@ public class RunAE implements StatusCallbackListener {
       CpeCasProcessor casCon = null;
       if (outputDir != null) {
         casCon = CpeDescriptorFactory.produceCasProcessor("CasConsumer");
-        cpeComponentDescriptor = 
-          CpeDescriptorFactory.produceComponentDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
-        casCon.setCpeComponentDescriptor(cpeComponentDescriptor);        
+        cpeComponentDescriptor = CpeDescriptorFactory
+                .produceComponentDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
+        casCon.setCpeComponentDescriptor(cpeComponentDescriptor);
         CasProcessorConfigurationParameterSettings consumerSettings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
         casCon.setConfigurationParameterSettings(consumerSettings);
-        consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
-                .getAbsolutePath());
+        consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR,
+                outputDir.getAbsolutePath());
         if (xcasInput) {
           consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, "XCAS");
         } else if (xmiInput) {
@@ -237,18 +237,18 @@ public class RunAE implements StatusCallbackListener {
       docsProcessed = 0;
       mCPE.process();
     } catch (Exception e) {
-      //special check for using XML detagger with remotes, which will generate an error
-      //since sofa mappings aren't supported for remotes
-      if (xmlTagName != null && xmlTagName.length() > 0 && e instanceof UIMAException &&
-              ((UIMAException)e).hasMessageKey(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
-        System.err.println("The XML detagging feature (-t) is not supported for remote Analysis Engines or for Aggregates containing remotes.");
-      }
-      else {
+      // special check for using XML detagger with remotes, which will generate an error
+      // since sofa mappings aren't supported for remotes
+      if (xmlTagName != null && xmlTagName.length() > 0 && e instanceof UIMAException
+              && ((UIMAException) e).hasMessageKey(
+                      ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
+        System.err.println(
+                "The XML detagging feature (-t) is not supported for remote Analysis Engines or for Aggregates containing remotes.");
+      } else {
         e.printStackTrace();
       }
     }
   }
-  
 
   /**
    * Initialization complete.
@@ -262,8 +262,10 @@ public class RunAE implements StatusCallbackListener {
   /**
    * Entity process complete.
    *
-   * @param aCas the a cas
-   * @param aStatus the a status
+   * @param aCas
+   *          the a cas
+   * @param aStatus
+   *          the a status
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
@@ -278,8 +280,8 @@ public class RunAE implements StatusCallbackListener {
       // retrieve the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
       if (!(xcasInput || xmiInput)) {
-        Type fileLocType = aCas.getTypeSystem().getType(
-                "org.apache.uima.examples.SourceDocumentInformation");
+        Type fileLocType = aCas.getTypeSystem()
+                .getType("org.apache.uima.examples.SourceDocumentInformation");
         Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
         FSIterator it = aCas.getAnnotationIndex(fileLocType).iterator();
         FeatureStructure fileLoc = it.get();
@@ -378,7 +380,8 @@ public class RunAE implements StatusCallbackListener {
   /**
    * Reads command line arguments and sets static class variables appropriately.
    *
-   * @param args the args
+   * @param args
+   *          the args
    * @return true if command line args were valid, false if not
    */
   private boolean processCmdLineArgs(String[] args) {
@@ -459,7 +462,8 @@ public class RunAE implements StatusCallbackListener {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     new RunAE(args);

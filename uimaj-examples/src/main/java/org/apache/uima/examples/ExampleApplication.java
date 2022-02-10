@@ -113,8 +113,8 @@ public class ExampleApplication {
    * @param aCAS
    *          CAS that will be used to hold analysis results
    */
-  private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS) throws IOException,
-          AnalysisEngineProcessException {
+  private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS)
+          throws IOException, AnalysisEngineProcessException {
     System.out.println("Processing file " + aFile.getName());
 
     String document = FileUtils.file2String(aFile);

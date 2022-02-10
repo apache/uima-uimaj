@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
  * The Class FeatureStructureContentProvider.
  */
@@ -53,7 +52,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
   /**
    * Instantiates a new feature structure content provider.
    *
-   * @param document the document
+   * @param document
+   *          the document
    */
   FeatureStructureContentProvider(ICasDocument document) {
 
@@ -67,7 +67,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
   /**
    * Array size.
    *
-   * @param value the value
+   * @param value
+   *          the value
    * @return the int
    */
   private int arraySize(FeatureStructure value) {
@@ -115,8 +116,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
         }
 
         return featureValues.toArray();
-      }
-      else {
+      } else {
         int size = arraySize(featureStructure);
 
         ArrayValue arrayValues[] = new ArrayValue[size];
@@ -170,7 +170,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
-    for(FeatureStructure fs : deletedFeatureStructure) {
+    for (FeatureStructure fs : deletedFeatureStructure) {
       if (viewer.getInput() == fs) {
         viewer.setInput(null);
         break;
@@ -210,8 +210,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
       ArrayFS array = (ArrayFS) value.getFeatureStructure();
 
       return getElements(array.get(value.slot()));
-    }
-    else {
+    } else {
       throw new CasEditorError("Unexpected element type!");
     }
   }
@@ -224,13 +223,13 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
   /**
    * Checks for children.
    *
-   * @param value the value
+   * @param value
+   *          the value
    * @return true, if successful
    */
   private boolean hasChildren(FeatureStructure value) {
 
     boolean result;
-
 
     if (value != null) {
 
@@ -255,8 +254,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
       if (value.getFeature().getRange().isPrimitive()) {
         return false;
-      }
-      else {
+      } else {
         return hasChildren((FeatureStructure) value.getValue());
       }
     } else if (element instanceof ArrayValue) {
@@ -268,13 +266,11 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
         ArrayFS array = (ArrayFS) value.getFeatureStructure();
 
         return hasChildren(array.get(value.slot()));
-      }
-      else {
+      } else {
         // false for primitive arrays
         return false;
       }
-    }
-    else {
+    } else {
       throw new CasEditorError("Unkown element type");
     }
   }

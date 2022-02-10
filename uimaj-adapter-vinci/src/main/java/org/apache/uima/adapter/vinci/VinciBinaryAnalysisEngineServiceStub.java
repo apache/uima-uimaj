@@ -66,32 +66,40 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * Timeout to use for process and collectionProcessComplete calls.
    */
   private int mTimeout;
-  
+
   /**
    * Timeout to use for getMetaData calls.
    */
-  private int mGetMetaDataTimeout;  
-  
+  private int mGetMetaDataTimeout;
+
   /**
    * Instantiates a new vinci binary analysis engine service stub.
    *
-   * @param endpointURI the endpoint URI
-   * @param owner the owner
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param endpointURI
+   *          the endpoint URI
+   * @param owner
+   *          the owner
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
-  public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
-          throws ResourceInitializationException {
+  public VinciBinaryAnalysisEngineServiceStub(String endpointURI,
+          AnalysisEngineServiceAdapter owner) throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
 
   /**
    * Instantiates a new vinci binary analysis engine service stub.
    *
-   * @param endpointURI the endpoint URI
-   * @param timeout the timeout
-   * @param owner the owner
-   * @param parameters the parameters
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param endpointURI
+   *          the endpoint URI
+   * @param timeout
+   *          the timeout
+   * @param owner
+   *          the owner
+   * @param parameters
+   *          the parameters
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, Integer timeout,
           AnalysisEngineServiceAdapter owner, Parameter[] parameters)
@@ -103,14 +111,13 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
       // Override vinci default VNS settings
       String vnsHost = null;
-      String vnsPort = null; 
-      String getMetaDataTimeout = null; 
+      String vnsPort = null;
+      String getMetaDataTimeout = null;
       if (parameters != null) {
-         vnsHost = 
-          VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
-         vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
-                parameters);
-         getMetaDataTimeout = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("GetMetaDataTimeout", parameters);
+        vnsHost = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters);
+        vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT", parameters);
+        getMetaDataTimeout = VinciBinaryAnalysisEngineServiceStub
+                .getParameterValueFor("GetMetaDataTimeout", parameters);
       }
       if (vnsHost == null) {
         vnsHost = System.getProperty("VNS_HOST");
@@ -124,7 +131,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       }
       vctx.setVNSHost(vnsHost);
       vctx.setVNSPort(Integer.parseInt(vnsPort));
-      
+
       // Override socket keepAlive setting
       vctx.setSocketKeepAliveEnabled(isSocketKeepAliveEnabled());
 
@@ -132,22 +139,22 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
         System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
                 + vctx.getVNSHost() + " and VNS_PORT=" + vctx.getVNSPort());
       }
-        
+
       // establish connection to service
       mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
-      
-      //store timeout for use in later RPC calls
+
+      // store timeout for use in later RPC calls
       if (timeout != null) {
         mTimeout = timeout;
       } else {
-       mTimeout = mVinciClient.getSocketTimeout(); //default
+        mTimeout = mVinciClient.getSocketTimeout(); // default
       }
       if (getMetaDataTimeout != null) {
         mGetMetaDataTimeout = Integer.parseInt(getMetaDataTimeout);
       } else {
-        mGetMetaDataTimeout = mVinciClient.getSocketTimeout(); //default
-      }      
-      
+        mGetMetaDataTimeout = mVinciClient.getSocketTimeout(); // default
+      }
+
       if (debug) {
         System.out.println("Success");
       }
@@ -159,8 +166,10 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * Gets the parameter value for.
    *
-   * @param aKey the a key
-   * @param parameters the parameters
+   * @param aKey
+   *          the a key
+   * @param parameters
+   *          the parameters
    * @return the parameter value for
    */
   public static String getParameterValueFor(String aKey, Parameter[] parameters) {
@@ -178,7 +187,8 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * Call get meta data.
    *
    * @return the resource meta data
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see ResourceServiceStub#callGetMetaData()
    */
   @Override
@@ -233,8 +243,10 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * Call process.
    *
-   * @param aCAS the a CAS
-   * @throws ResourceServiceException the resource service exception
+   * @param aCAS
+   *          the a CAS
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   @Override
@@ -271,7 +283,8 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * Call batch process complete.
    *
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see AnalysisEngineServiceStub#callBatchProcessComplete()
    */
   @Override
@@ -291,7 +304,8 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * Call collection process complete.
    *
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
   @Override
@@ -319,17 +333,16 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
     mVinciClient.close();
   }
 
-
   /**
-   * Gets whether socket keepAlive is enabled, by consulting the
-   * PerformanceTuningSettings.  (If no setting specified, defaults
-   * to true.)
+   * Gets whether socket keepAlive is enabled, by consulting the PerformanceTuningSettings. (If no
+   * setting specified, defaults to true.)
+   * 
    * @return if socketKeepAlive is enabled
    */
   private boolean isSocketKeepAliveEnabled() {
     Properties settings = mOwner.getPerformanceTuningSettings();
     if (settings != null) {
-      String enabledStr = (String)settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);
+      String enabledStr = (String) settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);
       return !"false".equalsIgnoreCase(enabledStr);
     }
     return true;

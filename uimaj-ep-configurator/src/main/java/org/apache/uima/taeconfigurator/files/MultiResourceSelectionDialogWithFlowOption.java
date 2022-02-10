@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-
 /**
  * The Class MultiResourceSelectionDialogWithFlowOption.
  */
@@ -48,19 +47,28 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
   /**
    * Instantiates a new multi resource selection dialog with flow option.
    *
-   * @param parentShell the parent shell
-   * @param rootElement the root element
-   * @param message the message
-   * @param excludeDescriptor the exclude descriptor
-   * @param editor the editor
+   * @param parentShell
+   *          the parent shell
+   * @param rootElement
+   *          the root element
+   * @param message
+   *          the message
+   * @param excludeDescriptor
+   *          the exclude descriptor
+   * @param editor
+   *          the editor
    */
   public MultiResourceSelectionDialogWithFlowOption(Shell parentShell, IAdaptable rootElement,
           String message, IPath excludeDescriptor, MultiPageEditor editor) {
     super(parentShell, rootElement, message, excludeDescriptor, editor);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.files.MultiResourceSelectionDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.files.MultiResourceSelectionDialog#createDialogArea(org.eclipse
+   * .swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -70,18 +78,21 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
 
     String sAddToFlowPrompt = Messages
             .getString("MultiResourceSelectionDialogWithFlowOption.addSelectedAEsToEndOfFlow"); //$NON-NLS-1$
-    FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(
-            parent.getDisplay()));
+    FormToolkit factory = new FormToolkit(
+            TAEConfiguratorPlugin.getDefault().getFormColors(parent.getDisplay()));
 
     autoAddToFlowButton = factory.createButton(composite, sAddToFlowPrompt, SWT.CHECK);
-    m_bAutoAddToFlow = "false".equals(CDEpropertyPage.getAddToFlow(editor.getProject())) ? false : true;
+    m_bAutoAddToFlow = "false".equals(CDEpropertyPage.getAddToFlow(editor.getProject())) ? false
+            : true;
     autoAddToFlowButton.setSelection(m_bAutoAddToFlow);
     autoAddToFlowButton.setBackground(null);
 
     return composite;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.dialogs.Dialog#okPressed()
    */
   @Override

@@ -25,7 +25,7 @@ package org.apache.vinci.debug;
  * 
  */
 public class FatalException extends RuntimeException {
-  
+
   private static final long serialVersionUID = -8889142805115637932L;
 
   private Throwable original_exception;

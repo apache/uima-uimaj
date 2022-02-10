@@ -24,12 +24,11 @@ import java.text.NumberFormat;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.NumberFormatter;
 
-
 /**
  * The Class IntegerField.
  */
 public class IntegerField extends JFormattedTextField {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -9172169254226111684L;
 
@@ -39,9 +38,12 @@ public class IntegerField extends JFormattedTextField {
   /**
    * Instantiates a new integer field.
    *
-   * @param min the min
-   * @param max the max
-   * @param initialValue the initial value
+   * @param min
+   *          the min
+   * @param max
+   *          the max
+   * @param initialValue
+   *          the initial value
    */
   public IntegerField(int min, int max, int initialValue) {
     NumberFormatter formatter = new NumberFormatter(numberFormat);

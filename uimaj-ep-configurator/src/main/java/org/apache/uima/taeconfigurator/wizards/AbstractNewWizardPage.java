@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
-
 /**
  * The Class AbstractNewWizardPage.
  */
@@ -63,11 +62,16 @@ public abstract class AbstractNewWizardPage extends WizardPage {
   /**
    * Instantiates a new abstract new wizard page.
    *
-   * @param pSelection the selection
-   * @param image the image
-   * @param title the title
-   * @param description the description
-   * @param defaultNewName the default new name
+   * @param pSelection
+   *          the selection
+   * @param image
+   *          the image
+   * @param title
+   *          the title
+   * @param description
+   *          the description
+   * @param defaultNewName
+   *          the default new name
    */
   public AbstractNewWizardPage(ISelection pSelection, String image, String title,
           String description, String defaultNewName) {
@@ -80,7 +84,9 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     this.defaultNewName = defaultNewName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
    */
   @Override
@@ -160,8 +166,8 @@ public abstract class AbstractNewWizardPage extends WizardPage {
    * Handle browse.
    */
   void handleBrowse() {
-    ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin
-            .getWorkspace().getRoot(), false, "Select a containing folder");
+    ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(),
+            ResourcesPlugin.getWorkspace().getRoot(), false, "Select a containing folder");
     if (dialog.open() == Window.OK) {
       Object[] result = dialog.getResult();
       if (result.length == 1) {
@@ -217,7 +223,8 @@ public abstract class AbstractNewWizardPage extends WizardPage {
   /**
    * Update status.
    *
-   * @param message the message
+   * @param message
+   *          the message
    */
   private void updateStatus(String message) {
     setErrorMessage(message);

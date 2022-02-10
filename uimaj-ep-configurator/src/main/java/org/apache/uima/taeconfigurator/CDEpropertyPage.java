@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-
 /**
  * The Class CDEpropertyPage.
  */
@@ -67,7 +66,8 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Creates the contents.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the control
    * @see PreferencePage#createContents(Composite)
    */
@@ -76,10 +76,9 @@ public class CDEpropertyPage extends PropertyPage {
     Composite composite = create2ColComposite(parent);
 
     Label instructions = new Label(composite, SWT.WRAP);
-    instructions
-            .setText("Enter the data path to use for finding resources by name;\n"
-                    + "This is a series of absolute paths, separated by\n"
-                    + "whatever character this platform uses for path separation (similar to class paths).\n\n");
+    instructions.setText("Enter the data path to use for finding resources by name;\n"
+            + "This is a series of absolute paths, separated by\n"
+            + "whatever character this platform uses for path separation (similar to class paths).\n\n");
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.horizontalSpan = 2;
     gd.grabExcessHorizontalSpace = true;
@@ -92,8 +91,8 @@ public class CDEpropertyPage extends PropertyPage {
     dataPathUI.setLayoutData(gd);
 
     try {
-      String dataPath = ((IResource) getElement()).getPersistentProperty(new QualifiedName("",
-              DATAPATH_PROPERTY_KEY));
+      String dataPath = ((IResource) getElement())
+              .getPersistentProperty(new QualifiedName("", DATAPATH_PROPERTY_KEY));
       dataPathUI.setText((dataPath != null) ? dataPath : DEFAULT_DATAPATH);
     } catch (CoreException e) {
       dataPathUI.setText(DEFAULT_DATAPATH);
@@ -104,7 +103,8 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Creates the 2 col composite.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   private Composite create2ColComposite(Composite parent) {
@@ -121,7 +121,9 @@ public class CDEpropertyPage extends PropertyPage {
     return composite;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
    */
   @Override
@@ -129,15 +131,17 @@ public class CDEpropertyPage extends PropertyPage {
     dataPathUI.setText(DEFAULT_DATAPATH);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.preference.PreferencePage#performOk()
    */
   @Override
   public boolean performOk() {
     // store the value in the owner text field
     try {
-      ((IResource) getElement()).setPersistentProperty(
-              new QualifiedName("", DATAPATH_PROPERTY_KEY), dataPathUI.getText());
+      ((IResource) getElement()).setPersistentProperty(new QualifiedName("", DATAPATH_PROPERTY_KEY),
+              dataPathUI.getText());
     } catch (CoreException e) {
       return false;
     }
@@ -147,7 +151,8 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Gets the data path.
    *
-   * @param project the project
+   * @param project
+   *          the project
    * @return the data path
    */
   public static String getDataPath(IProject project) {
@@ -165,8 +170,10 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Sets the data path.
    *
-   * @param project the project
-   * @param dataPath the data path
+   * @param project
+   *          the project
+   * @param dataPath
+   *          the data path
    */
   public static void setDataPath(IProject project, String dataPath) {
     try {
@@ -179,7 +186,8 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Gets the import by default.
    *
-   * @param project the project
+   * @param project
+   *          the project
    * @return the import by default
    */
   public static String getImportByDefault(IProject project) {
@@ -197,8 +205,10 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Sets the import by default.
    *
-   * @param project the project
-   * @param byDefault the by default
+   * @param project
+   *          the project
+   * @param byDefault
+   *          the by default
    */
   public static void setImportByDefault(IProject project, String byDefault) {
     try {
@@ -211,7 +221,8 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Gets the adds the to flow.
    *
-   * @param project the project
+   * @param project
+   *          the project
    * @return the adds the to flow
    */
   public static String getAddToFlow(IProject project) {
@@ -229,8 +240,10 @@ public class CDEpropertyPage extends PropertyPage {
   /**
    * Sets the add to flow.
    *
-   * @param project the project
-   * @param byDefault the by default
+   * @param project
+   *          the project
+   * @param byDefault
+   *          the by default
    */
   public static void setAddToFlow(IProject project, String byDefault) {
     try {

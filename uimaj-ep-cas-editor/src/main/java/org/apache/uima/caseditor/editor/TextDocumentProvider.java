@@ -28,64 +28,66 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
-
 /**
  * The Class TextDocumentProvider.
  */
 class TextDocumentProvider extends AbstractDocumentProvider {
-  
+
   /**
    * The Class CasElementInfo.
    */
   private class CasElementInfo extends AbstractDocumentProvider.ElementInfo {
-    
+
     /** The cas info. */
     private CasDocumentProvider.ElementInfo casInfo;
-    
+
     /**
      * Instantiates a new cas element info.
      *
-     * @param document the document
-     * @param model the model
+     * @param document
+     *          the document
+     * @param model
+     *          the model
      */
     public CasElementInfo(IDocument document, IAnnotationModel model) {
       super(document, model);
     }
   }
-  
+
   /** The document provider. */
   private final CasDocumentProvider documentProvider;
-  
+
   /**
    * Instantiates a new text document provider.
    *
-   * @param documentProvider the document provider
+   * @param documentProvider
+   *          the document provider
    */
   public TextDocumentProvider(CasDocumentProvider documentProvider) {
     this.documentProvider = documentProvider;
-    
+
     this.documentProvider.addElementStateListener(new IElementStateListener() {
-      
+
       @Override
       public void elementMoved(Object originalElement, Object movedElement) {
         fireElementMoved(originalElement, movedElement);
       }
-      
+
       @Override
       public void elementDirtyStateChanged(Object element, boolean isDirty) {
         fireElementDirtyStateChanged(element, isDirty);
       }
-      
+
       @Override
       public void elementDeleted(Object element) {
         fireElementDeleted(element);
       }
-      
+
       @Override
       public void elementContentReplaced(Object element) {
         fireElementContentReplaced(element);
       }
-      
+
       @Override
       public void elementContentAboutToBeReplaced(Object element) {
         fireElementContentAboutToBeReplaced(element);
@@ -100,14 +102,13 @@ class TextDocumentProvider extends AbstractDocumentProvider {
 
   @Override
   protected IDocument createDocument(Object element) throws CoreException {
-    ICasDocument casDocument =  documentProvider.createDocument(element);
-    
+    ICasDocument casDocument = documentProvider.createDocument(element);
+
     if (casDocument != null) {
       AnnotationDocument document = new AnnotationDocument();
       document.setDocument(casDocument);
       return document;
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -115,10 +116,11 @@ class TextDocumentProvider extends AbstractDocumentProvider {
   @Override
   protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
           boolean overwrite) throws CoreException {
-    
+
     if (document instanceof AnnotationDocument) {
       AnnotationDocument annotationDocument = (AnnotationDocument) document;
-      documentProvider.doSaveDocument(monitor, element, annotationDocument.getDocument(), overwrite);
+      documentProvider.doSaveDocument(monitor, element, annotationDocument.getDocument(),
+              overwrite);
     }
     // TODO:
     // else throw exception ->
@@ -131,19 +133,19 @@ class TextDocumentProvider extends AbstractDocumentProvider {
 
   @Override
   protected ElementInfo createElementInfo(Object element) throws CoreException {
-    
+
     ElementInfo elementInfo = super.createElementInfo(element);
     CasElementInfo casElementInfo = new CasElementInfo(elementInfo.fDocument, elementInfo.fModel);
     casElementInfo.casInfo = documentProvider.createElementInfo(element);
-    
+
     return casElementInfo;
   }
 
   @Override
   protected void disposeElementInfo(Object element, ElementInfo info) {
-    
+
     super.disposeElementInfo(element, info);
-    
+
     CasElementInfo casElementInfo = (CasElementInfo) info;
     documentProvider.disposeElementInfo(element, casElementInfo.casInfo);
   }

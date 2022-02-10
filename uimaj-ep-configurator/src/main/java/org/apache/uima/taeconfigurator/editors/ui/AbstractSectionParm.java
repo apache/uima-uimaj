@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-
 /**
  * The Class AbstractSectionParm.
  */
@@ -89,7 +88,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
   // //$NON-NLS-1$
 
   /** The Constant MULTI_VALUE_INDICATOR. */
-  protected final static String MULTI_VALUE_INDICATOR  = "Multi  "; //$NON-NLS-1$
+  protected final static String MULTI_VALUE_INDICATOR = "Multi  "; //$NON-NLS-1$
 
   /** The Constant SINGLE_VALUE_INDICATOR. */
   protected final static String SINGLE_VALUE_INDICATOR = "Single "; //$NON-NLS-1$
@@ -99,24 +98,23 @@ public abstract class AbstractSectionParm extends AbstractSection {
 
   /** The Constant REQUIRED_INDICATOR. */
   protected final static String REQUIRED_INDICATOR = "Req "; //$NON-NLS-1$
-  
+
   /** The Constant EXTERNAL_OVERRIDE_INDICATOR. */
-  protected final static String EXTERNAL_OVERRIDE_INDICATOR    = "XO "; //$NON-NLS-1$
-  
+  protected final static String EXTERNAL_OVERRIDE_INDICATOR = "XO "; //$NON-NLS-1$
+
   /** The Constant NO_EXTERNAL_OVERRIDE_INDICATOR. */
   protected final static String NO_EXTERNAL_OVERRIDE_INDICATOR = "      ";
-  
+
   /** The name header. */
   protected final String nameHeader = "  Name: "; //$NON-NLS-1$
 
   /** The Constant typeNamesW. */
-  protected final static Map<String,String> typeNamesW = new HashMap<>(4);
+  protected final static Map<String, String> typeNamesW = new HashMap<>(4);
   static { // map extra spaces to get these to take the same
     typeNamesW.put("Boolean", "Boolean "); //$NON-NLS-1$ //$NON-NLS-2$
-    typeNamesW.put("Float",   "Float      "); //$NON-NLS-1$ //$NON-NLS-2$
-    typeNamesW.put(Messages.getString("AbstractSectionParm.16"), 
-                              "Integer   "); //$NON-NLS-1$ 
-    typeNamesW.put("String",  "String     "); //$NON-NLS-1$ //$NON-NLS-2$
+    typeNamesW.put("Float", "Float      "); //$NON-NLS-1$ //$NON-NLS-2$
+    typeNamesW.put(Messages.getString("AbstractSectionParm.16"), "Integer   "); //$NON-NLS-2$
+    typeNamesW.put("String", "String     "); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /** The tree. */
@@ -150,7 +148,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Sets the settings.
    *
-   * @param v the new settings
+   * @param v
+   *          the new settings
    */
   public void setSettings(ParameterSettingsSection v) {
     settings = v;
@@ -160,10 +159,14 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Instantiates a new abstract section parm.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
-   * @param header the header
-   * @param description the description
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
+   * @param header
+   *          the header
+   * @param description
+   *          the description
    */
   public AbstractSectionParm(MultiPageEditor aEditor, Composite parent, String header,
           String description) {
@@ -188,14 +191,17 @@ public abstract class AbstractSectionParm extends AbstractSection {
   @Override
   public abstract void handleEvent(Event event);
 
-   /* ***********************************************************************************************
-   * methods shared with multiple param pages 
+  /*
+   * ***********************************************************************************************
+   * methods shared with multiple param pages
    *************************************************************************************************/
-  
+
   /**
    * Two modes: settingsDisplayMode - if true, shows groups one name at a time, and puts all
    * &lt;common&gt; parms in other groups
-   * @param usingGroups the using groups
+   * 
+   * @param usingGroups
+   *          the using groups
    */
   protected void clearAndRefillTree(boolean usingGroups) {
     cpd = getConfigurationParameterDeclarations();
@@ -218,13 +224,13 @@ public abstract class AbstractSectionParm extends AbstractSection {
       // first is the <Not in any group>, 2nd is the <Common>
       if (null == cpd.getConfigurationParameters()) {
         cpd.setConfigurationParameters(configurationParameterArray0);
-    }
+      }
 
       fillGroup(cpd.getConfigurationParameters(), NOT_IN_ANY_GROUP, null);
 
       if (null == cpd.getCommonParameters()) {
         cpd.setCommonParameters(configurationParameterArray0);
-    }
+      }
 
       if (usingGroups) {
         fillGroup(cpd.getCommonParameters(), COMMON_GROUP, null);
@@ -234,14 +240,14 @@ public abstract class AbstractSectionParm extends AbstractSection {
       for (int i = 0; i < groups.length; i++) {
         ConfigurationParameter[] cps = groups[i].getConfigurationParameters();
         if (null == cps) {
-            groups[i].setConfigurationParameters(cps = configurationParameterArray0);
+          groups[i].setConfigurationParameters(cps = configurationParameterArray0);
         }
         fillGroup(groups[i].getConfigurationParameters(), groups[i].getNames(), groups[i]);
       }
 
       if (splitGroupNames) {
         fillGroupsFromGroupParms();
-    }
+      }
 
       expandAllItems(tree.getItems()); // expand for overrides or groups
 
@@ -254,7 +260,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Expand all items.
    *
-   * @param items the items
+   * @param items
+   *          the items
    */
   private void expandAllItems(TreeItem[] items) {
     TreeItem[] containedItems;
@@ -263,18 +270,22 @@ public abstract class AbstractSectionParm extends AbstractSection {
       containedItems = items[i].getItems();
       if (null != containedItems) {
         expandAllItems(containedItems);
-    }
+      }
     }
   }
 
   /**
    * Called by refresh; add a normal named group and a set of parmaters.
    *
-   * @param parms the parms
-   * @param names the names
-   * @param modelCG the model CG
+   * @param parms
+   *          the parms
+   * @param names
+   *          the names
+   * @param modelCG
+   *          the model CG
    */
-  private void fillGroup(ConfigurationParameter[] parms, String[] names, ConfigurationGroup modelCG) {
+  private void fillGroup(ConfigurationParameter[] parms, String[] names,
+          ConfigurationGroup modelCG) {
     fillGroup(parms, groupNameArrayToString(names), modelCG);
   }
 
@@ -282,9 +293,12 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * called by refresh() for <Common> and refresh() for named, via another path with names as array
    * first converted to concatenated string.
    *
-   * @param parms the parms
-   * @param names the names
-   * @param modelCG the model CG
+   * @param parms
+   *          the parms
+   * @param names
+   *          the names
+   * @param modelCG
+   *          the model CG
    */
   private void fillGroup(ConfigurationParameter[] parms, String names, ConfigurationGroup modelCG) {
     if (splitGroupNames) {
@@ -295,22 +309,21 @@ public abstract class AbstractSectionParm extends AbstractSection {
         if (nameArray.length == 1 && nameArray[0].equals(NOT_IN_ANY_GROUP)) {
           TreeItem groupItem = addGroupToGUI(nameArray[0], modelCG);
           fill(parms, groupItem);
-        }
-        else {
-            for (int i = 0; i < nameArray.length; i++) {
-                List g = (List) groupParms.get(nameArray[i]);
-                if (null == g) {
-                  g = new ArrayList();
-                  groupParms.put(nameArray[i], g);
-                }
-                g.add(new Object[] { modelCG, parms });
-              }
+        } else {
+          for (int i = 0; i < nameArray.length; i++) {
+            List g = (List) groupParms.get(nameArray[i]);
+            if (null == g) {
+              g = new ArrayList();
+              groupParms.put(nameArray[i], g);
+            }
+            g.add(new Object[] { modelCG, parms });
+          }
         }
       }
     } else {
       if (names.equals(COMMON_GROUP)) {
         commonParms = parms;
-    }
+      }
       TreeItem groupItem = addGroupToGUI(names, modelCG);
       fill(parms, groupItem);
     }
@@ -337,12 +350,14 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * called by refresh() when no groups, just plain parm sets, also for group case.
    *
-   * @param parms the parms
-   * @param group          &lt;Not in any group&gt; if not in a group, otherwise the group tree item
+   * @param parms
+   *          the parms
+   * @param group
+   *          &lt;Not in any group&gt; if not in a group, otherwise the group tree item
    */
   protected void fill(ConfigurationParameter[] parms, TreeItem group) {
     if (parms == null) {
-        return;
+      return;
     }
     for (int i = 0; i < parms.length; i++) {
       addNewConfigurationParameterToGUI(parms[i], group);
@@ -352,16 +367,16 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Group name array to string.
    *
-   * @param strings the strings
+   * @param strings
+   *          the strings
    * @return the string
    */
   public static String groupNameArrayToString(String[] strings) {
     StringBuffer b = new StringBuffer();
     for (int i = 0; i < strings.length; i++) {
-      if (i > 0)
-     {
+      if (i > 0) {
         b.append("   "); //$NON-NLS-1$
-    }
+      }
       b.append(strings[i]);
     }
     return b.toString();
@@ -370,12 +385,13 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Group names to array.
    *
-   * @param names the names
+   * @param names
+   *          the names
    * @return the string[]
    */
   protected String[] groupNamesToArray(String names) {
     if (names.equals(NOT_IN_ANY_GROUP)) {
-        return new String[] { names };
+      return new String[] { names };
     }
 
     AbstractList items = new ArrayList();
@@ -383,7 +399,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     int end;
 
     while (start < names.length() && (names.charAt(start) == ' ')) {
-        start++;
+      start++;
     }
 
     for (; start < names.length();) {
@@ -396,7 +412,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
       start = end;
       while (start < names.length() && names.charAt(start) == ' ') {
         start++;
-    }
+      }
     }
     return (String[]) items.toArray(stringArray0);
   }
@@ -406,8 +422,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * addNewConfigurationParameter, alterExistingConfigurationParamater (editing), fill (bulk update
    * from refresh)
    *
-   * @param item the item
-   * @param parm the parm
+   * @param item
+   *          the item
+   * @param parm
+   *          the parm
    */
   protected void fillParmItem(TreeItem item, ConfigurationParameter parm) {
     item.setText(parmGuiString(parm));
@@ -421,42 +439,46 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Parm gui string.
    *
-   * @param parm the parm
+   * @param parm
+   *          the parm
    * @return the string
    */
   protected String parmGuiString(ConfigurationParameter parm) {
     return ((parm.isMultiValued()) ? MULTI_VALUE_INDICATOR : SINGLE_VALUE_INDICATOR)
             + ((parm.isMandatory()) ? REQUIRED_INDICATOR : OPTIONAL_INDICATOR)
             + typeNamesW.get(parm.getType())
-            + ((parm.getExternalOverrideName()==null) ? NO_EXTERNAL_OVERRIDE_INDICATOR : EXTERNAL_OVERRIDE_INDICATOR)
-            + nameHeader + parm.getName();    
+            + ((parm.getExternalOverrideName() == null) ? NO_EXTERNAL_OVERRIDE_INDICATOR
+                    : EXTERNAL_OVERRIDE_INDICATOR)
+            + nameHeader + parm.getName();
   }
 
   /**
    * Sets the group text.
    *
-   * @param groupItem the group item
-   * @param names the names
+   * @param groupItem
+   *          the group item
+   * @param names
+   *          the names
    */
   protected void setGroupText(TreeItem groupItem, String names) {
     if (names.equals(COMMON_GROUP)) {
-        groupItem.setText(COMMON_GROUP_HEADER);
-    }
-    else if (names.equals(NOT_IN_ANY_GROUP)) {
-        groupItem.setText(NOT_IN_ANY_GROUP_HEADER);
-    }
-    else {
-        // next line formats the names with the right number of spaces and makes it
-          // possible to do future equal compares
-          groupItem.setText(GROUP_HEADER + groupNameArrayToString(groupNamesToArray(names)));
+      groupItem.setText(COMMON_GROUP_HEADER);
+    } else if (names.equals(NOT_IN_ANY_GROUP)) {
+      groupItem.setText(NOT_IN_ANY_GROUP_HEADER);
+    } else {
+      // next line formats the names with the right number of spaces and makes it
+      // possible to do future equal compares
+      groupItem.setText(GROUP_HEADER + groupNameArrayToString(groupNamesToArray(names)));
     }
   }
 
   /**
    * Adds the group to GUI.
    *
-   * @param names the names
-   * @param cg the cg
+   * @param names
+   *          the names
+   * @param cg
+   *          the cg
    * @return the tree item
    */
   protected TreeItem addGroupToGUI(String names, ConfigurationGroup cg) {
@@ -464,13 +486,11 @@ public abstract class AbstractSectionParm extends AbstractSection {
     setGroupText(groupItem, names);
     ConfigGroup mcg;
     if (names.equals(COMMON_GROUP)) {
-        mcg = new ConfigGroup(cpd, ConfigGroup.COMMON);
-    }
-    else if (names.equals(NOT_IN_ANY_GROUP)) {
-        mcg = new ConfigGroup(cpd, ConfigGroup.NOT_IN_ANY_GROUP);
-    }
-    else {
-        mcg = new ConfigGroup(cpd, cg);
+      mcg = new ConfigGroup(cpd, ConfigGroup.COMMON);
+    } else if (names.equals(NOT_IN_ANY_GROUP)) {
+      mcg = new ConfigGroup(cpd, ConfigGroup.NOT_IN_ANY_GROUP);
+    } else {
+      mcg = new ConfigGroup(cpd, cg);
     }
     groupItem.setData(mcg);
     String[] nameArray = groupNamesToArray(names);
@@ -491,15 +511,17 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Contains group.
    *
-   * @param groupName the group name
-   * @param settingsItems the settings items
+   * @param groupName
+   *          the group name
+   * @param settingsItems
+   *          the settings items
    * @return true, if successful
    */
   private boolean containsGroup(String groupName, final TreeItem[] settingsItems) {
     for (int i = 0; i < settingsItems.length; i++) {
       if (groupName.equals(getName(settingsItems[i]))) {
         return true;
-    }
+      }
     }
     return false;
   }
@@ -507,16 +529,16 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * This is called sometimes with Settings group.
    *
-   * @param newCP the new CP
-   * @param group -
-   *          is never null. May be &lt;Not in any group&gt;, indicate no groups; may be the 
+   * @param newCP
+   *          the new CP
+   * @param group
+   *          - is never null. May be &lt;Not in any group&gt;, indicate no groups; may be the
    *          "&lt;Common&gt;" group; or may be a regular group with a set of group names
    */
   protected void addNewConfigurationParameterToGUI(ConfigurationParameter newCP, TreeItem group) {
 
-    if (null == group)
-     {
-        throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
+    if (null == group) {
+      throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
     }
 
     // is part of group but could be NOT_IN_ANY_GROUP
@@ -548,8 +570,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Fill overrides.
    *
-   * @param parent the parent
-   * @param modelCP the model CP
+   * @param parent
+   *          the parent
+   * @param modelCP
+   *          the model CP
    */
   // here just make above fn compile OK
   protected void fillOverrides(TreeItem parent, ConfigurationParameter modelCP) {
@@ -558,7 +582,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Checks if is override.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is override
    */
   protected boolean isOverride(TreeItem item) {
@@ -568,19 +593,21 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Checks if is parameter.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is parameter
    */
   protected boolean isParameter(TreeItem item) {
     String s = item.getText();
-    return (!isGroup(item) && !s.startsWith(DELEGATE_HEADER) && !s.startsWith(FLOWCTLR_HEADER) && !item
-            .getText().startsWith(OVERRIDE_HEADER));
+    return (!isGroup(item) && !s.startsWith(DELEGATE_HEADER) && !s.startsWith(FLOWCTLR_HEADER)
+            && !item.getText().startsWith(OVERRIDE_HEADER));
   }
 
   /**
    * Checks if is group.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is group
    */
   // Note: rest of code considers NOT_IN_ANY_GROUP to be a kind of group
@@ -593,7 +620,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Checks if is not in any group.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is not in any group
    */
   protected boolean isNOT_IN_ANY_GROUP(TreeItem item) {
@@ -603,7 +631,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Checks if is common group.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is common group
    */
   protected boolean isCommonGroup(TreeItem item) {
@@ -613,7 +642,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Checks if is delegate.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is delegate
    */
   protected boolean isDelegate(TreeItem item) {
@@ -659,7 +689,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the name.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the name
    */
   protected String getName(TreeItem item) {
@@ -669,23 +700,24 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the name.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the name
    */
   protected String getName(String s) {
 
     if (s.startsWith(NOT_IN_ANY_GROUP_HEADER)) {
-        return NOT_IN_ANY_GROUP;
+      return NOT_IN_ANY_GROUP;
     }
     if (s.startsWith(COMMON_GROUP_HEADER)) {
-        return COMMON_GROUP;
+      return COMMON_GROUP;
     }
 
     if (s.startsWith(GROUP_HEADER)) {
-        return s.substring(GROUP_HEADER.length());
+      return s.substring(GROUP_HEADER.length());
     }
     if (s.startsWith(OVERRIDE_HEADER)) {
-        return s.substring(OVERRIDE_HEADER.length());
+      return s.substring(OVERRIDE_HEADER.length());
     }
     // parameter
     return s.substring(s.indexOf(nameHeader) + nameHeader.length());
@@ -694,8 +726,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the item index.
    *
-   * @param parent the parent
-   * @param child the child
+   * @param parent
+   *          the parent
+   * @param child
+   *          the child
    * @return the item index
    */
   protected int getItemIndex(TreeItem parent, TreeItem child) {
@@ -705,8 +739,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the item index.
    *
-   * @param parent the parent
-   * @param child the child
+   * @param parent
+   *          the parent
+   * @param child
+   *          the child
    * @return the item index
    */
   protected int getItemIndex(Tree parent, TreeItem child) {
@@ -717,17 +753,19 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * Works between parameter tree and settings tree. We don't use any relative index offsets.
    * Instead, we search for the item with the same parameter name.
    *
-   * @param containingGroup          in parm section; if null = means all groups (common parms)
-   * @param sourceItemName the source item name
+   * @param containingGroup
+   *          in parm section; if null = means all groups (common parms)
+   * @param sourceItemName
+   *          the source item name
    * @return the settings parameter
    */
   protected TreeItem[] getSettingsParameter(TreeItem containingGroup, String sourceItemName) {
     if (null == settingsTree) {
-        return null;
+      return null;
     }
 
     if (null != containingGroup && isNOT_IN_ANY_GROUP(containingGroup)) {
-        return new TreeItem[] { findMatchingParm(settingsTree.getItems()[0], sourceItemName) };
+      return new TreeItem[] { findMatchingParm(settingsTree.getItems()[0], sourceItemName) };
     }
 
     TreeItem[] groups = getSettingsGroups((null == containingGroup) ? tree.getItems()[1] // use
@@ -752,8 +790,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Find matching parm.
    *
-   * @param group the group
-   * @param name the name
+   * @param group
+   *          the group
+   * @param name
+   *          the name
    * @return the tree item
    */
   private TreeItem findMatchingParm(TreeItem group, String name) {
@@ -761,7 +801,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     for (int i = 0; i < items.length; i++) {
       if (name.equals(getName(items[i]))) {
         return items[i];
-    }
+      }
     }
     throw new InternalErrorCDE("invalid state");
   }
@@ -769,16 +809,17 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * get set of settings group from settingsTree that correspond to parmsection group.
    *
-   * @param group the group
+   * @param group
+   *          the group
    * @return set of settings group from settingsTree that correspond to parm-section group
    */
   protected TreeItem[] getSettingsGroups(TreeItem group) {
     if (null == settingsTree) {
-        return null;
+      return null;
     }
 
     if (isNOT_IN_ANY_GROUP(group)) {
-        return new TreeItem[] { settingsTree.getItems()[0] };
+      return new TreeItem[] { settingsTree.getItems()[0] };
     }
 
     AbstractList results = new ArrayList();
@@ -797,7 +838,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
       String name = getName(items[itemIndex].getText());
       for (int i = 0; i < groupNamesArray.length; i++) {
         if (name.equals(groupNamesArray[i])) {
-            results.add(items[itemIndex]);
+          results.add(items[itemIndex]);
         }
       }
     }
@@ -807,7 +848,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * find settings tree item for group name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return settings tree item for group name
    */
   protected TreeItem getSettingsGroupTreeItemByName(String name) {
@@ -815,7 +857,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     for (int i = 0; i < items.length; i++) {
       if (name.equals(getName(items[i].getText()))) {
         return items[i];
-    }
+      }
     }
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
@@ -823,13 +865,13 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the corresponding model parm.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the corresponding model parm
    */
   protected ConfigurationParameter getCorrespondingModelParm(TreeItem item) {
-    if (!isParameter(item))
-     {
-        throw new InternalErrorCDE("invalid argument"); //$NON-NLS-1$
+    if (!isParameter(item)) {
+      throw new InternalErrorCDE("invalid argument"); //$NON-NLS-1$
     }
     return (ConfigurationParameter) item.getData();
   }
@@ -837,13 +879,13 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the corresponding model group.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the corresponding model group
    */
   protected ConfigGroup getCorrespondingModelGroup(TreeItem item) {
-    if (!isGroup(item))
-     {
-        throw new InternalErrorCDE("invalid argument"); //$NON-NLS-1$
+    if (!isGroup(item)) {
+      throw new InternalErrorCDE("invalid argument"); //$NON-NLS-1$
     }
     return (ConfigGroup) item.getData();
   }
@@ -858,8 +900,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   }
 
   // ***********************************************************************************************
-  // Methods affecting the parameter settings. 
-  // These run whether or not the settings page has been instantiated. 
+  // Methods affecting the parameter settings.
+  // These run whether or not the settings page has been instantiated.
   // If the settings page is instantiated, that GUI is also updated.
   // ***********************************************************************************************
 
@@ -871,13 +913,14 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * Remove a parameter from all groups it lives in the Settings. If settings page is shown, also
    * update the GUI.
    *
-   * @param parmItem          in ParameterSection of parameter belonging to (multiple) groups
-   * @param removeFromGUI the remove from GUI
+   * @param parmItem
+   *          in ParameterSection of parameter belonging to (multiple) groups
+   * @param removeFromGUI
+   *          the remove from GUI
    */
   public void removeParmSettingFromMultipleGroups(TreeItem parmItem, boolean removeFromGUI) {
-    if (!isParameter(parmItem))
-     {
-        throw new InternalErrorCDE("invalid argument"); //$NON-NLS-1$
+    if (!isParameter(parmItem)) {
+      throw new InternalErrorCDE("invalid argument"); //$NON-NLS-1$
     }
 
     ConfigurationParameterSettings modelSettings = getModelSettings();
@@ -910,9 +953,12 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Update parm in settings GUI.
    *
-   * @param existingCP the existing CP
-   * @param existingTreeItem the existing tree item
-   * @param prevName the prev name
+   * @param existingCP
+   *          the existing CP
+   * @param existingTreeItem
+   *          the existing tree item
+   * @param prevName
+   *          the prev name
    */
   public void updateParmInSettingsGUI(ConfigurationParameter existingCP, TreeItem existingTreeItem,
           String prevName) {
@@ -937,7 +983,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Gets the all group names.
    *
-   * @param aCpd the a cpd
+   * @param aCpd
+   *          the a cpd
    * @return all named groups, excludes &lt;Common&gt; and &lt;Not in any group&gt;
    */
   protected String[] getAllGroupNames(ConfigurationParameterDeclarations aCpd) {
@@ -993,8 +1040,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * group on the settings page (together with common parms for it) if no other group-set has this
    * group name Remove the group-set.
    *
-   * @param groupNames the group names
-   * @param cps the cps
+   * @param groupNames
+   *          the group names
+   * @param cps
+   *          the cps
    */
   public void removeIncludedParmSettingsFromMultipleGroups(String[] groupNames,
           ConfigurationParameter[] cps) {
@@ -1006,17 +1055,18 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Removes the included parm settings from single group.
    *
-   * @param groupName the group name
-   * @param cps          in ParameterSection of items an array of tree items to remove Can be all items under a
+   * @param groupName
+   *          the group name
+   * @param cps
+   *          in ParameterSection of items an array of tree items to remove Can be all items under a
    *          particular group, or a set of items from different groups
    */
   public void removeIncludedParmSettingsFromSingleGroup(String groupName,
           ConfigurationParameter[] cps) {
     ConfigurationParameterSettings modelSettings = getModelSettings();
     // modelSettings.setParameterValue()
-    if (groupName.equals(COMMON_GROUP))
-     {
-        throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
+    if (groupName.equals(COMMON_GROUP)) {
+      throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
     }
 
     if (groupName.equals(NOT_IN_ANY_GROUP)) {
@@ -1025,14 +1075,15 @@ public abstract class AbstractSectionParm extends AbstractSection {
     } else {
       for (int i = 0; i < cps.length; i++) {
         modelSettings.setParameterValue(groupName, cps[i].getName(), null);
-    }
+      }
     }
     if (null != settings) {
       TreeItem settingGroup = getSettingsGroupTreeItemByName(groupName);
       if (groupName.equals(COMMON_GROUP) || groupName.equals(NOT_IN_ANY_GROUP)) {
         disposeAllChildItems(settingGroup);
       } else {
-        if (getConfigurationParameterDeclarations().getConfigurationGroupDeclarations(groupName).length == 1) {
+        if (getConfigurationParameterDeclarations()
+                .getConfigurationGroupDeclarations(groupName).length == 1) {
           settingGroup.dispose();
         } else {
 
@@ -1048,7 +1099,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Dispose all child items.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   public void disposeAllChildItems(TreeItem parent) {
     TreeItem[] items = parent.getItems();
@@ -1060,7 +1112,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * Show description as tool tip.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   protected void showDescriptionAsToolTip(Event event) {
     TreeItem item = tree.getItem(new Point(event.x, event.y));
@@ -1078,9 +1131,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
     }
     if (text != null) {
       setToolTipText(tree, text);
-    }
-    else {
-        tree.setToolTipText(""); //$NON-NLS-1$
+    } else {
+      tree.setToolTipText(""); //$NON-NLS-1$
     }
   }
 

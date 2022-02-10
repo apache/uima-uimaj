@@ -32,7 +32,6 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 
-
 /**
  * The Class ArrayValue.
  */
@@ -47,8 +46,10 @@ public class ArrayValue implements IAdaptable {
   /**
    * Instantiates a new array value.
    *
-   * @param arrayFS the array FS
-   * @param slot the slot
+   * @param arrayFS
+   *          the array FS
+   * @param slot
+   *          the slot
    */
   public ArrayValue(FeatureStructure arrayFS, int slot) {
 
@@ -81,7 +82,8 @@ public class ArrayValue implements IAdaptable {
   /**
    * Sets the.
    *
-   * @param value the value
+   * @param value
+   *          the value
    */
   public void set(String value) {
 
@@ -161,7 +163,8 @@ public class ArrayValue implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
 
     if (FeatureStructure.class.equals(adapter)) {
       if (arrayFS instanceof ArrayFS) {
@@ -184,6 +187,6 @@ public class ArrayValue implements IAdaptable {
 
   @Override
   public String toString() {
-    return Integer.toString(slot()) ;
+    return Integer.toString(slot());
   }
 }

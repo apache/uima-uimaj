@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddExternalResourceDialog.
  */
@@ -82,7 +81,8 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
   /**
    * Instantiates a new adds the external resource dialog.
    *
-   * @param aSection the a section
+   * @param aSection
+   *          the a section
    */
   public AddExternalResourceDialog(AbstractSection aSection) {
     super(aSection, "Add an External Resource Definition", "Define and name an external resource");
@@ -92,8 +92,10 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
   /**
    * Instantiates a new adds the external resource dialog.
    *
-   * @param aSection the a section
-   * @param aExistingXRD the a existing XRD
+   * @param aSection
+   *          the a section
+   * @param aExistingXRD
+   *          the a existing XRD
    */
   public AddExternalResourceDialog(AbstractSection aSection,
           ExternalResourceDescription aExistingXRD) {
@@ -102,8 +104,12 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     originalXrName = existingXRD.getName();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -121,8 +127,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     // Implementation: styledText
     // (optional)
 
-    createWideLabel(
-            composite,
+    createWideLabel(composite,
             "The first URL field is used to identify the external resource.\nIf both URL fields are used, they form a name by concatenating the first with the document language and then with the second (suffix) URL.\nThe (optional) Implementation specifies a Java class which implements the interface used by the Analysis Engine to access the resource.");
 
     Composite twoCol = new2ColumnComposite(composite);
@@ -132,13 +137,9 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     xrDescriptionUI = newDescription(twoCol, "(Optional) Description of the External Resource");
     xrUrlUI = newLabeledSingleLineStyledText(twoCol, "URL:",
             "(Required) A URL for this resource, or the URL prefix if a suffix is being used");
-    xrUrlSuffixUI = newLabeledSingleLineStyledText(
-            twoCol,
-            "URL Suffix",
+    xrUrlSuffixUI = newLabeledSingleLineStyledText(twoCol, "URL Suffix",
             "(Optional) A URL part that will be suffixed to the prefix with the language being used inserted in-between");
-    xrImplementationUI = newLabeledSingleLineStyledText(
-            twoCol,
-            "Implementation",
+    xrImplementationUI = newLabeledSingleLineStyledText(twoCol, "Implementation",
             "(Optional) The name of a Java class implementing the interface used by the Analysis Engine to access this resource.");
     newErrorMessage(twoCol, 2);
 
@@ -152,8 +153,9 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
         xrUrlUI.setText(((FileLanguageResourceSpecifier) rs).getFileUrlPrefix());
         xrUrlSuffixUI.setText(((FileLanguageResourceSpecifier) rs).getFileUrlSuffix());
       } else {
-        Utility.popMessage("Unknown resource type", "The resource type '" + rs.getClass().getName()
-                + "' is unknown.  Editing should be done by hand in the source view.",
+        Utility.popMessage("Unknown resource type",
+                "The resource type '" + rs.getClass().getName()
+                        + "' is unknown.  Editing should be done by hand in the source view.",
                 MessageDialog.WARNING);
       }
       String impName = existingXRD.getImplementationName();
@@ -162,7 +164,9 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     return composite;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -177,7 +181,8 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
   /**
    * Called for many widgets.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @return true, if successful
    */
   @Override
@@ -194,7 +199,9 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
@@ -208,7 +215,9 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override

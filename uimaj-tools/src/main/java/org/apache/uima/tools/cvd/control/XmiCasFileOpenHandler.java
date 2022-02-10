@@ -27,12 +27,11 @@ import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * Load a CAS from an XMI file.
  */
 public class XmiCasFileOpenHandler implements ActionListener {
-  
+
   /** The main. */
   final MainFrame main;
 
@@ -48,13 +47,16 @@ public class XmiCasFileOpenHandler implements ActionListener {
   /**
    * Instantiates a new xmi cas file open handler.
    *
-   * @param main the main
+   * @param main
+   *          the main
    */
   public XmiCasFileOpenHandler(MainFrame main) {
     this.main = main;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

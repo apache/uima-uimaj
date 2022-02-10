@@ -54,38 +54,46 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-
 /**
  * Converts a UIMA TypeSystemDescription to an Ecore model.
  */
 public class UimaTypeSystem2Ecore {
-  
+
   /**
    * Converts a UIMA TypeSystem descriptor to an Ecore model.
    *
-   * @param aUimaTypeSystemFilePath          file path to UIMA TypeSystem descritpor
-   * @param aOutputResource          An EMF Resource to be populated with the Ecore model
-   * @param aOptions          a Map defining options for the conversion. Valid keys for this map are defined as
+   * @param aUimaTypeSystemFilePath
+   *          file path to UIMA TypeSystem descritpor
+   * @param aOutputResource
+   *          An EMF Resource to be populated with the Ecore model
+   * @param aOptions
+   *          a Map defining options for the conversion. Valid keys for this map are defined as
    *          constants on this class.
-   * @throws InvalidXMLException           if the TypeSystem descriptor, or one of its imports, is not valid or if there are
+   * @throws InvalidXMLException
+   *           if the TypeSystem descriptor, or one of its imports, is not valid or if there are
    *           duplicate, inconsistent definitions of the same type.
-   * @throws IOException           if an failure occur while reading the descriptor file
+   * @throws IOException
+   *           if an failure occur while reading the descriptor file
    */
   public static void uimaTypeSystem2Ecore(String aUimaTypeSystemFilePath, Resource aOutputResource,
           Map aOptions) throws InvalidXMLException, IOException {
-    TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(aUimaTypeSystemFilePath));
+    TypeSystemDescription tsDesc = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(aUimaTypeSystemFilePath));
     uimaTypeSystem2Ecore(tsDesc, aOutputResource, aOptions);
   }
 
   /**
    * Converts a UIMA TypeSystemDescription to an Ecore model.
    *
-   * @param aTypeSystem          UIMA TypeSystemDescription object to convert
-   * @param aOutputResource          An EMF Resource to be populated with the Ecore model
-   * @param aOptions          a Map defining options for the conversion. Valid keys for this map are defined as
+   * @param aTypeSystem
+   *          UIMA TypeSystemDescription object to convert
+   * @param aOutputResource
+   *          An EMF Resource to be populated with the Ecore model
+   * @param aOptions
+   *          a Map defining options for the conversion. Valid keys for this map are defined as
    *          constants on this class.
-   * @throws InvalidXMLException           if the TypeSystem descriptor imports another descriptor that could not be
+   * @throws InvalidXMLException
+   *           if the TypeSystem descriptor imports another descriptor that could not be
    *           successfully parsed, or if there are duplicate, inconsistent definitions of the same
    *           type.
    */
@@ -97,14 +105,19 @@ public class UimaTypeSystem2Ecore {
   /**
    * Converts a UIMA TypeSystemDescription to an Ecore model.
    *
-   * @param aTypeSystem          UIMA TypeSystemDescription object to convert
-   * @param aOutputResource          An EMF Resource to be populated with the Ecore model
-   * @param aOptions          a Map defining options for the conversion. Valid keys for this map are defined as
+   * @param aTypeSystem
+   *          UIMA TypeSystemDescription object to convert
+   * @param aOutputResource
+   *          An EMF Resource to be populated with the Ecore model
+   * @param aOptions
+   *          a Map defining options for the conversion. Valid keys for this map are defined as
    *          constants on this class.
-   * @param aSchemaLocationMap          optional parameter - if non-null, this map will be populated with (Namespace URI,
+   * @param aSchemaLocationMap
+   *          optional parameter - if non-null, this map will be populated with (Namespace URI,
    *          Schema Location) pairs, suitable for inclusion in the "schemaLocation" attribute of
    *          XMI instance documents.
-   * @throws InvalidXMLException the invalid XML exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
    */
   public static void uimaTypeSystem2Ecore(TypeSystemDescription aTypeSystem,
           Resource aOutputResource, Map aOptions, Map aSchemaLocationMap)
@@ -123,7 +136,8 @@ public class UimaTypeSystem2Ecore {
 
     // merge, to eliminate duplicate type definitions
     try {
-      aTypeSystem = CasCreationUtils.mergeTypeSystems(Arrays.asList(new TypeSystemDescription[] { aTypeSystem }));
+      aTypeSystem = CasCreationUtils
+              .mergeTypeSystems(Arrays.asList(new TypeSystemDescription[] { aTypeSystem }));
     } catch (ResourceInitializationException e) {
       throw new InvalidXMLException(e);
     }
@@ -173,7 +187,7 @@ public class UimaTypeSystem2Ecore {
         String supertypeName = type.getSupertypeName();
         EClassifier superclass = lookupEClassifierForType(supertypeName); // creates EClass if not
         // already existing
-        eclass.getESuperTypes().add((EClass)superclass);
+        eclass.getESuperTypes().add((EClass) superclass);
 
         // set features
         FeatureDescription[] features = type.getFeatures();
@@ -201,8 +215,10 @@ public class UimaTypeSystem2Ecore {
   /**
    * Load uima builtins ecore.
    *
-   * @param resourceSet the resource set
-   * @param aSchemaLocationMap the a schema location map
+   * @param resourceSet
+   *          the resource set
+   * @param aSchemaLocationMap
+   *          the a schema location map
    * @return the resource
    */
   private static Resource loadUimaBuiltinsEcore(ResourceSet resourceSet, Map aSchemaLocationMap) {
@@ -233,8 +249,10 @@ public class UimaTypeSystem2Ecore {
   /**
    * Uima type 2 E classifier.
    *
-   * @param aType the a type
-   * @param aOptions the a options
+   * @param aType
+   *          the a type
+   * @param aOptions
+   *          the a options
    * @return the e classifier
    */
   private static EClassifier uimaType2EClassifier(TypeDescription aType, Map aOptions) {
@@ -292,15 +310,17 @@ public class UimaTypeSystem2Ecore {
   /**
    * Uima feature 2 E structural feature.
    *
-   * @param aFeature the a feature
-   * @param aOptions the a options
+   * @param aFeature
+   *          the a feature
+   * @param aOptions
+   *          the a options
    * @return the e structural feature
    */
   private static EStructuralFeature uimaFeature2EStructuralFeature(FeatureDescription aFeature,
           Map aOptions) {
     String range = aFeature.getRangeTypeName();
-    boolean multiRefAllowed = aFeature.getMultipleReferencesAllowed() == null ? false : aFeature
-        .getMultipleReferencesAllowed();
+    boolean multiRefAllowed = aFeature.getMultipleReferencesAllowed() == null ? false
+            : aFeature.getMultipleReferencesAllowed();
     EStructuralFeature efeat;
     // map primitive types to EAttributes
     if (CAS.TYPE_NAME_STRING.equals(range)) {
@@ -334,9 +354,8 @@ public class UimaTypeSystem2Ecore {
       efeat = EcoreFactory.eINSTANCE.createEAttribute();
       efeat.setEType(EcorePackage.eINSTANCE.getEString());
       efeat.setUpperBound(-1);
-    } else if ((CAS.TYPE_NAME_INTEGER_ARRAY.equals(range) || CAS.TYPE_NAME_INTEGER_LIST
-            .equals(range))
-            && !multiRefAllowed) {
+    } else if ((CAS.TYPE_NAME_INTEGER_ARRAY.equals(range)
+            || CAS.TYPE_NAME_INTEGER_LIST.equals(range)) && !multiRefAllowed) {
       efeat = EcoreFactory.eINSTANCE.createEAttribute();
       efeat.setEType(EcorePackage.eINSTANCE.getEInt());
       efeat.setUpperBound(-1);
@@ -420,7 +439,8 @@ public class UimaTypeSystem2Ecore {
   /**
    * Lookup E classifier for type.
    *
-   * @param aFullTypeName the a full type name
+   * @param aFullTypeName
+   *          the a full type name
    * @return the e classifier
    */
   private static EClassifier lookupEClassifierForType(String aFullTypeName) {
@@ -491,7 +511,8 @@ public class UimaTypeSystem2Ecore {
   /**
    * Uima namespace 2 namespace uri.
    *
-   * @param uimaNamespace the uima namespace
+   * @param uimaNamespace
+   *          the uima namespace
    * @return the string
    */
   private static String uimaNamespace2NamespaceUri(String uimaNamespace) {
@@ -508,8 +529,10 @@ public class UimaTypeSystem2Ecore {
    * Main program. Takes two arguments: the filename of an input TypeSystem descriptor file and the
    * filename of the Ecore/XMI file to generate.
    *
-   * @param args the arguments
-   * @throws Exception the exception
+   * @param args
+   *          the arguments
+   * @throws Exception
+   *           the exception
    */
   public static void main(String[] args) throws Exception {
     // register default resource factory

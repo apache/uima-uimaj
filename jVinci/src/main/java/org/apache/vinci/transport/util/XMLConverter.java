@@ -35,7 +35,8 @@ public class XMLConverter {
    * Convert to XML string format. Uses CDATA encoding if there are more than 4 characters requiring
    * ampersand encoding.
    * 
-   * @param convert_me -
+   * @param convert_me
+   *          -
    * @return the converted string
    * @pre convert_me != null
    */
@@ -48,7 +49,8 @@ public class XMLConverter {
   /**
    * Convert to XML string format without ever using CDATA encoding.
    * 
-   * @param convert_me -
+   * @param convert_me
+   *          -
    * @return the converted string
    * 
    * @pre convert_me != null
@@ -61,8 +63,10 @@ public class XMLConverter {
 
   /**
    * 
-   * @param convert_me -
-   * @param append_to_me -
+   * @param convert_me
+   *          -
+   * @param append_to_me
+   *          -
    * 
    * @pre convert_me != null
    * @pre append_to_me != null
@@ -92,8 +96,10 @@ public class XMLConverter {
   }
 
   /**
-   * @param convert_me -
-   * @param append_to_me -
+   * @param convert_me
+   *          -
+   * @param append_to_me
+   *          -
    * 
    * @pre convert_me != null
    * @pre append_to_me != null
@@ -131,7 +137,8 @@ public class XMLConverter {
   }
 
   /**
-   * @param convert_me -
+   * @param convert_me
+   *          -
    * @return -
    * @pre convert_me != null
    */
@@ -143,8 +150,10 @@ public class XMLConverter {
 
   /**
    * 
-   * @param convert_me -
-   * @param append_to_me -
+   * @param convert_me
+   *          -
+   * @param append_to_me
+   *          -
    * 
    * @pre convert_me != null
    * @pre append_to_me != null
@@ -182,4 +191,3 @@ public class XMLConverter {
   }
 
 } // class
-

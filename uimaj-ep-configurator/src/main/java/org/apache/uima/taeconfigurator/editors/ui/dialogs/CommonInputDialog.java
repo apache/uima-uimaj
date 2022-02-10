@@ -26,7 +26,6 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-
 /**
  * The Class CommonInputDialog.
  */
@@ -74,10 +73,14 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
   /**
    * Instantiates a new common input dialog.
    *
-   * @param aSection the a section
-   * @param title the title
-   * @param dialogDescription the dialog description
-   * @param aKind the a kind
+   * @param aSection
+   *          the a section
+   * @param title
+   *          the title
+   * @param dialogDescription
+   *          the dialog description
+   * @param aKind
+   *          the a kind
    */
   public CommonInputDialog(AbstractSection aSection, String title, String dialogDescription,
           int aKind) {
@@ -88,11 +91,16 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
   /**
    * Instantiates a new common input dialog.
    *
-   * @param aSection the a section
-   * @param title the title
-   * @param dialogDescription the dialog description
-   * @param aKind the a kind
-   * @param aExisting the a existing
+   * @param aSection
+   *          the a section
+   * @param title
+   *          the title
+   * @param dialogDescription
+   *          the dialog description
+   * @param aKind
+   *          the a kind
+   * @param aExisting
+   *          the a existing
    */
   public CommonInputDialog(AbstractSection aSection, String title, String dialogDescription,
           int aKind, String aExisting) {
@@ -100,8 +108,12 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     existing = aExisting;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -119,8 +131,12 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.eclipse.swt.events.VerifyEvent)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.
+   * eclipse.swt.events.VerifyEvent)
    */
   @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
@@ -177,7 +193,9 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override
@@ -186,7 +204,9 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     okButton.setEnabled("".equals(errorMessageUI.getText()) && (text.getText().length() > 0));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -194,7 +214,9 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
     result = text.getText();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override

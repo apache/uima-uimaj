@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.WindowAdapter;
@@ -25,7 +24,6 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * Save preferences on closing CVD.
@@ -38,13 +36,16 @@ public class MainFrameClosing extends WindowAdapter {
   /**
    * Instantiates a new main frame closing.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public MainFrameClosing(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
    */
   @Override
@@ -55,7 +56,8 @@ public class MainFrameClosing extends WindowAdapter {
   /**
    * Handle closing event.
    *
-   * @param main the main
+   * @param main
+   *          the main
    */
   public static void handleClosingEvent(MainFrame main) {
     try {

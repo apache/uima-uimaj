@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class FindComponentDialog.
  */
@@ -70,10 +69,14 @@ public class FindComponentDialog extends AbstractDialog {
   /**
    * Instantiates a new find component dialog.
    *
-   * @param aSection the a section
-   * @param title the title
-   * @param header the header
-   * @param componentHeaders the component headers
+   * @param aSection
+   *          the a section
+   * @param title
+   *          the title
+   * @param header
+   *          the header
+   * @param componentHeaders
+   *          the component headers
    */
   public FindComponentDialog(AbstractSection aSection, String title, String header,
           String[] componentHeaders) {
@@ -81,8 +84,12 @@ public class FindComponentDialog extends AbstractDialog {
     this.componentHeaders = componentHeaders;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -123,8 +130,12 @@ public class FindComponentDialog extends AbstractDialog {
     return composite;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createButtonsForButtonBar(org
+   * .eclipse.swt.widgets.Composite)
    */
   @Override
   protected void createButtonsForButtonBar(Composite parent) {
@@ -151,7 +162,9 @@ public class FindComponentDialog extends AbstractDialog {
   }
 
   // also called by Search Monitoring Thread when
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#buttonPressed(int)
    */
   // it notices the search thread is finished
@@ -160,10 +173,9 @@ public class FindComponentDialog extends AbstractDialog {
     if (buttonId == IDialogConstants.OK_ID) { // start search
       if (null != m_searchThread) {
         errorMessageUI.setText("Search already in progress");
-    }
-    else {
+      } else {
         copyValuesFromGUI();
-    }
+      }
     } else { // cancel in-progress search
       if (m_searchThread.isDone()) {
         m_matchingDelegateComponetDescriptors = m_searchThread
@@ -181,13 +193,13 @@ public class FindComponentDialog extends AbstractDialog {
   }
 
   /** The Constant needToEscapeTheseChars. */
-  private static final String needToEscapeTheseChars = 
-    ".+{}()\\";
-  
+  private static final String needToEscapeTheseChars = ".+{}()\\";
+
   /**
    * Convert to regex search pattern.
    *
-   * @param searchPattern the search pattern
+   * @param searchPattern
+   *          the search pattern
    * @return the string
    */
   private String convertToRegexSearchPattern(String searchPattern) {

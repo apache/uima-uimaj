@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 
-
 /**
  * Abstract base class for document implementations.
  */
@@ -40,7 +39,8 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Registers a change listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   @Override
   public void addChangeListener(final ICasDocumentListener listener) {
@@ -50,7 +50,8 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Unregisters a change listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   @Override
   public void removeChangeListener(ICasDocumentListener listener) {
@@ -60,13 +61,14 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Sends an added message to registered listeners.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   protected void fireAddedFeatureStructure(final FeatureStructure annotation) {
-    
+
     for (Object listener : mListener.getListeners()) {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -79,13 +81,15 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Sends an added message to registered listeners.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
-  protected void fireAddedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+  protected void fireAddedFeatureStructure(
+          final Collection<? extends FeatureStructure> annotations) {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -98,13 +102,14 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Sends a removed message to registered listeners.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   protected void fireRemovedFeatureStructure(final FeatureStructure annotation) {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -117,13 +122,15 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Sends a removed message to registered listeners.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
-  protected void fireRemovedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+  protected void fireRemovedFeatureStructure(
+          final Collection<? extends FeatureStructure> annotations) {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -136,13 +143,14 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Sends an updated message to registered listeners.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   protected void fireUpdatedFeatureStructure(final FeatureStructure annotation) {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -155,13 +163,15 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Sends an updated message to registered listeners.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
-  protected void fireUpdatedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+  protected void fireUpdatedFeatureStructure(
+          final Collection<? extends FeatureStructure> annotations) {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -176,9 +186,9 @@ public abstract class AbstractDocument implements ICasDocument {
    */
   protected void fireChanged() {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {
@@ -191,14 +201,16 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Fire view changed.
    *
-   * @param oldViewName the old view name
-   * @param newViewName the new view name
+   * @param oldViewName
+   *          the old view name
+   * @param newViewName
+   *          the new view name
    */
   protected void fireViewChanged(final String oldViewName, final String newViewName) {
     for (Object listener : mListener.getListeners()) {
-      
+
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
-      
+
       SafeRunner.run(new SafeRunnable() {
         @Override
         public void run() {

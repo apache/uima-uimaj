@@ -27,31 +27,33 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
-   * This <code>OutlineContentProvider</code> synchronizes the <code>AnnotationFS</code>s with
-   * the <code>TableViewer</code>.
-   */
+ * This <code>OutlineContentProvider</code> synchronizes the <code>AnnotationFS</code>s with the
+ * <code>TableViewer</code>.
+ */
 class ModeSensitiveContentProvider extends OutlineContentProviderBase {
-	  
+
   /** The m annotation node list. */
   private AnnotationTreeNodeList mAnnotationNodeList;
 
   /**
    * Instantiates a new mode sensitive content provider.
    *
-   * @param editor the editor
-   * @param viewer the viewer
+   * @param editor
+   *          the editor
+   * @param viewer
+   *          the viewer
    */
   protected ModeSensitiveContentProvider(AnnotationEditor editor, TreeViewer viewer) {
-      super(editor, viewer);
-      this.viewer = viewer;
+    super(editor, viewer);
+    this.viewer = viewer;
   }
 
   /**
    * Adds the added annotations to the viewer.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
   @Override
   public void addedAnnotation(Collection<AnnotationFS> annotations) {
@@ -69,8 +71,9 @@ class ModeSensitiveContentProvider extends OutlineContentProviderBase {
       Display.getDefault().syncExec(new Runnable() {
         @Override
         public void run() {
-            viewer.add(annotationNode.getParent() != null ? annotationNode.getParent()
-                  : mInputDocument, annotationNode);
+          viewer.add(
+                  annotationNode.getParent() != null ? annotationNode.getParent() : mInputDocument,
+                  annotationNode);
         }
       });
     }
@@ -79,7 +82,8 @@ class ModeSensitiveContentProvider extends OutlineContentProviderBase {
   /**
    * Removes the removed annotations from the viewer.
    *
-   * @param deletedAnnotations the deleted annotations
+   * @param deletedAnnotations
+   *          the deleted annotations
    */
   @Override
   public void removedAnnotation(Collection<AnnotationFS> deletedAnnotations) {
@@ -95,41 +99,41 @@ class ModeSensitiveContentProvider extends OutlineContentProviderBase {
       i++;
     }
 
-
     Display.getDefault().syncExec(new Runnable() {
       @Override
       public void run() {
-          viewer.remove(items);
+        viewer.remove(items);
       }
     });
   }
 
   @Override
   public void viewChanged(String oldViewName, String newViewName) {
-      changed();
-}
+    changed();
+  }
 
   @Override
   public void changed() {
-    Collection<AnnotationFS> annotations = mEditor.getDocument().getAnnotations(
-            mEditor.getAnnotationMode());
+    Collection<AnnotationFS> annotations = mEditor.getDocument()
+            .getAnnotations(mEditor.getAnnotationMode());
 
-    mAnnotationNodeList = annotations != null ? new AnnotationTreeNodeList(mEditor
-            .getDocument(), annotations) : null;
+    mAnnotationNodeList = annotations != null
+            ? new AnnotationTreeNodeList(mEditor.getDocument(), annotations)
+            : null;
 
     Display.getDefault().syncExec(new Runnable() {
       @Override
       public void run() {
-          viewer.refresh();
+        viewer.refresh();
       }
     });
   }
 
   /**
-   * Retrieves all children of the NlpModel. That are the NlpProjects and
-   * {@link IProject}s.
+   * Retrieves all children of the NlpModel. That are the NlpProjects and {@link IProject}s.
    *
-   * @param inputElement the input element
+   * @param inputElement
+   *          the input element
    *
    * @return the nlp-projects and non-nlp projects
    */

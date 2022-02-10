@@ -34,7 +34,6 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-
 /**
  * Save CAS to disk as XMI.
  */
@@ -42,7 +41,7 @@ public class XmiCasSaveHandler implements ActionListener {
 
   /** The main. */
   private final MainFrame main;
-  
+
   /**
    * Instantiates a new xmi cas save handler.
    */
@@ -51,17 +50,20 @@ public class XmiCasSaveHandler implements ActionListener {
   private XmiCasSaveHandler() {
     this.main = null;
   }
-  
+
   /**
    * Instantiates a new xmi cas save handler.
    *
-   * @param main the main
+   * @param main
+   *          the main
    */
   public XmiCasSaveHandler(MainFrame main) {
     this.main = main;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -81,7 +83,8 @@ public class XmiCasSaveHandler implements ActionListener {
       try {
         OutputStream outStream = new BufferedOutputStream(new FileOutputStream(xmiCasFile));
         XMLSerializer xmlSerializer = new XMLSerializer(outStream);
-        XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(this.main.getCas().getTypeSystem());
+        XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(
+                this.main.getCas().getTypeSystem());
         xmiCasSerializer.serialize(this.main.getCas(), xmlSerializer.getContentHandler());
         outStream.close();
       } catch (IOException e) {

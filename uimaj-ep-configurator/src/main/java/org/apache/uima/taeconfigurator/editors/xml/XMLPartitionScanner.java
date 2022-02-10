@@ -25,12 +25,11 @@ import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
 
-
 /**
  * The Class XMLPartitionScanner.
  */
 public class XMLPartitionScanner extends RuleBasedPartitionScanner {
-  
+
   /** The Constant XML_DEFAULT. */
   public final static String XML_DEFAULT = "__xml_default";
 

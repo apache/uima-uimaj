@@ -28,7 +28,6 @@ import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * The Class CloseTypeSystemHandler.
  */
@@ -40,13 +39,16 @@ public class CloseTypeSystemHandler extends WindowAdapter implements WindowListe
   /**
    * Instantiates a new close type system handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public CloseTypeSystemHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
    */
   @Override
@@ -55,9 +57,9 @@ public class CloseTypeSystemHandler extends WindowAdapter implements WindowListe
     final int x = tsContentPane.getWidth();
     final int y = tsContentPane.getHeight();
     this.main.getPreferences().setProperty(MainFrame.tsWindowSizePref + MainFrame.widthSuffix,
-        Integer.toString(x));
+            Integer.toString(x));
     this.main.getPreferences().setProperty(MainFrame.tsWindowSizePref + MainFrame.heightSuffix,
-        Integer.toString(y));
+            Integer.toString(y));
   }
 
 }

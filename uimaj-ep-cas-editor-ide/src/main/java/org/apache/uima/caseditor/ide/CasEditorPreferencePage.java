@@ -24,21 +24,21 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class CasEditorPreferencePage extends FieldEditorPreferencePage
-  implements IWorkbenchPreferencePage {
+        implements IWorkbenchPreferencePage {
 
   public CasEditorPreferencePage() {
     // TODO uncomment, if you really want to use this page
     // setPreferenceStore(CasEditorPlugin.getDefault().getPreferenceStore());
     setDescription("General Cas Editor Preferences.");
   }
-  
+
   @Override
   public void init(IWorkbench arg0) {
-    
+
   }
 
   @Override
   protected void createFieldEditors() {
-    
+
   }
 }

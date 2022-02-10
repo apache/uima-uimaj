@@ -34,7 +34,8 @@ public interface Transportable {
    * @param is
    *          The stream to read from.
    * @return -
-   * @exception IOException -
+   * @exception IOException
+   *              -
    */
   KeyValuePair fromStream(InputStream is) throws IOException;
 
@@ -43,7 +44,8 @@ public interface Transportable {
    * 
    * @param os
    *          The stream to write into.
-   * @exception IOException -
+   * @exception IOException
+   *              -
    */
   void toStream(OutputStream os) throws IOException;
 

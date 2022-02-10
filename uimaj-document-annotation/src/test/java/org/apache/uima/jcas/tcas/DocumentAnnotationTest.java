@@ -48,14 +48,13 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class DocumentAnnotationTest {
   JCas jcas;
   private CAS source;
   private CAS target;
-  
-    @BeforeEach
-    public void setUp() throws Exception {
+
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
       this.jcas = cas.getJCas();
@@ -63,18 +62,18 @@ public class DocumentAnnotationTest {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @Test
-    public void testGetDocumentAnnotation() throws Exception {
+
+  @Test
+  public void testGetDocumentAnnotation() throws Exception {
     try {
       assertTrue(jcas.getDocumentAnnotationFs() instanceof DocumentAnnotation);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @Test
-    public void testCreateDocumentAnnot() throws Exception {
+
+  @Test
+  public void testCreateDocumentAnnot() throws Exception {
     try {
       DocumentAnnotation b = (DocumentAnnotation) jcas.getDocumentAnnotationFs();
       jcas.reset();
@@ -83,75 +82,76 @@ public class DocumentAnnotationTest {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @Test
-    public void testDocMeta() throws Exception {
+
+  @Test
+  public void testDocMeta() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
-    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(typeSystemFile));
-    
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
+
     source = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
     target = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
-    
+
     jcas = source.getJCas();
-    
+
     tstSerdesB4Sofa(SerialFormat.XMI);
     tstSerdesB4Sofa(SerialFormat.XCAS);
     tstSerdesB4Sofa(SerialFormat.BINARY);
     tstSerdesB4Sofa(SerialFormat.COMPRESSED);
-    tstSerdesB4Sofa(SerialFormat.COMPRESSED_FILTERED);    
+    tstSerdesB4Sofa(SerialFormat.COMPRESSED_FILTERED);
   }
-  
+
   private void tstSerdesB4Sofa(SerialFormat format) throws IOException {
     source.reset();
     target.reset();
-    
+
     new DocMeta(jcas).addToIndexes();
-    
+
     jcas.setDocumentText("something");
-    
+
     new Annotation(jcas);
-    
+
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     CasIOUtils.save(source, bos, format);
     bos.close();
-    
+
     CasIOUtils.load(new ByteArrayInputStream(bos.toByteArray()), target);
     AnnotationFS c = target.getDocumentAnnotation();
     System.out.println(c);
-    System.out.println(target.<DocMeta>getDocumentAnnotation());
-    assertTrue(CasCompare.compareCASes((CASImpl)source, (CASImpl)target));
+    System.out.println(target.<DocMeta> getDocumentAnnotation());
+    assertTrue(CasCompare.compareCASes((CASImpl) source, (CASImpl) target));
   }
-  
-    @Test
-    public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
+
+  @Test
+  public void testToString()
+          throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
-    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(typeSystemFile));
-    
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
+
     source = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
     jcas = source.getJCas();
-    
+
     DocMeta d = new DocMeta(jcas);
     d.setFeat("a string");
     d.setFeat2("b string");
     d.setFeat3("c string");
-    
+
     FSArray fsa = new FSArray(jcas, 2);
-    fsa.set(0, new Annotation(jcas, 1,2));
-    fsa.set(1, new Annotation(jcas, 3,4));
+    fsa.set(0, new Annotation(jcas, 1, 2));
+    fsa.set(1, new Annotation(jcas, 3, 4));
     d.setArrayFs(fsa);
-    
+
     IntegerArray intarr = new IntegerArray(jcas, 2);
-    intarr.set(0,  10);
-    intarr.set(1,  -10);
+    intarr.set(0, 10);
+    intarr.set(1, -10);
     d.setArrayints(intarr);
-    
+
     StringArray strarr = new StringArray(jcas, 2);
-    strarr.set(0,  "first");
-    strarr.set(1,  "second");
+    strarr.set(0, "first");
+    strarr.set(1, "second");
     d.setArraystr(strarr);
-    
+
     System.out.println(d.toString());
   }
 

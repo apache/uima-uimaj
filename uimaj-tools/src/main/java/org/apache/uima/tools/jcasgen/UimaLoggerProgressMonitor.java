@@ -22,20 +22,23 @@ package org.apache.uima.tools.jcasgen;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
-
 /**
  * The Class UimaLoggerProgressMonitor.
  */
 public class UimaLoggerProgressMonitor implements IProgressMonitor {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#beginTask(java.lang.String, int)
    */
   @Override
   public void beginTask(String name, int totalWork) { // do nothing
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#done()
    */
   @Override
@@ -43,7 +46,9 @@ public class UimaLoggerProgressMonitor implements IProgressMonitor {
     UIMAFramework.getLogger().log(Level.INFO, " ** JCasGen Done.");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#subTask(java.lang.String)
    */
   @Override
@@ -51,7 +56,9 @@ public class UimaLoggerProgressMonitor implements IProgressMonitor {
     UIMAFramework.getLogger().log(Level.INFO, " >>JCasGen " + message);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.jcasgen.IProgressMonitor#worked(int)
    */
   @Override
@@ -61,7 +68,8 @@ public class UimaLoggerProgressMonitor implements IProgressMonitor {
   /**
    * Internal worked.
    *
-   * @param work the work
+   * @param work
+   *          the work
    */
   /*
    * (non-Javadoc)
@@ -88,7 +96,8 @@ public class UimaLoggerProgressMonitor implements IProgressMonitor {
   /**
    * Sets the canceled.
    *
-   * @param value the new canceled
+   * @param value
+   *          the new canceled
    */
   /*
    * (non-Javadoc)
@@ -101,7 +110,8 @@ public class UimaLoggerProgressMonitor implements IProgressMonitor {
   /**
    * Sets the task name.
    *
-   * @param name the new task name
+   * @param name
+   *          the new task name
    */
   /*
    * (non-Javadoc)

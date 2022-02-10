@@ -76,10 +76,10 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 final class ImportDocumentWizardPage extends WizardPage {
 
   private static final Set<String> defaultEncodings;
-  
+
   static {
     Set<String> encodings = new HashSet<>();
-    
+
     encodings.add("US-ASCII");
     encodings.add("ISO-8859-1");
     encodings.add("UTF-8");
@@ -87,66 +87,62 @@ final class ImportDocumentWizardPage extends WizardPage {
     encodings.add("UTF-16LE");
     encodings.add("UTF-16");
     encodings.add(Charset.defaultCharset().displayName());
-    
+
     defaultEncodings = Collections.unmodifiableSet(encodings);
   }
-  
+
   private IPath importDestinationPath;
 
   private String importEncoding;
-  
+
   private String language;
-  
+
   private SerialFormat documentFormat;
-  
+
   private TableViewer fileTable;
 
   private IContainer containerElement;
 
   protected ImportDocumentWizardPage(String pageName,
-      IStructuredSelection currentResourceSelection) {
+          IStructuredSelection currentResourceSelection) {
     super(pageName);
 
     setTitle("Import Text Files");
 
     // TODO: Pre select the selected foler ..
-//    if (!currentResourceSelection.isEmpty()) {
-//      if (currentResourceSelection.getFirstElement() instanceof CorpusElement) {
-//        containerElement = (IContainer) currentResourceSelection.getFirstElement();
-//        importDestinationPath = containerElement.getFullPath();
-//      }
-//    }
-    
+    // if (!currentResourceSelection.isEmpty()) {
+    // if (currentResourceSelection.getFirstElement() instanceof CorpusElement) {
+    // containerElement = (IContainer) currentResourceSelection.getFirstElement();
+    // importDestinationPath = containerElement.getFullPath();
+    // }
+    // }
+
     setPageComplete(false);
   }
 
   private void updatePageState() {
-	  
-	boolean isEncodingSupported = false;
-	
-	try {
-		isEncodingSupported = Charset.isSupported(importEncoding);
-	}
-	catch (IllegalCharsetNameException e) {
-		// Name of the Charset is incorrect, that means
-		// it cannot exist
-		
-	}
-	
-	String errorMessage = null;
-	if (!isEncodingSupported)
-		errorMessage ="Invalid text import encoding!";
-	
-	// error message is always displayed instead of status message
-	// if both are set
-	setErrorMessage(errorMessage);
-	setMessage("Please select the documents to import.");
-	
-	
-	
-    setPageComplete(importDestinationPath != null && 
-    		fileTable.getTable().getItemCount() > 0
-    		&& isEncodingSupported);
+
+    boolean isEncodingSupported = false;
+
+    try {
+      isEncodingSupported = Charset.isSupported(importEncoding);
+    } catch (IllegalCharsetNameException e) {
+      // Name of the Charset is incorrect, that means
+      // it cannot exist
+
+    }
+
+    String errorMessage = null;
+    if (!isEncodingSupported)
+      errorMessage = "Invalid text import encoding!";
+
+    // error message is always displayed instead of status message
+    // if both are set
+    setErrorMessage(errorMessage);
+    setMessage("Please select the documents to import.");
+
+    setPageComplete(importDestinationPath != null && fileTable.getTable().getItemCount() > 0
+            && isEncodingSupported);
   }
 
   @Override
@@ -159,8 +155,8 @@ final class ImportDocumentWizardPage extends WizardPage {
     GridDataFactory.fillDefaults().grab(true, true).span(2, 4).applyTo(fileTable.getControl());
 
     Button addButton = new Button(composite, SWT.PUSH);
-    addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-            | GridData.VERTICAL_ALIGN_BEGINNING));
+    addButton.setLayoutData(
+            new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     addButton.setText("Add");
     addButton.addSelectionListener(new SelectionListener() {
 
@@ -178,8 +174,8 @@ final class ImportDocumentWizardPage extends WizardPage {
         // open a file dialog
         FileDialog fd = new FileDialog(Display.getCurrent().getActiveShell(), SWT.MULTI);
         fd.setText("Choose text files");
-        fd.setFilterExtensions(new String[] { "*.txt;*.rtf", "*.*"});
-        fd.setFilterNames(new String[] {"Text Files", "All Files (*)"});
+        fd.setFilterExtensions(new String[] { "*.txt;*.rtf", "*.*" });
+        fd.setFilterNames(new String[] { "Text Files", "All Files (*)" });
         if (fd.open() != null) {
           for (String fileItem : fd.getFileNames()) {
             fileTable.add(new File(fd.getFilterPath() + File.separator + fileItem));
@@ -191,8 +187,8 @@ final class ImportDocumentWizardPage extends WizardPage {
     });
 
     Button removeButton = new Button(composite, SWT.PUSH);
-    removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-            | GridData.VERTICAL_ALIGN_BEGINNING));
+    removeButton.setLayoutData(
+            new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     removeButton.setText("Remove");
     removeButton.addSelectionListener(new SelectionListener() {
 
@@ -224,8 +220,8 @@ final class ImportDocumentWizardPage extends WizardPage {
     });
 
     Button selectAllButton = new Button(composite, SWT.PUSH);
-    selectAllButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-            | GridData.VERTICAL_ALIGN_BEGINNING));
+    selectAllButton.setLayoutData(
+            new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     selectAllButton.setText("Select All");
     selectAllButton.addSelectionListener(new SelectionListener() {
 
@@ -245,8 +241,8 @@ final class ImportDocumentWizardPage extends WizardPage {
     });
 
     Button deselectAllButton = new Button(composite, SWT.PUSH);
-    deselectAllButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-            | GridData.VERTICAL_ALIGN_BEGINNING));
+    deselectAllButton.setLayoutData(
+            new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     deselectAllButton.setText("Deselect All");
     deselectAllButton.addSelectionListener(new SelectionListener() {
 
@@ -265,7 +261,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       }
     });
 
-    // Into Corpus folder 
+    // Into Corpus folder
     Label intoFolderLabel = new Label(composite, SWT.NONE);
     intoFolderLabel.setText("Into folder:");
 
@@ -277,8 +273,8 @@ final class ImportDocumentWizardPage extends WizardPage {
     }
 
     Button browseForFolder = new Button(composite, SWT.NONE);
-    browseForFolder.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-            | GridData.VERTICAL_ALIGN_BEGINNING));
+    browseForFolder.setLayoutData(
+            new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     browseForFolder.setText("Browse");
     browseForFolder.addSelectionListener(new SelectionListener() {
 
@@ -295,8 +291,9 @@ final class ImportDocumentWizardPage extends WizardPage {
       public void widgetSelected(SelectionEvent e) {
 
         final ElementTreeSelectionDialog folderSelectionDialog = new ElementTreeSelectionDialog(
-                getShell(), new DecoratingLabelProvider(new WorkbenchLabelProvider(), PlatformUI
-                        .getWorkbench().getDecoratorManager().getLabelDecorator()),
+                getShell(),
+                new DecoratingLabelProvider(new WorkbenchLabelProvider(),
+                        PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()),
                 new BaseWorkbenchContentProvider());
 
         folderSelectionDialog.addFilter(new ContainerElementFilter());
@@ -315,20 +312,21 @@ final class ImportDocumentWizardPage extends WizardPage {
           public IStatus validate(Object[] selection) {
 
             if (selection.length == 1) {
-              
+
               Object selectedElement = selection[0];
-              
+
               if (selectedElement instanceof IAdaptable) {
                 Object resourceElement = ((IAdaptable) selectedElement).getAdapter(IResource.class);
                 if (resourceElement != null)
                   selectedElement = resourceElement;
               }
-              
+
               if (selectedElement instanceof IContainer)
                 return new Status(IStatus.OK, CasEditorPlugin.ID, 0, "", null);
             }
 
-            return new Status(IStatus.ERROR, CasEditorPlugin.ID, 0, "Please select a folder!", null);
+            return new Status(IStatus.ERROR, CasEditorPlugin.ID, 0, "Please select a folder!",
+                    null);
           }
         });
 
@@ -339,19 +337,17 @@ final class ImportDocumentWizardPage extends WizardPage {
         if (results != null && results.length > 0) {
           // validator makes sure that an IContainer or an IAdaptable
           // element which can provide an IContainer is selected
-          
+
           if (results[0] instanceof IContainer) {
             containerElement = (IContainer) results[0];
-          }
-          else if (results[0] instanceof IAdaptable) {
+          } else if (results[0] instanceof IAdaptable) {
             IAdaptable adaptableElement = (IAdaptable) results[0];
-            
+
             containerElement = (IContainer) adaptableElement.getAdapter(IResource.class);
-          }
-          else {
+          } else {
             throw new IllegalStateException("Unexpected selection!");
           }
-          
+
           importDestinationPath = containerElement.getFullPath();
 
           corpusText.setText(importDestinationPath.toString());
@@ -369,81 +365,79 @@ final class ImportDocumentWizardPage extends WizardPage {
     GridData importOptionsGridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
     importOptionsGridData.horizontalSpan = 3;
     importOptions.setLayoutData(importOptionsGridData);
-    
+
     Label languageLabel = new Label(importOptions, SWT.NONE);
     languageLabel.setText("Language:");
-    
+
     final IPreferenceStore store = CasEditorIdePlugin.getDefault().getPreferenceStore();
-    
+
     final Text languageText = new Text(importOptions, SWT.BORDER);
     languageText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    language = store.getString(
-            CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_LANG);
+    language = store.getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_LANG);
     languageText.setText(language);
     languageText.addModifyListener(new ModifyListener() {
-      
+
       @Override
       public void modifyText(ModifyEvent e) {
         language = languageText.getText();
         store.setValue(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_LANG, language);
       }
     });
-    
+
     // Text file encoding
     Label encodingLabel = new Label(importOptions, SWT.NONE);
     encodingLabel.setText("Text Encoding:");
-    
+
     // combo box ...
     final Combo encodingCombo = new Combo(importOptions, SWT.NONE);
     encodingCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-
     Set<String> charsets = new HashSet<>(defaultEncodings);
-    
-    String lastUsedEncodingsString = 
-            store.getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
-    
-    String lastUsedEncodings[] = lastUsedEncodingsString.split(CasEditorIdePreferenceConstants.STRING_DELIMITER);
+
+    String lastUsedEncodingsString = store
+            .getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
+
+    String lastUsedEncodings[] = lastUsedEncodingsString
+            .split(CasEditorIdePreferenceConstants.STRING_DELIMITER);
     charsets.addAll(Arrays.asList(lastUsedEncodings));
 
     if (lastUsedEncodings.length > 0) {
       importEncoding = lastUsedEncodings[0];
-    }
-    else {
+    } else {
       importEncoding = Charset.defaultCharset().displayName();
     }
-    
+
     encodingCombo.setItems(charsets.toArray(new String[charsets.size()]));
     encodingCombo.setText(importEncoding);
     encodingCombo.addSelectionListener(new SelectionListener() {
-  		
-  		@Override
+
+      @Override
       public void widgetSelected(SelectionEvent e) {
-  			importEncoding = encodingCombo.getText();
-  			updatePageState();
-  		}
-  		
-  		@Override
+        importEncoding = encodingCombo.getText();
+        updatePageState();
+      }
+
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
-  		}
-  	});
-    
+      }
+    });
+
     encodingCombo.addKeyListener(new KeyListener() {
-		
-  		@Override
+
+      @Override
       public void keyReleased(KeyEvent e) {
-  			importEncoding = encodingCombo.getText();
-  			updatePageState();
-  		}
-  		
-  		@Override
+        importEncoding = encodingCombo.getText();
+        updatePageState();
+      }
+
+      @Override
       public void keyPressed(KeyEvent e) {
-  		}
-  	});
-    
+      }
+    });
+
     Label casFormatLabel = new Label(importOptions, SWT.NONE);
     casFormatLabel.setText("Cas Format:");
-  
+
     final Combo casFormatCombo = new Combo(importOptions, SWT.READ_ONLY);
     casFormatCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     SerialFormat[] values = SerialFormat.values();
@@ -454,21 +448,21 @@ final class ImportDocumentWizardPage extends WizardPage {
     casFormatCombo.setItems(stringValues);
     documentFormat = SerialFormat.XMI;
     casFormatCombo.select(0);
-    
+
     casFormatCombo.addSelectionListener(new SelectionListener() {
-  		
-  		@Override
+
+      @Override
       public void widgetSelected(SelectionEvent e) {
-  			documentFormat = SerialFormat.valueOf(casFormatCombo.getText());
-  		}
-  		
-  		@Override
+        documentFormat = SerialFormat.valueOf(casFormatCombo.getText());
+      }
+
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
-  		}
-  	});
-    
+      }
+    });
+
     updatePageState();
-    
+
     setControl(composite);
   }
 
@@ -491,16 +485,16 @@ final class ImportDocumentWizardPage extends WizardPage {
 
     return files;
   }
-  
+
   String getTextEncoding() {
-	  return importEncoding;
+    return importEncoding;
   }
-  
+
   String getLanguage() {
     return language;
   }
-  
+
   SerialFormat getCasFormat() {
-	  return documentFormat;
+    return documentFormat;
   }
 }

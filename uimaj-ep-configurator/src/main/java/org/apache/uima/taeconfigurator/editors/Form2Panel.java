@@ -21,7 +21,6 @@ package org.apache.uima.taeconfigurator.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
-
 /**
  * 3 element return value for 2 panel forms.
  */
@@ -39,9 +38,12 @@ public class Form2Panel {
   /**
    * Instantiates a new form 2 panel.
    *
-   * @param form the form
-   * @param left the left
-   * @param right the right
+   * @param form
+   *          the form
+   * @param left
+   *          the left
+   * @param right
+   *          the right
    */
   public Form2Panel(Composite form, Composite left, Composite right) {
     this.form = form;

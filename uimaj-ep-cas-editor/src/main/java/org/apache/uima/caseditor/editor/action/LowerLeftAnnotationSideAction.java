@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.action;
 
-
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -29,22 +28,22 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-
 /**
  * Lowers the left side of the currently selected annotation by one.
  */
 public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAction {
-  
+
   /** The Constant ID. */
   public static final String ID = "LowerLeftAnnotationSide";
-  
+
   /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes a new instance.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public LowerLeftAnnotationSideAction(ICasEditor editor) {
     super(ID);
@@ -64,8 +63,10 @@ public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAc
   /**
    * Lower left annotation side.
    *
-   * @param document the document
-   * @param annotation the annotation
+   * @param document
+   *          the document
+   * @param annotation
+   *          the annotation
    */
   public static void lowerLeftAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     Type annotationType = annotation.getType();
@@ -77,7 +78,7 @@ public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAc
 
     document.update(annotation);
   }
-  
+
   /**
    * Increases the begin index of an annotation by one.
    */

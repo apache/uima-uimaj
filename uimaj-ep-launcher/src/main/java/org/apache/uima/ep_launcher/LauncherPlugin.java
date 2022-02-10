@@ -31,10 +31,9 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 public class LauncherPlugin extends Plugin {
 
-  
   /** The Constant ID. */
   public static final String ID = "org.apache.uima.launcher";
-  
+
   /** The plugin. */
   private static LauncherPlugin plugin;
 
@@ -48,7 +47,9 @@ public class LauncherPlugin extends Plugin {
     plugin = this;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
    */
   @Override
@@ -58,7 +59,9 @@ public class LauncherPlugin extends Plugin {
     bundleContext = context;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
    */
   @Override
@@ -70,41 +73,44 @@ public class LauncherPlugin extends Plugin {
   /**
    * Gets the bundles.
    *
-   * @param bundleName the bundle name
-   * @param version the version
+   * @param bundleName
+   *          the bundle name
+   * @param version
+   *          the version
    * @return the bundles
    */
   public Bundle[] getBundles(String bundleName, String version) {
-    
+
     Bundle[] bundles = Platform.getBundles(bundleName, version);
     if (bundles != null) {
-        return bundles;
+      return bundles;
     }
 
     // Accessing bundle which is not resolved
-    PackageAdmin admin = (PackageAdmin) bundleContext.getService(
-            bundleContext.getServiceReference(PackageAdmin.class.getName()));
+    PackageAdmin admin = (PackageAdmin) bundleContext
+            .getService(bundleContext.getServiceReference(PackageAdmin.class.getName()));
     bundles = admin.getBundles(bundleName, version);
     if (bundles != null && bundles.length > 0) {
-        return bundles;
+      return bundles;
     }
-    
+
     return null;
   }
 
   /**
    * Gets the bundle.
    *
-   * @param bundleName the bundle name
+   * @param bundleName
+   *          the bundle name
    * @return the bundle
    */
   public Bundle getBundle(String bundleName) {
     Bundle[] bundles = getBundles(bundleName, null);
     if (bundles != null && bundles.length > 0) {
-        // return fist bundle, if multiple
-          return bundles[0];
+      // return fist bundle, if multiple
+      return bundles[0];
     }
-    
+
     return null;
   }
 

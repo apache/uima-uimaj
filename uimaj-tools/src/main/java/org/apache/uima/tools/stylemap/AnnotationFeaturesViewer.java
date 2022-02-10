@@ -46,7 +46,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.metadata.Capability;
 
-
 /**
  * A tree view of Annotations and associated features.
  * 
@@ -100,9 +99,12 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   /**
    * Populate.
    *
-   * @param analysisEngine the analysis engine
-   * @param aeMetaData the ae meta data
-   * @param cas the cas
+   * @param analysisEngine
+   *          the analysis engine
+   * @param aeMetaData
+   *          the ae meta data
+   * @param cas
+   *          the cas
    */
   public void populate(AnalysisEngineDescription analysisEngine, AnalysisEngineMetaData aeMetaData,
           CAS cas) {
@@ -127,9 +129,12 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   /**
    * Generate tree view.
    *
-   * @param analysisEngine the analysis engine
-   * @param aeMetaData the ae meta data
-   * @param cas the cas
+   * @param analysisEngine
+   *          the analysis engine
+   * @param aeMetaData
+   *          the ae meta data
+   * @param cas
+   *          the cas
    * @return the j tree
    */
   private JTree generateTreeView(AnalysisEngineDescription analysisEngine,
@@ -170,16 +175,14 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
         } else {
           // System.out.println("Can\'t get feature names for: "
           // + annotationTypeName);
-          JOptionPane.showMessageDialog(null,
-                  "Can\'t get feature names for: " + annotationTypeName, "XML error",
-                  JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null, "Can\'t get feature names for: " + annotationTypeName,
+                  "XML error", JOptionPane.ERROR_MESSAGE);
         }
       } else {
         // System.out.println("Annotation type does not exist: "
         // + annotationTypeName);
-        JOptionPane.showMessageDialog(null,
-                "Annotation type does not exist: " + annotationTypeName, "XML error",
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Annotation type does not exist: " + annotationTypeName,
+                "XML error", JOptionPane.ERROR_MESSAGE);
       }
     }
     return new JTree(root);
@@ -188,8 +191,10 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   /**
    * Gets the feature names for type.
    *
-   * @param aTypeName the a type name
-   * @param cas the cas
+   * @param aTypeName
+   *          the a type name
+   * @param cas
+   *          the cas
    * @return the feature names for type
    */
   // untimely ripped from UIMA since it does not work with a taeDescription
@@ -230,14 +235,17 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   /**
    * Adds the tree selection listener.
    *
-   * @param sel the sel
+   * @param sel
+   *          the sel
    */
   // add a tree selection listener to the JTree
   public void addTreeSelectionListener(TreeSelectionListener sel) {
     tree.addTreeSelectionListener(sel);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

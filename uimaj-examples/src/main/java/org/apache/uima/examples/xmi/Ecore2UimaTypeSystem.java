@@ -57,7 +57,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-
 /**
  * Converts an Ecore model to a UIMA TypeSystemDescription.
  */
@@ -161,10 +160,14 @@ public class Ecore2UimaTypeSystem {
   /**
    * E package 2 uima types.
    *
-   * @param aEPackage the a E package
-   * @param aResultTypes the a result types
-   * @param aOptions the a options
-   * @throws URISyntaxException the URI syntax exception
+   * @param aEPackage
+   *          the a E package
+   * @param aResultTypes
+   *          the a result types
+   * @param aOptions
+   *          the a options
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
   private static void ePackage2UimaTypes(EPackage aEPackage, List aResultTypes, Map aOptions)
           throws URISyntaxException {
@@ -201,14 +204,18 @@ public class Ecore2UimaTypeSystem {
   /**
    * Eclass 2 uima type.
    *
-   * @param aEClass the a E class
-   * @param aUimaNamespace the a uima namespace
-   * @param aOptions the a options
+   * @param aEClass
+   *          the a E class
+   * @param aUimaNamespace
+   *          the a uima namespace
+   * @param aOptions
+   *          the a options
    * @return the type description
-   * @throws URISyntaxException the URI syntax exception
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
-  private static TypeDescription eclass2UimaType(EClass aEClass, String aUimaNamespace, Map aOptions)
-          throws URISyntaxException {
+  private static TypeDescription eclass2UimaType(EClass aEClass, String aUimaNamespace,
+          Map aOptions) throws URISyntaxException {
     TypeDescription type = uimaFactory.createTypeDescription();
     // set name
     if (aUimaNamespace != null) {
@@ -252,9 +259,8 @@ public class Ecore2UimaTypeSystem {
       // if there are multiple supertypes, the first one is arbitrarily chosen
       // as the single supertype for the UIMA type. Other features are copied-down.
       if (supertypes.size() > 1) {
-        System.err.println("Warning: EClass " + aEClass.getName()
-                + " defines multiple supertypes. " + "The UIMA supertype will be "
-                + type.getSupertypeName()
+        System.err.println("Warning: EClass " + aEClass.getName() + " defines multiple supertypes. "
+                + "The UIMA supertype will be " + type.getSupertypeName()
                 + "; features inherited from other supertypes will be copied down.");
       }
     }
@@ -295,8 +301,10 @@ public class Ecore2UimaTypeSystem {
   /**
    * Contains named element.
    *
-   * @param locallyDefinedFeatures the locally defined features
-   * @param name the name
+   * @param locallyDefinedFeatures
+   *          the locally defined features
+   * @param name
+   *          the name
    * @return true, if successful
    */
   private static boolean containsNamedElement(EList locallyDefinedFeatures, String name) {
@@ -315,11 +323,15 @@ public class Ecore2UimaTypeSystem {
   /**
    * Eenum 2 uima type.
    *
-   * @param aEEnum the a E enum
-   * @param aUimaNamespace the a uima namespace
-   * @param aOptions the a options
+   * @param aEEnum
+   *          the a E enum
+   * @param aUimaNamespace
+   *          the a uima namespace
+   * @param aOptions
+   *          the a options
    * @return the type description
-   * @throws URISyntaxException the URI syntax exception
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
   private static TypeDescription eenum2UimaType(EEnum aEEnum, String aUimaNamespace, Map aOptions)
           throws URISyntaxException {
@@ -356,10 +368,13 @@ public class Ecore2UimaTypeSystem {
   /**
    * E structural feature 2 uima feature.
    *
-   * @param aStructuralFeature the a structural feature
-   * @param aOptions the a options
+   * @param aStructuralFeature
+   *          the a structural feature
+   * @param aOptions
+   *          the a options
    * @return -
-   * @throws URISyntaxException the URI syntax exception
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
   private static FeatureDescription eStructuralFeature2UimaFeature(
           EStructuralFeature aStructuralFeature, Map aOptions) throws URISyntaxException {
@@ -419,7 +434,8 @@ public class Ecore2UimaTypeSystem {
   /**
    * Checks if is array or list.
    *
-   * @param rangeTypeName the range type name
+   * @param rangeTypeName
+   *          the range type name
    * @return true, if is array or list
    */
   private static boolean isArrayOrList(String rangeTypeName) {
@@ -442,11 +458,15 @@ public class Ecore2UimaTypeSystem {
   /**
    * Gets the uima type name.
    *
-   * @param aEcoreType the a ecore type
-   * @param aMultiValued the a multi valued
-   * @param aOptions the a options
+   * @param aEcoreType
+   *          the a ecore type
+   * @param aMultiValued
+   *          the a multi valued
+   * @param aOptions
+   *          the a options
    * @return the uima type name
-   * @throws URISyntaxException the URI syntax exception
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
   private static String getUimaTypeName(EClassifier aEcoreType, boolean aMultiValued, Map aOptions)
           throws URISyntaxException {
@@ -473,10 +493,9 @@ public class Ecore2UimaTypeSystem {
       if (epackage != null) {
         String uimaNamespace = namespaceUri2UimaNamespace(epackage.getNsURI());
         if (uimaNamespace != null) {
-            return uimaNamespace + '.' + aEcoreType.getName();
-        }
-        else {
-            return aEcoreType.getName();
+          return uimaNamespace + '.' + aEcoreType.getName();
+        } else {
+          return aEcoreType.getName();
         }
       } else {
         return aEcoreType.getName();
@@ -484,8 +503,9 @@ public class Ecore2UimaTypeSystem {
     } else // primitive type
     {
       if (aEcoreType.equals(EcorePackage.eINSTANCE.getEInt())) {
-        return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_INTEGER_LIST
-                : CAS.TYPE_NAME_INTEGER_ARRAY) : CAS.TYPE_NAME_INTEGER;
+        return aMultiValued
+                ? (useUimaLists ? CAS.TYPE_NAME_INTEGER_LIST : CAS.TYPE_NAME_INTEGER_ARRAY)
+                : CAS.TYPE_NAME_INTEGER;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEShort())) {
         return aMultiValued ? CAS.TYPE_NAME_SHORT_ARRAY : CAS.TYPE_NAME_SHORT;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getELong())) {
@@ -511,8 +531,9 @@ public class Ecore2UimaTypeSystem {
           System.err.println("Warning: unknown EDataType " + aEcoreType.getName()
                   + " being mapped to uima.cas.String.");
         }
-        return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_STRING_LIST
-                : CAS.TYPE_NAME_STRING_ARRAY) : CAS.TYPE_NAME_STRING;
+        return aMultiValued
+                ? (useUimaLists ? CAS.TYPE_NAME_STRING_LIST : CAS.TYPE_NAME_STRING_ARRAY)
+                : CAS.TYPE_NAME_STRING;
       }
     }
   }
@@ -520,9 +541,11 @@ public class Ecore2UimaTypeSystem {
   /**
    * Namespace uri 2 uima namespace.
    *
-   * @param nsUri the ns uri
+   * @param nsUri
+   *          the ns uri
    * @return the string
-   * @throws URISyntaxException the URI syntax exception
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
   private static String namespaceUri2UimaNamespace(String nsUri) throws URISyntaxException {
     // Check for the special "no namespace URI", which maps to the null UIMA namespace
@@ -540,10 +563,10 @@ public class Ecore2UimaTypeSystem {
     } else {
       // The URI is a URL
       while (uimaNs.startsWith("/")) {
-	uimaNs = uimaNs.substring(1);
+        uimaNs = uimaNs.substring(1);
       }
       if (uimaNs.endsWith(".ecore")) {
-	uimaNs = uimaNs.substring(0, uimaNs.length() - 6);
+        uimaNs = uimaNs.substring(0, uimaNs.length() - 6);
       }
       uimaNs = uimaNs.replace('/', '.');
     }
@@ -555,8 +578,10 @@ public class Ecore2UimaTypeSystem {
    * Main program. Takes two arguments: the filename of an input .ecore file and the filename of the
    * UIMA TypeSystem file to generate.
    *
-   * @param args the arguments
-   * @throws Exception the exception
+   * @param args
+   *          the arguments
+   * @throws Exception
+   *           the exception
    */
   public static void main(String[] args) throws Exception {
     if (args.length != 2) {
@@ -581,8 +606,8 @@ public class Ecore2UimaTypeSystem {
     try {
       CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]);
     } catch (Exception e) {
-      System.err
-              .println("Warning: CAS could not be created from the output type system.  The following problem occurred:");
+      System.err.println(
+              "Warning: CAS could not be created from the output type system.  The following problem occurred:");
       System.err.println(e.getMessage());
     }
   }

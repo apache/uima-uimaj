@@ -33,29 +33,34 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-
 /**
  * Fills the background of an annotation.
  */
 final class BackgroundDrawingStrategy implements IDrawingStrategy {
-  
+
   /**
    * Fill the background of the given annotation in the specified color.
    *
-   * @param annotation the annotation
-   * @param gc the gc
-   * @param textWidget the text widget
-   * @param offset the offset
-   * @param length the length
-   * @param color the color
+   * @param annotation
+   *          the annotation
+   * @param gc
+   *          the gc
+   * @param textWidget
+   *          the text widget
+   * @param offset
+   *          the offset
+   * @param length
+   *          the length
+   * @param color
+   *          the color
    */
   @Override
-  public void draw(Annotation annotation, GC gc, StyledText textWidget, int annotationBegin, int length,
-          Color color) {
+  public void draw(Annotation annotation, GC gc, StyledText textWidget, int annotationBegin,
+          int length, Color color) {
     if (length != 0) {
       if (gc != null) {
-    	int annotationEnd = annotationBegin + length;
-    	  
+        int annotationEnd = annotationBegin + length;
+
         Rectangle bounds = textWidget.getTextBounds(annotationBegin, annotationEnd - 1);
 
         // Selection in the text widget are drawn before the annotations are drawn,
@@ -63,80 +68,79 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         // rectangle
         //
         // The annotation background to be drawn is a span which has a begin and end offset.
-        // Inside the background are areas (spans) which should not be over drawn. 
-        // That can be visualized like this (annotation goes from first to last z, an 
+        // Inside the background are areas (spans) which should not be over drawn.
+        // That can be visualized like this (annotation goes from first to last z, an
         // X is the selection which should not be overdrawn):
         //
         // zzzzXXXzzzzXXXXzzzXX
         //
         // The z offsets should be drawn, the X offsets should not be overdrawn. That is solved
         // by drawing for every z offset area one background rectangle.
-        
+
         List<Span> dontOverDrawSpans = new ArrayList<>();
-        
+
         Span annotationSpan = new Span(annotationBegin, length);
-        
+
         // add all style ranges to the list in the range of the annotation
         for (StyleRange styleRange : textWidget.getStyleRanges(annotationBegin, length)) {
-        	Span styleRangeSpan = new Span(styleRange.start, styleRange.length);
-        	if (styleRangeSpan.getLength() > 0)
-        	    dontOverDrawSpans.add(styleRangeSpan);
+          Span styleRangeSpan = new Span(styleRange.start, styleRange.length);
+          if (styleRangeSpan.getLength() > 0)
+            dontOverDrawSpans.add(styleRangeSpan);
         }
-        
+
         // add text selection to the list if intersects with annotation
         Point selection = textWidget.getSelection();
         Span selectionSpan = new Span(selection.x, selection.y - selection.x);
         if (annotationSpan.isIntersecting(selectionSpan) && selectionSpan.getLength() > 0) {
           dontOverDrawSpans.add(selectionSpan);
         }
-        
+
         Collections.sort(dontOverDrawSpans);
         // TODO: Asks on mailing list for help ...
         // strange that we need that here ...
-        Collections.reverse(dontOverDrawSpans); 
-        
+        Collections.reverse(dontOverDrawSpans);
+
         gc.setBackground(color);
-        
+
         if (dontOverDrawSpans.size() > 0) {
-	        int zBegin = annotationBegin;
-	    	for (Span xSpan : dontOverDrawSpans) {
-	    	  if (xSpan.getLength() > 0 && zBegin < xSpan.getStart()) {
-	    		  Rectangle selectionBounds = textWidget.getTextBounds(zBegin, xSpan.getStart() -1);
-	    		  gc.fillRectangle(selectionBounds);
-	    	   }
-	    	  
-	    	  if (zBegin < xSpan.getEnd())
-	    	      zBegin = xSpan.getEnd(); 
-	    	}
-	    	
-	    	// If the annotation ends with z offsets these must still be drawn
-	    	if (zBegin < annotationEnd) {
-	    		  Rectangle selectionBounds = textWidget.getTextBounds(zBegin, annotationEnd -1);
-	    		  gc.fillRectangle(selectionBounds);
-	    	  }
+          int zBegin = annotationBegin;
+          for (Span xSpan : dontOverDrawSpans) {
+            if (xSpan.getLength() > 0 && zBegin < xSpan.getStart()) {
+              Rectangle selectionBounds = textWidget.getTextBounds(zBegin, xSpan.getStart() - 1);
+              gc.fillRectangle(selectionBounds);
+            }
+
+            if (zBegin < xSpan.getEnd())
+              zBegin = xSpan.getEnd();
+          }
+
+          // If the annotation ends with z offsets these must still be drawn
+          if (zBegin < annotationEnd) {
+            Rectangle selectionBounds = textWidget.getTextBounds(zBegin, annotationEnd - 1);
+            gc.fillRectangle(selectionBounds);
+          }
+        } else {
+          Rectangle selectionBounds = textWidget.getTextBounds(annotationBegin, annotationEnd - 1);
+          gc.fillRectangle(selectionBounds);
         }
-        else {
-  		    Rectangle selectionBounds = textWidget.getTextBounds(annotationBegin, annotationEnd -1);
-		      gc.fillRectangle(selectionBounds);
-        }
-        
+
         int end = annotationBegin + length - 1;
 
         gc.setForeground(new Color(gc.getDevice(), 0, 0, 0));
-        
+
         // Instead of a tab draw textWidget.getTabs() spaces
         String annotationText = textWidget.getText(annotationBegin, end);
-        
+
         if (annotationText.contains("\t")) {
-        	char replacementSpaces[] = new char[textWidget.getTabs()];
-        	for (int i = 0; i < replacementSpaces.length; i++) {
-        		replacementSpaces[i] = ' ';
-        	}
-        	annotationText = annotationText.replace(new String(new char[]{'\t'}), new String(replacementSpaces));
+          char replacementSpaces[] = new char[textWidget.getTabs()];
+          for (int i = 0; i < replacementSpaces.length; i++) {
+            replacementSpaces[i] = ' ';
+          }
+          annotationText = annotationText.replace(new String(new char[] { '\t' }),
+                  new String(replacementSpaces));
         }
         gc.drawText(annotationText, bounds.x, bounds.y, true);
-      } 
-      else {
+      } else {
         textWidget.redrawRange(annotationBegin, length, true);
       }
     }

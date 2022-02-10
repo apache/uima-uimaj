@@ -24,17 +24,19 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 
-
 /**
  * The Class XMLDoubleClickStrategy.
  */
 public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
-  
+
   /** The text. */
   protected ITextViewer fText;
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.ITextDoubleClickStrategy#doubleClicked(org.eclipse.jface.text.ITextViewer)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jface.text.ITextDoubleClickStrategy#doubleClicked(org.eclipse.jface.text.
+   * ITextViewer)
    */
   @Override
   public void doubleClicked(ITextViewer part) {
@@ -53,7 +55,8 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
   /**
    * Select comment.
    *
-   * @param caretPos the caret pos
+   * @param caretPos
+   *          the caret pos
    * @return true, if successful
    */
   protected boolean selectComment(int caretPos) {
@@ -108,7 +111,8 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
   /**
    * Select word.
    *
-   * @param caretPos the caret pos
+   * @param caretPos
+   *          the caret pos
    * @return true, if successful
    */
   protected boolean selectWord(int caretPos) {
@@ -153,8 +157,10 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
   /**
    * Select range.
    *
-   * @param startPos the start pos
-   * @param stopPos the stop pos
+   * @param startPos
+   *          the start pos
+   * @param stopPos
+   *          the stop pos
    */
   private void selectRange(int startPos, int stopPos) {
     int offset = startPos + 1;

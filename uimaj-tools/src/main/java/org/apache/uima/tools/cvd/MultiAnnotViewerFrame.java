@@ -31,7 +31,6 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-
 /**
  * Class comment for MultiAnnotViewerFrame goes here.
  * 
@@ -45,7 +44,8 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Instantiates a new multi annot viewer frame.
    *
-   * @throws java.awt.HeadlessException the java.awt. headless exception
+   * @throws java.awt.HeadlessException
+   *           the java.awt. headless exception
    */
   public MultiAnnotViewerFrame() {
     // TODO Auto-generated constructor stub
@@ -54,7 +54,8 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Instantiates a new multi annot viewer frame.
    *
-   * @param gc the gc
+   * @param gc
+   *          the gc
    */
   public MultiAnnotViewerFrame(GraphicsConfiguration gc) {
     super(gc);
@@ -64,8 +65,10 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Instantiates a new multi annot viewer frame.
    *
-   * @param title the title
-   * @throws java.awt.HeadlessException the java.awt. headless exception
+   * @param title
+   *          the title
+   * @throws java.awt.HeadlessException
+   *           the java.awt. headless exception
    */
   public MultiAnnotViewerFrame(String title) {
     super(title);
@@ -75,8 +78,10 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Instantiates a new multi annot viewer frame.
    *
-   * @param title the title
-   * @param gc the gc
+   * @param title
+   *          the title
+   * @param gc
+   *          the gc
    */
   public MultiAnnotViewerFrame(String title, GraphicsConfiguration gc) {
     super(title, gc);
@@ -92,8 +97,10 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Inits the.
    *
-   * @param text the text
-   * @param extents the extents
+   * @param text
+   *          the text
+   * @param extents
+   *          the extents
    */
   public void init(String text, MarkupExtent[] extents) {
     this.textPane = new JTextPane();
@@ -138,9 +145,12 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Inits the.
    *
-   * @param text the text
-   * @param extents the extents
-   * @param size the size
+   * @param text
+   *          the text
+   * @param extents
+   *          the extents
+   * @param size
+   *          the size
    */
   public void init(String text, AnnotationExtent[] extents, Dimension size) {
     this.textPane = new JTextPane();
@@ -175,8 +185,10 @@ public class MultiAnnotViewerFrame extends JFrame {
   /**
    * Inits the html.
    *
-   * @param text the text
-   * @param extents the extents
+   * @param text
+   *          the text
+   * @param extents
+   *          the extents
    */
   public void initHtml(String text, MarkupExtent[] extents) {
     this.textPane = new JTextPane();

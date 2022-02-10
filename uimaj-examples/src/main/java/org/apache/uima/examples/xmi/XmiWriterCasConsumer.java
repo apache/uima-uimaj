@@ -109,7 +109,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
       }
     }
     if (outFile == null) {
-      outFile = new File(mOutputDir, "doc" + mDocNum++ + ".xmi");     
+      outFile = new File(mOutputDir, "doc" + mDocNum++ + ".xmi");
     }
     // serialize XCAS and write to output file
     try {
@@ -128,12 +128,16 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    *          CAS to serialize
    * @param name
    *          output file
-   * @throws SAXException -
-   * @throws Exception -
+   * @throws SAXException
+   *           -
+   * @throws Exception
+   *           -
    * 
-   * @throws ResourceProcessException -
+   * @throws ResourceProcessException
+   *           -
    */
-  private void writeXmi(CAS aCas, File name, String modelFileName) throws IOException, SAXException {
+  private void writeXmi(CAS aCas, File name, String modelFileName)
+          throws IOException, SAXException {
 
     try (OutputStream out = new FileOutputStream(name)) {
       // write XMI

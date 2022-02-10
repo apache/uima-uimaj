@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 
-
 /**
  * The Class AddIndexKeyDialog.
  */
@@ -87,10 +86,14 @@ public class AddIndexKeyDialog extends AbstractDialog {
   /**
    * Instantiates a new adds the index key dialog.
    *
-   * @param aSection the a section
-   * @param typeName the type name
-   * @param indexKind the index kind
-   * @param alreadyUsedKeys the already used keys
+   * @param aSection
+   *          the a section
+   * @param typeName
+   *          the type name
+   * @param indexKind
+   *          the index kind
+   * @param alreadyUsedKeys
+   *          the already used keys
    */
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
           List alreadyUsedKeys) {
@@ -103,11 +106,16 @@ public class AddIndexKeyDialog extends AbstractDialog {
   /**
    * Instantiates a new adds the index key dialog.
    *
-   * @param aSection the a section
-   * @param typeName the type name
-   * @param indexKind the index kind
-   * @param alreadyUsedKeys the already used keys
-   * @param existingKey the existing key
+   * @param aSection
+   *          the a section
+   * @param typeName
+   *          the type name
+   * @param indexKind
+   *          the index kind
+   * @param alreadyUsedKeys
+   *          the already used keys
+   * @param existingKey
+   *          the existing key
    */
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
           List alreadyUsedKeys, FsIndexKeyDescription existingKey) {
@@ -118,7 +126,8 @@ public class AddIndexKeyDialog extends AbstractDialog {
   /**
    * Gets the sortable feature names.
    *
-   * @param selectedTypeName the selected type name
+   * @param selectedTypeName
+   *          the selected type name
    * @return an array of features whose range is primitive
    */
   private String[] getSortableFeatureNames(String selectedTypeName) {
@@ -142,8 +151,12 @@ public class AddIndexKeyDialog extends AbstractDialog {
   // Kind: combo (up, down, or typePriority)
   // Feature: text with assist <browse>
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -186,8 +199,12 @@ public class AddIndexKeyDialog extends AbstractDialog {
     return mainComposite;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.
+   * widgets.Event)
    */
   @Override
   public void handleEvent(Event event) {
@@ -200,7 +217,9 @@ public class AddIndexKeyDialog extends AbstractDialog {
     super.handleEvent(event);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override
@@ -209,7 +228,9 @@ public class AddIndexKeyDialog extends AbstractDialog {
     okButton.setEnabled(typePriority || !(null != featureName && "".equals(featureName)));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -228,7 +249,9 @@ public class AddIndexKeyDialog extends AbstractDialog {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override

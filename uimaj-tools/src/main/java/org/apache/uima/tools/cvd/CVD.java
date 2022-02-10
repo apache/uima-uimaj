@@ -30,7 +30,6 @@ import org.apache.uima.internal.util.CommandLineParser;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.tools.images.Images;
 
-
 /**
  * The main class for the CAS Visual Debugger.
  * 
@@ -58,9 +57,9 @@ public class CVD {
 
   /** The Constant LOOK_AND_FEEL_PARAM. */
   private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
-  
+
   /** The Constant XMI_FILE_PARAM. */
-  private static final String XMI_FILE_PARAM = "-xmi"; 
+  private static final String XMI_FILE_PARAM = "-xmi";
 
   /**
    * Instantiates a new cvd.
@@ -80,7 +79,8 @@ public class CVD {
   /**
    * Creates the main frame.
    *
-   * @param iniFile the ini file
+   * @param iniFile
+   *          the ini file
    * @return the main frame
    */
   public static MainFrame createMainFrame(File iniFile) {
@@ -120,7 +120,7 @@ public class CVD {
     parser.addParameter(DATA_PATH_PARAM, true);
     parser.addParameter(LOOK_AND_FEEL_PARAM, true);
     parser.addParameter(EXECUTE_SWITCH);
-    parser.addParameter(XMI_FILE_PARAM, true); 
+    parser.addParameter(XMI_FILE_PARAM, true);
     parser.addParameter(INI_FILE_PARAM, true);
     return parser;
   }
@@ -129,8 +129,8 @@ public class CVD {
    * Prints the usage.
    */
   private static final void printUsage() {
-    System.out
-        .println("Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
+    System.out.println(
+            "Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
     System.out.println("Additional optional parameters:");
     System.out.println("  -lookandfeel <LookAndFeelClassName>");
   }
@@ -138,7 +138,8 @@ public class CVD {
   /**
    * Check cmd line syntax.
    *
-   * @param clp the clp
+   * @param clp
+   *          the clp
    * @return true, if successful
    */
   private static final boolean checkCmdLineSyntax(CommandLineParser clp) {
@@ -166,7 +167,8 @@ public class CVD {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     try {
@@ -206,9 +208,9 @@ public class CVD {
         frame.loadAEDescriptor(new File(clp.getParamArgument(DESC_FILE_PARAM)));
       }
       if (clp.isInArgsList(TEXT_FILE_PARAM)) {
-	frame.loadTextFile(new File(clp.getParamArgument(TEXT_FILE_PARAM)));
+        frame.loadTextFile(new File(clp.getParamArgument(TEXT_FILE_PARAM)));
       } else if (clp.isInArgsList(XMI_FILE_PARAM)) {
-	frame.loadXmiFile(new File(clp.getParamArgument(XMI_FILE_PARAM)));
+        frame.loadXmiFile(new File(clp.getParamArgument(XMI_FILE_PARAM)));
       }
       if (clp.isInArgsList(EXECUTE_SWITCH)) {
         frame.runAE(true);

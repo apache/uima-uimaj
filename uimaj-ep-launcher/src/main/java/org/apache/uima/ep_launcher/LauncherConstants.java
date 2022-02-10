@@ -25,13 +25,12 @@ public class LauncherConstants {
   public static final String ATTR_INPUT_RECURSIVELY_NAME = "org.apache.uima.ep_launcher.INPUT_RECURSIVELY_ATTR";
   public static final String ATTR_INPUT_ENCODING_NAME = "org.apache.uima.ep_launcher.INPUT_ENCODING_ATTR";
   public static final String ATTR_INPUT_LANGUAGE_NAME = "org.apache.uima.ep_launcher.INPUT_LANGUAGE_ATTR";
-  
+
   public static final String ATTR_INPUT_FORMAT_NAME = "org.apache.uima.ep_launcher.INPUT_FORMAT_ATTR";
   public static final String ATTR_OUTPUT_FOLDER_NAME = "org.apache.uima.ep_launcher.OUTPUT_FOLDER_ATTR";
   public static final String ATTR_OUTPUT_CLEAR_NAME = "org.apache.uima.ep_launcher.OUTPUT_CLEAR_ATTR";
-  
+
   public enum InputFormat {
-    CAS,
-    PLAIN_TEXT
+    CAS, PLAIN_TEXT
   }
 }

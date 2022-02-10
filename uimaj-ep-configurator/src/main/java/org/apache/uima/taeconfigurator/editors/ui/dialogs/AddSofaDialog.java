@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
-
 /**
  * The Class AddSofaDialog.
  */
@@ -71,8 +70,10 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   /**
    * Instantiates a new adds the sofa dialog.
    *
-   * @param aSection the a section
-   * @param c the c
+   * @param aSection
+   *          the a section
+   * @param c
+   *          the c
    */
   public AddSofaDialog(AbstractSection aSection, Capability c) {
     super(aSection, "Add a Sofa", "Use this panel to specify a Sofa Name.");
@@ -83,10 +84,14 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   /**
    * Constructor for Editing an existing Sofa Name.
    *
-   * @param aSection the a section
-   * @param c the c
-   * @param aExistingSofa the a existing sofa
-   * @param aIsInput the a is input
+   * @param aSection
+   *          the a section
+   * @param c
+   *          the c
+   * @param aExistingSofa
+   *          the a existing sofa
+   * @param aIsInput
+   *          the a is input
    */
   public AddSofaDialog(AbstractSection aSection, Capability c, String aExistingSofa,
           boolean aIsInput) {
@@ -95,22 +100,26 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     existingIsInput = aIsInput;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingSofa);
     createWideLabel(mainArea, "Sofa names must be unique within a Capability Set, and are"
-            + " simple names without name spaces (no dots in the name).\n\n" +
-            		" As a special case, they may end in .*\n" +
-            		"   - Use this form to designate a class of sofa names, where the class\n" +
-            		"     is all names that match the part up to the dot.\n\n" 
+            + " simple names without name spaces (no dots in the name).\n\n"
+            + " As a special case, they may end in .*\n"
+            + "   - Use this form to designate a class of sofa names, where the class\n"
+            + "     is all names that match the part up to the dot.\n\n"
             + "Type the name in the box below, and specify if it is an input Sofa\n"
             + "(created outside of this component), or an output Sofa (created by this component).");
 
     // This part of the form looks like this sketch
-    //   
+    //
     // SofaName: Text field << in 2 grid composite
     // Input / Output: 2 radio checkboxes << in 2 grid composite
     //
@@ -150,7 +159,9 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override
@@ -168,7 +179,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   @Override
   public boolean isValid() {
     if (sofaName.length() == 0) {
-        return false;
+      return false;
     }
     if (!sofaName.equals(originalSofa) || // true for adding new sofa, or sofa name changed on edit
             isInput != existingIsInput) { // true if input / output switched for editing
@@ -179,16 +190,19 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
         return false;
       }
     }
-    if ((sofaName.contains(".") || sofaName.contains("*")) &&
-        (sofaName.indexOf('.') != (sofaName.length() - 2) ||
-         sofaName.indexOf('*') != (sofaName.length() - 1))) {
-      setErrorMessage("Sofa Name cannot have the characters '.' or '*' except as the last 2 characters");
+    if ((sofaName.contains(".") || sofaName.contains("*"))
+            && (sofaName.indexOf('.') != (sofaName.length() - 2)
+                    || sofaName.indexOf('*') != (sofaName.length() - 1))) {
+      setErrorMessage(
+              "Sofa Name cannot have the characters '.' or '*' except as the last 2 characters");
       return false;
     }
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override
@@ -210,7 +224,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
       Capability ci = cSets[i];
       if (ci == capability) {
         continue;
-    }
+      }
       // "reverse" i and o - if input validate name not exist as output in other sets, etc.
       String[] sofaNames = isInput ? ci.getOutputSofas() : ci.getInputSofas();
       if (null != sofaNames) {
@@ -219,16 +233,16 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
             return "This name exists as an " + (isInput ? "output" : "input")
                     + " in some capability set.  Please choose another name, or "
                     + "switch the input/output specification to the opposite setting.";
+          }
         }
-        }
-    }
+      }
     }
     // check for duplicates in this capability
     if (!sofaName.equals(originalSofa)) { // means adding new sofa or changing name of existing one
       if (checkDuplSofaName1(sofaName, capability.getInputSofas())
               || checkDuplSofaName1(sofaName, capability.getOutputSofas())) {
         return "This name already in use; please choose a different name.";
-    }
+      }
     }
     return null;
   }
@@ -236,34 +250,39 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   /**
    * Check dupl sofa name 1.
    *
-   * @param name the name
-   * @param names the names
+   * @param name
+   *          the name
+   * @param names
+   *          the names
    * @return true, if successful
    */
   private boolean checkDuplSofaName1(String name, String[] names) {
     if (null == names) {
-        return false;
+      return false;
     }
     for (int i = 0; i < names.length; i++) {
       if (name.equals(names[i])) {
         return true;
-    }
+      }
     }
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.eclipse.swt.events.VerifyEvent)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.
+   * eclipse.swt.events.VerifyEvent)
    */
   @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB) {
-        return true;
+      return true;
     }
-    if (Character.isJavaIdentifierPart(event.character) ||
-        event.character == '*' ||
-        event.character == '.') {
-        return true;
+    if (Character.isJavaIdentifierPart(event.character) || event.character == '*'
+            || event.character == '.') {
+      return true;
     }
     return false;
   }

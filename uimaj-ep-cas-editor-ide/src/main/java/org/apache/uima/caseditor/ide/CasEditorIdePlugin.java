@@ -47,7 +47,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
    */
   private static CasEditorIdePlugin sPlugin;
 
-	/**
+  /**
    * The constructor.
    */
   public CasEditorIdePlugin() {
@@ -57,101 +57,104 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
   /**
    * This method is called upon plug-in activation
    *
-   * @param context -
-   * @throws Exception -
+   * @param context
+   *          -
+   * @throws Exception
+   *           -
    */
   @Override
   public void start(BundleContext context) throws Exception {
-	    super.start(context);
-	    
-	    // Backward compatibility: Migrate old Cas Editor Projects
-	    
-	    // Scan for all Nlp nature projects
-	    IProject projects[] = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-	    
-	    for (IProject project : projects) {
-	      // if nlp nature project
-	      
-	      if (project.isOpen() && project.hasNature("org.apache.uima.caseditor.NLPProject")) {
-	        
-	        // if ts property is not set ... 
-	        String typeSystemLocation;
-	        try {
-	          typeSystemLocation = project.getPersistentProperty(new QualifiedName("", 
-	        		  TypeSystemLocationPropertyPage.TYPE_SYSTEM_PROPERTY));
-	        } catch (CoreException e) {
-	          typeSystemLocation = null;
-	        }
-	        
-	        if (typeSystemLocation == null) {
-	          // 1. Read dotCorpus
-	          IFile dotCorpusFile = project.getFile(".corpus");
-	          
-	          
-	          if (dotCorpusFile.exists()) {
-	            
-	            InputStream dotCorpusIn = null;
-	            
-	            try {
-	              dotCorpusIn = dotCorpusFile.getContents();
-	            }
-	            catch (CoreException e) {
-	              log(e);
-	            }
-	            
-	            IFile typeSystemFile = null;
-	            if (dotCorpusIn != null) {
-	              try {
-	                DotCorpus dotCorpus = DotCorpusSerializer.parseDotCorpus(dotCorpusIn);
-	                
-	                if (dotCorpus.getTypeSystemFileName() != null) {
-                        typeSystemFile = project.getFile(dotCorpus.getTypeSystemFileName());
-                    }
-	              }
-	              finally {
-	                try {
-	                  dotCorpusIn.close();
-	                }
-	                catch (IOException e) {
-	                  log(e);
-	                }
-	              }
-	            }
-	            
-	            if (typeSystemFile != null && typeSystemFile.exists()) {
-	              // 2. Set type system file accordingly
-	              TypeSystemLocationPropertyPage.setTypeSystemLocation(project, typeSystemFile.getFullPath().toString());
-	              
-	              // 3. Try to copy dotCorpus file to type system location
-	              try {
-	                dotCorpusFile.copy(project.getFile(typeSystemFile.getParent().getProjectRelativePath() + "/" 
-	                        + ".style-" + typeSystemFile.getName()).getFullPath(), true, null);
-	                CasEditorPlugin.getDefault().setShowMigrationDialog();
-	              } catch (CoreException e) {
-	                log(e);
-	              }
-	            }
-	          }
-	        }
-	      }
-	    }
-	  }
+    super.start(context);
+
+    // Backward compatibility: Migrate old Cas Editor Projects
+
+    // Scan for all Nlp nature projects
+    IProject projects[] = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+
+    for (IProject project : projects) {
+      // if nlp nature project
+
+      if (project.isOpen() && project.hasNature("org.apache.uima.caseditor.NLPProject")) {
+
+        // if ts property is not set ...
+        String typeSystemLocation;
+        try {
+          typeSystemLocation = project.getPersistentProperty(
+                  new QualifiedName("", TypeSystemLocationPropertyPage.TYPE_SYSTEM_PROPERTY));
+        } catch (CoreException e) {
+          typeSystemLocation = null;
+        }
+
+        if (typeSystemLocation == null) {
+          // 1. Read dotCorpus
+          IFile dotCorpusFile = project.getFile(".corpus");
+
+          if (dotCorpusFile.exists()) {
+
+            InputStream dotCorpusIn = null;
+
+            try {
+              dotCorpusIn = dotCorpusFile.getContents();
+            } catch (CoreException e) {
+              log(e);
+            }
+
+            IFile typeSystemFile = null;
+            if (dotCorpusIn != null) {
+              try {
+                DotCorpus dotCorpus = DotCorpusSerializer.parseDotCorpus(dotCorpusIn);
+
+                if (dotCorpus.getTypeSystemFileName() != null) {
+                  typeSystemFile = project.getFile(dotCorpus.getTypeSystemFileName());
+                }
+              } finally {
+                try {
+                  dotCorpusIn.close();
+                } catch (IOException e) {
+                  log(e);
+                }
+              }
+            }
+
+            if (typeSystemFile != null && typeSystemFile.exists()) {
+              // 2. Set type system file accordingly
+              TypeSystemLocationPropertyPage.setTypeSystemLocation(project,
+                      typeSystemFile.getFullPath().toString());
+
+              // 3. Try to copy dotCorpus file to type system location
+              try {
+                dotCorpusFile.copy(
+                        project.getFile(typeSystemFile.getParent().getProjectRelativePath() + "/"
+                                + ".style-" + typeSystemFile.getName()).getFullPath(),
+                        true, null);
+                CasEditorPlugin.getDefault().setShowMigrationDialog();
+              } catch (CoreException e) {
+                log(e);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   /**
    * This method is called when the plug-in is stopped.
    *
-   * @param context -
-   * @throws Exception -
+   * @param context
+   *          -
+   * @throws Exception
+   *           -
    */
   @Override
   public void stop(BundleContext context) throws Exception {
     super.stop(context);
 
     sPlugin = null;
-	  /**
-	   * Resource bundle.
-	   */
-	  ResourceBundle mResourceBundle = null;
+    /**
+     * Resource bundle.
+     */
+    ResourceBundle mResourceBundle = null;
   }
 
   /**
@@ -166,7 +169,8 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
   /**
    * Log the throwable.
    *
-   * @param t -
+   * @param t
+   *          -
    */
   public static void log(Throwable t) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, t.getMessage(), t));

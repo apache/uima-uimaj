@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.FocusEvent;
@@ -25,7 +24,6 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
-
 
 /**
  * The Class TreeFocusHandler.
@@ -38,13 +36,16 @@ public class TreeFocusHandler implements FocusListener {
   /**
    * Instantiates a new tree focus handler.
    *
-   * @param tree the tree
+   * @param tree
+   *          the tree
    */
   public TreeFocusHandler(JTree tree) {
     this.tree = tree;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
    */
   @Override
@@ -56,7 +57,9 @@ public class TreeFocusHandler implements FocusListener {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
   @Override

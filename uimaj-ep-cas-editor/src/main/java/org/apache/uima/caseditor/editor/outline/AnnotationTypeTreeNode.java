@@ -25,11 +25,9 @@ import java.util.List;
 import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.IAdaptable;
 
-
 /**
- * The {@link AnnotationTreeNode} is used to group annotations
- * by their type. Only the {@link TypeGroupedContentProvider} creates
- * {@link AnnotationTreeNode} objects. 
+ * The {@link AnnotationTreeNode} is used to group annotations by their type. Only the
+ * {@link TypeGroupedContentProvider} creates {@link AnnotationTreeNode} objects.
  */
 class AnnotationTypeTreeNode implements IAdaptable {
 
@@ -42,19 +40,21 @@ class AnnotationTypeTreeNode implements IAdaptable {
   /**
    * Instantiates a new annotation type tree node.
    *
-   * @param type the type
+   * @param type
+   *          the type
    */
   public AnnotationTypeTreeNode(Type type) {
-      this.type = type;
+    this.type = type;
   }
 
   /**
    * Adds the.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   public void add(AnnotationTreeNode annotation) {
-      annotations.add(annotation);
+    annotations.add(annotation);
   }
 
   /**
@@ -65,27 +65,27 @@ class AnnotationTypeTreeNode implements IAdaptable {
   public AnnotationTreeNode[] getAnnotations() {
     return annotations.toArray(new AnnotationTreeNode[annotations.size()]);
   }
-	
+
   /**
    * Removes the.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   public void remove(AnnotationTreeNode annotation) {
     annotations.remove(annotation);
   }
-	
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-		
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
+
     if (Type.class.equals(adapter)) {
-        return type;
+      return type;
     }
 
     return null;
   }
-	
 
   @Override
   public int hashCode() {
@@ -96,20 +96,18 @@ class AnnotationTypeTreeNode implements IAdaptable {
   public boolean equals(Object obj) {
     if (obj == this) {
       return true;
-    }
-    else if (obj instanceof AnnotationTypeTreeNode) {
+    } else if (obj instanceof AnnotationTypeTreeNode) {
       AnnotationTypeTreeNode otherTypeNode = (AnnotationTypeTreeNode) obj;
 
       return type.equals(otherTypeNode.type);
-    }
-    else {
+    } else {
       return false;
     }
   }
 
   @Override
   public String toString() {
-      return type.getShortName() + " #chhildren = " + annotations.size();
+    return type.getShortName() + " #chhildren = " + annotations.size();
   }
 
   /**
@@ -118,6 +116,6 @@ class AnnotationTypeTreeNode implements IAdaptable {
    * @return the type
    */
   public Object getType() {
-      return type;
+    return type;
   }
 }

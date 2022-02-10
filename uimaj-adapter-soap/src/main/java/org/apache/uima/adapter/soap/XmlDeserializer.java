@@ -33,7 +33,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
-
 /**
  * An Axis deserializer for any {@link XMLizable} object.
  * 
@@ -70,13 +69,19 @@ public class XmlDeserializer extends DeserializerImpl {
   /**
    * This method is invoked when an element start tag is encountered.
    *
-   * @param namespace          is the namespace of the element
-   * @param localName          is the name of the element
-   * @param prefix          is the element's prefix
-   * @param attributes          are the attributes on the element...used to get the type
-   * @param context          is the DeserializationContext
+   * @param namespace
+   *          is the namespace of the element
+   * @param localName
+   *          is the name of the element
+   * @param prefix
+   *          is the element's prefix
+   * @param attributes
+   *          are the attributes on the element...used to get the type
+   * @param context
+   *          is the DeserializationContext
    * @return the SOAP handler
-   * @throws SAXException the SAX exception
+   * @throws SAXException
+   *           the SAX exception
    */
   @Override
   public SOAPHandler onStartChild(String namespace, String localName, String prefix,
@@ -87,13 +92,20 @@ public class XmlDeserializer extends DeserializerImpl {
   /**
    * On start element.
    *
-   * @param arg0 the arg 0
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
-   * @param arg3 the arg 3
-   * @param arg4 the arg 4
-   * @throws SAXException the SAX exception
-   * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes, DeserializationContext)
+   * @param arg0
+   *          the arg 0
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
+   * @param arg3
+   *          the arg 3
+   * @param arg4
+   *          the arg 4
+   * @throws SAXException
+   *           the SAX exception
+   * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes,
+   *      DeserializationContext)
    */
   @Override
   public void onStartElement(String arg0, String arg1, String arg2, Attributes arg3,
@@ -112,10 +124,14 @@ public class XmlDeserializer extends DeserializerImpl {
   /**
    * Characters.
    *
-   * @param ch the ch
-   * @param start the start
-   * @param length the length
-   * @throws SAXException the SAX exception
+   * @param ch
+   *          the ch
+   * @param start
+   *          the start
+   * @param length
+   *          the length
+   * @throws SAXException
+   *           the SAX exception
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
   @Override
@@ -128,10 +144,14 @@ public class XmlDeserializer extends DeserializerImpl {
   /**
    * On end element.
    *
-   * @param arg0 the arg 0
-   * @param arg1 the arg 1
-   * @param arg2 the arg 2
-   * @throws SAXException the SAX exception
+   * @param arg0
+   *          the arg 0
+   * @param arg1
+   *          the arg 1
+   * @param arg2
+   *          the arg 2
+   * @throws SAXException
+   *           the SAX exception
    * @see org.apache.axis.encoding.Deserializer#onEndElement(java.lang.String, java.lang.String,
    *      org.apache.axis.encoding.DeserializationContext)
    */
@@ -149,7 +169,8 @@ public class XmlDeserializer extends DeserializerImpl {
   /**
    * Value complete.
    *
-   * @throws SAXException the SAX exception
+   * @throws SAXException
+   *           the SAX exception
    * @see org.apache.axis.encoding.Deserializer#valueComplete()
    */
   @Override

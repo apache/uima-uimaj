@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class RemoveLanguageHandler.
@@ -39,13 +37,16 @@ public class RemoveLanguageHandler implements ActionListener {
   /**
    * Instantiates a new removes the language handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public RemoveLanguageHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

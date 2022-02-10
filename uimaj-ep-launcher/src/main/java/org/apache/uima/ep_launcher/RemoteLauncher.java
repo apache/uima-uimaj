@@ -53,7 +53,7 @@ public class RemoteLauncher {
   public static final String INPUT_LANGUAGE_PARAM = "-language";
   public static final String OUTPUT_FOLDER_PARAM = "-output";
   public static final String OUTPUT_CLEAR_PARAM = "-clear";
-  
+
   private static File descriptor;
   private static File inputResource;
   private static boolean inputRecursive;
@@ -62,158 +62,144 @@ public class RemoteLauncher {
   private static String inputLanguage;
   private static File outputFolder;
   private static boolean outputFolderClear;
-  
+
   private static boolean parseCmdLineArgs(String[] args) {
-    
+
     int necessaryArgCount = 0;
-    
+
     int index = 0;
     while (index < args.length) {
-      
+
       String arg = args[index++];
-      
+
       if (DESCRIPTOR_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         descriptor = new File(args[index++]);
         necessaryArgCount++;
-      }
-      else if (INPUT_RESOURCE_PARAM.equals(arg)) {
+      } else if (INPUT_RESOURCE_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         inputResource = new File(args[index++]);
         necessaryArgCount++;
-      }
-      else if (INPUT_RECURSIVE_PARAM.equals(arg)) {
+      } else if (INPUT_RECURSIVE_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         inputRecursive = Boolean.parseBoolean(args[index++]);
-      }
-      else if (INPUT_FORMAT_PARAM.equals(arg)) {
+      } else if (INPUT_FORMAT_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         String inputFormatName = args[index++];
-        
+
         if (InputFormat.CAS.toString().equals(inputFormatName)) {
           inputFormat = InputFormat.CAS;
-        }
-        else if (InputFormat.PLAIN_TEXT.toString().equals(inputFormatName)) {
+        } else if (InputFormat.PLAIN_TEXT.toString().equals(inputFormatName)) {
           inputFormat = InputFormat.PLAIN_TEXT;
-        }
-        else {
+        } else {
           System.err.println("Unkown input format: " + inputFormatName);
           return false;
         }
-        
-      }
-      else if (INPUT_ENCODING_PARAM.equals(arg)) {
+
+      } else if (INPUT_ENCODING_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         inputEncoding = args[index++];
-      }
-      else if (INPUT_LANGUAGE_PARAM.equals(arg)) {
+      } else if (INPUT_LANGUAGE_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         inputLanguage = args[index++];
-      }
-      else if (OUTPUT_FOLDER_PARAM.equals(arg)) {
+      } else if (OUTPUT_FOLDER_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         outputFolder = new File(args[index++]);
-      }
-      else if (OUTPUT_CLEAR_PARAM.equals(arg)) {
+      } else if (OUTPUT_CLEAR_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
         }
-        
+
         outputFolderClear = Boolean.parseBoolean(args[index++]);
       }
     }
-    
+
     return necessaryArgCount == 2;
   }
-  
-  private static void processFile(File inputFile, InputFormat format, 
-          AnalysisEngine aAE, CAS aCAS) throws IOException,
-          AnalysisEngineProcessException {
-    
+
+  private static void processFile(File inputFile, InputFormat format, AnalysisEngine aAE, CAS aCAS)
+          throws IOException, AnalysisEngineProcessException {
+
     if (InputFormat.PLAIN_TEXT.equals(format)) {
       String document = FileUtils.file2String(inputFile, inputEncoding);
       document = document.trim();
-  
+
       // put document text in CAS
       aCAS.setDocumentText(document);
-      
+
       if (inputLanguage != null)
         aCAS.setDocumentLanguage(inputLanguage);
-    }
-    else if (InputFormat.CAS.equals(format)) {
+    } else if (InputFormat.CAS.equals(format)) {
       if (inputFile.getName().endsWith(".xmi")) {
         try (FileInputStream inputStream = new FileInputStream(inputFile)) {
           XmiCasDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
           throw new IOException(e.getMessage());
         }
-      }
-      else if (inputFile.getName().endsWith(".xcas")) {
+      } else if (inputFile.getName().endsWith(".xcas")) {
         try (FileInputStream inputStream = new FileInputStream(inputFile)) {
           XCASDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
           throw new IOException(e.getMessage());
         }
       }
-    }
-    else {
+    } else {
       throw new IllegalStateException("Unexpected format!");
     }
-    
+
     // process
     aAE.process(aCAS);
 
     if (outputFolder != null) {
-      
+
       File inputDirectory;
       if (inputResource.isFile()) {
         inputDirectory = inputResource.getParentFile();
-      }
-      else {
+      } else {
         inputDirectory = inputResource;
       }
-      
+
       String inputFilePath = inputFile.getPath();
       String relativeInputFilePath;
       if (inputFilePath.startsWith(inputDirectory.getPath())) {
         relativeInputFilePath = inputFilePath.substring(inputDirectory.getPath().length());
-      }
-      else {
-        System.err.println("Error: Unable to construct output file path, output file will not be written!");
+      } else {
+        System.err.println(
+                "Error: Unable to construct output file path, output file will not be written!");
         return;
       }
-      
+
       String outputFilePath = new File(outputFolder.getPath(), relativeInputFilePath).getPath();
-      
+
       // cutoff file ending
       int fileTypeIndex = outputFilePath.lastIndexOf(".");
       if (fileTypeIndex != -1) {
         outputFilePath = outputFilePath.substring(0, fileTypeIndex);
       }
-      
+
       File outputFile = new File(outputFilePath + ".xmi");
-      
+
       // Create sub-directories
       if (!outputFile.getParentFile().exists()) {
         outputFile.getParentFile().mkdirs();
@@ -230,15 +216,14 @@ public class RemoteLauncher {
         }
       }
     }
-    
+
     // reset the CAS to prepare it for processing the next document
     aCAS.reset();
   }
-  
-  private static void findAndProcessFiles(File inputResource, FileFilter fileFilter, 
-          AnalysisEngine aAE, CAS aCAS) throws IOException,
-          AnalysisEngineProcessException {
-    
+
+  private static void findAndProcessFiles(File inputResource, FileFilter fileFilter,
+          AnalysisEngine aAE, CAS aCAS) throws IOException, AnalysisEngineProcessException {
+
     // Figure out if input resource is file or directory
     if (inputResource.isDirectory()) {
       // get all files in the input directory
@@ -247,101 +232,96 @@ public class RemoteLauncher {
         for (int i = 0; i < files.length; i++) {
           if (!files[i].isDirectory()) {
             processFile(files[i], inputFormat, aAE, aCAS);
-          }
-          else {
+          } else {
             findAndProcessFiles(files[i], fileFilter, aAE, aCAS);
           }
         }
       }
-    }
-    else if (inputResource.isFile()) {
+    } else if (inputResource.isFile()) {
       // Just process the single file
       processFile(inputResource, inputFormat, aAE, aCAS);
     }
   }
-  
+
   private static boolean deleteFile(File file) {
-    
+
     if (file.isDirectory()) {
       File subFiles[] = file.listFiles();
-      
+
       boolean success = true;
       for (File subFile : subFiles) {
         success = success && deleteFile(subFile);
       }
-      
+
       return success;
-    }
-    else {
+    } else {
       return file.delete();
     }
   }
-  
+
   public static void main(String[] args) throws Exception {
-    
+
     // debug / testing : see if jvm arg passed in...
-    
-//    MemoryMXBean memoryMxBean = ManagementFactory.getMemoryMXBean();
-//    long maxHeap = memoryMxBean.getHeapMemoryUsage().getMax();
-//    System.out.println("JVM MaxHeap: " + maxHeap);
-    
+
+    // MemoryMXBean memoryMxBean = ManagementFactory.getMemoryMXBean();
+    // long maxHeap = memoryMxBean.getHeapMemoryUsage().getMax();
+    // System.out.println("JVM MaxHeap: " + maxHeap);
+
     // show what command line args (not jvm args) got passed
-//    System.out.println("Cmdline args: ");
-//    for (int i = 0; i < args.length; i++) {
-//      System.out.println("  arg " + i + " = " + args[i]);      
-//    }
-    
+    // System.out.println("Cmdline args: ");
+    // for (int i = 0; i < args.length; i++) {
+    // System.out.println(" arg " + i + " = " + args[i]);
+    // }
+
     if (!parseCmdLineArgs(args)) {
       throw new IllegalArgumentException("Passed arguments are invalid!");
     }
-    
+
     if (outputFolder != null && outputFolderClear) {
       File filesToDelete[] = outputFolder.listFiles();
-      
+
       for (File file : filesToDelete) {
         deleteFile(file);
       }
     }
-    
+
     // get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource(descriptor);
     ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-    
+
     // create Analysis Engine
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
-    
+
     // create a CAS
     CAS cas = ae.newCAS();
-    
+
     // Create a file filter depending on the format
     // to filter out all file which do not have the
     // expected file ending
     FileFilter fileFilter;
     if (InputFormat.CAS.equals(inputFormat)) {
       fileFilter = new FileFilter() {
-        
+
         @Override
         public boolean accept(File file) {
-          return file.getName().endsWith(".xmi") || file.getName().endsWith(".xcas") || 
-                  (inputRecursive && file.isDirectory());
+          return file.getName().endsWith(".xmi") || file.getName().endsWith(".xcas")
+                  || (inputRecursive && file.isDirectory());
         }
       };
-    }
-    else if (InputFormat.PLAIN_TEXT.equals(inputFormat)) {
+    } else if (InputFormat.PLAIN_TEXT.equals(inputFormat)) {
       fileFilter = new FileFilter() {
-        
+
         @Override
         public boolean accept(File file) {
           return file.getName().endsWith(".txt") || (inputRecursive && file.isDirectory());
         }
       };
-    }
-    else {
+    } else {
       throw new IllegalStateException("Unexpected input format!");
     }
-    
+
     findAndProcessFiles(inputResource, fileFilter, ae, cas);
-    
+
     ae.collectionProcessComplete(new ProcessTrace_impl());
     ae.destroy();
   }

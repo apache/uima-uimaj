@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.action;
 
-
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -29,22 +28,22 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-
 /**
  * Widens the left side of the currently selected annotation by one.
  */
 public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAction {
-  
+
   /** The Constant ID. */
   public static final String ID = "WideLeftAnnotationSide";
-  
+
   /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes a new instance.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public WideLeftAnnotationSideAction(ICasEditor editor) {
     super("WideLeftAnnotationSside");
@@ -62,11 +61,12 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
   }
 
   /**
-   * Widens the annotation and sends and sends an update notification
-   * to the provided document.
+   * Widens the annotation and sends and sends an update notification to the provided document.
    *
-   * @param document the document
-   * @param annotation the annotation
+   * @param document
+   *          the document
+   * @param annotation
+   *          the annotation
    */
   public static void wideLeftAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     Type annotationType = annotation.getType();
@@ -78,7 +78,7 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
 
     document.update(annotation);
   }
-  
+
   /**
    * Decreases the begin index of an annotation by one.
    */
@@ -87,7 +87,7 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
     AnnotationSelection annotations = new AnnotationSelection(getStructuredSelection());
 
     AnnotationFS annotation = annotations.getFirst();
-    
+
     wideLeftAnnotationSide(editor.getDocument(), annotation);
   }
 }

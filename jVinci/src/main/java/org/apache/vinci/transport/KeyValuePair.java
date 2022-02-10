@@ -38,8 +38,10 @@ public final class KeyValuePair {
   /**
    * @pre mykey != null
    * @pre myvalue != null
-   * @param mykey -
-   * @param myvalue -
+   * @param mykey
+   *          -
+   * @param myvalue
+   *          -
    */
   public KeyValuePair(String mykey, FrameComponent myvalue) {
     this.key = mykey;

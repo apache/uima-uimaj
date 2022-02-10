@@ -37,17 +37,16 @@ import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.internal.util.SerializationUtils;
 
-
 /**
  * The CasAnnotationViewer as an Applet.
  * 
  */
 public class CasAnnotationViewerApplet extends JApplet {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1273090141115008715L;
 
-  /**  The CAS Annotation Viewer panel. */
+  /** The CAS Annotation Viewer panel. */
   private CasAnnotationViewer mViewer;
 
   /**
@@ -140,8 +139,10 @@ public class CasAnnotationViewerApplet extends JApplet {
    * @see MyComponentEvent
    */
   class MyComponentListener extends ComponentAdapter {
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.awt.event.ComponentAdapter#componentResized(java.awt.event.ComponentEvent)
      */
     @Override

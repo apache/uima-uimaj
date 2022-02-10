@@ -197,19 +197,26 @@ public class XMLToXTalk {
    * representation of that data. If xml_filename is non-null, then this method will also create a
    * UTF-8 representation of the xml file, exactly mimicing the XTalk encoding (e.g. removing
    * irrelevant whitespace, expanding entity refs, etc).
-   * @param r -
-   * @param filename -
-   * @param purgeWhitespace -
-   * @param xml_filename -
-   * @throws ServiceException -
-   * @throws IOException -
+   * 
+   * @param r
+   *          -
+   * @param filename
+   *          -
+   * @param purgeWhitespace
+   *          -
+   * @param xml_filename
+   *          -
+   * @throws ServiceException
+   *           -
+   * @throws IOException
+   *           -
    */
   public static void xmlToXTalk(Reader r, String filename, boolean purgeWhitespace,
           String xml_filename) throws ServiceException, IOException {
     Writer xml_os = null;
     if (xml_filename != null) {
-      xml_os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xml_filename),
-              StandardCharsets.UTF_8));
+      xml_os = new BufferedWriter(
+              new OutputStreamWriter(new FileOutputStream(xml_filename), StandardCharsets.UTF_8));
     }
     File file = new File(filename);
     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
@@ -224,9 +231,11 @@ public class XMLToXTalk {
         try {
           spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         } catch (SAXNotRecognizedException e) {
-          System.err.println("Warning: SAXParserFactory didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+          System.err.println(
+                  "Warning: SAXParserFactory didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
         } catch (SAXNotSupportedException e) {
-          System.err.println("Warning: SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+          System.err.println(
+                  "Warning: SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
         }
         xr = spf.newSAXParser().getXMLReader();
       } catch (SAXException e) {
@@ -296,10 +305,11 @@ public class XMLToXTalk {
   static private void skipString(RandomAccessFile raf) throws IOException {
     final int count = raf.readInt();
     // Debug.p("Skipping string of size: " + count);
-    final int skipped = raf.skipBytes(count); 
+    final int skipped = raf.skipBytes(count);
     if (count != skipped) {
-      throw new RuntimeException(String.format("%d bytes skipped when %d was requested, while reading from stream %s",
-          skipped, count, raf));
+      throw new RuntimeException(
+              String.format("%d bytes skipped when %d was requested, while reading from stream %s",
+                      skipped, count, raf));
     }
   }
 

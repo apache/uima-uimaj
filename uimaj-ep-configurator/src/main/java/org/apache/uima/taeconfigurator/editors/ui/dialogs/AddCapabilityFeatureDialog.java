@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-
 /**
  * The Class AddCapabilityFeatureDialog.
  */
@@ -79,14 +78,15 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   /**
    * Instantiates a new adds the capability feature dialog.
    *
-   * @param aSection the a section
-   * @param aSelectedType the a selected type
-   * @param c the c
+   * @param aSection
+   *          the a section
+   * @param aSelectedType
+   *          the a selected type
+   * @param c
+   *          the c
    */
   public AddCapabilityFeatureDialog(AbstractSection aSection, Type aSelectedType, Capability c) {
-    super(
-            aSection,
-            "Specify features input and / or output",
+    super(aSection, "Specify features input and / or output",
             "Designate by mouse clicking one or more features in the Input and/or Output column, to designate as Input and/or Output press \"OK\"");
     selectedType = aSelectedType;
     allFeatures = selectedType.getFeatures().toArray(featureArray0);
@@ -105,8 +105,12 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -122,8 +126,8 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
 
     TreeItem item = new TreeItem(tree, SWT.NONE);
     item.setText(0, CapabilitySection.ALL_FEATURES);
-    TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(), selectedType
-            .getName());
+    TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(),
+            selectedType.getName());
     setChecked(item, 1, null == tof ? false : tof.isAllAnnotatorFeatures());
     tof = AbstractSection.getTypeOrFeature(capability.getOutputs(), selectedType.getName());
     setChecked(item, 2, null == tof ? false : tof.isAllAnnotatorFeatures());
@@ -145,15 +149,20 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   /**
    * return the actual type name : short-feature-name.
    *
-   * @param feature the feature
+   * @param feature
+   *          the feature
    * @return the actual type name : short-feature-name
    */
   protected String getTypeFeature(Feature feature) {
     return selectedType.getName() + ':' + feature.getShortName();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogMultiColTable#toggleValue(org.eclipse.swt.widgets.TableItem, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogMultiColTable#toggleValue(org.
+   * eclipse.swt.widgets.TableItem, int)
    */
   @Override
   protected void toggleValue(TableItem item, int col) {
@@ -174,7 +183,8 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   /**
    * Uncheck all other features.
    *
-   * @param column the column
+   * @param column
+   *          the column
    */
   private void uncheckAllOtherFeatures(int column) {
     TreeItem[] items = f_tree.getItems();
@@ -183,7 +193,9 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
   @Override

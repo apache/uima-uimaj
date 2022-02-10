@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.Plugin;
  * The main plugin class to be used in the desktop.
  */
 public class JgPlugin extends Plugin {
-  
+
   /** The plugin. */
   // The shared instance.
   private static JgPlugin plugin;
@@ -39,7 +39,7 @@ public class JgPlugin extends Plugin {
   /**
    * The constructor.
    */
-//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
+  // @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   public JgPlugin() {
     plugin = this;
   }

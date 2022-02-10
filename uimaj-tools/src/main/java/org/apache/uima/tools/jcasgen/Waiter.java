@@ -19,12 +19,11 @@
 
 package org.apache.uima.tools.jcasgen;
 
-
 /**
  * The Class Waiter.
  */
 public class Waiter {
-  
+
   /** The woke up intentionally. */
   private boolean wokeUpIntentionally = false;
 

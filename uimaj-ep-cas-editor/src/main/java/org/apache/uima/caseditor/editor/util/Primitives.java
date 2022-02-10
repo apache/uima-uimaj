@@ -26,8 +26,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
-
-
 /**
  * The Class Primitives.
  */
@@ -36,53 +34,49 @@ public class Primitives {
   /**
    * Retrieve the primitive java class for a primitive type.
    *
-   * @param ts the ts
-   * @param type the type
+   * @param ts
+   *          the ts
+   * @param type
+   *          the type
    * @return the primitive java class
    */
   public static Class<?> getPrimitiveClass(TypeSystem ts, Type type) {
     if (!type.isPrimitive())
       throw new IllegalArgumentException("Type " + type.getName() + " is not primitive!");
-    
+
     // Note:
-    // In a UIMA type system *only* the primitive string type can be 
+    // In a UIMA type system *only* the primitive string type can be
     // sub-typed.
-    
+
     if (ts.getType(CAS.TYPE_NAME_BOOLEAN).equals(type)) {
       return Boolean.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_BYTE).equals(type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_BYTE).equals(type)) {
       return Byte.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_SHORT).equals(type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_SHORT).equals(type)) {
       return Short.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_INTEGER).equals(type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_INTEGER).equals(type)) {
       return Integer.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_LONG).equals(type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_LONG).equals(type)) {
       return Long.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_FLOAT).equals(type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_FLOAT).equals(type)) {
       return Float.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_DOUBLE).equals(type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_DOUBLE).equals(type)) {
       return Double.class;
-    }
-    else if (ts.getType(CAS.TYPE_NAME_STRING).equals(type) || 
-            ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING), type)) {
+    } else if (ts.getType(CAS.TYPE_NAME_STRING).equals(type)
+            || ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING), type)) {
       return String.class;
-    }
-    else {
+    } else {
       throw new IllegalStateException("Unexpected primitive type: " + type.getName());
     }
   }
-  
+
   /**
    * Retrieves the {@link Class} for the current primitive.
    *
-   * @param ts the ts
-   * @param f the f
+   * @param ts
+   *          the ts
+   * @param f
+   *          the f
    * @return the class
    */
   public static Class<?> getPrimitiveClass(TypeSystem ts, Feature f) {
@@ -92,16 +86,18 @@ public class Primitives {
   /**
    * Retrieves the primitive value.
    *
-   * @param structure the structure
-   * @param feature the feature
+   * @param structure
+   *          the structure
+   * @param feature
+   *          the feature
    * @return the primitive value as object
    */
   public static Object getPrimitive(FeatureStructure structure, Feature feature) {
-    
+
     TypeSystem ts = structure.getCAS().getTypeSystem();
-    
+
     Class<?> primitiveClass = getPrimitiveClass(ts, feature);
-    
+
     Object result;
 
     if (Boolean.class.equals(primitiveClass)) {
@@ -120,56 +116,59 @@ public class Primitives {
       result = structure.getDoubleValue(feature);
     } else if (String.class.equals(primitiveClass)) {
       result = structure.getStringValue(feature);
-      
+
       if (result == null)
         result = "";
     } else {
-      throw new IllegalStateException("Unexpected type: " 
-          + feature.getRange().getName());
+      throw new IllegalStateException("Unexpected type: " + feature.getRange().getName());
     }
 
     return result;
   }
-  
+
   /**
    * Checks if is restricted by allowed values.
    *
-   * @param ts the ts
-   * @param type the type
+   * @param ts
+   *          the ts
+   * @param type
+   *          the type
    * @return true, if is restricted by allowed values
    */
   public static boolean isRestrictedByAllowedValues(TypeSystem ts, Type type) {
-    
-    if (ts.getType(CAS.TYPE_NAME_STRING).equals(type) || 
-            ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING), type)) {
+
+    if (ts.getType(CAS.TYPE_NAME_STRING).equals(type)
+            || ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING), type)) {
       LowLevelTypeSystem lts = ts.getLowLevelTypeSystem();
       final int typeCode = lts.ll_getCodeForType(type);
       String[] strings = lts.ll_getStringSet(typeCode);
-      
+
       return strings.length > 0;
-    }
-    else {
+    } else {
       return false;
     }
-    
+
   }
-  
+
   /**
    * Gets the restricted values.
    *
-   * @param ts the ts
-   * @param type the type
+   * @param ts
+   *          the ts
+   * @param type
+   *          the type
    * @return the restricted values
    */
   public static String[] getRestrictedValues(TypeSystem ts, Type type) {
     if (isRestrictedByAllowedValues(ts, type)) {
-      throw new IllegalArgumentException("Type " + type.getName() + " does not defines allowed values!");
+      throw new IllegalArgumentException(
+              "Type " + type.getName() + " does not defines allowed values!");
     }
-    
+
     LowLevelTypeSystem lts = ts.getLowLevelTypeSystem();
     final int typeCode = lts.ll_getCodeForType(type);
-    
+
     return lts.ll_getStringSet(typeCode);
   }
-  
+
 }

@@ -48,7 +48,6 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 
-
 /**
  * Insert comment for enclosing_type here.
  * 
@@ -60,22 +59,21 @@ public class MainFrame extends JFrame {
   private static final long serialVersionUID = 5606886216212480040L;
 
   /**
-   * The listener interface for receiving typeTreeSelection events.
-   * The class that is interested in processing a typeTreeSelection
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addTypeTreeSelectionListener<code> method. When
-   * the typeTreeSelection event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving typeTreeSelection events. The class that is interested in
+   * processing a typeTreeSelection event implements this interface, and the object created with
+   * that class is registered with a component using the component's
+   * <code>addTypeTreeSelectionListener<code> method. When the typeTreeSelection event occurs, that
+   * object's appropriate method is invoked.
    *
    * @see TypeTreeSelectionEvent
    */
   private class TypeTreeSelectionListener implements TreeSelectionListener {
-    
+
     /**
      * Value changed.
      *
-     * @param event the event
+     * @param event
+     *          the event
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
     @Override
@@ -111,7 +109,8 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    * 
-   * @throws HeadlessException -
+   * @throws HeadlessException
+   *           -
    */
   public MainFrame() {
     init();
@@ -120,7 +119,8 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    *
-   * @param gc the gc
+   * @param gc
+   *          the gc
    */
   public MainFrame(GraphicsConfiguration gc) {
     super(gc);
@@ -130,8 +130,10 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    *
-   * @param title the title
-   * @throws HeadlessException -
+   * @param title
+   *          the title
+   * @throws HeadlessException
+   *           -
    */
   public MainFrame(String title) {
     super(title);
@@ -141,8 +143,10 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    *
-   * @param title the title
-   * @param gc the gc
+   * @param title
+   *          the title
+   * @param gc
+   *          the gc
    */
   public MainFrame(String title, GraphicsConfiguration gc) {
     super(title, gc);
@@ -220,7 +224,8 @@ public class MainFrame extends JFrame {
   /**
    * Creates the type tree.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return the default mutable tree node
    */
   private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type) {
@@ -269,7 +274,8 @@ public class MainFrame extends JFrame {
   /**
    * Gets the tree model listeners.
    *
-   * @param model the model
+   * @param model
+   *          the model
    * @return the tree model listeners
    */
   public static TreeModelListener[] getTreeModelListeners(DefaultTreeModel model) {
@@ -284,7 +290,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the type system.
    *
-   * @param ts the new type system
+   * @param ts
+   *          the new type system
    */
   public void setTypeSystem(TypeSystem ts) {
     this.ts = ts;
@@ -294,7 +301,8 @@ public class MainFrame extends JFrame {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
 

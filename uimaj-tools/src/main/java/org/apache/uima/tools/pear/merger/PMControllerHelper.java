@@ -186,8 +186,8 @@ public class PMControllerHelper {
     }
     InstallationDescriptor insdObject = insdHandler.getInstallationDescriptor();
     // add installation descriptor file to 'find_and_replace_path' actions
-    insdObject.addInstallationAction(createFileAction(adjMainRoot + "/"
-            + InstallationProcessor.INSD_FILE_PATH, MAIN_ROOT));
+    insdObject.addInstallationAction(
+            createFileAction(adjMainRoot + "/" + InstallationProcessor.INSD_FILE_PATH, MAIN_ROOT));
     // 2nd: process files under 'desc' folder, if exists
     processFiles(rootDir, PackageBrowser.DESCRIPTORS_DIR, insdObject);
     // 3rd: process files under 'conf' folder, if exists
@@ -225,8 +225,8 @@ public class PMControllerHelper {
       if (counter > 0) {
         // add this file to 'find_and_replace_path' actions
         String relFilePath = FileUtil.getRelativePath(rootDir, file.getAbsolutePath());
-        insdObject.addInstallationAction(createFileAction(adjMainRoot + "/" + relFilePath,
-                MAIN_ROOT));
+        insdObject.addInstallationAction(
+                createFileAction(adjMainRoot + "/" + relFilePath, MAIN_ROOT));
       }
     }
   }

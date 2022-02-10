@@ -28,7 +28,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.Level;
 
-
 /**
  * The Class SetLogConfigHandler.
  */
@@ -40,7 +39,9 @@ public class SetLogConfigHandler implements ActionListener {
   public SetLogConfigHandler() {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

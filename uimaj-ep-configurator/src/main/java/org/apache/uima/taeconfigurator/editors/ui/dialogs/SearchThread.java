@@ -37,23 +37,22 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
  * The Class SearchThread.
  */
-public class SearchThread implements Runnable /* extends Thread */{
-  
+public class SearchThread implements Runnable /* extends Thread */ {
+
   /** The m file name search. */
-  private Pattern m_fileNameSearch; 
-  
+  private Pattern m_fileNameSearch;
+
   /** The m input type search. */
   private Pattern m_inputTypeSearch;
-  
+
   /** The m output type search. */
   private Pattern m_outputTypeSearch;
-  
+
   /** The m project to search. */
-  private String  m_projectToSearch;
+  private String m_projectToSearch;
 
   /** The m dialog. */
   FindComponentDialog m_dialog;
@@ -79,13 +78,20 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Instantiates a new search thread.
    *
-   * @param dialog the dialog
-   * @param aggregateSection the aggregate section
-   * @param fileNameSearch the file name search
-   * @param inputTypeSearch the input type search
-   * @param outputTypeSearch the output type search
-   * @param projectToSearch the project to search
-   * @param componentHeaders the component headers
+   * @param dialog
+   *          the dialog
+   * @param aggregateSection
+   *          the aggregate section
+   * @param fileNameSearch
+   *          the file name search
+   * @param inputTypeSearch
+   *          the input type search
+   * @param outputTypeSearch
+   *          the output type search
+   * @param projectToSearch
+   *          the project to search
+   * @param componentHeaders
+   *          the component headers
    */
   public SearchThread(FindComponentDialog dialog, AbstractSection aggregateSection,
           String fileNameSearch, String inputTypeSearch, String outputTypeSearch,
@@ -93,9 +99,9 @@ public class SearchThread implements Runnable /* extends Thread */{
 
     m_dialog = dialog;
     m_aggregateSection = aggregateSection;
-    m_fileNameSearch = (null == fileNameSearch)? null : Pattern.compile(fileNameSearch);
-    m_inputTypeSearch = (null == inputTypeSearch)? null : Pattern.compile(inputTypeSearch);
-    m_outputTypeSearch = (null == outputTypeSearch)? null : Pattern.compile(outputTypeSearch);
+    m_fileNameSearch = (null == fileNameSearch) ? null : Pattern.compile(fileNameSearch);
+    m_inputTypeSearch = (null == inputTypeSearch) ? null : Pattern.compile(inputTypeSearch);
+    m_outputTypeSearch = (null == outputTypeSearch) ? null : Pattern.compile(outputTypeSearch);
     m_projectToSearch = projectToSearch;
     m_componentHeaders = componentHeaders;
   }
@@ -131,15 +137,15 @@ public class SearchThread implements Runnable /* extends Thread */{
     return m_bDone;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Runnable#run()
    */
   @Override
   public void run() {
     m_matchingDelegateComponentDescriptors = new ArrayList();
     m_matchingDelegateComponentDescriptions = new ArrayList();
-    
-    
 
     getDelegateComponentsByInputOutputTypes(m_projectToSearch);
 
@@ -149,7 +155,8 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Test one resource.
    *
-   * @param resource the resource
+   * @param resource
+   *          the resource
    */
   private void testOneResource(IResource resource) {
     switch (resource.getType()) {
@@ -157,7 +164,8 @@ public class SearchThread implements Runnable /* extends Thread */{
         if (resource.getName().toLowerCase().endsWith(".xml")
                 // exclude potentially many data files, not descriptors
                 && !resource.getName().toLowerCase().endsWith(".txt.xml")
-                && (m_fileNameSearch == null || m_fileNameSearch.matcher(resource.getName()).find())) {
+                && (m_fileNameSearch == null
+                        || m_fileNameSearch.matcher(resource.getName()).find())) {
           String fileDescriptorRelPath = m_aggregateSection.editor
                   .getDescriptorRelativePath(resource.getLocation().toString());
           setStatusMsg(2, "Examining " + getBriefDisplayVersion(fileDescriptorRelPath));
@@ -189,7 +197,8 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Gets the delegate components by input output types.
    *
-   * @param projectToSearch the project to search
+   * @param projectToSearch
+   *          the project to search
    * @return the delegate components by input output types
    */
   // matchingAnalysisEngineDescriptions
@@ -231,7 +240,8 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Gets the delegate components by IO types beginning at.
    *
-   * @param beginFolder the begin folder
+   * @param beginFolder
+   *          the begin folder
    * @return the delegate components by IO types beginning at
    */
   // matchingAnalysisEngineDescriptions
@@ -253,9 +263,12 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Delegate component matches capability reqs.
    *
-   * @param rs the rs
-   * @param inputTypeSearch the input type search
-   * @param outputTypeSearch the output type search
+   * @param rs
+   *          the rs
+   * @param inputTypeSearch
+   *          the input type search
+   * @param outputTypeSearch
+   *          the output type search
    * @return true, if successful
    */
   private boolean delegateComponentMatchesCapabilityReqs(ResourceCreationSpecifier rs,
@@ -284,17 +297,20 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Match capabilities to.
    *
-   * @param capabilities the capabilities
-   * @param search the search
-   * @param isInput the is input
+   * @param capabilities
+   *          the capabilities
+   * @param search
+   *          the search
+   * @param isInput
+   *          the is input
    * @return true, if successful
    */
   private boolean matchCapabilitiesTo(Capability[] capabilities, Pattern search, boolean isInput) {
     if (null == search)
       return true;
     for (int i = 0; i < capabilities.length; i++) {
-      TypeOrFeature[] typeOrFeatures = isInput ? capabilities[i].getInputs() : capabilities[i]
-              .getOutputs();
+      TypeOrFeature[] typeOrFeatures = isInput ? capabilities[i].getInputs()
+              : capabilities[i].getOutputs();
       if (null != typeOrFeatures) {
         for (int j = 0; j < typeOrFeatures.length; j++) {
           if (search.matcher(typeOrFeatures[j].getName()).find()) {
@@ -327,8 +343,10 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Sets the status msg.
    *
-   * @param nWhich the n which
-   * @param msg the msg
+   * @param nWhich
+   *          the n which
+   * @param msg
+   *          the msg
    */
   private void setStatusMsg(int nWhich, String msg) {
     m_nWhichStatusMsg = nWhich;
@@ -353,7 +371,8 @@ public class SearchThread implements Runnable /* extends Thread */{
   /**
    * Gets the brief display version.
    *
-   * @param filePathName the file path name
+   * @param filePathName
+   *          the file path name
    * @return the brief display version
    */
   private String getBriefDisplayVersion(String filePathName) {

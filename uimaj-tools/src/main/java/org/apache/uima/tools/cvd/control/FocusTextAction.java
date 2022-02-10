@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * Focus in text frame action handler.
@@ -39,7 +37,8 @@ public class FocusTextAction extends AbstractAction implements Action {
   /**
    * Instantiates a new focus text action.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public FocusTextAction(MainFrame frame) {
     this.main = frame;
@@ -48,7 +47,9 @@ public class FocusTextAction extends AbstractAction implements Action {
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -4867535661038776033L;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

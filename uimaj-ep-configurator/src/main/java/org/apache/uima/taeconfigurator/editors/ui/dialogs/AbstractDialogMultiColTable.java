@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
-
 /**
  * The Class AbstractDialogMultiColTable.
  */
@@ -39,7 +38,8 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   /**
    * Checked indicator.
    *
-   * @param col the col
+   * @param col
+   *          the col
    * @return the string
    */
   protected String checkedIndicator(int col) {
@@ -67,16 +67,24 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   /**
    * Instantiates a new abstract dialog multi col table.
    *
-   * @param aSection the a section
-   * @param title the title
-   * @param description the description
+   * @param aSection
+   *          the a section
+   * @param title
+   *          the title
+   * @param description
+   *          the description
    */
-  protected AbstractDialogMultiColTable(AbstractSection aSection, String title, String description) {
+  protected AbstractDialogMultiColTable(AbstractSection aSection, String title,
+          String description) {
     super(aSection, title, description);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.
+   * widgets.Event)
    */
   @Override
   public void handleEvent(Event event) {
@@ -110,7 +118,8 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   /**
    * Jit how to.
    *
-   * @param w the w
+   * @param w
+   *          the w
    */
   private void jitHowTo(Widget w) {
     Utility.popMessage(w, "Where to mouse click",
@@ -121,35 +130,40 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   /**
    * Toggle value.
    *
-   * @param item the item
-   * @param col the col
+   * @param item
+   *          the item
+   * @param col
+   *          the col
    */
   protected void toggleValue(TableItem item, int col) {
-    item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
-            : checkedIndicator(col));
+    item.setText(col,
+            item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED : checkedIndicator(col));
     if (item.getText(col).equals(checkedIndicator(col)))
       numberChecked++;
     else
       numberChecked--;
   }
-  
+
   /**
    * Toggle value.
    *
-   * @param item the item
-   * @param col the col
+   * @param item
+   *          the item
+   * @param col
+   *          the col
    */
   protected void toggleValue(TreeItem item, int col) {
-    item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
-            : checkedIndicator(col));
+    item.setText(col,
+            item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED : checkedIndicator(col));
     if (item.getText(col).equals(checkedIndicator(col)))
       numberChecked++;
     else
       numberChecked--;
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override
@@ -157,7 +171,9 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override
@@ -169,9 +185,12 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   /**
    * Sets the checked.
    *
-   * @param item the item
-   * @param col the col
-   * @param value the value
+   * @param item
+   *          the item
+   * @param col
+   *          the col
+   * @param value
+   *          the value
    */
   protected void setChecked(TableItem item, int col, boolean value) {
     boolean prevChecked = checkedIndicator(col).equals(item.getText(col));
@@ -181,13 +200,16 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     else if (!value && prevChecked)
       numberChecked--;
   }
-  
+
   /**
    * Sets the checked.
    *
-   * @param item the item
-   * @param col the col
-   * @param value the value
+   * @param item
+   *          the item
+   * @param col
+   *          the col
+   * @param value
+   *          the value
    */
   protected void setChecked(TreeItem item, int col, boolean value) {
     boolean prevChecked = checkedIndicator(col).equals(item.getText(col));

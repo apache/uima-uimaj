@@ -24,43 +24,44 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
-
 /**
  * The interface implemented by an external editor.
  */
 public interface IUimaEditorExtension {
-  
+
   /**
-   * The first method called by the CDE after the implementation class of this 
-   * interface is instantiated.
+   * The first method called by the CDE after the implementation class of this interface is
+   * instantiated.
    * 
    */
-  void init ();
-  
+  void init();
+
   /**
-   * When a new type of descriptor is encountered and cannot edit, CDE will
-   * called this method to test if the external editor can edit this new type of descriptor.
+   * When a new type of descriptor is encountered and cannot edit, CDE will called this method to
+   * test if the external editor can edit this new type of descriptor.
    * 
-   * @param cde       An instance of CDE
-   * @param xmlizable New type of descriptor to be edited
+   * @param cde
+   *          An instance of CDE
+   * @param xmlizable
+   *          New type of descriptor to be edited
    * @return true if the external editor can edit the specified type of descriptor
    */
-  boolean canEdit (MultiPageEditor cde, XMLizable xmlizable);
-  
+  boolean canEdit(MultiPageEditor cde, XMLizable xmlizable);
+
   /**
-   * Called by CDE to activate the external editor for editing the new type of descriptor.
-   *    * 
+   * Called by CDE to activate the external editor for editing the new type of descriptor. *
+   * 
    * @param site
-   *            The site for which this part is being created; must not be
-   *            <code>null</code>.
+   *          The site for which this part is being created; must not be <code>null</code>.
    * @param editorInput
-   *            The input on which this editor should be created; must not be
-   *            <code>null</code>.
-   * @param cde       An instance of CDE
-   * @param xmlizable New type of descriptor to be edited
+   *          The input on which this editor should be created; must not be <code>null</code>.
+   * @param cde
+   *          An instance of CDE
+   * @param xmlizable
+   *          New type of descriptor to be edited
    * @throws PartInitException
-   *             If the initialization of the part fails
+   *           If the initialization of the part fails
    */
-  void activateEditor(IEditorSite site, IEditorInput editorInput,
-          MultiPageEditor cde, XMLizable xmlizable) throws PartInitException;
+  void activateEditor(IEditorSite site, IEditorInput editorInput, MultiPageEditor cde,
+          XMLizable xmlizable) throws PartInitException;
 }

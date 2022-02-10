@@ -28,87 +28,92 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-
 /**
  * Abstract base class for menus which display the type hierarchy.
  */
 abstract class TypeMenu extends ContributionItem {
-    
-    /** The m parent type. */
-    private Type mParentType;
 
-    /** The m type system. */
-    private TypeSystem mTypeSystem;
+  /** The m parent type. */
+  private Type mParentType;
 
-    /**
-     * Initializes a new instance.
-     *
-     * @param parentType the parent type
-     * @param typeSystem the type system
-     */
-    TypeMenu(Type parentType, TypeSystem typeSystem) {
-      mParentType = parentType;
-      mTypeSystem = typeSystem;
-    }
+  /** The m type system. */
+  private TypeSystem mTypeSystem;
 
-    /**
-     * Fills the menu with type entries.
-     *
-     * @param menu the menu
-     * @param index the index
-     */
-    @Override
-    public void fill(Menu menu, int index) {
-      fillTypeMenu(mParentType, menu, false);
-    }
-
-    /**
-     * Fill type menu.
-     *
-     * @param parentType the parent type
-     * @param parentMenu the parent menu
-     * @param isParentIncluded the is parent included
-     */
-    private void fillTypeMenu(Type parentType, Menu parentMenu, 
-    		boolean isParentIncluded) {
-     
-      List<Type> childs = mTypeSystem.getDirectSubtypes(parentType);
-
-      Menu newSubMenu;
-
-      // has this type sub types ?
-      // yes
-      if (childs.size() != 0) {
-
-        if (isParentIncluded) {
-          MenuItem  subMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-          subMenuItem.setText(parentType.getName());
-
-          newSubMenu = new Menu(subMenuItem);
-          subMenuItem.setMenu(newSubMenu);
-        }
-        else {
-          newSubMenu = parentMenu;
-        }
-
-        insertAction(parentType, newSubMenu);
-
-        for (Type child : childs) {
-          fillTypeMenu(child, newSubMenu, true);
-        }
-      }
-      // no
-      else {
-        insertAction(parentType, parentMenu);
-      }
-    }
-    
-    /**
-     * Implementing classes must implement this method to insert
-     * actions into the type menu.
-     *
-     * @param type the type
-     * @param parentMenu the parent menu
-     */
-    protected abstract void insertAction(final Type type, Menu parentMenu);
+  /**
+   * Initializes a new instance.
+   *
+   * @param parentType
+   *          the parent type
+   * @param typeSystem
+   *          the type system
+   */
+  TypeMenu(Type parentType, TypeSystem typeSystem) {
+    mParentType = parentType;
+    mTypeSystem = typeSystem;
   }
+
+  /**
+   * Fills the menu with type entries.
+   *
+   * @param menu
+   *          the menu
+   * @param index
+   *          the index
+   */
+  @Override
+  public void fill(Menu menu, int index) {
+    fillTypeMenu(mParentType, menu, false);
+  }
+
+  /**
+   * Fill type menu.
+   *
+   * @param parentType
+   *          the parent type
+   * @param parentMenu
+   *          the parent menu
+   * @param isParentIncluded
+   *          the is parent included
+   */
+  private void fillTypeMenu(Type parentType, Menu parentMenu, boolean isParentIncluded) {
+
+    List<Type> childs = mTypeSystem.getDirectSubtypes(parentType);
+
+    Menu newSubMenu;
+
+    // has this type sub types ?
+    // yes
+    if (childs.size() != 0) {
+
+      if (isParentIncluded) {
+        MenuItem subMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+        subMenuItem.setText(parentType.getName());
+
+        newSubMenu = new Menu(subMenuItem);
+        subMenuItem.setMenu(newSubMenu);
+      } else {
+        newSubMenu = parentMenu;
+      }
+
+      insertAction(parentType, newSubMenu);
+
+      for (Type child : childs) {
+        fillTypeMenu(child, newSubMenu, true);
+      }
+    }
+    // no
+    else {
+      insertAction(parentType, parentMenu);
+    }
+  }
+
+  /**
+   * Implementing classes must implement this method to insert actions into the type menu.
+   *
+   * @param type
+   *          the type
+   * @param parentMenu
+   *          the parent menu
+   */
+  protected abstract void insertAction(final Type type, Menu parentMenu);
+}

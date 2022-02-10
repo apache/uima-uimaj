@@ -27,27 +27,29 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.fieldassist.ContentAssistField;
 
-
 /**
  * The Class ContentAssistField32.
  */
 public class ContentAssistField32 {
-  
+
   /** The caf. */
   final private ContentAssistField caf;
-  
+
   /**
    * Instantiates a new content assist field 32.
    *
-   * @param tc the tc
-   * @param candidatesToPickFrom the candidates to pick from
+   * @param tc
+   *          the tc
+   * @param candidatesToPickFrom
+   *          the candidates to pick from
    */
   ContentAssistField32(Composite tc, TypesWithNameSpaces candidatesToPickFrom) {
     TypesWithNameSpaces32 twns32 = new TypesWithNameSpaces32(candidatesToPickFrom);
-    caf = new ContentAssistField(tc, SWT.BORDER, new org.eclipse.jface.fieldassist.TextControlCreator(), 
-            new org.eclipse.jface.fieldassist.TextContentAdapter(), twns32,
-            null, null);
-    caf.getContentAssistCommandAdapter().setProposalAcceptanceStyle(org.eclipse.jface.fieldassist.ContentProposalAdapter.PROPOSAL_REPLACE);
+    caf = new ContentAssistField(tc, SWT.BORDER,
+            new org.eclipse.jface.fieldassist.TextControlCreator(),
+            new org.eclipse.jface.fieldassist.TextContentAdapter(), twns32, null, null);
+    caf.getContentAssistCommandAdapter().setProposalAcceptanceStyle(
+            org.eclipse.jface.fieldassist.ContentProposalAdapter.PROPOSAL_REPLACE);
   }
 
   /**

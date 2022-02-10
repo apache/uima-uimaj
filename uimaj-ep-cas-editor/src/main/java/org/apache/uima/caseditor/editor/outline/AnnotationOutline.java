@@ -65,14 +65,12 @@ import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
-
 /**
- * This outline view displays all <code>AnnotationFS</code>s of the current
- * mode/type from the binded editor.
+ * This outline view displays all <code>AnnotationFS</code>s of the current mode/type from the
+ * binded editor.
  */
-public final class AnnotationOutline extends ContentOutlinePage
-		implements ISelectionListener {
-  
+public final class AnnotationOutline extends ContentOutlinePage implements ISelectionListener {
+
   /**
    * This listener receive events from the bound editor.
    */
@@ -81,7 +79,8 @@ public final class AnnotationOutline extends ContentOutlinePage
     /**
      * Called if the editor annotation mode was changed.
      *
-     * @param newMode the new mode
+     * @param newMode
+     *          the new mode
      */
     @Override
     public void annotationModeChanged(Type newMode) {
@@ -112,10 +111,10 @@ public final class AnnotationOutline extends ContentOutlinePage
 
   /** The editor change listener. */
   private IAnnotationEditorModifyListener editorChangeListener;
-  
+
   /** The style. */
   private OutlineStyles style = OutlineStyles.TYPE;
-  
+
   /** The m outline composite. */
   private Composite mOutlineComposite;
 
@@ -130,8 +129,8 @@ public final class AnnotationOutline extends ContentOutlinePage
   /**
    * Creates a new <code>AnnotationOutline</code> object.
    *
-   * @param editor -
-   *          the editor to bind
+   * @param editor
+   *          - the editor to bind
    */
   public AnnotationOutline(AnnotationEditor editor) {
     this.editor = editor;
@@ -140,7 +139,8 @@ public final class AnnotationOutline extends ContentOutlinePage
   /**
    * Creates the outline table control.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   @Override
   public void createControl(Composite parent) {
@@ -152,7 +152,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     getSite().getPage().addSelectionListener(this);
     getSite().setSelectionProvider(mTableViewer);
-    
+
     changeAnnotationMode();
 
     editorChangeListener = new EditorListener();
@@ -205,7 +205,8 @@ public final class AnnotationOutline extends ContentOutlinePage
    * Adds the these actions to the global action handler: {@link DeleteFeatureStructureAction}
    * SelectAllAction.
    *
-   * @param actionBars the new action bars
+   * @param actionBars
+   *          the new action bars
    */
   @Override
   public void setActionBars(IActionBars actionBars) {
@@ -216,24 +217,25 @@ public final class AnnotationOutline extends ContentOutlinePage
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAction);
 
     actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), new SelectAllAction());
-    
+
     Action action = new SwitchStyleAction(this);
-    
+
     IMenuManager dropDownMenu = actionBars.getMenuManager();
     dropDownMenu.add(action);
-    
+
     IToolBarManager toolBarManager = actionBars.getToolBarManager();
-    
+
     // wide left annotation side action
     WideLeftAnnotationSideAction wideLeftAnnotationSideAction = new WideLeftAnnotationSideAction(
             editor);
     wideLeftAnnotationSideAction.setActionDefinitionId(WideLeftAnnotationSideAction.ID);
     wideLeftAnnotationSideAction.setText("Wides the left annotation side");
-    wideLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.WIDE_LEFT_SIDE));
+    wideLeftAnnotationSideAction
+            .setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.WIDE_LEFT_SIDE));
 
     getSite().getSelectionProvider().addSelectionChangedListener(wideLeftAnnotationSideAction);
-    actionBars.setGlobalActionHandler(WideLeftAnnotationSideAction.ID, wideLeftAnnotationSideAction);
+    actionBars.setGlobalActionHandler(WideLeftAnnotationSideAction.ID,
+            wideLeftAnnotationSideAction);
     toolBarManager.add(wideLeftAnnotationSideAction);
 
     // lower left annotation side action
@@ -241,23 +243,25 @@ public final class AnnotationOutline extends ContentOutlinePage
             editor);
     lowerLeftAnnotationSideAction.setActionDefinitionId(LowerLeftAnnotationSideAction.ID);
     lowerLeftAnnotationSideAction.setText("Lowers the left annotation side");
-    lowerLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.LOWER_LEFT_SIDE));
+    lowerLeftAnnotationSideAction
+            .setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.LOWER_LEFT_SIDE));
 
     getSite().getSelectionProvider().addSelectionChangedListener(lowerLeftAnnotationSideAction);
-    actionBars.setGlobalActionHandler(LowerLeftAnnotationSideAction.ID, lowerLeftAnnotationSideAction);
+    actionBars.setGlobalActionHandler(LowerLeftAnnotationSideAction.ID,
+            lowerLeftAnnotationSideAction);
     toolBarManager.add(lowerLeftAnnotationSideAction);
 
     // lower right annotation side action
-    LowerRightAnnotationSideAction lowerRightAnnotationSideAction =
-      new LowerRightAnnotationSideAction(editor);
+    LowerRightAnnotationSideAction lowerRightAnnotationSideAction = new LowerRightAnnotationSideAction(
+            editor);
     lowerRightAnnotationSideAction.setActionDefinitionId(LowerRightAnnotationSideAction.ID);
     lowerRightAnnotationSideAction.setText("Lowers the right annotation side");
-    lowerRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.LOWER_RIGHT_SIDE));
+    lowerRightAnnotationSideAction
+            .setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.LOWER_RIGHT_SIDE));
 
     getSite().getSelectionProvider().addSelectionChangedListener(lowerRightAnnotationSideAction);
-    actionBars.setGlobalActionHandler(LowerRightAnnotationSideAction.ID, lowerRightAnnotationSideAction);
+    actionBars.setGlobalActionHandler(LowerRightAnnotationSideAction.ID,
+            lowerRightAnnotationSideAction);
     toolBarManager.add(lowerRightAnnotationSideAction);
 
     // wide right annotation side action
@@ -265,11 +269,12 @@ public final class AnnotationOutline extends ContentOutlinePage
             editor);
     wideRightAnnotationSideAction.setActionDefinitionId(WideRightAnnotationSideAction.ID);
     wideRightAnnotationSideAction.setText("Wides the right annotation side");
-    wideRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.WIDE_RIGHT_SIDE));
+    wideRightAnnotationSideAction
+            .setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.WIDE_RIGHT_SIDE));
 
     getSite().getSelectionProvider().addSelectionChangedListener(wideRightAnnotationSideAction);
-    actionBars.setGlobalActionHandler(WideRightAnnotationSideAction.ID, wideRightAnnotationSideAction);
+    actionBars.setGlobalActionHandler(WideRightAnnotationSideAction.ID,
+            wideRightAnnotationSideAction);
     toolBarManager.add(wideRightAnnotationSideAction);
 
     // merge action
@@ -281,7 +286,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // delete action
     toolBarManager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
-    
+
     super.setActionBars(actionBars);
   }
 
@@ -291,31 +296,30 @@ public final class AnnotationOutline extends ContentOutlinePage
    * @return the outline styles
    */
   OutlineStyles currentStyle() {
-	  return style;
+    return style;
   }
-  
+
   /**
    * Switch style.
    *
-   * @param style the style
+   * @param style
+   *          the style
    */
   void switchStyle(OutlineStyles style) {
-	  
-	  this.style = style;
-	  
-	  if (OutlineStyles.MODE.equals(style)) {
-		  mTableViewer.setContentProvider(new ModeSensitiveContentProvider(
-				  editor, mTableViewer));
-	  } else if (OutlineStyles.TYPE.equals(style)) {
-		  mTableViewer.setContentProvider(new TypeGroupedContentProvider(
-				  editor, mTableViewer));
-	  } else {
-		  throw new CasEditorError("Unknown style!");
-	  }
 
-		mTableViewer.refresh();
+    this.style = style;
+
+    if (OutlineStyles.MODE.equals(style)) {
+      mTableViewer.setContentProvider(new ModeSensitiveContentProvider(editor, mTableViewer));
+    } else if (OutlineStyles.TYPE.equals(style)) {
+      mTableViewer.setContentProvider(new TypeGroupedContentProvider(editor, mTableViewer));
+    } else {
+      throw new CasEditorError("Unknown style!");
+    }
+
+    mTableViewer.refresh();
   }
-  
+
   /**
    * Sets the focus.
    */
@@ -335,7 +339,8 @@ public final class AnnotationOutline extends ContentOutlinePage
   /**
    * Creates the table viewer.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   private void createTableViewer(Composite parent) {
     int style = SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION;
@@ -363,30 +368,28 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // Note: The type style is considered as the default
     mTableViewer.setContentProvider(new TypeGroupedContentProvider(editor, mTableViewer));
-    
-    mTableViewer.setFilters(new ViewerFilter[]{new ViewerFilter() {
 
-    	// TODO: Improve this filter ... it is to sloooooooooow
-		@Override
-		public boolean select(Viewer viewer, Object parentElement,
-				Object element) {
-			Collection<Type> shownTypes = editor.getShownAnnotationTypes();
-			
-			if (element instanceof AnnotationTypeTreeNode) {
-				AnnotationTypeTreeNode typeNode = (AnnotationTypeTreeNode) element;
+    mTableViewer.setFilters(new ViewerFilter[] { new ViewerFilter() {
 
-                return shownTypes.contains(typeNode.getType());
-			}
-			else if (element instanceof AnnotationTreeNode) {
-				AnnotationTreeNode annotationNode = (AnnotationTreeNode) element;
-				
-				return shownTypes.contains(annotationNode.getAnnotation().getType());
-			}
-			else {
-				throw new CasEditorError("Unexpected element type!");
-			}
-		}}});
-    
+      // TODO: Improve this filter ... it is to sloooooooooow
+      @Override
+      public boolean select(Viewer viewer, Object parentElement, Object element) {
+        Collection<Type> shownTypes = editor.getShownAnnotationTypes();
+
+        if (element instanceof AnnotationTypeTreeNode) {
+          AnnotationTypeTreeNode typeNode = (AnnotationTypeTreeNode) element;
+
+          return shownTypes.contains(typeNode.getType());
+        } else if (element instanceof AnnotationTreeNode) {
+          AnnotationTreeNode annotationNode = (AnnotationTreeNode) element;
+
+          return shownTypes.contains(annotationNode.getAnnotation().getType());
+        } else {
+          throw new CasEditorError("Unexpected element type!");
+        }
+      }
+    } });
+
     mTableViewer.setLabelProvider(new OutlineLabelProvider());
 
     mTableViewer.setSorter(new OutlineTableSorter());
@@ -398,14 +401,14 @@ public final class AnnotationOutline extends ContentOutlinePage
 
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    
+
     boolean isForeignSelection = true;
-    
+
     if (part instanceof ContentOutline) {
       ContentOutline contentOutline = (ContentOutline) part;
-      
+
       IPage currentPage = contentOutline.getCurrentPage();
-      
+
       if (currentPage instanceof OutlinePageBook) {
         OutlinePageBook pageBook = (OutlinePageBook) currentPage;
         isForeignSelection = pageBook.getCasViewPage() != this;
@@ -417,8 +420,8 @@ public final class AnnotationOutline extends ContentOutlinePage
         AnnotationSelection annotations = new AnnotationSelection((StructuredSelection) selection);
 
         if (!annotations.isEmpty()) {
-          ISelection tableSelection = new StructuredSelection(new AnnotationTreeNode(editor
-                  .getDocument(), annotations.getFirst()));
+          ISelection tableSelection = new StructuredSelection(
+                  new AnnotationTreeNode(editor.getDocument(), annotations.getFirst()));
 
           mTableViewer.setSelection(tableSelection, true);
         }
