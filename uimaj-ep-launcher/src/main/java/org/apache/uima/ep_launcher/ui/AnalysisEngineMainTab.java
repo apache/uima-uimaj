@@ -65,82 +65,81 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
- * The Analysis Engine Main Tab is responsible to display/edit
- * the UIMA related settings, such as project, descriptor file,
- * input folders, etc. 
+ * The Analysis Engine Main Tab is responsible to display/edit the UIMA related settings, such as
+ * project, descriptor file, input folders, etc.
  */
 // TODO: Add an icon for the main tab
 public class AnalysisEngineMainTab extends JavaLaunchTab {
 
   private Text projectText;
-  
+
   private Text descriptorText;
-  
+
   private Text inputText;
   private Button recursivelyButton;
-  
+
   private Button casButton;
   private Button plainTextButton;
   private Combo encodingCombo;
   private Text languageText;
-  
+
   private Text outputFolderText;
   private Button clearFolderButton;
-  
+
   private IWorkspaceRoot getWorkspaceRoot() {
     return ResourcesPlugin.getWorkspace().getRoot();
   }
-  
+
   private IProject getSelectedProject() {
     IResource project = ResourcesPlugin.getWorkspace().getRoot().findMember(projectText.getText());
     if (project instanceof IProject) {
-      return (IProject)  project;
+      return (IProject) project;
     }
-    
+
     return null;
   }
-  
+
   private IContainer getContainer(String path) {
-	Path containerPath = new Path(path);
-	IResource resource =  getWorkspaceRoot().findMember(containerPath);
-	if (resource instanceof IContainer)
-	  return (IContainer) resource;
-    
+    Path containerPath = new Path(path);
+    IResource resource = getWorkspaceRoot().findMember(containerPath);
+    if (resource instanceof IContainer)
+      return (IContainer) resource;
+
     return null;
   }
-  
+
   @Override
   public void createControl(Composite composite) {
-    
+
     Composite projectComposite = new Composite(composite, SWT.NONE);
     GridLayout projectGridLayout = new GridLayout();
     projectGridLayout.numColumns = 1;
     projectGridLayout.horizontalSpacing = SWT.FILL;
     projectComposite.setLayout(projectGridLayout);
-    
+
     // Project Group
     Group projectGroup = new Group(projectComposite, SWT.None);
     projectGroup.setText("Project:");
-    
+
     GridData projectGroupData = new GridData();
     projectGroupData.grabExcessHorizontalSpace = true;
     projectGroupData.horizontalAlignment = SWT.FILL;
     projectGroup.setLayoutData(projectGroupData);
-    
+
     GridLayout projectGroupLayout = new GridLayout(2, false);
     projectGroup.setLayout(projectGroupLayout);
-    
+
     projectText = new Text(projectGroup, SWT.BORDER);
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(projectText);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(projectText);
     projectText.addModifyListener(new ModifyListener() {
-      
+
       @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
     });
-    
+
     Button browseProject = new Button(projectGroup, SWT.NONE);
     browseProject.setText("Browse ...");
     browseProject.addSelectionListener(new SelectionAdapter() {
@@ -157,31 +156,31 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         if (project != null) {
           dialog.setInitialSelections(new Object[] { project });
         }
-        
+
         if (dialog.open() == Window.OK) {
           IProject selectedProject = (IProject) dialog.getFirstResult();
           projectText.setText(selectedProject.getName());
         }
       }
     });
-    
+
     // Descriptor Group
     Group descriptorGroup = new Group(projectComposite, SWT.None);
     descriptorGroup.setText("Descriptor:");
-    
+
     GridData descriptorGroupData = new GridData();
     descriptorGroupData.grabExcessHorizontalSpace = true;
     descriptorGroupData.horizontalAlignment = SWT.FILL;
     descriptorGroup.setLayoutData(projectGroupData);
-    
+
     GridLayout descriptorGroupLayout = new GridLayout(2, false);
     descriptorGroup.setLayout(descriptorGroupLayout);
-    
+
     descriptorText = new Text(descriptorGroup, SWT.BORDER);
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(descriptorText);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(descriptorText);
     descriptorText.addModifyListener(new ModifyListener() {
-      
+
       @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
@@ -207,28 +206,27 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         }
       }
     });
-    
+
     // Input Resource Group
     Group inputResourceGroup = new Group(projectComposite, SWT.None);
     inputResourceGroup.setText("Input Resource:");
-    
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(inputResourceGroup);
-    
+
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(inputResourceGroup);
+
     GridLayout inputResourceGroupLayout = new GridLayout(2, false);
     inputResourceGroup.setLayout(inputResourceGroupLayout);
-    
+
     inputText = new Text(inputResourceGroup, SWT.BORDER);
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(inputText);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(inputText);
     inputText.addModifyListener(new ModifyListener() {
-      
+
       @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
     });
-    
+
     Button browseInputResource = new Button(inputResourceGroup, SWT.NONE);
     browseInputResource.setText("Browse ...");
     browseInputResource.addSelectionListener(new SelectionAdapter() {
@@ -249,80 +247,80 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         }
       }
     });
-    
+
     recursivelyButton = new Button(inputResourceGroup, SWT.CHECK);
     recursivelyButton.setText("Recursively, read all files under each directory");
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(recursivelyButton);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(recursivelyButton);
     recursivelyButton.addSelectionListener(new SelectionListener() {
-      
+
       @Override
       public void widgetSelected(SelectionEvent event) {
         updateLaunchConfigurationDialog();
       }
-      
+
       @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
-    
+
     Group inputFormatGroup = new Group(projectComposite, SWT.None);
     inputFormatGroup.setText("Input Format:");
-    
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(inputFormatGroup);
-    
+
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(inputFormatGroup);
+
     GridLayout inputFormatGroupLayout = new GridLayout(4, false);
     inputFormatGroup.setLayout(inputFormatGroupLayout);
-    
+
     casButton = new Button(inputFormatGroup, SWT.RADIO);
     casButton.setText("CASes (XMI or XCAS format)");
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).span(4, 1).applyTo(casButton);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).span(4, 1)
+            .applyTo(casButton);
     casButton.addSelectionListener(new SelectionListener() {
-      
+
       @Override
       public void widgetSelected(SelectionEvent event) {
         updateLaunchConfigurationDialog();
       }
-      
+
       @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
-    
+
     plainTextButton = new Button(inputFormatGroup, SWT.RADIO);
-    GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).
-            grab(false, false).applyTo(plainTextButton);
+    GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(false, false)
+            .applyTo(plainTextButton);
     plainTextButton.addSelectionListener(new SelectionListener() {
-      
+
       @Override
       public void widgetSelected(SelectionEvent event) {
         encodingCombo.setEnabled(plainTextButton.getSelection());
         languageText.setEnabled(plainTextButton.getSelection());
         updateLaunchConfigurationDialog();
       }
-      
+
       @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
     });
     plainTextButton.setText("Plain Text, encoding:");
-    
+
     encodingCombo = new Combo(inputFormatGroup, SWT.NONE);
-    GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).
-        grab(false, false).applyTo(encodingCombo);
-    
+    GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(false, false)
+            .applyTo(encodingCombo);
+
     encodingCombo.addModifyListener(new ModifyListener() {
-      
+
       @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
     });
-  
+
     String defaultEncoding = Charset.defaultCharset().displayName();
-    
+
     Set<String> charsets = new HashSet<>();
     charsets.add("US-ASCII");
     charsets.add("ISO-8859-1");
@@ -331,56 +329,56 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     charsets.add("UTF-16LE");
     charsets.add("UTF-16");
     charsets.add(defaultEncoding);
-    
+
     encodingCombo.setItems(charsets.toArray(new String[charsets.size()]));
     // Will be enabled by initializeForm if format is plain text
     encodingCombo.setEnabled(false);
-    
+
     // Add language label
     Label languageLabel = new Label(inputFormatGroup, SWT.NONE);
     languageLabel.setText("Language:");
-    
+
     // Add language text field
-   languageText = new Text(inputFormatGroup, SWT.BORDER);
-   GridDataFactory.swtDefaults().hint(250, SWT.DEFAULT).align(SWT.LEFT, SWT.CENTER).
-            grab(true, false).applyTo(languageText);
-    
-   languageText.addModifyListener(new ModifyListener() {
-     
-     @Override
-    public void modifyText(ModifyEvent event) {
-       updateLaunchConfigurationDialog();
-     }
-   });
-   
-    // Output Folder
-    Group outputFolderGroup = new Group(projectComposite, SWT.None);
-    outputFolderGroup.setText("Output Folder:");
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(outputFolderGroup);
-    GridLayout outputFolderGroupLayout = new GridLayout(2, false);
-    outputFolderGroup.setLayout(outputFolderGroupLayout);
-    outputFolderText = new Text(outputFolderGroup, SWT.BORDER);
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(outputFolderText);
-    outputFolderText.addModifyListener(new ModifyListener() {
-      
+    languageText = new Text(inputFormatGroup, SWT.BORDER);
+    GridDataFactory.swtDefaults().hint(250, SWT.DEFAULT).align(SWT.LEFT, SWT.CENTER)
+            .grab(true, false).applyTo(languageText);
+
+    languageText.addModifyListener(new ModifyListener() {
+
       @Override
       public void modifyText(ModifyEvent event) {
         updateLaunchConfigurationDialog();
       }
     });
-    
+
+    // Output Folder
+    Group outputFolderGroup = new Group(projectComposite, SWT.None);
+    outputFolderGroup.setText("Output Folder:");
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(outputFolderGroup);
+    GridLayout outputFolderGroupLayout = new GridLayout(2, false);
+    outputFolderGroup.setLayout(outputFolderGroupLayout);
+    outputFolderText = new Text(outputFolderGroup, SWT.BORDER);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(outputFolderText);
+    outputFolderText.addModifyListener(new ModifyListener() {
+
+      @Override
+      public void modifyText(ModifyEvent event) {
+        updateLaunchConfigurationDialog();
+      }
+    });
+
     Button browseOutputFolderButton = new Button(outputFolderGroup, SWT.NONE);
     browseOutputFolderButton.setText("Browse ...");
     browseOutputFolderButton.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-     // TODO: Only select elements within project
+        // TODO: Only select elements within project
         String currentContainerString = outputFolderText.getText();
         IContainer currentContainer = getContainer(currentContainerString);
-        ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(),
-                currentContainer, false, "Select output folder");
+        ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), currentContainer,
+                false, "Select output folder");
         dialog.showClosedProjects(false);
         dialog.open();
         Object[] results = dialog.getResult();
@@ -391,17 +389,17 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         }
       }
     });
-    
+
     clearFolderButton = new Button(outputFolderGroup, SWT.CHECK);
     clearFolderButton.setText("Clear the output folder");
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).applyTo(clearFolderButton);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(clearFolderButton);
     clearFolderButton.addSelectionListener(new SelectionListener() {
       @Override
       public void widgetSelected(SelectionEvent event) {
         updateLaunchConfigurationDialog();
       }
-      
+
       @Override
       public void widgetDefaultSelected(SelectionEvent event) {
       }
@@ -416,51 +414,49 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
 
   @Override
   public boolean isValid(ILaunchConfiguration launchConfig) {
-    
+
     setErrorMessage(null);
-    
-    
+
     // Project must be set, check that project does exist
     String projectName = projectText.getText();
-    
+
     IResource projectResource = ResourcesPlugin.getWorkspace().getRoot().findMember(projectName);
     if (!(projectResource instanceof IProject)) {
       setErrorMessage("Project does not exist!");
       return false;
     }
-    
+
     // Descriptor must be set and valid file
     IResource descriptorResource = getWorkspaceRoot().findMember(descriptorText.getText());
     if (!(descriptorResource instanceof IFile)) {
       setErrorMessage("Descriptor must be an existing file!");
       return false;
     }
-    
+
     // Input folder or file must be set
     IResource inputResource = getWorkspaceRoot().findMember(inputText.getText());
     if (inputResource == null) {
       setErrorMessage("Input resource must be an existing file or folder!");
       return false;
     }
-    
+
     // Validate the input encoding
     if (plainTextButton.getSelection()) {
       String inptuEncoding = encodingCombo.getText();
-      
+
       boolean isEncodingValid;
       try {
         isEncodingValid = Charset.isSupported(inptuEncoding);
-      }
-      catch (IllegalCharsetNameException e) {
+      } catch (IllegalCharsetNameException e) {
         isEncodingValid = false;
       }
-      
+
       if (!isEncodingValid) {
         setErrorMessage("Invalid input format encoding!");
         return false;
       }
     }
-    
+
     // Validate output folder
     if (outputFolderText.getText().length() > 0) {
       IResource outputResource = getWorkspaceRoot().findMember(outputFolderText.getText());
@@ -469,41 +465,38 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         return false;
       }
     }
-        
+
     return super.isValid(launchConfig);
   }
-  
+
   @Override
   public void performApply(ILaunchConfigurationWorkingCopy config) {
     config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
             (String) projectText.getText());
-    
+
     config.setAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, descriptorText.getText());
-    
+
     config.setAttribute(LauncherConstants.ATTR_INPUT_NAME, inputText.getText());
     config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME,
-        recursivelyButton.getSelection());
-    
+            recursivelyButton.getSelection());
+
     String formatName;
     if (casButton.getSelection()) {
       formatName = InputFormat.CAS.toString();
-    }
-    else if (plainTextButton.getSelection()) {
+    } else if (plainTextButton.getSelection()) {
       formatName = InputFormat.PLAIN_TEXT.toString();
-    }
-    else {
+    } else {
       throw new IllegalStateException("One button must always be selected!");
     }
 
     config.setAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME, formatName);
-    
+
     config.setAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME, encodingCombo.getText());
-    
+
     config.setAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, languageText.getText());
-    
+
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, outputFolderText.getText());
-    config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME,
-        clearFolderButton.getSelection());
+    config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, clearFolderButton.getSelection());
   }
 
   @Override
@@ -513,90 +506,92 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     config.setAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "x-unspecified");
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false);
   }
-  
+
   @Override
   public void initializeFrom(ILaunchConfiguration config) {
-    
+
     // TODO: Log errors if reading fails?
-    
+
     // write values to launch configuration ...
     try {
-      projectText.setText(config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, ""));
+      projectText.setText(
+              config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, ""));
     } catch (CoreException e) {
       projectText.setText("");
     }
-    
+
     try {
       descriptorText.setText(config.getAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, ""));
     } catch (CoreException e) {
       descriptorText.setText("");
     }
-    
+
     try {
       inputText.setText(config.getAttribute(LauncherConstants.ATTR_INPUT_NAME, ""));
     } catch (CoreException e) {
       inputText.setText("");
     }
-    
+
     // recursive button
     try {
-      recursivelyButton.setSelection((Boolean) config.getAttribute(
-              LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false));
+      recursivelyButton.setSelection(
+              (Boolean) config.getAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false));
     } catch (CoreException e) {
       recursivelyButton.setSelection(false);
     }
-    
+
     // Format buttons
     String formatName;
     try {
-      formatName = config.getAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME, InputFormat.CAS.toString());
+      formatName = config.getAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME,
+              InputFormat.CAS.toString());
     } catch (CoreException e) {
       formatName = InputFormat.CAS.toString();
     }
-    
+
     if (InputFormat.CAS.toString().equals(formatName)) {
       casButton.setSelection(true);
-    }
-    else if (InputFormat.PLAIN_TEXT.toString().equals(formatName)) {
+    } else if (InputFormat.PLAIN_TEXT.toString().equals(formatName)) {
       plainTextButton.setSelection(true);
       encodingCombo.setEnabled(true);
       languageText.setEnabled(true);
-      
+
       String language;
       try {
         language = config.getAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "x-unspecified");
       } catch (CoreException e) {
         language = "x-unspecified";
       }
-      
+
       languageText.setText(language);
     }
-    
+
     // Always remember the input encoding, even so plain text is not selected,
     // it might be convenient for the user
     String inputEncoding = Charset.defaultCharset().displayName();
     try {
-      inputEncoding = config.getAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME, inputEncoding);
+      inputEncoding = config.getAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME,
+              inputEncoding);
     } catch (CoreException e) {
     }
-    
+
     encodingCombo.setText(inputEncoding);
-    
+
     // output folder
     try {
       outputFolderText.setText(config.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, ""));
     } catch (CoreException e) {
       outputFolderText.setText("");
     }
-    
+
     // clear folder button
     try {
-      clearFolderButton.setSelection((Boolean) config.getAttribute(
-              LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
+      clearFolderButton.setSelection(
+              (Boolean) config.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
     } catch (CoreException e) {
       clearFolderButton.setSelection(false);
     }
-    
+
     super.initializeFrom(config);
   }
 }
