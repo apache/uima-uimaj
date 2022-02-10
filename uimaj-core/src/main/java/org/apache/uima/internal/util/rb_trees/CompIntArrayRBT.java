@@ -24,8 +24,9 @@ import org.apache.uima.internal.util.IntComparator;
 /**
  * Used for UIMA Set indexes
  * 
- * 
+ * @deprecated Not used anymore. Will be removed in UIMA 4.
  */
+@Deprecated
 public class CompIntArrayRBT extends IntArrayRBT {
 
   private IntComparator comp;
