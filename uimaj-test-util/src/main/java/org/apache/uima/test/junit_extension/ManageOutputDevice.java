@@ -45,7 +45,8 @@ public class ManageOutputDevice {
    * 
    * @param descriptor
    *          a full qualified filename, see {@link java.io.File#File(String pathname)}
-   * @throws FileNotFoundException -
+   * @throws FileNotFoundException
+   *           -
    */
   public static void setSysOutToFile(String descriptor) throws FileNotFoundException {
     File f = new File(descriptor);
@@ -55,8 +56,8 @@ public class ManageOutputDevice {
   }
 
   /**
-   * sets the <code>System.out</code> to the value, which was set, when the class was loaded by
-   * the VM.
+   * sets the <code>System.out</code> to the value, which was set, when the class was loaded by the
+   * VM.
    */
   public static void setSysOutToDefault() {
     System.setOut(sysOutPS);
@@ -72,8 +73,10 @@ public class ManageOutputDevice {
   /**
    * sets the <code>System.err</code> to a file based <code>java.io.PrintStream</code>
    * 
-   * @param descriptor -
-   * @throws FileNotFoundException -
+   * @param descriptor
+   *          -
+   * @throws FileNotFoundException
+   *           -
    */
   public static void setSysErrToFile(String descriptor) throws FileNotFoundException {
     File f = new File(descriptor);
@@ -83,8 +86,8 @@ public class ManageOutputDevice {
   }
 
   /**
-   * sets the <code>System.err</code> to the value, which was set, when this class was loaded by
-   * the VM.
+   * sets the <code>System.err</code> to the value, which was set, when this class was loaded by the
+   * VM.
    */
   public static void setSysErrToDefault() {
     System.setErr(sysErrPS);
@@ -107,8 +110,8 @@ public class ManageOutputDevice {
   }
 
   /**
-   * sets the <code>System.err</code> and <code>System.out</code> to their values, which were
-   * set, when this class was loaded.
+   * sets the <code>System.err</code> and <code>System.out</code> to their values, which were set,
+   * when this class was loaded.
    */
   public static void setAllSystemOutputToDefault() {
     setSysErrToDefault();

@@ -224,8 +224,8 @@ public class JUnitTestRunner {
       }
 
       // print header
-      resultWriter
-              .println("################################################################################################");
+      resultWriter.println(
+              "################################################################################################");
       resultWriter.println("# TestSuite: " + suite.getName());
       resultWriter.println("# Testcases: " + suite.countTestCases());
       resultWriter.println("# Test candidate: " + testName);
@@ -234,8 +234,8 @@ public class JUnitTestRunner {
       resultWriter.println("# Console output filename: " + consoleFileName);
       resultWriter.println("# Test start directory: " + System.getProperty("user.dir"));
       resultWriter.println("# Test starter: " + System.getProperty("user.name"));
-      resultWriter.println("# OS: " + System.getProperty("os.name") + " "
-              + System.getProperty("os.version"));
+      resultWriter.println(
+              "# OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version"));
       resultWriter.println("# Command line run: " + System.getProperty("isCommandLine", "false"));
 
       // get current date and time
@@ -252,8 +252,8 @@ public class JUnitTestRunner {
 
       resultWriter.println("# Test runs with java version: " + System.getProperty("java.version"));
       resultWriter.println("# JUnitTestRunner version: 1.2");
-      resultWriter
-              .println("################################################################################################");
+      resultWriter.println(
+              "################################################################################################");
 
       // run current test
       TestResult results = aTestRunner.doRun(suite);
