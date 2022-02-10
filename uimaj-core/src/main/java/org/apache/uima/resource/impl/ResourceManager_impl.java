@@ -371,7 +371,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   @Override
-  public String[] getDataPathElements() {
+  public List<String> getDataPathElements() {
     return getRelativePathResolver().getDataPathElements();
   }
 

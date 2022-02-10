@@ -22,6 +22,7 @@ package org.apache.uima.resource;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Used by the resource manager to resolve relative URLs to absolute URLs.
@@ -49,7 +50,7 @@ public interface RelativePathResolver {
    * 
    * @return the data path
    */
-  String[] getDataPathElements();
+  List<String> getDataPathElements();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by

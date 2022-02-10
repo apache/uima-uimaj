@@ -55,7 +55,7 @@ public interface ResourceManager {
    * 
    * @return the data path elements
    */
-  String[] getDataPathElements();
+  List<String> getDataPathElements();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by

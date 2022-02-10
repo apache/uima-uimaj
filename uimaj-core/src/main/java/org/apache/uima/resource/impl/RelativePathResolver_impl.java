@@ -19,8 +19,10 @@
 
 package org.apache.uima.resource.impl;
 
-import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +43,7 @@ import org.apache.uima.util.impl.Constants;
 public class RelativePathResolver_impl implements RelativePathResolver {
 
   /** Data path as a string. */
-  private String[] mDataPath;
+  private List<String> mDataPath;
 
   /** Array of base URLs parsed from the data path. */
   private URL[] mBaseUrls;
@@ -82,7 +84,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       setDataPath(dataPath);
     } catch (MalformedURLException e) {
       // initialize to empty path
-      mDataPath = Constants.EMPTY_STRING_ARRAY;
+      mDataPath = emptyList();
       mBaseUrls = Constants.EMPTY_URL_ARRAY;
     }
     mClassLoader = aClassLoader;
@@ -92,25 +94,25 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   @Deprecated
   public String getDataPath() {
     String pathSepChar = System.getProperty("path.separator");
-    return stream(mDataPath).collect(joining(pathSepChar));
+    return mDataPath.stream().collect(joining(pathSepChar));
   }
 
   @Override
-  public String[] getDataPathElements() {
+  public List<String> getDataPathElements() {
     return mDataPath;
   }
 
   @Override
   public void setDataPathElements(File... aPaths) throws MalformedURLException {
     if (aPaths == null) {
-      mDataPath = Constants.EMPTY_STRING_ARRAY;
+      mDataPath = emptyList();
       mBaseUrls = Constants.EMPTY_URL_ARRAY;
       return;
     }
 
-    mDataPath = Arrays.stream(aPaths) //
+    mDataPath = unmodifiableList(Arrays.stream(aPaths) //
             .map(File::getPath) //
-            .toArray(String[]::new);
+            .collect(toList()));
     mBaseUrls = new URL[aPaths.length];
     for (int i = 0; i < aPaths.length; i++) {
       // Note, this URL can contain space characters if there were spaces in the
@@ -129,7 +131,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       return;
     }
 
-    mDataPath = Arrays.copyOf(aPaths, aPaths.length);
+    mDataPath = unmodifiableList(Arrays.stream(aPaths).collect(toList()));
     mBaseUrls = new URL[aPaths.length];
     for (int i = 0; i < aPaths.length; i++) {
       // Note, this URL can contain space characters if there were spaces in the
@@ -160,7 +162,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       // URL.getFile() and expecting it to be a valid file name).
     }
     mBaseUrls = urls.toArray(new URL[urls.size()]);
-    mDataPath = paths.toArray(new String[paths.size()]);
+    mDataPath = unmodifiableList(paths);
   }
 
   @Override
