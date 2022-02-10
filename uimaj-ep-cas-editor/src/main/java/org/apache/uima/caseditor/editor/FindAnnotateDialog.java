@@ -46,80 +46,80 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-
 /**
  * A dialog to find and annotate a piece of text in the document.
  * 
- * TODO:
- * Add option to only search in text which is not covered by the annotation type.
- * Add buttons to modify annotation bounds
- * Match whole annotation: e.g. Token
- * Scope search in annotations of type
- * Add history to search field
+ * TODO: Add option to only search in text which is not covered by the annotation type. Add buttons
+ * to modify annotation bounds Match whole annotation: e.g. Token Scope search in annotations of
+ * type Add history to search field
  */
 class FindAnnotateDialog extends Dialog {
 
   /** The Constant FIND_BUTTON. */
   private static final int FIND_BUTTON = 100;
-  
+
   /** The Constant ANNOTATE_FIND_BUTTON. */
   private static final int ANNOTATE_FIND_BUTTON = 101;
-  
+
   /** The Constant ANNOTATE_BUTTON. */
   private static final int ANNOTATE_BUTTON = 102;
-  
+
   /** The Constant ANNOTATE_ALL_BUTTON. */
   private static final int ANNOTATE_ALL_BUTTON = 103;
-  
+
   /** The close button. */
   private static int CLOSE_BUTTON = 104;
-  
+
   /** The find replace target. */
   private final IFindReplaceTarget findReplaceTarget;
-  
+
   /** The document. */
   private final ICasDocument document;
-  
+
   /** The mode type. */
   private final Type modeType;
-  
+
   /** The find field. */
   private Combo findField;
-  
+
   /** The type field. */
   private TypeCombo typeField;
-  
+
   /** The wide left side button. */
   private Button wideLeftSideButton;
-  
+
   /** The lower left side button. */
   private Button lowerLeftSideButton;
-  
+
   /** The lower right side button. */
   private Button lowerRightSideButton;
-  
+
   /** The wide right side button. */
   private Button wideRightSideButton;
-  
+
   /** The forward radio button. */
   private Button forwardRadioButton;
-  
+
   /**
-   * Annotation created by the user with the Annotate button.
-   * Contains null if no search was done or search was continued after 
-   * an annotation was created.
+   * Annotation created by the user with the Annotate button. Contains null if no search was done or
+   * search was continued after an annotation was created.
    */
   private AnnotationFS currentAnnotation;
-  
+
   /**
    * Instantiates a new find annotate dialog.
    *
-   * @param parentShell the parent shell
-   * @param document the document
-   * @param findReplaceTarget the find replace target
-   * @param modeType the mode type
+   * @param parentShell
+   *          the parent shell
+   * @param document
+   *          the document
+   * @param findReplaceTarget
+   *          the find replace target
+   * @param modeType
+   *          the mode type
    */
-  FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget, Type modeType) {
+  FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget,
+          Type modeType) {
     super(parentShell);
     this.document = document;
     this.findReplaceTarget = findReplaceTarget;
@@ -141,21 +141,22 @@ class FindAnnotateDialog extends Dialog {
   /**
    * Creates the search string input field.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   private Composite createInputPanel(Composite parent) {
-    Composite panel= new Composite(parent, SWT.NULL);
-    GridLayout layout= new GridLayout();
-    layout.numColumns= 2;
+    Composite panel = new Composite(parent, SWT.NULL);
+    GridLayout layout = new GridLayout();
+    layout.numColumns = 2;
     panel.setLayout(layout);
 
     // find label
-    Label findLabel= new Label(panel, SWT.LEFT);
+    Label findLabel = new Label(panel, SWT.LEFT);
     findLabel.setText("Find:");
 
     GridData labelData = new GridData();
-    labelData.horizontalAlignment =  SWT.LEFT;
+    labelData.horizontalAlignment = SWT.LEFT;
     findLabel.setLayoutData(labelData);
 
     // find combo box
@@ -167,10 +168,10 @@ class FindAnnotateDialog extends Dialog {
     findField.setLayoutData(findFieldData);
 
     // type label
-    Label typeLabel= new Label(panel, SWT.LEFT);
+    Label typeLabel = new Label(panel, SWT.LEFT);
     typeLabel.setText("Type:");
     GridData typeData = new GridData();
-    typeData.horizontalAlignment =  SWT.LEFT;
+    typeData.horizontalAlignment = SWT.LEFT;
     typeLabel.setLayoutData(typeData);
 
     typeField = new TypeCombo(panel);
@@ -189,7 +190,8 @@ class FindAnnotateDialog extends Dialog {
   /**
    * Creates the group to specify the direction of the search.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   private Composite createDirectionGroup(Composite parent) {
@@ -199,9 +201,9 @@ class FindAnnotateDialog extends Dialog {
     layout.marginHeight = 0;
     panel.setLayout(layout);
 
-    Group group= new Group(panel, SWT.SHADOW_ETCHED_IN);
+    Group group = new Group(panel, SWT.SHADOW_ETCHED_IN);
     group.setText("Direction");
-    GridLayout groupLayout= new GridLayout();
+    GridLayout groupLayout = new GridLayout();
     groupLayout.numColumns = 2;
     group.setLayout(groupLayout);
     group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -210,7 +212,7 @@ class FindAnnotateDialog extends Dialog {
     forwardRadioButton.setText("Forward");
     forwardRadioButton.setSelection(true);
 
-    Button backwardRadioButton= new Button(group, SWT.RADIO | SWT.LEFT);
+    Button backwardRadioButton = new Button(group, SWT.RADIO | SWT.LEFT);
     backwardRadioButton.setText("Backward");
 
     return panel;
@@ -219,7 +221,8 @@ class FindAnnotateDialog extends Dialog {
   /**
    * Creates the annotation buttons.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   private void createAnnotationButtons(Composite parent) {
     Composite panel = new Composite(parent, SWT.NONE);
@@ -228,19 +231,19 @@ class FindAnnotateDialog extends Dialog {
     layout.marginHeight = 0;
     panel.setLayout(layout);
 
-    Group group= new Group(panel, SWT.SHADOW_ETCHED_IN);
+    Group group = new Group(panel, SWT.SHADOW_ETCHED_IN);
     group.setText("Annotation");
-    GridLayout groupLayout= new GridLayout();
+    GridLayout groupLayout = new GridLayout();
     groupLayout.numColumns = 4;
     group.setLayout(groupLayout);
     group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
     wideLeftSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
-    wideLeftSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
-            Images.WIDE_LEFT_SIDE).createImage());
+    wideLeftSideButton
+            .setImage(CasEditorPlugin.getTaeImageDescriptor(Images.WIDE_LEFT_SIDE).createImage());
     wideLeftSideButton.setEnabled(false);
-    
-    wideLeftSideButton.addSelectionListener(new SelectionListener(){
+
+    wideLeftSideButton.addSelectionListener(new SelectionListener() {
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
@@ -251,12 +254,12 @@ class FindAnnotateDialog extends Dialog {
         WideLeftAnnotationSideAction.wideLeftAnnotationSide(document, currentAnnotation);
       }
     });
-    
+
     lowerLeftSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
-    lowerLeftSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
-            Images.LOWER_LEFT_SIDE).createImage());
+    lowerLeftSideButton
+            .setImage(CasEditorPlugin.getTaeImageDescriptor(Images.LOWER_LEFT_SIDE).createImage());
     lowerLeftSideButton.setEnabled(false);
-    lowerLeftSideButton.addSelectionListener(new SelectionListener(){
+    lowerLeftSideButton.addSelectionListener(new SelectionListener() {
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
@@ -269,10 +272,10 @@ class FindAnnotateDialog extends Dialog {
     });
 
     lowerRightSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
-    lowerRightSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
-            Images.LOWER_RIGHT_SIDE).createImage());
+    lowerRightSideButton
+            .setImage(CasEditorPlugin.getTaeImageDescriptor(Images.LOWER_RIGHT_SIDE).createImage());
     lowerRightSideButton.setEnabled(false);
-    lowerRightSideButton.addSelectionListener(new SelectionListener(){
+    lowerRightSideButton.addSelectionListener(new SelectionListener() {
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
@@ -285,10 +288,10 @@ class FindAnnotateDialog extends Dialog {
     });
 
     wideRightSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
-    wideRightSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
-            Images.WIDE_RIGHT_SIDE).createImage());
+    wideRightSideButton
+            .setImage(CasEditorPlugin.getTaeImageDescriptor(Images.WIDE_RIGHT_SIDE).createImage());
     wideRightSideButton.setEnabled(false);
-    wideRightSideButton.addSelectionListener(new SelectionListener(){
+    wideRightSideButton.addSelectionListener(new SelectionListener() {
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
@@ -316,7 +319,8 @@ class FindAnnotateDialog extends Dialog {
   /**
    * Creates the find and annotate buttons.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   private Composite createButtonSection(Composite parent) {
@@ -325,19 +329,19 @@ class FindAnnotateDialog extends Dialog {
     GridLayout layout = new GridLayout();
 
     // Number of columns should be 2, for each button added to the panel the
-    // createButton methods increments numColumns. That means after adding 
+    // createButton methods increments numColumns. That means after adding
     // 3 buttons numColumns is 2.
     layout.numColumns = -1;
 
     panel.setLayout(layout);
 
-    createButton(panel, FIND_BUTTON, "Fi&nd",true);
+    createButton(panel, FIND_BUTTON, "Fi&nd", true);
 
     createButton(panel, ANNOTATE_FIND_BUTTON, "Annotate/Fin&d", false);
 
     createButton(panel, ANNOTATE_BUTTON, "&Annotate", false);
 
-    //  createButton(panel, ANNOTATE_ALL_BUTTON, "Anno&tate All", false);
+    // createButton(panel, ANNOTATE_ALL_BUTTON, "Anno&tate All", false);
 
     return panel;
   }
@@ -345,29 +349,30 @@ class FindAnnotateDialog extends Dialog {
   /**
    * Creates the status and close button.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the composite
    */
   private Composite createStatusAndCloseButton(Composite parent) {
 
-    Composite panel= new Composite(parent, SWT.NULL);
-    GridLayout layout= new GridLayout();
-    layout.numColumns= 2;
-    layout.marginWidth= 0;
-    layout.marginHeight= 0;
+    Composite panel = new Composite(parent, SWT.NULL);
+    GridLayout layout = new GridLayout();
+    layout.numColumns = 2;
+    layout.marginWidth = 0;
+    layout.marginHeight = 0;
     panel.setLayout(layout);
 
-    Label statusLabel= new Label(panel, SWT.LEFT);
+    Label statusLabel = new Label(panel, SWT.LEFT);
     GridData statusData = new GridData();
     statusData.horizontalAlignment = SWT.FILL;
-    statusData.grabExcessHorizontalSpace= true;
+    statusData.grabExcessHorizontalSpace = true;
     statusLabel.setLayoutData(statusData);
 
     Button closeButton = createButton(panel, CLOSE_BUTTON, "Close", false);
     GridData closeData = new GridData();
     closeData.horizontalAlignment = SWT.RIGHT;
     closeButton.setLayoutData(closeData);
-    //    setGridData(closeButton, SWT.RIGHT, false, SWT.BOTTOM, false);
+    // setGridData(closeButton, SWT.RIGHT, false, SWT.BOTTOM, false);
 
     return panel;
   }
@@ -376,14 +381,14 @@ class FindAnnotateDialog extends Dialog {
   protected Control createContents(Composite parent) {
 
     Composite panel = new Composite(parent, SWT.NULL);
-    GridLayout layout= new GridLayout();
-    layout.numColumns= 1;
-    layout.makeColumnsEqualWidth= true;
+    GridLayout layout = new GridLayout();
+    layout.numColumns = 1;
+    layout.makeColumnsEqualWidth = true;
     panel.setLayout(layout);
 
     Composite inputPanel = createInputPanel(panel);
     GridData inputPanelData = new GridData();
-    inputPanelData.horizontalAlignment =  SWT.FILL;
+    inputPanelData.horizontalAlignment = SWT.FILL;
     inputPanelData.grabExcessHorizontalSpace = true;
     inputPanelData.verticalAlignment = SWT.TOP;
     inputPanelData.grabExcessVerticalSpace = false;
@@ -392,7 +397,7 @@ class FindAnnotateDialog extends Dialog {
     createDirectionGroup(panel);
 
     createAnnotationButtons(panel);
-    
+
     Composite buttonFindAnnotatePanel = createButtonSection(panel);
     GridData buttonFindAnnotatePanelData = new GridData();
     buttonFindAnnotatePanelData.horizontalAlignment = SWT.RIGHT;
@@ -411,8 +416,7 @@ class FindAnnotateDialog extends Dialog {
   }
 
   /**
-   * Finds the next occurrence of the search string and selects it in
-   * the editor.
+   * Finds the next occurrence of the search string and selects it in the editor.
    */
   private void findAndSelectNext() {
 
@@ -422,12 +426,12 @@ class FindAnnotateDialog extends Dialog {
 
     if (isForwardSearch) {
       textOffset = findReplaceTarget.getSelection().x + findReplaceTarget.getSelection().y;
-    }
-    else {
+    } else {
       textOffset = findReplaceTarget.getSelection().x - 1;
     }
 
-    int result = findReplaceTarget.findAndSelect(textOffset, findField.getText(), isForwardSearch, false, false);
+    int result = findReplaceTarget.findAndSelect(textOffset, findField.getText(), isForwardSearch,
+            false, false);
 
     if (result == -1) {
       findReplaceTarget.findAndSelect(-1, findField.getText(), isForwardSearch, false, false);
@@ -442,11 +446,11 @@ class FindAnnotateDialog extends Dialog {
   private AnnotationFS annotateSelection() {
     Point selection = findReplaceTarget.getSelection();
 
-    AnnotationFS newAnnotation = document.getCAS().createAnnotation(
-            typeField.getType(), selection.x, selection.x + selection.y);
+    AnnotationFS newAnnotation = document.getCAS().createAnnotation(typeField.getType(),
+            selection.x, selection.x + selection.y);
     document.getCAS().addFsToIndexes(newAnnotation);
     document.addFeatureStructure(newAnnotation);
-    
+
     return newAnnotation;
   }
 
@@ -456,27 +460,22 @@ class FindAnnotateDialog extends Dialog {
     if (FIND_BUTTON == buttonID) {
       findAndSelectNext();
       currentAnnotation = null;
-    }
-    else if (ANNOTATE_BUTTON == buttonID) {
+    } else if (ANNOTATE_BUTTON == buttonID) {
       currentAnnotation = annotateSelection();
-    }
-    else if (ANNOTATE_FIND_BUTTON == buttonID) {
+    } else if (ANNOTATE_FIND_BUTTON == buttonID) {
       annotateSelection();
       findAndSelectNext();
-      
+
       // TODO: Should be disabled when annotate was pressed
-    }
-    else if (ANNOTATE_ALL_BUTTON == buttonID) {
+    } else if (ANNOTATE_ALL_BUTTON == buttonID) {
       // TODO: Should it be implemented ???
-    }
-    else if (CLOSE_BUTTON == buttonID) {
+    } else if (CLOSE_BUTTON == buttonID) {
       close();
       return;
-    }
-    else {
+    } else {
       throw new TaeError("Unkown button!");
     }
-    
+
     updateAnnotationButtons();
   }
 }

@@ -85,15 +85,13 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.Page;
 
-
 /**
- * The {@link EditViewPage} provides basic editing support for {@link FeatureStructure}s.
- * It shows always the selected {@link FeatureStructure}, but for editing a certain
- * {@link FeatureStructure} can be pinned to the view (selection updates disabled).
+ * The {@link EditViewPage} provides basic editing support for {@link FeatureStructure}s. It shows
+ * always the selected {@link FeatureStructure}, but for editing a certain {@link FeatureStructure}
+ * can be pinned to the view (selection updates disabled).
  *
- * For editing the {@link Feature}s of the {@link FeatureStructure} are shown in
- * a tree with two columns. The values of the {@link Feature} can be changed with
- * cell editors.
+ * For editing the {@link Feature}s of the {@link FeatureStructure} are shown in a tree with two
+ * columns. The values of the {@link Feature} can be changed with cell editors.
  *
  * Note: Lists type are currently not supported
  */
@@ -103,11 +101,12 @@ final class EditViewPage extends Page implements ISelectionListener {
    * The Class ValueEditingSupport.
    */
   private final class ValueEditingSupport extends EditingSupport {
-    
+
     /**
      * Instantiates a new value editing support.
      *
-     * @param viewer the viewer
+     * @param viewer
+     *          the viewer
      */
     private ValueEditingSupport(ColumnViewer viewer) {
       super(viewer);
@@ -120,8 +119,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         FeatureValue value = (FeatureValue) element;
 
         return value.getFeature().getRange().isPrimitive();
-      }
-      else if (element instanceof ArrayValue) {
+      } else if (element instanceof ArrayValue) {
 
         ArrayValue value = (ArrayValue) element;
 
@@ -129,16 +127,12 @@ final class EditViewPage extends Page implements ISelectionListener {
 
         if (arrayFS instanceof ArrayFS) {
           return false;
-        }
-        else if (arrayFS instanceof CommonArrayFS ||
-                arrayFS instanceof StringArrayFS) {
+        } else if (arrayFS instanceof CommonArrayFS || arrayFS instanceof StringArrayFS) {
           return true;
-        }
-        else {
+        } else {
           throw new CasEditorError("Unkown array type");
         }
-      }
-      else {
+      } else {
         throw new CasEditorError("Unkown element type!");
       }
     }
@@ -155,16 +149,15 @@ final class EditViewPage extends Page implements ISelectionListener {
 
           if (value.getFeature().getRange().getName().equals(CAS.TYPE_NAME_BOOLEAN)) {
             editor = new CheckboxCellEditor(viewer.getTree(), SWT.CHECK);
-          }
-          else {
+          } else {
             editor = new TextCellEditor(viewer.getTree());
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Primitives
-                    .getPrimitiveClass(value.getFeatureStructure().getCAS().getTypeSystem(), value.getFeature())));
+                    .getPrimitiveClass(value.getFeatureStructure().getCAS().getTypeSystem(),
+                            value.getFeature())));
           }
 
           return editor;
-        }
-        else {
+        } else {
           return null;
         }
       } else if (element instanceof ArrayValue) {
@@ -177,39 +170,30 @@ final class EditViewPage extends Page implements ISelectionListener {
 
         if (arrayFS instanceof BooleanArrayFS) {
           editor = new CheckboxCellEditor(viewer.getTree(), SWT.CHECK);
-        }
-        else {
+        } else {
           editor = new TextCellEditor(viewer.getTree());
 
           if (arrayFS instanceof ByteArrayFS) {
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Byte.class));
-          }
-          else if (arrayFS instanceof ShortArrayFS) {
+          } else if (arrayFS instanceof ShortArrayFS) {
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Short.class));
-          }
-          else if (arrayFS instanceof IntArrayFS) {
+          } else if (arrayFS instanceof IntArrayFS) {
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Integer.class));
-          }
-          else if (arrayFS instanceof LongArrayFS) {
+          } else if (arrayFS instanceof LongArrayFS) {
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Long.class));
-          }
-          else if (arrayFS instanceof FloatArrayFS) {
+          } else if (arrayFS instanceof FloatArrayFS) {
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Float.class));
-          }
-          else if (arrayFS instanceof DoubleArrayFS) {
+          } else if (arrayFS instanceof DoubleArrayFS) {
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Double.class));
-          }
-          else if (arrayFS instanceof StringArrayFS) {
+          } else if (arrayFS instanceof StringArrayFS) {
             // no validator needed
-          }
-          else {
+          } else {
             throw new CasEditorError("Unknown array type: " + arrayFS.getClass().getName());
           }
         }
 
         return editor;
-      }
-      else {
+      } else {
         throw new CasEditorError("Unknown element type: " + element.getClass().getName());
       }
     }
@@ -222,28 +206,26 @@ final class EditViewPage extends Page implements ISelectionListener {
 
         // if not a boolean return string value,
         // otherwise return boolean number
-        if (!featureValue.getFeature().getRange().getName().equals(
-                CAS.TYPE_NAME_BOOLEAN)) {
-          return Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature()).toString();
-        }
-        else {
+        if (!featureValue.getFeature().getRange().getName().equals(CAS.TYPE_NAME_BOOLEAN)) {
+          return Primitives
+                  .getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature())
+                  .toString();
+        } else {
           // for booleans
-          return Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature());
+          return Primitives.getPrimitive(featureValue.getFeatureStructure(),
+                  featureValue.getFeature());
         }
 
-      }
-      else if (element instanceof ArrayValue) {
-          ArrayValue value = (ArrayValue) element;
+      } else if (element instanceof ArrayValue) {
+        ArrayValue value = (ArrayValue) element;
 
-          // if not a boolean array return string value
-          if (!(value.getFeatureStructure() instanceof BooleanArrayFS)) {
-            return value.get().toString();
-          }
-          else {
-            return value.get();
-          }
-      }
-      else {
+        // if not a boolean array return string value
+        if (!(value.getFeatureStructure() instanceof BooleanArrayFS)) {
+          return value.get().toString();
+        } else {
+          return value.get();
+        }
+      } else {
         throw new CasEditorError("Unkown element type!");
       }
     }
@@ -258,18 +240,17 @@ final class EditViewPage extends Page implements ISelectionListener {
           FeatureValue featureValue = (FeatureValue) element;
 
           // for all other than boolean values
-          if (!featureValue.getFeature().getRange().getName().equals(
-                  CAS.TYPE_NAME_BOOLEAN)) {
+          if (!featureValue.getFeature().getRange().getName().equals(CAS.TYPE_NAME_BOOLEAN)) {
             if (featureValue.getFeature().getRange().isPrimitive()) {
 
               // TODO: try to prevent setting of invalid annotation span values
 
-              featureValue.getFeatureStructure().setFeatureValueFromString(featureValue.getFeature(),
-                      (String) value);
+              featureValue.getFeatureStructure()
+                      .setFeatureValueFromString(featureValue.getFeature(), (String) value);
             }
-          }
-          else {
-            featureValue.getFeatureStructure().setBooleanValue(featureValue.getFeature(),(Boolean) value);
+          } else {
+            featureValue.getFeatureStructure().setBooleanValue(featureValue.getFeature(),
+                    (Boolean) value);
           }
           document.update(featureValue.getFeatureStructure());
 
@@ -281,8 +262,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
           if (!(arrayValue.getFeatureStructure() instanceof BooleanArrayFS)) {
             arrayValue.set((String) value);
-          }
-          else {
+          } else {
             arrayValue.set(value.toString());
           }
 
@@ -294,7 +274,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
   }
-
 
   /**
    * The Class DeleteFeatureStructureValue.
@@ -325,13 +304,13 @@ final class EditViewPage extends Page implements ISelectionListener {
           document.update(featureValue.getFeatureStructure());
         }
       } else if (element instanceof ArrayValue) {
-          ArrayValue arrayValue = (ArrayValue) element;
+        ArrayValue arrayValue = (ArrayValue) element;
 
-          ArrayFS array = (ArrayFS) arrayValue.getFeatureStructure();
+        ArrayFS array = (ArrayFS) arrayValue.getFeatureStructure();
 
-          array.set(arrayValue.slot(), null);
+        array.set(arrayValue.slot(), null);
 
-          document.update(array);
+        document.update(array);
       }
     }
 
@@ -344,17 +323,16 @@ final class EditViewPage extends Page implements ISelectionListener {
         if (selection.getFirstElement() instanceof FeatureValue) {
           FeatureValue featureValue = (FeatureValue) selection.getFirstElement();
 
-          result = !featureValue.getFeature().getRange().isPrimitive() &&
-              featureValue.getFeatureStructure().getFeatureValue(featureValue.getFeature()) != null;
-        }
-        else if (selection.getFirstElement() instanceof ArrayValue) {
+          result = !featureValue.getFeature().getRange().isPrimitive() && featureValue
+                  .getFeatureStructure().getFeatureValue(featureValue.getFeature()) != null;
+        } else if (selection.getFirstElement() instanceof ArrayValue) {
           ArrayValue arrayValue = (ArrayValue) selection.getFirstElement();
 
-            if (arrayValue.getFeatureStructure() instanceof ArrayFS) {
-              ArrayFS array = (ArrayFS) arrayValue.getFeatureStructure();
+          if (arrayValue.getFeatureStructure() instanceof ArrayFS) {
+            ArrayFS array = (ArrayFS) arrayValue.getFeatureStructure();
 
-              result = array.get(arrayValue.slot()) != null;
-            }
+            result = array.get(arrayValue.slot()) != null;
+          }
         }
       }
 
@@ -377,12 +355,13 @@ final class EditViewPage extends Page implements ISelectionListener {
       setEnabled(false);
     }
 
-
     /**
      * Creates the FS.
      *
-     * @param type the type
-     * @param arraySize the array size
+     * @param type
+     *          the type
+     * @param arraySize
+     *          the array size
      * @return the feature structure
      */
     FeatureStructure createFS(Type type, int arraySize) {
@@ -427,28 +406,25 @@ final class EditViewPage extends Page implements ISelectionListener {
           default:
             throw new CasEditorError("Unkown array type: " + type.getName() + "!");
         }
-      }
-      else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
+      } else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
 
-    	// get begin of selection from editor, if any
-    	// TODO: Add an interface to retrieve the span from the editor
+        // get begin of selection from editor, if any
+        // TODO: Add an interface to retrieve the span from the editor
 
-    	int begin = 0;
-    	int end = 0;
+        int begin = 0;
+        int end = 0;
 
-    	if (editor instanceof AnnotationEditor) {
-    	  Point selection = ((AnnotationEditor) editor).getSelection();
+        if (editor instanceof AnnotationEditor) {
+          Point selection = ((AnnotationEditor) editor).getSelection();
 
-    	  begin = selection.x;
-    	  end = selection.y;
-    	}
+          begin = selection.x;
+          end = selection.y;
+        }
 
-    	fs = document.getCAS().createAnnotation(type, begin, end);
-      }
-      else if (!type.isArray()) {
+        fs = document.getCAS().createAnnotation(type, begin, end);
+      } else if (!type.isArray()) {
         fs = document.getCAS().createFS(type);
-      }
-      else {
+      } else {
         throw new TaeError("Unexpected error!");
       }
 
@@ -467,29 +443,27 @@ final class EditViewPage extends Page implements ISelectionListener {
         Type fsSuperType = featureValue.getFeature().getRange();
 
         if (!fsSuperType.isArray()) {
-          List<Type> subTypes =
-              document.getCAS().getTypeSystem().getProperlySubsumedTypes(fsSuperType);
+          List<Type> subTypes = document.getCAS().getTypeSystem()
+                  .getProperlySubsumedTypes(fsSuperType);
 
           Type typeToCreate;
           int arraySize = -1;
 
           if (subTypes.size() == 0) {
             typeToCreate = fsSuperType;
-          }
-          else {
-             CreateFeatureStructureDialog createFsDialog =
-                 new CreateFeatureStructureDialog(Display.getCurrent()
-                         .getActiveShell(), fsSuperType, document.getCAS().getTypeSystem());
+          } else {
+            CreateFeatureStructureDialog createFsDialog = new CreateFeatureStructureDialog(
+                    Display.getCurrent().getActiveShell(), fsSuperType,
+                    document.getCAS().getTypeSystem());
 
-             int returnCode = createFsDialog.open();
+            int returnCode = createFsDialog.open();
 
-             if (returnCode == IDialogConstants.OK_ID) {
-               typeToCreate = createFsDialog.getType();
-               arraySize = createFsDialog.getArraySize();
-             }
-             else {
-               return;
-             }
+            if (returnCode == IDialogConstants.OK_ID) {
+              typeToCreate = createFsDialog.getType();
+              arraySize = createFsDialog.getArraySize();
+            } else {
+              return;
+            }
           }
 
           newValue = createFS(typeToCreate, arraySize);
@@ -498,8 +472,9 @@ final class EditViewPage extends Page implements ISelectionListener {
         } else {
           Type arrayType = featureValue.getFeature().getRange();
 
-          CreateFeatureStructureDialog createArrayDialog = new CreateFeatureStructureDialog(Display.getCurrent()
-                  .getActiveShell(), arrayType, document.getCAS().getTypeSystem());
+          CreateFeatureStructureDialog createArrayDialog = new CreateFeatureStructureDialog(
+                  Display.getCurrent().getActiveShell(), arrayType,
+                  document.getCAS().getTypeSystem());
 
           int returnCode = createArrayDialog.open();
 
@@ -512,17 +487,14 @@ final class EditViewPage extends Page implements ISelectionListener {
 
         featureValue.getFeatureStructure().setFeatureValue(featureValue.getFeature(), newValue);
         document.update(featureValue.getFeatureStructure());
-      }
-      else if (selection.getFirstElement() instanceof ArrayValue) {
+      } else if (selection.getFirstElement() instanceof ArrayValue) {
         ArrayValue value = (ArrayValue) selection.getFirstElement();
-
 
         TypeSystem typeSystem = document.getCAS().getTypeSystem();
 
-        CreateFeatureStructureDialog createFsDialog =
-          new CreateFeatureStructureDialog(Display.getCurrent()
-                  .getActiveShell(), typeSystem.getType(CAS.TYPE_NAME_TOP),
-                  typeSystem);
+        CreateFeatureStructureDialog createFsDialog = new CreateFeatureStructureDialog(
+                Display.getCurrent().getActiveShell(), typeSystem.getType(CAS.TYPE_NAME_TOP),
+                typeSystem);
 
         int returnCode = createFsDialog.open();
 
@@ -548,10 +520,9 @@ final class EditViewPage extends Page implements ISelectionListener {
         if (selection.getFirstElement() instanceof FeatureValue) {
           FeatureValue featureValue = (FeatureValue) selection.getFirstElement();
 
-          result = !featureValue.getFeature().getRange().isPrimitive() &&
-              featureValue.getFeatureStructure().getFeatureValue(featureValue.getFeature()) == null;
-        }
-        else if (selection.getFirstElement() instanceof ArrayValue) {
+          result = !featureValue.getFeature().getRange().isPrimitive() && featureValue
+                  .getFeatureStructure().getFeatureValue(featureValue.getFeature()) == null;
+        } else if (selection.getFirstElement() instanceof ArrayValue) {
           ArrayValue value = (ArrayValue) selection.getFirstElement();
 
           if (value.getFeatureStructure() instanceof ArrayFS) {
@@ -572,7 +543,7 @@ final class EditViewPage extends Page implements ISelectionListener {
    * The Class PinAction.
    */
   private static final class PinAction extends Action {
-    
+
     /**
      * Instantiates a new pin action.
      */
@@ -586,7 +557,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   /** The document. */
   private ICasDocument document;
-  
+
   /** The editor. */
   private ICasEditor editor;
 
@@ -599,15 +570,18 @@ final class EditViewPage extends Page implements ISelectionListener {
   /**
    * Instantiates a new edits the view page.
    *
-   * @param editView the edit view
-   * @param editor the editor
-   * @param document the document
+   * @param editView
+   *          the edit view
+   * @param editor
+   *          the editor
+   * @param document
+   *          the document
    */
   EditViewPage(EditView editView, ICasEditor editor, ICasDocument document) {
 
-	if (editView == null || document == null) {
-		throw new IllegalArgumentException("Parameters must not be null!");
-	}
+    if (editView == null || document == null) {
+      throw new IllegalArgumentException("Parameters must not be null!");
+    }
 
     this.editView = editView;
     this.editor = editor;
@@ -639,9 +613,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     valueColumn.setEditingSupport(new ValueEditingSupport(viewer));
 
-
-    FeatureStructureContentProvider contentProvider =
-        new FeatureStructureContentProvider(document);
+    FeatureStructureContentProvider contentProvider = new FeatureStructureContentProvider(document);
 
     viewer.setContentProvider(contentProvider);
 
@@ -741,7 +713,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     });
 
-
     DragSource source = new DragSource(viewer.getTree(), DND.DROP_COPY);
 
     source.setTransfer(new Transfer[] { FeatureStructureTransfer.getInstance() });
@@ -823,8 +794,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAction);
 
-    actionBars.getToolBarManager().add(
-            ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
+    actionBars.getToolBarManager().add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
   }
 
   @Override

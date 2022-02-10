@@ -21,16 +21,16 @@ package org.apache.uima.caseditor.editor.fsview;
 
 import org.apache.uima.cas.Type;
 
-
 /**
  * Notifies clients about type changes.
  */
 public interface ITypePaneListener {
-  
+
   /**
    * Called after the type was changed.
    *
-   * @param newType the new type
+   * @param newType
+   *          the new type
    */
   void typeChanged(Type newType);
 }

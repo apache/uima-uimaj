@@ -19,13 +19,11 @@
 
 package org.apache.uima.caseditor.editor.outline;
 
-
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.util.AnnotationComparator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-
 
 /**
  * Sorts <code>AnnotationFS</code>s for a Viewer. This implementation is based on
@@ -34,18 +32,21 @@ import org.eclipse.jface.viewers.ViewerSorter;
  * @see AnnotationComparator
  */
 class OutlineTableSorter extends ViewerSorter {
-  
+
   /** The m comperator. */
   private AnnotationComparator mComperator = new AnnotationComparator();
 
   /**
    * Uses <code>AnnotationComparator</code> to compare the both objects.
    *
-   * @param viewer the viewer
-   * @param aObject the a object
-   * @param bObject the b object
-   * @return int the return value is if aObject &lt; bObject negative number, if aObject == bObject 0,
-   *         aObject &gt; bObject a positive number or if both objects have different types 1.
+   * @param viewer
+   *          the viewer
+   * @param aObject
+   *          the a object
+   * @param bObject
+   *          the b object
+   * @return int the return value is if aObject &lt; bObject negative number, if aObject == bObject
+   *         0, aObject &gt; bObject a positive number or if both objects have different types 1.
    * @see ViewerSorter
    */
   @Override
@@ -60,7 +61,7 @@ class OutlineTableSorter extends ViewerSorter {
               .getAdapter(AnnotationFS.class);
 
       if (aAnnotation != null && bAnnotation != null)
-    	  result = mComperator.compare(aAnnotation, bAnnotation);
+        result = mComperator.compare(aAnnotation, bAnnotation);
     }
 
     return result;

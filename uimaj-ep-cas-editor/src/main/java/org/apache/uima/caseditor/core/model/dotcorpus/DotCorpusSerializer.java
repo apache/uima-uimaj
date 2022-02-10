@@ -42,7 +42,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * This class is responsible to read and write {@link DotCorpus} objects from or to a byte stream.
  */
@@ -71,7 +70,7 @@ public class DotCorpusSerializer {
 
   /** The Constant STYLE_LAYER_ATTRIBUTE. */
   private static final String STYLE_LAYER_ATTRIBUTE = "layer";
-  
+
   /** The Constant STYLE_CONFIG_ATTRIBUTE. */
   private static final String STYLE_CONFIG_ATTRIBUTE = "config";
 
@@ -95,20 +94,21 @@ public class DotCorpusSerializer {
 
   /** The Constant SHOWN_ELEMENT. */
   private static final String SHOWN_ELEMENT = "shown";
-  
+
   /** The Constant SHOWN_TYPE_ATTRIBUTE. */
   private static final String SHOWN_TYPE_ATTRIBUTE = "type";
-  
+
   /** The Constant SHOWN_IS_VISISBLE_ATTRIBUTE. */
   private static final String SHOWN_IS_VISISBLE_ATTRIBUTE = "visible";
-  
-  
+
   /**
    * Creates a {@link DotCorpus} object from a given {@link InputStream}.
    *
-   * @param dotCorpusStream the dot corpus stream
+   * @param dotCorpusStream
+   *          the dot corpus stream
    * @return the {@link DotCorpus} instance.
-   * @throws CoreException -
+   * @throws CoreException
+   *           -
    */
   public static DotCorpus parseDotCorpus(InputStream dotCorpusStream) throws CoreException {
     DocumentBuilderFactory documentBuilderFactory = XMLUtils.createDocumentBuilderFactory();
@@ -161,7 +161,7 @@ public class DotCorpusSerializer {
       // TODO: This code will emit NumberFormatExceptions if the values
       // are incorrect, they should be caught, logged and replaced with default
       // values
-      
+
       if (TYPESYSTEM_ELEMENT.equals(corporaChildElement.getNodeName())) {
         dotCorpus.setTypeSystemFilename(corporaChildElement.getAttribute(TYPESYTEM_FILE_ATTRIBUTE));
       } else if (CORPUS_ELEMENT.equals(corporaChildElement.getNodeName())) {
@@ -179,12 +179,12 @@ public class DotCorpusSerializer {
         Color color = new Color(colorInteger);
 
         String drawingLayerString = corporaChildElement.getAttribute(STYLE_LAYER_ATTRIBUTE);
-        
+
         String drawingConfigString = corporaChildElement.getAttribute(STYLE_CONFIG_ATTRIBUTE);
-        
+
         if (drawingConfigString.length() == 0)
           drawingConfigString = null;
-        
+
         int drawingLayer;
 
         try {
@@ -193,13 +193,14 @@ public class DotCorpusSerializer {
           drawingLayer = 0;
         }
 
-        AnnotationStyle style = new AnnotationStyle(type, AnnotationStyle.Style
-                .valueOf(styleString), color, drawingLayer, drawingConfigString);
+        AnnotationStyle style = new AnnotationStyle(type,
+                AnnotationStyle.Style.valueOf(styleString), color, drawingLayer,
+                drawingConfigString);
 
         dotCorpus.setStyle(style);
       } else if (CAS_PROCESSOR_ELEMENT.equals(corporaChildElement.getNodeName())) {
-        dotCorpus.addCasProcessorFolder(corporaChildElement
-                .getAttribute(CAS_PROCESSOR_FOLDER_ATTRIBUTE));
+        dotCorpus.addCasProcessorFolder(
+                corporaChildElement.getAttribute(CAS_PROCESSOR_FOLDER_ATTRIBUTE));
       } else if (EDITOR_ELEMENT.equals(corporaChildElement.getNodeName())) {
         String lineLengthHintString = corporaChildElement
                 .getAttribute(EDITOR_LINE_LENGTH_ATTRIBUTE);
@@ -209,16 +210,15 @@ public class DotCorpusSerializer {
         dotCorpus.setEditorLineLength(lineLengthHint);
       } else if (SHOWN_ELEMENT.equals(corporaChildElement.getNodeName())) {
         String type = corporaChildElement.getAttribute(SHOWN_TYPE_ATTRIBUTE);
-        
+
         String isVisisbleString = corporaChildElement.getAttribute(SHOWN_IS_VISISBLE_ATTRIBUTE);
-        
+
         boolean isVisible = Boolean.parseBoolean(isVisisbleString);
-        
+
         if (isVisible) {
-          dotCorpus.setShownType(type); 
+          dotCorpus.setShownType(type);
         }
-      }
-      else {
+      } else {
         String message = "Unexpected element: " + corporaChildElement.getNodeName();
 
         IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, null);
@@ -237,7 +237,8 @@ public class DotCorpusSerializer {
    *          the {@link DotCorpus} object to serialize.
    * @param out
    *          - the stream to write the current <code>DotCorpus</code> instance.
-   * @throws CoreException -
+   * @throws CoreException
+   *           -
    */
   public static void serialize(DotCorpus dotCorpus, OutputStream out) throws CoreException {
 
@@ -264,11 +265,11 @@ public class DotCorpusSerializer {
         Color color = style.getColor();
         int colorInt = new Color(color.getRed(), color.getGreen(), color.getBlue()).getRGB();
         styleAttributes.addAttribute("", "", STYLE_COLOR_ATTRIBUTE, "", Integer.toString(colorInt));
-        styleAttributes.addAttribute("", "", STYLE_LAYER_ATTRIBUTE, "", Integer.toString(style
-                .getLayer()));
+        styleAttributes.addAttribute("", "", STYLE_LAYER_ATTRIBUTE, "",
+                Integer.toString(style.getLayer()));
         if (style.getConfiguration() != null) {
-          styleAttributes.addAttribute("", "", STYLE_CONFIG_ATTRIBUTE, "", style
-                  .getConfiguration());
+          styleAttributes.addAttribute("", "", STYLE_CONFIG_ATTRIBUTE, "",
+                  style.getConfiguration());
         }
 
         xmlSerHandler.startElement("", STYLE_ELEMENT, STYLE_ELEMENT, styleAttributes);
@@ -276,19 +277,19 @@ public class DotCorpusSerializer {
       }
 
       for (String type : dotCorpus.getShownTypes()) {
-        
+
         AttributesImpl shownAttributes = new AttributesImpl();
         shownAttributes.addAttribute("", "", SHOWN_TYPE_ATTRIBUTE, "", type);
         shownAttributes.addAttribute("", "", SHOWN_IS_VISISBLE_ATTRIBUTE, "", "true");
-        
+
         xmlSerHandler.startElement("", SHOWN_ELEMENT, SHOWN_ELEMENT, shownAttributes);
         xmlSerHandler.endElement("", SHOWN_ELEMENT, SHOWN_ELEMENT);
       }
-      
+
       if (dotCorpus.getTypeSystemFileName() != null) {
         AttributesImpl typeSystemFileAttributes = new AttributesImpl();
-        typeSystemFileAttributes.addAttribute("", "", TYPESYTEM_FILE_ATTRIBUTE, "", dotCorpus
-                .getTypeSystemFileName());
+        typeSystemFileAttributes.addAttribute("", "", TYPESYTEM_FILE_ATTRIBUTE, "",
+                dotCorpus.getTypeSystemFileName());
 
         xmlSerHandler.startElement("", TYPESYSTEM_ELEMENT, TYPESYSTEM_ELEMENT,
                 typeSystemFileAttributes);

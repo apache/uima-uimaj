@@ -25,7 +25,6 @@ import java.util.List;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-
 /**
  * The Class AnnotationEditorSelection.
  */
@@ -33,17 +32,20 @@ class AnnotationEditorSelection implements ITextSelection, IStructuredSelection 
 
   /** The text selection. */
   private ITextSelection textSelection;
-  
+
   /** The structured selection. */
   private IStructuredSelection structuredSelection;
-  
+
   /**
    * Instantiates a new annotation editor selection.
    *
-   * @param textSelection the text selection
-   * @param structuredSelection the structured selection
+   * @param textSelection
+   *          the text selection
+   * @param structuredSelection
+   *          the structured selection
    */
-  AnnotationEditorSelection(ITextSelection textSelection, IStructuredSelection structuredSelection) {
+  AnnotationEditorSelection(ITextSelection textSelection,
+          IStructuredSelection structuredSelection) {
     this.textSelection = textSelection;
     this.structuredSelection = structuredSelection;
   }

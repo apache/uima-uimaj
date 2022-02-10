@@ -26,7 +26,6 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-
 /**
  * Preference page to manage preferences for the Annotation Editor.
  */
@@ -35,7 +34,7 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
 
   /** The m editor line length hint. */
   private IntegerFieldEditor mEditorLineLengthHint;
-  
+
   /** The m editor text size. */
   private IntegerFieldEditor mEditorTextSize;
 
@@ -51,22 +50,22 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
   protected void createFieldEditors() {
     // editor line length hint
     mEditorLineLengthHint = new IntegerFieldEditor(
-            AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT,
-            "Line Length Hint", getFieldEditorParent());
+            AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT, "Line Length Hint",
+            getFieldEditorParent());
     addField(mEditorLineLengthHint);
-    
+
     // editor text size
     mEditorTextSize = new IntegerFieldEditor(
-            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE,
-            "Editor Text Size", getFieldEditorParent());
+            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE, "Editor Text Size",
+            getFieldEditorParent());
     addField(mEditorTextSize);
-    
+
     // load CAS with partial type system
     BooleanFieldEditor editorPartialTypesystem = new BooleanFieldEditor(
-        AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM,
-        "Load CAS leniently (WARNING: only for experienced users)", getFieldEditorParent());
+            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM,
+            "Load CAS leniently (WARNING: only for experienced users)", getFieldEditorParent());
     addField(editorPartialTypesystem);
-    
+
   }
 
   @Override
@@ -76,21 +75,19 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
   @Override
   protected void checkState() {
     super.checkState();
-    
+
     if (mEditorLineLengthHint.getIntValue() > 0) {
       setErrorMessage(null);
       setValid(true);
-    }
-    else {
+    } else {
       setErrorMessage("Line length hint must be a larger than zero!");
       setValid(false);
     }
-    
+
     if (mEditorTextSize.getIntValue() > 5) {
       setErrorMessage(null);
       setValid(true);
-    }
-    else {
+    } else {
       setErrorMessage("Editor text size must be a larger than five!");
       setValid(false);
     }

@@ -30,8 +30,8 @@ public class SpanTest {
   /**
    * Test the Span.equals() method.
    */
-    @Test
-    public void testEquals() {
+  @Test
+  public void testEquals() {
     Span a = new Span(100, 1000);
     Span b = new Span(100, 1000);
 
@@ -41,17 +41,17 @@ public class SpanTest {
   /**
    * Test the Span.equals() method.
    */
-    @Test
-    public void testEqualsWithAnotherObject() {
+  @Test
+  public void testEqualsWithAnotherObject() {
 
-      assertThat(new Span(0, 0)).isNotEqualTo(Boolean.TRUE);
+    assertThat(new Span(0, 0)).isNotEqualTo(Boolean.TRUE);
   }
 
   /**
    * Test the Span.equals() method.
    */
-    @Test
-    public void testEqualsWithNull() {
+  @Test
+  public void testEqualsWithNull() {
     Span a = new Span(0, 0);
     assertThat(a.equals(null)).isFalse();
   }
@@ -59,8 +59,8 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @Test
-    public void testCompareToWithBiggerSpan() {
+  @Test
+  public void testCompareToWithBiggerSpan() {
     Span a = new Span(100, 1000);
     Span b = new Span(5000, 900);
 
@@ -70,8 +70,8 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @Test
-    public void testCompareToWithBiggerIntersectSpan() {
+  @Test
+  public void testCompareToWithBiggerIntersectSpan() {
     Span a = new Span(100, 1000);
     Span b = new Span(900, 900);
 
@@ -81,19 +81,19 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @Test
-    public void testCompareToWithLowerSpan() {
+  @Test
+  public void testCompareToWithLowerSpan() {
     Span a = new Span(5000, 900);
     Span b = new Span(100, 1000);
 
-      assertThat(a.compareTo(b) < 0).isTrue();
+    assertThat(a.compareTo(b) < 0).isTrue();
   }
 
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @Test
-    public void testCompareToWithLowerIntersectSpan() {
+  @Test
+  public void testCompareToWithLowerIntersectSpan() {
     Span a = new Span(5000, 900);
     Span b = new Span(4900, 1000);
 
@@ -103,8 +103,8 @@ public class SpanTest {
   /**
    * Test the Span.compareTo(Object) method.
    */
-    @Test
-    public void testCompareToEquals() {
+  @Test
+  public void testCompareToEquals() {
     Span a = new Span(4900, 1000);
     Span b = new Span(4900, 1000);
 
@@ -114,8 +114,8 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @Test
-    public void testIsContaining() {
+  @Test
+  public void testIsContaining() {
     Span a = new Span(5000, 900);
     Span b = new Span(5200, 600);
 
@@ -125,8 +125,8 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @Test
-    public void testIsContainingWithEqual() {
+  @Test
+  public void testIsContainingWithEqual() {
     Span a = new Span(5000, 900);
 
     assertThat(a.isContaining(a)).isTrue();
@@ -135,8 +135,8 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @Test
-    public void testIsContainingWithLowerIntersect() {
+  @Test
+  public void testIsContainingWithLowerIntersect() {
     Span a = new Span(5000, 900);
     Span b = new Span(4500, 1000);
 
@@ -146,8 +146,8 @@ public class SpanTest {
   /**
    * Test the Span.IsContaining(Span) method.
    */
-    @Test
-    public void testIsContainingWithHigherIntersect() {
+  @Test
+  public void testIsContainingWithHigherIntersect() {
     Span a = new Span(5000, 900);
     Span b = new Span(5000, 1000);
 

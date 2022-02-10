@@ -34,13 +34,11 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
-
 /**
- * Base class for views which show information about the {@link CAS} opened
- * in the editor.
+ * Base class for views which show information about the {@link CAS} opened in the editor.
  * <p>
- * The view page created with {@link #doCreatePage(ICasEditor)} will be disposed
- * and re-created on every Cas Editor input change or CAS view change.
+ * The view page created with {@link #doCreatePage(ICasEditor)} will be disposed and re-created on
+ * every Cas Editor input change or CAS view change.
  * <p>
  * In the case the view should no be re-created on a CAS view change
  * {@link #isRecreatePageOnCASViewSwitch()} must be overridden and return false.
@@ -52,17 +50,16 @@ public abstract class CasEditorView extends PageBookView {
   private final String editorNotAvailableMessage;
 
   /** The editor listener map. */
-  private Map<ICasEditor, ICasEditorInputListener> editorListenerMap =
-      new HashMap<>();
-  
+  private Map<ICasEditor, ICasEditorInputListener> editorListenerMap = new HashMap<>();
+
   /** The document listener map. */
-  private Map<ICasEditor, ICasDocumentListener> documentListenerMap =
-      new HashMap<>();
-  
+  private Map<ICasEditor, ICasDocumentListener> documentListenerMap = new HashMap<>();
+
   /**
    * Instantiates a new cas editor view.
    *
-   * @param editorNotAvailableMessage the editor not available message
+   * @param editorNotAvailableMessage
+   *          the editor not available message
    */
   public CasEditorView(String editorNotAvailableMessage) {
     this.editorNotAvailableMessage = editorNotAvailableMessage;
@@ -72,14 +69,12 @@ public abstract class CasEditorView extends PageBookView {
    * Implementors should overwrite if they want that. Default is false.
    * <p>
    * Note:<br>
-   * The implementation uses the ICasDocumentListener.viewChanged event
-   * to recognize view changes. If the view implementation also listens for
-   * this event the view might already be disposed when the listener is called.
-   * It is therefore strongly recommended either to listen for the event and
+   * The implementation uses the ICasDocumentListener.viewChanged event to recognize view changes.
+   * If the view implementation also listens for this event the view might already be disposed when
+   * the listener is called. It is therefore strongly recommended either to listen for the event and
    * update the view or don't list for the event and rely on a page re-creation.
    * 
-   * @return true if page should be disposed/re-created on CAS view change,
-   * or false if not.
+   * @return true if page should be disposed/re-created on CAS view change, or false if not.
    */
   protected boolean isRecreatePageOnCASViewSwitch() {
     return false;
@@ -98,7 +93,8 @@ public abstract class CasEditorView extends PageBookView {
   /**
    * Do create page.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    * @return the i page book view page
    */
   // Will be recreated on view switch (need a flag to disable that) and input cas switch
@@ -107,11 +103,13 @@ public abstract class CasEditorView extends PageBookView {
   /**
    * Creates the view page.
    *
-   * @param casViewPageBookedPage the cas view page booked page
-   * @param editor the editor
+   * @param casViewPageBookedPage
+   *          the cas view page booked page
+   * @param editor
+   *          the editor
    */
-  private void createViewPage( CasEditorViewPage casViewPageBookedPage, ICasEditor editor) {
-    
+  private void createViewPage(CasEditorViewPage casViewPageBookedPage, ICasEditor editor) {
+
     IPageBookViewPage page = doCreatePage(editor);
     if (page != null) {
       try {
@@ -119,10 +117,9 @@ public abstract class CasEditorView extends PageBookView {
       } catch (PartInitException e) {
         CasEditorPlugin.log(e);
       }
-      
+
       casViewPageBookedPage.setCASViewPage(page);
-    }
-    else {
+    } else {
       casViewPageBookedPage.setCASViewPage(null);
     }
   }
@@ -131,12 +128,13 @@ public abstract class CasEditorView extends PageBookView {
   protected final PageRec doCreatePage(final IWorkbenchPart part) {
 
     PageRec result = null;
-    
+
     if (part instanceof ICasEditor) {
       final ICasEditor editor = (ICasEditor) part;
-      
-      final CasEditorViewPage casViewPageBookedPage = new CasEditorViewPage(editorNotAvailableMessage);
-      
+
+      final CasEditorViewPage casViewPageBookedPage = new CasEditorViewPage(
+              editorNotAvailableMessage);
+
       if (editor.getDocument() != null) {
         ICasDocumentListener documentListener = new AbstractDocumentListener() {
           @Override
@@ -146,48 +144,47 @@ public abstract class CasEditorView extends PageBookView {
             }
           }
         };
-        
+
         editor.getDocument().addChangeListener(documentListener);
-        
+
         // remember on map
         documentListenerMap.put(editor, documentListener);
       }
-      
+
       ICasEditorInputListener inputListener = new ICasEditorInputListener() {
-        
+
         @Override
         public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument,
                 IEditorInput newInput, ICasDocument newDocument) {
-          
+
           createViewPage(casViewPageBookedPage, editor);
-          
+
           ICasDocumentListener changeListener = documentListenerMap.get(editor);
-          
+
           if (changeListener != null) {
             if (oldDocument != null)
               oldDocument.removeChangeListener(changeListener);
-              
+
             if (newDocument != null)
               newDocument.addChangeListener(changeListener);
           }
-          
+
         }
       };
       editorListenerMap.put(editor, inputListener);
       editor.addCasEditorInputListener(inputListener);
-      
-      // BUG: This does not work! 
-      
-      
+
+      // BUG: This does not work!
+
       initPage(casViewPageBookedPage);
-      
+
       casViewPageBookedPage.createControl(getPageBook());
-      
+
       createViewPage(casViewPageBookedPage, editor);
-      
+
       result = new PageRec(editor, casViewPageBookedPage);
     }
-    
+
     return result;
   }
 
@@ -198,23 +195,23 @@ public abstract class CasEditorView extends PageBookView {
 
   @Override
   protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
-    
+
     if (part instanceof ICasEditor) {
       ICasEditor editor = (ICasEditor) part;
       ICasEditorInputListener editorListener = editorListenerMap.remove(part);
-      
+
       if (editorListener != null) {
         editor.removeCasEditorInputListener(editorListener);
       }
-      
+
       ICasDocumentListener documentListener = documentListenerMap.remove(part);
       ICasDocument document = editor.getDocument();
-      
+
       if (documentListener != null && document != null) {
         document.removeChangeListener(documentListener);
       }
     }
-    
+
     pageRecord.page.dispose();
     pageRecord.dispose();
   }
@@ -228,7 +225,8 @@ public abstract class CasEditorView extends PageBookView {
   /**
    * Look at {@link IPartListener#partBroughtToTop(IWorkbenchPart)}.
    *
-   * @param part the part
+   * @param part
+   *          the part
    */
   @Override
   public void partBroughtToTop(IWorkbenchPart part) {
@@ -237,24 +235,22 @@ public abstract class CasEditorView extends PageBookView {
 
   @Override
   public void dispose() {
-    
-    for (Map.Entry<ICasEditor, ICasEditorInputListener> entry :
-      editorListenerMap.entrySet()) {
+
+    for (Map.Entry<ICasEditor, ICasEditorInputListener> entry : editorListenerMap.entrySet()) {
       entry.getKey().removeCasEditorInputListener(entry.getValue());
     }
-    
+
     editorListenerMap.clear();
-    
-    for (Map.Entry<ICasEditor, ICasDocumentListener> entry :
-      documentListenerMap.entrySet()) {
-      
+
+    for (Map.Entry<ICasEditor, ICasDocumentListener> entry : documentListenerMap.entrySet()) {
+
       ICasDocument document = entry.getKey().getDocument();
       if (document != null)
         document.removeChangeListener(entry.getValue());
     }
-    
+
     documentListenerMap.clear();
-    
+
     super.dispose();
   }
 }

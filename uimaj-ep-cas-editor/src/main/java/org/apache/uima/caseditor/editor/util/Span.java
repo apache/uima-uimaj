@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.util;
 
-
 /**
  * This class usually specifies an continous are of text. This area has an start and end index. The
  * difference of the end and start is the length of the area.
@@ -38,8 +37,10 @@ public class Span implements Comparable<Span> {
   /**
    * Initializes a new <code>Span</code> instance.
    *
-   * @param start the start
-   * @param length the length
+   * @param start
+   *          the start
+   * @param length
+   *          the length
    */
   public Span(int start, int length) {
     mStart = start;
@@ -76,8 +77,8 @@ public class Span implements Comparable<Span> {
   /**
    * Returns true if the given span is a subset of this span.
    *
-   * @param containingSpan -
-   *          the span to compare
+   * @param containingSpan
+   *          - the span to compare
    * @return - true if containingSpan is a subset.
    */
   public boolean isContaining(Span containingSpan) {
@@ -92,20 +93,21 @@ public class Span implements Comparable<Span> {
   /**
    * Checks if is intersecting.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return true, if is intersecting
    */
   public boolean isIntersecting(Span s) {
     int sstart = s.getStart();
-    return this.isContaining(s) || s.isContaining(this) ||
-	   getStart() <= sstart && sstart < getEnd() ||
-	   sstart <= getStart() && getStart() < s.getEnd();
+    return this.isContaining(s) || s.isContaining(this) || getStart() <= sstart && sstart < getEnd()
+            || sstart <= getStart() && getStart() < s.getEnd();
   }
-  
+
   /**
    * Compares the current instance to another {@link Span} object.
    *
-   * @param span the span
+   * @param span
+   *          the span
    * @return the int
    */
   @Override
@@ -116,7 +118,8 @@ public class Span implements Comparable<Span> {
   /**
    * Tests if the current instance is equal to o;.
    *
-   * @param o the o
+   * @param o
+   *          the o
    * @return true, if successful
    */
   @Override

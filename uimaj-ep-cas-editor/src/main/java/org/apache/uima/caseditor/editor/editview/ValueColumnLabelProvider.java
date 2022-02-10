@@ -28,7 +28,6 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
-
 /**
  * Provides the labels for the edit view.
  */
@@ -43,9 +42,10 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
       FeatureValue featureValue = (FeatureValue) element;
 
       if (featureValue.getFeature().getRange().isPrimitive()) {
-        cell.setText(Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature()).toString());
-      }
-      else {
+        cell.setText(Primitives
+                .getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature())
+                .toString());
+      } else {
         FeatureStructure value = (FeatureStructure) featureValue.getValue();
 
         if (value == null) {
@@ -54,8 +54,7 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
           cell.setText("[" + value.getType().getShortName() + "]");
         }
       }
-    }
-    else if (element instanceof ArrayValue) {
+    } else if (element instanceof ArrayValue) {
 
       ArrayValue value = (ArrayValue) element;
 
@@ -66,16 +65,13 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
 
         if (fs == null) {
           cell.setText("null");
-        }
-        else {
+        } else {
           cell.setText("[" + fs.getType().getShortName() + "]");
         }
-      }
-      else {
+      } else {
         cell.setText(value.get().toString());
       }
-    }
-    else {
+    } else {
       throw new CasEditorError("Unknown element!");
     }
   }

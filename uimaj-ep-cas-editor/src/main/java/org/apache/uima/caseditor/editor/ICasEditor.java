@@ -22,47 +22,48 @@ package org.apache.uima.caseditor.editor;
 import org.apache.uima.cas.CAS;
 import org.eclipse.ui.IEditorPart;
 
-
 /**
- * A Cas Editor is an extension to the {@link IEditorPart} interface and 
- * is responsible to view and edit a {@link CAS} object.
+ * A Cas Editor is an extension to the {@link IEditorPart} interface and is responsible to view and
+ * edit a {@link CAS} object.
  */
 public interface ICasEditor extends IEditorPart {
-  
+
   // TODO: Add a method to get the document provider, could needed
-  //       by various views to store configuration linked to the ts!
-  
+  // by various views to store configuration linked to the ts!
+
   /**
    * Gets the document.
    *
    * @return the document
    */
   ICasDocument getDocument();
-  
+
   /**
    * Gets the cas document provider.
    *
    * @return the cas document provider
    */
   CasDocumentProvider getCasDocumentProvider();
-  
+
   /**
    * Reopen editor with new type system.
    */
   void reopenEditorWithNewTypeSystem();
-  
+
   /**
    * Adds the cas editor input listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   void addCasEditorInputListener(ICasEditorInputListener listener);
-  
+
   /**
    * Removes the cas editor input listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   void removeCasEditorInputListener(ICasEditorInputListener listener);
-  
+
 }

@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
-
 /**
  * Provide the labels for the given {@link FeatureStructure}s.
  */
@@ -48,24 +47,20 @@ public final class FeatureStructureLabelProvider implements ILabelProvider {
       }
 
       return featureValue.getFeature().getShortName();
-    }
-    else if (element instanceof IAdaptable) {
+    } else if (element instanceof IAdaptable) {
 
       FeatureStructure structure = null;
 
       if (((IAdaptable) element).getAdapter(AnnotationFS.class) != null) {
-        structure = (AnnotationFS) ((IAdaptable) element)
-                .getAdapter(AnnotationFS.class);
+        structure = (AnnotationFS) ((IAdaptable) element).getAdapter(AnnotationFS.class);
       }
 
       if (structure == null) {
         structure = (FeatureStructure) ((IAdaptable) element).getAdapter(FeatureStructure.class);
       }
 
-      return structure.getType().getShortName() + " (id=" +
-      		structure._id() + ")";
-    }
-    else {
+      return structure.getType().getShortName() + " (id=" + structure._id() + ")";
+    } else {
       assert false : "Unexpected element!";
 
       return element.toString();

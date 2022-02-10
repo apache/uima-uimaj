@@ -24,9 +24,8 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-
 public final class EditView extends CasEditorView {
-  
+
   /**
    * The ID of the feature structure view.
    */
@@ -39,7 +38,7 @@ public final class EditView extends CasEditorView {
    * Instantiates a new edits the view.
    */
   public EditView() {
-      super("The edit view is currently not available.");
+    super("The edit view is currently not available.");
   }
 
   @Override

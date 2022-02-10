@@ -27,8 +27,6 @@ import java.util.Objects;
 import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-
-
 /**
  * The <code>AnnotationStyle</code> describes the look of an certain annotation type in the
  * <code>AnnotationEditor</code>.
@@ -73,7 +71,7 @@ public final class AnnotationStyle {
      * The bracket style.
      */
     BRACKET,
-    
+
     /** The tag. */
     TAG
   }
@@ -105,22 +103,25 @@ public final class AnnotationStyle {
 
   /** The configuration. */
   private final String configuration;
-  
+
   /**
    * Initialize a new instance.
    *
-   * @param annotation -
-   *          the annotation type
-   * @param style -
-   *          the drawing style
-   * @param color -
-   *          annotation color
+   * @param annotation
+   *          - the annotation type
+   * @param style
+   *          - the drawing style
+   * @param color
+   *          - annotation color
    *
-   * @param layer - drawing layer
+   * @param layer
+   *          - drawing layer
    * 
-   * @param configuration the configuration string for the style or null if no configuration
+   * @param configuration
+   *          the configuration string for the style or null if no configuration
    */
-  public AnnotationStyle(String annotation, Style style, Color color, int layer, String configuration) {
+  public AnnotationStyle(String annotation, Style style, Color color, int layer,
+          String configuration) {
 
     if (annotation == null || style == null || color == null) {
       throw new IllegalArgumentException("parameters must be not null!");
@@ -141,15 +142,19 @@ public final class AnnotationStyle {
   /**
    * Instantiates a new annotation style.
    *
-   * @param annotation the annotation
-   * @param style the style
-   * @param color the color
-   * @param layer the layer
+   * @param annotation
+   *          the annotation
+   * @param style
+   *          the style
+   * @param color
+   *          the color
+   * @param layer
+   *          the layer
    */
   public AnnotationStyle(String annotation, Style style, Color color, int layer) {
     this(annotation, style, color, layer, null);
   }
-  
+
   /**
    * Retrieves the annotation type.
    *
@@ -194,11 +199,12 @@ public final class AnnotationStyle {
   public String getConfiguration() {
     return configuration;
   }
-  
+
   /**
    * Compares if current is equal to another object.
    *
-   * @param object the object
+   * @param object
+   *          the object
    * @return true, if successful
    */
   @Override
@@ -209,7 +215,7 @@ public final class AnnotationStyle {
       isEqual = true;
     } else if (object instanceof AnnotationStyle) {
       AnnotationStyle style = (AnnotationStyle) object;
-      
+
       boolean isConfigEqual = Objects.equals(configuration, style.configuration);
 
       isEqual = annotation.equals(style.annotation) && this.style.equals(style.style)
@@ -245,144 +251,149 @@ public final class AnnotationStyle {
     annotationStyle += " Config: " + getConfiguration();
     return annotationStyle;
   }
-  
+
   // TODO: Format must be redefined, so that only one key/string pair is needed to save it!
-  
+
   // key -> type name + ."style"
   // value -> key/value pairs -> key=value; key=value;
   // split on ";" and then split on = to parse values into a map
   /**
    * Serialize properties.
    *
-   * @param properties the properties
+   * @param properties
+   *          the properties
    * @return the string
    */
   // maybe make a util which can save a String, String map to a line, and load it from String ...
   private static String serializeProperties(Map<String, String> properties) {
-    
+
     StringBuilder configString = new StringBuilder();
-    
+
     for (Map.Entry<String, String> entry : properties.entrySet()) {
       configString.append(entry.getKey().trim());
       configString.append("=");
       configString.append(entry.getValue().trim());
       configString.append(";");
     }
-    
+
     return configString.toString();
   }
-  
+
   /**
    * Parses the properties.
    *
-   * @param line the line
+   * @param line
+   *          the line
    * @return the map
    */
   private static Map<String, String> parseProperties(String line) {
     Map<String, String> properties = new HashMap<>();
-    
+
     String keyValueStrings[] = line.split(";");
-    
+
     for (String keyValueString : keyValueStrings) {
-     String keyValuePair[] = keyValueString.split("=");
-     
-     if (keyValuePair.length == 2) {
-       properties.put(keyValuePair[0], keyValuePair[1]);
-     }
+      String keyValuePair[] = keyValueString.split("=");
+
+      if (keyValuePair.length == 2) {
+        properties.put(keyValuePair[0], keyValuePair[1]);
+      }
     }
-    
+
     return properties;
   }
-  
+
   /**
-   * Note: This method must not be called by user code! It is only public because the migration
-   * code in the Cas Editor Ide Plugin needs to access this method.
+   * Note: This method must not be called by user code! It is only public because the migration code
+   * in the Cas Editor Ide Plugin needs to access this method.
    *
-   * @param store the store
-   * @param style the style
+   * @param store
+   *          the store
+   * @param style
+   *          the style
    */
   public static void putAnnotatationStyleToStore(IPreferenceStore store, AnnotationStyle style) {
-    
+
     Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
             style.getColor().getBlue());
-    
+
     Map<String, String> styleProperties = new HashMap<>();
-    
+
     styleProperties.put("color", Integer.toString(color.getRGB()));
     styleProperties.put("strategy", style.getStyle().toString());
     styleProperties.put("layer", Integer.toString(style.getLayer()));
-    
+
     if (style.getConfiguration() != null) {
       styleProperties.put("config", style.getConfiguration());
     }
-    
+
     store.setValue(style.getAnnotation() + ".style", serializeProperties(styleProperties));
   }
-  
+
   /**
    * Retrieves an annotation style from the provided preference store.
    * <p>
-   * Note: This method must not be called by user code! It is only public because the migration
-   * code in the Cas Editor Ide Plugin needs to access this method.
+   * Note: This method must not be called by user code! It is only public because the migration code
+   * in the Cas Editor Ide Plugin needs to access this method.
    *
-   * @param store the store
-   * @param typeName the type name
+   * @param store
+   *          the store
+   * @param typeName
+   *          the type name
    * @return an annotation style from the provided preference store
    */
-  public static AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {
-    
+  public static AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store,
+          String typeName) {
+
     Map<String, String> styleProperties = parseProperties(store.getString(typeName + ".style"));
-    
-    // initialize with random background style for the case if the store contains no style information
+
+    // initialize with random background style for the case if the store contains no style
+    // information
     AnnotationStyle.Style style = AnnotationStyle.Style.BACKGROUND;
-    int index = (int) Math.round(Math.random() * (DefaultColors.COLORS.length-1));
+    int index = (int) Math.round(Math.random() * (DefaultColors.COLORS.length - 1));
     Color color = DefaultColors.COLORS[index];
-    
+
     String styleString = styleProperties.get("strategy");
     if (styleString != null && styleString.length() != 0) {
       // TODO: Might throw exception, catch it and use default!
       try {
         style = AnnotationStyle.Style.valueOf(styleString);
-      }
-      catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
       }
     }
-    
-    
+
     String colorString = styleProperties.get("color");
     if (colorString != null && colorString.length() != 0) {
       try {
         int colorInteger = Integer.parseInt(colorString);
         color = new Color(colorInteger);
-      }
-      catch (NumberFormatException e) {
+      } catch (NumberFormatException e) {
       }
     }
-    
+
     int layer = 0;
-    
+
     String layerString = styleProperties.get("layer");
-    
+
     if (layerString != null && layerString.length() != 0) {
       try {
         layer = Integer.parseInt(layerString);
-      }
-      catch (NumberFormatException e) {
+      } catch (NumberFormatException e) {
       }
     }
-    
+
     String configuration = styleProperties.get("config");
-    
+
     if (configuration != null && configuration.length() != 0)
       configuration = null;
-    
-    AnnotationStyle annotationStyle = new AnnotationStyle(typeName, style, color, layer, configuration);
-    
+
+    AnnotationStyle annotationStyle = new AnnotationStyle(typeName, style, color, layer,
+            configuration);
+
     // store style if it is not known yet
-    if(styleProperties == null || styleProperties.isEmpty()) {
+    if (styleProperties == null || styleProperties.isEmpty()) {
       putAnnotatationStyleToStore(store, annotationStyle);
     }
-    
+
     return annotationStyle;
   }
 }

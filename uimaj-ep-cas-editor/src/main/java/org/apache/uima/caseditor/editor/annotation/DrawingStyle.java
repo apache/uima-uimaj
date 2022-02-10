@@ -26,24 +26,22 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 
-
 /**
  * A factory for drawing styles.
  * 
- *  @see org.apache.uima.caseditor.editor.AnnotationStyle.Style
+ * @see org.apache.uima.caseditor.editor.AnnotationStyle.Style
  */
 public class DrawingStyle {
 
   /** The stateless styles. */
-  private static Map<AnnotationStyle.Style, IDrawingStrategy> statelessStyles =
-      new HashMap<>();
-  
+  private static Map<AnnotationStyle.Style, IDrawingStrategy> statelessStyles = new HashMap<>();
+
   static {
     statelessStyles.put(Style.BACKGROUND, new BackgroundDrawingStrategy());
     statelessStyles.put(Style.TEXT_COLOR, new TextColorDrawingStrategy());
     statelessStyles.put(Style.TOKEN, new TokenDrawingStrategy());
     // deprecated since 3.4, but minimum version is 3.3
-    statelessStyles.put(Style.SQUIGGLES, 
+    statelessStyles.put(Style.SQUIGGLES,
             new org.eclipse.jface.text.source.AnnotationPainter.SquigglesStrategy());
     statelessStyles.put(Style.BOX, new BoxDrawingStrategy());
     statelessStyles.put(Style.UNDERLINE, new UnderlineDrawingStrategy());
@@ -59,17 +57,19 @@ public class DrawingStyle {
   /**
    * Retrieves the {@link IDrawingStrategy}.
    *
-   * @param style the style
+   * @param style
+   *          the style
    * @return the {@link IDrawingStrategy} or null if does not exist.
    */
   public static IDrawingStrategy createStrategy(AnnotationStyle style) {
-    
+
     IDrawingStrategy strategy = statelessStyles.get(style.getStyle());
-    
-    if (strategy == null && Style.TAG.equals(style.getStyle()) && style.getConfiguration() != null) {
+
+    if (strategy == null && Style.TAG.equals(style.getStyle())
+            && style.getConfiguration() != null) {
       strategy = new TagDrawingStrategy(style.getConfiguration());
     }
-    
+
     return strategy;
   }
 }

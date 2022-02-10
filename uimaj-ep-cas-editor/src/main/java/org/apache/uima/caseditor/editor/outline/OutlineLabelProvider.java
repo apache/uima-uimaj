@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-
 /**
  * This <code>OutlineLabelProvider</code> returns the covered text of an <code>AnnotationFS</code>.
  */
@@ -55,20 +54,21 @@ class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider 
       else
         return "";
     }
-    
+
     Type type = (Type) ((IAdaptable) element).getAdapter(Type.class);
-    
+
     if (type != null) {
-    	return type.getShortName();
+      return type.getShortName();
     }
-    
+
     return "Unkown type";
   }
 
   /**
    * Gets the string without new line.
    *
-   * @param string the string
+   * @param string
+   *          the string
    * @return the string without new line
    */
   private static String getStringWithoutNewLine(String string) {

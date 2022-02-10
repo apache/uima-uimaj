@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.action;
 
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.ICasDocument;
@@ -28,26 +27,26 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-
 /**
  * Merges two or more annotations.
  *
- * TODO: also merge features - if one is null or primitive has default value take the the other one -
- * in conflict case do nothing
+ * TODO: also merge features - if one is null or primitive has default value take the the other one
+ * - in conflict case do nothing
  */
 public class MergeAnnotationAction extends BaseSelectionListenerAction {
-  
+
   /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes the current instance.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public MergeAnnotationAction(ICasEditor editor) {
     super("MergeAnnotationAction");
-    
+
     this.editor = editor;
 
     setEnabled(false);
@@ -68,7 +67,7 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
     AnnotationSelection annotations = new AnnotationSelection(getStructuredSelection());
 
     ICasDocument document = editor.getDocument();
-    
+
     CAS documentCAS = document.getCAS();
 
     AnnotationFS mergedAnnotation = documentCAS.createAnnotation(annotations.getFirst().getType(),

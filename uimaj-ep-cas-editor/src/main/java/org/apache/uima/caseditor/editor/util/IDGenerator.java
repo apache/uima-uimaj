@@ -21,7 +21,6 @@ package org.apache.uima.caseditor.editor.util;
 
 import java.util.Random;
 
-
 /**
  * <p>
  * The IDGenerator generate unique IDs.
@@ -32,7 +31,7 @@ import java.util.Random;
  * </p>
  */
 public class IDGenerator {
-  
+
   /** The s start value. */
   private long sStartValue;
 
@@ -59,8 +58,8 @@ public class IDGenerator {
    * Retrieve the next unique ID.
    *
    * @return - the unique id
-   * @throws IllegalStateException -
-   *           if there are more than Long.MAX_VALUE calls to
+   * @throws IllegalStateException
+   *           - if there are more than Long.MAX_VALUE calls to
    *           <code>IDGenerator.nextUniqueID()</code>
    */
   public byte[] nextUniqueID() {
@@ -69,8 +68,8 @@ public class IDGenerator {
     }
 
     byte[] id = new byte[] { (byte) (sUniqueID >> 56), (byte) (sUniqueID >> 48),
-            (byte) (sUniqueID >> 40), (byte) (sUniqueID >> 32), (byte) (sUniqueID >> 24),
-            (byte) (sUniqueID >> 16), (byte) (sUniqueID >> 8), (byte) sUniqueID, };
+        (byte) (sUniqueID >> 40), (byte) (sUniqueID >> 32), (byte) (sUniqueID >> 24),
+        (byte) (sUniqueID >> 16), (byte) (sUniqueID >> 8), (byte) sUniqueID, };
 
     sUniqueID++;
     return id;

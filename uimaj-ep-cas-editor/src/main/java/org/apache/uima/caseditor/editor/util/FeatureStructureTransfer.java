@@ -19,40 +19,34 @@
 
 package org.apache.uima.caseditor.editor.util;
 
-
 /**
- * This class is able to transfer a {@link org.apache.uima.cas.FeatureStructure}
- * objects.
+ * This class is able to transfer a {@link org.apache.uima.cas.FeatureStructure} objects.
  */
-public class FeatureStructureTransfer extends ObjectTransfer
-{
-    
-    /** The s feature structure transfer. */
-    private static FeatureStructureTransfer sFeatureStructureTransfer;
+public class FeatureStructureTransfer extends ObjectTransfer {
 
-    /**
-     * Initializes a new instance.
-     *
-     * Note: Use {@link #getInstance() } to get a instance of
-     * the FeatureStructureTransfer, singleton pattern.
-     */
-    private FeatureStructureTransfer()
-    {
-        super("FeatureStructureTransfer");
+  /** The s feature structure transfer. */
+  private static FeatureStructureTransfer sFeatureStructureTransfer;
+
+  /**
+   * Initializes a new instance.
+   *
+   * Note: Use {@link #getInstance() } to get a instance of the FeatureStructureTransfer, singleton
+   * pattern.
+   */
+  private FeatureStructureTransfer() {
+    super("FeatureStructureTransfer");
+  }
+
+  /**
+   * Returns the singleton instance of the FeatureStructureTransfer.
+   *
+   * @return the only FeatureStructureTransfer object
+   */
+  public static FeatureStructureTransfer getInstance() {
+    if (sFeatureStructureTransfer == null) {
+      sFeatureStructureTransfer = new FeatureStructureTransfer();
     }
 
-    /**
-     * Returns the singleton instance of the FeatureStructureTransfer.
-     *
-     * @return the only FeatureStructureTransfer object
-     */
-    public static FeatureStructureTransfer getInstance()
-    {
-        if (sFeatureStructureTransfer == null)
-        {
-            sFeatureStructureTransfer = new FeatureStructureTransfer();
-        }
-
-        return sFeatureStructureTransfer;
-    }
+    return sFeatureStructureTransfer;
+  }
 }

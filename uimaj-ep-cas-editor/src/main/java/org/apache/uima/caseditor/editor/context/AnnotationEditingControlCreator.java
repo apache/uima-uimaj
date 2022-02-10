@@ -19,14 +19,12 @@
 
 package org.apache.uima.caseditor.editor.context;
 
-
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.caseditor.editor.CustomInformationControl;
 import org.apache.uima.caseditor.editor.ICustomInformationControlContentHandler;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.swt.widgets.Shell;
-
 
 /**
  * TODO: add javadoc here.
@@ -36,7 +34,8 @@ public class AnnotationEditingControlCreator implements IInformationControlCreat
   /**
    * Creates the information control.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the new control
    */
   @Override
@@ -57,8 +56,8 @@ public class AnnotationEditingControlCreator implements IInformationControlCreat
 
     CustomInformationControl control = new CustomInformationControl(parent, contentHandler);
 
-    AnnotationEditingControl annotationEditingControl = new AnnotationEditingControl(control
-            .getParent());
+    AnnotationEditingControl annotationEditingControl = new AnnotationEditingControl(
+            control.getParent());
 
     control.setControl(annotationEditingControl);
 

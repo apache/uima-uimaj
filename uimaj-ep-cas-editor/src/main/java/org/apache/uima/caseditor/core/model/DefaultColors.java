@@ -32,10 +32,8 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 
-
 /**
- * Utility to assign default colors to the annotation types in the
- * TypeSystem.
+ * Utility to assign default colors to the annotation types in the TypeSystem.
  */
 public class DefaultColors {
 
@@ -43,81 +41,74 @@ public class DefaultColors {
   /** The Constant BRIGHT. */
   // (use high brightness for best contrast against black text)
   private static final float BRIGHT = 0.95f;
-  
+
   /** The Constant COLORS. */
   public static final Color[] COLORS = new Color[] {
-    // low saturation colors are best, so put them first
-    Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
-    Color.getHSBColor(0f / 360, 0.25f, BRIGHT), // pink?
-    Color.getHSBColor(210f / 360, 0.25f, BRIGHT), // baby blue?
-    Color.getHSBColor(120f / 360, 0.25f, BRIGHT), // mint green?
-    Color.getHSBColor(290f / 360, 0.25f, BRIGHT), // lavender?
-    Color.getHSBColor(30f / 360, 0.25f, BRIGHT), // tangerine?
-    Color.getHSBColor(80f / 360, 0.25f, BRIGHT), // celery green?
-    Color.getHSBColor(330f / 360, 0.25f, BRIGHT), // light coral?
-    Color.getHSBColor(160f / 360, 0.25f, BRIGHT), // aqua?
-    Color.getHSBColor(250f / 360, 0.25f, BRIGHT), // light violet?
-    
-    // higher saturation colors
-    Color.getHSBColor(55f / 360, 0.5f, BRIGHT), 
-    Color.getHSBColor(0f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(210f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(120f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(290f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(30f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(80f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(330f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(160f / 360, 0.5f, BRIGHT),
-    Color.getHSBColor(250f / 360, 0.5f, BRIGHT),
-    
-    // even higher saturation colors
-    Color.getHSBColor(55f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(0f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(210f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(120f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(290f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(30f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(80f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(330f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(160f / 360, 0.75f, BRIGHT),
-    Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
-  
+      // low saturation colors are best, so put them first
+      Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
+      Color.getHSBColor(0f / 360, 0.25f, BRIGHT), // pink?
+      Color.getHSBColor(210f / 360, 0.25f, BRIGHT), // baby blue?
+      Color.getHSBColor(120f / 360, 0.25f, BRIGHT), // mint green?
+      Color.getHSBColor(290f / 360, 0.25f, BRIGHT), // lavender?
+      Color.getHSBColor(30f / 360, 0.25f, BRIGHT), // tangerine?
+      Color.getHSBColor(80f / 360, 0.25f, BRIGHT), // celery green?
+      Color.getHSBColor(330f / 360, 0.25f, BRIGHT), // light coral?
+      Color.getHSBColor(160f / 360, 0.25f, BRIGHT), // aqua?
+      Color.getHSBColor(250f / 360, 0.25f, BRIGHT), // light violet?
+
+      // higher saturation colors
+      Color.getHSBColor(55f / 360, 0.5f, BRIGHT), Color.getHSBColor(0f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(210f / 360, 0.5f, BRIGHT), Color.getHSBColor(120f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(290f / 360, 0.5f, BRIGHT), Color.getHSBColor(30f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(80f / 360, 0.5f, BRIGHT), Color.getHSBColor(330f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(160f / 360, 0.5f, BRIGHT), Color.getHSBColor(250f / 360, 0.5f, BRIGHT),
+
+      // even higher saturation colors
+      Color.getHSBColor(55f / 360, 0.75f, BRIGHT), Color.getHSBColor(0f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(210f / 360, 0.75f, BRIGHT), Color.getHSBColor(120f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(290f / 360, 0.75f, BRIGHT), Color.getHSBColor(30f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(80f / 360, 0.75f, BRIGHT), Color.getHSBColor(330f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(160f / 360, 0.75f, BRIGHT), Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
+
   /**
-   * Assigns color to the annotation types in the provided <code>TypeSystem</code>.
-   * If a user provides an already existing mapping these will not be changed
-   * and taken into account when mapping the not assigned types.
+   * Assigns color to the annotation types in the provided <code>TypeSystem</code>. If a user
+   * provides an already existing mapping these will not be changed and taken into account when
+   * mapping the not assigned types.
    *
-   * @param ts the <code>TypeSystem</code>
-   * @param styles already existing styles which map an annotation to a color
+   * @param ts
+   *          the <code>TypeSystem</code>
+   * @param styles
+   *          already existing styles which map an annotation to a color
    * @return the collection
    */
-  public static Collection<AnnotationStyle> assignColors(TypeSystem ts, Collection<AnnotationStyle> styles) {
-    
+  public static Collection<AnnotationStyle> assignColors(TypeSystem ts,
+          Collection<AnnotationStyle> styles) {
+
     Map<String, Color> typeNameToColorMap = new HashMap<>();
-    
+
     for (AnnotationStyle style : styles) {
       typeNameToColorMap.put(style.getAnnotation(), style.getColor());
     }
-    
+
     for (Type type : ts.getProperlySubsumedTypes(ts.getType(CAS.TYPE_NAME_ANNOTATION))) {
       if (!typeNameToColorMap.containsKey(type.getName())) {
         Color c = COLORS[typeNameToColorMap.size() % COLORS.length];
         typeNameToColorMap.put(type.getName(), c);
       }
     }
-    
+
     Set<AnnotationStyle> newStyles = new HashSet<>();
-    
+
     for (AnnotationStyle style : styles) {
       typeNameToColorMap.remove(style.getAnnotation());
       newStyles.add(style);
     }
-    
+
     for (Map.Entry<String, Color> entry : typeNameToColorMap.entrySet()) {
       newStyles.add(new AnnotationStyle(entry.getKey(), AnnotationStyle.Style.BACKGROUND,
               entry.getValue(), 0));
     }
-    
+
     return Collections.unmodifiableSet(newStyles);
   }
 }

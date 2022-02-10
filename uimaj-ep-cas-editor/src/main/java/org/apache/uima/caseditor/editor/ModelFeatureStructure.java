@@ -28,15 +28,11 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
-
 /**
- * TODO:
- * set feature value to null
- * delete feature value structure
- * create feature value structure.
+ * TODO: set feature value to null delete feature value structure create feature value structure.
  */
 public class ModelFeatureStructure implements IAdaptable {
-  
+
   /** The m document. */
   private ICasDocument mDocument;
 
@@ -46,8 +42,10 @@ public class ModelFeatureStructure implements IAdaptable {
   /**
    * Initializes a new instance.
    *
-   * @param document the document
-   * @param featureStructre the feature structre
+   * @param document
+   *          the document
+   * @param featureStructre
+   *          the feature structre
    */
   public ModelFeatureStructure(ICasDocument document, FeatureStructure featureStructre) {
     mDocument = document;
@@ -75,7 +73,8 @@ public class ModelFeatureStructure implements IAdaptable {
   /**
    * Sets the feature null.
    *
-   * @param feature the new feature null
+   * @param feature
+   *          the new feature null
    */
   public void setFeatureNull(Feature feature) {
     mFeatureStructre.setFeatureValue(feature, null);
@@ -84,7 +83,8 @@ public class ModelFeatureStructure implements IAdaptable {
   /**
    * Delete feature value.
    *
-   * @param feature the feature
+   * @param feature
+   *          the feature
    */
   public void deleteFeatureValue(Feature feature) {
     // get value and call remove
@@ -93,7 +93,8 @@ public class ModelFeatureStructure implements IAdaptable {
   /**
    * Creates the feature value.
    *
-   * @param feature the feature
+   * @param feature
+   *          the feature
    */
   public void createFeatureValue(Feature feature) {
     // create, add and link
@@ -102,19 +103,22 @@ public class ModelFeatureStructure implements IAdaptable {
   /**
    * Creates the feature value array.
    *
-   * @param feature the feature
-   * @param size the size
+   * @param feature
+   *          the feature
+   * @param size
+   *          the size
    */
   public void createFeatureValueArray(Feature feature, int size) {
     // create add and link
   }
 
-
   /**
    * Creates the.
    *
-   * @param document the document
-   * @param annotations the annotations
+   * @param document
+   *          the document
+   * @param annotations
+   *          the annotations
    * @return the list
    */
   public static List<ModelFeatureStructure> create(ICasDocument document,
@@ -129,7 +133,8 @@ public class ModelFeatureStructure implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
     if (FeatureStructure.class.equals(adapter)) {
       return getStructre();
     } else if (AnnotationFS.class.equals(adapter) && getStructre() instanceof AnnotationFS) {
@@ -151,8 +156,7 @@ public class ModelFeatureStructure implements IAdaptable {
 
     if (obj == this) {
       return true;
-    }
-    else if (obj instanceof ModelFeatureStructure) {
+    } else if (obj instanceof ModelFeatureStructure) {
       ModelFeatureStructure foreignFS = (ModelFeatureStructure) obj;
 
       return mFeatureStructre.equals(foreignFS.mFeatureStructre);

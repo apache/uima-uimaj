@@ -26,10 +26,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
-
 /**
  * TODO: add javadoc here.
-
+ * 
  */
 public abstract class AnnotationSelectionListener implements ISelectionListener {
 
@@ -40,7 +39,8 @@ public abstract class AnnotationSelectionListener implements ISelectionListener 
   /**
    * Selected annotation.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
   protected abstract void selectedAnnotation(Collection<AnnotationFS> annotations);
 

@@ -21,10 +21,9 @@ package org.apache.uima.caseditor.editor.annotation;
 
 import org.apache.uima.cas.text.AnnotationFS;
 
-
 /**
- * This class is used to provide additional information about the {@link AnnotationFS}
- * object to the custom drawing strategies.
+ * This class is used to provide additional information about the {@link AnnotationFS} object to the
+ * custom drawing strategies.
  */
 public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotation {
 
@@ -34,7 +33,8 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
   /**
    * Initializes a new instance.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   public EclipseAnnotationPeer(AnnotationFS annotation) {
     super(annotation.getType().getName(), false, "");
@@ -50,7 +50,6 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
   public AnnotationFS getAnnotationFS() {
     return annotation;
   }
-  
 
   @Override
   public int hashCode() {
@@ -61,13 +60,11 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
   public boolean equals(Object obj) {
     if (obj == this) {
       return true;
-    }
-    else if (obj instanceof EclipseAnnotationPeer) {
+    } else if (obj instanceof EclipseAnnotationPeer) {
       EclipseAnnotationPeer peer = (EclipseAnnotationPeer) obj;
-      
+
       return annotation.equals(peer.annotation);
-    }
-    else {
+    } else {
       return false;
     }
   }

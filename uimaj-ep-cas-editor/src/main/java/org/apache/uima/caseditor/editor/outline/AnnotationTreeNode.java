@@ -27,12 +27,11 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 
-
 /**
  * TODO: add javadoc here.
  */
 public class AnnotationTreeNode implements IAdaptable {
-  
+
   /** The m parent. */
   private AnnotationTreeNode mParent;
 
@@ -45,8 +44,10 @@ public class AnnotationTreeNode implements IAdaptable {
   /**
    * Instantiates a new annotation tree node.
    *
-   * @param document the document
-   * @param annotation the annotation
+   * @param document
+   *          the document
+   * @param annotation
+   *          the annotation
    */
   AnnotationTreeNode(ICasDocument document, AnnotationFS annotation) {
     Assert.isNotNull(document);
@@ -87,7 +88,8 @@ public class AnnotationTreeNode implements IAdaptable {
   /**
    * Checks if the given node is completly contained by the current node instance.
    *
-   * @param node the node
+   * @param node
+   *          the node
    * @return true if completly contained otherwise false
    */
   boolean isChild(AnnotationTreeNode node) {
@@ -98,7 +100,8 @@ public class AnnotationTreeNode implements IAdaptable {
   /**
    * Adds the child.
    *
-   * @param node the node
+   * @param node
+   *          the node
    */
   void addChild(AnnotationTreeNode node) {
     node.mParent = this;
@@ -108,9 +111,9 @@ public class AnnotationTreeNode implements IAdaptable {
     mChildren.buildTree();
   }
 
-
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
     // TODO:
     // use ModelFeatureStructure
     // create a AdapterFactory which just calls the
@@ -118,8 +121,7 @@ public class AnnotationTreeNode implements IAdaptable {
 
     if (AnnotationFS.class.equals(adapter) || FeatureStructure.class.equals(adapter)) {
       return getAnnotation();
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -131,16 +133,14 @@ public class AnnotationTreeNode implements IAdaptable {
 
   @Override
   public boolean equals(Object obj) {
-    
+
     if (this == obj) {
       return true;
-    }
-    else if (obj instanceof AnnotationTreeNode) {
+    } else if (obj instanceof AnnotationTreeNode) {
       AnnotationTreeNode other = (AnnotationTreeNode) obj;
-      
+
       return other.getAnnotation().equals(mAnnotation);
-    }
-    else {
+    } else {
       return false;
     }
   }

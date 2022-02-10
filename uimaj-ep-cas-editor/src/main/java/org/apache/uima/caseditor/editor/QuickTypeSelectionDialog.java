@@ -61,7 +61,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-
 /**
  * This is a lightweight popup dialog which creates an annotation of the chosen type.
  */
@@ -82,8 +81,10 @@ class QuickTypeSelectionDialog extends PopupDialog {
   /**
    * Initializes the current instance.
    *
-   * @param parent the parent
-   * @param editor the editor
+   * @param parent
+   *          the parent
+   * @param editor
+   *          the editor
    */
   @SuppressWarnings("deprecation")
   QuickTypeSelectionDialog(Shell parent, AnnotationEditor editor) {
@@ -162,8 +163,10 @@ class QuickTypeSelectionDialog extends PopupDialog {
   /**
    * Put shortcut.
    *
-   * @param shortcut the shortcut
-   * @param type the type
+   * @param shortcut
+   *          the shortcut
+   * @param type
+   *          the type
    */
   private void putShortcut(Character shortcut, Type type) {
     shortcutTypeMap.put(shortcut, type);
@@ -179,26 +182,26 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
     TypeSystem typeSystem = editor.getDocument().getCAS().getTypeSystem();
 
-    List<Type> types =
-            typeSystem.getProperlySubsumedTypes(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
+    List<Type> types = typeSystem
+            .getProperlySubsumedTypes(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
 
     types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
-    
+
     return types.toArray(new Type[types.size()]);
   }
 
   /**
    * Annotate and close.
    *
-   * @param annotationType the annotation type
+   * @param annotationType
+   *          the annotation type
    */
   private void annotateAndClose(Type annotationType) {
     if (annotationType != null) {
       Point textSelection = editor.getSelection();
 
-      AnnotationFS annotation =
-              editor.getDocument().getCAS().createAnnotation(annotationType, textSelection.x,
-                      textSelection.y);
+      AnnotationFS annotation = editor.getDocument().getCAS().createAnnotation(annotationType,
+              textSelection.x, textSelection.y);
 
       editor.getDocument().addFeatureStructure(annotation);
 
@@ -226,8 +229,8 @@ class QuickTypeSelectionDialog extends PopupDialog {
     separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     final TreeViewer typeTree = new TreeViewer(composite, SWT.SINGLE | SWT.V_SCROLL);
-    typeTree.getControl().setLayoutData(
-            new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL));
+    typeTree.getControl()
+            .setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL));
 
     typeTree.getControl().setFocus();
 
@@ -377,11 +380,11 @@ class QuickTypeSelectionDialog extends PopupDialog {
         annotateAndClose((Type) selection.getFirstElement());
       }
     });
-    
+
     Collection<Type> shownAnnotationTypes = editor.getShownAnnotationTypes();
-    
+
     Type[] types = shownAnnotationTypes.toArray(new Type[shownAnnotationTypes.size()]);
-    
+
     typeTree.setInput(types);
 
     ISelection modeSelection = new StructuredSelection(new Object[] { editor.getAnnotationMode() });

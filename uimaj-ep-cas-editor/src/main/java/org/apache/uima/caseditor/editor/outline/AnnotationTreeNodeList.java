@@ -27,18 +27,16 @@ import java.util.List;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.ICasDocument;
 
-
 /**
- * The {@link AnnotationTreeNodeList} class can build a tree of
- * {@link AnnotationTreeNode} objects.
+ * The {@link AnnotationTreeNodeList} class can build a tree of {@link AnnotationTreeNode} objects.
  * 
- * Currently this is not used, because it slows down the Cas Editor UI
- * if the document contains to many annotations.
+ * Currently this is not used, because it slows down the Cas Editor UI if the document contains to
+ * many annotations.
  * 
  * TODO: Rename this class
  */
 public class AnnotationTreeNodeList {
-  
+
   /** The m elements. */
   private List<AnnotationTreeNode> mElements = new ArrayList<>();
 
@@ -48,7 +46,8 @@ public class AnnotationTreeNodeList {
   /**
    * Instantiates a new annotation tree node list.
    *
-   * @param document the document
+   * @param document
+   *          the document
    */
   AnnotationTreeNodeList(ICasDocument document) {
     mDocument = document;
@@ -57,8 +56,10 @@ public class AnnotationTreeNodeList {
   /**
    * Instantiates a new annotation tree node list.
    *
-   * @param document the document
-   * @param annotations the annotations
+   * @param document
+   *          the document
+   * @param annotations
+   *          the annotations
    */
   AnnotationTreeNodeList(ICasDocument document, Collection<AnnotationFS> annotations) {
     mDocument = document;
@@ -82,7 +83,8 @@ public class AnnotationTreeNodeList {
   /**
    * Adds the.
    *
-   * @param node the node
+   * @param node
+   *          the node
    */
   void add(AnnotationTreeNode node) {
     mElements.add(node);
@@ -91,7 +93,8 @@ public class AnnotationTreeNodeList {
   /**
    * Removes the.
    *
-   * @param node the node
+   * @param node
+   *          the node
    */
   void remove(AnnotationTreeNode node) {
     if (mElements.contains(node)) {
