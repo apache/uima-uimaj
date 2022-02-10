@@ -26,10 +26,9 @@ import java.util.GregorianCalendar;
 
 import org.apache.uima.internal.util.TimeSpan;
 
-
 /**
- * PerformanceTestResultImpl implements the PerformanceTestResult interface and provides the results of a performance
- * test run.
+ * PerformanceTestResultImpl implements the PerformanceTestResult interface and provides the results
+ * of a performance test run.
  * 
  */
 public class PerformanceTestResultImpl implements PerformanceTestResult {
@@ -88,8 +87,11 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /** The document preparation time. */
   private TimeSpan documentPreparationTime = null;
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getNumberOfProcessedCharacters()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.test.junit_extension.PerformanceTestResult#getNumberOfProcessedCharacters()
    */
   @Override
   public int getNumberOfProcessedCharacters() {
@@ -99,13 +101,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the number of characters.
    *
-   * @param numberOfCharacters          The number of characters.
+   * @param numberOfCharacters
+   *          The number of characters.
    */
   public void setNumberOfCharacters(int numberOfCharacters) {
     this.numberOfCharacters = numberOfCharacters;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getNumberOfProcessedFiles()
    */
   @Override
@@ -116,13 +121,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the number of files.
    *
-   * @param numberOfFiles          The number of files.
+   * @param numberOfFiles
+   *          The number of files.
    */
   public void setNumberOfFiles(int numberOfFiles) {
     this.numberOfFiles = numberOfFiles;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getUIMADatapath()
    */
   @Override
@@ -133,13 +141,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the datapath.
    *
-   * @param datapath          The UIMA datapath.
+   * @param datapath
+   *          The UIMA datapath.
    */
   public void setDatapath(String datapath) {
     this.datapath = datapath;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getAeInitTime()
    */
   @Override
@@ -150,13 +161,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the inits the time.
    *
-   * @param initTime          The analysis engine init time.
+   * @param initTime
+   *          The analysis engine init time.
    */
   public void setInitTime(TimeSpan initTime) {
     this.initTime = initTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getFileIoTime()
    */
   @Override
@@ -167,13 +181,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the io time.
    *
-   * @param ioTime          The file io time to set.
+   * @param ioTime
+   *          The file io time to set.
    */
   public void setIoTime(TimeSpan ioTime) {
     this.ioTime = ioTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getNumberOfCreatedAnnotations()
    */
   @Override
@@ -184,13 +201,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the number of created annotations.
    *
-   * @param numberOfCreatedAnnotations          The number of created annotations to set.
+   * @param numberOfCreatedAnnotations
+   *          The number of created annotations to set.
    */
   public void setNumberOfCreatedAnnotations(int numberOfCreatedAnnotations) {
     this.numberOfCreatedAnnotations = numberOfCreatedAnnotations;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getNumberOfRepeatedRuns()
    */
   @Override
@@ -201,13 +221,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the nums to run.
    *
-   * @param numsToRun          The number of repeated runs.
+   * @param numsToRun
+   *          The number of repeated runs.
    */
   public void setNumsToRun(int numsToRun) {
     this.numsToRun = numsToRun;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getOverallTime()
    */
   @Override
@@ -218,13 +241,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the overall time.
    *
-   * @param overallTime          The overall processing time.
+   * @param overallTime
+   *          The overall processing time.
    */
   public void setOverallTime(TimeSpan overallTime) {
     this.overallTime = overallTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getAeProcessingTime()
    */
   @Override
@@ -235,13 +261,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the processing time.
    *
-   * @param processingTime          The analysis engine processing time.
+   * @param processingTime
+   *          The analysis engine processing time.
    */
   public void setProcessingTime(TimeSpan processingTime) {
     this.processingTime = processingTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#isRepeatSingleMode()
    */
   @Override
@@ -252,13 +281,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the repeat single mode.
    *
-   * @param repeatSingleMode          The repeat single mode setting
+   * @param repeatSingleMode
+   *          The repeat single mode setting
    */
   public void setRepeatSingleMode(boolean repeatSingleMode) {
     this.repeatSingleMode = repeatSingleMode;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getAeDescFilePath()
    */
   @Override
@@ -269,13 +301,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the ae desc file path.
    *
-   * @param aeDescFile          The analysis engine descriptor file.
+   * @param aeDescFile
+   *          The analysis engine descriptor file.
    */
   public void setAeDescFilePath(File aeDescFile) {
     this.aeDescFile = aeDescFile;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getTestFileDirectoryPath()
    */
   @Override
@@ -286,13 +321,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the test file dir.
    *
-   * @param testFileDir          The test file directory.
+   * @param testFileDir
+   *          The test file directory.
    */
   public void setTestFileDir(File testFileDir) {
     this.testFileDir = testFileDir;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getAeWarmupTime()
    */
   @Override
@@ -303,13 +341,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the warmup time.
    *
-   * @param warmupTime          The analysis engine warmup time.
+   * @param warmupTime
+   *          The analysis engine warmup time.
    */
   public void setWarmupTime(TimeSpan warmupTime) {
     this.warmupTime = warmupTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#isDoAeWarmup()
    */
   @Override
@@ -320,7 +361,8 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the do warmup.
    *
-   * @param doWarmup          the doWarmup setting
+   * @param doWarmup
+   *          the doWarmup setting
    */
   public void setDoWarmup(boolean doWarmup) {
     this.doWarmup = doWarmup;
@@ -344,9 +386,10 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
     resultString.append("Use " + this.aeDescFile.getAbsolutePath() + " descriptor" + NEWLINE);
     resultString.append("Fileset " + this.testFileDir + " is used" + NEWLINE);
     resultString.append("Datapath setting is: " + this.datapath + NEWLINE);
-    resultString.append("Number of documents (overall): " + this.getNumberOfProcessedFiles() + NEWLINE);
     resultString
-            .append("Number of characters (overall): " + this.getNumberOfProcessedCharacters() + NEWLINE);
+            .append("Number of documents (overall): " + this.getNumberOfProcessedFiles() + NEWLINE);
+    resultString.append(
+            "Number of characters (overall): " + this.getNumberOfProcessedCharacters() + NEWLINE);
     resultString.append("Total document size (overall): "
             + (float) (this.getProcessedFileSize() / 1024) + " KB" + NEWLINE);
     resultString.append(NEWLINE + "Initialize: " + NEWLINE);
@@ -361,10 +404,11 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
     resultString.append("Analysis Engine processing time: " + this.processingTime + NEWLINE);
     if (this.processingTime.getFullMilliseconds() > 0 && this.getProcessedFileSize() > 0) {
       resultString.append("Processing throughput: "
-              + (long) ((this.getProcessedFileSize() / 1024) / ((float) this.processingTime
-                      .getFullMilliseconds() / 1000)) + " KB/s" + NEWLINE);
-      long mbPerSecond = (long) ((this.getProcessedFileSize() / 1024 / 1024) / ((float) this.processingTime
-              .getFullMilliseconds() / 1000 / 60 / 60));
+              + (long) ((this.getProcessedFileSize() / 1024)
+                      / ((float) this.processingTime.getFullMilliseconds() / 1000))
+              + " KB/s" + NEWLINE);
+      long mbPerSecond = (long) ((this.getProcessedFileSize() / 1024 / 1024)
+              / ((float) this.processingTime.getFullMilliseconds() / 1000 / 60 / 60));
       resultString.append("Processing throughput: " + mbPerSecond + " MB/h" + NEWLINE);
     }
 
@@ -385,7 +429,8 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
    * @param file
    *          Output file where the results are written to
    * 
-   * @throws Exception passthru
+   * @throws Exception
+   *           passthru
    */
   @Override
   public void writePerfResultsAsColumn(String level, File file) throws Exception {
@@ -441,8 +486,8 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
     FileWriter fileWriter = new FileWriter(file, true);
 
     if (writeHeader) {
-      fileWriter
-              .write("Timestamp ; Levelname ; singleMode ; warmup; Docs ; Annotations ; Processing time ; init time ; io time");
+      fileWriter.write(
+              "Timestamp ; Levelname ; singleMode ; warmup; Docs ; Annotations ; Processing time ; init time ; io time");
       fileWriter.write(System.getProperty("line.separator"));
     }
 
@@ -454,7 +499,9 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
     fileWriter.close();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getAeCleanupTime()
    */
   @Override
@@ -465,13 +512,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the cleanup time.
    *
-   * @param cleanupTime          the analysis engine cleanup time
+   * @param cleanupTime
+   *          the analysis engine cleanup time
    */
   public void setCleanupTime(TimeSpan cleanupTime) {
     this.cleanupTime = cleanupTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getDocumentPreparationTime()
    */
   @Override
@@ -482,13 +532,16 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the document preparation time.
    *
-   * @param documentPreparationTime          the document preparation time
+   * @param documentPreparationTime
+   *          the document preparation time
    */
   public void setDocumentPreparationTime(TimeSpan documentPreparationTime) {
     this.documentPreparationTime = documentPreparationTime;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.test.junit_extension.PerformanceTestResult#getProcessedFileSize()
    */
   @Override
@@ -499,7 +552,8 @@ public class PerformanceTestResultImpl implements PerformanceTestResult {
   /**
    * Sets the total file size.
    *
-   * @param collectionFileSize          the collection file size
+   * @param collectionFileSize
+   *          the collection file size
    */
   public void setTotalFileSize(long collectionFileSize) {
     this.collectionFileSize = collectionFileSize;
