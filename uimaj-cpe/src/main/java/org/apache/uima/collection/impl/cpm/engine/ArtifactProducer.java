@@ -63,7 +63,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  * 
  */
-public class ArtifactProducer extends Thread {
+public class ArtifactProducer implements Runnable {
 
   /** The thread state. */
   public int threadState = 0;
@@ -417,8 +417,9 @@ public class ArtifactProducer extends Thread {
 
         threadState = 1001; // Waiting for CAS
         // Get the cas from the pool.
-        while (cpm.isRunning() && (casList[i] = casPool.getCas(0)) == null)
+        while (cpm.isRunning() && (casList[i] = casPool.getCas(0)) == null) {
           ; // intentionally empty while loop
+        }
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -475,11 +476,12 @@ public class ArtifactProducer extends Thread {
         // mapped to _InitialView) for backward compatiblity
         Capability[] capabilities;
         CasInitializer casIni = ((CollectionReader) collectionReader).getCasInitializer();
-        if (casIni != null)
+        if (casIni != null) {
           capabilities = casIni.getProcessingResourceMetaData().getCapabilities();
-        else
+        } else {
           capabilities = ((CollectionReader) collectionReader).getProcessingResourceMetaData()
                   .getCapabilities();
+        }
 
         boolean sofaUnaware = true;
         for (int j = 0; j < capabilities.length; j++) {
@@ -654,6 +656,8 @@ public class ArtifactProducer extends Thread {
    */
   @Override
   public void run() {
+    Thread.currentThread().setName("[CollectionReader Thread]::");
+
     boolean crEventCompleted = false; // this flag is used to mark the
     // ProcessTrace event
     if (!cpm.isRunning()) {

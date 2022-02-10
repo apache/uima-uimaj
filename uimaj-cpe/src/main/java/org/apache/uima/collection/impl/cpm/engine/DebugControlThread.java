@@ -103,7 +103,7 @@ public class DebugControlThread implements Runnable {
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_cpm__WARNING",
               new Object[] { Thread.currentThread().getName() }));
     } else {
-      new Thread(this).start();
+      cpm.getExecutorService().submit(this);
     }
   }
 

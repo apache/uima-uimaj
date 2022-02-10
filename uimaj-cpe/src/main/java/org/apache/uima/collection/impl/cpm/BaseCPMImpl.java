@@ -21,13 +21,13 @@ package org.apache.uima.collection.impl.cpm;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -44,7 +44,7 @@ import org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer;
 import org.apache.uima.collection.impl.cpm.container.CPEFactory;
 import org.apache.uima.collection.impl.cpm.container.deployer.socket.ProcessControllerAdapter;
 import org.apache.uima.collection.impl.cpm.engine.CPMEngine;
-import org.apache.uima.collection.impl.cpm.engine.CPMThreadGroup;
+import org.apache.uima.collection.impl.cpm.engine.CPMExecutorService;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.CasMetaData;
 import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
@@ -65,8 +65,6 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
 /**
  * Main thread that launches CPE and manages it. An application interacts with the running CPE via
  * this object. Through an API, an application may start, pause, resume, and stop a CPE.
- * 
- * 
  */
 public class BaseCPMImpl implements BaseCPM, Runnable {
 
@@ -106,8 +104,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   /** The m event type map. */
   private Map mEventTypeMap;
 
-  /** The cpm thread group. */
-  public CPMThreadGroup cpmThreadGroup = null;
+  /** The CPE executor service. */
+  public CPMExecutorService cpmExecutorService = null;
 
   /**
    * Instantiates and initializes CPE Factory with a given CPE Descriptor and defaults.
@@ -119,7 +117,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    */
   public BaseCPMImpl(CpeDescription aDescriptor) throws Exception {
     this(aDescriptor, null, true, UIMAFramework.getDefaultPerformanceTuningProperties());
-    cpmThreadGroup = new CPMThreadGroup("CPM Thread Group");
+    cpmExecutorService = new CPMExecutorService();
   }
 
   /**
@@ -141,7 +139,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
           boolean aDefaultProcessTrace, Properties aProps) throws Exception {
     cpeFactory = new CPEFactory(aDescriptor, aResourceManager);
     defaultProcessTrace = aDefaultProcessTrace;
-    cpmThreadGroup = new CPMThreadGroup("CPM Thread Group");
+    cpmExecutorService = new CPMExecutorService();
     init(false, aProps);
   }
 
@@ -159,7 +157,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    */
   public BaseCPMImpl(Boolean mode, String aDescriptor, ResourceManager aResourceManager)
           throws Exception {
-    cpmThreadGroup = new CPMThreadGroup("CPM Thread Group");
+    cpmExecutorService = new CPMExecutorService();
     cpeFactory = new CPEFactory(aResourceManager);
     if (mode == null) {
       defaultProcessTrace = true;
@@ -268,7 +266,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       }
     }
     // Instantiate class responsible for processing
-    cpEngine = new CPMEngine(cpmThreadGroup, cpeFactory, procTr, checkpointData);
+    cpEngine = new CPMEngine(cpmExecutorService, cpeFactory, procTr, checkpointData);
     if (!aDummyCasProcessor) {
       int concurrentThreadCount = cpeFactory.getCpeDescriptor().getCpeCasProcessors()
               .getConcurrentPUCount();
@@ -570,11 +568,12 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
 
       // Start the checkpoint thread
       if (checkpoint != null) {
-        new Thread(checkpoint).start();
+        cpmExecutorService.submit(checkpoint);
       }
-      cpEngine.start();
-      // Joing the CPMWorker Thread and wait until it finishes
-      cpEngine.join();
+
+      Future<?> cpEngineResult = cpmExecutorService.submit(cpEngine);
+      // Joining the CPMWorker Thread and wait until it finishes
+      cpEngineResult.get();
 
       completed = true;
       // If the entire collection has been processed there is no need for a checkpoint.
@@ -616,14 +615,13 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       }
       UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, "" + e);
       killed = true;
-      ArrayList statusCbL = cpEngine.getCallbackListeners();
+      List<BaseStatusCallbackListener> statusCbL = cpEngine.getCallbackListeners();
       EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr, true);
       // e is the actual exception.
       enProcSt.addEventStatus("CPM", "Failed", e);
 
       // Notify all listeners that the CPM has finished processing
-      for (int j = 0; j < statusCbL.size(); j++) {
-        BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
+      for (BaseStatusCallbackListener st : statusCbL) {
         if (st != null && st instanceof StatusCallbackListener) {
           ((StatusCallbackListener) st).entityProcessComplete(null, enProcSt);
         }
@@ -639,10 +637,10 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_stopped__FINEST",
               new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
     }
-    ArrayList statusCbL = cpEngine.getCallbackListeners();
+
+    List<BaseStatusCallbackListener> statusCbL = cpEngine.getCallbackListeners();
     // Notify all listeners that the CPM has finished processing
-    for (int j = 0; j < statusCbL.size(); j++) {
-      BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
+    for (BaseStatusCallbackListener st : statusCbL) {
       if (st != null) {
         if (!killed) {
           st.collectionProcessComplete();
@@ -686,9 +684,9 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     if (cpeFactory.isDefault()) {
       cpeFactory.addCollectionReader(collectionReader);
     }
-    cpmThreadGroup.setProcessTrace(procTr);
-    cpmThreadGroup.setListeners(cpEngine.getCallbackListeners());
-    new Thread(this).start();
+    cpmExecutorService.setProcessTrace(procTr);
+    cpmExecutorService.setListeners(cpEngine.getCallbackListeners());
+    cpmExecutorService.submit(this);
   }
 
   /**
@@ -713,10 +711,10 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     if (cpeFactory.isDefault()) {
       cpeFactory.addCollectionReader(collectionReader);
     }
-    cpmThreadGroup.setProcessTrace(procTr);
-    cpmThreadGroup.setListeners(cpEngine.getCallbackListeners());
+    cpmExecutorService.setProcessTrace(procTr);
+    cpmExecutorService.setListeners(cpEngine.getCallbackListeners());
 
-    new Thread(this).start();
+    cpmExecutorService.submit(this);
   }
 
   /**
@@ -741,10 +739,9 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     if (cpeFactory.isDefault()) {
       cpeFactory.addCollectionReader(collectionReader);
     }
-    cpmThreadGroup.setProcessTrace(procTr);
-    cpmThreadGroup.setListeners(cpEngine.getCallbackListeners());
-
-    new Thread(cpmThreadGroup, this).start();
+    cpmExecutorService.setProcessTrace(procTr);
+    cpmExecutorService.setListeners(cpEngine.getCallbackListeners());
+    cpmExecutorService.submit(this);
   }
 
   /**

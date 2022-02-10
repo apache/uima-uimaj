@@ -62,15 +62,13 @@ import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
 /**
- * This component executes the processing pipeline. Running in a seperate thread it continuously
- * reads bundles of Cas from the Work Queue filled by {@link ArtifactProducer} and sends it through
+ * This component executes the processing pipeline. Running in a separate thread it continuously
+ * reads bundles of CAS from the Work Queue filled by {@link ArtifactProducer} and sends it through
  * configured CasProcessors. The sequence in which CasProcessors are invoked is defined by the order
- * of Cas Processor listing in the cpe descriptor. The results of analysis produced be Cas
- * Processors is enqueued onto an output queue that is shared with Cas Consumers.
- * 
- * 
+ * of CAS Processor listing in the CPE descriptor. The results of analysis produced be CAS
+ * Processors is enqueued onto an output queue that is shared with CAS Consumers.
  */
-public class ProcessingUnit extends Thread {
+public class ProcessingUnit implements Runnable {
 
   /** The thread state. */
   public int threadState = 0;
@@ -156,6 +154,8 @@ public class ProcessingUnit extends Thread {
   /** The timer 06. */
   public long timer06 = 0;
 
+  private String name;
+
   /**
    * Instantiates a new processing unit.
    */
@@ -163,6 +163,14 @@ public class ProcessingUnit extends Thread {
     conversionCasArray = new CAS[1];
     // Instantiate a class responsible for converting CasData to CasObject and vice versa
     mConverter = new CasConverter();
+  }
+
+  public void setName(String aName) {
+    name = aName;
+  }
+
+  public String getName() {
+    return name;
   }
 
   /**
@@ -523,20 +531,22 @@ public class ProcessingUnit extends Thread {
    */
   @Override
   public void run() {
-    if (!cpm.isRunning()) {
+    Thread.currentThread().setName(getName());
 
+    if (!cpm.isRunning()) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_not_running__WARNING",
               new Object[] { Thread.currentThread().getName() });
       return;
     }
+
     maybeLogFinestWorkQueue("UIMA_CPM_start_pp__FINEST", workQueue);
     // Assign initial status to all Cas Processors in the processing pipeline
     for (int i = 0; i < processContainers.size(); i++) {
       ((ProcessingContainer) processContainers.get(i)).setStatus(Constants.CAS_PROCESSOR_RUNNING);
     }
+
     // Continue until CPE is stopped
-    boolean run = true;
     int maxWaitTimeForEntity = 0;
     if (cpeConfiguration != null && cpeConfiguration.getMaxTimeToWait() > 0) {
       maxWaitTimeForEntity = cpeConfiguration.getMaxTimeToWait();
@@ -544,6 +554,7 @@ public class ProcessingUnit extends Thread {
 
     isRunning = true;
 
+    boolean run = true;
     while (run) {
       threadState = 2000; // Start the Loop
       // blocks if CPM is in pause state
@@ -562,13 +573,13 @@ public class ProcessingUnit extends Thread {
         entity = workQueue.dequeue(maxWaitTimeForEntity);
       } else {
         entity = workQueue.dequeue(0);
-
       }
 
       if (entity == null) {
         maybeLogFinest("UIMA_CPM_queue_empty__FINEST", workQueue.getName());
         continue;
       }
+
       try {
         if (entity instanceof WorkUnit) {
           artifact = (Object[]) ((WorkUnit) entity).get();
@@ -642,12 +653,10 @@ public class ProcessingUnit extends Thread {
         threadState = 2003; // Killing
 
         this.cpm.killIt();
-
       } finally {
         if (releaseCAS) {
           clearCasCache();
         }
-
       }
     }
     maybeLogFinestWorkQueue("UIMA_CPM_exit_pp__FINEST", workQueue);
@@ -655,7 +664,6 @@ public class ProcessingUnit extends Thread {
     clearCasCache();
     maybeLogFinest("UIMA_CPM_pp_terminated__FINEST");
     isRunning = false;
-
   }
 
   /**
@@ -680,7 +688,6 @@ public class ProcessingUnit extends Thread {
       }
       casCache = null;
     }
-
   }
 
   /**
@@ -720,9 +727,9 @@ public class ProcessingUnit extends Thread {
   }
 
   /**
-   * Executes the processing pipeline. Given bundle of Cas instances is processed by each Cas
-   * Processor in the pipeline. Conversions between different types of Cas Processors is done on the
-   * fly. Two types of Cas Processors are currently supported:
+   * Executes the processing pipeline. Given bundle of CAS instances is processed by each CAS
+   * Processor in the pipeline. Conversions between different types of CAS Processors is done on the
+   * fly. Two types of CAS Processors are currently supported:
    * 
    * <ul>
    * <li>CasDataProcessor</li>
@@ -730,10 +737,10 @@ public class ProcessingUnit extends Thread {
    * </ul>
    * 
    * The first operates on instances of CasData the latter operates on instances of CAS. The results
-   * produced by Cas Processors are added to the output queue.
+   * produced by CAS Processors are added to the output queue.
    *
    * @param aCasObjectList
-   *          - bundle of Cas to analyze
+   *          - bundle of CAS to analyze
    * @param pTrTemp
    *          - object used to aggregate stats
    * @return true, if successful
@@ -775,7 +782,7 @@ public class ProcessingUnit extends Thread {
     // *******************************************
     // ** P R O C E S S I N G P I P E L I N E **
     // *******************************************
-    // Send Cas Object through the processing pipeline.
+    // Send CAS Object through the processing pipeline.
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
