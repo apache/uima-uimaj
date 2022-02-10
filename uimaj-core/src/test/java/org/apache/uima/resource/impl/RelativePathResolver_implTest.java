@@ -19,47 +19,104 @@
 
 package org.apache.uima.resource.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.stream.Stream;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class RelativePathResolver_implTest {
+
+  private final static String PATH_SEP = System.getProperty("path.separator");
+  private RelativePathResolver_impl sut;
+
+  private final static String[] expectedElements = { "/this/is/a/test", "/another/test" };
+  private final static String expectedPath = String.join(PATH_SEP, expectedElements);
+
+  @BeforeEach
+  public void setup() {
+    sut = new RelativePathResolver_impl();
+  }
+
+  @Test
+  public void thatPathElementsAreNotModifiable() throws Exception {
+    sut.setDataPathElements(expectedPath);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+            .as("Path elements should not be modifiable")
+            .isThrownBy(() -> sut.getDataPathElements().add("blah"));
+  }
+
+  @SuppressWarnings("deprecation")
   @Test
   public void testSetDataPath() throws Exception {
-    RelativePathResolver_impl resolver = new RelativePathResolver_impl();
-    // specify path by file names
-    String path = "/this/is/a/test" + System.getProperty("path.separator") + "/another/test";
-    resolver.setDataPath(path);
-    Assert.assertEquals(path, resolver.getDataPath());
-    URL[] urls = resolver.getBaseUrls();
-    Assert.assertEquals(2, urls.length);
-    Assert.assertEquals(new File("/this/is/a/test").toURL(), urls[0]);
-    Assert.assertEquals(new File("/another/test").toURL(), urls[1]);
+    sut.setDataPath(expectedPath);
+
+    assertThatGettersReturnTheRightValues(sut);
+  }
+
+  @Test
+  public void testSetDataPathElements() throws Exception {
+    sut.setDataPathElements(expectedElements);
+
+    assertThatGettersReturnTheRightValues(sut);
+  }
+
+  @Test
+  public void testSetDataPathElementsAsFiles() throws Exception {
+    File[] expectedElementFiles = Stream.of(expectedElements).map(File::new).toArray(File[]::new);
+
+    sut.setDataPathElements(expectedElementFiles);
+
+    assertThatGettersReturnTheRightValues(sut);
   }
 
   @Test
   public void testResolveRelativePath() throws Exception {
-    RelativePathResolver_impl resolver = new RelativePathResolver_impl();
     // file should not be found
-    URL absUrl = resolver.resolveRelativePath(new URL("file:test/relativePathTest.dat"));
-    Assert.assertNull(absUrl);
+    assertThat(sut.resolveRelativePath(new URL("file:test/relativePathTest.dat"))) //
+            .as("File should not be found") //
+            .isNull();
 
     // specify path
     String path = JUnitExtension.getFile("ResourceTest/subdir").getAbsolutePath();
-    resolver.setDataPath(path);
+    sut.setDataPathElements(path);
 
-    // now file should be found
-    absUrl = resolver.resolveRelativePath(new URL("file:test/relativePathTest.dat"));
-    Assert.assertNotNull(absUrl);
+    URL absUrl = sut.resolveRelativePath(new URL("file:test/relativePathTest.dat"));
+    assertThat(absUrl) //
+            .as("now file should be found") //
+            .isNotNull();
 
     // try resolving an absolute path even with no data path
-    resolver.setDataPath("");
-    URL newUrl = resolver.resolveRelativePath(absUrl);
-    assertEquals(absUrl, newUrl);
+    sut.setDataPathElements("");
+
+    assertThat(sut.resolveRelativePath(absUrl)).isEqualTo(absUrl);
+  }
+
+  @SuppressWarnings("deprecation")
+  private void assertThatGettersReturnTheRightValues(RelativePathResolver_impl aResolver) {
+    assertThat(aResolver.getDataPathElements()) //
+            .containsExactly(expectedElements);
+
+    assertThat(aResolver.getDataPath()) //
+            .isEqualTo(expectedPath);
+
+    assertThat(aResolver.getBaseUrls())
+            .containsExactly(Stream.of(expectedElements).map(this::toUrl).toArray(URL[]::new));
+  }
+
+  @SuppressWarnings("deprecation")
+  private URL toUrl(String path) {
+    try {
+      return new File(path).toURL();
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException(e);
+    }
   }
 }
