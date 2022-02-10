@@ -29,7 +29,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 
-
 /**
  * Reference implementation of {@link AnalysisEngineServiceAdapter} for SOAP.
  * 
@@ -40,10 +39,13 @@ public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapt
   /**
    * Initialize.
    *
-   * @param aSpecifier the a specifier
-   * @param aAdditionalParams the a additional params
+   * @param aSpecifier
+   *          the a specifier
+   * @param aAdditionalParams
+   *          the a additional params
    * @return true, if successful
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   @Override
@@ -66,8 +68,9 @@ public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapt
 
     try {
       // create proxy to service
-      AnalysisEngineServiceStub stub = new AxisAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec
-              .getTimeout(), uriSpec.getProtocol().equals(Constants.PROTOCOL_SOAP_WITH_ATTACHMENTS));
+      AnalysisEngineServiceStub stub = new AxisAnalysisEngineServiceStub(uriSpec.getUri(),
+              uriSpec.getTimeout(),
+              uriSpec.getProtocol().equals(Constants.PROTOCOL_SOAP_WITH_ATTACHMENTS));
       setStub(stub);
 
       // finish initialization. This requires access to metadata, so must be called
@@ -78,13 +81,14 @@ public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapt
       throw new ResourceInitializationException(ResourceInitializationException.MALFORMED_URL,
               new Object[] { uriSpec.getUri(), uriSpec.getSourceUrlString() }, e);
     }
-    
-    // Sofa mappings are currently not implemented for remote AEs.  Catch this
+
+    // Sofa mappings are currently not implemented for remote AEs. Catch this
     // and report an error.
     if (getUimaContextAdmin().getSofaMap().size() > 0) {
-      throw new ResourceInitializationException(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
-              new Object[]{getMetaData().getName()});
-    }    
+      throw new ResourceInitializationException(
+              ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
+              new Object[] { getMetaData().getName() });
+    }
 
     return true;
   }

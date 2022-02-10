@@ -27,7 +27,6 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.DeserializerFactory;
 import org.apache.uima.adapter.soap.axis11.XmlDeserializer_Axis11;
 
-
 /**
  * An Axis deserializer factory that constructs instances of {@link XmlDeserializer}.
  * 
@@ -41,7 +40,9 @@ public class XmlDeserializerFactory implements DeserializerFactory {
   /** The mechanisms. */
   private Vector mechanisms;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.DeserializerFactory#getDeserializerAs(java.lang.String)
    */
   @Override
@@ -59,7 +60,9 @@ public class XmlDeserializerFactory implements DeserializerFactory {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.DeserializerFactory#getSupportedMechanismTypes()
    */
   @Override

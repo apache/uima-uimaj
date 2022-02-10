@@ -29,7 +29,6 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.SerializerFactory;
 import org.apache.uima.adapter.soap.axis11.XmlSerializer_Axis11;
 
-
 /**
  * An AxisSerializer factory that constructs instances of {@link XmlSerializer}.
  * 
@@ -43,7 +42,9 @@ public class XmlSerializerFactory implements SerializerFactory {
   /** The mechanisms. */
   private Vector mechanisms;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.SerializerFactory#getSerializerAs(java.lang.String)
    */
   @Override
@@ -61,7 +62,9 @@ public class XmlSerializerFactory implements SerializerFactory {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.SerializerFactory#getSupportedMechanismTypes()
    */
   @Override

@@ -41,15 +41,14 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceServiceStub;
 
-
 /**
- * Proxy to an {@link AnalysisEngineService_impl} that makes use of Axis SOAP to communicate with the
- * service.
+ * Proxy to an {@link AnalysisEngineService_impl} that makes use of Axis SOAP to communicate with
+ * the service.
  * 
  * 
  */
-public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub implements
-        AnalysisEngineServiceStub {
+public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub
+        implements AnalysisEngineServiceStub {
 
   /** Whether attachments should be used to send binary-serialized data. */
   private boolean mUseAttachments;
@@ -92,8 +91,10 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   /**
    * Call process.
    *
-   * @param aCAS the a CAS
-   * @throws ResourceServiceException the resource service exception
+   * @param aCAS
+   *          the a CAS
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   @Override
@@ -152,8 +153,8 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
         resultCargo = (ServiceDataCargo) result;
       } else {
         throw new ResourceServiceException(
-                ResourceServiceException.UNEXPECTED_SERVICE_RETURN_VALUE_TYPE, new Object[] {
-                    ServiceDataCargo.class.getName(),
+                ResourceServiceException.UNEXPECTED_SERVICE_RETURN_VALUE_TYPE,
+                new Object[] { ServiceDataCargo.class.getName(),
                     resultCargo == null ? "null" : resultCargo.getClass().getName() });
       }
 
@@ -180,7 +181,9 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
     // no resources to clean up
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineServiceStub#callBatchProcessComplete()
    */
   @Override
@@ -188,7 +191,9 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
     // currently not implemented for SOAP services
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
   @Override

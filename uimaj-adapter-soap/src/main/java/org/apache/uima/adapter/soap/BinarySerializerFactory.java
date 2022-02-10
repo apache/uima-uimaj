@@ -29,7 +29,6 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.SerializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
 
-
 /**
  * An Axis serializer factory that constructs instances of {@link BinarySerializer}.
  * 
@@ -53,13 +52,16 @@ public class BinarySerializerFactory implements SerializerFactory {
   /**
    * Instantiates a new binary serializer factory.
    *
-   * @param aUseAttachments the a use attachments
+   * @param aUseAttachments
+   *          the a use attachments
    */
   public BinarySerializerFactory(boolean aUseAttachments) {
     // TODO: attachments never used?
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.SerializerFactory#getSerializerAs(java.lang.String)
    */
   @Override
@@ -77,7 +79,9 @@ public class BinarySerializerFactory implements SerializerFactory {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.SerializerFactory#getSupportedMechanismTypes()
    */
   @Override

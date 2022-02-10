@@ -33,7 +33,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 /**
  * An Axis serializer for any {@link XMLizable} object.
  * 
@@ -47,11 +46,16 @@ public class XmlSerializer implements Serializer {
   /**
    * Serialize an element named name, with the indicated attributes and value.
    *
-   * @param name          is the element name
-   * @param attributes          are the attributes...serializer is free to add more.
-   * @param value          is the value
-   * @param context          is the SerializationContext
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param name
+   *          is the element name
+   * @param attributes
+   *          are the attributes...serializer is free to add more.
+   * @param value
+   *          is the value
+   * @param context
+   *          is the SerializationContext
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   @Override
   public void serialize(QName name, Attributes attributes, Object value,
@@ -68,12 +72,14 @@ public class XmlSerializer implements Serializer {
         throw new IOException("SAXException: " + e.getMessage());
       }
     } else {
-      throw new IOException("Can't serialize a " + value.getClass().getName()
-              + " with an XmlSerializer.");
+      throw new IOException(
+              "Can't serialize a " + value.getClass().getName() + " with an XmlSerializer.");
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.Serializer#getMechanismType()
    */
   @Override
@@ -84,10 +90,13 @@ public class XmlSerializer implements Serializer {
   /**
    * Write schema.
    *
-   * @param javaType the java type
-   * @param types the types
+   * @param javaType
+   *          the java type
+   * @param types
+   *          the types
    * @return the element
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    * @see org.apache.axis.encoding.Serializer#writeSchema(java.lang.Class,
    *      org.apache.axis.wsdl.fromJava.Types)
    */
@@ -103,14 +112,15 @@ public class XmlSerializer implements Serializer {
    * 
    */
   static class SerializerContentHandler extends DefaultHandler {
-    
+
     /** The m context. */
     private SerializationContext mContext;
 
     /**
      * Instantiates a new serializer content handler.
      *
-     * @param aContext the a context
+     * @param aContext
+     *          the a context
      */
     SerializerContentHandler(SerializationContext aContext) {
       mContext = aContext;
@@ -119,10 +129,14 @@ public class XmlSerializer implements Serializer {
     /**
      * Characters.
      *
-     * @param ch the ch
-     * @param start the start
-     * @param length the length
-     * @throws SAXException the SAX exception
+     * @param ch
+     *          the ch
+     * @param start
+     *          the start
+     * @param length
+     *          the length
+     * @throws SAXException
+     *           the SAX exception
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
     @Override
@@ -138,10 +152,14 @@ public class XmlSerializer implements Serializer {
     /**
      * End element.
      *
-     * @param uri the uri
-     * @param localName the local name
-     * @param qName the q name
-     * @throws SAXException the SAX exception
+     * @param uri
+     *          the uri
+     * @param localName
+     *          the local name
+     * @param qName
+     *          the q name
+     * @throws SAXException
+     *           the SAX exception
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
      *      java.lang.String)
      */
@@ -158,11 +176,16 @@ public class XmlSerializer implements Serializer {
     /**
      * Start element.
      *
-     * @param uri the uri
-     * @param localName the local name
-     * @param qName the q name
-     * @param attributes the attributes
-     * @throws SAXException the SAX exception
+     * @param uri
+     *          the uri
+     * @param localName
+     *          the local name
+     * @param qName
+     *          the q name
+     * @param attributes
+     *          the attributes
+     * @throws SAXException
+     *           the SAX exception
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
      *      java.lang.String, org.xml.sax.Attributes)
      */
