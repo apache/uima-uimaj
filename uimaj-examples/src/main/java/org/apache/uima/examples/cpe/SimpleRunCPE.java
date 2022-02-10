@@ -31,7 +31,6 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * Main Class that runs a Collection Processing Engine (CPE). This class reads a CPE Descriptor as a
  * command-line argument and instantiates the CPE. It also registers a callback listener with the
@@ -47,15 +46,17 @@ public class SimpleRunCPE extends Thread {
 
   /** Start time of CPE initialization. */
   private long mStartTime;
-  
+
   /** Start time of the processing. */
   private long mInitCompleteTime;
 
   /**
    * Constructor for the class.
    *
-   * @param args          command line arguments into the program - see class description
-   * @throws Exception the exception
+   * @param args
+   *          command line arguments into the program - see class description
+   * @throws Exception
+   *           the exception
    */
   public SimpleRunCPE(String args[]) throws Exception {
     mStartTime = System.currentTimeMillis();
@@ -68,8 +69,8 @@ public class SimpleRunCPE extends Thread {
 
     // parse CPE descriptor
     System.out.println("Parsing CPE Descriptor");
-    CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-            new XMLInputSource(args[0]));
+    CpeDescription cpeDesc = UIMAFramework.getXMLParser()
+            .parseCpeDescription(new XMLInputSource(args[0]));
     // instantiate CPE
     System.out.println("Instantiating CPE");
     mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
@@ -93,7 +94,6 @@ public class SimpleRunCPE extends Thread {
     }
   }
 
-  
   /**
    * Prints the usage message.
    */
@@ -105,8 +105,10 @@ public class SimpleRunCPE extends Thread {
   /**
    * main class.
    *
-   * @param args          Command line arguments - see class description
-   * @throws Exception the exception
+   * @param args
+   *          Command line arguments - see class description
+   * @throws Exception
+   *           the exception
    */
   public static void main(String[] args) throws Exception {
     new SimpleRunCPE(args);
@@ -118,7 +120,7 @@ public class SimpleRunCPE extends Thread {
    * 
    */
   class StatusCallbackListenerImpl implements StatusCallbackListener {
-    
+
     /** The entity count. */
     int entityCount = 0;
 
@@ -131,7 +133,7 @@ public class SimpleRunCPE extends Thread {
      * @see StatusCallbackListener#initializationComplete()
      */
     @Override
-    public void initializationComplete() {      
+    public void initializationComplete() {
       System.out.println("CPM Initialization Complete");
       mInitCompleteTime = System.currentTimeMillis();
     }
@@ -166,13 +168,13 @@ public class SimpleRunCPE extends Thread {
         System.out.print("; " + size + " characters");
       }
       System.out.println();
-      long initTime = mInitCompleteTime - mStartTime; 
+      long initTime = mInitCompleteTime - mStartTime;
       long processingTime = time - mInitCompleteTime;
       long elapsedTime = initTime + processingTime;
       System.out.println("Total Time Elapsed: " + elapsedTime + " ms ");
       System.out.println("Initialization Time: " + initTime + " ms");
       System.out.println("Processing Time: " + processingTime + " ms");
-      
+
       System.out.println("\n\n ------------------ PERFORMANCE REPORT ------------------\n");
       System.out.println(mCPE.getPerformanceReport().toString());
       // stop the JVM. Otherwise main thread will still be blocked waiting for

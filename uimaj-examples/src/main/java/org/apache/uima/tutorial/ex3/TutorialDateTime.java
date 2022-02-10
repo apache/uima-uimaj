@@ -122,7 +122,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   };
 
   static final String defaultYear = "2003";
-  
+
   private static boolean warningMessageShown = false;
 
   // PROCESS
@@ -137,27 +137,27 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
     // Create Annotations
     ResultSpecification resultSpec = getResultSpecification();
-    boolean timeWanted = resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot", aJCas.getDocumentLanguage());
-    boolean dateWanted = resultSpec.containsType("org.apache.uima.tutorial.DateAnnot", aJCas.getDocumentLanguage());
+    boolean timeWanted = resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot",
+            aJCas.getDocumentLanguage());
+    boolean dateWanted = resultSpec.containsType("org.apache.uima.tutorial.DateAnnot",
+            aJCas.getDocumentLanguage());
 
     if (timeWanted)
       makeAnnotations(timeAnnotationMaker, hoursMinutesPattern, dfTimeShort);
-    
-    if (dateWanted) {    
+
+    if (dateWanted) {
       makeAnnotations(dateAnnotationMaker, numericDatePattern, dfDateShort);
       makeAnnotations(dateAnnotationMaker, mediumDatePattern, dfDateMedium);
       makeAnnotations(dateAnnotationMaker, longDatePattern, dfDateLong);
     }
-    
+
     if (!timeWanted && !dateWanted && !warningMessageShown) {
       String m = String.format(
-        "No output is being produced by the TutorialDateTime annotator because the Result Specification did not contain" +
-        " a request for the type%n" +
-        "  org.apache.uima.tutorial.TimeAnnot nor%n" +
-        "  org.apache.uima.tutorial.DateAnnot" +
-        " with the language '%s'%n" +
-              "  (Note: this message will only be shown once.)%n", 
-              aJCas.getDocumentLanguage());              
+              "No output is being produced by the TutorialDateTime annotator because the Result Specification did not contain"
+                      + " a request for the type%n" + "  org.apache.uima.tutorial.TimeAnnot nor%n"
+                      + "  org.apache.uima.tutorial.DateAnnot" + " with the language '%s'%n"
+                      + "  (Note: this message will only be shown once.)%n",
+              aJCas.getDocumentLanguage());
       System.err.println(m);
       getContext().getLogger().log(Level.WARNING, m);
       warningMessageShown = true;
@@ -168,8 +168,8 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
-    for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
-            .next()) {
+    for (int end = b.next(),
+            start = b.first(); end != BreakIterator.DONE; start = end, end = b.next()) {
 
       // eliminate all-whitespace tokens
       boolean isWhitespace = true;

@@ -54,24 +54,24 @@ import org.apache.uima.util.Level;
  * <p>
  * This annotator takes the following optional configuration parameters:
  * <ul>
- * <li><code>Patterns</code> - array of Strings indicating regular expressions to match. The
- * pattern language is described at <a
- * href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html">
- * http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html</a>) </li>
+ * <li><code>Patterns</code> - array of Strings indicating regular expressions to match. The pattern
+ * language is described at
+ * <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html">
+ * http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html</a>)</li>
  * <li><code>TypeNames</code> - array of Strings indicating names of Types to be created from the
- * patterns. </li>
- * <li><code>ContainingAnnotationTypes</code> - an array of input annotation types. This
- * annotator will only produce new annotations that are contained within existing annotaions of
- * these types. (This is optional.) </li>
- * <li><code>AnnotateEntireContainedAnnotation</code> - When the ContainingAnnoationTypes
- * parameter is specified, a value of true for this parameter will cause the entire containing
- * annotation to be used as the span of the new annotation, rather than just the span of the regular
- * expression match. This can be used to "classify" previously created annotations according to
- * whether or not they contain text matching a regular expression. </li>
+ * patterns.</li>
+ * <li><code>ContainingAnnotationTypes</code> - an array of input annotation types. This annotator
+ * will only produce new annotations that are contained within existing annotaions of these types.
+ * (This is optional.)</li>
+ * <li><code>AnnotateEntireContainedAnnotation</code> - When the ContainingAnnoationTypes parameter
+ * is specified, a value of true for this parameter will cause the entire containing annotation to
+ * be used as the span of the new annotation, rather than just the span of the regular expression
+ * match. This can be used to "classify" previously created annotations according to whether or not
+ * they contain text matching a regular expression.</li>
  * </ul>
  * <p>
- * The indices of the <code>Patterns</code> and <code>TypeNames</code> arrays correspond, so
- * that a substring that matches <code>Patterns[i]</code> will result in an annotation of type
+ * The indices of the <code>Patterns</code> and <code>TypeNames</code> arrays correspond, so that a
+ * substring that matches <code>Patterns[i]</code> will result in an annotation of type
  * <code>TypeNames[i]</code>.
  * <p>
  * It is also possible to provide an external resource file that declares the annotation type names
@@ -104,11 +104,11 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       // Retrieve configuration parameters
       String[] patternStrings = (String[]) getContext().getConfigParameterValue("Patterns");
       String[] typeNames = (String[]) getContext().getConfigParameterValue("TypeNames");
-      mContainingAnnotationTypeNames = (String[]) getContext().getConfigParameterValue(
-              "ContainingAnnotationTypes");
+      mContainingAnnotationTypeNames = (String[]) getContext()
+              .getConfigParameterValue("ContainingAnnotationTypes");
       if (mContainingAnnotationTypeNames != null && mContainingAnnotationTypeNames.length > 0) {
-        mAnnotateEntireContainingAnnotation = (Boolean) getContext().getConfigParameterValue(
-                "AnnotateEntireContainingAnnotation");
+        mAnnotateEntireContainingAnnotation = (Boolean) getContext()
+                .getConfigParameterValue("AnnotateEntireContainingAnnotation");
       } else {
         mAnnotateEntireContainingAnnotation = Boolean.FALSE;
       }
@@ -251,7 +251,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * parameters.
    * 
    * @param aCAS
-   *          the CAS to process 
+   *          the CAS to process
    * @throws AnalysisEngineProcessException
    *           if a failure occurs during processing.
    * 
@@ -275,7 +275,9 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
         // iterate over all annotation types for which we have patterns
         for (int j = 0; j < mCASTypes.length; j++) {
           // see if the ResultSpec contains this type
-          if (getResultSpecification().containsType(mCASTypes[j].getName(),aCAS.getDocumentLanguage()) || getResultSpecification().containsType(mCASTypes[j].getName())) {
+          if (getResultSpecification().containsType(mCASTypes[j].getName(),
+                  aCAS.getDocumentLanguage())
+                  || getResultSpecification().containsType(mCASTypes[j].getName())) {
             // try to match each pattern that we have for this annotation type
             for (int k = 0; k < mPatterns[j].length; k++) {
               int pos = 0;
@@ -311,8 +313,8 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * Utility method that determines which subranges of the document text should be annotated by this
    * annotator. This is done as follows:
    * <ul>
-   * <li>If <code>mContainingAnnotationTypes</code> is <code>null</code>, the entire document
-   * is eligible for annotation.</li>
+   * <li>If <code>mContainingAnnotationTypes</code> is <code>null</code>, the entire document is
+   * eligible for annotation.</li>
    * <li>If <code>mContainingAnnotationTypes</code> is not <code>null</code>, then each of its
    * elements is expected to be an Annotation Type name. The CAS is queried for existing annotations
    * of any of these Types, and the only subranges of the document eligible for annotation are those
@@ -369,7 +371,8 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
   private Pattern[][] mPatterns;
 
   /**
-   * The names of the CAS types that this annotator produces from the patterns in {@link #mPatterns}.
+   * The names of the CAS types that this annotator produces from the patterns in
+   * {@link #mPatterns}.
    */
   private ArrayList<String> mTypeNames;
 

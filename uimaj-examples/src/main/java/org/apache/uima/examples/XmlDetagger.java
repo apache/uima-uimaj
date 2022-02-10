@@ -51,19 +51,18 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
    * file will be considered the document.
    */
   public static final String PARAM_XMLTAG = "XmlTagContainingText";
-  
+
   private SAXParserFactory parserFactory = XMLUtils.createSAXParserFactory();
- 
+
   private Type sourceDocInfoType;
 
   private String mXmlTagContainingText = null;
 
-    
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config param setting
-    mXmlTagContainingText  = (String) getContext().getConfigParameterValue(PARAM_XMLTAG);
+    mXmlTagContainingText = (String) getContext().getConfigParameterValue(PARAM_XMLTAG);
   }
 
   @Override
@@ -97,11 +96,11 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     if (null != sourceDocInfoFs) {
       plainTextView.addFsToIndexes(sourceDocInfoFs);
     }
-//    Iterator iter = xmlCas.getAnnotationIndex(sourceDocInfoType).iterator();
-//    if (iter.hasNext()) {
-//      FeatureStructure sourceDocInfoFs = (FeatureStructure) iter.next();
-//      plainTextView.getIndexRepository().addFS(sourceDocInfoFs);
-//    }
+    // Iterator iter = xmlCas.getAnnotationIndex(sourceDocInfoType).iterator();
+    // if (iter.hasNext()) {
+    // FeatureStructure sourceDocInfoFs = (FeatureStructure) iter.next();
+    // plainTextView.getIndexRepository().addFS(sourceDocInfoFs);
+    // }
 
   }
 
@@ -112,9 +111,10 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     public DetagHandler() {
       insideTextTag = (mXmlTagContainingText == null);
     }
-        
+
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes)
+            throws SAXException {
       if (qName.equalsIgnoreCase(mXmlTagContainingText)) {
         insideTextTag = true;
       }
@@ -130,14 +130,14 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       if (insideTextTag) {
-        detaggedText.append(ch, start, length);        
+        detaggedText.append(ch, start, length);
       }
     }
-    
+
     @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
       if (insideTextTag) {
-        detaggedText.append(ch, start, length);        
+        detaggedText.append(ch, start, length);
       }
     }
 

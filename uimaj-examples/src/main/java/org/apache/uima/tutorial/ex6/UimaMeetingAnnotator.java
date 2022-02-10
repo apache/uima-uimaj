@@ -101,8 +101,9 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
         // look up token in map to see if it is an acronym
         if (mMap.get(token) != null) {
           // create annotation
-          UimaMeeting annot = new UimaMeeting(aJCas, meeting.getBegin(), meeting.getEnd(), meeting
-                  .getRoom(), meeting.getDate(), meeting.getStartTime(), meeting.getEndTime());
+          UimaMeeting annot = new UimaMeeting(aJCas, meeting.getBegin(), meeting.getEnd(),
+                  meeting.getRoom(), meeting.getDate(), meeting.getStartTime(),
+                  meeting.getEndTime());
           // Add annotation to a list, to be later added to the indexes.
           // We need to do this because it's not allowed to add to an
           // index that you're currently iterating over.

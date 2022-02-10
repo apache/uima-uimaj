@@ -34,23 +34,22 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * Main Class that runs the Collection Processing Manager (CPM). This class reads descriptor files
  * and initiailizes the following components:
  * <ol>
- * <li> CollectionReader </li>
- * <li> Analysis Engine </li>
- * <li> CAS Consumer </li>
+ * <li>CollectionReader</li>
+ * <li>Analysis Engine</li>
+ * <li>CAS Consumer</li>
  * </ol>
  * <br>
  * It also registers a callback listener with the CPM, which will print progress and statistics to
  * System.out. <br>
  * Command lines arguments for the run are :
  * <ol>
- * <li> args[0] : CollectionReader descriptor file </li>
- * <li> args[1] : CAS Consumer descriptor file. </li>
- * <li> args[2] : AnnotationPrinter descriptor file </li>
+ * <li>args[0] : CollectionReader descriptor file</li>
+ * <li>args[1] : CAS Consumer descriptor file.</li>
+ * <li>args[2] : AnnotationPrinter descriptor file</li>
  * </ol>
  * <br>
  * Example : <br>
@@ -74,9 +73,12 @@ public class SimpleRunCPM extends Thread {
   /**
    * Constructor for the class.
    *
-   * @param args          command line arguments into the program - see class description
-   * @throws UIMAException the UIMA exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param args
+   *          command line arguments into the program - see class description
+   * @throws UIMAException
+   *           the UIMA exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public SimpleRunCPM(String args[]) throws UIMAException, IOException {
     mStartTime = System.currentTimeMillis();
@@ -97,14 +99,14 @@ public class SimpleRunCPM extends Thread {
 
     // AnalysisEngine
     System.out.println("Initializing AnalysisEngine");
-    ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            new XMLInputSource(args[1]));
+    ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(new XMLInputSource(args[1]));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
 
     // CAS Consumer
     System.out.println("Initializing CAS Consumer");
-    ResourceSpecifier consumerSpecifier = UIMAFramework.getXMLParser().parseCasConsumerDescription(
-            new XMLInputSource(args[2]));
+    ResourceSpecifier consumerSpecifier = UIMAFramework.getXMLParser()
+            .parseCasConsumerDescription(new XMLInputSource(args[2]));
     CasConsumer casConsumer = UIMAFramework.produceCasConsumer(consumerSpecifier);
 
     // create a new Collection Processing Manager
@@ -124,7 +126,6 @@ public class SimpleRunCPM extends Thread {
     mCPM.process(collectionReader, 10);
   }
 
-  
   /**
    * Prints the usage message.
    */
@@ -138,9 +139,12 @@ public class SimpleRunCPM extends Thread {
   /**
    * main class.
    *
-   * @param args          Command line arguments - see class description
-   * @throws UIMAException the UIMA exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param args
+   *          Command line arguments - see class description
+   * @throws UIMAException
+   *           the UIMA exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public static void main(String[] args) throws UIMAException, IOException {
     new SimpleRunCPM(args);
@@ -152,7 +156,7 @@ public class SimpleRunCPM extends Thread {
    * 
    */
   class StatusCallbackListenerImpl implements StatusCallbackListener {
-    
+
     /** The entity count. */
     int entityCount = 0;
 
