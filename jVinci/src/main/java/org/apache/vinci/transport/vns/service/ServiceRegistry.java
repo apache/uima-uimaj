@@ -411,9 +411,10 @@ public class ServiceRegistry {
     try {
       dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
     } catch (ParserConfigurationException e) {
-      System.err.println("Warning: DocumentBuilderFactory doesn't support the feature http://apache.org/xml/features/disallow-doctype-decl");
+      System.err.println(
+              "Warning: DocumentBuilderFactory doesn't support the feature http://apache.org/xml/features/disallow-doctype-decl");
     }
-  
+
     DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
     Document doc;
@@ -452,8 +453,8 @@ public class ServiceRegistry {
           H.put(C.getNodeName(), C.getFirstChild().getNodeValue());
         } else {
           // Complex elements
-          H.put(C.getNodeName(), XMLToVinci.xmlToVinciFrame(new StringReader(constructXMLString(C,
-                  true))));
+          H.put(C.getNodeName(),
+                  XMLToVinci.xmlToVinciFrame(new StringReader(constructXMLString(C, true))));
         }
       } // End for j
 

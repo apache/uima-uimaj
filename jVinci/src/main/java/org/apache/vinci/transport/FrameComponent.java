@@ -29,7 +29,9 @@ public class FrameComponent {
   /**
    * Set the attributes (replacing any previous ones) assocated with this Frame component. Default
    * implementation does nothing since attributes are not supported by default.
-   * @param s -
+   * 
+   * @param s
+   *          -
    */
   public void setAttributes(Attributes s) {
     Debug.p("WARNING: Attempt to set attributes of FrameComponent "

@@ -48,7 +48,8 @@ public class Base64Converter {
 
   /**
    * @pre from != null
-   * @param from -
+   * @param from
+   *          -
    * @return -
    */
   static public byte[] convertBinaryToBase64(byte[] from) {
@@ -57,19 +58,22 @@ public class Base64Converter {
 
   /**
    * @pre convert_me != null
-   * @param convert_me -
+   * @param convert_me
+   *          -
    * @return -
    */
-  
+
   static public String convertStringToBase64String(String convert_me) {
     return new String(convertBinaryToBase64(convert_me.getBytes()));
   }
 
   /**
    * @pre base64 != null
-   * @param base64 -
+   * @param base64
+   *          -
    * @return -
-   * @throws Base64FormatException -
+   * @throws Base64FormatException
+   *           -
    */
   static public String convertBase64StringToString(String base64) throws Base64FormatException {
     return new String(convertBase64ToBinary(base64.getBytes()));
@@ -77,9 +81,12 @@ public class Base64Converter {
 
   /**
    * @pre count &le; from.length
-   * @param from -
-   * @param count -
-   * @param line_breaks -
+   * @param from
+   *          -
+   * @param count
+   *          -
+   * @param line_breaks
+   *          -
    * @return -
    */
   static public byte[] convertBinaryToBase64(byte[] from, final int count, boolean line_breaks) {
@@ -115,8 +122,11 @@ public class Base64Converter {
   /**
    * Calculates the size of the resulting Base64 string returned by this class for a binary byte
    * array of the specified length. Includes carriage returns and all.
-   * @param input_size -
-   * @param line_breaks -
+   * 
+   * @param input_size
+   *          -
+   * @param line_breaks
+   *          -
    * @return -
    */
   static public int calculateBase64OutputSize(int input_size, boolean line_breaks) {
@@ -135,9 +145,11 @@ public class Base64Converter {
 
   /**
    * @pre input != null
-   * @param input -
+   * @param input
+   *          -
    * @return -
-   * @throws Base64FormatException -
+   * @throws Base64FormatException
+   *           -
    */
   static public byte[] convertBase64ToBinary(byte[] input) throws Base64FormatException {
     return convertBase64ToBinary(input, input.length);
@@ -146,10 +158,13 @@ public class Base64Converter {
   /**
    * @pre input != null
    * @pre input_size &le; input.length
-   * @param input -
-   * @param input_size -
+   * @param input
+   *          -
+   * @param input_size
+   *          -
    * @return -
-   * @throws Base64FormatException -
+   * @throws Base64FormatException
+   *           -
    */
   static public byte[] convertBase64ToBinary(byte[] input, final int input_size)
           throws Base64FormatException {
@@ -169,10 +184,13 @@ public class Base64Converter {
    * 
    * @pre input != null
    * @pre input_size &le; input.length
-   * @param input -
-   * @param input_size -
+   * @param input
+   *          -
+   * @param input_size
+   *          -
    * @return -
-   * @throws Base64FormatException -
+   * @throws Base64FormatException
+   *           -
    */
   static public int calculateBinaryOutputSize(byte[] input, final int input_size)
           throws Base64FormatException {

@@ -225,8 +225,8 @@ public class VNS extends VinciServableAdapter {
     System.out.println("    Set the ServerSocket backlog [default=" + backlog + "]");
 
     System.out.println("  -m N  --maxthreads N");
-    System.out.println("    Set the maximum size of the VNS thread pool [default=" + maxThreads
-            + "].");
+    System.out.println(
+            "    Set the maximum size of the VNS thread pool [default=" + maxThreads + "].");
 
     System.out.println("  -h  --help");
     System.out.println("    This help message");
@@ -574,12 +574,8 @@ public class VNS extends VinciServableAdapter {
     } catch (Exception e) {
       // Exact translation of the Python code [may not be necessary]
       out = new VinciFrame();
-      out
-              .fadd(
-                      "vinci:ERROR",
-                      "Critical error :\n"
-                              + e
-                              + "\nThe server MAY not respond to further requests.\nPlease notify the administrator\n");
+      out.fadd("vinci:ERROR", "Critical error :\n" + e
+              + "\nThe server MAY not respond to further requests.\nPlease notify the administrator\n");
       e.printStackTrace();
     }
 
@@ -650,8 +646,8 @@ public class VNS extends VinciServableAdapter {
         cache(name + "[" + servicesList[0].level + "]", new CachedItem(servicesList));
         // Have a proxy pointer to the entry created if it is not the same
         if (!servicesList[0].level.equals(level)) {
-          cache(name + "[" + level + "]", new ProxyCachedItem(name + "[" + servicesList[0].level
-                  + "]"));
+          cache(name + "[" + level + "]",
+                  new ProxyCachedItem(name + "[" + servicesList[0].level + "]"));
         }
       }
     } else
@@ -797,8 +793,8 @@ public class VNS extends VinciServableAdapter {
   }
 
   VinciFrame resolve(VinciFrame in) {
-    logRequest(VNSConstants.RESOLVE_COMMAND, in.fgetString("vinci:REMOTEIP"), in
-            .fgetString("SERVICE"));
+    logRequest(VNSConstants.RESOLVE_COMMAND, in.fgetString("vinci:REMOTEIP"),
+            in.fgetString("SERVICE"));
 
     if (in.fgetString("WORKSPACE") == null) {
       return resolveDefaults(in);
@@ -916,10 +912,8 @@ public class VNS extends VinciServableAdapter {
           public void run() {
             Debug.p("Trying to shutdown old service ...");
             VinciFrame shutdown = new VinciFrame();
-            shutdown
-                    .fadd(
-                            "vinci:SHUTDOWN",
-                            "Identical service started on this host. Use the INSTANCE tag to run multiple instances of the same service on a single host.");
+            shutdown.fadd("vinci:SHUTDOWN",
+                    "Identical service started on this host. Use the INSTANCE tag to run multiple instances of the same service on a single host.");
             try {
               VinciFrame f = BaseClient.rpc(shutdown, s_host, s_port, 10000);
               Debug.p("Shutdown response received: " + f.toXML());
@@ -985,8 +979,8 @@ public class VNS extends VinciServableAdapter {
       getFrame(false, "Malformed request");
     else {
       synchronized (SR) {
-        ok = SR
-                .addAlias(new ServiceAlias(service.fgetString("NAME"), service.fgetString("TARGET")));
+        ok = SR.addAlias(
+                new ServiceAlias(service.fgetString("NAME"), service.fgetString("TARGET")));
       }
     }
 

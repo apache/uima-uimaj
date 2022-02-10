@@ -39,7 +39,8 @@ public final class SimpleTransportable implements Transportable {
    * Create a SimpleTransportable that is an immutable copy of the provided Transportable object.
    * 
    * @pre convert_me != null
-   * @param convert_me -
+   * @param convert_me
+   *          -
    */
   public SimpleTransportable(Transportable convert_me) {
     try {

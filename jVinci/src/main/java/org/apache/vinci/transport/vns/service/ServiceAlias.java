@@ -50,9 +50,9 @@ public class ServiceAlias implements ServiceInterface {
     StringBuffer indent = new StringBuffer(offset);
     while (offset > 0) {
       indent.append(' ');
-      offset --;
+      offset--;
     }
-    
+
     StringBuffer result = new StringBuffer(50);
 
     result = result.append(indent).append("<SERVICE>\n");

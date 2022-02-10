@@ -26,7 +26,7 @@ import java.io.IOException;
  * not be established.
  */
 public class ServiceDownException extends IOException {
-  
+
   private static final long serialVersionUID = -6125121845524920235L;
 
   /**

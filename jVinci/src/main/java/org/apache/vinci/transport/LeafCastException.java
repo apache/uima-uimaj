@@ -24,7 +24,7 @@ package org.apache.vinci.transport;
  * errors.
  */
 public class LeafCastException extends IllegalArgumentException {
-  
+
   private static final long serialVersionUID = 2167774897716144428L;
 
   public LeafCastException() {
