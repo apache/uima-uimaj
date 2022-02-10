@@ -67,7 +67,7 @@ import org.apache.vinci.transport.document.AFrame;
  * 
  */
 public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter {
-  
+
   /** The server. */
   private VinciServer _server = null;
 
@@ -90,10 +90,14 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   /**
    * Instantiate Analysis Engine from a given descriptor - possibly in debug mode.
    *
-   * @param serviceConfigPath descriptor location
-   * @param debug the debug
-   * @param instanceId the instance id
-   * @throws Exception the exception
+   * @param serviceConfigPath
+   *          descriptor location
+   * @param debug
+   *          the debug
+   * @param instanceId
+   *          the instance id
+   * @throws Exception
+   *           the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug,
           String instanceId) throws Exception {
@@ -105,9 +109,12 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   /**
    * Instantiate Analysis Engine from a given descriptor - possibly in debug mode.
    *
-   * @param serviceConfigPath descriptor location
-   * @param debug the debug
-   * @throws Exception the exception
+   * @param serviceConfigPath
+   *          descriptor location
+   * @param debug
+   *          the debug
+   * @throws Exception
+   *           the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug)
           throws Exception {
@@ -122,15 +129,15 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     String aResourceSpecifierPath = descriptor.getResourceSpecifierPath();
     UIMAFramework.getLogger().log(Level.FINE, "Resource Specifier Path::" + aResourceSpecifierPath);
 
-    ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            new XMLInputSource(aResourceSpecifierPath));
+    ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(new XMLInputSource(aResourceSpecifierPath));
 
     // create CAS Object Processor
     if (mAE == null) {
       UIMAFramework.getLogger().log(Level.FINEST,
               "VinciBinaryAnalysisEngineService_impl: creating CAS Processor");
-      mAE = UIMAFramework
-              .produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(), 0);
+      mAE = UIMAFramework.produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(),
+              0);
     }
     // create pool of CASes
     if (mCasPool == null) {
@@ -141,8 +148,10 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   /**
    * Instantiate Analysis Engine from a given descriptor.
    *
-   * @param serviceConfigPath descriptor location
-   * @throws Exception the exception
+   * @param serviceConfigPath
+   *          descriptor location
+   * @throws Exception
+   *           the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
@@ -152,7 +161,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * Extracts AE metadata.
    *
    * @return Frame containing extracted meta data
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   private Frame getMetaData() throws Exception {
     UIMAFramework.getLogger().log(Level.FINEST, "getMetaData()");
@@ -182,9 +192,11 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * VinciFrame containing XCAS translated into a set of Vinci subFrames. Each subframe containing
    * one annotation with all its attributes.
    *
-   * @param aRequestFrame          request frame
+   * @param aRequestFrame
+   *          request frame
    * @return VinciFrame containing XCAS translated into a set of Vinci subframes.
-   * @throws ServiceException the service exception
+   * @throws ServiceException
+   *           the service exception
    */
   private Transportable analyze(AFrame aRequestFrame) throws ServiceException {
     CAS cas = null;
@@ -244,11 +256,13 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * VINCI:COMMAND. Currently, two such operations are supported: 1) Annotate - triggers document
    * analysis 2) GetData - triggers return of the AE meta data ( descriptor)
    *
-   * @param doc {@link org.apache.vinci.transport.Transportable} -
-   *          a VinciFrame containing client request
+   * @param doc
+   *          {@link org.apache.vinci.transport.Transportable} - a VinciFrame containing client
+   *          request
    * @return {@link org.apache.vinci.transport.Transportable} - a VinciFrame containg result of
    *         performing the service
-   * @throws ServiceException the service exception
+   * @throws ServiceException
+   *           the service exception
    */
 
   @Override
@@ -316,15 +330,15 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
 
         _server = new VinciServer(serviceName, serviceHost, this);
       }
-      UIMAFramework.getLogger().log(
-              Level.FINEST,
+      UIMAFramework.getLogger().log(Level.FINEST,
               "VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       System.out
               .println("VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
-      _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(), descriptor.getThreadPoolMaxSize());
+      _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(),
+              descriptor.getThreadPoolMaxSize());
       _server.serve();
     } catch (ServiceDownException e) {
       UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage());
@@ -356,7 +370,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     try {
@@ -394,7 +409,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   /**
    * Redirects all logger output for this JVM to the given output stream.
    *
-   * @param out the out
+   * @param out
+   *          the out
    */
   private static void redirectLoggerOutput(OutputStream out) {
     // get root logger handlers - root logger is parent of all loggers
@@ -415,20 +431,23 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * Class that handles service shutdowns (including Ctrl-C).
    */
   static class ShutdownHook extends Thread {
-    
+
     /** The server. */
     VinciBinaryAnalysisEngineService_impl server;
 
     /**
      * Instantiates a new shutdown hook.
      *
-     * @param instance the instance
+     * @param instance
+     *          the instance
      */
     public ShutdownHook(VinciBinaryAnalysisEngineService_impl instance) {
       server = instance;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Thread#run()
      */
     @Override

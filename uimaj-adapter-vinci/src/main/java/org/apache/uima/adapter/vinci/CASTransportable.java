@@ -77,10 +77,14 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * This constructor is used on the service side - a CAS Pool reference is provided. We don't check
    * a CAS out of the pool until we get a request.
    *
-   * @param casPool the cas pool
-   * @param outOfTypeSystemData the out of type system data
-   * @param uimaContext the uima context
-   * @param includeDocText the include doc text
+   * @param casPool
+   *          the cas pool
+   * @param outOfTypeSystemData
+   *          the out of type system data
+   * @param uimaContext
+   *          the uima context
+   * @param includeDocText
+   *          the include doc text
    */
   public CASTransportable(CasPool casPool, OutOfTypeSystemData outOfTypeSystemData,
           UimaContext uimaContext, boolean includeDocText) {
@@ -97,13 +101,17 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * This constructor is used on the client side, where we have a dedicated CAS instance for the
    * request.
    *
-   * @param cas the cas
-   * @param outOfTypeSystemData the out of type system data
-   * @param uimaContext the uima context
-   * @param includeDocText the include doc text
+   * @param cas
+   *          the cas
+   * @param outOfTypeSystemData
+   *          the out of type system data
+   * @param uimaContext
+   *          the uima context
+   * @param includeDocText
+   *          the include doc text
    */
-  public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData,
-          UimaContext uimaContext, boolean includeDocText) {
+  public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData, UimaContext uimaContext,
+          boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
     this.myCas = cas;
     this.myCasPool = null;
@@ -143,7 +151,8 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   /**
    * Sets the command.
    *
-   * @param command the new command
+   * @param command
+   *          the new command
    */
   public void setCommand(String command) {
     this.command = command;
@@ -163,7 +172,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * XCASSerializer.
    */
   class XTalkSerializer extends DefaultHandler {
-    
+
     /** The os. */
     OutputStream os;
 
@@ -174,15 +183,19 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     /**
      * Instantiates a new x talk serializer.
      *
-     * @param os the os
-     * @param s the s
+     * @param os
+     *          the os
+     * @param s
+     *          the s
      */
     XTalkSerializer(OutputStream os, XCASSerializer s) {
       this.os = os;
       this.serializer = s;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.helpers.DefaultHandler#startDocument()
      */
     @Override
@@ -228,8 +241,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     /**
      * Attributes to X talk.
      *
-     * @param attributes the attributes
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @param attributes
+     *          the attributes
+     * @throws IOException
+     *           Signals that an I/O exception has occurred.
      */
     void attributesToXTalk(org.xml.sax.Attributes attributes) throws IOException {
       int size = attributes.getLength();
@@ -241,8 +256,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String,
+     * java.lang.String)
      */
     @Override
     public void endElement(String uri, String name, String qName) throws SAXException {
@@ -250,8 +268,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       // Debug.p("Ending element: " + qName);
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String,
+     * java.lang.String, org.xml.sax.Attributes)
      */
     @Override
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
@@ -276,7 +297,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
      */
     @Override
@@ -291,7 +314,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.vinci.transport.Transportable#fromStream(java.io.InputStream)
    */
   @Override
@@ -305,9 +330,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       // Debug.p("...done parsing.");
       done = true;
     } catch (SAXException e) {
-      //if SAXException wraps an IOException, throw the IOException.  This is
-      //important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
-      //are treated differently by Vinci
+      // if SAXException wraps an IOException, throw the IOException. This is
+      // important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
+      // are treated differently by Vinci
       throw convertToIOException(e);
     } finally {
       if (!done) {
@@ -325,8 +350,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * Serialize the CAS to the stream in XTalk format. After serialization is complete the cas is
    * returned to the pool (if it was allocated from a pool.)
    *
-   * @param os the os
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param os
+   *          the os
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   @Override
   public void toStream(OutputStream os) throws IOException {
@@ -340,9 +367,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       try {
         xcasSerializer.serialize(myCas, s, includeDocText, outOfTypeSystemData);
       } catch (org.xml.sax.SAXException e) {
-        //if SAXException wraps an IOException, throw the IOException.  This is
-        //important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
-        //are treated differently by Vinci
+        // if SAXException wraps an IOException, throw the IOException. This is
+        // important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
+        // are treated differently by Vinci
         throw convertToIOException(e);
       }
       UIMAFramework.getLogger().log(Level.FINEST, "CAS Serialization Complete.");
@@ -368,7 +395,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#finalize()
    */
   @Override
@@ -383,8 +412,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String,
+   * java.lang.String, org.xml.sax.Attributes)
    */
   @Override
   public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
@@ -404,8 +436,8 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
     if (Constants.KEYS.equals(qName)) {
       // the data inside the KEYS element is the contents of an incoming CAS.
-      // So this is where we need to grab a CAS from the CasPool and initialize 
-      //the XCASDeserializer.
+      // So this is where we need to grab a CAS from the CasPool and initialize
+      // the XCASDeserializer.
       if (myCas == null) {
         myCas = myCasPool.getCas(0);
       }
@@ -419,13 +451,16 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
       handler.startDocument();
       handler.startElement("", "CAS", "CAS", null);
-      //set the ready flag to indicate that following elements are CAS data
+      // set the ready flag to indicate that following elements are CAS data
       ready++;
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public void endElement(String uri, String name, String qName) throws SAXException {
@@ -442,7 +477,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
    */
   @Override
@@ -480,48 +517,51 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   @Override
   public void endDocument() throws SAXException {
   }
-  
+
   /**
-   * Create a SAXException that wraps the given IOException.
-   * The wrapping is done using the standard Java 1.4 mechanism, 
-   * so that getCause() will work.  Note that new SAXException(Exception) 
-   * does NOT work.
-   * @param e an IOException to wrap
+   * Create a SAXException that wraps the given IOException. The wrapping is done using the standard
+   * Java 1.4 mechanism, so that getCause() will work. Note that new SAXException(Exception) does
+   * NOT work.
+   * 
+   * @param e
+   *          an IOException to wrap
    * @return a SAX exception for which <code>getCause()</code> will return <code>e</code>.
    */
   public SAXException wrapAsSAXException(IOException e) {
-    SAXException saxEx =new SAXException(e.getMessage());
+    SAXException saxEx = new SAXException(e.getMessage());
     saxEx.initCause(e);
     return saxEx;
   }
-  
+
   /**
-   * Converts a Throwable to an IOException.  If <code>t</code> is an IOException,
-   * then <code>t</code> is returned.  If not, then if <code>t</code> was caused
-   * by an IOException (directly or indirectly), then that IOException is returned.
-   * Otherwise, a new IOException is created which wraps (is caused by) <code>t</code>.
-   * @param t the throwable to convert
-   * @return an IOException which is either t, one of the causes of t, or a new IOException
-   *   that wraps t.
+   * Converts a Throwable to an IOException. If <code>t</code> is an IOException, then
+   * <code>t</code> is returned. If not, then if <code>t</code> was caused by an IOException
+   * (directly or indirectly), then that IOException is returned. Otherwise, a new IOException is
+   * created which wraps (is caused by) <code>t</code>.
+   * 
+   * @param t
+   *          the throwable to convert
+   * @return an IOException which is either t, one of the causes of t, or a new IOException that
+   *         wraps t.
    */
   private IOException convertToIOException(Throwable t) {
-   //if t is itself an IOException, just return it
-   if (t instanceof IOException) {
-     return (IOException)t;
-   }
-   
-   //search for a cause that is an IOException.  If one is found, return that.
-   Throwable cause = t.getCause();
-   while (cause != null) {
-     if (cause instanceof IOException) {
-       return (IOException)cause;
-     }
-     cause = cause.getCause();
-   }
-   
-   //otherwise, wrap t in a new IOException
-   IOException ioex = new IOException();
-   ioex.initCause(t);
-   return ioex;
-  }  
+    // if t is itself an IOException, just return it
+    if (t instanceof IOException) {
+      return (IOException) t;
+    }
+
+    // search for a cause that is an IOException. If one is found, return that.
+    Throwable cause = t.getCause();
+    while (cause != null) {
+      if (cause instanceof IOException) {
+        return (IOException) cause;
+      }
+      cause = cause.getCause();
+    }
+
+    // otherwise, wrap t in a new IOException
+    IOException ioex = new IOException();
+    ioex.initCause(t);
+    return ioex;
+  }
 }

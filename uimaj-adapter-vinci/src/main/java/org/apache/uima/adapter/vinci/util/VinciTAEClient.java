@@ -34,7 +34,8 @@ public class VinciTAEClient {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     System.out.println("Invoking the service...");

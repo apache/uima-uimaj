@@ -38,10 +38,13 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
   /**
    * Initialize.
    *
-   * @param aSpecifier the a specifier
-   * @param aAdditionalParams the a additional params
+   * @param aSpecifier
+   *          the a specifier
+   * @param aAdditionalParams
+   *          the a additional params
    * @return true, if successful
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   @Override
@@ -67,8 +70,8 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
       setStub(new VinciAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(), this,
               uriSpec.getParameters()));
     } else {
-      setStub(new VinciBinaryAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(),
-              this, uriSpec.getParameters()));
+      setStub(new VinciBinaryAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(), this,
+              uriSpec.getParameters()));
     }
 
     // do superclass initialization, which among other things initializes UimaContext.
@@ -76,13 +79,14 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
     // superclass initialization depends on having access to the component metadata.
     super.initialize(aSpecifier, aAdditionalParams);
 
-    // Sofa mappings are currently not implemented for remote AEs.  Catch this
+    // Sofa mappings are currently not implemented for remote AEs. Catch this
     // and report an error.
     if (getUimaContextAdmin().getSofaMap().size() > 0) {
-      throw new ResourceInitializationException(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
-              new Object[]{getMetaData().getName()});
+      throw new ResourceInitializationException(
+              ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
+              new Object[] { getMetaData().getName() });
     }
-    
+
     return true;
   }
 

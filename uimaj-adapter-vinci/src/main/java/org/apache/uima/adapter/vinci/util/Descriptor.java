@@ -29,7 +29,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Instance of this class handles parsing of the xml descriptor files. It also retrieves values of
@@ -57,17 +56,18 @@ public class Descriptor extends DefaultHandler {
 
   /** The server socket timeout. */
   private int serverSocketTimeout = 300000; // 5 minute timeout on the service socket
-  
+
   /** The thread pool min size. */
   private int threadPoolMinSize = 1;
-  
+
   /** The thread pool max size. */
   private int threadPoolMaxSize = 20;
 
   /**
    * Constructor responsible for parsing the descriptor file named in filePath.
    * 
-   * @param filePath Fully qualified path the xml descriptor.
+   * @param filePath
+   *          Fully qualified path the xml descriptor.
    */
   public Descriptor(String filePath) {
     try {
@@ -80,7 +80,8 @@ public class Descriptor extends DefaultHandler {
   /**
    * Parses the.
    *
-   * @param configFile the config file
+   * @param configFile
+   *          the config file
    * @return the document
    */
   private Document parse(String configFile) {
@@ -110,8 +111,10 @@ public class Descriptor extends DefaultHandler {
   /**
    * Gets the attribute.
    *
-   * @param attrName the attr name
-   * @param attribs the attribs
+   * @param attrName
+   *          the attr name
+   * @param attribs
+   *          the attribs
    * @return the attribute
    */
   private String getAttribute(String attrName, Attributes attribs) {
@@ -131,8 +134,10 @@ public class Descriptor extends DefaultHandler {
   /**
    * Gets the name.
    *
-   * @param s1 the s 1
-   * @param s2 the s 2
+   * @param s1
+   *          the s 1
+   * @param s2
+   *          the s 2
    * @return the name
    */
   private String getName(String s1, String s2) {
@@ -142,8 +147,11 @@ public class Descriptor extends DefaultHandler {
       return s1;
   }
 
-  /* (non-Javadoc)
-   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String,
+   * java.lang.String, org.xml.sax.Attributes)
    */
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attribs) {
@@ -206,7 +214,8 @@ public class Descriptor extends DefaultHandler {
   /**
    * Sets the thread pool max size.
    *
-   * @param threadPoolMaxSize the new thread pool max size
+   * @param threadPoolMaxSize
+   *          the new thread pool max size
    */
   public void setThreadPoolMaxSize(int threadPoolMaxSize) {
     this.threadPoolMaxSize = threadPoolMaxSize;
@@ -224,7 +233,8 @@ public class Descriptor extends DefaultHandler {
   /**
    * Sets the thread pool min size.
    *
-   * @param threadPoolMinSize the new thread pool min size
+   * @param threadPoolMinSize
+   *          the new thread pool min size
    */
   public void setThreadPoolMinSize(int threadPoolMinSize) {
     this.threadPoolMinSize = threadPoolMinSize;
@@ -318,7 +328,8 @@ public class Descriptor extends DefaultHandler {
   /**
    * Sets the naming service host.
    *
-   * @param namingServiceHost the new naming service host
+   * @param namingServiceHost
+   *          the new naming service host
    */
   public void setNamingServiceHost(String namingServiceHost) {
     this.namingServiceHost = namingServiceHost;
@@ -336,7 +347,8 @@ public class Descriptor extends DefaultHandler {
   /**
    * Sets the server socket timeout.
    *
-   * @param serverSocketTimeout the new server socket timeout
+   * @param serverSocketTimeout
+   *          the new server socket timeout
    */
   public void setServerSocketTimeout(int serverSocketTimeout) {
     this.serverSocketTimeout = serverSocketTimeout;

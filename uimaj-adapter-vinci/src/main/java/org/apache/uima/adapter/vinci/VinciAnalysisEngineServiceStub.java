@@ -53,18 +53,18 @@ import org.apache.vinci.transport.document.AFrame;
  * The Class VinciAnalysisEngineServiceStub.
  */
 public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub {
-  
+
   /** The m vinci client. */
   private VinciClient mVinciClient;
 
   /** The m owner. */
   private Resource mOwner;
-  
+
   /**
    * Timeout to use for process and collectionProcessComplete calls.
    */
   private int mTimeout;
-  
+
   /**
    * Timeout to use for getMetaData calls.
    */
@@ -72,20 +72,23 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /** The Constant debug. */
   private static final boolean debug = System.getProperty("DEBUG") != null;
-  
+
   /**
-   * Value to return from callGetSupportedXCasVersions method for older services 
-   * that don't actually implement this method.
+   * Value to return from callGetSupportedXCasVersions method for older services that don't actually
+   * implement this method.
    */
-  private static final List SUPPORT_XCAS_V1 = Collections.unmodifiableList(
-          Arrays.asList(new String[]{"1"}));
-  
+  private static final List SUPPORT_XCAS_V1 = Collections
+          .unmodifiableList(Arrays.asList(new String[] { "1" }));
+
   /**
    * Instantiates a new vinci analysis engine service stub.
    *
-   * @param endpointURI the endpoint URI
-   * @param owner the owner
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param endpointURI
+   *          the endpoint URI
+   * @param owner
+   *          the owner
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public VinciAnalysisEngineServiceStub(String endpointURI, Resource owner)
           throws ResourceInitializationException {
@@ -95,11 +98,16 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * Instantiates a new vinci analysis engine service stub.
    *
-   * @param endpointURI the endpoint URI
-   * @param timeout the timeout
-   * @param owner the owner
-   * @param parameters the parameters
-   * @throws ResourceInitializationException the resource initialization exception
+   * @param endpointURI
+   *          the endpoint URI
+   * @param timeout
+   *          the timeout
+   * @param owner
+   *          the owner
+   * @param parameters
+   *          the parameters
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public VinciAnalysisEngineServiceStub(String endpointURI, Integer timeout, Resource owner,
           Parameter[] parameters) throws ResourceInitializationException {
@@ -110,30 +118,29 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
       // Override vinci default VNS settings
       String vnsHost = null;
-      String vnsPort = null; 
-      String getMetaDataTimeout = null; 
+      String vnsPort = null;
+      String getMetaDataTimeout = null;
       if (parameters != null) {
-         vnsHost = 
-          VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
-         vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
-                parameters);
-         getMetaDataTimeout = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("GetMetaDataTimeout", parameters);
+        vnsHost = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters);
+        vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT", parameters);
+        getMetaDataTimeout = VinciBinaryAnalysisEngineServiceStub
+                .getParameterValueFor("GetMetaDataTimeout", parameters);
       }
       if (vnsHost == null) {
         vnsHost = System.getProperty("VNS_HOST");
         if (vnsHost == null) {
-            vnsHost = Constants.DEFAULT_VNS_HOST;
+          vnsHost = Constants.DEFAULT_VNS_HOST;
         }
       }
       if (vnsPort == null) {
         vnsPort = System.getProperty("VNS_PORT");
         if (vnsPort == null) {
-            vnsPort = "9000";
+          vnsPort = "9000";
         }
       }
       vctx.setVNSHost(vnsHost);
       vctx.setVNSPort(Integer.parseInt(vnsPort));
-      
+
       // Override socket keepAlive setting
       vctx.setSocketKeepAliveEnabled(isSocketKeepAliveEnabled());
 
@@ -141,22 +148,22 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
         System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
                 + vctx.getVNSHost() + " and VNS_PORT=" + vctx.getVNSPort());
       }
-        
+
       // establish connection to service
       mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
-      
-      //store timeout for use in later RPC calls
+
+      // store timeout for use in later RPC calls
       if (timeout != null) {
         mTimeout = timeout;
       } else {
-       mTimeout = mVinciClient.getSocketTimeout(); //default
+        mTimeout = mVinciClient.getSocketTimeout(); // default
       }
       if (getMetaDataTimeout != null) {
         mGetMetaDataTimeout = Integer.parseInt(getMetaDataTimeout);
       } else {
-        mGetMetaDataTimeout = mVinciClient.getSocketTimeout(); //default
+        mGetMetaDataTimeout = mVinciClient.getSocketTimeout(); // default
       }
-      
+
       if (debug) {
         System.out.println("Success");
       }
@@ -165,12 +172,12 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
     }
   }
 
-
   /**
    * Call get meta data.
    *
    * @return the resource meta data
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see ResourceServiceStub#callGetMetaData()
    */
   @Override
@@ -224,8 +231,10 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * Call process.
    *
-   * @param aCAS the a CAS
-   * @throws ResourceServiceException the resource service exception
+   * @param aCAS
+   *          the a CAS
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   @Override
@@ -236,8 +245,10 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * Call process cas.
    *
-   * @param aCAS the a CAS
-   * @throws ResourceServiceException the resource service exception
+   * @param aCAS
+   *          the a CAS
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see CasObjectProcessor#processCas(CAS)
    */
   public void callProcessCas(CAS aCAS) throws ResourceServiceException {
@@ -247,15 +258,18 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * The actual process call.
    *
-   * @param aCAS the a CAS
-   * @throws ResourceServiceException the resource service exception
+   * @param aCAS
+   *          the a CAS
+   * @throws ResourceServiceException
+   *           the resource service exception
    */
   private void doProcess(CAS aCAS) throws ResourceServiceException {
     try {
       aCAS = ((CASImpl) aCAS).getBaseCAS();
 
       // create CASTransportable ... always send the base CAS
-      final CASTransportable query = new CASTransportable(aCAS, null, mOwner.getUimaContext(), true);
+      final CASTransportable query = new CASTransportable(aCAS, null, mOwner.getUimaContext(),
+              true);
       query.setCommand("Annotate");
 
       mVinciClient.sendAndReceive(query, new TransportableFactory() {
@@ -292,7 +306,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * Call batch process complete.
    *
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see CasObjectProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   @Override
@@ -312,7 +327,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * Call collection process complete.
    *
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see CasObjectProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   @Override
@@ -334,7 +350,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * Call is read only.
    *
    * @return true, if successful
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see CasObjectProcessor#isReadOnly()
    */
   public boolean callIsReadOnly() throws ResourceServiceException {
@@ -357,7 +374,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * Call is stateless.
    *
    * @return true, if successful
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    * @see CasObjectProcessor#isStateless()
    */
   public boolean callIsStateless() throws ResourceServiceException {
@@ -380,7 +398,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * Call get supported X cas versions.
    *
    * @return the list
-   * @throws ResourceServiceException the resource service exception
+   * @throws ResourceServiceException
+   *           the resource service exception
    */
   public List callGetSupportedXCasVersions() throws ResourceServiceException {
     try {
@@ -395,8 +414,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       if (result != null) {
         String[] versions = result.split("\\s+");
         return Collections.unmodifiableList(Arrays.asList(versions));
-      }
-      else {
+      } else {
         return SUPPORT_XCAS_V1;
       }
     } catch (Exception e) {
@@ -405,16 +423,16 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * Gets whether socket keepAlive is enabled, by consulting the
-   * PerformanceTuningSettings.  (If no setting specified, defaults
-   * to true.)
+   * Gets whether socket keepAlive is enabled, by consulting the PerformanceTuningSettings. (If no
+   * setting specified, defaults to true.)
+   * 
    * @return if socketKeepAlive is enabled
    */
   protected boolean isSocketKeepAliveEnabled() {
     if (mOwner instanceof AnalysisEngine) {
-      Properties settings = ((AnalysisEngine)mOwner).getPerformanceTuningSettings();
+      Properties settings = ((AnalysisEngine) mOwner).getPerformanceTuningSettings();
       if (settings != null) {
-        String enabledStr = (String)settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);
+        String enabledStr = (String) settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);
         return !"false".equalsIgnoreCase(enabledStr);
       }
     }

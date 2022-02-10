@@ -28,7 +28,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.URISpecifier;
 import org.junit.jupiter.api.Test;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class VinciAnalysisEngineServiceAdapterTest.
@@ -38,37 +37,38 @@ public class VinciAnalysisEngineServiceAdapterTest {
   /**
    * Test initialize.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
-    @Test
-    public void testInitialize() throws ResourceInitializationException {
-      // Don't want an actual network dependency so will test only with services that
-      // don't exist. The tests just make sure that the AnalysisEngineServiceAdapter.initialize
-      // method just returns false when passed an inappropriate specifier and throws an
-      // exception when passed an appropriate specifier.
+  @Test
+  public void testInitialize() throws ResourceInitializationException {
+    // Don't want an actual network dependency so will test only with services that
+    // don't exist. The tests just make sure that the AnalysisEngineServiceAdapter.initialize
+    // method just returns false when passed an inappropriate specifier and throws an
+    // exception when passed an appropriate specifier.
 
-      final String NON_EXISTENT_URI = "this.service.does.not.exit.at.least.i.hope.not";
-      URISpecifier uriSpec = UIMAFramework.getResourceSpecifierFactory().createURISpecifier();
-      uriSpec.setUri(NON_EXISTENT_URI);
+    final String NON_EXISTENT_URI = "this.service.does.not.exit.at.least.i.hope.not";
+    URISpecifier uriSpec = UIMAFramework.getResourceSpecifierFactory().createURISpecifier();
+    uriSpec.setUri(NON_EXISTENT_URI);
 
-      // test incorrect protocol
-      uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
-      VinciAnalysisEngineServiceAdapter adapter = new VinciAnalysisEngineServiceAdapter();
-      boolean result = adapter.initialize(uriSpec, null);
-      assertThat(result).isFalse();
+    // test incorrect protocol
+    uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+    VinciAnalysisEngineServiceAdapter adapter = new VinciAnalysisEngineServiceAdapter();
+    boolean result = adapter.initialize(uriSpec, null);
+    assertThat(result).isFalse();
 
-      // test correct protocol
-      VinciAnalysisEngineServiceAdapter adapter2 = new VinciAnalysisEngineServiceAdapter();
-      uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
-      uriSpec.setResourceType(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE);
+    // test correct protocol
+    VinciAnalysisEngineServiceAdapter adapter2 = new VinciAnalysisEngineServiceAdapter();
+    uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
+    uriSpec.setResourceType(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE);
 
-      assertThatExceptionOfType(ResourceInitializationException.class)
-              .isThrownBy(() -> adapter2.initialize(uriSpec, null));
+    assertThatExceptionOfType(ResourceInitializationException.class)
+            .isThrownBy(() -> adapter2.initialize(uriSpec, null));
 
-      // test correct protocol and no component type
-      uriSpec.setResourceType(null);
-      VinciAnalysisEngineServiceAdapter adapter1 = new VinciAnalysisEngineServiceAdapter();
-      assertThatExceptionOfType(ResourceInitializationException.class)
-              .isThrownBy(() -> adapter1.initialize(uriSpec, null));
-    }
+    // test correct protocol and no component type
+    uriSpec.setResourceType(null);
+    VinciAnalysisEngineServiceAdapter adapter1 = new VinciAnalysisEngineServiceAdapter();
+    assertThatExceptionOfType(ResourceInitializationException.class)
+            .isThrownBy(() -> adapter1.initialize(uriSpec, null));
+  }
 }
