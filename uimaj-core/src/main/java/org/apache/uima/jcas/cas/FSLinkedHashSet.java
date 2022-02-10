@@ -21,28 +21,12 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.RandomAccess;
-import java.util.Set;
-import java.util.Spliterator;
 
-import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.util.impl.Constants;
 
 
 /** a hash set of Feature Structures

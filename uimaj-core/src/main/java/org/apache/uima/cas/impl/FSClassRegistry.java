@@ -122,7 +122,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   static final String LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN = "uima.log_jcas_classloaders_on_shutdown";
   static final boolean IS_LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN = Misc
           .getNoValueSystemProperty(LOG_JCAS_CLASSLOADERS_ON_SHUTDOWN);
-    
+
   // private static final boolean IS_TRACE_AUGMENT_TS = false;
   // private static final boolean IS_TIME_AUGMENT_FEATURES = false;
   /* ========================================================= */
@@ -1533,7 +1533,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       if (v != null) {
         return false;
       }
-      }
+    }
     return true;
   }
 
@@ -1622,7 +1622,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       Misc.internalError(e); // never happen
     }
   }
-  
+
   /**
    * For internal use only!
    */
