@@ -30,11 +30,10 @@ import org.apache.uima.tools.cvd.IndexTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.TypeTreeNode;
 
-
 /**
  * Change the display of the FSTree if a type in an index is selected.
  *
-// * @see IndexTreeSelectionEvent
+ * // * @see IndexTreeSelectionEvent
  */
 public class IndexTreeSelectionListener implements TreeSelectionListener {
 
@@ -44,7 +43,8 @@ public class IndexTreeSelectionListener implements TreeSelectionListener {
   /**
    * Instantiates a new index tree selection listener.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public IndexTreeSelectionListener(MainFrame frame) {
     this.main = frame;
@@ -53,14 +53,15 @@ public class IndexTreeSelectionListener implements TreeSelectionListener {
   /**
    * Value changed.
    *
-   * @param arg0 the arg 0
+   * @param arg0
+   *          the arg 0
    * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
   @Override
   public void valueChanged(TreeSelectionEvent arg0) {
     // System.out.println("Tree selection value changed");
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.main.getIndexTree()
-        .getLastSelectedPathComponent();
+            .getLastSelectedPathComponent();
     if (node == null) {
       return;
     }
@@ -82,8 +83,8 @@ public class IndexTreeSelectionListener implements TreeSelectionListener {
     this.main.setAnnotationIndex(label.equals(CAS.STD_ANNOTATION_INDEX));
     this.main.setIndex(this.main.getCas().getIndexRepository().getIndex(label, type));
     this.main.updateFSTree(label, this.main.getIndex());
-    this.main.setAllAnnotationViewerItemEnable(((CASImpl) this.main.getCas())
-        .isAnnotationType(type));
+    this.main.setAllAnnotationViewerItemEnable(
+            ((CASImpl) this.main.getCas()).isAnnotationType(type));
     this.main.getTextArea().getCaret().setVisible(true);
   }
 

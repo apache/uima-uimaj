@@ -24,12 +24,11 @@ import java.awt.event.MouseEvent;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * Handle text pop-up (mouse) events. The actual logic for creating the text pop-up menu is not
  * here.
  *
-// * @see PopupEvent
+ * // * @see PopupEvent
  */
 public class PopupListener extends MouseAdapter {
 
@@ -39,13 +38,16 @@ public class PopupListener extends MouseAdapter {
   /**
    * Instantiates a new popup listener.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public PopupListener(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
    */
   @Override
@@ -53,7 +55,9 @@ public class PopupListener extends MouseAdapter {
     maybeShowPopup(e);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
    */
   @Override
@@ -64,7 +68,8 @@ public class PopupListener extends MouseAdapter {
   /**
    * Maybe show popup.
    *
-   * @param e the e
+   * @param e
+   *          the e
    */
   private void maybeShowPopup(MouseEvent e) {
     if (e.isPopupTrigger()) {

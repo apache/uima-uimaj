@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import java.io.File;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * The Class LoadRecentDescFileEventHandler.
  */
@@ -34,22 +32,26 @@ public class LoadRecentDescFileEventHandler implements ActionListener {
 
   /** The main. */
   private final MainFrame main;
-  
+
   /** The file name. */
   private final String fileName;
 
   /**
    * Instantiates a new load recent desc file event handler.
    *
-   * @param frame the frame
-   * @param fileName the file name
+   * @param frame
+   *          the frame
+   * @param fileName
+   *          the file name
    */
   public LoadRecentDescFileEventHandler(MainFrame frame, String fileName) {
     this.main = frame;
     this.fileName = fileName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

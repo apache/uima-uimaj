@@ -23,13 +23,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * List of recently used files.
  * 
  * <p>
  * Provides functionality to keep a list of a certain max size. New files are added to the top. When
- * a file is added that is already in the list, it is shuffled to the top.  When the maximum list
+ * a file is added that is already in the list, it is shuffled to the top. When the maximum list
  * size has been reached, files start dropping off the end.
  */
 public class RecentFilesList {
@@ -41,10 +40,12 @@ public class RecentFilesList {
   /** The max. */
   // The maximum size to which this list can grow
   private final int max;
-  
+
   /**
    * Constructor.
-   * @param maxSize The maximum size to which the list can grow.
+   * 
+   * @param maxSize
+   *          The maximum size to which the list can grow.
    */
   public RecentFilesList(int maxSize) {
     this.list = new ArrayList<>();
@@ -53,6 +54,7 @@ public class RecentFilesList {
 
   /**
    * Get the internal list of files, in the proper order (most recent first).
+   * 
    * @return A recency-sorted list of files.
    */
   public List<File> getFileList() {
@@ -61,7 +63,9 @@ public class RecentFilesList {
 
   /**
    * Append a file at the end of the list (useful for initialization).
-   * @param file The file to be added.
+   * 
+   * @param file
+   *          The file to be added.
    */
   public void appendFile(File file) {
     if (this.list.size() < this.max) {
@@ -70,9 +74,11 @@ public class RecentFilesList {
   }
 
   /**
-   * Add a file at the beginning.  If maximum capacity is exceeded, drop last file.  If
+   * Add a file at the beginning. If maximum capacity is exceeded, drop last file. If
    * <code>file</code> is already in the list, move it to the front.
-   * @param file The file to be added.
+   * 
+   * @param file
+   *          The file to be added.
    */
   public void addFile(File file) {
     // Check to see if list contains file already.
@@ -86,13 +92,13 @@ public class RecentFilesList {
       // Set file to the beginning
       this.list.set(0, file);
     } else {
-      // File is not contained in list.  First, check if list is empty as shift code assumes
+      // File is not contained in list. First, check if list is empty as shift code assumes
       // non-empty list.
       if (this.list.isEmpty()) {
         // To an empty list, we can just add the file.
         this.list.add(file);
       } else {
-        // List is not empty.  Shift list right by one, possibly dropping last file.
+        // List is not empty. Shift list right by one, possibly dropping last file.
         shiftRight();
         // Set file to beginning
         this.list.set(0, file);
@@ -108,7 +114,7 @@ public class RecentFilesList {
       // If max has not been reached, duplicate last file
       this.list.add(this.list.get(this.list.size() - 1));
     }
-    // Last file has been taken care of (either duplicated or it will be dropped).  Shift all
+    // Last file has been taken care of (either duplicated or it will be dropped). Shift all
     // others to the right by one.
     for (int i = this.list.size() - 2; i >= 0; i--) {
       this.list.set(i + 1, this.list.get(i));
@@ -117,6 +123,7 @@ public class RecentFilesList {
 
   /**
    * Return the file list as a list of strings for persistence.
+   * 
    * @return The file list as a list of absolute file names.
    */
   public List<String> toStringList() {

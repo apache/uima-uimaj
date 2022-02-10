@@ -42,22 +42,18 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
-
 /**
  * A node in the FS Tree Model
  * 
- * A node is
- *   - an Feature Structure array
- *     -- elements may be other nodes
- *   - a primitive value, including Strings
- *   - a Feature Structure.
+ * A node is - an Feature Structure array -- elements may be other nodes - a primitive value,
+ * including Strings - a Feature Structure.
  */
 
 public class FSNode extends FSTreeNode {
 
   /** The Constant maxStringLength. */
   private static final int maxStringLength = 100;
-  
+
   /** The s tree model. */
   private final FSTreeModel fSTreeModel;
 
@@ -99,10 +95,10 @@ public class FSNode extends FSTreeNode {
 
   /** The int or long like value. */
   private final long intOrLongLikeValue;
-  
+
   /** The fs. */
   private final TOP fs;
-  
+
   /** The string. */
   private final String string;
 
@@ -114,45 +110,63 @@ public class FSNode extends FSTreeNode {
 
   /** The is array elem. */
   private final boolean isArrayElem;
-  
+
   /** The is shortened string. */
   // Remember if we're displaying a shortened string.
   private boolean isShortenedString = false;
-  
+
   /**
    * K 2 nc.
    *
-   * @param kind the kind
+   * @param kind
+   *          the kind
    * @return the int
    */
   private int k2nc(SlotKind kind) {
-    switch(kind) {
-    case Slot_Boolean: 
-    case Slot_BooleanRef: return BOOL_FS;
-    case Slot_Byte:
-    case Slot_ByteRef: return BYTE_FS;
-    case Slot_Short:
-    case Slot_ShortRef: return SHORT_FS;
-    case Slot_Int: return INT_FS;
-    case Slot_Float: return FLOAT_FS;
-    case Slot_LongRef: return LONG_FS;
-    case Slot_DoubleRef: return DOUBLE_FS;
-    case Slot_StrRef: return STRING_FS;
-    case Slot_HeapRef: return STD_FS;
-    default: Misc.internalError(); return -1;
+    switch (kind) {
+      case Slot_Boolean:
+      case Slot_BooleanRef:
+        return BOOL_FS;
+      case Slot_Byte:
+      case Slot_ByteRef:
+        return BYTE_FS;
+      case Slot_Short:
+      case Slot_ShortRef:
+        return SHORT_FS;
+      case Slot_Int:
+        return INT_FS;
+      case Slot_Float:
+        return FLOAT_FS;
+      case Slot_LongRef:
+        return LONG_FS;
+      case Slot_DoubleRef:
+        return DOUBLE_FS;
+      case Slot_StrRef:
+        return STRING_FS;
+      case Slot_HeapRef:
+        return STD_FS;
+      default:
+        Misc.internalError();
+        return -1;
     }
   }
 
   /**
    * Instantiates a new FS node.
    *
-   * @param fSTreeModel the f S tree model
-   * @param nodeClass the node class
-   * @param fsOrString the fs or string
-   * @param intOrLongLikeValue the int or long like value
-   * @param feat the feat
+   * @param fSTreeModel
+   *          the f S tree model
+   * @param nodeClass
+   *          the node class
+   * @param fsOrString
+   *          the fs or string
+   * @param intOrLongLikeValue
+   *          the int or long like value
+   * @param feat
+   *          the feat
    */
-  FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue, Feature feat) {
+  FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue,
+          Feature feat) {
     this.fSTreeModel = fSTreeModel;
     this.nodeClass = nodeClass;
     this.intOrLongLikeValue = intOrLongLikeValue;
@@ -166,13 +180,19 @@ public class FSNode extends FSTreeNode {
   /**
    * Instantiates a new FS node.
    *
-   * @param fSTreeModel the f S tree model
-   * @param nodeClass the node class
-   * @param fsOrString the fs or string
-   * @param intOrLongLikeValue the int or long like value
-   * @param elementIndex the element index
+   * @param fSTreeModel
+   *          the f S tree model
+   * @param nodeClass
+   *          the node class
+   * @param fsOrString
+   *          the fs or string
+   * @param intOrLongLikeValue
+   *          the int or long like value
+   * @param elementIndex
+   *          the element index
    */
-  FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue, int elementIndex) {
+  FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue,
+          int elementIndex) {
     this.fSTreeModel = fSTreeModel;
     this.nodeClass = nodeClass;
     this.intOrLongLikeValue = intOrLongLikeValue;
@@ -192,7 +212,9 @@ public class FSNode extends FSTreeNode {
     return this.nodeClass;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.cvd.FSTreeNode#initChildren()
    */
   @Override
@@ -207,89 +229,93 @@ public class FSNode extends FSTreeNode {
     if (this.fs == null) {
       return;
     }
-    
-    TypeImpl type = getType();
-//    CASImpl cas = this.fSTreeModel.getCas();
-    if (type.isArray()) {
-      int arrayLength = ((CommonArrayFS)fs).size();
-//      if (arrayLength > 20) {
-//        arrayLength = 20;
-//      }
 
-//      FSNode node = null;
-//      int arrayPos = cas.getArrayStartAddress((int) this.addr);
-//      int nodeClass1;
-//      if (cas.isIntArrayType(type)) {
-//        nodeClass1 = FSNode.INT_FS;
-//      } else if (cas.isFloatArrayType(type)) {
-//        nodeClass1 = FSNode.FLOAT_FS;
-//      } else if (cas.isStringArrayType(type)) {
-//        nodeClass1 = FSNode.STRING_FS;
-//      } else if (cas.isByteArrayType(type)) {
-//        nodeClass1 = FSNode.BYTE_FS;
-//      } else if (cas.isBooleanArrayType(type)) {
-//        nodeClass1 = FSNode.BOOL_FS;
-//      } else if (cas.isShortArrayType(type)) {
-//        nodeClass1 = FSNode.SHORT_FS;
-//      } else if (cas.isLongArrayType(type)) {
-//        nodeClass1 = FSNode.LONG_FS;
-//      } else if (cas.isDoubleArrayType(type)) {
-//        nodeClass1 = FSNode.DOUBLE_FS;
-//      } else {
-//        nodeClass1 = FSNode.STD_FS;
-//      }
+    TypeImpl type = getType();
+    // CASImpl cas = this.fSTreeModel.getCas();
+    if (type.isArray()) {
+      int arrayLength = ((CommonArrayFS) fs).size();
+      // if (arrayLength > 20) {
+      // arrayLength = 20;
+      // }
+
+      // FSNode node = null;
+      // int arrayPos = cas.getArrayStartAddress((int) this.addr);
+      // int nodeClass1;
+      // if (cas.isIntArrayType(type)) {
+      // nodeClass1 = FSNode.INT_FS;
+      // } else if (cas.isFloatArrayType(type)) {
+      // nodeClass1 = FSNode.FLOAT_FS;
+      // } else if (cas.isStringArrayType(type)) {
+      // nodeClass1 = FSNode.STRING_FS;
+      // } else if (cas.isByteArrayType(type)) {
+      // nodeClass1 = FSNode.BYTE_FS;
+      // } else if (cas.isBooleanArrayType(type)) {
+      // nodeClass1 = FSNode.BOOL_FS;
+      // } else if (cas.isShortArrayType(type)) {
+      // nodeClass1 = FSNode.SHORT_FS;
+      // } else if (cas.isLongArrayType(type)) {
+      // nodeClass1 = FSNode.LONG_FS;
+      // } else if (cas.isDoubleArrayType(type)) {
+      // nodeClass1 = FSNode.DOUBLE_FS;
+      // } else {
+      // nodeClass1 = FSNode.STD_FS;
+      // }
       List<FSNode> arrayNodes = new ArrayList<>(arrayLength);
       SlotKind kind = type.getComponentSlotKind();
       int nc = k2nc(kind);
       switch (kind) {
-      case Slot_Int: {
-        int[] a = ((IntegerArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
-        break;
+        case Slot_Int: {
+          int[] a = ((IntegerArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+          break;
         }
-      case Slot_Float: {
-        float[] a = ((FloatArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.float2int(a[i]), i));
-        break;
+        case Slot_Float: {
+          float[] a = ((FloatArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength,
+                  i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.float2int(a[i]), i));
+          break;
         }
-      case Slot_StrRef: {
-        String[] a = ((StringArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
-        break;
+        case Slot_StrRef: {
+          String[] a = ((StringArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
+          break;
         }
-      case Slot_HeapRef: {
-        TOP[] a = ((FSArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
-        break;
+        case Slot_HeapRef: {
+          TOP[] a = ((FSArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
+          break;
         }
-      case Slot_BooleanRef: {
-        boolean[] a = ((BooleanArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i]? 1 : 0, i));
-        break;
+        case Slot_BooleanRef: {
+          boolean[] a = ((BooleanArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength,
+                  i -> new FSNode(this.fSTreeModel, nc, null, a[i] ? 1 : 0, i));
+          break;
         }
-      case Slot_ByteRef: {
-        byte[] a = ((ByteArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
-        break;
+        case Slot_ByteRef: {
+          byte[] a = ((ByteArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+          break;
         }
-      case Slot_ShortRef: {
-        short[] a = ((ShortArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
-        break;
+        case Slot_ShortRef: {
+          short[] a = ((ShortArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+          break;
         }
-      case Slot_LongRef: {
-        long[] a = ((LongArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
-        break;
+        case Slot_LongRef: {
+          long[] a = ((LongArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+          break;
         }
-      case Slot_DoubleRef: {
-        double[] a = ((DoubleArray)fs)._getTheArray();
-        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.double2long(a[i]), i));
-        break;
+        case Slot_DoubleRef: {
+          double[] a = ((DoubleArray) fs)._getTheArray();
+          makeNodes(arrayNodes, arrayLength,
+                  i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.double2long(a[i]), i));
+          break;
         }
-      default: Misc.internalError();
-      }  // end of switch
-      
+        default:
+          Misc.internalError();
+      } // end of switch
+
       this.children = FSTreeModel.createArrayChildren(0, arrayLength, arrayNodes, this.fSTreeModel);
     } else {
       this.children = new ArrayList<>(type.getNumberOfFeatures());
@@ -297,17 +323,38 @@ public class FSNode extends FSTreeNode {
       for (FeatureImpl f : feats) {
         SlotKind kind = f.getSlotKind();
         int nc = k2nc(kind);
-        switch(kind) {
-        case Slot_Boolean: children.add(new FSNode(this.fSTreeModel, nc, null, fs.getBooleanValue(f) ? 1 : 0, f)); break;
-        case Slot_Byte:    children.add(new FSNode(this.fSTreeModel, nc, null, fs.getByteValue(f), f)); break;
-        case Slot_Short:   children.add(new FSNode(this.fSTreeModel, nc, null, fs.getShortValue(f), f)); break;
-        case Slot_Int:     children.add(new FSNode(this.fSTreeModel, nc, null, fs.getIntValue(f), f)); break;
-        case Slot_Float:   children.add(new FSNode(this.fSTreeModel, nc, null, CASImpl.float2int(fs.getFloatValue(f)), f)); break;
-        case Slot_LongRef: children.add(new FSNode(this.fSTreeModel, nc, null, fs.getLongValue(f), f)); break;
-        case Slot_DoubleRef:children.add(new FSNode(this.fSTreeModel, nc, null, CASImpl.double2long(fs.getDoubleValue(f)), f)); break;
-        case Slot_StrRef:  children.add(new FSNode(this.fSTreeModel, nc, fs.getStringValue(f), 0, f)); break;
-        case Slot_HeapRef: children.add(new FSNode(this.fSTreeModel, nc, fs.getFeatureValue(f), 0, f)); break;
-        default: Misc.internalError();
+        switch (kind) {
+          case Slot_Boolean:
+            children.add(new FSNode(this.fSTreeModel, nc, null, fs.getBooleanValue(f) ? 1 : 0, f));
+            break;
+          case Slot_Byte:
+            children.add(new FSNode(this.fSTreeModel, nc, null, fs.getByteValue(f), f));
+            break;
+          case Slot_Short:
+            children.add(new FSNode(this.fSTreeModel, nc, null, fs.getShortValue(f), f));
+            break;
+          case Slot_Int:
+            children.add(new FSNode(this.fSTreeModel, nc, null, fs.getIntValue(f), f));
+            break;
+          case Slot_Float:
+            children.add(new FSNode(this.fSTreeModel, nc, null,
+                    CASImpl.float2int(fs.getFloatValue(f)), f));
+            break;
+          case Slot_LongRef:
+            children.add(new FSNode(this.fSTreeModel, nc, null, fs.getLongValue(f), f));
+            break;
+          case Slot_DoubleRef:
+            children.add(new FSNode(this.fSTreeModel, nc, null,
+                    CASImpl.double2long(fs.getDoubleValue(f)), f));
+            break;
+          case Slot_StrRef:
+            children.add(new FSNode(this.fSTreeModel, nc, fs.getStringValue(f), 0, f));
+            break;
+          case Slot_HeapRef:
+            children.add(new FSNode(this.fSTreeModel, nc, fs.getFeatureValue(f), 0, f));
+            break;
+          default:
+            Misc.internalError();
         } // end of switch
       }
     }
@@ -316,16 +363,20 @@ public class FSNode extends FSTreeNode {
   /**
    * Make nodes.
    *
-   * @param arrayNodes the array nodes
-   * @param newFSNode the new FS node
+   * @param arrayNodes
+   *          the array nodes
+   * @param newFSNode
+   *          the new FS node
    */
   private void makeNodes(List<FSNode> arrayNodes, int size, IntFunction<FSNode> newFSNode) {
     for (int idx = 0; idx < size; idx++) {
       arrayNodes.add(newFSNode.apply(idx));
     }
-  }  
-  
-  /* (non-Javadoc)
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
@@ -356,7 +407,7 @@ public class FSNode extends FSTreeNode {
   private String getFeatureString() {
     return "<i>" + this.feat.getShortName() + "</i>";
   }
-  
+
   /**
    * Checks if is shortened string.
    *
@@ -365,8 +416,8 @@ public class FSNode extends FSTreeNode {
   boolean isShortenedString() {
     return this.isShortenedString;
   }
-  
-  /** 
+
+  /**
    * @return for string nodes, return the string value (so it can be displayed seperately
    */
   String getFullString() {
@@ -382,7 +433,7 @@ public class FSNode extends FSTreeNode {
    * @return the value string
    */
   private String getValueString() {
-    
+
     switch (this.nodeClass) {
       case INT_FS:
       case BYTE_FS:
@@ -416,8 +467,8 @@ public class FSNode extends FSTreeNode {
         if (this.fs == null) {
           return getNullString();
         }
-        return "<font color=blue>" + getType().getName() + "</font>["
-                + ((CommonArrayFS)fs).size() + "]";
+        return "<font color=blue>" + getType().getName() + "</font>[" + ((CommonArrayFS) fs).size()
+                + "]";
       }
       case STD_FS: {
         if (fs == null) {
@@ -432,7 +483,8 @@ public class FSNode extends FSTreeNode {
   /**
    * Shorten string.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the string
    */
   private static final String shortenString(String s) {
@@ -444,11 +496,12 @@ public class FSNode extends FSTreeNode {
     buf.append("...");
     return buf.toString();
   }
-  
+
   /**
    * Escape lt.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the string
    */
   private static final String escapeLt(String s) {
@@ -456,7 +509,7 @@ public class FSNode extends FSTreeNode {
     int i = 0;
     while (i < max) {
       if (s.charAt(i) == '<') {
-	break;
+        break;
       }
       ++i;
     }
@@ -466,15 +519,15 @@ public class FSNode extends FSTreeNode {
     StringBuffer buf = new StringBuffer(s.substring(0, i));
     while (i < max) {
       if (s.charAt(i) == '<') {
-	buf.append("&lt;");
+        buf.append("&lt;");
       } else {
-	buf.append(s.charAt(i));
+        buf.append(s.charAt(i));
       }
       ++i;
     }
     return buf.toString();
   }
-  
+
   /**
    * Gets the null string.
    *
@@ -517,7 +570,7 @@ public class FSNode extends FSTreeNode {
    * @return the start
    */
   public int getStart() {
-    return isAnnotation() ? ((Annotation)fs).getBegin() : -1;
+    return isAnnotation() ? ((Annotation) fs).getBegin() : -1;
   }
 
   /**
@@ -526,7 +579,7 @@ public class FSNode extends FSTreeNode {
    * @return the end
    */
   public int getEnd() {
-    return isAnnotation() ? ((Annotation)fs).getEnd() : -1;
+    return isAnnotation() ? ((Annotation) fs).getEnd() : -1;
   }
 
 }

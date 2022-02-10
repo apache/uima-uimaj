@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JRadioButtonMenuItem;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class SetCodePageHandler.
@@ -39,13 +37,16 @@ public class SetCodePageHandler implements ActionListener {
   /**
    * Instantiates a new sets the code page handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public SetCodePageHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

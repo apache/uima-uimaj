@@ -17,14 +17,13 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.annot_view;
 
 import org.apache.uima.tools.cvd.CVD;
 
-
 /**
- * Compatibility class, delegates to the new {@link org.apache.uima.tools.cvd.CVD org.apache.uima.tools.cvd.CVD}.
+ * Compatibility class, delegates to the new {@link org.apache.uima.tools.cvd.CVD
+ * org.apache.uima.tools.cvd.CVD}.
  * 
  * @deprecated Use org.apache.uima.tools.cvd.CVD instead.
  */
@@ -34,7 +33,8 @@ public class Gladis {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     CVD.main(args);

@@ -82,8 +82,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   public static final String PARAM_XCAS = "XCAS";
 
   /**
-   * Name of the configuration parameter that must be set to indicate if the
-   * execution proceeds if an encountered type is unknown
+   * Name of the configuration parameter that must be set to indicate if the execution proceeds if
+   * an encountered type is unknown
    */
   public static final String PARAM_LENIENT = "LENIENT";
 
@@ -98,7 +98,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   private boolean mTEXT;
 
   private String mXCAS;
-  
+
   private boolean lenient;
 
   /**
@@ -111,9 +111,11 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
     mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
     mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
-    //XCAS parameter can be set to "xcas" or "xmi", as well as "true" (which for historical reasons
-    //means the same as "xcas").  Any other value will cause the input file to be treated as a text document.
-    mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS) || "true".equalsIgnoreCase(mXCAS));
+    // XCAS parameter can be set to "xcas" or "xmi", as well as "true" (which for historical reasons
+    // means the same as "xcas"). Any other value will cause the input file to be treated as a text
+    // document.
+    mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS)
+            || "true".equalsIgnoreCase(mXCAS));
     String mLenient = (String) getConfigParameterValue(PARAM_LENIENT);
     lenient = "true".equalsIgnoreCase(mLenient);
 
@@ -165,7 +167,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
           getCasInitializer().initializeCas(fis, aCAS);
         } else // No CAS Initiliazer, so read file and set document text ourselves
         {
-          String text = FileUtils.file2String(file, mEncoding);      
+          String text = FileUtils.file2String(file, mEncoding);
           // put document text in JCas
           jcas.setDocumentText(text);
         }
@@ -196,8 +198,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
       try {
         if (mXCAS.equalsIgnoreCase("xmi")) {
           XmiCasDeserializer.deserialize(fis, aCAS, lenient);
-        }
-        else {
+        } else {
           XCASDeserializer.deserialize(fis, aCAS, lenient);
         }
       } catch (SAXException e) {
@@ -247,10 +248,10 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   public static CollectionReaderDescription getDescription() throws InvalidXMLException {
     InputStream descStream = FileSystemCollectionReader.class
             .getResourceAsStream("FileSystemCollectionReader.xml");
-    return UIMAFramework.getXMLParser().parseCollectionReaderDescription(
-            new XMLInputSource(descStream, null));
+    return UIMAFramework.getXMLParser()
+            .parseCollectionReaderDescription(new XMLInputSource(descStream, null));
   }
-  
+
   public static URL getDescriptorURL() {
     return FileSystemCollectionReader.class.getResource("FileSystemCollectionReader.xml");
   }

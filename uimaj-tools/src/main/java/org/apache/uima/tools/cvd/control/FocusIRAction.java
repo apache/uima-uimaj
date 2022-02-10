@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * Action handler for focus in index repository frame.
@@ -39,7 +37,8 @@ public class FocusIRAction extends AbstractAction implements Action {
   /**
    * Instantiates a new focus IR action.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public FocusIRAction(MainFrame frame) {
     this.main = frame;
@@ -48,7 +47,9 @@ public class FocusIRAction extends AbstractAction implements Action {
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8128067676842119411L;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

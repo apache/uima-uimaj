@@ -21,7 +21,6 @@ package org.apache.uima.tools.cvd;
 
 import javax.swing.text.Style;
 
-
 /**
  * The Class AnnotationExtent.
  */
@@ -36,13 +35,15 @@ public class AnnotationExtent {
   /** The style. */
   private Style style;
 
-  
   /**
    * Instantiates a new annotation extent.
    *
-   * @param start the start
-   * @param end the end
-   * @param style the style
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param style
+   *          the style
    */
   public AnnotationExtent(int start, int end, Style style) {
     this.start = start;

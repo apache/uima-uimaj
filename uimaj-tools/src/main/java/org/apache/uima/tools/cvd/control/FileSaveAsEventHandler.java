@@ -27,7 +27,6 @@ import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * The Class FileSaveAsEventHandler.
  */
@@ -39,7 +38,8 @@ public class FileSaveAsEventHandler implements ActionListener {
   /**
    * Instantiates a new file save as event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public FileSaveAsEventHandler(MainFrame frame) {
     this.main = frame;
@@ -48,7 +48,8 @@ public class FileSaveAsEventHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override
@@ -66,7 +67,7 @@ public class FileSaveAsEventHandler implements ActionListener {
       File fileToSaveTo = fileChooser.getSelectedFile();
       if (!this.main.confirmOverwrite(fileToSaveTo)) {
         return;
-      }      
+      }
       this.main.setTextFile(fileToSaveTo);
       boolean fileSaved = this.main.saveFile();
       if (fileSaved) {

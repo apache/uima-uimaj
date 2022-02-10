@@ -24,13 +24,12 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * Listener for changes in text frame. When the text is changed, the CAS is removed as the text from
  * the CAS does no longer correspond to the text that is displayed in the frame, hence annotation
  * offsets are no longer correct.
  *
-// * @see TextChangedEvent
+ * // * @see TextChangedEvent
  */
 public class TextChangedListener implements DocumentListener {
 
@@ -40,13 +39,16 @@ public class TextChangedListener implements DocumentListener {
   /**
    * Instantiates a new text changed listener.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public TextChangedListener(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
    */
   @Override
@@ -54,7 +56,9 @@ public class TextChangedListener implements DocumentListener {
     // Do nothing.
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
    */
   @Override

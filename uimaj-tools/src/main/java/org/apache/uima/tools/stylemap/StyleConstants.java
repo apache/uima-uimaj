@@ -19,12 +19,11 @@
 
 package org.apache.uima.tools.stylemap;
 
-
 /**
  * The Class StyleConstants.
  */
 public class StyleConstants {
-  
+
   /** The Constant NR_TABLE_COLUMNS. */
   public static final int NR_TABLE_COLUMNS = 7;
 

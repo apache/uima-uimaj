@@ -60,9 +60,9 @@ import org.xml.sax.SAXException;
 
 public class PMUimaAgent {
   /**
-   * Creates UIMA aggregate analysis engine description object, based on given aggregate component name
-   * (ID), aggregate root directory and array of delegate installation descriptors. Returns the UIMA
-   * aggregate analysis engine description object. 
+   * Creates UIMA aggregate analysis engine description object, based on given aggregate component
+   * name (ID), aggregate root directory and array of delegate installation descriptors. Returns the
+   * UIMA aggregate analysis engine description object.
    * 
    * @param aggCompName
    *          The given aggregate component name (ID).
@@ -103,8 +103,8 @@ public class PMUimaAgent {
       AnalysisEngineMetaData aggMetadata = aggDescription.getAnalysisEngineMetaData();
       // set AE name and textual description
       aggMetadata.setName(aggCompName);
-      aggMetadata.setDescription("Merged aggregate component" + "(" + PMController.PEAR_MERGER
-              + ")");
+      aggMetadata
+              .setDescription("Merged aggregate component" + "(" + PMController.PEAR_MERGER + ")");
       // set fixed flow constraints
       FixedFlow aggFixedFlow = rsFactory.createFixedFlow();
       String[] aggFlowSpecs = new String[dlgInstDescs.length];
@@ -182,18 +182,17 @@ public class PMUimaAgent {
   }
 
   /**
-   * Merges source <code>Capability</code> objects specified in a given 
-   * <code>ArrayList</code>, creating one <code>Capability</code> object 
-   * that contains all non-duplicated inputs and outputs of the source 
-   * <code>Capability</code> objects. Returns an array of 
-   * <code>Capability</code> objects, containing the merged object.
+   * Merges source <code>Capability</code> objects specified in a given <code>ArrayList</code>,
+   * creating one <code>Capability</code> object that contains all non-duplicated inputs and outputs
+   * of the source <code>Capability</code> objects. Returns an array of <code>Capability</code>
+   * objects, containing the merged object.
    * 
-   * @param allCapabilities The given <code>ArrayList</code> of the source 
-   * <code>Capability</code> objects.
-   * @param rsFactory The <code>ResourceSpecifierFactory</code> object 
-   * used to create new <code>Capability</code> object.
-   * @return Array of <code>Capability</code> objects, containing the merged 
-   * object.
+   * @param allCapabilities
+   *          The given <code>ArrayList</code> of the source <code>Capability</code> objects.
+   * @param rsFactory
+   *          The <code>ResourceSpecifierFactory</code> object used to create new
+   *          <code>Capability</code> object.
+   * @return Array of <code>Capability</code> objects, containing the merged object.
    */
   private static Capability[] mergeCapabilities(ArrayList allCapabilities,
           ResourceSpecifierFactory rsFactory) {
@@ -268,8 +267,8 @@ public class PMUimaAgent {
   }
 
   /**
-   * Creates <code>ResourceSpecifier</code> object for a delegate component descriptor, specified
-   * by a given <code>InstallationDescriptor</code> object. Returns the delegate component
+   * Creates <code>ResourceSpecifier</code> object for a delegate component descriptor, specified by
+   * a given <code>InstallationDescriptor</code> object. Returns the delegate component
    * <code>ResourceSpecifier</code> object.
    * 
    * @param aggRootDir
@@ -343,8 +342,7 @@ public class PMUimaAgent {
   }
 
   /**
-   * Converts a given <code>XMLizable</code> object to String. This method is useful for
-   * debugging.
+   * Converts a given <code>XMLizable</code> object to String. This method is useful for debugging.
    * 
    * @param content
    *          The given <code>XMLizable</code> object

@@ -46,12 +46,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
-
 /**
  * The Class GUI.
  */
 public class GUI extends JFrame {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
@@ -71,7 +70,7 @@ public class GUI extends JFrame {
    * The Class G.
    */
   class G extends JPanel implements ActionListener {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
@@ -144,7 +143,8 @@ public class GUI extends JFrame {
     /**
      * Instantiates a new g.
      *
-     * @param gui the gui
+     * @param gui
+     *          the gui
      */
     public G(GUI gui) {
       this.gui = gui;
@@ -261,7 +261,9 @@ public class GUI extends JFrame {
       add(lbResult);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     @Override
@@ -284,7 +286,8 @@ public class GUI extends JFrame {
     /**
      * Browse file.
      *
-     * @param f the f
+     * @param f
+     *          the f
      */
     void browseFile(JTextArea f) {
       String startingDir = f.getText();
@@ -306,7 +309,8 @@ public class GUI extends JFrame {
     /**
      * Browse dir.
      *
-     * @param f the f
+     * @param f
+     *          the f
      */
     void browseDir(JTextArea f) {
       String startingDir = f.getText();
@@ -345,13 +349,14 @@ public class GUI extends JFrame {
     /**
      * Show in status.
      *
-     * @param message the message
+     * @param message
+     *          the message
      * @return the string
      */
     String showInStatus(String message) {
       taStatus.setText(taStatus.getText() + message + NL);
-      areaScrollPane.getVerticalScrollBar().setValue(
-              areaScrollPane.getVerticalScrollBar().getMaximum());
+      areaScrollPane.getVerticalScrollBar()
+              .setValue(areaScrollPane.getVerticalScrollBar().getMaximum());
       gui.repaint();
       return message;
     }
@@ -363,7 +368,8 @@ public class GUI extends JFrame {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   // for testing only
   public static void main(String args[]) {
@@ -380,7 +386,8 @@ public class GUI extends JFrame {
   /**
    * Instantiates a new gui.
    *
-   * @param jg the jg
+   * @param jg
+   *          the jg
    */
   public GUI(Jg jg) {
     super("JCasGen");

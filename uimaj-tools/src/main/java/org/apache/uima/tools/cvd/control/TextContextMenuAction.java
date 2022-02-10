@@ -26,7 +26,6 @@ import javax.swing.AbstractAction;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * Text pop-up action (for keyboard accessibility).
  */
@@ -38,7 +37,8 @@ public class TextContextMenuAction extends AbstractAction {
   /**
    * Instantiates a new text context menu action.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public TextContextMenuAction(MainFrame frame) {
     this.main = frame;
@@ -47,7 +47,9 @@ public class TextContextMenuAction extends AbstractAction {
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5518456467913617514L;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

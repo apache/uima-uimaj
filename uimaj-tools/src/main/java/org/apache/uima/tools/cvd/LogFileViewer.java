@@ -41,7 +41,6 @@ import javax.swing.text.DefaultEditorKit;
 
 import org.apache.uima.util.FileUtils;
 
-
 /**
  * Simple file viewer for viewing log files.
  * 
@@ -49,144 +48,153 @@ import org.apache.uima.util.FileUtils;
  */
 public class LogFileViewer extends JFrame {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 3599235286749804258L;
+  /** The Constant serialVersionUID. */
+  private static final long serialVersionUID = 3599235286749804258L;
 
-	/** The log file. */
-	private File logFile;
+  /** The log file. */
+  private File logFile;
 
-	/** The scroll pane. */
-	private JScrollPane scrollPane;
+  /** The scroll pane. */
+  private JScrollPane scrollPane;
 
-	/** The text area. */
-	private JTextArea textArea;
+  /** The text area. */
+  private JTextArea textArea;
 
-	/**
-	 * Instantiates a new log file viewer.
-	 *
-	 * @throws java.awt.HeadlessException the java.awt. headless exception
-	 */
-	public LogFileViewer() {
-	}
+  /**
+   * Instantiates a new log file viewer.
+   *
+   * @throws java.awt.HeadlessException
+   *           the java.awt. headless exception
+   */
+  public LogFileViewer() {
+  }
 
-	/**
-	 * Instantiates a new log file viewer.
-	 *
-	 * @param arg0 the arg 0
-	 */
-	public LogFileViewer(GraphicsConfiguration arg0) {
-		super(arg0);
-	}
+  /**
+   * Instantiates a new log file viewer.
+   *
+   * @param arg0
+   *          the arg 0
+   */
+  public LogFileViewer(GraphicsConfiguration arg0) {
+    super(arg0);
+  }
 
-	/**
-	 * Instantiates a new log file viewer.
-	 *
-	 * @param arg0 the arg 0
-	 * @throws java.awt.HeadlessException the java.awt. headless exception
-	 */
-	public LogFileViewer(String arg0) {
-		super(arg0);
-	}
+  /**
+   * Instantiates a new log file viewer.
+   *
+   * @param arg0
+   *          the arg 0
+   * @throws java.awt.HeadlessException
+   *           the java.awt. headless exception
+   */
+  public LogFileViewer(String arg0) {
+    super(arg0);
+  }
 
-	/**
-	 * Instantiates a new log file viewer.
-	 *
-	 * @param arg0 the arg 0
-	 * @param arg1 the arg 1
-	 */
-	public LogFileViewer(String arg0, GraphicsConfiguration arg1) {
-		super(arg0, arg1);
-	}
+  /**
+   * Instantiates a new log file viewer.
+   *
+   * @param arg0
+   *          the arg 0
+   * @param arg1
+   *          the arg 1
+   */
+  public LogFileViewer(String arg0, GraphicsConfiguration arg1) {
+    super(arg0, arg1);
+  }
 
-	/**
-	 * Inits the.
-	 *
-	 * @param file the file
-	 * @param d the d
-	 */
-	public void init(File file, Dimension d) {
-		createMenus();
-		this.logFile = file;
-		this.textArea = new JTextArea();
-		// Copy
-		Action copyAction = this.textArea.getActionMap().get(DefaultEditorKit.copyAction);
-		copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				InputEvent.CTRL_MASK));
-		copyAction.setEnabled(true);
-		this.scrollPane = new JScrollPane(this.textArea);
-		this.setContentPane(this.scrollPane);
-		this.scrollPane.setPreferredSize(d);
-		boolean doneLoadingFile = loadFile();
-		if (!doneLoadingFile) {
-			this.dispose();
-			return;
-		}
-		this.pack();
-		this.setVisible(true);
-	}
+  /**
+   * Inits the.
+   *
+   * @param file
+   *          the file
+   * @param d
+   *          the d
+   */
+  public void init(File file, Dimension d) {
+    createMenus();
+    this.logFile = file;
+    this.textArea = new JTextArea();
+    // Copy
+    Action copyAction = this.textArea.getActionMap().get(DefaultEditorKit.copyAction);
+    copyAction.putValue(Action.ACCELERATOR_KEY,
+            KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
+    copyAction.setEnabled(true);
+    this.scrollPane = new JScrollPane(this.textArea);
+    this.setContentPane(this.scrollPane);
+    this.scrollPane.setPreferredSize(d);
+    boolean doneLoadingFile = loadFile();
+    if (!doneLoadingFile) {
+      this.dispose();
+      return;
+    }
+    this.pack();
+    this.setVisible(true);
+  }
 
-	/**
-	 * Creates the menus.
-	 */
-	private void createMenus() {
-		JMenuBar menuBar = new JMenuBar();
-		this.setJMenuBar(menuBar);
-		JMenu fileMenu = new JMenu("File");
-		menuBar.add(fileMenu);
-		JMenuItem reload = new JMenuItem("Reload Log File");
-		reload.addActionListener(new ActionListener() {
-			@Override
+  /**
+   * Creates the menus.
+   */
+  private void createMenus() {
+    JMenuBar menuBar = new JMenuBar();
+    this.setJMenuBar(menuBar);
+    JMenu fileMenu = new JMenu("File");
+    menuBar.add(fileMenu);
+    JMenuItem reload = new JMenuItem("Reload Log File");
+    reload.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent event) {
-				loadFile();
-			}
-		});
-		fileMenu.add(reload);
-		JMenuItem exit = new JMenuItem("Close Window");
-		exit.addActionListener(new ActionListener() {
-			@Override
+        loadFile();
+      }
+    });
+    fileMenu.add(reload);
+    JMenuItem exit = new JMenuItem("Close Window");
+    exit.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent event) {
-				LogFileViewer.this.dispose();
-			}
-		});
-		fileMenu.add(exit);
-	}
+        LogFileViewer.this.dispose();
+      }
+    });
+    fileMenu.add(exit);
+  }
 
-	/**
-	 * Load file.
-	 *
-	 * @return true, if successful
-	 */
-	private boolean loadFile() {
-		if (!this.logFile.exists()) {
-			JOptionPane.showMessageDialog(this, "The log file \"" + this.logFile.getAbsolutePath()
-					+ "\" does not exist (yet).\nThis probably just means that nothing was logged yet.",
-					"Information", JOptionPane.INFORMATION_MESSAGE);
-			return false;
-		}
-		String text = null;
-		try {
-			text = FileUtils.file2String(this.logFile, "UTF-8");
-		} catch (IOException e) {
-			handleException(e);
-			return false;
-		}
-		this.textArea.setText(text);
-		return true;
-	}
+  /**
+   * Load file.
+   *
+   * @return true, if successful
+   */
+  private boolean loadFile() {
+    if (!this.logFile.exists()) {
+      JOptionPane.showMessageDialog(this, "The log file \"" + this.logFile.getAbsolutePath()
+              + "\" does not exist (yet).\nThis probably just means that nothing was logged yet.",
+              "Information", JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    String text = null;
+    try {
+      text = FileUtils.file2String(this.logFile, "UTF-8");
+    } catch (IOException e) {
+      handleException(e);
+      return false;
+    }
+    this.textArea.setText(text);
+    return true;
+  }
 
-	/**
-	 * Handle exception.
-	 *
-	 * @param e the e
-	 */
-	protected void handleException(Exception e) {
-		boolean hasAsserts = false;
-		// assert(hasAsserts = true);
-		if (hasAsserts) {
-			e.printStackTrace();
-		}
-		JOptionPane.showMessageDialog(this, e.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
+  /**
+   * Handle exception.
+   *
+   * @param e
+   *          the e
+   */
+  protected void handleException(Exception e) {
+    boolean hasAsserts = false;
+    // assert(hasAsserts = true);
+    if (hasAsserts) {
+      e.printStackTrace();
+    }
+    JOptionPane.showMessageDialog(this, e.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
 
-	}
+  }
 
 }

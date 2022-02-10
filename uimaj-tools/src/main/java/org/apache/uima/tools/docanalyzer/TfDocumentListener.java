@@ -22,22 +22,22 @@ package org.apache.uima.tools.docanalyzer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-
 /**
  * * This class tells the Mediator to check the length of the 3 text fields and adjust whether the 3
  * buttons are enabeld or not.
  * 
-// * @see TfDocumentEvent
+ * // * @see TfDocumentEvent
  */
 public class TfDocumentListener implements DocumentListener {
-  
+
   /** The med. */
   private PrefsMediator med;
 
   /**
    * Instantiates a new tf document listener.
    *
-   * @param med the med
+   * @param med
+   *          the med
    */
   public TfDocumentListener(PrefsMediator med) {
     this.med = med;

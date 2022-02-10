@@ -53,8 +53,8 @@ import org.xml.sax.SAXException;
  * This CAS Consumer takes two parameters:
  * <ul>
  * <li><code>OutputDirectory</code> - path to directory into which output files will be written</li>
- * <li><code>OutputFilter</code> (optional) - an FSMatchConstraint which annotations must match
- * in order to be included in the output. If omitted, all annotations will be included in the
+ * <li><code>OutputFilter</code> (optional) - an FSMatchConstraint which annotations must match in
+ * order to be included in the output. If omitted, all annotations will be included in the
  * output.</li>
  * </ul>
  * <p>
@@ -84,7 +84,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
   private int mDocNum;
 
   private String mXCAS;
-  
+
   private boolean mTEXT;
 
   @Override
@@ -164,8 +164,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
         if (mXCAS.equalsIgnoreCase("xcas")) {
           XCASSerializer ser = new XCASSerializer(aCAS.getTypeSystem());
           ser.serialize(aCAS, xmlSer.getContentHandler());
-        }
-        else {
+        } else {
           XmiCasSerializer ser = new XmiCasSerializer(aCAS.getTypeSystem());
           ser.serialize(aCAS, xmlSer.getContentHandler());
         }
@@ -199,10 +198,10 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
   public static CasConsumerDescription getDescription() throws InvalidXMLException {
     InputStream descStream = InlineXmlCasConsumer.class
             .getResourceAsStream("InlineXmlCasConsumer.xml");
-    return UIMAFramework.getXMLParser().parseCasConsumerDescription(
-            new XMLInputSource(descStream, null));
+    return UIMAFramework.getXMLParser()
+            .parseCasConsumerDescription(new XMLInputSource(descStream, null));
   }
-  
+
   public static URL getDescriptorURL() {
     return InlineXmlCasConsumer.class.getResource("InlineXmlCasConsumer.xml");
   }

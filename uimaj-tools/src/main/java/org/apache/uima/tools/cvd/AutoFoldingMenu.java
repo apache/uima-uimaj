@@ -22,7 +22,6 @@ package org.apache.uima.tools.cvd;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-
 /**
  * Auto-folding menu. It overrides the add(JMenuItem) method only.
  * 
@@ -46,8 +45,10 @@ public class AutoFoldingMenu extends JMenu {
   /**
    * Instantiates a new auto folding menu.
    *
-   * @param title the title
-   * @param max the max
+   * @param title
+   *          the title
+   * @param max
+   *          the max
    */
   public AutoFoldingMenu(String title, int max) {
     super(title);
@@ -57,13 +58,16 @@ public class AutoFoldingMenu extends JMenu {
   /**
    * Instantiates a new auto folding menu.
    *
-   * @param title the title
+   * @param title
+   *          the title
    */
   public AutoFoldingMenu(String title) {
     this(title, DEFAULT_MENU_SIZE);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.JMenu#add(javax.swing.JMenuItem)
    */
   @Override

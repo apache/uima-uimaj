@@ -26,7 +26,6 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.pear.tools.PackageInstallerException;
 
-
 /**
  * The Class InstallPearCli.
  */
@@ -35,30 +34,29 @@ public class InstallPearCli {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
-  
+
   public static void main(String[] args) {
-//    OptionParser parser = new OptionParser();
-//    OptionSpec<File> infile = parser.acceptsAll(Arrays.asList("f","file"), "PEAR file")
-//    .withRequiredArg().ofType( File.class ).describedAs( "filename" );
-//    OptionSpec<File> outdir = parser.acceptsAll(Arrays.asList("d","dir"), "installation directory")
-//    .withRequiredArg().ofType( File.class ).describedAs( "directory (default: use PEAR name)" );
-//    parser.acceptsAll(Arrays.asList("c", "check", "verify"), "do verification");
-//    parser.acceptsAll(Arrays.asList("v", "verbose"), "be more verbose");
-//    parser.acceptsAll(Arrays.asList( "h", "?" ), "show help");
-    
-    if (null == args || 
-        args.length == 0 ||
-        "?".equals(args[0]) ||
-        "-h".equals(args[0]) ||
-        "-help".equals(args[0])) {
+    // OptionParser parser = new OptionParser();
+    // OptionSpec<File> infile = parser.acceptsAll(Arrays.asList("f","file"), "PEAR file")
+    // .withRequiredArg().ofType( File.class ).describedAs( "filename" );
+    // OptionSpec<File> outdir = parser.acceptsAll(Arrays.asList("d","dir"), "installation
+    // directory")
+    // .withRequiredArg().ofType( File.class ).describedAs( "directory (default: use PEAR name)" );
+    // parser.acceptsAll(Arrays.asList("c", "check", "verify"), "do verification");
+    // parser.acceptsAll(Arrays.asList("v", "verbose"), "be more verbose");
+    // parser.acceptsAll(Arrays.asList( "h", "?" ), "show help");
+
+    if (null == args || args.length == 0 || "?".equals(args[0]) || "-h".equals(args[0])
+            || "-help".equals(args[0])) {
       printUsageAndExit();
     }
     File pathToPear = new File(args[0]);
     File installDir = null;
     boolean doVerification = false;
-    for (int i = 1 ; i < args.length; i++) {
+    for (int i = 1; i < args.length; i++) {
       String a = args[i];
       if (a.equals("-c") || a.equals("-check") || a.equals("-verify")) {
         doVerification = true;
@@ -68,27 +66,30 @@ public class InstallPearCli {
         installDir = new File(a);
       }
     }
-    
+
     if (installDir == null) {
-      installDir = new File(pathToPear.getName().replace(".pear", "")); 
+      installDir = new File(pathToPear.getName().replace(".pear", ""));
     }
-    
+
     installPear(installDir, pathToPear, doVerification);
   }
 
   /**
    * Install pear.
    *
-   * @param installDir the install dir
-   * @param pearFile the pear file
-   * @param doVerification the do verification
+   * @param installDir
+   *          the install dir
+   * @param pearFile
+   *          the pear file
+   * @param doVerification
+   *          the do verification
    */
   private static void installPear(File installDir, File pearFile, boolean doVerification) {
 
     try {
       // install PEAR package
-      PackageBrowser instPear = PackageInstaller.installPackage(
-          installDir, pearFile, doVerification);
+      PackageBrowser instPear = PackageInstaller.installPackage(installDir, pearFile,
+              doVerification);
 
       // retrieve installed PEAR data
       // PEAR package classpath
@@ -96,21 +97,17 @@ public class InstallPearCli {
       // PEAR package datapath
       String datapath = instPear.getComponentDataPath();
       // PEAR package main component descriptor
-      String mainComponentDescriptor = instPear
-      .getInstallationDescriptor().getMainComponentDesc();
+      String mainComponentDescriptor = instPear.getInstallationDescriptor().getMainComponentDesc();
       // PEAR package component ID
-      String mainComponentID = instPear
-      .getInstallationDescriptor().getMainComponentId();
+      String mainComponentID = instPear.getInstallationDescriptor().getMainComponentId();
       // PEAR package pear descriptor
       String pearDescPath = instPear.getComponentPearDescPath();
 
       // print out settings
       System.out.println("PEAR package class path: " + classpath);
       System.out.println("PEAR package datapath: " + datapath);
-      System.out.println("PEAR package mainComponentDescriptor: "
-          + mainComponentDescriptor);
-      System.out.println("PEAR package mainComponentID: "
-          + mainComponentID);
+      System.out.println("PEAR package mainComponentDescriptor: " + mainComponentDescriptor);
+      System.out.println("PEAR package mainComponentID: " + mainComponentID);
       System.out.println("PEAR package specifier path: " + pearDescPath);
       System.out.println("PEAR installed successfully");
     } catch (PackageInstallerException ex) {
@@ -122,18 +119,16 @@ public class InstallPearCli {
       System.out.println("Error retrieving installed PEAR settings");
     }
   }
-  
+
   /**
    * Prints the usage and exit.
    */
   private static void printUsageAndExit() {
-    System.out
-            .println("Usage: installPearCli pathToPearFile [directoryToInstallInto] [options]\n\n"
-                    + "  *** items in [] are optional ***"
-                    + "Install a Pear file into a specified directory\n"
-                    + "Install directory defaults to the current directory/pearFileName\n"
-                    + "Options:\n"
-                    + " -c or -check or -verify: Run the Pear validation checks after installing\n");
+    System.out.println("Usage: installPearCli pathToPearFile [directoryToInstallInto] [options]\n\n"
+            + "  *** items in [] are optional ***"
+            + "Install a Pear file into a specified directory\n"
+            + "Install directory defaults to the current directory/pearFileName\n" + "Options:\n"
+            + " -c or -check or -verify: Run the Pear validation checks after installing\n");
     System.exit(1);
   }
 }

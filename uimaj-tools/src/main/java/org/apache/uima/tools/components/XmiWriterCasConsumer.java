@@ -104,7 +104,8 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
       try {
         // handle blanks in path
         // https://issues.apache.org/jira/browse/UIMA-1748
-        // use 3 arg form of URI Constructor to properly quote any otherwise illegal chars such as blank
+        // use 3 arg form of URI Constructor to properly quote any otherwise illegal chars such as
+        // blank
         // https://issues.apache.org/jira/browse/UIMA-2097
         URI uri = UriUtils.quote(fileLoc.getUri());
         inFile = new File(uri);
@@ -139,12 +140,16 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    *          CAS to serialize
    * @param name
    *          output file
-   * @throws SAXException -
-   * @throws Exception -
+   * @throws SAXException
+   *           -
+   * @throws Exception
+   *           -
    * 
-   * @throws ResourceProcessException -
+   * @throws ResourceProcessException
+   *           -
    */
-  private void writeXmi(CAS aCas, File name, String modelFileName) throws IOException, SAXException {
+  private void writeXmi(CAS aCas, File name, String modelFileName)
+          throws IOException, SAXException {
 
     try (FileOutputStream out = new FileOutputStream(name)) {
       // write XMI
@@ -166,11 +171,11 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
   public static CasConsumerDescription getDescription() throws InvalidXMLException {
     InputStream descStream = XCasWriterCasConsumer.class
             .getResourceAsStream("XmiWriterCasConsumer.xml");
-    return UIMAFramework.getXMLParser().parseCasConsumerDescription(
-            new XMLInputSource(descStream, null));
+    return UIMAFramework.getXMLParser()
+            .parseCasConsumerDescription(new XMLInputSource(descStream, null));
   }
-  
+
   public static URL getDescriptorURL() {
     return XmiWriterCasConsumer.class.getResource("XmiWriterCasConsumer.xml");
-  }  
+  }
 }

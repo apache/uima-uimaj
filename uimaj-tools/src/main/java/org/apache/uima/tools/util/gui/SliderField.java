@@ -28,12 +28,11 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 /**
  * The Class SliderField.
  */
 public class SliderField extends JPanel implements ChangeListener, PropertyChangeListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8200124988260091779L;
 
@@ -46,9 +45,12 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
   /**
    * Instantiates a new slider field.
    *
-   * @param min the min
-   * @param max the max
-   * @param initialValue the initial value
+   * @param min
+   *          the min
+   * @param max
+   *          the max
+   * @param initialValue
+   *          the initial value
    */
   public SliderField(int min, int max, int initialValue) {
     setLayout(new FlowLayout(FlowLayout.LEFT, 4, 4));
@@ -71,7 +73,9 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
     add(textField);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
    */
   @Override
@@ -86,7 +90,9 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
       textField.setText(String.valueOf(sliderValue));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
    */
   @Override
@@ -98,7 +104,9 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.JComponent#setEnabled(boolean)
    */
   @Override
@@ -120,7 +128,8 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
   /**
    * Determine major tick spacing.
    *
-   * @param range the range
+   * @param range
+   *          the range
    * @return the int
    */
   private int determineMajorTickSpacing(int range) {

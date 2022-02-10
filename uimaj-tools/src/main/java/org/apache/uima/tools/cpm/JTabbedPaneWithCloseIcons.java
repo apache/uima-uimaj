@@ -29,7 +29,6 @@ import java.awt.event.MouseListener;
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 
-
 /**
  * A JTabbedPane which has a close ('X') icon on each tab. To add a tab, use the method
  * addTab(String, Component) To have an extra icon on each tab (e.g. showing the file type) use the
@@ -39,7 +38,7 @@ import javax.swing.JTabbedPane;
  */
 
 public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7680554379341154297L;
 
@@ -56,13 +55,16 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
   /**
    * Adds the tab closed listener.
    *
-   * @param aTabClosedListener the a tab closed listener
+   * @param aTabClosedListener
+   *          the a tab closed listener
    */
   public void addTabClosedListener(TabClosedListener aTabClosedListener) {
     this.tabClosedListener = aTabClosedListener;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.JTabbedPane#addTab(java.lang.String, java.awt.Component)
    */
   @Override
@@ -73,9 +75,12 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
   /**
    * Adds the tab.
    *
-   * @param title the title
-   * @param component the component
-   * @param extraIcon the extra icon
+   * @param title
+   *          the title
+   * @param component
+   *          the component
+   * @param extraIcon
+   *          the extra icon
    */
   public void addTab(String title, Component component, Icon extraIcon) {
     super.addTab(title, new CloseTabIcon(extraIcon), component);
@@ -84,8 +89,10 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
   /**
    * Move tab.
    *
-   * @param fromIndex the from index
-   * @param toIndex the to index
+   * @param fromIndex
+   *          the from index
+   * @param toIndex
+   *          the to index
    */
   public void moveTab(int fromIndex, int toIndex) {
     Component componentToMove = this.getComponentAt(fromIndex);
@@ -96,7 +103,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
     this.setTitleAt(toIndex, title);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
    */
   @Override
@@ -112,28 +121,36 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
    */
   @Override
   public void mouseEntered(MouseEvent e) {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
    */
   @Override
   public void mouseExited(MouseEvent e) {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
    */
   @Override
   public void mousePressed(MouseEvent e) {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
    */
   @Override

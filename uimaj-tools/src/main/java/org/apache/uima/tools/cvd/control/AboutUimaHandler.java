@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -25,7 +24,6 @@ import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.util.gui.AboutDialog;
-
 
 /**
  * The Class AboutUimaHandler.
@@ -38,13 +36,16 @@ public class AboutUimaHandler implements ActionListener {
   /**
    * Instantiates a new about uima handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public AboutUimaHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

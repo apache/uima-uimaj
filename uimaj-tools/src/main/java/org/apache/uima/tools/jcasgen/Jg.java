@@ -75,7 +75,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
 
-
 /**
  * Class holds type plugin-wide collections and static methods. Also implements the runnable that is
  * called to do the processing
@@ -84,15 +83,17 @@ import org.apache.uima.util.XMLizable;
 public class Jg {
 
   private final static boolean IS_TRACE_LIMITED = false;
+
   /**
    * Interface implemented by JCAS code generation's templates.
    */
   public interface IJCasTypeTemplate {
-    
+
     /**
      * Generate.
      *
-     * @param argument the argument
+     * @param argument
+     *          the argument
      * @return the string
      */
     String generate(Object argument);
@@ -162,18 +163,19 @@ public class Jg {
     }
 
     ((CASImpl) tcas).commitTypeSystem();
-    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();  // follow commit because commit may reuse existing type system
+    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl(); // follow commit because commit may
+                                                              // reuse existing type system
 
-    // setup noGen for semibuiltin types 
+    // setup noGen for semibuiltin types
     noGenTypes.add("org.apache.uima.jcas.cas.FSArrayList");
     noGenTypes.add("org.apache.uima.jcas.cas.IntegerArrayList");
     noGenTypes.add("org.apache.uima.jcas.cas.FSHashSet");
-    
+
     for (Iterator<Type> it = builtInTypeSystem.getTypeIterator(); it.hasNext();) {
       Type type = it.next();
       if (type.isFeatureFinal()) {
         noGenTypes.add(type.getName());
-        continue;  // skip if feature final
+        continue; // skip if feature final
       }
       String typeName = type.getName();
       List<Feature> fs = type.getFeatures();
@@ -206,9 +208,12 @@ public class Jg {
   /**
    * Adds the built in type info.
    *
-   * @param casName the cas name
-   * @param javaName the java name
-   * @param casElementName the cas element name
+   * @param casName
+   *          the cas name
+   * @param javaName
+   *          the java name
+   * @param casElementName
+   *          the cas element name
    */
   static private void addBuiltInTypeInfo(String casName, String javaName, String casElementName) {
     TypeInfo ti = new TypeInfo(casName, javaName, casElementName);
@@ -218,17 +223,21 @@ public class Jg {
   /**
    * Adds the built in type info.
    *
-   * @param casName the cas name
-   * @param javaName the java name
+   * @param casName
+   *          the cas name
+   * @param javaName
+   *          the java name
    */
   static private void addBuiltInTypeInfo(String casName, String javaName) {
     addBuiltInTypeInfo(casName, javaName, null);
   }
 
-  static private List<String> genericFeatureDescriptorTypes = Arrays.asList("uima.cas.FSArray", "uima.cas.FSList");
+  static private List<String> genericFeatureDescriptorTypes = Arrays.asList("uima.cas.FSArray",
+          "uima.cas.FSList");
   // first type needed by fsArrayType; in hash map will be overwritten, though
   static {
-//    addBuiltInTypeInfo("uima.cas.TOP", "org.apache.uima.cas.FeatureStructure"); // overridden below
+    // addBuiltInTypeInfo("uima.cas.TOP", "org.apache.uima.cas.FeatureStructure"); // overridden
+    // below
     addBuiltInTypeInfo("uima.cas.Integer", "int");
     addBuiltInTypeInfo("uima.cas.Float", "float");
     addBuiltInTypeInfo("uima.cas.String", "String");
@@ -270,12 +279,13 @@ public class Jg {
     addBuiltInTypeInfo("uima.cas.NonEmptyFSList", "org.apache.uima.jcas.cas.NonEmptyFSList");
     addBuiltInTypeInfo("uima.cas.NonEmptyIntegerList",
             "org.apache.uima.jcas.cas.NonEmptyIntegerList");
-    addBuiltInTypeInfo("uima.cas.NonEmptyStringList", "org.apache.uima.jcas.cas.NonEmptyStringList");
+    addBuiltInTypeInfo("uima.cas.NonEmptyStringList",
+            "org.apache.uima.jcas.cas.NonEmptyStringList");
     addBuiltInTypeInfo("uima.cas.Sofa", "org.apache.uima.jcas.cas.Sofa");
     // not built-in
-//    addBuiltInTypeInfo("uima.cas.IntegerArrayList", "org.apache.uima.jcas.cas.IntegerArrayList");
-//    addBuiltInTypeInfo("uima.cas.FSArrayList", "org.apache.uima.jcas.cas.FSArrayList");
-//    addBuiltInTypeInfo("uima.cas.FSHashSet", "org.apache.uima.jcas.cas.FSHashSet");
+    // addBuiltInTypeInfo("uima.cas.IntegerArrayList", "org.apache.uima.jcas.cas.IntegerArrayList");
+    // addBuiltInTypeInfo("uima.cas.FSArrayList", "org.apache.uima.jcas.cas.FSArrayList");
+    // addBuiltInTypeInfo("uima.cas.FSHashSet", "org.apache.uima.jcas.cas.FSHashSet");
   }
 
   /** The resource bundle. */
@@ -337,10 +347,13 @@ public class Jg {
   private Type tcasAnnotationType;
 
   /** The merged types adding features. */
-  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<>(); // a Map of types and the xml files that were merged to create them
+  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<>(); // a Map of types
+                                                                                // and the xml files
+                                                                                // that were merged
+                                                                                // to create them
 
   /** The project path dir. */
-  private String projectPathDir;  
+  private String projectPathDir;
 
   /** The limit J cas gen to project scope. */
   private boolean limitJCasGenToProjectScope;
@@ -354,7 +367,8 @@ public class Jg {
   /**
    * Returns the string from the plugin's resource bundle, or 'key' if not found.
    *
-   * @param key the key
+   * @param key
+   *          the key
    * @return the resource string
    */
   public String getResourceString(String key) {
@@ -369,8 +383,10 @@ public class Jg {
   /**
    * Gets the string.
    *
-   * @param key the key
-   * @param substitutions the substitutions
+   * @param key
+   *          the key
+   * @param substitutions
+   *          the substitutions
    * @return the string
    */
   public String getString(String key, Object[] substitutions) {
@@ -390,7 +406,7 @@ public class Jg {
    * The Class ErrorExit.
    */
   public static class ErrorExit extends RuntimeException {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -3314235749649859540L;
   }
@@ -412,7 +428,7 @@ public class Jg {
     gui = new GUI(this);
     gui.addWindowListener(new WindowAdapter() {
       @Override
-    public void windowClosing(WindowEvent e) {
+      public void windowClosing(WindowEvent e) {
         Prefs.set(gui);
         waiter.finished();
       }
@@ -428,7 +444,8 @@ public class Jg {
   /**
    * The main method.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   // exits with -1 if failure
   public static void main(String[] args) {
@@ -439,100 +456,143 @@ public class Jg {
   /**
    * Main for cde.
    *
-   * @param aMerger the a merger
-   * @param aProgressMonitor the a progress monitor
-   * @param aError the a error
-   * @param inputFile the input file
-   * @param outputDirectory the output directory
-   * @param tds the tds
-   * @param aCas the a cas
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param aMerger
+   *          the a merger
+   * @param aProgressMonitor
+   *          the a progress monitor
+   * @param aError
+   *          the a error
+   * @param inputFile
+   *          the input file
+   * @param outputDirectory
+   *          the output directory
+   * @param tds
+   *          the tds
+   * @param aCas
+   *          the a cas
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
           String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas)
           throws IOException {
-    mainForCde(aMerger, aProgressMonitor, aError,
-               inputFile, outputDirectory, tds, aCas, "", false, null);
+    mainForCde(aMerger, aProgressMonitor, aError, inputFile, outputDirectory, tds, aCas, "", false,
+            null);
   }
-  
+
   /**
    * Main for cde.
    *
-   * @param aMerger the a merger
-   * @param aProgressMonitor the a progress monitor
-   * @param aError the a error
-   * @param inputFile the input file
-   * @param outputDirectory the output directory
-   * @param tds the tds
-   * @param aCas the a cas
-   * @param pProjectPathDir the project path dir
-   * @param limitToProjectScope the limit J cas gen to project scope
-   * @param pMergedTypesAddingFeatures the merged types adding features
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param aMerger
+   *          the a merger
+   * @param aProgressMonitor
+   *          the a progress monitor
+   * @param aError
+   *          the a error
+   * @param inputFile
+   *          the input file
+   * @param outputDirectory
+   *          the output directory
+   * @param tds
+   *          the tds
+   * @param aCas
+   *          the a cas
+   * @param pProjectPathDir
+   *          the project path dir
+   * @param limitToProjectScope
+   *          the limit J cas gen to project scope
+   * @param pMergedTypesAddingFeatures
+   *          the merged types adding features
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
-          String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas, 
-          String pProjectPathDir, boolean limitToProjectScope, 
-          Map<String, Set<String>> pMergedTypesAddingFeatures)
-          throws IOException {
+          String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas,
+          String pProjectPathDir, boolean limitToProjectScope,
+          Map<String, Set<String>> pMergedTypesAddingFeatures) throws IOException {
     try {
       // Generate type classes by using DEFAULT templates
       mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, aError, inputFile,
-              outputDirectory, tds, aCas, JCasTypeTemplate.class,
-              pProjectPathDir, limitToProjectScope, pMergedTypesAddingFeatures);
+              outputDirectory, tds, aCas, JCasTypeTemplate.class, pProjectPathDir,
+              limitToProjectScope, pMergedTypesAddingFeatures);
       // convert thrown things to IOExceptions to avoid changing API for this
       // FIXME later
     } catch (InstantiationException e) {
       throw new IOException(e.toString());
     } catch (IllegalAccessException e) {
       throw new IOException(e.toString());
-    }    
+    }
   }
 
   /**
    * Main generate all types from templates.
    *
-   * @param aMerger the a merger
-   * @param aProgressMonitor the a progress monitor
-   * @param aError the a error
-   * @param inputFile the input file
-   * @param outputDirectory the output directory
-   * @param tds the tds
-   * @param aCas the a cas
-   * @param jcasTypeClass the jcas type class
-   * @param jcas_TypeClass the jcas type class
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws InstantiationException the instantiation exception
-   * @throws IllegalAccessException the illegal access exception
+   * @param aMerger
+   *          the a merger
+   * @param aProgressMonitor
+   *          the a progress monitor
+   * @param aError
+   *          the a error
+   * @param inputFile
+   *          the input file
+   * @param outputDirectory
+   *          the output directory
+   * @param tds
+   *          the tds
+   * @param aCas
+   *          the a cas
+   * @param jcasTypeClass
+   *          the jcas type class
+   * @param jcas_TypeClass
+   *          the jcas type class
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws InstantiationException
+   *           the instantiation exception
+   * @throws IllegalAccessException
+   *           the illegal access exception
    */
   // use template classes to generate code
   public void mainGenerateAllTypesFromTemplates(IMerge aMerger, IProgressMonitor aProgressMonitor,
-      IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
-      CASImpl aCas, Class<JCasTypeTemplate> jcasTypeClass, // Template class
-      Class<JCasTypeTemplate> jcas_TypeClass) // Template class
-      throws IOException, InstantiationException, IllegalAccessException {
-    mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, 
-             aError, inputFile, outputDirectory, tds, aCas, 
-             jcasTypeClass, "", false, null);
+          IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
+          CASImpl aCas, Class<JCasTypeTemplate> jcasTypeClass, // Template class
+          Class<JCasTypeTemplate> jcas_TypeClass) // Template class
+          throws IOException, InstantiationException, IllegalAccessException {
+    mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, aError, inputFile, outputDirectory,
+            tds, aCas, jcasTypeClass, "", false, null);
   }
-  
+
   /**
    * Main generate all types from templates.
    *
-   * @param aMerger the a merger
-   * @param aProgressMonitor the a progress monitor
-   * @param aError the a error
-   * @param inputFile the input file
-   * @param outputDirectory the output directory
-   * @param tds the tds
-   * @param aCas the a cas
-   * @param jcasTypeClass the jcas type class
-   * @param pProjectPathDir the project path dir
-   * @param limitToProjectScope the limit J cas gen to project scope
-   * @param pMergedTypesAddingFeatures the merged types adding features
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws InstantiationException the instantiation exception
-   * @throws IllegalAccessException the illegal access exception
+   * @param aMerger
+   *          the a merger
+   * @param aProgressMonitor
+   *          the a progress monitor
+   * @param aError
+   *          the a error
+   * @param inputFile
+   *          the input file
+   * @param outputDirectory
+   *          the output directory
+   * @param tds
+   *          the tds
+   * @param aCas
+   *          the a cas
+   * @param jcasTypeClass
+   *          the jcas type class
+   * @param pProjectPathDir
+   *          the project path dir
+   * @param limitToProjectScope
+   *          the limit J cas gen to project scope
+   * @param pMergedTypesAddingFeatures
+   *          the merged types adding features
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws InstantiationException
+   *           the instantiation exception
+   * @throws IllegalAccessException
+   *           the illegal access exception
    */
   public void mainGenerateAllTypesFromTemplates(IMerge aMerger, IProgressMonitor aProgressMonitor,
           IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
@@ -555,13 +615,18 @@ public class Jg {
   /**
    * Main 0.
    *
-   * @param args the args
-   * @param aMerger the a merger
-   * @param aProgressMonitor the a progress monitor
-   * @param aError the a error
+   * @param args
+   *          the args
+   * @param aMerger
+   *          the a merger
+   * @param aProgressMonitor
+   *          the a progress monitor
+   * @param aError
+   *          the a error
    * @return the int
    */
-  public int main0(String[] args, IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError) {
+  public int main0(String[] args, IMerge aMerger, IProgressMonitor aProgressMonitor,
+          IError aError) {
     this.merger = aMerger;
     this.error = aError;
     this.progressMonitor = aProgressMonitor;
@@ -586,13 +651,11 @@ public class Jg {
   }
 
   /**
-   * Arguments are:
-   *   -jcasgeninput xxxx
-   *   -jcasgenoutput  xxxx
-   *   -jcasgenclasspath xxxx
-   *   
+   * Arguments are: -jcasgeninput xxxx -jcasgenoutput xxxx -jcasgenclasspath xxxx
+   * 
    *
-   * @param arguments the arguments
+   * @param arguments
+   *          the arguments
    * @return the int
    */
   public int main1(String[] arguments) {
@@ -610,8 +673,8 @@ public class Jg {
 
         TypeSystemDescription typeSystemDescription = null;
         TypeDescription[] tds = null;
-        
-        projectPathDir = "";  // init to default value
+
+        projectPathDir = ""; // init to default value
         limitJCasGenToProjectScope = false;
 
         for (int i = 0; i < arguments.length - 1; i++) {
@@ -623,9 +686,9 @@ public class Jg {
             outputDirectory = arguments[++i];
             continue;
           }
-          // This is used by the jcasgen maven plugin 
+          // This is used by the jcasgen maven plugin
           if (arguments[i].equalsIgnoreCase("=jcasgenclasspath") || // https://issues.apache.org/jira/browse/UIMA-3044
-              arguments[i].equalsIgnoreCase("-jcasgenclasspath")) { // https://issues.apache.org/jira/browse/UIMA-3044
+                  arguments[i].equalsIgnoreCase("-jcasgenclasspath")) { // https://issues.apache.org/jira/browse/UIMA-3044
             classPath = arguments[++i];
             continue;
           }
@@ -638,30 +701,35 @@ public class Jg {
 
         xmlSourceFileName = inputFile.replaceAll("\\\\", "/");
         URL url;
-        if(inputFile.substring(0, 4).equalsIgnoreCase("jar:")) {
+        if (inputFile.substring(0, 4).equalsIgnoreCase("jar:")) {
           // https://issues.apache.org/jira/browse/UIMA-1793 get things out of Jars
-        	try {
-        		url = new URL(inputFile);
-//          	if (null == url) {     // is never null from above line
-//          		error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
-//          	}
-          	if(null == outputDirectory || outputDirectory.equals("")) {
-          		error.newError(IError.ERROR, getString("sourceArgNeedsDirectory", new Object[] { inputFile }), null);
-          	}
-        	} catch (MalformedURLException e) {
-        		error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
-        		url = null;  // never get here, the previous statement throws.  Needed, though for java path analysis.
-        	}
+          try {
+            url = new URL(inputFile);
+            // if (null == url) { // is never null from above line
+            // error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }),
+            // null);
+            // }
+            if (null == outputDirectory || outputDirectory.equals("")) {
+              error.newError(IError.ERROR,
+                      getString("sourceArgNeedsDirectory", new Object[] { inputFile }), null);
+            }
+          } catch (MalformedURLException e) {
+            error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }),
+                    null);
+            url = null; // never get here, the previous statement throws. Needed, though for java
+                        // path analysis.
+          }
         } else {
-        	File file = new File(inputFile);
+          File file = new File(inputFile);
           if (!file.exists()) {
-              error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
+            error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }),
+                    null);
           }
           if (null == outputDirectory || outputDirectory.equals("")) {
             File dir = file.getParentFile();
             if (null == dir) {
-              error.newError(IError.ERROR, getString("sourceArgNeedsDirectory",
-                      new Object[] { inputFile }), null);
+              error.newError(IError.ERROR,
+                      getString("sourceArgNeedsDirectory", new Object[] { inputFile }), null);
             }
             outputDirectory = dir.getPath() + File.separator + "JCas"
                     + ((null != merger) ? "" : "New");
@@ -671,8 +739,8 @@ public class Jg {
 
         progressMonitor.beginTask("", 5);
         progressMonitor.subTask("Output going to '" + outputDirectory + "'");
-        progressMonitor.subTask(getString("ReadingDescriptorAndCreatingTypes",
-                new Object[] { inputFile }));
+        progressMonitor.subTask(
+                getString("ReadingDescriptorAndCreatingTypes", new Object[] { inputFile }));
         // code to read xml and make cas type instance
         CASImpl casLocal = null;
         // handle classpath
@@ -687,8 +755,8 @@ public class Jg {
               typeSystemDescription = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(
                       aeSpecifier, createResourceManager(), mergedTypesAddingFeatures);
             else
-              typeSystemDescription = mergeTypeSystemImports(aeSpecifier
-                      .getAnalysisEngineMetaData().getTypeSystem());
+              typeSystemDescription = mergeTypeSystemImports(
+                      aeSpecifier.getAnalysisEngineMetaData().getTypeSystem());
 
           } else if (specifier instanceof TypeSystemDescription)
             typeSystemDescription = mergeTypeSystemImports(((TypeSystemDescription) specifier));
@@ -719,8 +787,8 @@ public class Jg {
         } catch (InvalidXMLException e) {
           error.newError(IError.ERROR, getString("invalidXML", new Object[] { inputFile }), e);
         } catch (ResourceInitializationException e) {
-          error.newError(IError.ERROR, getString("resourceInitializationExceptionError",
-                  new Object[] {}), e);
+          error.newError(IError.ERROR,
+                  getString("resourceInitializationExceptionError", new Object[] {}), e);
         }
 
         progressMonitor.worked(1);
@@ -731,7 +799,7 @@ public class Jg {
 
       } catch (IOException e) {
         error.newError(IError.ERROR, getString("IOException", new Object[] {}), e);
-      } catch (ErrorExit e) { 
+      } catch (ErrorExit e) {
         hadError = true;
       } catch (InstantiationException e) {
         error.newError(IError.ERROR, getString("InstantiationException", new Object[] {}), e);
@@ -741,28 +809,28 @@ public class Jg {
     } finally {
       progressMonitor.done();
     }
-    return (hadError) ? -1 : 0;    
+    return (hadError) ? -1 : 0;
   }
 
   /**
    * Make merge message.
    *
-   * @param m the m
+   * @param m
+   *          the m
    * @return the string
    */
   // message: TypeName = ".....", URLs defining this type = "xxxx", "xxxx", ....
   private String makeMergeMessage(Map<String, Set<String>> m) {
     StringBuffer sb = new StringBuffer();
-    for (Map.Entry<String, Set<String>> entry :  m.entrySet()) {
+    for (Map.Entry<String, Set<String>> entry : m.entrySet()) {
       String typeName = entry.getKey();
       sb.append("\n  ");
-      sb.append("TypeName having merged features = ").append(typeName).append(
-              "\n    URLs defining this type =");
+      sb.append("TypeName having merged features = ").append(typeName)
+              .append("\n    URLs defining this type =");
       Set<String> urls = entry.getValue();
       boolean afterFirst = false;
       for (String url : urls) {
-        sb.append(afterFirst ? ',' : "")
-          .append("\n        \"");
+        sb.append(afterFirst ? ',' : "").append("\n        \"");
         afterFirst = true;
         sb.append('"').append(url).append('"');
       }
@@ -773,18 +841,25 @@ public class Jg {
   /**
    * Generate all types from templates.
    *
-   * @param outputDirectory the output directory
-   * @param tds the tds
-   * @param aCas the a cas
-   * @param jcasTypeClass the jcas type class
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws InstantiationException the instantiation exception
-   * @throws IllegalAccessException the illegal access exception
+   * @param outputDirectory
+   *          the output directory
+   * @param tds
+   *          the tds
+   * @param aCas
+   *          the a cas
+   * @param jcasTypeClass
+   *          the jcas type class
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws InstantiationException
+   *           the instantiation exception
+   * @throws IllegalAccessException
+   *           the illegal access exception
    */
   // This is also the interface for CDE
   private void generateAllTypesFromTemplates(String outputDirectory, TypeDescription[] tds,
-          CASImpl aCas, Class<JCasTypeTemplate> jcasTypeClass) throws IOException,
-          InstantiationException, IllegalAccessException {
+          CASImpl aCas, Class<JCasTypeTemplate> jcasTypeClass)
+          throws IOException, InstantiationException, IllegalAccessException {
 
     // Create instances of Template classes
     IJCasTypeTemplate jcasTypeInstance = (IJCasTypeTemplate) jcasTypeClass.newInstance();
@@ -803,8 +878,7 @@ public class Jg {
         continue;
       if (td.getSupertypeName().equals("uima.cas.String"))
         continue;
-      if (limitJCasGenToProjectScope && 
-          isOutOfScope(td, projectPathDir)) {
+      if (limitJCasGenToProjectScope && isOutOfScope(td, projectPathDir)) {
         Set<String> mt = mergedTypesAddingFeatures.get(td.getName());
         if (null == mt) {
           continue;
@@ -813,13 +887,14 @@ public class Jg {
         for (String p : mt) {
           sb.append("  ").append(p).append('\n');
         }
-        error.newError(IError.ERROR, getString("limitingButTypeWasExtended", new Object[] { td.getName(), sb.toString()}), null);
+        error.newError(IError.ERROR, getString("limitingButTypeWasExtended",
+                new Object[] { td.getName(), sb.toString() }), null);
         continue;
       }
 
       // if the type is built-in - augment it with the built-in's features
-      FeatureDescription[] builtInFeatures = (FeatureDescription[]) extendableBuiltInTypes.get(td
-              .getName());
+      FeatureDescription[] builtInFeatures = (FeatureDescription[]) extendableBuiltInTypes
+              .get(td.getName());
       if (null != builtInFeatures) {
         generatedBuiltInTypes.add(td.getName());
         List<FeatureDescription> newFeatures = setDifference(td.getFeatures(), builtInFeatures);
@@ -834,83 +909,74 @@ public class Jg {
         } else {
           // The only built-in type which is extensible is DocumentAnnotation.
           // If we get here, the user defined DocumentAnnotation, but did not add any features
-          //   In this case, skip generation
+          // In this case, skip generation
           continue;
         }
       }
       generateClassesFromTemplate(td, outputDirectory, jcasTypeInstance);
     }
 
-    /* 
-     * This code was supposed to generate extendable built-in types that were not 
-     * extended by the input types
-     * But the only extendable built-in type is DocumentAnnotation, and it should
-     * not be generated by default - there's one provided by the framework.
+    /*
+     * This code was supposed to generate extendable built-in types that were not extended by the
+     * input types But the only extendable built-in type is DocumentAnnotation, and it should not be
+     * generated by default - there's one provided by the framework.
      * 
-     for (Iterator it = extendableBuiltInTypes.entrySet().iterator(); it.hasNext();) {
-     Map.Entry entry = (Map.Entry) it.next();
-     String typeName = (String) entry.getKey();
-     if (noGenTypes.contains(typeName) || generatedBuiltInTypes.contains(typeName))
-     continue;
-     TypeDescription td = createTdFromType(typeName);
-     generateClasses(td, outputDirectory);
-     }
+     * for (Iterator it = extendableBuiltInTypes.entrySet().iterator(); it.hasNext();) { Map.Entry
+     * entry = (Map.Entry) it.next(); String typeName = (String) entry.getKey(); if
+     * (noGenTypes.contains(typeName) || generatedBuiltInTypes.contains(typeName)) continue;
+     * TypeDescription td = createTdFromType(typeName); generateClasses(td, outputDirectory); }
      */
   }
 
-  /* This code was only called by above commented out section 
-   private TypeDescription createTdFromType(String typeName) {
-   TypeDescription td = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
-   Type type = builtInTypeSystem.getType(typeName);
-   td.setName(typeName);
-   td.setSupertypeName(builtInTypeSystem.getParent(type).getName());
-
-   ArrayList featuresOfType = new ArrayList();
-   final List vFeatures = type.getFeatures();
-   for (int i = 0; i < vFeatures.size(); i++) {
-   Feature f = (Feature) vFeatures.get(i);
-   if (f.getDomain().equals(type)) {
-   FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
-   .createFeatureDescription();
-   fd.setName(f.getShortName());
-   fd.setRangeTypeName(f.getRange().getName());
-   featuresOfType.add(fd);
-   }
-   }
-   td.setFeatures((FeatureDescription[]) featuresOfType
-   .toArray(new FeatureDescription[featuresOfType.size()]));
-   return td;
-   }
+  /*
+   * This code was only called by above commented out section private TypeDescription
+   * createTdFromType(String typeName) { TypeDescription td =
+   * UIMAFramework.getResourceSpecifierFactory().createTypeDescription(); Type type =
+   * builtInTypeSystem.getType(typeName); td.setName(typeName);
+   * td.setSupertypeName(builtInTypeSystem.getParent(type).getName());
+   * 
+   * ArrayList featuresOfType = new ArrayList(); final List vFeatures = type.getFeatures(); for (int
+   * i = 0; i < vFeatures.size(); i++) { Feature f = (Feature) vFeatures.get(i); if
+   * (f.getDomain().equals(type)) { FeatureDescription fd =
+   * UIMAFramework.getResourceSpecifierFactory() .createFeatureDescription();
+   * fd.setName(f.getShortName()); fd.setRangeTypeName(f.getRange().getName());
+   * featuresOfType.add(fd); } } td.setFeatures((FeatureDescription[]) featuresOfType .toArray(new
+   * FeatureDescription[featuresOfType.size()])); return td; }
    */
 
   /**
-   * return true if td is not defined in this project, or
-   *   it is defined, but is also in merged and any of the other
-   *   merged urls are not defined in this project.
+   * return true if td is not defined in this project, or it is defined, but is also in merged and
+   * any of the other merged urls are not defined in this project.
    *
-   * @param td the td
-   * @param projectDirPath the project dir path
+   * @param td
+   *          the td
+   * @param projectDirPath
+   *          the project dir path
    * @return true, if is out of scope
    */
   private boolean isOutOfScope(TypeDescription td, String projectDirPath) {
     URI typeDefinitionUri;
     try {
-      typeDefinitionUri = new URI (td.getSourceUrlString());
+      typeDefinitionUri = new URI(td.getSourceUrlString());
     } catch (URISyntaxException e) {
       if (IS_TRACE_LIMITED) {
-        error.newError(IError.INFO, "debug isOutOfScope: got URISyntaxException, td.getSourceUrlstring: " + ((td.getSourceUrlString() == null) ? "null" : td.getSourceUrlString()), e);
+        error.newError(IError.INFO,
+                "debug isOutOfScope: got URISyntaxException, td.getSourceUrlstring: "
+                        + ((td.getSourceUrlString() == null) ? "null" : td.getSourceUrlString()),
+                e);
       }
       return true; // may be overkill - but if td's source can't be parsed ... likely out of project
     }
     String tdPath = typeDefinitionUri.getPath();
-    
+
     // Issue UIMA-4080 - If a type system resides in a JAR, then the path is null and it is
     // certainly out of scope.
     if (tdPath == null) {
       if (IS_TRACE_LIMITED) {
-        error.newError(IError.INFO, "debug isOutOfScope: typeDefinitionUri had null path. " + typeDefinitionUri.toString(), null);
+        error.newError(IError.INFO, "debug isOutOfScope: typeDefinitionUri had null path. "
+                + typeDefinitionUri.toString(), null);
       }
-        return true;
+      return true;
     }
 
     // UIMA-4119 - On windows, the default path representation and the URI path representation
@@ -920,28 +986,29 @@ public class Jg {
     // as well as clients that use file-system notation (e.g. jcasgen-maven-plugin or a simple
     // invocation from the command line.
     String resolvedProjectPath;
-    if (!projectDirPath.startsWith("/")) { 
-        resolvedProjectPath = new File(projectDirPath).getAbsoluteFile().toURI().getPath();
+    if (!projectDirPath.startsWith("/")) {
+      resolvedProjectPath = new File(projectDirPath).getAbsoluteFile().toURI().getPath();
+    } else {
+      resolvedProjectPath = projectDirPath;
     }
-    else {
-        resolvedProjectPath = projectDirPath;
-    }
-    
+
     // UIMA-4131 - Make sure that paths end in a slash so that "/my/project1" is not considered
     // to be in the scope of "/my/project"
     if (!tdPath.endsWith("/")) {
-        tdPath += "/";
+      tdPath += "/";
     }
 
     if (!resolvedProjectPath.endsWith("/")) {
-        resolvedProjectPath += "/";
+      resolvedProjectPath += "/";
     }
 
     boolean r = !tdPath.startsWith(resolvedProjectPath);
     if (r) {
       if (IS_TRACE_LIMITED) {
-        error.newError(IError.INFO, "debug isOutOfScope: tdPath doesn't start with resolved ProjectPath, tdPath: "
-             + tdPath + ", resolvedProjectPath: " + resolvedProjectPath, null);
+        error.newError(IError.INFO,
+                "debug isOutOfScope: tdPath doesn't start with resolved ProjectPath, tdPath: "
+                        + tdPath + ", resolvedProjectPath: " + resolvedProjectPath,
+                null);
       }
       return true;
     }
@@ -952,44 +1019,49 @@ public class Jg {
         try {
           tempURI = new URI(p);
         } catch (URISyntaxException e) {
-          return true; //because a merged path is out of the project
+          return true; // because a merged path is out of the project
         }
         String tempPath = tempURI.getPath();
         if (!tempPath.startsWith(resolvedProjectPath)) {
           if (IS_TRACE_LIMITED) {
-            error.newError(IError.INFO, "debug isOutOfScope due to mergedType adding feature", null);
+            error.newError(IError.INFO, "debug isOutOfScope due to mergedType adding feature",
+                    null);
           }
-          return true; 
+          return true;
         }
       }
     }
-    return false; 
+    return false;
   }
-  
+
   /**
-   *  Generate type classes from the specified templates.
+   * Generate type classes from the specified templates.
    *
-   * @param td                        TypeDescription object
-   * @param outputDirectory           output directory
-   * @param jcasTypeInstance          Template instance used to generate class
+   * @param td
+   *          TypeDescription object
+   * @param outputDirectory
+   *          output directory
+   * @param jcasTypeInstance
+   *          Template instance used to generate class
    * @return void
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   private void generateClassesFromTemplate(TypeDescription td, String outputDirectory,
-          IJCasTypeTemplate jcasTypeInstance)
-          throws IOException {
+          IJCasTypeTemplate jcasTypeInstance) throws IOException {
     simpleClassName = removePkg(getJavaName(td));
-    generateClass(progressMonitor, outputDirectory, td, jcasTypeInstance.generate(new Object[] {
-        this, td }), getJavaName(td), merger);
-//    simpleClassName = removePkg(getJavaName_Type(td));
-//    generateClass(progressMonitor, outputDirectory, td, jcas_TypeInstance.generate(new Object[] {
-//        this, td }), getJavaName_Type(td), merger);
+    generateClass(progressMonitor, outputDirectory, td,
+            jcasTypeInstance.generate(new Object[] { this, td }), getJavaName(td), merger);
+    // simpleClassName = removePkg(getJavaName_Type(td));
+    // generateClass(progressMonitor, outputDirectory, td, jcas_TypeInstance.generate(new Object[] {
+    // this, td }), getJavaName_Type(td), merger);
   }
 
   /**
    * Gets the pkg.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return the pkg
    */
   String getPkg(TypeDescription td) {
@@ -999,7 +1071,8 @@ public class Jg {
   /**
    * Gets the pkg.
    *
-   * @param nameWithPkg the name with pkg
+   * @param nameWithPkg
+   *          the name with pkg
    * @return the pkg
    */
   String getPkg(String nameWithPkg) {
@@ -1012,13 +1085,20 @@ public class Jg {
   /**
    * Generate class.
    *
-   * @param progressMonitorGenerateClass the progress monitor generate class
-   * @param outputDirectory the output directory
-   * @param td the td
-   * @param sourceContents the source contents
-   * @param className the class name
-   * @param mergerGenerateClass the merger generate class
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param progressMonitorGenerateClass
+   *          the progress monitor generate class
+   * @param outputDirectory
+   *          the output directory
+   * @param td
+   *          the td
+   * @param sourceContents
+   *          the source contents
+   * @param className
+   *          the class name
+   * @param mergerGenerateClass
+   *          the merger generate class
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   private void generateClass(IProgressMonitor progressMonitorGenerateClass, String outputDirectory,
           TypeDescription td, String sourceContents, String className, IMerge mergerGenerateClass)
@@ -1035,11 +1115,11 @@ public class Jg {
               targetContainer, targetPath, qualifiedClassName, targetFile);
     } else {
       if (targetFile.exists()) {
-        progressMonitorGenerateClass.subTask(getString("replacingTarget",
-                new Object[] { qualifiedClassName }));
+        progressMonitorGenerateClass
+                .subTask(getString("replacingTarget", new Object[] { qualifiedClassName }));
       } else
-        progressMonitorGenerateClass.subTask(getString("creatingTarget",
-                new Object[] { qualifiedClassName }));
+        progressMonitorGenerateClass
+                .subTask(getString("creatingTarget", new Object[] { qualifiedClassName }));
       new File(targetContainer).mkdirs();
       try (Writer fw = new FileWriter(targetPath)) {
         fw.write(sourceContents);
@@ -1050,7 +1130,8 @@ public class Jg {
   /**
    * Removes the pkg.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the string
    */
   public static String removePkg(String name) {
@@ -1069,7 +1150,8 @@ public class Jg {
   /**
    * Sc.
    *
-   * @param v the v
+   * @param v
+   *          the v
    * @return the string
    */
   String sc(String v) {
@@ -1100,7 +1182,8 @@ public class Jg {
   /**
    * Gets the java pkg.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return the java pkg
    */
   String getJavaPkg(TypeDescription td) {
@@ -1113,7 +1196,8 @@ public class Jg {
   /**
    * Gets the java name with pkg.
    *
-   * @param casTypeName the cas type name
+   * @param casTypeName
+   *          the cas type name
    * @return the java name with pkg
    */
   String getJavaNameWithPkg(String casTypeName) {
@@ -1124,7 +1208,8 @@ public class Jg {
   /**
    * Checks for pkg prefix.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return true, if successful
    */
   boolean hasPkgPrefix(String name) {
@@ -1134,7 +1219,8 @@ public class Jg {
   /**
    * Gets the java name.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return the java name
    */
   String getJavaName(TypeDescription td) {
@@ -1144,7 +1230,8 @@ public class Jg {
   /**
    * Gets the java name type.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return the java name type
    */
   String getJavaName_Type(TypeDescription td) {
@@ -1154,7 +1241,8 @@ public class Jg {
   /**
    * Gets the java name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the java name
    */
   String getJavaName(String name) {
@@ -1186,8 +1274,10 @@ public class Jg {
   /**
    * Collect import.
    *
-   * @param casName the cas name
-   * @param _Type the type
+   * @param casName
+   *          the cas name
+   * @param _Type
+   *          the type
    */
   void collectImport(String casName, boolean _Type) {
     if (!hasPkgPrefix(casName))
@@ -1214,8 +1304,10 @@ public class Jg {
   /**
    * Collect imports.
    *
-   * @param td the td
-   * @param _Type the type
+   * @param td
+   *          the td
+   * @param _Type
+   *          the type
    * @return the collection
    */
   Collection<String> collectImports(TypeDescription td, boolean _Type) {
@@ -1249,7 +1341,8 @@ public class Jg {
   /**
    * Gets the java range type.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return the java range type
    */
   String getJavaRangeType(FeatureDescription fd) {
@@ -1267,21 +1360,24 @@ public class Jg {
   /**
    * Gets the java range type, with generic types in <> as required.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return the java range type
    */
   String getJavaRangeType2(FeatureDescription fd) {
-	  if (isRangeTypeGeneric(fd)) {
-		  String generic = getJavaRangeArrayElementType2(fd);
-		  return getJavaRangeType(fd) + "<" + (generic == null || generic.trim().isEmpty() ? "?" : generic) + ">";
-	  } else
-		  return getJavaRangeType(fd);
+    if (isRangeTypeGeneric(fd)) {
+      String generic = getJavaRangeArrayElementType2(fd);
+      return getJavaRangeType(fd) + "<"
+              + (generic == null || generic.trim().isEmpty() ? "?" : generic) + ">";
+    } else
+      return getJavaRangeType(fd);
   }
 
   /**
    * Checks if is sub type of annotation.
    *
-   * @param td the td
+   * @param td
+   *          the td
    * @return true, if is sub type of annotation
    */
   boolean isSubTypeOfAnnotation(TypeDescription td) {
@@ -1296,7 +1392,8 @@ public class Jg {
   /**
    * Checks for array range.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return true, if successful
    */
   boolean hasArrayRange(FeatureDescription fd) {
@@ -1305,33 +1402,35 @@ public class Jg {
       return false;
     return bi.isArray;
   }
-  
+
   /**
    * Checks if is possible index key.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return true, if is possible index key
    */
   boolean isPossibleIndexKey(FeatureDescription fd) {
     String rangeTypeName = fd.getRangeTypeName();
     // keys are primitives + string + string subtypes
     TypeImpl rangeType = (null == typeSystem) ? null : (TypeImpl) typeSystem.getType(rangeTypeName);
-    return (null == typeSystem) ||          // default is to do checking
-           rangeType.isStringSubtype() ||   
-           BuiltinTypeKinds.primitiveTypeNames_contains(rangeTypeName);  // includes String
+    return (null == typeSystem) || // default is to do checking
+            rangeType.isStringSubtype()
+            || BuiltinTypeKinds.primitiveTypeNames_contains(rangeTypeName); // includes String
   }
-  
+
   /**
    * Checks if is string subtype.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return true, if is string subtype
    */
   boolean isStringSubtype(FeatureDescription fd) {
     if (null != typeSystem) {
       String rangeTypeName = fd.getRangeTypeName();
       TypeImpl rangeType = (TypeImpl) typeSystem.getType(rangeTypeName);
-      return rangeType.getSuperType() == ((TypeSystemImpl)typeSystem).stringType;
+      return rangeType.getSuperType() == ((TypeSystemImpl) typeSystem).stringType;
     }
     return false;
   }
@@ -1339,7 +1438,8 @@ public class Jg {
   /**
    * Gets the java range array element type.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return the java range array element type
    */
   String getJavaRangeArrayElementType(FeatureDescription fd) {
@@ -1359,14 +1459,15 @@ public class Jg {
   /**
    * Gets the java range array element type, with generic type or ? in <> as needed
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return the java range array element type
    */
   String getJavaRangeArrayElementType2(FeatureDescription fd) {
-	if(this.isElementTypeGeneric(fd))
-		return getJavaRangeArrayElementType(fd) + "<?>";
-	else
-		return getJavaRangeArrayElementType(fd);
+    if (this.isElementTypeGeneric(fd))
+      return getJavaRangeArrayElementType(fd) + "<?>";
+    else
+      return getJavaRangeArrayElementType(fd);
   }
 
   // **************************************************
@@ -1374,7 +1475,8 @@ public class Jg {
   /**
    * Uc 1.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the string
    */
   // **************************************************
@@ -1396,8 +1498,10 @@ public class Jg {
   /**
    * Cast result.
    *
-   * @param resultType the result type
-   * @param core the core
+   * @param resultType
+   *          the result type
+   * @param core
+   *          the core
    * @return the string
    */
   // *******************************
@@ -1417,8 +1521,10 @@ public class Jg {
   /**
    * Wrap to get FS.
    *
-   * @param core string representing the get or set code
-   * @param range Boolean, Byte, Short, Int, Long, Float, Double, String, or Feature
+   * @param core
+   *          string representing the get or set code
+   * @param range
+   *          Boolean, Byte, Short, Int, Long, Float, Double, String, or Feature
    * @return -
    */
   String wrapToGetFS(String core, String range) {
@@ -1430,29 +1536,36 @@ public class Jg {
   /**
    * Simple core.
    *
-   * @param get_set get or set
-   * @param range Boolean, Byte, Short, Int, Long, Float, Double, String, or Feature
-   * @param fname feature name (e.g. "begin"
+   * @param get_set
+   *          get or set
+   * @param range
+   *          Boolean, Byte, Short, Int, Long, Float, Double, String, or Feature
+   * @param fname
+   *          feature name (e.g. "begin"
    * @return the string
    */
   String simpleCore(String get_set, String range, String fname) {
     String v = ", v";
-//    if (get_set.equals("set") && range.equals("Feature"))
-//      v = ", jcasType.ll_cas.ll_getFSRef(v)";
-//    boolean isInInt = ! (range.equals("String") || range.equals("Feature") || range.equals("JavaObject"));
+    // if (get_set.equals("set") && range.equals("Feature"))
+    // v = ", jcasType.ll_cas.ll_getFSRef(v)";
+    // boolean isInInt = ! (range.equals("String") || range.equals("Feature") ||
+    // range.equals("JavaObject"));
     String chksfx = getCheckSuffix(get_set, range);
-    //wrapGetIntCatchException(_FH_begin)
+    // wrapGetIntCatchException(_FH_begin)
     String featOrOffset = "wrapGetIntCatchException(_FH_" + fname + ")";
-    return "_" + get_set + range + "Value" + chksfx + "(" + featOrOffset  +
-        ((get_set.equals("set")) ? v : "") + ")";
+    return "_" + get_set + range + "Value" + chksfx + "(" + featOrOffset
+            + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   /**
    * Simple LL core.
    *
-   * @param get_set the get set
-   * @param range the range
-   * @param fname the fname
+   * @param get_set
+   *          the get set
+   * @param range
+   *          the range
+   * @param fname
+   *          the fname
    * @return the string
    */
   String simpleLLCore(String get_set, String range, String fname) {
@@ -1468,27 +1581,33 @@ public class Jg {
   /**
    * Array core.
    *
-   * @param get_set  get or set
-   * @param range the component range: Boolean, Byte, Short, Int, Long, Float, Double, String, Feature
-   * @param arrayRange the array range
-   * @param fname the fname
+   * @param get_set
+   *          get or set
+   * @param range
+   *          the component range: Boolean, Byte, Short, Int, Long, Float, Double, String, Feature
+   * @param arrayRange
+   *          the array range
+   * @param fname
+   *          the fname
    * @return the string
    */
   String arrayCore(String get_set, String range, String arrayRange, String fname) {
     String v = ", v";
-//    if (get_set.equals("set") && range.equals("Feature"))
-//      v = ", jcasType.ll_cas.ll_getFSRef(v)";
-    return 
-        "((" + arrayRange + ")(" + simpleCore("get", "Feature", fname) + "))." + get_set +
-        "(i" + ((get_set.equals("set")) ? v : "") + ")"; 
+    // if (get_set.equals("set") && range.equals("Feature"))
+    // v = ", jcasType.ll_cas.ll_getFSRef(v)";
+    return "((" + arrayRange + ")(" + simpleCore("get", "Feature", fname) + "))." + get_set + "(i"
+            + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   /**
    * Array LL core.
    *
-   * @param get_set the get set
-   * @param range the range
-   * @param fname the fname
+   * @param get_set
+   *          the get set
+   * @param range
+   *          the range
+   * @param fname
+   *          the fname
    * @return the string
    */
   String arrayLLCore(String get_set, String range, String fname) {
@@ -1500,9 +1619,12 @@ public class Jg {
   /**
    * Array LL core chk.
    *
-   * @param get_set the get set
-   * @param range the range
-   * @param fname the fname
+   * @param get_set
+   *          the get set
+   * @param range
+   *          the range
+   * @param fname
+   *          the fname
    * @return the string
    */
   String arrayLLCoreChk(String get_set, String range, String fname) {
@@ -1514,8 +1636,10 @@ public class Jg {
   /**
    * Gets the feature value.
    *
-   * @param fd the fd
-   * @param td the td
+   * @param fd
+   *          the fd
+   * @param td
+   *          the td
    * @return the feature value
    */
   String getFeatureValue(FeatureDescription fd, TypeDescription td) {
@@ -1527,8 +1651,10 @@ public class Jg {
   /**
    * Sets the feature value.
    *
-   * @param fd the fd
-   * @param td the td
+   * @param fd
+   *          the fd
+   * @param td
+   *          the td
    * @return the string
    */
   String setFeatureValue(FeatureDescription fd, TypeDescription td) {
@@ -1538,8 +1664,10 @@ public class Jg {
   /**
    * Gets the array feature value.
    *
-   * @param fd the fd
-   * @param td the td
+   * @param fd
+   *          the fd
+   * @param td
+   *          the td
    * @return the array feature value
    */
   String getArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
@@ -1551,8 +1679,10 @@ public class Jg {
   /**
    * Sets the array feature value.
    *
-   * @param fd the fd
-   * @param td the td
+   * @param fd
+   *          the fd
+   * @param td
+   *          the td
    * @return the string
    */
   String setArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
@@ -1562,7 +1692,8 @@ public class Jg {
   /**
    * Gets the gets the set name part.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return the gets the set name part
    */
   String getGetSetNamePart(FeatureDescription fd) {
@@ -1572,7 +1703,8 @@ public class Jg {
   /**
    * Gets the gets the set array name part.
    *
-   * @param fd the fd
+   * @param fd
+   *          the fd
    * @return the gets the set array name part
    */
   String getGetSetArrayNamePart(FeatureDescription fd) {
@@ -1582,7 +1714,8 @@ public class Jg {
   /**
    * Null blank.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the string
    */
   String nullBlank(String s) {
@@ -1605,9 +1738,8 @@ public class Jg {
       } catch (MalformedURLException e1) {
         error.newError(IError.ERROR, getString("Internal Error", null), e1);
       }
-    }
-    else {
-        resourceManager.setExtensionClassLoader(this.getClass().getClassLoader(), true);
+    } else {
+      resourceManager.setExtensionClassLoader(this.getClass().getClassLoader(), true);
     }
     return resourceManager;
   }
@@ -1615,9 +1747,11 @@ public class Jg {
   /**
    * Merge type system imports.
    *
-   * @param tsd the tsd
+   * @param tsd
+   *          the tsd
    * @return the type system description
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   private TypeSystemDescription mergeTypeSystemImports(TypeSystemDescription tsd)
           throws ResourceInitializationException {
@@ -1632,11 +1766,14 @@ public class Jg {
   /**
    * Sets the difference.
    *
-   * @param newFeatures the new features
-   * @param alreadyDefinedFeatures the already defined features
+   * @param newFeatures
+   *          the new features
+   * @param alreadyDefinedFeatures
+   *          the already defined features
    * @return the list
    */
-  List<FeatureDescription> setDifference(FeatureDescription[] newFeatures, FeatureDescription[] alreadyDefinedFeatures) {
+  List<FeatureDescription> setDifference(FeatureDescription[] newFeatures,
+          FeatureDescription[] alreadyDefinedFeatures) {
     List<FeatureDescription> result = new ArrayList<>();
     outerLoop: for (int i = 0; i < newFeatures.length; i++) {
       for (int j = 0; j < alreadyDefinedFeatures.length; j++) {
@@ -1651,8 +1788,10 @@ public class Jg {
   /**
    * Checks if is same feature description.
    *
-   * @param f1 the f 1
-   * @param f2 the f 2
+   * @param f1
+   *          the f 1
+   * @param f2
+   *          the f 2
    * @return true, if is same feature description
    */
   private boolean isSameFeatureDescription(FeatureDescription f1, FeatureDescription f2) {
@@ -1662,25 +1801,28 @@ public class Jg {
       return false;
     return true;
   }
-  
+
   /**
    * Gets the check suffix.
    *
-   * @param get_set the get set
-   * @param range the range
+   * @param get_set
+   *          the get set
+   * @param range
+   *          the range
    * @return the check suffix
    */
   private String getCheckSuffix(String get_set, String range) {
-    if (get_set.equals("get")) return "Nc";
-    
-    return (range.equals("Feature")) ? "NcWj" : "Nfc";  
+    if (get_set.equals("get"))
+      return "Nc";
+
+    return (range.equals("Feature")) ? "NcWj" : "Nfc";
   }
-  
+
   boolean isRangeTypeGeneric(FeatureDescription fd) {
-	  return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getRangeTypeName());
+    return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getRangeTypeName());
   }
 
   boolean isElementTypeGeneric(FeatureDescription fd) {
-	  return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getElementType());
+    return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getElementType());
   }
 }

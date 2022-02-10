@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -28,20 +27,19 @@ import javax.swing.WindowConstants;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * The Class ShowTypesystemHandler.
  */
 public class ShowTypesystemHandler implements ActionListener {
 
-  
   /** The main. */
   private final MainFrame main;
 
   /**
    * Instantiates a new show typesystem handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public ShowTypesystemHandler(MainFrame frame) {
     this.main = frame;
@@ -50,7 +48,8 @@ public class ShowTypesystemHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override

@@ -32,16 +32,15 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
-
 /**
- * Pop-up event adapter for string valued features in the FS display.  Displays a pop-up for string
- * values that were shortened for display purposes.  Users can display long strings in a separate
+ * Pop-up event adapter for string valued features in the FS display. Displays a pop-up for string
+ * values that were shortened for display purposes. Users can display long strings in a separate
  * window.
  */
 public class StringFsPopupEventAdapter extends MouseAdapter {
 
   /**
-   * ActionListener for the pop-up menu.  Just shows text in a separate text window.
+   * ActionListener for the pop-up menu. Just shows text in a separate text window.
    */
   private static class ShowStringHandler implements ActionListener {
 
@@ -51,13 +50,16 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
     /**
      * Instantiates a new show string handler.
      *
-     * @param s the s
+     * @param s
+     *          the s
      */
     private ShowStringHandler(String s) {
       this.string = s;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     @Override
@@ -80,7 +82,9 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
   public StringFsPopupEventAdapter() {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
    */
   @Override
@@ -88,7 +92,9 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
     showPopupMaybe(e);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
    */
   @Override
@@ -99,7 +105,8 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
   /**
    * Show popup maybe.
    *
-   * @param e the e
+   * @param e
+   *          the e
    */
   private void showPopupMaybe(MouseEvent e) {
     // Mouse event is pop-up trigger?
@@ -107,22 +114,22 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
       Object o = e.getSource();
       // Event was triggered over the tree?
       if (o instanceof javax.swing.JTree) {
-	JTree tree = (JTree) o;
-	TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-	// Get the node in the tree model where context click occurred.
-	Object leafComponent = path.getLastPathComponent();
-	if (leafComponent instanceof FSNode) {
-	  FSNode node = (FSNode) leafComponent;
-	  // FSNode is a string node and was shortened?
-	  if (node.getNodeClass() == FSNode.STRING_FS && node.isShortenedString()) {
-	    // Show pop-up
-	    JPopupMenu menu = new JPopupMenu();
-	    JMenuItem showStringItem = new JMenuItem("Show full string");
-	    showStringItem.addActionListener(new ShowStringHandler(node.getFullString()));
-	    menu.add(showStringItem);
-	    menu.show(e.getComponent(), e.getX(), e.getY());
-	  }
-	}
+        JTree tree = (JTree) o;
+        TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+        // Get the node in the tree model where context click occurred.
+        Object leafComponent = path.getLastPathComponent();
+        if (leafComponent instanceof FSNode) {
+          FSNode node = (FSNode) leafComponent;
+          // FSNode is a string node and was shortened?
+          if (node.getNodeClass() == FSNode.STRING_FS && node.isShortenedString()) {
+            // Show pop-up
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem showStringItem = new JMenuItem("Show full string");
+            showStringItem.addActionListener(new ShowStringHandler(node.getFullString()));
+            menu.add(showStringItem);
+            menu.show(e.getComponent(), e.getX(), e.getY());
+          }
+        }
       }
     }
   }

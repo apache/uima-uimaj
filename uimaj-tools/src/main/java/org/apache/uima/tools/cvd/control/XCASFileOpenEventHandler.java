@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -33,7 +32,6 @@ import org.apache.uima.internal.util.Timer;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * Load an XCAS file.
  */
@@ -45,7 +43,8 @@ public class XCASFileOpenEventHandler implements ActionListener {
   /**
    * Instantiates a new XCAS file open event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public XCASFileOpenEventHandler(MainFrame frame) {
     this.main = frame;
@@ -54,7 +53,8 @@ public class XCASFileOpenEventHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override
@@ -74,8 +74,8 @@ public class XCASFileOpenEventHandler implements ActionListener {
           time.start();
           SAXParserFactory saxParserFactory = XMLUtils.createSAXParserFactory();
           SAXParser parser = saxParserFactory.newSAXParser();
-          XCASDeserializer xcasDeserializer = new XCASDeserializer(this.main.getCas()
-              .getTypeSystem());
+          XCASDeserializer xcasDeserializer = new XCASDeserializer(
+                  this.main.getCas().getTypeSystem());
           this.main.getCas().reset();
           parser.parse(xcasFile, xcasDeserializer.getXCASHandler(this.main.getCas()));
           time.stop();

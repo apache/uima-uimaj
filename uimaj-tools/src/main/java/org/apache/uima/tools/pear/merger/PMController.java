@@ -36,8 +36,8 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.util.FileUtil;
 
 /**
- * The <code>PMController</code> class allows to merge several input PEAR files in one PEAR file
- * and generate an aggregate analysis engine from the components encapsulated in the input PEARs.
+ * The <code>PMController</code> class allows to merge several input PEAR files in one PEAR file and
+ * generate an aggregate analysis engine from the components encapsulated in the input PEARs.
  * 
  * @see org.apache.uima.tools.pear.merger.PMControllerHelper
  * @see org.apache.uima.tools.pear.merger.PMUimaAgent
@@ -54,7 +54,7 @@ public class PMController {
   static final String AGGREGATE_NAME_ARG = "-n";
 
   static final String AGGREGATE_PEAR_FILE_ARG = "-f";
-  
+
   // command line parameters
   private static File[] __pearFiles = null;
 
@@ -126,11 +126,11 @@ public class PMController {
    * arguments:
    * <ul>
    * <li>pear_file_1 ... pear_file_n - input PEAR files (required)</li>
-   * <li>-n agg_name - a name of the output aggregate analysis engine (required) </li>
+   * <li>-n agg_name - a name of the output aggregate analysis engine (required)</li>
    * <li>-f agg_pear_file - output aggregate PEAR file (optional). <br>
    * If the output PEAR file is not specified, the default output PEAR file is created in the
    * current working directory.</li>
-    * </ul>
+   * </ul>
    * 
    * @param args
    *          pear_file_1 ... pear_file_n -n agg_name [-f agg_pear_file]
@@ -236,7 +236,7 @@ public class PMController {
         // set aggregate PEAR file
         if (++i < args.length)
           __aggregatePearFile = new File(args[i]);
-      } else if (args[i].startsWith( "-" )) {
+      } else if (args[i].startsWith("-")) {
         logErrorMessage(PEAR_MERGER + " error: " + "unknown flag '" + args[i] + "'");
         return false;
       } else {
@@ -317,7 +317,8 @@ public class PMController {
    * @exception IOException
    *              If any I/O exception occurred during initialization.
    */
-  public PMController(File[] inpPearFiles, String outCompName, File outPearFile) throws IOException {
+  public PMController(File[] inpPearFiles, String outCompName, File outPearFile)
+          throws IOException {
     // initialize task attributes
     _inpPearFiles = inpPearFiles;
     _outAggCompName = outCompName;
@@ -399,8 +400,8 @@ public class PMController {
 
   /**
    * Merges specified input PEARs into one PEAR, which encapsulates aggregate AE that refers to
-   * input components, as delegates. Returns <code>true</code>, if the merging operation
-   * completed successfully, <code>false</code> otherwise.
+   * input components, as delegates. Returns <code>true</code>, if the merging operation completed
+   * successfully, <code>false</code> otherwise.
    * 
    * @return <code>true</code>, if the merge operation completed successfully, <code>false</code>
    *         otherwise.
@@ -431,8 +432,8 @@ public class PMController {
       throw new IOException("cannot create merged package folders");
     // 4th step: generate aggregate component descriptor
     File aggDescFile = new File(pkgDescDir, _outAggCompName + ".xml");
-    AnalysisEngineDescription aggDescription = PMUimaAgent.createAggregateDescription(
-            _outAggCompName, _outAggRootDir, _dlgInstDescs);
+    AnalysisEngineDescription aggDescription = PMUimaAgent
+            .createAggregateDescription(_outAggCompName, _outAggRootDir, _dlgInstDescs);
     if (aggDescription != null) {
       PMUimaAgent.saveAggregateDescription(aggDescription, aggDescFile);
       logInfoMessage("[" + PEAR_MERGER + "]: " + "generated aggregate component descriptor");
@@ -444,8 +445,8 @@ public class PMController {
     _outAggInstDesc = PMControllerHelper.generateMergedInstallationDescriptor(_outAggRootDir,
             _outAggCompName, aggDescFile, _dlgInstDescs, _outDlgRootDirs);
     if (_outAggInstDesc != null) {
-      logInfoMessage("[" + PEAR_MERGER + "]: "
-              + "generated aggregate package installation descriptor");
+      logInfoMessage(
+              "[" + PEAR_MERGER + "]: " + "generated aggregate package installation descriptor");
       if (System.getProperty("DEBUG") != null)
         logInfoMessage(_outAggInstDesc.toString());
       // 6th step: create merged PEAR file

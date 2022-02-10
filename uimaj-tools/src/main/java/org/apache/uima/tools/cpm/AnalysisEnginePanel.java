@@ -30,12 +30,11 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * The Class AnalysisEnginePanel.
  */
 public class AnalysisEnginePanel extends MetaDataPanel {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5927337001602381195L;
 
@@ -54,9 +53,12 @@ public class AnalysisEnginePanel extends MetaDataPanel {
   /**
    * Instantiates a new analysis engine panel.
    *
-   * @param aeSpecifier the ae specifier
-   * @param specifierFile the specifier file
-   * @param fileModStamp the file mod stamp
+   * @param aeSpecifier
+   *          the ae specifier
+   * @param specifierFile
+   *          the specifier file
+   * @param fileModStamp
+   *          the file mod stamp
    */
   public AnalysisEnginePanel(ResourceSpecifier aeSpecifier, File specifierFile, long fileModStamp) {
     super(4); // 4 columns
@@ -86,7 +88,8 @@ public class AnalysisEnginePanel extends MetaDataPanel {
   /**
    * Sets the last file sync timestamp.
    *
-   * @param timestamp the new last file sync timestamp
+   * @param timestamp
+   *          the new last file sync timestamp
    */
   public void setLastFileSyncTimestamp(long timestamp) {
     this.lastFileSyncTimestamp = timestamp;
@@ -95,7 +98,8 @@ public class AnalysisEnginePanel extends MetaDataPanel {
   /**
    * Checks for file changed.
    *
-   * @param lastCheck the last check
+   * @param lastCheck
+   *          the last check
    * @return true, if successful
    */
   public boolean hasFileChanged(long lastCheck) {
@@ -106,13 +110,15 @@ public class AnalysisEnginePanel extends MetaDataPanel {
   /**
    * Refresh from file.
    *
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public void refreshFromFile() throws InvalidXMLException, IOException {
     clearAll();
-    this.aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            new XMLInputSource(this.specifierFile));
+    this.aeSpecifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(new XMLInputSource(this.specifierFile));
     if (aeSpecifier instanceof AnalysisEngineDescription) {
       AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) aeSpecifier;
       populate(aeDescription.getMetaData(), null);

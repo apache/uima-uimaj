@@ -26,12 +26,11 @@ import org.apache.uima.tools.cvd.FSNode;
 import org.apache.uima.tools.cvd.FSTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * Handle selection of annotations in annotation frame. If selected node represents an annotation,
  * highlight the corresponding extent in the text.
  *
-// * @see FSTreeSelectionEvent
+ * // * @see FSTreeSelectionEvent
  */
 public class FSTreeSelectionListener implements TreeSelectionListener {
 
@@ -41,7 +40,8 @@ public class FSTreeSelectionListener implements TreeSelectionListener {
   /**
    * Instantiates a new FS tree selection listener.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public FSTreeSelectionListener(MainFrame frame) {
     this.main = frame;
@@ -50,7 +50,8 @@ public class FSTreeSelectionListener implements TreeSelectionListener {
   /**
    * Value changed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
   @Override

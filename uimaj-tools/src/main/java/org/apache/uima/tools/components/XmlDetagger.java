@@ -57,19 +57,18 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
    * file will be considered the document.
    */
   public static final String PARAM_TEXT_TAG = "XmlTagContainingText";
-  
+
   private SAXParserFactory parserFactory = XMLUtils.createSAXParserFactory();
 
   private Type sourceDocInfoType;
 
   private String mXmlTagContainingText = null;
 
-    
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config param setting
-    mXmlTagContainingText  = (String) getContext().getConfigParameterValue(PARAM_TEXT_TAG);
+    mXmlTagContainingText = (String) getContext().getConfigParameterValue(PARAM_TEXT_TAG);
   }
 
   @Override
@@ -107,7 +106,7 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     }
 
   }
-  
+
   /**
    * Parses and returns the descriptor for this Analysis Gnein. The descriptor is stored in the
    * uima-core.jar file and located using the ClassLoader.
@@ -118,15 +117,14 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
    *           if the descriptor is invalid or missing
    */
   public static AnalysisEngineDescription getDescription() throws InvalidXMLException {
-    InputStream descStream = XmlDetagger.class
-            .getResourceAsStream("XmlDetagger.xml");
-    return UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-            new XMLInputSource(descStream, null));
-  }  
+    InputStream descStream = XmlDetagger.class.getResourceAsStream("XmlDetagger.xml");
+    return UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(descStream, null));
+  }
 
   public static URL getDescriptorURL() {
     return XmlDetagger.class.getResource("XmlDetagger.xml");
-  }  
+  }
 
   class DetagHandler extends DefaultHandler {
     private StringBuffer detaggedText = new StringBuffer();
@@ -135,9 +133,10 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     public DetagHandler() {
       insideTextTag = (mXmlTagContainingText == null);
     }
-        
+
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes)
+            throws SAXException {
       if (qName.equalsIgnoreCase(mXmlTagContainingText)) {
         insideTextTag = true;
       }
@@ -153,14 +152,14 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
       if (insideTextTag) {
-        detaggedText.append(ch, start, length);        
+        detaggedText.append(ch, start, length);
       }
     }
-    
+
     @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
       if (insideTextTag) {
-        detaggedText.append(ch, start, length);        
+        detaggedText.append(ch, start, length);
       }
     }
 

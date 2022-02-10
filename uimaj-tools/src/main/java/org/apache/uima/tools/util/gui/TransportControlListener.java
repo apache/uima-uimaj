@@ -19,19 +19,16 @@
 
 package org.apache.uima.tools.util.gui;
 
-
 /**
- * The listener interface for receiving transportControl events.
- * The class that is interested in processing a transportControl
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addTransportControlListener</code> method. When
- * the transportControl event occurs, that object's appropriate
- * method is invoked.
+ * The listener interface for receiving transportControl events. The class that is interested in
+ * processing a transportControl event implements this interface, and the object created with that
+ * class is registered with a component using the component's
+ * <code>addTransportControlListener</code> method. When the transportControl event occurs, that
+ * object's appropriate method is invoked.
  *
  */
 public interface TransportControlListener {
-  
+
   /**
    * Control started.
    */

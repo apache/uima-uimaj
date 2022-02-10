@@ -21,19 +21,19 @@ package org.apache.uima.tools.jcasgen;
 
 import java.util.prefs.Preferences;
 
-
 /**
  * The Class Prefs.
  */
 public class Prefs {
-  
+
   /** The Constant prefs. */
   static final Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/JCasGen");
 
   /**
    * Sets the.
    *
-   * @param gui the gui
+   * @param gui
+   *          the gui
    */
   static void set(GUI gui) {
     prefs.putInt("WindowPos X", gui.getLocation().x);
@@ -47,15 +47,16 @@ public class Prefs {
   /**
    * Gets the.
    *
-   * @param gui the gui
+   * @param gui
+   *          the gui
    */
   static void get(GUI gui) {
-    gui.setBounds(prefs.getInt("WindowPos X", 200), prefs.getInt("WindowPos Y", 200), prefs.getInt(
-            "WindowW", 520), prefs.getInt("WindowH", 400));
+    gui.setBounds(prefs.getInt("WindowPos X", 200), prefs.getInt("WindowPos Y", 200),
+            prefs.getInt("WindowW", 520), prefs.getInt("WindowH", 400));
     gui.pnG.tfOutDirName.setText(prefs.get("outDir", "/temp"));
     String userDir = System.getProperty("user.dir").replaceAll("\\\\", "/");
 
-    gui.pnG.tfInputFileName.setText(prefs.get("inFile", userDir
-            + "/examples/descriptors/tutorial/ex1/TutorialTypeSystem.xml"));
+    gui.pnG.tfInputFileName.setText(prefs.get("inFile",
+            userDir + "/examples/descriptors/tutorial/ex1/TutorialTypeSystem.xml"));
   }
 }

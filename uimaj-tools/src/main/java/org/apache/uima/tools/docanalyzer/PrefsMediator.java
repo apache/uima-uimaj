@@ -29,7 +29,6 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 
-
 /**
  * The Class PrefsMediator.
  */
@@ -67,7 +66,7 @@ public class PrefsMediator {
 
   /** The input file format. */
   private String inputFileFormat;
-  
+
   /** The language. */
   private String language;
 
@@ -79,7 +78,7 @@ public class PrefsMediator {
 
   /** The xml tag. */
   private String xmlTag;
-  
+
   /** The lenient. */
   private boolean lenient;
 
@@ -92,7 +91,7 @@ public class PrefsMediator {
 
   /** The Constant INPUTFILEFORMAT. */
   private static final String INPUTFILEFORMAT = "inputFileFormat";
-  
+
   /** The Constant LANGUAGE. */
   private static final String LANGUAGE = "language";
 
@@ -104,10 +103,10 @@ public class PrefsMediator {
 
   /** The Constant INDIR. */
   private static final String INDIR = "inDir";
-  
+
   /** The Constant XMLTAG. */
   private static final String XMLTAG = "xmlTag";
-  
+
   /** The Constant LENIENT. */
   private static final String LENIENT = "lenient";
 
@@ -163,7 +162,8 @@ public class PrefsMediator {
   /**
    * Sets the input dir.
    *
-   * @param inputDir          The inputDir to set.
+   * @param inputDir
+   *          The inputDir to set.
    */
   public void setInputDir(String inputDir) {
     this.inputDir = inputDir;
@@ -183,7 +183,8 @@ public class PrefsMediator {
   /**
    * Sets the output dir.
    *
-   * @param outputDir          The outputDir to set.
+   * @param outputDir
+   *          The outputDir to set.
    */
   public void setOutputDir(String outputDir) {
     this.outputDir = outputDir;
@@ -251,11 +252,12 @@ public class PrefsMediator {
   }
 
   /**
-   * Gets index of last file separator character in a file path.
-   * Supports File.separator but also / on Windows.
+   * Gets index of last file separator character in a file path. Supports File.separator but also /
+   * on Windows.
    *
-   * @param path the path
-   * @return index of the last file separator char.  Returns -1 if none.
+   * @param path
+   *          the path
+   * @return index of the last file separator char. Returns -1 if none.
    */
   private int indexOfLastFileSeparator(String path) {
     int index = path.lastIndexOf(File.separator);
@@ -268,7 +270,8 @@ public class PrefsMediator {
   /**
    * Sets the TA efile.
    *
-   * @param edir          set the TAE directory
+   * @param edir
+   *          set the TAE directory
    */
   public void setTAEfile(String edir) {
     taeDir = edir;
@@ -287,13 +290,14 @@ public class PrefsMediator {
   /**
    * Sets the encoding.
    *
-   * @param encoding          The encoding to set.
+   * @param encoding
+   *          The encoding to set.
    */
   public void setEncoding(String encoding) {
     this.encoding = encoding;
     prefs.put(ENCODING, encoding);
   }
-  
+
   /**
    * Gets the input file format.
    *
@@ -306,7 +310,8 @@ public class PrefsMediator {
   /**
    * Sets the input file format.
    *
-   * @param inputFileFormat          The input file format to set.
+   * @param inputFileFormat
+   *          The input file format to set.
    */
   public void setInputFileFormat(String inputFileFormat) {
     this.inputFileFormat = inputFileFormat;
@@ -325,7 +330,8 @@ public class PrefsMediator {
   /**
    * Sets the language.
    *
-   * @param language          The language to set.
+   * @param language
+   *          The language to set.
    */
   public void setLanguage(String language) {
     this.language = language;
@@ -344,7 +350,8 @@ public class PrefsMediator {
   /**
    * Sets the view type.
    *
-   * @param viewType          The view type to set.
+   * @param viewType
+   *          The view type to set.
    */
   public void setViewType(String viewType) {
     this.viewType = viewType;
@@ -363,7 +370,8 @@ public class PrefsMediator {
   /**
    * Sets the xml tag.
    *
-   * @param xmlTag          The xmlTag to set.
+   * @param xmlTag
+   *          The xmlTag to set.
    */
   public void setXmlTag(String xmlTag) {
     this.xmlTag = xmlTag;
@@ -382,15 +390,16 @@ public class PrefsMediator {
   /**
    * Sets the lenient.
    *
-   * @param lenient          The lenient to set.
+   * @param lenient
+   *          The lenient to set.
    */
   public void setLenient(Boolean lenient) {
     this.lenient = lenient;
     prefs.putBoolean(LENIENT, lenient);
   }
-  
+
   /**
-   *  returns the new edited stylemap file.
+   * returns the new edited stylemap file.
    *
    * @return the stylemap file
    */
@@ -402,9 +411,12 @@ public class PrefsMediator {
   /**
    * Sets the doc buttons.
    *
-   * @param run the run
-   * @param inter the inter
-   * @param view the view
+   * @param run
+   *          the run
+   * @param inter
+   *          the inter
+   * @param view
+   *          the view
    */
   // gets copies of buttonreference se it can mediate their on-ness
   public void setDocButtons(JButton run, JButton inter, JButton view) {
@@ -418,9 +430,12 @@ public class PrefsMediator {
   /**
    * Sets the file selectors.
    *
-   * @param input the input
-   * @param output the output
-   * @param xml the xml
+   * @param input
+   *          the input
+   * @param output
+   *          the output
+   * @param xml
+   *          the xml
    */
   // sets the File Seelctors
   public void setFileSelectors(FileSelector input, FileSelector output, FileSelector xml) {

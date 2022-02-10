@@ -99,7 +99,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-
 /**
  * Dialog that loads analyzed documents stored in XMI or XCAS format and allows them to be viewed
  * using the Java-based CAS viewer or a web browser, in either an HTML/Javascript format or in the
@@ -128,7 +127,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   /** the list of analyzed results */
   JList<String> analyzedResultsList;
-  
+
   /** The input dir path. */
   String inputDirPath = null;
 
@@ -155,26 +154,38 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   /** The processed style map. */
   private boolean processedStyleMap = false;
-  
+
   /** The default cas view name. */
   private String defaultCasViewName = CAS.NAME_DEFAULT_SOFA;
 
   /**
    * Create an AnnotationViewer Dialog.
    *
-   * @param aParentFrame          frame containing this panel
-   * @param aDialogTitle          title to display for the dialog
-   * @param med the med
-   * @param aStyleMapFile          filename of style map to be used to view files in HTML
-   * @param aPerformanceStats          string representaiton of performance statistics, optional.
-   * @param aTypeSystem          the CAS Type System to which the XCAS files must conform.
-   * @param aTypesToDisplay          array of types that should be highlighted in the viewer. This can be set to the output
+   * @param aParentFrame
+   *          frame containing this panel
+   * @param aDialogTitle
+   *          title to display for the dialog
+   * @param med
+   *          the med
+   * @param aStyleMapFile
+   *          filename of style map to be used to view files in HTML
+   * @param aPerformanceStats
+   *          string representaiton of performance statistics, optional.
+   * @param aTypeSystem
+   *          the CAS Type System to which the XCAS files must conform.
+   * @param aTypesToDisplay
+   *          array of types that should be highlighted in the viewer. This can be set to the output
    *          types of the Analysis Engine. A value of null means to display all types.
-   * @param interactiveTempFN the interactive temp FN
-   * @param javaViewerRBisSelected the java viewer R bis selected
-   * @param javaViewerUCRBisSelected the java viewer UCR bis selected
-   * @param xmlRBisSelected the xml R bis selected
-   * @param cas the cas
+   * @param interactiveTempFN
+   *          the interactive temp FN
+   * @param javaViewerRBisSelected
+   *          the java viewer R bis selected
+   * @param javaViewerUCRBisSelected
+   *          the java viewer UCR bis selected
+   * @param xmlRBisSelected
+   *          the xml R bis selected
+   * @param cas
+   *          the cas
    */
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
@@ -196,8 +207,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     // Select documents via filter. JMP
     final InteractiveFilter iFilter = new InteractiveFilter(filenameFilter);
     String[] documents = dir.list(iFilter);
-    //create an empty array to display
-    if(documents == null) {
+    // create an empty array to display
+    if (documents == null) {
       documents = new String[] {};
     }
 
@@ -207,15 +218,24 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Instantiates a new annotation viewer dialog.
    *
-   * @param aParentFrame the a parent frame
-   * @param aDialogTitle the a dialog title
-   * @param med the med
-   * @param aStyleMapFile the a style map file
-   * @param aPerformanceStats the a performance stats
-   * @param aTypeSystem the a type system
-   * @param aTypesToDisplay the a types to display
-   * @param generatedStyleMap the generated style map
-   * @param cas the cas
+   * @param aParentFrame
+   *          the a parent frame
+   * @param aDialogTitle
+   *          the a dialog title
+   * @param med
+   *          the med
+   * @param aStyleMapFile
+   *          the a style map file
+   * @param aPerformanceStats
+   *          the a performance stats
+   * @param aTypeSystem
+   *          the a type system
+   * @param aTypesToDisplay
+   *          the a types to display
+   * @param generatedStyleMap
+   *          the generated style map
+   * @param cas
+   *          the cas
    */
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
@@ -248,8 +268,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
     /*
      * File[] documents = dir.listFiles(); Vector docVector = new Vector(); for (int i = 0; i <
-     * documents.length; i++) { if (documents[i].isFile()) { docVector.add(documents[i].getName()); } }
-     * final JList analyzedResultsList = new JList(docVector);
+     * documents.length; i++) { if (documents[i].isFile()) { docVector.add(documents[i].getName());
+     * } } final JList analyzedResultsList = new JList(docVector);
      */
     JScrollPane scrollPane = new JScrollPane();
     scrollPane.getViewport().add(analyzedResultsList, null);
@@ -386,7 +406,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   // unwound from small anonymous inner class
@@ -430,14 +452,16 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * Filter to not show the two interactive-mode directories in the file list.
    */
   static class InteractiveFilter implements FilenameFilter {
-   
+
     private final String filenameFilter;
 
     public InteractiveFilter(String filenameFilter) {
       this.filenameFilter = filenameFilter;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
      */
     @Override
@@ -447,14 +471,13 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       if (name.equals("interactive_out"))
         return false;
       if (!name.isEmpty())
-        return name.contains(filenameFilter);  
+        return name.contains(filenameFilter);
       return true;
     }
   }
 
   /**
-   * Gets the name of the CAS View that will be displayed first in 
-   * the annotation viewer.
+   * Gets the name of the CAS View that will be displayed first in the annotation viewer.
    *
    * @return the default cas view name
    */
@@ -463,15 +486,16 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   }
 
   /**
-   * Sets the name of the CAS View that will be displayed first in 
-   * the annotation viewer.  It not set, defaults to {@link CAS#NAME_DEFAULT_SOFA}.
+   * Sets the name of the CAS View that will be displayed first in the annotation viewer. It not
+   * set, defaults to {@link CAS#NAME_DEFAULT_SOFA}.
    *
-   * @param defaultCasViewName the new default cas view name
+   * @param defaultCasViewName
+   *          the new default cas view name
    */
   public void setDefaultCasViewName(String defaultCasViewName) {
     this.defaultCasViewName = defaultCasViewName;
   }
-  
+
   // Common code to launch viewer for both the Run (file-based) and
   // Interactive modes
   // JMP
@@ -479,15 +503,24 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Launch that viewer.
    *
-   * @param inputDirPath the input dir path
-   * @param fileName the file name
-   * @param typeSystem the type system
-   * @param aTypesToDisplay the a types to display
-   * @param javaViewerRBisSelected the java viewer R bis selected
-   * @param javaViewerUCRBisSelected the java viewer UCR bis selected
-   * @param xmlRBisSelected the xml R bis selected
-   * @param styleMapFile the style map file
-   * @param viewerDirectory the viewer directory
+   * @param inputDirPath
+   *          the input dir path
+   * @param fileName
+   *          the file name
+   * @param typeSystem
+   *          the type system
+   * @param aTypesToDisplay
+   *          the a types to display
+   * @param javaViewerRBisSelected
+   *          the java viewer R bis selected
+   * @param javaViewerUCRBisSelected
+   *          the java viewer UCR bis selected
+   * @param xmlRBisSelected
+   *          the xml R bis selected
+   * @param styleMapFile
+   *          the style map file
+   * @param viewerDirectory
+   *          the viewer directory
    */
   public void launchThatViewer(String inputDirPath, String fileName, TypeSystem typeSystem,
           final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
@@ -497,14 +530,14 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
       File xcasFile = new File(inputDirPath, fileName);
       // create a new CAS
-      CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem, UIMAFramework
-              .getDefaultPerformanceTuningProperties());
+      CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem,
+              UIMAFramework.getDefaultPerformanceTuningProperties());
       // deserialize XCAS into CAS
       try (InputStream xcasInStream = new FileInputStream(xcasFile)) {
         XmlCasDeserializer.deserialize(xcasInStream, cas, true);
       }
-      
-      //get the specified view
+
+      // get the specified view
       cas = cas.getView(this.defaultCasViewName);
 
       // launch appropriate viewer
@@ -521,8 +554,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
           viewer.setHiddenTypes(new String[] { "uima.cpm.FileLocation" });
         // launch viewer in a new dialog
         viewer.setCAS(cas);
-        JDialog dialog = new JDialog(AnnotationViewerDialog.this, "Annotation Results for "
-                + fileName + " in " + inputDirPath); // JMP
+        JDialog dialog = new JDialog(AnnotationViewerDialog.this,
+                "Annotation Results for " + fileName + " in " + inputDirPath); // JMP
         dialog.getContentPane().add(viewer);
         dialog.setSize(850, 630);
         dialog.pack();
@@ -530,7 +563,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       } else {
         CAS defaultView = cas.getView(CAS.NAME_DEFAULT_SOFA);
         if (defaultView.getDocumentText() == null) {
-          displayError("The HTML and XML Viewers can only view the default text document, which was not found in this CAS.");
+          displayError(
+                  "The HTML and XML Viewers can only view the default text document, which was not found in this CAS.");
           return;
         }
         // generate inline XML
@@ -576,11 +610,11 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     }
   }
 
-
   /**
    * Assumes node has a text field and extracts its value. JMP
    *
-   * @param node the node
+   * @param node
+   *          the node
    * @return the text value
    */
   static public String getTextValue(Node node) {
@@ -595,8 +629,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Gets the first child with a given name. JMP
    *
-   * @param node the node
-   * @param name the name
+   * @param node
+   *          the node
+   * @param name
+   *          the name
    * @return the first child by name
    */
   static public Node getFirstChildByName(Node node, String name) {
@@ -613,8 +649,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * Reads in annotation-color associations from stylemap file. JMP Also reads checked value if
    * present.
    *
-   * @param viewer the viewer
-   * @param aStyleMapFile the a style map file
+   * @param viewer
+   *          the viewer
+   * @param aStyleMapFile
+   *          the a style map file
    */
 
   public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile) {
@@ -769,17 +807,20 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * AnalysisEngineDescription object.
    *
    * @return the selected AnalysisEngineDescription, null if the user cancelled
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
-  protected AnalysisEngineDescription promptForAE() throws IOException, InvalidXMLException,
-          ResourceInitializationException {
+  protected AnalysisEngineDescription promptForAE()
+          throws IOException, InvalidXMLException, ResourceInitializationException {
     if (med1.getTAEfile() != null) {
       File taeFile = new File(med1.getTAEfile());
       XMLInputSource in = new XMLInputSource(taeFile);
-      AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              in);
+      AnalysisEngineDescription aed = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(in);
       return aed;
     } else {
       String taeDir = med1.getTAEfile();
@@ -797,7 +838,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   }
 
   /**
-   *  set default look and feel.
+   * set default look and feel.
    */
   private static void setLF() {
     // Force SwingApp to come up in the System L&F
@@ -810,7 +851,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       System.err.println("Error loading " + laf + ": " + exc);
     }
   }
-  
+
   /**
    * Creates the temp dir.
    *
@@ -828,7 +869,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    */
   // image icon
   static class MyListCellRenderer extends JLabel implements ListCellRenderer {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7231915634689270693L;
 
@@ -839,8 +880,11 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       setOpaque(true);
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
+     * java.lang.Object, int, boolean, boolean)
      */
     @Override
     public Component getListCellRendererComponent(JList analyzedResultsList, Object value,
@@ -859,7 +903,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    */
   class ListMouseAdapter extends MouseAdapter {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
      */
     @Override
@@ -870,9 +916,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
           if (fileName != null) {
             analyzedResultsList.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             // Start LTV here
-            launchThatViewer(inputDirPath, fileName, typeSystem, typesToDisplay, javaViewerRB
-                    .isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(), styleMapFile,
-                    tempDir);
+            launchThatViewer(inputDirPath, fileName, typeSystem, typesToDisplay,
+                    javaViewerRB.isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(),
+                    styleMapFile, tempDir);
 
             analyzedResultsList.setCursor(Cursor.getDefaultCursor());
           }

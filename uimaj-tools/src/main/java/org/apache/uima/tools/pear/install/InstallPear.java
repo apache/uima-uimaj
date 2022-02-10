@@ -68,7 +68,6 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
-
 /**
  * This GUI is used to install a pear file locally in a directory chosen by the user and then run
  * the installed AE in CVD. <br>
@@ -78,7 +77,7 @@ import org.apache.uima.tools.util.gui.AboutDialog;
  * 
  */
 public class InstallPear extends JFrame {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -450696952085640703L;
 
@@ -87,7 +86,7 @@ public class InstallPear extends JFrame {
    * installation.
    */
   protected static class RunInstallation implements Runnable {
-    
+
     /** The pear file. */
     private File pearFile;
 
@@ -121,11 +120,11 @@ public class InstallPear extends JFrame {
   }
 
   /**
-   * The <code>PEARFilter</code> class allows to filter directories, as well as '.tear' and
-   * '.pear' files.
+   * The <code>PEARFilter</code> class allows to filter directories, as well as '.tear' and '.pear'
+   * files.
    */
   protected static class PEARFilter extends FileFilter {
-    
+
     /** The Constant TEAR_EXT. */
     static final String TEAR_EXT = "tear";
 
@@ -136,7 +135,8 @@ public class InstallPear extends JFrame {
      * Returns <code>true</code>, if the given input file is directory or has 'tear' or 'pear'
      * extension, <code>false</code> otherwise.
      *
-     * @param file the file
+     * @param file
+     *          the file
      * @return <code>true</code>, if the given input file is directory or has 'tear' or 'pear'
      *         extension, <code>false</code> otherwise.
      */
@@ -313,11 +313,12 @@ public class InstallPear extends JFrame {
     userPrefs = Preferences.userNodeForPackage(this.getClass());
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.addChoosableFileFilter(new PEARFilter());
-    String lastDirName = (installDirTextField.getText().length() > 0) ? installDirTextField
-            .getText() : userPrefs.get(LAST_DIRECTORY_CHOOSEN_KEY, "./");
+    String lastDirName = (installDirTextField.getText().length() > 0)
+            ? installDirTextField.getText()
+            : userPrefs.get(LAST_DIRECTORY_CHOOSEN_KEY, "./");
     String selectedDirName = null;
-    File directory = (lastDirName.length() > 0) ? new File(lastDirName).getParentFile() : new File(
-            "./");
+    File directory = (lastDirName.length() > 0) ? new File(lastDirName).getParentFile()
+            : new File("./");
     fileChooser.setCurrentDirectory(directory);
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     int result = fileChooser.showDialog(new JFrame(), "Select");
@@ -462,7 +463,6 @@ public class InstallPear extends JFrame {
    */
   private void runCVD() {
 
-    
     Runnable runCVD = new Runnable() {
 
       @Override
@@ -498,7 +498,7 @@ public class InstallPear extends JFrame {
 
       }
     };
-    
+
     Thread th = new Thread(runCVD);
     th.start();
   }
@@ -779,8 +779,7 @@ public class InstallPear extends JFrame {
    */
   private JScrollPane getJScrollPane() {
     if (jScrollPane == null) {
-      jScrollPane = new JScrollPane(getPearConsole(),
-              ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+      jScrollPane = new JScrollPane(getPearConsole(), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
               ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
       jScrollPane.setBounds(10, 150, 708, 352);
       jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -824,8 +823,8 @@ public class InstallPear extends JFrame {
               manFrame.pack();
               manFrame.setVisible(true);
             } catch (Exception ex) {
-              JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(),
-                      "Error showing help", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(), "Error showing help",
+                      JOptionPane.ERROR_MESSAGE);
             }
           }
         }

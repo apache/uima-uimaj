@@ -41,7 +41,7 @@ import org.apache.uima.pear.tools.PackageCreator;
  *     
  *     Mode 1 usage: java org.apache.uima.tools.pear.packager.PearPackager -compID &lt;componentID&amp;gt -mainCompDesc &lt;mainComponentDesc&amp;gt [-classpath &lt;classpath&amp;gt] [-datapath &lt;datapath&amp;gt] -mainCompDir &lt;mainComponentDir&amp;gt -targetDir &lt;targetDir&amp;gt [-envVars &lt;propertiesFilePath&amp;gt]
  *     Mode 2 usage: java org.apache.uima.tools.pear.packager.PearPackager -create -compID &lt;componentID&amp;gt -mainCompDesc &lt;mainComponentDesc&amp;gt [-classpath &lt;classpath&amp;gt] [-datapath &lt;datapath&amp;gt] -mainCompDir &lt;mainComponentDir&amp;gt [-envVars &lt;propertiesFilePath&amp;gt]
- *     Mode 3 usage: java org.apache.uima.tools.pear.packager.PearPackager -package -compID &lt;componentID&amp;gt -mainCompDir &lt;mainComponentDir&amp;gt -targetDir &lt;targetDir&amp;gt    
+ *     Mode 3 usage: java org.apache.uima.tools.pear.packager.PearPackager -package -compID &lt;componentID&amp;gt -mainCompDir &lt;mainComponentDir&amp;gt -targetDir &lt;targetDir&amp;gt
  * </pre>
  */
 public class PearPackager {
@@ -83,12 +83,12 @@ public class PearPackager {
     System.out.println("Mode 1: create a complete PEAR package (default mode)");
     System.out.println("Mode 2: just create the PEAR installation descriptor");
     System.out.println("Mode 3: just package a PEAR file \n");
-    System.out
-            .println("Mode 1 usage: java org.apache.uima.tools.pear.packager.PearPackager -compID <componentID> -mainCompDesc <mainComponentDesc> [-classpath <classpath>] [-datapath <datapath>] -mainCompDir <mainComponentDir> -targetDir <targetDir> [-envVars <propertiesFilePath>]\n");
-    System.out
-            .println("Mode 2 usage: java org.apache.uima.tools.pear.packager.PearPackager -create -compID <componentID> -mainCompDesc <mainComponentDesc> [-classpath <classpath>] [-datapath <datapath>] -mainCompDir <mainComponentDir> [-envVars <propertiesFilePath>]\n");
-    System.out
-            .println("Mode 3 usage: java org.apache.uima.tools.pear.packager.PearPackager -package -compID <componentID> -mainCompDir <mainComponentDir> -targetDir <targetDir>");
+    System.out.println(
+            "Mode 1 usage: java org.apache.uima.tools.pear.packager.PearPackager -compID <componentID> -mainCompDesc <mainComponentDesc> [-classpath <classpath>] [-datapath <datapath>] -mainCompDir <mainComponentDir> -targetDir <targetDir> [-envVars <propertiesFilePath>]\n");
+    System.out.println(
+            "Mode 2 usage: java org.apache.uima.tools.pear.packager.PearPackager -create -compID <componentID> -mainCompDesc <mainComponentDesc> [-classpath <classpath>] [-datapath <datapath>] -mainCompDir <mainComponentDir> [-envVars <propertiesFilePath>]\n");
+    System.out.println(
+            "Mode 3 usage: java org.apache.uima.tools.pear.packager.PearPackager -package -compID <componentID> -mainCompDir <mainComponentDir> -targetDir <targetDir>");
   }
 
   private static final boolean checkCmdLineSyntax(CommandLineParser clp) {
@@ -130,7 +130,7 @@ public class PearPackager {
 
     String installDesc = null;
     String pearFile = null;
-    
+
     try {
       // create command line parser
       CommandLineParser clp = createCmdLineParser();
@@ -173,33 +173,32 @@ public class PearPackager {
         }
 
         // create installation descriptor
-        installDesc = PackageCreator.createInstallDescriptor(clp
-                .getParamArgument(COMPONENT_ID_PARAM), clp
-                .getParamArgument(MAIN_COMPONENT_DESC_PARAM),
-                clp.getParamArgument(CLASSPATH_PARAM), clp.getParamArgument(DATAPATH_PARAM), clp
-                        .getParamArgument(MAIN_COMPONENT_DIR_PARAM), properties);
+        installDesc = PackageCreator.createInstallDescriptor(
+                clp.getParamArgument(COMPONENT_ID_PARAM),
+                clp.getParamArgument(MAIN_COMPONENT_DESC_PARAM),
+                clp.getParamArgument(CLASSPATH_PARAM), clp.getParamArgument(DATAPATH_PARAM),
+                clp.getParamArgument(MAIN_COMPONENT_DIR_PARAM), properties);
 
       }
 
       // do package action
       if (doPackageAction) {
-        pearFile = PackageCreator
-                .createPearPackage(clp.getParamArgument(COMPONENT_ID_PARAM), clp
-                        .getParamArgument(MAIN_COMPONENT_DIR_PARAM), clp
-                        .getParamArgument(TARGET_DIR_PARAM));
+        pearFile = PackageCreator.createPearPackage(clp.getParamArgument(COMPONENT_ID_PARAM),
+                clp.getParamArgument(MAIN_COMPONENT_DIR_PARAM),
+                clp.getParamArgument(TARGET_DIR_PARAM));
       }
 
     } catch (Exception ex) {
       ex.printStackTrace();
       System.exit(1);
     }
-    
+
     System.out.println("Operation successfully finished");
-    
-    if(installDesc != null && pearFile == null) {
+
+    if (installDesc != null && pearFile == null) {
       System.out.println("Installation descriptor created at: " + installDesc);
     }
-    if(pearFile != null) {
+    if (pearFile != null) {
       System.out.println("Pear package created at: " + pearFile);
     }
 

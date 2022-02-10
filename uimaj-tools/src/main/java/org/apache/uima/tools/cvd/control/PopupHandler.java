@@ -27,9 +27,8 @@ import javax.swing.tree.TreePath;
 import org.apache.uima.tools.cvd.FSTreeModel;
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
- * Action handler for text pop-up menu items.  Select chosen annotation in FS tree, make visible.
+ * Action handler for text pop-up menu items. Select chosen annotation in FS tree, make visible.
  */
 public class PopupHandler implements ActionListener {
 
@@ -42,15 +41,19 @@ public class PopupHandler implements ActionListener {
   /**
    * Instantiates a new popup handler.
    *
-   * @param frame the frame
-   * @param n the n
+   * @param frame
+   *          the frame
+   * @param n
+   *          the n
    */
   public PopupHandler(MainFrame frame, int n) {
     this.main = frame;
     this.node = n;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

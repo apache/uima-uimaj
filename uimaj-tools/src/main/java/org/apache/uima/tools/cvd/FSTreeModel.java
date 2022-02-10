@@ -37,7 +37,6 @@ import org.apache.uima.cas.impl.TypeImpl_string;
 import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.jcas.cas.TOP;
 
-
 /**
  * Swing Tree Model for Feature Structures.
  */
@@ -74,9 +73,12 @@ public class FSTreeModel implements TreeModel {
   /**
    * Update.
    *
-   * @param indexName the index name
-   * @param index the index
-   * @param cas1 the cas 1
+   * @param indexName
+   *          the index name
+   * @param index
+   *          the index
+   * @param cas1
+   *          the cas 1
    */
   public void update(String indexName, FSIndex index, CAS cas1) {
     // this.indexName = indexName;
@@ -141,8 +143,10 @@ public class FSTreeModel implements TreeModel {
   /**
    * Gets the child.
    *
-   * @param parent the parent
-   * @param index the index
+   * @param parent
+   *          the parent
+   * @param index
+   *          the index
    * @return the child
    * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
    */
@@ -153,54 +157,64 @@ public class FSTreeModel implements TreeModel {
     return node.getChildren().get(index);
   }
 
-//  int getNodeType(int addr, Feature feat) {
-//    Type domType = feat.getRange();
-//    if (this.cas.isStringType(domType)) {
-//      return FSNode.STRING_FS;
-//    } else if (this.cas.isIntType(domType)) {
-//      return FSNode.INT_FS;
-//    } else if (this.cas.isFloatType(domType)) {
-//      return FSNode.FLOAT_FS;
-//    } else if (this.cas.isByteType(domType)) {
-//      return FSNode.BYTE_FS;
-//    } else if (this.cas.isBooleanType(domType)) {
-//      return FSNode.BOOL_FS;
-//    } else if (this.cas.isShortType(domType)) {
-//      return FSNode.SHORT_FS;
-//    } else if (this.cas.isLongType(domType)) {
-//      return FSNode.LONG_FS;
-//    } else if (this.cas.isDoubleType(domType)) {
-//      return FSNode.DOUBLE_FS;
-//    } else if (this.cas.isArrayOfFsType(domType)) {
-//      final int featAddr = this.cas.getFeatureValue(addr, ((FeatureImpl) feat).getCode());
-//      if (this.cas.isArrayType(this.cas.getTypeSystemImpl()
-//              .ll_getTypeForCode(this.cas.getHeapValue(featAddr)))) {
-//        return FSNode.ARRAY_FS;
-//      }
-//    }
-//    return FSNode.STD_FS;
-//  }
+  // int getNodeType(int addr, Feature feat) {
+  // Type domType = feat.getRange();
+  // if (this.cas.isStringType(domType)) {
+  // return FSNode.STRING_FS;
+  // } else if (this.cas.isIntType(domType)) {
+  // return FSNode.INT_FS;
+  // } else if (this.cas.isFloatType(domType)) {
+  // return FSNode.FLOAT_FS;
+  // } else if (this.cas.isByteType(domType)) {
+  // return FSNode.BYTE_FS;
+  // } else if (this.cas.isBooleanType(domType)) {
+  // return FSNode.BOOL_FS;
+  // } else if (this.cas.isShortType(domType)) {
+  // return FSNode.SHORT_FS;
+  // } else if (this.cas.isLongType(domType)) {
+  // return FSNode.LONG_FS;
+  // } else if (this.cas.isDoubleType(domType)) {
+  // return FSNode.DOUBLE_FS;
+  // } else if (this.cas.isArrayOfFsType(domType)) {
+  // final int featAddr = this.cas.getFeatureValue(addr, ((FeatureImpl) feat).getCode());
+  // if (this.cas.isArrayType(this.cas.getTypeSystemImpl()
+  // .ll_getTypeForCode(this.cas.getHeapValue(featAddr)))) {
+  // return FSNode.ARRAY_FS;
+  // }
+  // }
+  // return FSNode.STD_FS;
+  // }
 
   /**
- * Gets the node type.
- *
- * @param type the type
- * @return the node type
- */
-int getNodeType(Type type) {
+   * Gets the node type.
+   *
+   * @param type
+   *          the type
+   * @return the node type
+   */
+  int getNodeType(Type type) {
     if (type instanceof TypeImpl_string) {
       return FSNode.STRING_FS;
     } else {
-      switch(((TypeImpl)type).getCode()) {
-      case TypeSystemConstants.intTypeCode: return FSNode.INT_FS;
-      case TypeSystemConstants.floatTypeCode: return FSNode.FLOAT_FS;
-      case TypeSystemConstants.fsArrayTypeCode: return FSNode.ARRAY_FS;
-      case TypeSystemConstants.byteArrayTypeCode: return FSNode.BYTE_FS;
-      case TypeSystemConstants.booleanArrayTypeCode: return FSNode.BOOL_FS;
-      case TypeSystemConstants.shortArrayTypeCode: return FSNode.SHORT_FS;
-      case TypeSystemConstants.longArrayTypeCode: return FSNode.LONG_FS;
-      case TypeSystemConstants.doubleArrayTypeCode: return FSNode.DOUBLE_FS;
-      default: return FSNode.STD_FS;
+      switch (((TypeImpl) type).getCode()) {
+        case TypeSystemConstants.intTypeCode:
+          return FSNode.INT_FS;
+        case TypeSystemConstants.floatTypeCode:
+          return FSNode.FLOAT_FS;
+        case TypeSystemConstants.fsArrayTypeCode:
+          return FSNode.ARRAY_FS;
+        case TypeSystemConstants.byteArrayTypeCode:
+          return FSNode.BYTE_FS;
+        case TypeSystemConstants.booleanArrayTypeCode:
+          return FSNode.BOOL_FS;
+        case TypeSystemConstants.shortArrayTypeCode:
+          return FSNode.SHORT_FS;
+        case TypeSystemConstants.longArrayTypeCode:
+          return FSNode.LONG_FS;
+        case TypeSystemConstants.doubleArrayTypeCode:
+          return FSNode.DOUBLE_FS;
+        default:
+          return FSNode.STD_FS;
       }
     }
   }
@@ -208,7 +222,8 @@ int getNodeType(Type type) {
   /**
    * Gets the child count.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the child count
    * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
    */
@@ -220,7 +235,8 @@ int getNodeType(Type type) {
   /**
    * Checks if is leaf.
    *
-   * @param node the node
+   * @param node
+   *          the node
    * @return true, if is leaf
    * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
    */
@@ -232,8 +248,10 @@ int getNodeType(Type type) {
   /**
    * Value for path changed.
    *
-   * @param path the path
-   * @param newValue the new value
+   * @param path
+   *          the path
+   * @param newValue
+   *          the new value
    * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,
    *      java.lang.Object)
    */
@@ -245,8 +263,10 @@ int getNodeType(Type type) {
   /**
    * Gets the index of child.
    *
-   * @param parent the parent
-   * @param child the child
+   * @param parent
+   *          the parent
+   * @param child
+   *          the child
    * @return the index of child
    * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
    */
@@ -260,7 +280,8 @@ int getNodeType(Type type) {
   /**
    * Adds the tree model listener.
    *
-   * @param arg0 the arg 0
+   * @param arg0
+   *          the arg 0
    * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
    */
   @Override
@@ -271,7 +292,8 @@ int getNodeType(Type type) {
   /**
    * Removes the tree model listener.
    *
-   * @param arg0 the arg 0
+   * @param arg0
+   *          the arg 0
    * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
    */
   @Override
@@ -300,13 +322,18 @@ int getNodeType(Type type) {
   /**
    * Creates the array children.
    *
-   * @param start the start
-   * @param end the end
-   * @param array the array
-   * @param model the model
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param array
+   *          the array
+   * @param model
+   *          the model
    * @return the list
    */
-  static List<FSTreeNode> createArrayChildren(int start, int end, List<FSNode> array, FSTreeModel model) {
+  static List<FSTreeNode> createArrayChildren(int start, int end, List<FSNode> array,
+          FSTreeModel model) {
     ArrayList<FSTreeNode> kids = new ArrayList<>();
     final int size = end - start;
     if (size <= ArrayNode.CUTOFF) {
@@ -347,7 +374,8 @@ int getNodeType(Type type) {
   /**
    * Path to node.
    *
-   * @param fsNum the fs num
+   * @param fsNum
+   *          the fs num
    * @return the tree path
    */
   public TreePath pathToNode(int fsNum) {
@@ -361,9 +389,12 @@ int getNodeType(Type type) {
   /**
    * Gets the path to node.
    *
-   * @param n the n
-   * @param dtrs the dtrs
-   * @param path the path
+   * @param n
+   *          the n
+   * @param dtrs
+   *          the dtrs
+   * @param path
+   *          the path
    * @return the path to node
    */
   private void getPathToNode(int n, List<FSTreeNode> dtrs, List<FSTreeNode> path) {

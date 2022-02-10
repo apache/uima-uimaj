@@ -39,7 +39,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 
-
 /**
  * 
  * 
@@ -48,7 +47,7 @@ import javax.swing.filechooser.FileFilter;
  */
 
 public class FileSelector extends JPanel implements FocusListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8710960143421949274L;
 
@@ -73,9 +72,12 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Instantiates a new file selector.
    *
-   * @param initialValue the initial value
-   * @param fileChooserTitle the file chooser title
-   * @param selectionMode the selection mode
+   * @param initialValue
+   *          the initial value
+   * @param fileChooserTitle
+   *          the file chooser title
+   * @param selectionMode
+   *          the selection mode
    */
   public FileSelector(String initialValue, String fileChooserTitle, int selectionMode) // Can be
   // either
@@ -89,10 +91,14 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Instantiates a new file selector.
    *
-   * @param initialValue the initial value
-   * @param fileChooserTitle the file chooser title
-   * @param selectionMode the selection mode
-   * @param currentDir the current dir
+   * @param initialValue
+   *          the initial value
+   * @param fileChooserTitle
+   *          the file chooser title
+   * @param selectionMode
+   *          the selection mode
+   * @param currentDir
+   *          the current dir
    */
   public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, // Can be
           // either
@@ -213,13 +219,16 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Adds the file selector listener.
    *
-   * @param aFileSelectorListener the a file selector listener
+   * @param aFileSelectorListener
+   *          the a file selector listener
    */
   public void addFileSelectorListener(FileSelectorListener aFileSelectorListener) {
     this.fileSelectorListener = aFileSelectorListener;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.Component#addFocusListener(java.awt.event.FocusListener)
    */
   // added this to make focus change available to mediator
@@ -232,7 +241,8 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Adds the choosable file filter.
    *
-   * @param ff the ff
+   * @param ff
+   *          the ff
    */
   public void addChoosableFileFilter(FileFilter ff) {
     fileChooser.addChoosableFileFilter(ff);
@@ -250,7 +260,8 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Sets the selected.
    *
-   * @param s the new selected
+   * @param s
+   *          the new selected
    */
   public void setSelected(String s) {
     s = s.trim();
@@ -267,7 +278,9 @@ public class FileSelector extends JPanel implements FocusListener {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.JComponent#setEnabled(boolean)
    */
   @Override
@@ -287,20 +300,23 @@ public class FileSelector extends JPanel implements FocusListener {
    * The Class BrowseButton.
    */
   static class BrowseButton extends JButton {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7366026783079468609L;
 
     /**
      * Instantiates a new browse button.
      *
-     * @param s the s
+     * @param s
+     *          the s
      */
     public BrowseButton(String s) {
       super(s);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.JComponent#getInsets()
      */
     @Override
@@ -332,7 +348,8 @@ public class FileSelector extends JPanel implements FocusListener {
       }
       File file = new File(path);
 
-      if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
+      if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY
+              && file.isDirectory()) {
         this.fileChooser.setCurrentDirectory(file);
       } else {
         this.fileChooser.setSelectedFile(file);
@@ -347,7 +364,8 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Adds the document listener.
    *
-   * @param l the l
+   * @param l
+   *          the l
    */
   /*
    * (non-Javadoc)
@@ -361,7 +379,8 @@ public class FileSelector extends JPanel implements FocusListener {
   /**
    * Removes the document listener.
    *
-   * @param l the l
+   * @param l
+   *          the l
    */
   /*
    * (non-Javadoc)

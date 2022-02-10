@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.WindowAdapter;
@@ -28,7 +27,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class CloseLogViewHandler.
@@ -41,13 +39,16 @@ public class CloseLogViewHandler extends WindowAdapter implements WindowListener
   /**
    * Instantiates a new close log view handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public CloseLogViewHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
    */
   @Override
@@ -55,8 +56,10 @@ public class CloseLogViewHandler extends WindowAdapter implements WindowListener
     JComponent contentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
     final int x = contentPane.getWidth();
     final int y = contentPane.getHeight();
-    this.main.getPreferences().setProperty(MainFrame.logViewSizePref + MainFrame.widthSuffix, Integer.toString(x));
-    this.main.getPreferences().setProperty(MainFrame.logViewSizePref + MainFrame.heightSuffix, Integer.toString(y));
+    this.main.getPreferences().setProperty(MainFrame.logViewSizePref + MainFrame.widthSuffix,
+            Integer.toString(x));
+    this.main.getPreferences().setProperty(MainFrame.logViewSizePref + MainFrame.heightSuffix,
+            Integer.toString(y));
   }
 
 }
