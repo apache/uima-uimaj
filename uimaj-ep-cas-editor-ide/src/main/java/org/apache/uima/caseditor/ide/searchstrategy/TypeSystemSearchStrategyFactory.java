@@ -37,8 +37,8 @@ public class TypeSystemSearchStrategyFactory {
 
   private TypeSystemSearchStrategyFactory() {
 
-    IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-            SEARCH_STRATEGY_EXTENSION);
+    IConfigurationElement[] config = Platform.getExtensionRegistry()
+            .getConfigurationElementsFor(SEARCH_STRATEGY_EXTENSION);
 
     for (IConfigurationElement element : config) {
 

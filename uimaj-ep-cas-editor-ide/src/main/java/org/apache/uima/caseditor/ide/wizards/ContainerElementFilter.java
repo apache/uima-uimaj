@@ -32,7 +32,7 @@ public class ContainerElementFilter extends ViewerFilter {
 
     if (element instanceof IAdaptable) {
       IResource resourceElement = (IResource) ((IAdaptable) element).getAdapter(IResource.class);
-      
+
       if (resourceElement != null)
         element = resourceElement;
     }

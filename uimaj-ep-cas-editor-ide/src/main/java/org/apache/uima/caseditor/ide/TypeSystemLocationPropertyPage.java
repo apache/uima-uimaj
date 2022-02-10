@@ -45,8 +45,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
- * Type System Property Page to set the default type system location
- * of a project.
+ * Type System Property Page to set the default type system location of a project.
  */
 public class TypeSystemLocationPropertyPage extends PropertyPage {
 
@@ -56,25 +55,23 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
 
   private Text typeSystemText;
 
-  
   IProject getProject() {
     return (IProject) getElement().getAdapter(IProject.class);
   }
-  
+
   String getDefaultTypeSystemLocation() {
-    
+
     IProject project = getProject();
-    
+
     if (project != null) {
-        return project.getFile(DEFAULT_TYPE_SYSTEM_PATH).getFullPath().toString();
-    }
-    else {
-        return "";
+      return project.getFile(DEFAULT_TYPE_SYSTEM_PATH).getFullPath().toString();
+    } else {
+      return "";
     }
   }
-  
+
   @Override
-protected Control createContents(Composite parent) {
+  protected Control createContents(Composite parent) {
     Composite composite = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
     layout.numColumns = 2;
@@ -92,38 +89,39 @@ protected Control createContents(Composite parent) {
     gd.grabExcessHorizontalSpace = true;
     instructions.setLayoutData(gd);
 
-    typeSystemText = new Text(composite,SWT.BORDER);
+    typeSystemText = new Text(composite, SWT.BORDER);
     gd = new GridData(GridData.FILL_HORIZONTAL);
     typeSystemText.setLayoutData(gd);
 
     typeSystemText.addModifyListener(new ModifyListener() {
-      
+
       @Override
-    public void modifyText(ModifyEvent event) {
+      public void modifyText(ModifyEvent event) {
         updateApplyButton();
       }
     });
-    
+
     try {
-      String typeSystemPath = ((IResource) getElement()).getPersistentProperty(new QualifiedName("",
-              TYPE_SYSTEM_PROPERTY));
-      typeSystemText.setText((typeSystemPath != null) ? typeSystemPath : getDefaultTypeSystemLocation());
+      String typeSystemPath = ((IResource) getElement())
+              .getPersistentProperty(new QualifiedName("", TYPE_SYSTEM_PROPERTY));
+      typeSystemText
+              .setText((typeSystemPath != null) ? typeSystemPath : getDefaultTypeSystemLocation());
     } catch (CoreException e) {
       typeSystemText.setText(DEFAULT_TYPE_SYSTEM_PATH);
     }
-    
+
     Button browseButton = new Button(composite, SWT.PUSH);
     browseButton.setText("Browse ...");
     browseButton.addSelectionListener(new SelectionAdapter() {
       @Override
-    public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e) {
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(),
                 new WorkbenchLabelProvider(), new WorkbenchContentProvider());
         dialog.setTitle("Select descriptor");
         dialog.setMessage("Select descriptor");
         dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-        dialog.setInitialSelection(ResourcesPlugin.getWorkspace().getRoot().
-                findMember(typeSystemText.getText()));
+        dialog.setInitialSelection(
+                ResourcesPlugin.getWorkspace().getRoot().findMember(typeSystemText.getText()));
         if (dialog.open() == IDialogConstants.OK_ID) {
           IResource resource = (IResource) dialog.getFirstResult();
           if (resource != null) {
@@ -133,24 +131,24 @@ protected Control createContents(Composite parent) {
         }
       }
     });
-    
+
     return composite;
   }
 
   @Override
-protected void performDefaults() {
+  protected void performDefaults() {
     typeSystemText.setText(getDefaultTypeSystemLocation());
   }
-  
+
   @Override
-public boolean performOk() {
-    
+  public boolean performOk() {
+
     // have check, so performOk is only done when ts file is a valid file string
-    
+
     // store the value in the owner text field
     try {
-      ((IResource) getElement()).setPersistentProperty(
-              new QualifiedName("", TYPE_SYSTEM_PROPERTY), typeSystemText.getText());
+      ((IResource) getElement()).setPersistentProperty(new QualifiedName("", TYPE_SYSTEM_PROPERTY),
+              typeSystemText.getText());
     } catch (CoreException e) {
       return false;
     }
@@ -160,29 +158,32 @@ public boolean performOk() {
   /**
    * Retrieves the type system or null if its not set.
    * 
-   * @param project -
+   * @param project
+   *          -
    * @return the type system location or null if its not set
    */
   public static IFile getTypeSystemLocation(IProject project) {
-    
+
     IFile defaultTypeSystemFile = project.getFile(DEFAULT_TYPE_SYSTEM_PATH);
-    
+
     String typeSystemLocation;
     try {
-      typeSystemLocation = project.getPersistentProperty(new QualifiedName("", TYPE_SYSTEM_PROPERTY));
+      typeSystemLocation = project
+              .getPersistentProperty(new QualifiedName("", TYPE_SYSTEM_PROPERTY));
     } catch (CoreException e) {
       typeSystemLocation = null;
     }
-    
+
     IFile typeSystemFile = null;
-    
+
     // Type system location is null when it was never set it anyway,
     if (typeSystemLocation != null) {
-      
+
       if (typeSystemLocation.length() > 0) {
-          IResource potentialTypeSystemResource = ResourcesPlugin.getWorkspace().getRoot().findMember(typeSystemLocation);
-          if (potentialTypeSystemResource instanceof IFile) {
-            typeSystemFile = (IFile) potentialTypeSystemResource;
+        IResource potentialTypeSystemResource = ResourcesPlugin.getWorkspace().getRoot()
+                .findMember(typeSystemLocation);
+        if (potentialTypeSystemResource instanceof IFile) {
+          typeSystemFile = (IFile) potentialTypeSystemResource;
         }
       }
       // Empty string means user does not want a type system to be set
@@ -190,18 +191,19 @@ public boolean performOk() {
         return null;
       }
     }
-    
+
     if (typeSystemFile == null) {
       typeSystemFile = defaultTypeSystemFile;
     }
-    
+
     return typeSystemFile;
   }
 
   public static void setTypeSystemLocation(IProject project, String typeSystemLocation) {
-    
+
     try {
-      project.setPersistentProperty(new QualifiedName("", TYPE_SYSTEM_PROPERTY), typeSystemLocation);
+      project.setPersistentProperty(new QualifiedName("", TYPE_SYSTEM_PROPERTY),
+              typeSystemLocation);
     } catch (CoreException e) {
       CasEditorPlugin.log(e);
     }

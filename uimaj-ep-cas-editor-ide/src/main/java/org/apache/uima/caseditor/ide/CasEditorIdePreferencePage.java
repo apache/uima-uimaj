@@ -37,10 +37,11 @@ public class CasEditorIdePreferencePage extends FieldEditorPreferencePage
 
   @Override
   protected void createFieldEditors() {
-   
+
     // should the editor use the last selected type system to open the cas?
-    BooleanFieldEditor mEditorRememberTypesystem = new BooleanFieldEditor(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM,
-        "Use the previously selected type system to open a CAS", getFieldEditorParent());
+    BooleanFieldEditor mEditorRememberTypesystem = new BooleanFieldEditor(
+            CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM,
+            "Use the previously selected type system to open a CAS", getFieldEditorParent());
     addField(mEditorRememberTypesystem);
   }
 

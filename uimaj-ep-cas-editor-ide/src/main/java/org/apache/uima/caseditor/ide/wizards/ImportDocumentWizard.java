@@ -41,7 +41,7 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
  * is supported.
  */
 public final class ImportDocumentWizard extends Wizard implements IImportWizard {
-  
+
   private ImportDocumentWizardPage mMainPage;
 
   private IStructuredSelection mCurrentResourceSelection;
@@ -64,49 +64,47 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
 
   @Override
   public boolean performFinish() {
-    
+
     String usedEncoding = mMainPage.getTextEncoding();
-    
+
     IPreferenceStore store = CasEditorIdePlugin.getDefault().getPreferenceStore();
-    
-    String lastUsedEncodingsString = store.getString(
-            CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
-    
-    List<String> lastUsedEncodings = new ArrayList<>(Arrays.asList(lastUsedEncodingsString.split(
-        CasEditorIdePreferenceConstants.STRING_DELIMITER)));
-    
+
+    String lastUsedEncodingsString = store
+            .getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
+
+    List<String> lastUsedEncodings = new ArrayList<>(Arrays.asList(
+            lastUsedEncodingsString.split(CasEditorIdePreferenceConstants.STRING_DELIMITER)));
+
     int usedEncodingIndex = lastUsedEncodings.indexOf(usedEncoding);
-    
+
     if (usedEncodingIndex != -1) {
       lastUsedEncodings.remove(usedEncodingIndex);
     }
-    
+
     lastUsedEncodings.add(0, usedEncoding);
-    
+
     int maxUserItemCount = 10;
-    
+
     if (lastUsedEncodings.size() > maxUserItemCount) {
       lastUsedEncodings = lastUsedEncodings.subList(0, maxUserItemCount - 1);
     }
-    
+
     StringBuilder updatedLastUsedEncodingsString = new StringBuilder();
-    
+
     for (String encoding : lastUsedEncodings) {
       updatedLastUsedEncodingsString.append(encoding);
-      updatedLastUsedEncodingsString.append(
-              CasEditorIdePreferenceConstants.STRING_DELIMITER);
+      updatedLastUsedEncodingsString.append(CasEditorIdePreferenceConstants.STRING_DELIMITER);
     }
-    
+
     store.setValue(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS,
             updatedLastUsedEncodingsString.toString());
-    
-    IImportStructureProvider importProvider = new DocumentImportStructureProvider(mMainPage.getLanguage(),
-    		mMainPage.getTextEncoding(), mMainPage.getCasFormat());
-    
+
+    IImportStructureProvider importProvider = new DocumentImportStructureProvider(
+            mMainPage.getLanguage(), mMainPage.getTextEncoding(), mMainPage.getCasFormat());
+
     // BUG: We cannot pass null here for the overwrite query
-    ImportOperation operation =
-            new ImportOperation(mMainPage.getImportDestinationPath(), importProvider, new OverwriteQuery(getShell()),
-            mMainPage.getFilesToImport());
+    ImportOperation operation = new ImportOperation(mMainPage.getImportDestinationPath(),
+            importProvider, new OverwriteQuery(getShell()), mMainPage.getFilesToImport());
 
     operation.setContext(getShell());
 
@@ -116,18 +114,18 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
       getContainer().run(true, true, operation);
     } catch (InvocationTargetException e) {
       CasEditorPlugin.log(e);
-      
+
       String message = "Unkown error during import, see the log file for details";
-      
+
       Throwable cause = e.getCause();
       if (cause != null) {
-        
+
         String causeMessage = cause.getMessage();
-        
+
         if (causeMessage != null)
           message = causeMessage;
       }
-      
+
       MessageDialog.openError(getContainer().getShell(), "Import failed", message);
 
       return false;

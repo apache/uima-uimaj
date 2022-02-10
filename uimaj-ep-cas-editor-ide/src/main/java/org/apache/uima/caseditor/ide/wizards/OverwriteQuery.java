@@ -26,43 +26,39 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 
 /**
- * Overwrite Query to ask user how to deal with fields that need
- * to be overwritten.
+ * Overwrite Query to ask user how to deal with fields that need to be overwritten.
  */
 class OverwriteQuery implements IOverwriteQuery {
 
   private final Shell shell;
 
   private String result = CANCEL;
-  
+
   OverwriteQuery(Shell shell) {
     this.shell = shell;
   }
-  
+
   @Override
   public String queryOverwrite(final String pathString) {
 
     if (ALL.equals(result)) {
       return ALL;
     }
-    
-    final String[] options = {
-            IDialogConstants.YES_LABEL,
-            IDialogConstants.YES_TO_ALL_LABEL,
-            IDialogConstants.NO_LABEL,
-            IDialogConstants.CANCEL_LABEL 
-            };
-    
+
+    final String[] options = { IDialogConstants.YES_LABEL, IDialogConstants.YES_TO_ALL_LABEL,
+        IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
+
     // Must executed synchronously, otherwise the result is not available
     // when the return statement is executed
     Display.getDefault().syncExec(new Runnable() {
       @Override
       public void run() {
-        MessageDialog dialog = new MessageDialog(shell, "CAS target file already exists" , null,
-                "The CAS target file already exists: \n" + pathString + 
-                "\n\nPlease choose an action.", MessageDialog.QUESTION, options, 0);
+        MessageDialog dialog = new MessageDialog(shell, "CAS target file already exists", null,
+                "The CAS target file already exists: \n" + pathString
+                        + "\n\nPlease choose an action.",
+                MessageDialog.QUESTION, options, 0);
         dialog.open();
-        
+
         String codes[] = { YES, ALL, NO, CANCEL };
         result = codes[dialog.getReturnCode()];
       }

@@ -22,12 +22,11 @@ package org.apache.uima.caseditor.ide;
 public class CasEditorIdePreferenceConstants {
 
   public static final String STRING_DELIMITER = ";";
-  
-  public static final String CAS_IMPORT_WIZARD_LAST_USED_LANG =
-          "CAS_IMPORT_WIZARD_LAST_USED_LANG";
-  
+
+  public static final String CAS_IMPORT_WIZARD_LAST_USED_LANG = "CAS_IMPORT_WIZARD_LAST_USED_LANG";
+
   public static final String CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS = "CAS_IMPORT_WIZARD_ENCODINGS";
-  
+
   public static final String CAS_EDITOR_REMEMBER_TYPESYSTEM = "CAS_EDITOR_REMEMBER_TYPESYSTEM";
-  
+
 }
