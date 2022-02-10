@@ -19,7 +19,6 @@
 
 package org.apache.uima.tools.jcasgen;
 
-
 /**
  * The Class TypeInfo.
  */
@@ -46,8 +45,10 @@ public class TypeInfo {
   /**
    * Instantiates a new type info.
    *
-   * @param xmlName the xml name
-   * @param javaName the java name
+   * @param xmlName
+   *          the xml name
+   * @param javaName
+   *          the java name
    */
   TypeInfo(String xmlName, String javaName) {
     this.xmlName = xmlName;
@@ -60,9 +61,12 @@ public class TypeInfo {
   /**
    * Instantiates a new type info.
    *
-   * @param xmlName the xml name
-   * @param javaName the java name
-   * @param arrayElNameWithPkg the array el name with pkg
+   * @param xmlName
+   *          the xml name
+   * @param javaName
+   *          the java name
+   * @param arrayElNameWithPkg
+   *          the array el name with pkg
    */
   TypeInfo(String xmlName, String javaName, String arrayElNameWithPkg) {
     this(xmlName, javaName);

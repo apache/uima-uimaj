@@ -24,8 +24,8 @@ import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
 import org.eclipse.ui.IStartup;
 
 /**
- * The class that has the startup code. 
- * Per Eclipse platform design, it must be in a different class than the main plugin code.
+ * The class that has the startup code. Per Eclipse platform design, it must be in a different class
+ * than the main plugin code.
  */
 public class DebugPluginStartup implements IStartup {
 
@@ -34,10 +34,12 @@ public class DebugPluginStartup implements IStartup {
 
   /** The Constant ALREADY_SET_PREF_SHOW_DETAILS. */
   public static final String ALREADY_SET_PREF_SHOW_DETAILS = "already_set_pref_show_details";
- 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.IStartup#earlyStartup()
-   * This method will be called on a different thread after the workbench initializes.
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.ui.IStartup#earlyStartup() This method will be called on a different thread
+   * after the workbench initializes.
    */
   @Override
   public void earlyStartup() {
@@ -48,19 +50,19 @@ public class DebugPluginStartup implements IStartup {
     // display work, initially, but allowing the user to set it to something else without having
     // this
     // be overridden every time the pluging starts.
-    String doneOnce = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
-            PREF_ALREADY_SET_PREF_SHOW_DETAILS);
+    String doneOnce = JDIDebugUIPlugin.getDefault().getPreferenceStore()
+            .getString(PREF_ALREADY_SET_PREF_SHOW_DETAILS);
     if (ALREADY_SET_PREF_SHOW_DETAILS.equals(doneOnce))
       return;
     JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(PREF_ALREADY_SET_PREF_SHOW_DETAILS,
             ALREADY_SET_PREF_SHOW_DETAILS);
 
-    String preference = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
-            IJDIPreferencesConstants.PREF_SHOW_DETAILS);
+    String preference = JDIDebugUIPlugin.getDefault().getPreferenceStore()
+            .getString(IJDIPreferencesConstants.PREF_SHOW_DETAILS);
     if (IJDIPreferencesConstants.INLINE_ALL.equals(preference))
       return;
     JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(
-            IJDIPreferencesConstants.PREF_SHOW_DETAILS, IJDIPreferencesConstants.INLINE_ALL);    
+            IJDIPreferencesConstants.PREF_SHOW_DETAILS, IJDIPreferencesConstants.INLINE_ALL);
   }
 
 }

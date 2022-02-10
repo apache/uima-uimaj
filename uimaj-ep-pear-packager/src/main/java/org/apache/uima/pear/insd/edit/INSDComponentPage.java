@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
-
 /**
  * This is wizard page to edit UIMA component basic information.
  */
@@ -83,16 +82,20 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * Constructor.
    *
-   * @param currentContainer the current container
-   * @param insd the insd
-   * @param wizardData the wizard data
+   * @param currentContainer
+   *          the current container
+   * @param insd
+   *          the insd
+   * @param wizardData
+   *          the wizard data
    */
   public INSDComponentPage(IContainer currentContainer, InstallationDescriptor insd,
           Hashtable wizardData) {
     super("wizardPage");
     setTitle("UIMA - Installation Descriptor - Component Information");
-    setDescription("Enter information about your UIMA component. The required fields are indicated with a (*).\n"
-            + "The descriptor must be specified using paths relative to the project's root (e.g. \"desc/MyTAE.xml\").\n");
+    setDescription(
+            "Enter information about your UIMA component. The required fields are indicated with a (*).\n"
+                    + "The descriptor must be specified using paths relative to the project's root (e.g. \"desc/MyTAE.xml\").\n");
     this.wizardData = wizardData;
     this.insd = insd;
     this.currentContainer = currentContainer;
@@ -134,10 +137,9 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
     temp = insd.getMainComponentId();
     if (temp == null || temp.trim().length() == 0) {
-        compID = currentContainer.getName();
-    }
-    else {
-        compID = temp;
+      compID = currentContainer.getName();
+    } else {
+      compID = temp;
     }
 
     temp = insd.getMainComponentDesc();
@@ -148,10 +150,14 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * Adds the text field.
    *
-   * @param parent the parent
-   * @param strLabel the str label
-   * @param strText the str text
-   * @param editable the editable
+   * @param parent
+   *          the parent
+   * @param strLabel
+   *          the str label
+   * @param strText
+   *          the str text
+   * @param editable
+   *          the editable
    * @return the text
    */
   public Text addTextField(Composite parent, String strLabel, String strText, boolean editable) {
@@ -174,7 +180,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * See IDialogPage#createControl(Composite).
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   @Override
   public void createControl(Composite parent) {
@@ -239,9 +246,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
       setPageComplete(false);
       setErrorMessage(null);
-    }
-    else {
-        updateStatus(null);
+    } else {
+      updateStatus(null);
     }
 
   }
@@ -255,9 +261,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
       setPageComplete(false);
       setErrorMessage(null);
-    }
-    else {
-        updateStatus(null);
+    } else {
+      updateStatus(null);
     }
   }
 
@@ -271,7 +276,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * Update status.
    *
-   * @param message the message
+   * @param message
+   *          the message
    */
   private void updateStatus(String message) {
 
@@ -302,16 +308,15 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
         filename = filename.trim();
         IFile iFile = currentContainer.getFile(new Path(filename));
         if (!iFile.exists()) {
-            sb.append("\n  \"" + filename + "\" was not found in the current project!");
-        }
-        else if (filename.trim().indexOf(".xml") == -1) {
-            sb.append("\n  \"" + filename + "\" is not an xml file!");
+          sb.append("\n  \"" + filename + "\" was not found in the current project!");
+        } else if (filename.trim().indexOf(".xml") == -1) {
+          sb.append("\n  \"" + filename + "\" is not an xml file!");
         }
       }
     }
     String s = sb.toString();
     if (s.length() > 0) {
-        message = s;
+      message = s;
     }
 
     return message;
@@ -320,21 +325,26 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * Creates a new button
    * <p>
-   * The <code>Dialog</code> implementation of this framework method creates a standard push
-   * button, registers for selection events including button presses and registers default buttons
-   * with its shell. The button id is stored as the buttons client data. Note that the parent's
-   * layout is assumed to be a GridLayout and the number of columns in this layout is incremented.
-   * Subclasses may override.
+   * The <code>Dialog</code> implementation of this framework method creates a standard push button,
+   * registers for selection events including button presses and registers default buttons with its
+   * shell. The button id is stored as the buttons client data. Note that the parent's layout is
+   * assumed to be a GridLayout and the number of columns in this layout is incremented. Subclasses
+   * may override.
    * </p>
    *
-   * @param parent          the parent composite
-   * @param label          the label from the button
-   * @param defaultButton          <code>true</code> if the button is to be the default button, and <code>false</code>
+   * @param parent
+   *          the parent composite
+   * @param label
+   *          the label from the button
+   * @param defaultButton
+   *          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
-   * @param text the text
+   * @param text
+   *          the text
    * @return the button
    */
-  protected Button addButton(Composite parent, String label, boolean defaultButton, final Text text) {
+  protected Button addButton(Composite parent, String label, boolean defaultButton,
+          final Text text) {
 
     Button button = new Button(parent, SWT.PUSH);
     button.setText(label);
@@ -373,9 +383,12 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * Creates a new Radio button.
    *
-   * @param parent          the parent composite
-   * @param label          the label from the button
-   * @param initialSelection          <code>true</code> if the button is to be the default button, and <code>false</code>
+   * @param parent
+   *          the parent composite
+   * @param label
+   *          the label from the button
+   * @param initialSelection
+   *          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
    * @return the button
    */
@@ -396,14 +409,16 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     return button;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
    */
   @Override
   public void setVisible(boolean visible) {
     super.setVisible(visible);
     if (visible) {
-        compIDText.setFocus();
+      compIDText.setFocus();
     }
   }
 }

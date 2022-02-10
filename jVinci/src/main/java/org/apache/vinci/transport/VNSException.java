@@ -25,7 +25,7 @@ import java.io.IOException;
  * Special exception type thrown by VinciClient/VinciServer when VNS itself reports an error.
  */
 public class VNSException extends IOException {
-  
+
   private static final long serialVersionUID = -9150424759390586749L;
 
   public VNSException(String message) {

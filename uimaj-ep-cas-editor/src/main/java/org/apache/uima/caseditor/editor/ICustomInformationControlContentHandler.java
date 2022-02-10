@@ -19,17 +19,18 @@
 
 package org.apache.uima.caseditor.editor;
 
-
 /**
  * The Interface ICustomInformationControlContentHandler.
  */
 public interface ICustomInformationControlContentHandler {
-  
+
   /**
    * Sets the input object.
    *
-   * @param control the control
-   * @param input the input
+   * @param control
+   *          the control
+   * @param input
+   *          the input
    */
   void setInput(CustomInformationControl control, Object input);
 }

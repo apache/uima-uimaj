@@ -22,40 +22,38 @@ package org.apache.uima.caseditor.editor.outline;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.eclipse.jface.action.Action;
 
-
 /**
  * This action triggers the switch of the outline style.
  */
 public class SwitchStyleAction extends Action {
-	
-	/** The outline. */
-	private AnnotationOutline outline;
-	
-	/**
-	 * Instantiates a new switch style action.
-	 *
-	 * @param outline the outline
-	 */
-	SwitchStyleAction(AnnotationOutline outline) {
-		this.outline = outline;
-	}
 
-	@Override
-	public String getText() {
-		return "Switch style";
-	}
+  /** The outline. */
+  private AnnotationOutline outline;
 
-	@Override
-	public void run() {
-		
-		if (OutlineStyles.MODE.equals(outline.currentStyle())) {
-			outline.switchStyle(OutlineStyles.TYPE);
-		}
-		else if (OutlineStyles.TYPE.equals(outline.currentStyle())) {
-			outline.switchStyle(OutlineStyles.MODE);
-		}
-		else {
-			throw new CasEditorError("Unknown style!");
-		}
-	}	
+  /**
+   * Instantiates a new switch style action.
+   *
+   * @param outline
+   *          the outline
+   */
+  SwitchStyleAction(AnnotationOutline outline) {
+    this.outline = outline;
+  }
+
+  @Override
+  public String getText() {
+    return "Switch style";
+  }
+
+  @Override
+  public void run() {
+
+    if (OutlineStyles.MODE.equals(outline.currentStyle())) {
+      outline.switchStyle(OutlineStyles.TYPE);
+    } else if (OutlineStyles.TYPE.equals(outline.currentStyle())) {
+      outline.switchStyle(OutlineStyles.MODE);
+    } else {
+      throw new CasEditorError("Unknown style!");
+    }
+  }
 }

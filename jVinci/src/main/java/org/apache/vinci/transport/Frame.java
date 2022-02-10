@@ -94,7 +94,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    *          The tag name with which to associate the value.
    * @param val
    *          The (Frame | FrameLeaf) value to associate with the tag.
-   * @throws UnsupportedOperationException not implemented
+   * @throws UnsupportedOperationException
+   *           not implemented
    */
   /* abstract */public void add(String tag, FrameComponent val) {
     throw new UnsupportedOperationException("not implemented");
@@ -111,7 +112,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param which
    *          The index of the KeyValuePair to retrieve.
-   * @throws UnsupportedOperationException not implemented
+   * @throws UnsupportedOperationException
+   *           not implemented
    * @return The requested KeyValuePair.
    */
   /* abstract */public KeyValuePair getKeyValuePair(int which) {
@@ -126,7 +128,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * define it in cases where alternative getters are provided for querying the document, and the
    * object is never marshalled to a stream.
    * 
-   * @throws UnsupportedOperationException not implemented
+   * @throws UnsupportedOperationException
+   *           not implemented
    * @return The total number of key/value pairs in this frame.
    */
   /* abstract */public int getKeyValuePairCount() {
@@ -281,7 +284,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * Factory method used by fromStream when it needs to create a frame leaf. Default implementation
    * creates a regular FrameLeaf.
    * 
-   * @param array -
+   * @param array
+   *          -
    * @return the created FrameLeaf.
    * 
    * @pre array != null
@@ -293,8 +297,11 @@ public abstract class Frame extends FrameComponent implements Transportable {
   /**
    * Factory method used by fromStream when it needs to create a sub-frame. Default implementation
    * creates a subframe of the same type as the current frame.
-   * @param tag_name -
-   * @param initialCapacity -
+   * 
+   * @param tag_name
+   *          -
+   * @param initialCapacity
+   *          -
    * @return the created sub-frame.
    * @throws UnsupportedOperationException
    *           if the getClass().newInstance() call on this object results in an exception.
@@ -341,8 +348,10 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @pre rval != null
    * @pre offset &ge; 0
-   * @param rval -
-   * @param offset -
+   * @param rval
+   *          -
+   * @param offset
+   *          -
    */
   protected void toXML(StringBuffer rval, int offset) {
     KeyValuePair keyVal = null;
@@ -383,7 +392,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param key
    *          The key to be associated with the value.
-   * @param val -
+   * @param val
+   *          -
    * @return This frame
    * @throws UnsupportedOperationException
    *           if this document model doesn't support key addition.
@@ -400,7 +410,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param key
    *          The key to be associated with the value.
-   * @param val -
+   * @param val
+   *          -
    * @return This frame
    * @throws UnsupportedOperationException
    *           if this document model doesn't support key addition.
@@ -419,7 +430,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param key
    *          The key to be associated with the value.
-   * @param val -
+   * @param val
+   *          -
    * @throws UnsupportedOperationException
    *           if this document model doesn't support key addition.
    * @return This frame

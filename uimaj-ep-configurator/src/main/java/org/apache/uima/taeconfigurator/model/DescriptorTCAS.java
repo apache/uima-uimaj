@@ -27,7 +27,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-
 /**
  * Model part: CAS corresponding to the descriptor being edited.
  */
@@ -40,7 +39,8 @@ public class DescriptorTCAS extends AbstractModelPart {
   /**
    * Instantiates a new descriptor TCAS.
    *
-   * @param modelRoot the model root
+   * @param modelRoot
+   *          the model root
    */
   public DescriptorTCAS(MultiPageEditor modelRoot) {
     super(modelRoot);
@@ -49,7 +49,8 @@ public class DescriptorTCAS extends AbstractModelPart {
   /**
    * Validate.
    *
-   * @throws ResourceInitializationException the resource initialization exception
+   * @throws ResourceInitializationException
+   *           the resource initialization exception
    */
   public void validate() throws ResourceInitializationException {
 
@@ -66,7 +67,8 @@ public class DescriptorTCAS extends AbstractModelPart {
     try {
       // long time = System.currentTimeMillis();
       // System.out.println("Creating TCas model");
-      cachedResult = modelRoot.createCas(ae, casCreateProperties, modelRoot.createResourceManager());
+      cachedResult = modelRoot.createCas(ae, casCreateProperties,
+              modelRoot.createResourceManager());
       // System.out.println("Finished Creating TCas model; time= " +
       // (System.currentTimeMillis() - time));
       if (null == cachedResult)
@@ -93,7 +95,8 @@ public class DescriptorTCAS extends AbstractModelPart {
   /**
    * Sets the.
    *
-   * @param tcas the tcas
+   * @param tcas
+   *          the tcas
    */
   public void set(CAS tcas) {
     cachedResult = tcas;

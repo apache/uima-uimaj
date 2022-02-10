@@ -33,13 +33,16 @@ import org.xml.sax.Attributes;
  * 
  */
 public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
-  
+
   /**
    * Instantiates a new uima sax vinci frame builder.
    *
-   * @param aSupressDocumentText the a supress document text
-   * @param aIncludeSpannedTextInAnnotations the a include spanned text in annotations
-   * @param aDocText the a doc text
+   * @param aSupressDocumentText
+   *          the a supress document text
+   * @param aIncludeSpannedTextInAnnotations
+   *          the a include spanned text in annotations
+   * @param aDocText
+   *          the a doc text
    */
   public UimaSaxVinciFrameBuilder(boolean aSupressDocumentText,
           boolean aIncludeSpannedTextInAnnotations, String aDocText) {
@@ -60,9 +63,12 @@ public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
   /**
    * Overridden to supress document content and include annotation spans.
    *
-   * @param aFrameName the a frame name
-   * @param aAttributes the a attributes
-   * @param aContentBuf the a content buf
+   * @param aFrameName
+   *          the a frame name
+   * @param aAttributes
+   *          the a attributes
+   * @param aContentBuf
+   *          the a content buf
    * @return the leaf content
    * @see SaxVinciFrameBuilder#getLeafContent(String, Attributes, StringBuffer)
    */

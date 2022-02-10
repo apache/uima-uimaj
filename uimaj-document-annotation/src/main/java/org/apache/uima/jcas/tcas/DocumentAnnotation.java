@@ -41,7 +41,7 @@ public class DocumentAnnotation extends Annotation {
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
   public final static String _FeatName_language = "language";
-  
+
   public final static int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
 
   public final static int type = typeIndexID;
@@ -51,9 +51,10 @@ public class DocumentAnnotation extends Annotation {
     return typeIndexID;
   }
 
-  private final static CallSite _FC_language = TypeSystemImpl.createCallSite(DocumentAnnotation.class, "language");
+  private final static CallSite _FC_language = TypeSystemImpl
+          .createCallSite(DocumentAnnotation.class, "language");
   private final static MethodHandle _FH_language = _FC_language.dynamicInvoker();
-        
+
   // Never called. Disable default constructor
   protected DocumentAnnotation() {
   }
@@ -63,10 +64,12 @@ public class DocumentAnnotation extends Annotation {
   }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public DocumentAnnotation(TypeImpl t, CASImpl c) {
@@ -77,13 +80,18 @@ public class DocumentAnnotation extends Annotation {
   // * Feature: language
   /**
    * getter for language
+   * 
    * @return the language
    */
-  public String getLanguage() { return _getStringValueNc(wrapGetIntCatchException(_FH_language)); }
+  public String getLanguage() {
+    return _getStringValueNc(wrapGetIntCatchException(_FH_language));
+  }
 
   /**
    * setter for language
-   * @param v the language
+   * 
+   * @param v
+   *          the language
    */
   public void setLanguage(String v) {
     _setStringValueNfc(wrapGetIntCatchException(_FH_language), v);

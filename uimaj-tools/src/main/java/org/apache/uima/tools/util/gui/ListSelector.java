@@ -43,14 +43,13 @@ import javax.swing.border.Border;
 
 import org.apache.uima.tools.images.Images;
 
-
 /**
  * 
  * A composite component comprising a JList and associated controls used to add and remove list
  * elements and to control their ordering.
  */
 public class ListSelector extends JPanel implements ActionListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6426556774940666223L;
 
@@ -78,7 +77,8 @@ public class ListSelector extends JPanel implements ActionListener {
   /**
    * Instantiates a new list selector.
    *
-   * @param listData the list data
+   * @param listData
+   *          the list data
    */
   public ListSelector(Object[] listData) {
     for (int i = 0; i < listData.length; i++)
@@ -148,7 +148,8 @@ public class ListSelector extends JPanel implements ActionListener {
   /**
    * Populate.
    *
-   * @param listData the list data
+   * @param listData
+   *          the list data
    */
   public void populate(Object[] listData) {
     listModel.clear();
@@ -176,7 +177,9 @@ public class ListSelector extends JPanel implements ActionListener {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -194,9 +197,9 @@ public class ListSelector extends JPanel implements ActionListener {
     } else if (source == removeButton) {
       Object selectedValue = list.getSelectedValue();
       if (selectedValue != null) {
-        int rv = JOptionPane
-                .showConfirmDialog((Component) source, "Are you sure you want to remove "
-                        + selectedValue, null, JOptionPane.YES_NO_OPTION);
+        int rv = JOptionPane.showConfirmDialog((Component) source,
+                "Are you sure you want to remove " + selectedValue, null,
+                JOptionPane.YES_NO_OPTION);
 
         if (rv == JOptionPane.YES_OPTION)
           listModel.remove(list.getSelectedIndex());
@@ -238,20 +241,23 @@ public class ListSelector extends JPanel implements ActionListener {
    * The Class SmallButton.
    */
   static class SmallButton extends JButton {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -4311761385714783114L;
 
     /**
      * Instantiates a new small button.
      *
-     * @param s the s
+     * @param s
+     *          the s
      */
     public SmallButton(String s) {
       super(s);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.JComponent#getInsets()
      */
     @Override

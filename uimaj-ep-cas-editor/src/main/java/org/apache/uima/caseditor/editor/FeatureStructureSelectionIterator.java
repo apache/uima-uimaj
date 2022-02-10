@@ -27,7 +27,6 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-
 /**
  * Iterates over all selected {@link FeatureStructure}s.
  */
@@ -42,7 +41,8 @@ public class FeatureStructureSelectionIterator implements Iterator<FeatureStruct
   /**
    * Initializes the current instance.
    *
-   * @param selection the selection
+   * @param selection
+   *          the selection
    */
   public FeatureStructureSelectionIterator(IStructuredSelection selection) {
     mSelectionIterator = selection.iterator();
@@ -86,7 +86,8 @@ public class FeatureStructureSelectionIterator implements Iterator<FeatureStruct
   /**
    * Not supported, it throws an {@link UnsupportedOperationException}.
    *
-   * @throws UnsupportedOperationException -
+   * @throws UnsupportedOperationException
+   *           -
    */
   @Override
   public void remove() {

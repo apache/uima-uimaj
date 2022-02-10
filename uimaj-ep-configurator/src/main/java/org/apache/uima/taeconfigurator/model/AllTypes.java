@@ -28,7 +28,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-
 /**
  * Model part: Map of all defined types Key = string = typename, fully qualified Value = CAS
  * TypeSystem Type object.
@@ -41,7 +40,8 @@ public class AllTypes extends AbstractModelPart {
   /**
    * Instantiates a new all types.
    *
-   * @param pModelRoot the model root
+   * @param pModelRoot
+   *          the model root
    */
   public AllTypes(MultiPageEditor pModelRoot) {
     super(pModelRoot);

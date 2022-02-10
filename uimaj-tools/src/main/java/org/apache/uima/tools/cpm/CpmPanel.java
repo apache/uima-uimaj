@@ -101,13 +101,12 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UriUtils;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * The Class CpmPanel.
  */
 public class CpmPanel extends JPanel implements ActionListener, FileSelectorListener,
         TabClosedListener, TransportControlListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5096300176103368922L;
 
@@ -125,9 +124,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   /** The Constant PREFS_CPE_DESCRIPTOR_FILE. */
   private static final String PREFS_CPE_DESCRIPTOR_FILE = "cpeDescriptorFile";
-  
+
   /** The Constant PREFS_SAVE_USING_IMPORTS. */
-  private static final String PREFS_SAVE_USING_IMPORTS ="saveUsingImports";
+  private static final String PREFS_SAVE_USING_IMPORTS = "saveUsingImports";
 
   /** The open cpe desc menu item. */
   private JMenuItem openCpeDescMenuItem;
@@ -265,7 +264,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /** The last file sync user prompt time. */
   private long lastFileSyncUserPromptTime;
 
-  /**  Stores user preferences. */
+  /** Stores user preferences. */
   private Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/CPE_GUI");
 
   /** The m shutting down. */
@@ -282,10 +281,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   /** The current cpe desc. */
   private CpeDescription currentCpeDesc = createEmptyCpeDescription();
-  
+
   /** The default resource manager. */
   private final ResourceManager defaultResourceManager = UIMAFramework.newDefaultResourceManager();
-  
+
   /** The save using imports. */
   private boolean saveUsingImports = true;
 
@@ -296,7 +295,6 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * Instantiates a new cpm panel.
    */
   public CpmPanel() {
-    
 
     // The following is VERY flaky:
     // Don't 'try' this at home:
@@ -458,7 +456,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     initFileChoosers();
 
-    //create file selectors (used to populate CR and CI panels later) 
+    // create file selectors (used to populate CR and CI panels later)
     readerFileSelector = new FileSelector(null, "Collection Reader Descriptor",
             JFileChooser.FILES_ONLY, fileChooserRootDir, new XMLFileFilter());
     readerFileSelector.addFileSelectorListener(this, collectionReaderPanel);
@@ -477,7 +475,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     // CAS initializer panel is initially hidden since it is deprecated
     setCasInitializerPanelVisible(false);
-    
+
     // read preferences (loads last opened CPE descriptor)
     if (System.getProperty("uima.noprefs") == null) {
       readPreferences();
@@ -512,8 +510,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     consumerFileChooser.addChoosableFileFilter(new XMLFileFilter());
     File consumerDescDir = fileChooserRootDir;
     if (consumerSpecifiers.size() > 0) {
-      File lastConsumerFile = new File((String) consumerSpecifiers
-              .get(consumerSpecifiers.size() - 1));
+      File lastConsumerFile = new File(
+              (String) consumerSpecifiers.get(consumerSpecifiers.size() - 1));
       consumerDescDir = lastConsumerFile.getParentFile();
     }
     if (consumerDescDir.exists()) {
@@ -557,13 +555,13 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     refreshMenuItem.addActionListener(this);
     menuItemList.add(refreshMenuItem);
 
-    JMenu saveOptionsSubmenu = new JMenu ("Save Options");
+    JMenu saveOptionsSubmenu = new JMenu("Save Options");
     saveUsingImportMenuItem = new JCheckBoxMenuItem("Use <import>");
     saveUsingImportMenuItem.addActionListener(this);
     saveUsingImportMenuItem.setSelected(saveUsingImports);
     saveOptionsSubmenu.add(saveUsingImportMenuItem);
     menuItemList.add(saveOptionsSubmenu);
-        
+
     clearAllMenuItem = new JMenuItem("Clear All");
     clearAllMenuItem.addActionListener(this);
     menuItemList.add(clearAllMenuItem);
@@ -586,11 +584,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     return menuItemList;
   }
-  
+
   /**
    * Sets the cas initializer panel visible.
    *
-   * @param visible the new cas initializer panel visible
+   * @param visible
+   *          the new cas initializer panel visible
    */
   private void setCasInitializerPanelVisible(boolean visible) {
     casInitializerPanel.setVisible(visible);
@@ -626,7 +625,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Sets the save using imports.
    *
-   * @param b the new save using imports
+   * @param b
+   *          the new save using imports
    */
   private void setSaveUsingImports(boolean b) {
     saveUsingImports = b;
@@ -653,8 +653,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       updateCpeDescriptionParameterOverrides();
 
       // intantiate CPE
-      mCPE = null;  // to allow GC of previous ae's that may
-                    // hold onto lots of memory e.g. OpenNLP
+      mCPE = null; // to allow GC of previous ae's that may
+                   // hold onto lots of memory e.g. OpenNLP
       mCPE = UIMAFramework.produceCollectionProcessingEngine(currentCpeDesc);
 
       // attach callback listener
@@ -674,7 +674,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * Updates the configuration parameter settings in this.currentCpeDesc to match the current state
    * of the GUI.
    *
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    */
   private void updateCpeDescriptionParameterOverrides() throws Exception {
     // first check for descriptors out of sync with filesystem
@@ -722,8 +723,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
     // CAS Consumers
     for (int i = 0; i < consumerSpecifiers.size(); i++) {
-      CpeCasProcessor casProc = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
-              aeSpecifiers.size() + i);
+      CpeCasProcessor casProc = currentCpeDesc.getCpeCasProcessors()
+              .getCpeCasProcessor(aeSpecifiers.size() + i);
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
       if (consumerPanel.isModified()) {
         CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
@@ -740,9 +741,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * Called by createCpeDescription to add configuration parameter overrides to the CpeDescription
    * being constructed, based on the user's changes in the GUI.
    *
-   * @param aSettings          the CasProcessorConfigurationParameterSettings element that will be modified
-   * @param aPanel          the GUI panel representing settings for the CAS Processor
-   * @throws CpeDescriptorException the cpe descriptor exception
+   * @param aSettings
+   *          the CasProcessorConfigurationParameterSettings element that will be modified
+   * @param aPanel
+   *          the GUI panel representing settings for the CAS Processor
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
    */
   private void createParameterOverrides(CasProcessorConfigurationParameterSettings aSettings,
           MetaDataPanel aPanel) throws CpeDescriptorException {
@@ -776,7 +780,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     selectedComponentsChanged = false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -828,8 +834,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       if (index > 0) {
         // update CPE descriptor
         try {
-          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
-                  index);
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors()
+                  .getCpeCasProcessor(index);
           currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(index);
           currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, index - 1);
         } catch (CpeDescriptorException e) {
@@ -847,8 +853,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       if (index > -1 && index < aeTabbedPane.getTabCount() - 1) {
         // update CPE descriptor
         try {
-          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
-                  index);
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors()
+                  .getCpeCasProcessor(index);
           currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(index);
           currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, index + 1);
         } catch (CpeDescriptorException e) {
@@ -889,8 +895,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         // update CPE descriptor
         try {
           int absIndex = aeSpecifiers.size() + index;
-          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
-                  absIndex);
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors()
+                  .getCpeCasProcessor(absIndex);
           currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(absIndex);
           currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, absIndex - 1);
         } catch (CpeDescriptorException e) {
@@ -909,8 +915,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         // update CPE descriptor
         try {
           int absIndex = aeSpecifiers.size() + index;
-          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
-                  absIndex);
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors()
+                  .getCpeCasProcessor(absIndex);
           currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(absIndex);
           currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, absIndex + 1);
         } catch (CpeDescriptorException e) {
@@ -945,8 +951,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } else if (source == viewCasInitializerPanelMenuItem) {
       setCasInitializerPanelVisible(!casInitializerPanel.isVisible());
     } else if (source == saveUsingImportMenuItem) {
-      setSaveUsingImports(!saveUsingImports);      
-    } 
+      setSaveUsingImports(!saveUsingImports);
+    }
   }
 
   /**
@@ -1011,15 +1017,17 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Do save cpe descriptor.
    *
-   * @param aFile the a file
-   * @throws Exception the exception
+   * @param aFile
+   *          the a file
+   * @throws Exception
+   *           the exception
    */
   private void doSaveCpeDescriptor(File aFile) throws Exception {
     // update the parameter overrides according to GUI settings
     updateCpeDescriptionParameterOverrides();
-    
+
     if (saveUsingImports) {
-      //replace <include> with <import>, and update relative import paths
+      // replace <include> with <import>, and update relative import paths
       updateImports(aFile);
     }
 
@@ -1038,17 +1046,19 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       }
     }
 
-    //mark descriptor with new location, for later import resolution
+    // mark descriptor with new location, for later import resolution
     currentCpeDesc.setSourceUrl(aFile.toURI().toURL());
-    
+
     clearDirty();
   }
 
   /**
    * Update imports.
    *
-   * @param cpeDescSaveFile the cpe desc save file
-   * @throws Exception the exception
+   * @param cpeDescSaveFile
+   *          the cpe desc save file
+   * @throws Exception
+   *           the exception
    */
   private void updateImports(File cpeDescSaveFile) throws Exception {
     CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
@@ -1064,46 +1074,51 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     for (int i = 0; i < casProcs.length; i++) {
       updateImport(casProcs[i].getCpeComponentDescriptor(), cpeDescSaveFile);
     }
-    
+
   }
 
   /**
    * Update import.
    *
-   * @param descriptor the descriptor
-   * @param cpeDescSaveFile the cpe desc save file
-   * @throws Exception the exception
+   * @param descriptor
+   *          the descriptor
+   * @param cpeDescSaveFile
+   *          the cpe desc save file
+   * @throws Exception
+   *           the exception
    */
-  private void updateImport(CpeComponentDescriptor descriptor, File cpeDescSaveFile) throws Exception {
-    //don't touch import by name
+  private void updateImport(CpeComponentDescriptor descriptor, File cpeDescSaveFile)
+          throws Exception {
+    // don't touch import by name
     if (descriptor.getImport() != null && descriptor.getImport().getName() != null)
       return;
-    
-    //for include or import by location, get the absolute URL of the descriptor
+
+    // for include or import by location, get the absolute URL of the descriptor
     URL descUrl = descriptor.findAbsoluteUrl(defaultResourceManager);
-    
-    //don't touch URLs with protocol other than file:
+
+    // don't touch URLs with protocol other than file:
     if ("file".equals(descUrl.getProtocol())) {
       File descFile = urlToFile(descUrl);
-      //try to find relative path from cpeDescSaveFile to descFile
+      // try to find relative path from cpeDescSaveFile to descFile
       String relPath = FileUtils.findRelativePath(descFile, cpeDescSaveFile.getParentFile());
       if (relPath != null) {
-        //update CPE descriptor
+        // update CPE descriptor
         descriptor.setInclude(null);
         Import newImport = UIMAFramework.getResourceSpecifierFactory().createImport();
         newImport.setLocation(relPath);
         descriptor.setImport(newImport);
       }
-    }    
+    }
   }
 
   /**
-   * Utility method for convertion a URL to a File name, taking care of
-   * proper escaping.
+   * Utility method for convertion a URL to a File name, taking care of proper escaping.
    *
-   * @param url a URL
+   * @param url
+   *          a URL
    * @return File corresponding to that URL
-   * @throws URISyntaxException the URI syntax exception
+   * @throws URISyntaxException
+   *           the URI syntax exception
    */
   private File urlToFile(URL url) throws URISyntaxException {
     return new File(UriUtils.quote(url));
@@ -1128,7 +1143,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
             }
           }
 
-          if (FILE_ENTITY_PROGRESS_INDEX >= 0) {  // uima-1086
+          if (FILE_ENTITY_PROGRESS_INDEX >= 0) { // uima-1086
             int value = (int) progress[FILE_ENTITY_PROGRESS_INDEX].getCompleted();
             progressBar.setValue(value);
 
@@ -1145,7 +1160,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   *  Ask user to confirm exist. Return true if they confirm, false if not.
+   * Ask user to confirm exist. Return true if they confirm, false if not.
    *
    * @return true, if successful
    */
@@ -1168,9 +1183,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     // ask for confirm if configuration settings have been modified
     try {
       if (isDirty()) {
-        int rv = JOptionPane.showConfirmDialog(this, "Configuration settings have been modified. "
-                + "Would you like to save the CPE descriptor?", "Exit",
-                JOptionPane.YES_NO_CANCEL_OPTION);
+        int rv = JOptionPane.showConfirmDialog(this,
+                "Configuration settings have been modified. "
+                        + "Would you like to save the CPE descriptor?",
+                "Exit", JOptionPane.YES_NO_CANCEL_OPTION);
 
         if (rv == JOptionPane.CANCEL_OPTION) {
           mShuttingDown = false;
@@ -1248,8 +1264,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       File readerSpecifierFile = new File(readerFileSelector.getSelected());
       if (readerSpecifierFile.lastModified() > this.collectionReaderLastFileSyncTimestamp) {
         try {
-          populateCollectionReaderPanel(currentCpeDesc.getAllCollectionCollectionReaders()[0]
-                  .getCollectionIterator());
+          populateCollectionReaderPanel(
+                  currentCpeDesc.getAllCollectionCollectionReaders()[0].getCollectionIterator());
         } catch (Exception e) {
           displayError(e);
         }
@@ -1260,8 +1276,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       File casInitializerSpecifierFile = new File(casInitializerFileSelector.getSelected());
       if (casInitializerSpecifierFile.lastModified() > this.casInitializerLastFileSyncTimestamp) {
         try {
-          populateCasInitializerPanel(currentCpeDesc.getAllCollectionCollectionReaders()[0]
-                  .getCasInitializer());
+          populateCasInitializerPanel(
+                  currentCpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer());
         } catch (Exception e) {
           displayError(e);
         }
@@ -1357,11 +1373,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Populate collection reader panel.
    *
-   * @param cpeColRdr the cpe col rdr
+   * @param cpeColRdr
+   *          the cpe col rdr
    * @return true, if successful
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private boolean populateCollectionReaderPanel(CpeCollectionReaderIterator cpeColRdr)
           throws InvalidXMLException, IOException, ResourceConfigurationException {
@@ -1370,12 +1390,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       String specifierFile = null;
       if (cpeColRdr != null) {
         specifierUrl = cpeColRdr.getDescriptor().findAbsoluteUrl(defaultResourceManager);
-        //CPE GUI only supports file URLs
+        // CPE GUI only supports file URLs
         if (!"file".equals(specifierUrl.getProtocol())) {
-          displayError("Could not load descriptor from URL " + specifierUrl.toString() + 
-                  ".  CPE Configurator only supports file: URLs");
+          displayError("Could not load descriptor from URL " + specifierUrl.toString()
+                  + ".  CPE Configurator only supports file: URLs");
           return false;
-        }  
+        }
         try {
           specifierFile = urlToFile(specifierUrl).toString();
         } catch (URISyntaxException e) {
@@ -1409,10 +1429,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         } else {
           collectionReaderLastFileSyncTimestamp = f.lastModified();
           XMLInputSource readerInputSource = new XMLInputSource(f);
-          collectionReaderDesc = UIMAFramework.getXMLParser().parseCollectionReaderDescription(
-                  readerInputSource);
-          collectionReaderPanel.populate(collectionReaderDesc.getMetaData(), cpeColRdr
-                  .getConfigurationParameterSettings());
+          collectionReaderDesc = UIMAFramework.getXMLParser()
+                  .parseCollectionReaderDescription(readerInputSource);
+          collectionReaderPanel.populate(collectionReaderDesc.getMetaData(),
+                  cpeColRdr.getConfigurationParameterSettings());
         }
       }
       return true;
@@ -1426,11 +1446,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Populate cas initializer panel.
    *
-   * @param cpeCasIni the cpe cas ini
+   * @param cpeCasIni
+   *          the cpe cas ini
    * @return true, if successful
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private boolean populateCasInitializerPanel(CpeCollectionReaderCasInitializer cpeCasIni)
           throws InvalidXMLException, IOException, ResourceConfigurationException {
@@ -1439,12 +1463,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       String specifierFile = null;
       if (cpeCasIni != null) {
         specifierUrl = cpeCasIni.getDescriptor().findAbsoluteUrl(defaultResourceManager);
-        //CPE GUI only supports file URLs
+        // CPE GUI only supports file URLs
         if (!"file".equals(specifierUrl.getProtocol())) {
-          displayError("Could not load descriptor from URL " + specifierUrl.toString() + 
-                  ".  CPE Configurator only supports file: URLs");
+          displayError("Could not load descriptor from URL " + specifierUrl.toString()
+                  + ".  CPE Configurator only supports file: URLs");
           return false;
-        }  
+        }
         try {
           specifierFile = urlToFile(specifierUrl).toString();
         } catch (URISyntaxException e) {
@@ -1481,11 +1505,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       } else {
         casInitializerLastFileSyncTimestamp = f.lastModified();
         XMLInputSource casIniInputSource = new XMLInputSource(f);
-        casInitializerDesc = UIMAFramework.getXMLParser().parseCasInitializerDescription(
-                casIniInputSource);
+        casInitializerDesc = UIMAFramework.getXMLParser()
+                .parseCasInitializerDescription(casIniInputSource);
 
-        casInitializerPanel.populate(casInitializerDesc.getMetaData(), cpeCasIni
-                .getConfigurationParameterSettings());
+        casInitializerPanel.populate(casInitializerDesc.getMetaData(),
+                cpeCasIni.getConfigurationParameterSettings());
         return true;
       }
     } finally {
@@ -1497,11 +1521,16 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Adds the AE.
    *
-   * @param aeSpecifierFile the ae specifier file
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aeSpecifierFile
+   *          the ae specifier file
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private void addAE(String aeSpecifierFile) throws CpeDescriptorException, InvalidXMLException,
           IOException, ResourceConfigurationException {
@@ -1521,22 +1550,28 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Adds the AE.
    *
-   * @param cpeCasProc the cpe cas proc
+   * @param cpeCasProc
+   *          the cpe cas proc
    * @return true, if successful
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private boolean addAE(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
           InvalidXMLException, IOException, ResourceConfigurationException {
-    URL aeSpecifierUrl = cpeCasProc.getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
-    //CPE GUI only supports file URLs
+    URL aeSpecifierUrl = cpeCasProc.getCpeComponentDescriptor()
+            .findAbsoluteUrl(defaultResourceManager);
+    // CPE GUI only supports file URLs
     if (!"file".equals(aeSpecifierUrl.getProtocol())) {
-      displayError("Could not load descriptor from URL " + aeSpecifierUrl.toString() + 
-              ".  CPE Configurator only supports file: URLs");
+      displayError("Could not load descriptor from URL " + aeSpecifierUrl.toString()
+              + ".  CPE Configurator only supports file: URLs");
       return false;
-    }  
+    }
     File f;
     try {
       f = urlToFile(aeSpecifierUrl);
@@ -1546,8 +1581,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierUrl);
-    ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            aeInputSource);
+    ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(aeInputSource);
 
     AnalysisEnginePanel aePanel = new AnalysisEnginePanel(aeSpecifier, f, fileModStamp);
     String tabName;
@@ -1572,11 +1607,16 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Adds the consumer.
    *
-   * @param consumerSpecifierFile the consumer specifier file
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param consumerSpecifierFile
+   *          the consumer specifier file
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private void addConsumer(String consumerSpecifierFile) throws CpeDescriptorException,
           InvalidXMLException, IOException, ResourceConfigurationException {
@@ -1595,23 +1635,28 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Adds the consumer.
    *
-   * @param cpeCasProc the cpe cas proc
+   * @param cpeCasProc
+   *          the cpe cas proc
    * @return true, if successful
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private boolean addConsumer(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
           InvalidXMLException, IOException, ResourceConfigurationException {
-    URL consumerSpecifierUrl = cpeCasProc.getCpeComponentDescriptor().findAbsoluteUrl(
-            defaultResourceManager);
-    //CPE GUI only supports file URLs
+    URL consumerSpecifierUrl = cpeCasProc.getCpeComponentDescriptor()
+            .findAbsoluteUrl(defaultResourceManager);
+    // CPE GUI only supports file URLs
     if (!"file".equals(consumerSpecifierUrl.getProtocol())) {
-      displayError("Could not load descriptor from URL " + consumerSpecifierUrl.toString() + 
-              ".  CPE Configurator only supports file: URLs");
+      displayError("Could not load descriptor from URL " + consumerSpecifierUrl.toString()
+              + ".  CPE Configurator only supports file: URLs");
       return false;
-    }  
+    }
     File f;
     try {
       f = urlToFile(consumerSpecifierUrl);
@@ -1622,8 +1667,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource consumerInputSource = new XMLInputSource(consumerSpecifierUrl);
-    ResourceSpecifier casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            consumerInputSource);
+    ResourceSpecifier casConsumerSpecifier = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(consumerInputSource);
     ConsumerPanel consumerPanel = new ConsumerPanel(casConsumerSpecifier, f, fileModStamp);
 
     String tabName;
@@ -1647,7 +1692,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Make unique cas processor name.
    *
-   * @param baseName the base name
+   * @param baseName
+   *          the base name
    * @return the string
    */
   private String makeUniqueCasProcessorName(String baseName) {
@@ -1674,8 +1720,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     consumerSpecifiers.clear();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.tools.util.gui.FileSelectorListener#fileSelected(javax.swing.JComponent, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.tools.util.gui.FileSelectorListener#fileSelected(javax.swing.JComponent,
+   * java.lang.String)
    */
   // FileSelectorListener:
   @Override
@@ -1691,15 +1740,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           currentCpeDesc.setAllCollectionCollectionReaders(null);
           currentCpeDesc.addCollectionReader(fileString);
           CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
-          
-//          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
-//          if (readers.length == 0) {
-//            currentCpeDesc.addCollectionReader(fileString);
-//            readers = currentCpeDesc.getAllCollectionCollectionReaders();
-//          } else {
-//            readers[0].getCollectionIterator().getDescriptor().getInclude().set(fileString);
-//            readers[0].getCollectionIterator().setConfigurationParameterSettings(null);
-//          }
+
+          // CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          // if (readers.length == 0) {
+          // currentCpeDesc.addCollectionReader(fileString);
+          // readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          // } else {
+          // readers[0].getCollectionIterator().getDescriptor().getInclude().set(fileString);
+          // readers[0].getCollectionIterator().setConfigurationParameterSettings(null);
+          // }
 
           rv = populateCollectionReaderPanel(readers[0].getCollectionIterator());
         } else {
@@ -1713,16 +1762,16 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           currentCpeDesc.setAllCollectionCollectionReaders(null);
           currentCpeDesc.addCasInitializer(fileString);
           CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
-          
-//          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
-//          if (readers.length == 0 || readers[0].getCasInitializer() == null) {
-//            currentCpeDesc.addCasInitializer(fileString);
-//            readers = currentCpeDesc.getAllCollectionCollectionReaders();
-//          } else {
-//            readers[0].getCasInitializer().getDescriptor().getInclude().set(fileString);
-//            // clear config settings
-//            readers[0].getCasInitializer().setConfigurationParameterSettings(null);
-//          }
+
+          // CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          // if (readers.length == 0 || readers[0].getCasInitializer() == null) {
+          // currentCpeDesc.addCasInitializer(fileString);
+          // readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          // } else {
+          // readers[0].getCasInitializer().getDescriptor().getInclude().set(fileString);
+          // // clear config settings
+          // readers[0].getCasInitializer().setConfigurationParameterSettings(null);
+          // }
           rv = populateCasInitializerPanel(readers[0].getCasInitializer());
         } else {
           // no CAS initializer selected - OK
@@ -1744,8 +1793,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     return rv;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.tools.cpm.TabClosedListener#tabClosed(org.apache.uima.tools.cpm.JTabbedPaneWithCloseIcons, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.tools.cpm.TabClosedListener#tabClosed(org.apache.uima.tools.cpm.
+   * JTabbedPaneWithCloseIcons, int)
    */
   // TabClosedListener:
   @Override
@@ -1764,7 +1816,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.util.gui.TransportControlListener#controlStarted()
    */
   @Override
@@ -1774,7 +1828,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     setFrameEnabled(false);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.util.gui.TransportControlListener#controlPaused()
    */
   @Override
@@ -1792,13 +1848,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     progressTimer.stop();
     performanceQueryTimer.stop();
 
-    PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(CpmPanel.this
-            .getParentFrame());
+    PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(
+            CpmPanel.this.getParentFrame());
     perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
             "Processing is paused.");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.util.gui.TransportControlListener#controlResumed()
    */
   @Override
@@ -1814,7 +1872,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     performanceQueryTimer.restart();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.tools.util.gui.TransportControlListener#controlStopped()
    */
   @Override
@@ -1969,11 +2029,16 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Open cpe descriptor.
    *
-   * @param aFile the a file
-   * @throws InvalidXMLException the invalid XML exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws CpeDescriptorException the cpe descriptor exception
-   * @throws ResourceConfigurationException the resource configuration exception
+   * @param aFile
+   *          the a file
+   * @throws InvalidXMLException
+   *           the invalid XML exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws CpeDescriptorException
+   *           the cpe descriptor exception
+   * @throws ResourceConfigurationException
+   *           the resource configuration exception
    */
   private void openCpeDescriptor(File aFile) throws InvalidXMLException, IOException,
           CpeDescriptorException, ResourceConfigurationException {
@@ -1983,8 +2048,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     // update GUI
     // Collection Reader
     CpeCollectionReader[] collRdrs = currentCpeDesc.getAllCollectionCollectionReaders(); // more
-                                                                                          // than
-                                                                                          // one??
+                                                                                         // than
+                                                                                         // one??
     CpeCollectionReader collRdr = null;
     if (collRdrs != null && collRdrs.length > 0) {
       collRdr = collRdrs[0];
@@ -2012,26 +2077,26 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     for (int i = 0; i < casProcs.length; i++) {
       boolean success = true;
       try {
-        URL specifierUrl = casProcs[i].getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
-        ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                new XMLInputSource(specifierUrl));
+        URL specifierUrl = casProcs[i].getCpeComponentDescriptor()
+                .findAbsoluteUrl(defaultResourceManager);
+        ResourceSpecifier specifier = UIMAFramework.getXMLParser()
+                .parseResourceSpecifier(new XMLInputSource(specifierUrl));
         if (isCasConsumerSpecifier(specifier)) {
           success = addConsumer(casProcs[i]);
         } else {
           success = addAE(casProcs[i]);
         }
-      }
-      catch(Exception e) {
+      } catch (Exception e) {
         System.err.println("Error loading CPE Descriptor " + aFile.getPath());
-        e.printStackTrace();        
-        success= false;
+        e.printStackTrace();
+        success = false;
       }
       if (!success) {
         currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(i - numFailed);
         numFailed++;
       }
-    }    
-    
+    }
+
     prefs.put(PREFS_CPE_DESCRIPTOR_FILE, aFile.getAbsolutePath());
 
     // nothing should be dirty when we first open
@@ -2041,7 +2106,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Checks if is cas consumer specifier.
    *
-   * @param specifier the specifier
+   * @param specifier
+   *          the specifier
    * @return true, if is cas consumer specifier
    */
   private boolean isCasConsumerSpecifier(ResourceSpecifier specifier) {
@@ -2058,8 +2124,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * The Class StatusCallbackListenerImpl.
    */
   class StatusCallbackListenerImpl implements StatusCallbackListener {
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
      */
     @Override
@@ -2087,8 +2155,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       progressTimer.start();
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS, org.apache.uima.collection.EntityProcessStatus)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.
+     * CAS, org.apache.uima.collection.EntityProcessStatus)
      */
     @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
@@ -2099,22 +2171,29 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#batchProcessComplete()
      */
     @Override
     public void batchProcessComplete() {
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
      */
     @Override
     public void collectionProcessComplete() {
       onCompletion();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#paused()
      */
     @Override
@@ -2122,7 +2201,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       System.out.println("StatusCallbackListenerImpl::paused()");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#resumed()
      */
     @Override
@@ -2130,14 +2211,16 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       System.out.println("StatusCallbackListenerImpl::resumed");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
      */
     @Override
     public void aborted() {
       if (!mShuttingDown && !mPaused) {
-        PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(CpmPanel.this
-                .getParentFrame());
+        PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(
+                CpmPanel.this.getParentFrame());
         perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
                 "Processing aborted.");
       }
@@ -2147,11 +2230,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   * MetaDataPanel used for Collection Reader &amp; AE selection and configuration. Adds a reset method
-   * to clear out related components when specifier file selection changes.
+   * MetaDataPanel used for Collection Reader &amp; AE selection and configuration. Adds a reset
+   * method to clear out related components when specifier file selection changes.
    */
   static class ResetableMetaDataPanel extends MetaDataPanel {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -4573780175511175666L;
 
@@ -2164,7 +2247,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     /**
      * Instantiates a new resetable meta data panel.
      *
-     * @param nrColumns the nr columns
+     * @param nrColumns
+     *          the nr columns
      */
     public ResetableMetaDataPanel(int nrColumns) {
       super(nrColumns);

@@ -19,15 +19,14 @@
 
 package org.apache.uima.caseditor.editor.outline;
 
-
 /**
  * The Enum OutlineStyles.
  */
 public enum OutlineStyles {
 
-	/** The mode. */
-	MODE,
-	
-	/** The type. */
-	TYPE
+  /** The mode. */
+  MODE,
+
+  /** The type. */
+  TYPE
 }

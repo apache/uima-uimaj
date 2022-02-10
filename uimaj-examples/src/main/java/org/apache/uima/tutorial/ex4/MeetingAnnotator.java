@@ -67,21 +67,21 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
 
     for (RoomNumber room : roomNumberIndex.select()) {
       for (DateAnnot date : dateIndex.select()) {
-        for(TimeAnnot time1 : timeIndex.select()) {
+        for (TimeAnnot time1 : timeIndex.select()) {
           for (TimeAnnot time2 : timeIndex.select()) {
 
             // times must be different annotations
             if (time1 != time2) {
               // compute the begin and end of the span
-              int minBegin = Math.min(Math.min(time1.getBegin(), time2.getBegin()), 
-                                      Math.min(date .getBegin(), room .getBegin()));
-              int maxEnd = Math.max(Math.max(time1.getEnd(), time2.getEnd()), 
-                                    Math.max(date .getEnd(), room .getEnd()));
+              int minBegin = Math.min(Math.min(time1.getBegin(), time2.getBegin()),
+                      Math.min(date.getBegin(), room.getBegin()));
+              int maxEnd = Math.max(Math.max(time1.getEnd(), time2.getEnd()),
+                      Math.max(date.getEnd(), room.getEnd()));
 
               // span must be smaller than the window size?
-              if (maxEnd - minBegin < mWindowSize && 
-                // span must not overlap the last annotation we made
-                  minBegin > lastMeetingEnd) {
+              if (maxEnd - minBegin < mWindowSize &&
+              // span must not overlap the last annotation we made
+                      minBegin > lastMeetingEnd) {
                 // annotate
                 Meeting mtg = new Meeting(aJCas, minBegin, maxEnd, room, date, time1, time2);
                 mtg.addToIndexes();
@@ -90,7 +90,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
             }
           }
         }
-      }   
+      }
     }
   }
 }

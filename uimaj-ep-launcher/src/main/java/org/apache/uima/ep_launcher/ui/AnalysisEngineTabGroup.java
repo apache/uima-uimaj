@@ -30,26 +30,20 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 
 /**
- * The tab group to set up all the parameters which are necessary to run
- * an analysis engine.
+ * The tab group to set up all the parameters which are necessary to run an analysis engine.
  */
 public class AnalysisEngineTabGroup extends AbstractLaunchConfigurationTabGroup {
 
   @Override
   public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 
-    ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-            new AnalysisEngineMainTab(),
-            new JavaArgumentsTab(),
-            new JavaJRETab(),  // Java Runtime Environment
-            new JavaClasspathTab(),
-            // TODO: Error launch configuration does not support source lookup, why not?
-            // It should be on the tab.
-            new SourceLookupTab(),
-            new EnvironmentTab(),
-            new CommonTab()
-            };
-    
+    ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new AnalysisEngineMainTab(),
+        new JavaArgumentsTab(), new JavaJRETab(), // Java Runtime Environment
+        new JavaClasspathTab(),
+        // TODO: Error launch configuration does not support source lookup, why not?
+        // It should be on the tab.
+        new SourceLookupTab(), new EnvironmentTab(), new CommonTab() };
+
     setTabs(tabs);
   }
 }

@@ -46,12 +46,11 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 
-
 /**
  * The Class CpmFrame.
  */
 public class CpmFrame extends JFrame implements ActionListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 756368351780483658L;
 
@@ -135,7 +134,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     exitMenuItem = new JMenuItem("Exit");
     exitMenuItem.addActionListener(this);
     fileMenu.add(exitMenuItem);
-    
+
     JMenu viewMenu = new JMenu("View");
     List viewMenuItems = cpmPanel.createViewMenuItems();
     iter = viewMenuItems.iterator();
@@ -157,7 +156,9 @@ public class CpmFrame extends JFrame implements ActionListener {
     return menuBar;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -174,7 +175,9 @@ public class CpmFrame extends JFrame implements ActionListener {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.Container#getPreferredSize()
    */
   @Override
@@ -186,19 +189,20 @@ public class CpmFrame extends JFrame implements ActionListener {
   /**
    * Runs the application.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
-    //GUI creation must be done in the event handler thread, because Swing is
-    //not thread-safe.  This is particularly important for the CPE Configurator
-    //because it's initialization can be quite complex (it loads the last known    
-    //CPE descriptor).
+    // GUI creation must be done in the event handler thread, because Swing is
+    // not thread-safe. This is particularly important for the CPE Configurator
+    // because it's initialization can be quite complex (it loads the last known
+    // CPE descriptor).
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        initGUI();        
+        initGUI();
       }
-    });    
+    });
   }
 
   /**

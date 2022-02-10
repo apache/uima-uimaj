@@ -31,6 +31,10 @@ import java.util.Set;
 import org.apache.uima.internal.util.IntListIterator;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @deprecated Not used anymore. Will be removed in UIMA 4.
+ */
+@Deprecated
 public class IntArrayRBTTest {
   private final static int NIL = 0;
   static final Random rand = new Random();

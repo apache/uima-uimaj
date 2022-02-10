@@ -44,15 +44,15 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    * files.
    */
   public static final String PARAM_INPUTDIR = "InputDirectory";
-  
+
   /**
-   * Name of the configuration parameter that must be set to indicate if the
-   * execution fails if an encountered type is unknown
+   * Name of the configuration parameter that must be set to indicate if the execution fails if an
+   * encountered type is unknown
    */
   public static final String PARAM_FAILUNKNOWN = "FailOnUnknownType";
 
   private Boolean mFailOnUnknownType;
-  
+
   private ArrayList mFiles;
 
   private int mCurrentIndex;
@@ -62,10 +62,10 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    */
   @Override
   public void initialize() throws ResourceInitializationException {
-	mFailOnUnknownType = (Boolean) getConfigParameterValue(PARAM_FAILUNKNOWN);
-	if (null == mFailOnUnknownType) {
-	  mFailOnUnknownType = true;  // default to true if not specified
-	}
+    mFailOnUnknownType = (Boolean) getConfigParameterValue(PARAM_FAILUNKNOWN);
+    if (null == mFailOnUnknownType) {
+      mFailOnUnknownType = true; // default to true if not specified
+    }
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
     mCurrentIndex = 0;
 

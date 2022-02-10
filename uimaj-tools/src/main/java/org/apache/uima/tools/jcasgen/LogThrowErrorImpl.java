@@ -24,12 +24,11 @@ import org.apache.uima.tools.jcasgen.Jg.ErrorExit;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-
 /**
  * The Class LogThrowErrorImpl.
  */
 public class LogThrowErrorImpl implements IError {
-  
+
   /** The log levels. */
   private static Level logLevels[] = { Level.INFO, Level.WARNING, Level.SEVERE };
 

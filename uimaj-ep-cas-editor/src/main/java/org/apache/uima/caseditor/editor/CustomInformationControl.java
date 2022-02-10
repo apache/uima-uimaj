@@ -33,12 +33,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-
 /**
  * TODO: add javadoc here.
  */
-public class CustomInformationControl implements IInformationControl, IInformationControlExtension2 {
-  
+public class CustomInformationControl
+        implements IInformationControl, IInformationControlExtension2 {
+
   /** The m shell. */
   private Shell mShell;
 
@@ -51,8 +51,10 @@ public class CustomInformationControl implements IInformationControl, IInformati
   /**
    * Initializes a new instance.
    *
-   * @param parent the parent
-   * @param contentHandler the content handler
+   * @param parent
+   *          the parent
+   * @param contentHandler
+   *          the content handler
    */
   public CustomInformationControl(Shell parent,
           ICustomInformationControlContentHandler contentHandler) {
@@ -68,7 +70,8 @@ public class CustomInformationControl implements IInformationControl, IInformati
   /**
    * Sets the viewer control.
    *
-   * @param viewerControl the new control
+   * @param viewerControl
+   *          the new control
    */
   public void setControl(Control viewerControl) {
     mControl = viewerControl;

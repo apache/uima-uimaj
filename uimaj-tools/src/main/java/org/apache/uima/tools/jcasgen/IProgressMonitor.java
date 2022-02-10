@@ -19,12 +19,11 @@
 
 package org.apache.uima.tools.jcasgen;
 
-
 /**
  * The Interface IProgressMonitor.
  */
 public interface IProgressMonitor {
-  
+
   /**
    * Done.
    */
@@ -33,22 +32,26 @@ public interface IProgressMonitor {
   /**
    * Begin task.
    *
-   * @param name the name
-   * @param totalWorked the total worked
+   * @param name
+   *          the name
+   * @param totalWorked
+   *          the total worked
    */
   void beginTask(String name, int totalWorked);
 
   /**
    * Sub task.
    *
-   * @param name the name
+   * @param name
+   *          the name
    */
   void subTask(String name);
 
   /**
    * Worked.
    *
-   * @param work the work
+   * @param work
+   *          the work
    */
   void worked(int work);
 }

@@ -36,7 +36,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.CasToInlineXml;
 
-
 /**
  * A simple CAS consumer that generates inline XML and writes it to a file. UTF-8 encoding is used.
  * <p>
@@ -63,7 +62,9 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
   /** The m doc num. */
   private int mDocNum;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
    */
   @Override

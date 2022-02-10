@@ -25,13 +25,13 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-
 public class AnnotationEditingControl extends Composite {
 
   /**
    * Initializes the current instance.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   public AnnotationEditingControl(Composite parent) {
     super(parent, SWT.NONE);
@@ -47,7 +47,8 @@ public class AnnotationEditingControl extends Composite {
   /**
    * Display this feature structure.
    *
-   * @param structure the structure
+   * @param structure
+   *          the structure
    */
   public void displayFeatureStructure(FeatureStructure structure) {
   }

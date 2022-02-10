@@ -71,7 +71,6 @@ import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-
 /**
  * This document implementation is based on an uima cas object.
  */
@@ -79,7 +78,7 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /** The Constant JAVA_NATURE. */
   public static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
-  
+
   /** The m CAS. */
   private CAS mCAS;
 
@@ -92,10 +91,14 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Initializes a new instance.
    *
-   * @param cas the cas
-   * @param casFile the cas file
-   * @param typeSystemText          type system string
-   * @throws CoreException the core exception
+   * @param cas
+   *          the cas
+   * @param casFile
+   *          the cas file
+   * @param typeSystemText
+   *          type system string
+   * @throws CoreException
+   *           the core exception
    */
   public DocumentUimaImpl(CAS cas, IFile casFile, String typeSystemText) throws CoreException {
     mCAS = cas;
@@ -123,7 +126,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Internally removes an annotation from the {@link CAS}.
    *
-   * @param featureStructure the feature structure
+   * @param featureStructure
+   *          the feature structure
    */
   private void addFeatureStructureInternal(FeatureStructure featureStructure) {
     getCAS().getIndexRepository().addFS(featureStructure);
@@ -132,7 +136,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Adds the given annotation to the {@link CAS}.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void addFeatureStructure(FeatureStructure annotation) {
@@ -155,7 +160,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Internally removes an annotation from the {@link CAS}.
    *
-   * @param featureStructure the feature structure
+   * @param featureStructure
+   *          the feature structure
    */
   private void removeAnnotationInternal(FeatureStructure featureStructure) {
     getCAS().getIndexRepository().removeFS(featureStructure);
@@ -164,7 +170,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Removes the annotations from the {@link CAS}.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void removeFeatureStructure(FeatureStructure annotation) {
@@ -176,7 +183,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Removes the given annotations from the {@link CAS}.
    *
-   * @param annotationsToRemove the annotations to remove
+   * @param annotationsToRemove
+   *          the annotations to remove
    */
   @Override
   public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
@@ -193,7 +201,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Notifies clients about the changed annotation.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void update(FeatureStructure annotation) {
@@ -203,7 +212,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Notifies clients about the changed annotation.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
   @Override
   public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
@@ -218,7 +228,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Retrieves annotations of the given type from the {@link CAS}.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return the annotations
    */
   @Override
@@ -236,7 +247,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Fs iterator to collection.
    *
-   * @param iterator the iterator
+   * @param iterator
+   *          the iterator
    * @return the collection
    */
   static Collection<AnnotationFS> fsIteratorToCollection(FSIterator<AnnotationFS> iterator) {
@@ -253,7 +265,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Retrieves the given type from the {@link TypeSystem}.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return the type
    */
   @Override
@@ -273,8 +286,10 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Sets the content. The XCAS {@link InputStream} gets parsed.
    *
-   * @param casFile the new content
-   * @throws CoreException the core exception
+   * @param casFile
+   *          the new content
+   * @throws CoreException
+   *           the core exception
    */
   private void setContent(IFile casFile) throws CoreException {
 
@@ -298,8 +313,10 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Throw core exception.
    *
-   * @param e the e
-   * @throws CoreException the core exception
+   * @param e
+   *          the e
+   * @throws CoreException
+   *           the core exception
    */
   private void throwCoreException(Exception e) throws CoreException {
     String message = e.getMessage() != null ? e.getMessage() : "";
@@ -310,8 +327,10 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Serializes the {@link CAS} to the given {@link OutputStream} in the XCAS format.
    *
-   * @param out the out
-   * @throws CoreException the core exception
+   * @param out
+   *          the out
+   * @throws CoreException
+   *           the core exception
    */
   public void serialize(OutputStream out) throws CoreException {
     try {
@@ -320,13 +339,15 @@ public class DocumentUimaImpl extends AbstractDocument {
       throwCoreException(e);
     }
   }
-  
+
   /**
    * Gets the virgin CAS.
    *
-   * @param extensionTypeSystemFile the type system file
+   * @param extensionTypeSystemFile
+   *          the type system file
    * @return the virgin CAS
-   * @throws CoreException the core exception
+   * @throws CoreException
+   *           the core exception
    */
   public static CAS getVirginCAS(IFile extensionTypeSystemFile) throws CoreException {
     ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
@@ -351,16 +372,15 @@ public class DocumentUimaImpl extends AbstractDocument {
 
       IProject project = extensionTypeSystemFile.getProject();
       ClassLoader classLoader = getProjectClassLoader(project);
-      
+
       ResourceManager resourceManager;
-      if(classLoader != null) {
+      if (classLoader != null) {
         resourceManager = new ResourceManager_impl(classLoader);
       } else {
         resourceManager = UIMAFramework.newDefaultResourceManager();
       }
-      
-      String dataPath = project
-              .getPersistentProperty((new QualifiedName("", "CDEdataPath")));
+
+      String dataPath = project.getPersistentProperty((new QualifiedName("", "CDEdataPath")));
       if (dataPath != null) {
         resourceManager.setDataPath(dataPath);
       }
@@ -394,15 +414,17 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Gets the project class loader.
    *
-   * @param project the project
+   * @param project
+   *          the project
    * @return the project class loader
-   * @throws CoreException the core exception
+   * @throws CoreException
+   *           the core exception
    */
   public static ClassLoader getProjectClassLoader(IProject project) throws CoreException {
     IProjectNature javaNature = project.getNature(JAVA_NATURE);
     if (javaNature != null) {
       JavaProject javaProject = (JavaProject) JavaCore.create(project);
-      
+
       String[] runtimeClassPath = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
       List<URL> urls = new ArrayList<>();
       for (String cp : runtimeClassPath) {
@@ -413,7 +435,7 @@ public class DocumentUimaImpl extends AbstractDocument {
         }
       }
       return new URLClassLoader(urls.toArray(new URL[0]));
-    } 
+    }
     return null;
   }
 }

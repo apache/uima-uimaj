@@ -23,12 +23,11 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-
 /**
  * The Class ColorParser.
  */
 public class ColorParser {
-  
+
   /** The color name map. */
   private HashMap colorNameMap;
 
@@ -114,10 +113,14 @@ public class ColorParser {
   /**
    * Parses the and assign colors.
    *
-   * @param typeName the type name
-   * @param featureValue the feature value
-   * @param labelString the label string
-   * @param styleColor the style color
+   * @param typeName
+   *          the type name
+   * @param featureValue
+   *          the feature value
+   * @param labelString
+   *          the label string
+   * @param styleColor
+   *          the style color
    * @return the style map entry
    */
   // --------------------
@@ -166,8 +169,10 @@ public class ColorParser {
   /**
    * Parses the checked.
    *
-   * @param token the token
-   * @param sme the sme
+   * @param token
+   *          the token
+   * @param sme
+   *          the sme
    */
   // test for "checked:true" or false
   private void parseChecked(StringTokenizer token, StyleMapEntry sme) {
@@ -190,8 +195,10 @@ public class ColorParser {
   /**
    * Parses the hidden.
    *
-   * @param token the token
-   * @param sme the sme
+   * @param token
+   *          the token
+   * @param sme
+   *          the sme
    */
   // test for "hidden:true" or false
   private void parseHidden(StringTokenizer token, StyleMapEntry sme) {

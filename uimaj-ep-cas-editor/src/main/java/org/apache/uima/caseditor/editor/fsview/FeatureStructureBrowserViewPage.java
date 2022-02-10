@@ -61,15 +61,14 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
-
 /**
  * The actual view page which contains the ui code for this view.
  */
 public final class FeatureStructureBrowserViewPage extends Page {
-  
+
   /** The Constant LAST_SELECTED_FS_TYPE. */
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
-  
+
   /**
    * The Class FeatureStructureTreeContentProvider.
    */
@@ -85,7 +84,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
     /**
      * Instantiates a new feature structure tree content provider.
      *
-     * @param document the document
+     * @param document
+     *          the document
      */
     FeatureStructureTreeContentProvider(ICasDocument document) {
       mDocument = document;
@@ -105,8 +105,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
       List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       while (strictTypeIterator.hasNext()) {
-        featureStructureList.add(new ModelFeatureStructure(mDocument,
-                strictTypeIterator.next()));
+        featureStructureList.add(new ModelFeatureStructure(mDocument, strictTypeIterator.next()));
       }
 
       ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStructureList
@@ -151,7 +150,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
     /**
      * Retrieves children for a FeatureStrcuture and for FeatureValues if they have children.
      *
-     * @param parentElement the parent element
+     * @param parentElement
+     *          the parent element
      * @return the children
      */
     @Override
@@ -241,8 +241,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     @Override
     public void added(Collection<FeatureStructure> structures) {
-      final LinkedList<ModelFeatureStructure> featureStructureList =
-          new LinkedList<>();
+      final LinkedList<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       for (FeatureStructure structure : structures) {
         if (structure.getType() == mCurrentType) {
@@ -352,7 +351,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
   /** The m cas editor. */
   private ICasEditor mCasEditor;
-  
+
   /** The m FS list. */
   private ListViewer mFSList;
 
@@ -374,17 +373,18 @@ public final class FeatureStructureBrowserViewPage extends Page {
   /**
    * Initializes a new instance.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
-	if (editor == null)
-		throw new IllegalArgumentException("editor parameter must not be null!");
+    if (editor == null)
+      throw new IllegalArgumentException("editor parameter must not be null!");
 
     mDocument = editor.getDocument();
 
     mCasEditor = editor;
-    
+
     mDeleteAction = new DeleteFeatureStructureAction(this.mCasEditor);
 
     mSelectAllAction = new SelectAllAction();
@@ -438,27 +438,26 @@ public final class FeatureStructureBrowserViewPage extends Page {
     layout.numColumns = 1;
 
     mInstanceComposite.setLayout(layout);
-    
+
     Composite typePanel = new Composite(mInstanceComposite, SWT.NULL);
-    
+
     GridData typePanelData = new GridData();
     typePanelData.grabExcessHorizontalSpace = true;
     typePanelData.grabExcessVerticalSpace = false;
     typePanelData.horizontalAlignment = SWT.FILL;
     typePanel.setLayoutData(typePanelData);
-    
+
     GridLayout typePanelLayout = new GridLayout();
     typePanelLayout.numColumns = 2;
     typePanel.setLayout(typePanelLayout);
-    
+
     Label typeLabel = new Label(typePanel, SWT.NONE);
     typeLabel.setText("Type: ");
 
     GridData typeLabelData = new GridData();
     typeLabelData.horizontalAlignment = SWT.LEFT;
     typeLabel.setLayoutData(typeLabelData);
-    
-    
+
     TypeCombo typeCombo = new TypeCombo(typePanel);
     typeCombo.setInput(mDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
             mDocument.getCAS().getTypeSystem(), filterTypes);
@@ -466,24 +465,24 @@ public final class FeatureStructureBrowserViewPage extends Page {
     typeComboData.horizontalAlignment = SWT.FILL;
     typeComboData.grabExcessHorizontalSpace = true;
     typeCombo.setLayoutData(typeComboData);
-    
-    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().
-            getSessionPreferenceStore(mCasEditor.getEditorInput());
-    
+
+    final IPreferenceStore store = mCasEditor.getCasDocumentProvider()
+            .getSessionPreferenceStore(mCasEditor.getEditorInput());
+
     Type lastUsedType = mDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
-    
+
     if (lastUsedType != null) {
       typeCombo.select(lastUsedType);
     }
-    
+
     typeCombo.addListener(new ITypePaneListener() {
-      
+
       @Override
       public void typeChanged(Type newType) {
         store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
       }
     });
-    
+
     mFSList = new ListViewer(mInstanceComposite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
     GridData instanceListData = new GridData();
     instanceListData.grabExcessHorizontalSpace = true;
@@ -507,7 +506,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     if (lastUsedType != null)
       mFSList.setInput(lastUsedType);
-    
+
     getSite().setSelectionProvider(mFSList);
   }
 
@@ -525,9 +524,12 @@ public final class FeatureStructureBrowserViewPage extends Page {
    * Adds the following actions to the toolbar: {@link FeatureStructureBrowserViewPage.CreateAction}
    * DeleteAction
    *
-   * @param menuManager the menu manager
-   * @param toolBarManager the tool bar manager
-   * @param statusLineManager the status line manager
+   * @param menuManager
+   *          the menu manager
+   * @param toolBarManager
+   *          the tool bar manager
+   * @param statusLineManager
+   *          the status line manager
    */
   @Override
   public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager,
@@ -545,7 +547,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
   /**
    * Sets global action handlers for: delete select all.
    *
-   * @param actionBars the new action bars
+   * @param actionBars
+   *          the new action bars
    */
   @Override
   public void setActionBars(IActionBars actionBars) {

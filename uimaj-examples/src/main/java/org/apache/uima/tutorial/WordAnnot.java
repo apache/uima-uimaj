@@ -24,7 +24,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
 
-
 /**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
@@ -33,83 +32,89 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public class WordAnnot extends Annotation {
 
-    /**
-     * The Constant typeIndexID.
-     *
-     * @generated 
-     * @ordered 
-     */
-    public static final int typeIndexID = JCasRegistry.register(WordAnnot.class);
+  /**
+   * The Constant typeIndexID.
+   *
+   * @generated
+   * @ordered
+   */
+  public static final int typeIndexID = JCasRegistry.register(WordAnnot.class);
 
-    /**
-     * The Constant type.
-     *
-     * @generated 
-     * @ordered 
-     */
-    public static final int type = typeIndexID;
+  /**
+   * The Constant type.
+   *
+   * @generated
+   * @ordered
+   */
+  public static final int type = typeIndexID;
 
-    /**
-     * Gets the type index ID.
-     *
-     * @return the type index ID
-     * @generated 
-     */
-    @Override
-    public int getTypeIndexID() {
-        return typeIndexID;
-    }
+  /**
+   * Gets the type index ID.
+   *
+   * @return the type index ID
+   * @generated
+   */
+  @Override
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
 
-    /**
+  /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  WordAnnot() {
-    }
+  protected WordAnnot() {
+  }
 
-    /**
-     * Internal - constructor used by generator.
-     *
-     * @param type the type
-     * @param casImpl the cas impl
-     * @generated 
-     */
-    public  WordAnnot(TypeImpl type, CASImpl casImpl) {
-        super(type, casImpl);
-        readObject();
-    }
+  /**
+   * Internal - constructor used by generator.
+   *
+   * @param type
+   *          the type
+   * @param casImpl
+   *          the cas impl
+   * @generated
+   */
+  public WordAnnot(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    readObject();
+  }
 
-    /**
-     * Instantiates a new word annot.
-     *
-     * @param jcas the jcas
-     * @generated 
-     */
-    public  WordAnnot(JCas jcas) {
-        super(jcas);
-        readObject();
-    }
+  /**
+   * Instantiates a new word annot.
+   *
+   * @param jcas
+   *          the jcas
+   * @generated
+   */
+  public WordAnnot(JCas jcas) {
+    super(jcas);
+    readObject();
+  }
 
-    /**
-     * Instantiates a new word annot.
-     *
-     * @param jcas the jcas
-     * @param begin the begin
-     * @param end the end
-     */
-    public  WordAnnot(JCas jcas, int begin, int end) {
-        super(jcas);
-        setBegin(begin);
-        setEnd(end);
-        readObject();
-    }
+  /**
+   * Instantiates a new word annot.
+   *
+   * @param jcas
+   *          the jcas
+   * @param begin
+   *          the begin
+   * @param end
+   *          the end
+   */
+  public WordAnnot(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }
 
-    /**
-     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
-     *
-     * @generated modifiable
-     */
-    private void readObject() {
-    }
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+   *
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
 }

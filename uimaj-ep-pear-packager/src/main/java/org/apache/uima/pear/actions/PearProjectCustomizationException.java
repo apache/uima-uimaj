@@ -47,7 +47,8 @@ public class PearProjectCustomizationException extends Exception {
   /**
    * Instantiates a new pear project customization exception.
    *
-   * @param message the message
+   * @param message
+   *          the message
    */
   public PearProjectCustomizationException(String message) {
     super(message);
@@ -56,7 +57,8 @@ public class PearProjectCustomizationException extends Exception {
   /**
    * Instantiates a new pear project customization exception.
    *
-   * @param cause the cause
+   * @param cause
+   *          the cause
    */
   public PearProjectCustomizationException(Throwable cause) {
     super(cause);
@@ -65,8 +67,10 @@ public class PearProjectCustomizationException extends Exception {
   /**
    * Instantiates a new pear project customization exception.
    *
-   * @param message the message
-   * @param cause the cause
+   * @param message
+   *          the message
+   * @param cause
+   *          the cause
    */
   public PearProjectCustomizationException(String message, Throwable cause) {
     super(message, cause);
@@ -83,18 +87,18 @@ public class PearProjectCustomizationException extends Exception {
       IStatus[] sa = new IStatus[o.length];
       for (int i = 0; i < o.length; i++) {
         sa[i] = (IStatus) o[i];
-    }
+      }
       return sa;
-    }
-    else {
-        return new IStatus[0];
+    } else {
+      return new IStatus[0];
     }
   }
 
   /**
    * Gets the custom stack trace.
    *
-   * @param e the e
+   * @param e
+   *          the e
    * @return the custom stack trace
    */
   synchronized ArrayList getCustomStackTrace(Throwable e) {
@@ -111,7 +115,7 @@ public class PearProjectCustomizationException extends Exception {
       Throwable aCause = e.getCause();
       if (aCause != null) {
         a.addAll(getCustomStackTrace(aCause));
-    }
+      }
     }
     return a;
   }
@@ -119,7 +123,8 @@ public class PearProjectCustomizationException extends Exception {
   /**
    * Opens an Error dialog for this exception.
    *
-   * @param shell the shell
+   * @param shell
+   *          the shell
    */
   public void openErrorDialog(Shell shell) {
     try {
@@ -128,8 +133,8 @@ public class PearProjectCustomizationException extends Exception {
       msg = msg == null ? "" : msg;
       MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.ERROR, getCustomStackTrace(), msg,
               getCause());
-      ErrorDialog.openError(shell, "Project Customization Error", getMessage()
-              + " \nPlease see the details (below).", status, 0xFFFF);
+      ErrorDialog.openError(shell, "Project Customization Error",
+              getMessage() + " \nPlease see the details (below).", status, 0xFFFF);
     } catch (Throwable th) {
       th.printStackTrace();
     }
@@ -138,8 +143,10 @@ public class PearProjectCustomizationException extends Exception {
   /**
    * Opens an Error dialog for a given exception.
    *
-   * @param e          A Throwable instance
-   * @param shell          Ashell
+   * @param e
+   *          A Throwable instance
+   * @param shell
+   *          Ashell
    */
   public static void openErrorDialog(Throwable e, Shell shell) {
     PearProjectCustomizationException subEx = new PearProjectCustomizationException(

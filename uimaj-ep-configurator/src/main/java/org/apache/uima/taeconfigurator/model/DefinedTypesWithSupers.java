@@ -29,7 +29,6 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-
 /**
  * Model part: names of the defined types, augmented with their supertypes This means that some of
  * the built-ins (those in the super chain) will be included.
@@ -42,7 +41,8 @@ public class DefinedTypesWithSupers extends AbstractModelPart {
   /**
    * Instantiates a new defined types with supers.
    *
-   * @param pModelRoot the model root
+   * @param pModelRoot
+   *          the model root
    */
   public DefinedTypesWithSupers(MultiPageEditor pModelRoot) {
     super(pModelRoot);

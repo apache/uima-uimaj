@@ -29,13 +29,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-
-
 /**
  * The Class FeatureStructureSelection.
  */
 public class FeatureStructureSelection {
-  
+
   /** The m feature structures. */
   private List<FeatureStructure> mFeatureStructures;
 
@@ -43,14 +41,15 @@ public class FeatureStructureSelection {
    * Initializes a the current instance with all FeatureStructure object that are contained in the
    * {@link StructuredSelection}.
    *
-   * @param selection the selection
+   * @param selection
+   *          the selection
    */
   public FeatureStructureSelection(IStructuredSelection selection) {
     mFeatureStructures = new ArrayList<>(selection.size());
 
     for (Object item : selection.toList()) {
-      FeatureStructure annotation = (FeatureStructure) Platform.getAdapterManager().getAdapter(
-              item, FeatureStructure.class);
+      FeatureStructure annotation = (FeatureStructure) Platform.getAdapterManager().getAdapter(item,
+              FeatureStructure.class);
 
       // TODO: fix it
       if (annotation == null && item instanceof IAdaptable) {
@@ -94,6 +93,7 @@ public class FeatureStructureSelection {
 
   /**
    * Retrieves a human readable string.
+   * 
    * @return human readable string
    */
   @Override

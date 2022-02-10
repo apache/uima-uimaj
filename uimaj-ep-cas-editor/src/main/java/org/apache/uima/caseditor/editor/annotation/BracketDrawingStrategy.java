@@ -27,24 +27,29 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
-
 /**
  * Draws brackets around an annotation.
  */
 public class BracketDrawingStrategy implements IDrawingStrategy {
-  
+
   /** The Constant BRACKET_WIDTH. */
   private static final int BRACKET_WIDTH = 3;
 
   /**
    * Draws an opening bracket to the begin and a closing bracket to the end of the given annotation.
    *
-   * @param annotation the annotation
-   * @param gc the gc
-   * @param textWidget the text widget
-   * @param offset the offset
-   * @param length the length
-   * @param color the color
+   * @param annotation
+   *          the annotation
+   * @param gc
+   *          the gc
+   * @param textWidget
+   *          the text widget
+   * @param offset
+   *          the offset
+   * @param length
+   *          the length
+   * @param color
+   *          the color
    */
   @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
@@ -60,8 +65,8 @@ public class BracketDrawingStrategy implements IDrawingStrategy {
 
           boolean isDrawOpenBracket = annotationFS.getBegin() == offset;
           if (isDrawOpenBracket) {
-            gc.drawLine(bounds.x, bounds.y + bounds.height - 1, bounds.x + BRACKET_WIDTH, bounds.y
-                    + bounds.height - 1);
+            gc.drawLine(bounds.x, bounds.y + bounds.height - 1, bounds.x + BRACKET_WIDTH,
+                    bounds.y + bounds.height - 1);
 
             gc.drawLine(bounds.x, bounds.y, bounds.x, bounds.y + bounds.height - 1);
 
@@ -70,11 +75,11 @@ public class BracketDrawingStrategy implements IDrawingStrategy {
 
           boolean isDrawCloseBracket = annotationFS.getEnd() == offset + length;
           if (isDrawCloseBracket) {
-            gc.drawLine(bounds.x + bounds.width, bounds.y + bounds.height - 1, bounds.x
-                    + bounds.width - BRACKET_WIDTH, bounds.y + bounds.height - 1);
+            gc.drawLine(bounds.x + bounds.width, bounds.y + bounds.height - 1,
+                    bounds.x + bounds.width - BRACKET_WIDTH, bounds.y + bounds.height - 1);
 
-            gc.drawLine(bounds.x + bounds.width - 1, bounds.y, bounds.x + bounds.width - 1, bounds.y
-                    + bounds.height - 1);
+            gc.drawLine(bounds.x + bounds.width - 1, bounds.y, bounds.x + bounds.width - 1,
+                    bounds.y + bounds.height - 1);
 
             gc.drawLine(bounds.x + bounds.width, bounds.y, bounds.x + bounds.width - BRACKET_WIDTH,
                     bounds.y);

@@ -19,12 +19,11 @@
 
 package org.apache.uima.tools.jcasgen;
 
-
 /**
  * The Interface IError.
  */
 public interface IError {
-  
+
   /** The Constant ERROR. */
   int ERROR = 2;
 
@@ -37,9 +36,12 @@ public interface IError {
   /**
    * New error.
    *
-   * @param Severity the severity
-   * @param message the message
-   * @param e the e
+   * @param Severity
+   *          the severity
+   * @param message
+   *          the message
+   * @param e
+   *          the e
    */
   void newError(int Severity, String message, Exception e);
 }

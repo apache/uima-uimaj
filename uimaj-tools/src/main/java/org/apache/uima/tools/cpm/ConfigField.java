@@ -28,7 +28,6 @@ import javax.swing.JTextField;
 import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.ListSelector;
 
-
 /**
  * Configuration Field class used for representation of resource parameters in dynamically created
  * MetaDataPanels.
@@ -36,7 +35,7 @@ import org.apache.uima.tools.util.gui.ListSelector;
  * @see org.apache.uima.tools.cpm.MetaDataPanel
  */
 public class ConfigField {
-  
+
   /** The parameter name. */
   private String parameterName;
 
@@ -58,10 +57,14 @@ public class ConfigField {
   /**
    * Instantiates a new config field.
    *
-   * @param pn          Resource parameter name e.g. outputDir
-   * @param cs          String value of Java type used for value e.g. Integer
-   * @param mv          true if the value is a multi-value array
-   * @param c          Component used to represent field - Could be JTextField, JCheckBox, FileSelector or
+   * @param pn
+   *          Resource parameter name e.g. outputDir
+   * @param cs
+   *          String value of Java type used for value e.g. Integer
+   * @param mv
+   *          true if the value is a multi-value array
+   * @param c
+   *          Component used to represent field - Could be JTextField, JCheckBox, FileSelector or
    *          ListSelector
    */
   public ConfigField(String pn, String cs, boolean mv, JComponent c) {
@@ -166,7 +169,8 @@ public class ConfigField {
   /**
    * Sets the field value.
    *
-   * @param fieldValue the new field value
+   * @param fieldValue
+   *          the new field value
    */
   public void setFieldValue(Object fieldValue) {
     if (fieldComponent instanceof JTextField) {

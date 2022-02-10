@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -25,7 +24,6 @@ import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.AnnotationDisplayCustomizationFrame;
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class ShowAnnotationCustomizerHandler.
@@ -38,19 +36,22 @@ public class ShowAnnotationCustomizerHandler implements ActionListener {
   /**
    * Instantiates a new show annotation customizer handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public ShowAnnotationCustomizerHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
   public void actionPerformed(ActionEvent event) {
     AnnotationDisplayCustomizationFrame acd = new AnnotationDisplayCustomizationFrame(
-        "Customize Annotation Display");
+            "Customize Annotation Display");
     acd.init(this.main.getStyleMap(), this.main.getCas());
     acd.pack();
     acd.setVisible(true);

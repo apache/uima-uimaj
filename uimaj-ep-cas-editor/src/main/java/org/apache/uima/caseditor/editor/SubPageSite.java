@@ -28,7 +28,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.part.IPageSite;
 
-
 /**
  * The Class SubPageSite.
  */
@@ -36,34 +35,38 @@ public class SubPageSite implements IPageSite {
 
   /** The site. */
   private final IPageSite site;
-  
+
   /** The sub action bars. */
-  private SubActionBars subActionBars; 
-  
+  private SubActionBars subActionBars;
+
   /** The selection provider. */
   private ISelectionProvider selectionProvider;
 
   /**
    * Instantiates a new sub page site.
    *
-   * @param site the site
+   * @param site
+   *          the site
    */
   public SubPageSite(IPageSite site) {
     this.site = site;
   }
-  
+
   @Override
-  public boolean hasService(@SuppressWarnings("rawtypes") Class api) {
+  public boolean hasService(@SuppressWarnings("rawtypes")
+  Class api) {
     return site.hasService(api);
   }
 
   @Override
-  public Object getService(@SuppressWarnings("rawtypes") Class api) {
+  public Object getService(@SuppressWarnings("rawtypes")
+  Class api) {
     return site.getService(api);
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
     return site.getAdapter(adapter);
   }
 
@@ -100,7 +103,7 @@ public class SubPageSite implements IPageSite {
 
   @Override
   public IActionBars getActionBars() {
-    
+
     if (subActionBars == null) {
       subActionBars = new SubActionBars(site.getActionBars());
     }

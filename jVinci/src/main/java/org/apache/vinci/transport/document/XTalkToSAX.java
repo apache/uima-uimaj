@@ -68,6 +68,7 @@ public class XTalkToSAX {
    * determine the size of these arrays with this method. This method in conjunction with
    * resetBuffers lets application implement their own buffer management. Buffers can be reset
    * during parsing, but not from another thread.
+   * 
    * @return -
    */
   public int bufferSize() {
@@ -78,7 +79,9 @@ public class XTalkToSAX {
    * Resets buffers to their initial size... this is useful because buffers can grow during parsing
    * and this allows the space to be reclaimed without having to undo references to the parser
    * object.
-   * @param toSize -
+   * 
+   * @param toSize
+   *          -
    */
   public void resizeBuffers(int toSize) {
     if (this.byteBuffer.length != toSize) {
@@ -93,8 +96,10 @@ public class XTalkToSAX {
    * the document. Use bufferSize() and resizeBuffers to manage memory in applications where very
    * large strings may be encountered and the same object is used to parse many incoming documents.
    * 
-   * @param is -
-   * @param handler -
+   * @param is
+   *          -
+   * @param handler
+   *          -
    * @throws IOException
    *           if underlying IOException from the stream or if XTalk format is invalid.
    * @throws SAXException

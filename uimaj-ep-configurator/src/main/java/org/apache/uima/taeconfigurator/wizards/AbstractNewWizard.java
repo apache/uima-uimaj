@@ -51,7 +51,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
-
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target
@@ -72,61 +71,60 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   // 3 = metadata element name
   // 4 = implname element name (implementationName or annotatorImplementationName
   // 5 = "<primitive>true</primitive>\n"
-  
+
   /** The Constant XMLNS_PART. */
-  // for explanation of this strange code, see JDK bug 6447475   found by findbugs
+  // for explanation of this strange code, see JDK bug 6447475 found by findbugs
   public final static String XMLNS_PART;
-  static {XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";}
+  static {
+    XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";
+  }
 
   /** The Constant COMMON_HEADER. */
   public final static String COMMON_HEADER;
-  static {COMMON_HEADER = 
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
-    + "<{2} " + XMLNS_PART + ">\n";}
+  static {
+    COMMON_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<{2} " + XMLNS_PART + ">\n";
+  }
 
   /** The Constant COMMON_NDVV. */
   public final static String COMMON_NDVV;
-  static {COMMON_NDVV = 
-      "    <name>{0}</name>\n"    // 1 = name of component (e.g. type name, type priority name, ae descriptor name)
-    + "    <description></description>\n"
-    + "    <version>1.0</version>\n"
-    + "    <vendor></vendor>\n";}
-  
+  static {
+    COMMON_NDVV = "    <name>{0}</name>\n" // 1 = name of component (e.g. type name, type priority
+                                           // name, ae descriptor name)
+            + "    <description></description>\n" + "    <version>1.0</version>\n"
+            + "    <vendor></vendor>\n";
+  }
+
   /** The Constant COMMON_FULL_DESCRIPTOR. */
   public final static String COMMON_FULL_DESCRIPTOR;
-  static {COMMON_FULL_DESCRIPTOR =
-      COMMON_HEADER 
-    + "  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
-    + "{5}"                       // 5 = "" or "<primitive>true</primitive>\n"
-    + "  <{4}></{4}>\n"           // 4 = implname element name (implementationName or annotatorImplementationName
-    + "  <{3}>\n"                   // 3 = metadata element name
-    + COMMON_NDVV
-    + "    <configurationParameters></configurationParameters>\n"
-    + "    <configurationParameterSettings></configurationParameterSettings>\n"
-    + "    <typeSystemDescription></typeSystemDescription>\n"
-    + "    <typePriorities></typePriorities>\n" 
-    + "    <fsIndexCollection></fsIndexCollection>\n"
-    + "    <capabilities>\n" 
-    + "      <capability>\n" 
-    + "        <inputs></inputs>\n"
-    + "        <outputs></outputs>\n" 
-    + "        <languagesSupported></languagesSupported>\n"
-    + "      </capability>\n" 
-    + "    </capabilities>\n" 
-    + "  </{3}>\n"
-    + "  <externalResourceDependencies></externalResourceDependencies>\n"
-    + "  <resourceManagerConfiguration></resourceManagerConfiguration>\n"
-    + "</{2}>"
-    ;}
-  
+  static {
+    COMMON_FULL_DESCRIPTOR = COMMON_HEADER
+            + "  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n" + "{5}" // 5
+                                                                                                    // =
+                                                                                                    // ""
+                                                                                                    // or
+                                                                                                    // "<primitive>true</primitive>\n"
+            + "  <{4}></{4}>\n" // 4 = implname element name (implementationName or
+                                // annotatorImplementationName
+            + "  <{3}>\n" // 3 = metadata element name
+            + COMMON_NDVV + "    <configurationParameters></configurationParameters>\n"
+            + "    <configurationParameterSettings></configurationParameterSettings>\n"
+            + "    <typeSystemDescription></typeSystemDescription>\n"
+            + "    <typePriorities></typePriorities>\n"
+            + "    <fsIndexCollection></fsIndexCollection>\n" + "    <capabilities>\n"
+            + "      <capability>\n" + "        <inputs></inputs>\n"
+            + "        <outputs></outputs>\n"
+            + "        <languagesSupported></languagesSupported>\n" + "      </capability>\n"
+            + "    </capabilities>\n" + "  </{3}>\n"
+            + "  <externalResourceDependencies></externalResourceDependencies>\n"
+            + "  <resourceManagerConfiguration></resourceManagerConfiguration>\n" + "</{2}>";
+  }
+
   /** The common partial descriptor. */
   public static String COMMON_PARTIAL_DESCRIPTOR;
-  static {COMMON_PARTIAL_DESCRIPTOR =
-      COMMON_HEADER 
-    + COMMON_NDVV
-    + "{1}" 
-    + "</{2}>\n";}
-    
+  static {
+    COMMON_PARTIAL_DESCRIPTOR = COMMON_HEADER + COMMON_NDVV + "{1}" + "</{2}>\n";
+  }
+
   /** The page. */
   protected AbstractNewWizardPage page;
 
@@ -139,7 +137,8 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   /**
    * Instantiates a new abstract new wizard.
    *
-   * @param windowTitle the window title
+   * @param windowTitle
+   *          the window title
    */
   public AbstractNewWizard(String windowTitle) {
     setDialogSettings(TAEConfiguratorPlugin.getDefault().getDialogSettings());
@@ -190,7 +189,8 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   /**
    * Gets the prototype descriptor.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the prototype descriptor
    */
   public abstract String getPrototypeDescriptor(String name);
@@ -198,10 +198,14 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   /**
    * Do finish.
    *
-   * @param containerName the container name
-   * @param fileName the file name
-   * @param monitor the monitor
-   * @throws CoreException the core exception
+   * @param containerName
+   *          the container name
+   * @param fileName
+   *          the file name
+   * @param monitor
+   *          the monitor
+   * @throws CoreException
+   *           the core exception
    */
   void doFinish(String containerName, String fileName, IProgressMonitor monitor)
           throws CoreException {
@@ -269,16 +273,21 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   /**
    * Throw core exception.
    *
-   * @param message the message
-   * @throws CoreException the core exception
+   * @param message
+   *          the message
+   * @throws CoreException
+   *           the core exception
    */
   private void throwCoreException(String message) throws CoreException {
     IStatus status = new Status(IStatus.ERROR, "DescEditor", IStatus.OK, message, null);
     throw new CoreException(status);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
+   * org.eclipse.jface.viewers.IStructuredSelection)
    */
   @Override
   public void init(IWorkbench workbench, IStructuredSelection pSelection) {

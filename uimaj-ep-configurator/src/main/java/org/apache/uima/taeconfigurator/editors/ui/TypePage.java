@@ -23,7 +23,6 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class TypePage.
  */
@@ -38,7 +37,8 @@ public class TypePage extends HeaderPageWithSash {
   /**
    * Instantiates a new type page.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public TypePage(MultiPageEditor editor) {
     super(editor, "Type Definitions");
@@ -47,7 +47,8 @@ public class TypePage extends HeaderPageWithSash {
   /**
    * Called by the framework to fill in the contents.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   @Override
   protected void createFormContent(IManagedForm managedForm) {

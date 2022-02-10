@@ -36,7 +36,6 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Assert;
 
-
 /**
  * AnnotatorPerfTester is a helper class to execute annotator performance tests. The performance
  * test results are returned as {@link PerformanceTestResultImpl} object.
@@ -55,7 +54,9 @@ public class AnnotatorPerformanceTester {
     private FileFileFilter() {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FileFilter#accept(java.io.File)
      */
     @Override
@@ -82,16 +83,23 @@ public class AnnotatorPerformanceTester {
   /**
    * runs an annotator performance test.
    *
-   * @param repeatSingle          if true, every document is process "numsToRun" times before the next document is
+   * @param repeatSingle
+   *          if true, every document is process "numsToRun" times before the next document is
    *          processed. If false, all documents are processed and this is repeated "numsToRun"
    *          times.
-   * @param numsToRun          repeat count for the input documents
-   * @param taeDescFilePath          ae descriptor - absolute file path
-   * @param testFileDir          test file directory
-   * @param dataPath          ae datapath
-   * @param doWarmup          do warum for analysis engine - runs an short english sample document
+   * @param numsToRun
+   *          repeat count for the input documents
+   * @param taeDescFilePath
+   *          ae descriptor - absolute file path
+   * @param testFileDir
+   *          test file directory
+   * @param dataPath
+   *          ae datapath
+   * @param doWarmup
+   *          do warum for analysis engine - runs an short english sample document
    * @return PerformanceTestResult - returns the performance test results
-   * @throws Exception passthru
+   * @throws Exception
+   *           passthru
    */
   public static PerformanceTestResult runPerformanceTest(boolean repeatSingle, int numsToRun,
           File taeDescFilePath, File testFileDir, String dataPath, boolean doWarmup)
@@ -118,8 +126,7 @@ public class AnnotatorPerformanceTester {
     }
 
     // get current log level setting
-    Level defaultLogLevel = (Level) logLevels.get(LogManager.getLogManager()
-            .getProperty(".level"));
+    Level defaultLogLevel = (Level) logLevels.get(LogManager.getLogManager().getProperty(".level"));
 
     if (defaultLogLevel == null) {
       // no log level was specified, use default log level settings "INFO" that is also
@@ -130,7 +137,7 @@ public class AnnotatorPerformanceTester {
     Logger logger = UIMAFramework.getLogger();
     logger.setLevel(Level.OFF);
 
-    //create timer 
+    // create timer
     Timer globalTimer = new Timer();
     Timer initTimer = new Timer();
     Timer warmupTimer = new Timer();
@@ -138,16 +145,16 @@ public class AnnotatorPerformanceTester {
     Timer processResetTimer = new Timer();
     Timer cleanupTimer = new Timer();
     Timer documentPreparationTimer = new Timer();
-    
-    //start timer for global time
+
+    // start timer for global time
     globalTimer.start();
 
     // init analysis engine
     try {
 
-      // start initialization timer   
+      // start initialization timer
       initTimer.start();
-      
+
       // set datapath
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       if (dataPath != null) {
@@ -178,7 +185,7 @@ public class AnnotatorPerformanceTester {
       result.setInitTime(initTimer.getTimeSpan());
 
       if (doWarmup) {
-        // start warmup timer     
+        // start warmup timer
         warmupTimer.start();
 
         // process dummy document

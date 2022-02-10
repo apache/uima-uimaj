@@ -23,94 +23,104 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-
-/** 
- * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
- * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * @generated */
+/**
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017 XML source:
+ * C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * 
+ * @generated
+ */
 public class DateAnnot extends DateTimeAnnot {
 
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
-  @SuppressWarnings ("hiding")
+  @SuppressWarnings("hiding")
   public final static String _TypeName = "org.apache.uima.tutorial.DateAnnot";
-  
-    /**
-     * The Constant typeIndexID.
-     *
-     * @generated 
-     * @ordered 
-     */
-    public static final int typeIndexID = JCasRegistry.register(DateAnnot.class);
 
-    /**
-     * The Constant type.
-     *
-     * @generated 
-     * @ordered 
-     */
-    public static final int type = typeIndexID;
+  /**
+   * The Constant typeIndexID.
+   *
+   * @generated
+   * @ordered
+   */
+  public static final int typeIndexID = JCasRegistry.register(DateAnnot.class);
 
-    /**
-     * Gets the type index ID.
-     *
-     * @return the type index ID
-     * @generated 
-     */
-    @Override
-    public int getTypeIndexID() {return typeIndexID;}
- 
- 
-    /**
+  /**
+   * The Constant type.
+   *
+   * @generated
+   * @ordered
+   */
+  public static final int type = typeIndexID;
+
+  /**
+   * Gets the type index ID.
+   *
+   * @return the type index ID
+   * @generated
+   */
+  @Override
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  DateAnnot() {/* intentionally empty block */}
-    
-    /**
-     * Internal - constructor used by generator.
-     *
-     * @param type the type
-     * @param casImpl the cas impl
-     * @generated 
-     */
-    public  DateAnnot(TypeImpl type, CASImpl casImpl) {
+  protected DateAnnot() {
+    /* intentionally empty block */}
+
+  /**
+   * Internal - constructor used by generator.
+   *
+   * @param type
+   *          the type
+   * @param casImpl
+   *          the cas impl
+   * @generated
+   */
+  public DateAnnot(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     readObject();
   }
-  
-    /**
-     * Instantiates a new date annot.
-     *
-     * @param jcas the jcas
-     * @generated 
-     */
-    public  DateAnnot(JCas jcas) {
-    super(jcas);
-    readObject();   
-  } 
 
-
-    /**
-     * Instantiates a new date annot.
-     *
-     * @param jcas the jcas
-     * @param begin the begin
-     * @param end the end
-     */
-    public  DateAnnot(JCas jcas, int begin, int end) {
-        super(jcas);
-        setBegin(begin);
-        setEnd(end);
-        readObject();
-    }
-
-  /** 
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
-   * @generated modifiable 
+  /**
+   * Instantiates a new date annot.
+   *
+   * @param jcas
+   *          the jcas
+   * @generated
    */
-    private void readObject() {
-    }
+  public DateAnnot(JCas jcas) {
+    super(jcas);
+    readObject();
+  }
+
+  /**
+   * Instantiates a new date annot.
+   *
+   * @param jcas
+   *          the jcas
+   * @param begin
+   *          the begin
+   * @param end
+   *          the end
+   */
+  public DateAnnot(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }
+
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
 }

@@ -23,16 +23,17 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-
 /**
  * File filter to accept only xml files (.xml extension)
  */
 public class XMLFileFilter extends FileFilter {
-  
+
   /** The Constant XML. */
   private static final String XML = "xml";
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
    */
   @Override
@@ -48,7 +49,9 @@ public class XMLFileFilter extends FileFilter {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.filechooser.FileFilter#getDescription()
    */
   @Override
@@ -59,7 +62,8 @@ public class XMLFileFilter extends FileFilter {
   /**
    * Gets the extension.
    *
-   * @param f the f
+   * @param f
+   *          the f
    * @return the extension
    */
   private String getExtension(File f) {

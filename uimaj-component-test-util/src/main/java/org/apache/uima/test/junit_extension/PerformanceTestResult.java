@@ -23,20 +23,19 @@ import java.io.File;
 
 import org.apache.uima.internal.util.TimeSpan;
 
-
 /**
  * PerformanceTestResult interfance contains all the methods to access the performance test results.
  * 
  */
 public interface PerformanceTestResult {
 
-   /**
-    * Gets the number of processed characters.
-    *
-    * @return Returns the number of processed characters.
-    */
+  /**
+   * Gets the number of processed characters.
+   *
+   * @return Returns the number of processed characters.
+   */
   int getNumberOfProcessedCharacters();
-  
+
   /**
    * Gets the number of processed files.
    *
@@ -50,7 +49,7 @@ public interface PerformanceTestResult {
    * @return Returns the UIMA datapath setting used for the performance test.
    */
   String getUIMADatapath();
-   
+
   /**
    * Gets the ae init time.
    *
@@ -136,10 +135,11 @@ public interface PerformanceTestResult {
    * @param file
    *          Output file where the results are written to
    * 
-   * @throws Exception passthru
+   * @throws Exception
+   *           passthru
    */
   void writePerfResultsAsColumn(String level, File file) throws Exception;
-  
+
   /**
    * Gets the ae cleanup time.
    *

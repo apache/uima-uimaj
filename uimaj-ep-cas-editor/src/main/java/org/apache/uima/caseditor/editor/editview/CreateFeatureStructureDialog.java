@@ -15,7 +15,8 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */package org.apache.uima.caseditor.editor.editview;
+ */
+package org.apache.uima.caseditor.editor.editview;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,7 +39,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
 
 /**
  * The Class CreateFeatureStructureDialog.
@@ -75,9 +75,12 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
   /**
    * Initializes a the current instance.
    *
-   * @param parentShell the parent shell
-   * @param superType the super type
-   * @param typeSystem the type system
+   * @param parentShell
+   *          the parent shell
+   * @param superType
+   *          the super type
+   * @param typeSystem
+   *          the type system
    */
   protected CreateFeatureStructureDialog(Shell parentShell, Type superType, TypeSystem typeSystem) {
 
@@ -118,7 +121,8 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
   /**
    * Enable size enter.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   private void enableSizeEnter(Composite parent) {
 
@@ -178,13 +182,13 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     labelAndText.setLayoutData(labelAndTextData);
 
     if (!superType.isArray()) {
-      
+
       Composite typePanel = new Composite(labelAndText, SWT.NULL);
-      
+
       GridLayout typePanelLayout = new GridLayout();
       typePanelLayout.numColumns = 2;
       typePanel.setLayout(typePanelLayout);
-      
+
       Label typeLabel = new Label(typePanel, SWT.NONE);
       typeLabel.setText("Type: ");
 
@@ -223,7 +227,6 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
 
     return labelAndText;
   }
-
 
   @Override
   protected void createButtonsForButtonBar(Composite parent) {

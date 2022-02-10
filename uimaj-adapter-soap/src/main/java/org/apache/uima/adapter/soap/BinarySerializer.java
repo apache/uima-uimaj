@@ -41,7 +41,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * An Axis serializer for {@link Serializable} objects. The serialized bytes are Base-64 encoded for
  * transport via SOAP.
@@ -66,7 +65,8 @@ public class BinarySerializer implements Serializer {
   /**
    * Instantiates a new binary serializer.
    *
-   * @param aUseAttachments the a use attachments
+   * @param aUseAttachments
+   *          the a use attachments
    */
   public BinarySerializer(boolean aUseAttachments) {
     mUseAttachments = aUseAttachments;
@@ -75,11 +75,16 @@ public class BinarySerializer implements Serializer {
   /**
    * Serialize an element named name, with the indicated attributes and value.
    *
-   * @param name          is the element name
-   * @param attributes          are the attributes...serializer is free to add more.
-   * @param value          is the value
-   * @param context          is the SerializationContext
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param name
+   *          is the element name
+   * @param attributes
+   *          are the attributes...serializer is free to add more.
+   * @param value
+   *          is the value
+   * @param context
+   *          is the SerializationContext
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   @Override
   public void serialize(QName name, Attributes attributes, Object value,
@@ -102,8 +107,8 @@ public class BinarySerializer implements Serializer {
       if (useAttachments) {
         // System.out.println("Creating attachment"); //DEBUG
         SOAPConstants soapConstants = context.getMessageContext().getSOAPConstants();
-        DataHandler dataHandler = new DataHandler(new OctetStreamDataSource("test",
-                new OctetStream(bytes)));
+        DataHandler dataHandler = new DataHandler(
+                new OctetStreamDataSource("test", new OctetStream(bytes)));
         Part attachmentPart = attachments.createAttachmentPart(dataHandler);
 
         AttributesImpl attrs = new AttributesImpl();
@@ -135,7 +140,9 @@ public class BinarySerializer implements Serializer {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.xml.rpc.encoding.Serializer#getMechanismType()
    */
   @Override
@@ -146,10 +153,13 @@ public class BinarySerializer implements Serializer {
   /**
    * Write schema.
    *
-   * @param javaType the java type
-   * @param types the types
+   * @param javaType
+   *          the java type
+   * @param types
+   *          the types
    * @return the element
-   * @throws Exception the exception
+   * @throws Exception
+   *           the exception
    * @see org.apache.axis.encoding.Serializer#writeSchema(java.lang.Class,
    *      org.apache.axis.wsdl.fromJava.Types)
    */

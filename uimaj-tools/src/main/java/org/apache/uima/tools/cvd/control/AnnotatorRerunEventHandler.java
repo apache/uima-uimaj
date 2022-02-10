@@ -17,14 +17,12 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class AnnotatorRerunEventHandler.
@@ -37,7 +35,8 @@ public class AnnotatorRerunEventHandler implements ActionListener {
   /**
    * Instantiates a new annotator rerun event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public AnnotatorRerunEventHandler(MainFrame frame) {
     this.main = frame;
@@ -46,7 +45,8 @@ public class AnnotatorRerunEventHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override

@@ -69,8 +69,8 @@ import org.xml.sax.SAXException;
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class JCasGenMojo extends AbstractMojo {
-  
-  @Parameter( defaultValue = "${project}", readonly = true ) 
+
+  @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
 
   @Component
@@ -111,7 +111,7 @@ public class JCasGenMojo extends AbstractMojo {
 
     // assemble the classpath
     StringBuilder classpathBuilder = new StringBuilder();
-    
+
     // Source roots
     for (String element : this.project.getCompileSourceRoots()) {
       if (classpathBuilder.length() > 0) {
@@ -129,7 +129,7 @@ public class JCasGenMojo extends AbstractMojo {
       classpathBuilder.append(element.getDirectory());
       getLog().debug("JCasGen: Adding resource root to classpath '" + element.getDirectory() + "'");
     }
-    
+
     // Dependencies
     List<String> elements;
     try {
@@ -197,7 +197,7 @@ public class JCasGenMojo extends AbstractMojo {
     } finally {
       IOUtil.close(typeSystemOs);
     }
-    
+
     // skip JCasGen if there are no changes in the type system file or the files it
     // references hasDelta resolves the imports!
     if (!contextDelta && !this.hasDelta(typeSystem, classpath)) {
@@ -256,8 +256,8 @@ public class JCasGenMojo extends AbstractMojo {
     }
 
     /*
-     * called by the common JCasGen code when it detects an error
-     * If no exception, the "exception" parameter is null
+     * called by the common JCasGen code when it detects an error If no exception, the "exception"
+     * parameter is null
      */
     @Override
     public void newError(int severity, String message, Exception exception) {
@@ -269,7 +269,7 @@ public class JCasGenMojo extends AbstractMojo {
       } else if (severity == IError.ERROR) {
         String m = fullMessage;
         if (exception != null) {
-          m = m + "\nException: " + exception.getMessage(); 
+          m = m + "\nException: " + exception.getMessage();
         }
         throw new JCasGenException(m, exception);
       } else {
@@ -360,7 +360,8 @@ public class JCasGenMojo extends AbstractMojo {
           }
           // for any type system file that is in the same project, return true if it has
           // changed
-          if (targetFile.getAbsolutePath().startsWith(this.project.getBasedir().getAbsolutePath())) {
+          if (targetFile.getAbsolutePath()
+                  .startsWith(this.project.getBasedir().getAbsolutePath())) {
             if (this.buildContext.hasDelta(targetFile)) {
               this.getLog().info("Type system file " + sourceFile + " has changed");
               return true;

@@ -32,23 +32,24 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-
 /**
  * Creates the mode context sub menu.
  */
 public class ModeMenu extends TypeMenu {
-	
+
   /** The editor. */
   private AnnotationEditor editor;
-  
+
   /** The listeners. */
   private Set<IModeMenuListener> listeners = new HashSet<>();
 
   /**
    * Initializes a new instance.
    *
-   * @param typeSystem the type system
-   * @param editor the editor
+   * @param typeSystem
+   *          the type system
+   * @param editor
+   *          the editor
    */
   public ModeMenu(TypeSystem typeSystem, AnnotationEditor editor) {
     super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
@@ -58,36 +59,38 @@ public class ModeMenu extends TypeMenu {
   /**
    * Adds the listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   public void addListener(IModeMenuListener listener) {
-	  listeners.add(listener);
+    listeners.add(listener);
   }
-  
+
   /**
    * Removes the listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   public void removeListener(IModeMenuListener listener) {
-	  listeners.remove(listener);
+    listeners.remove(listener);
   }
 
   @Override
   protected void insertAction(final Type type, Menu parentMenu) {
     MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
     actionItem.setText(type.getName());
-    
+
     if (type.equals(editor.getAnnotationMode()))
-        actionItem.setSelection(true);
-    
+      actionItem.setSelection(true);
+
     actionItem.addListener(SWT.Selection, new Listener() {
       @Override
       public void handleEvent(Event e) {
 
-    	for (IModeMenuListener listener : listeners) {
-    		listener.modeChanged(type);
-    	}
+        for (IModeMenuListener listener : listeners) {
+          listener.modeChanged(type);
+        }
       }
     });
   }

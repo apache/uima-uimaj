@@ -19,19 +19,20 @@
 
 package org.apache.uima.tools.cpm;
 
-
 /**
  * Callback interface used in conjunction with JTabbedPaneWithCloseIcons.
  *
  * @see org.apache.uima.tools.cpm.JTabbedPaneWithCloseIcons
  */
 public interface TabClosedListener {
-  
+
   /**
    * Tab closed.
    *
-   * @param source          the JTabbedPaneWithCloseIcons control sending this event
-   * @param tabPos          position of the tab that was closed
+   * @param source
+   *          the JTabbedPaneWithCloseIcons control sending this event
+   * @param tabPos
+   *          position of the tab that was closed
    */
   void tabClosed(JTabbedPaneWithCloseIcons source, int tabPos);
 }

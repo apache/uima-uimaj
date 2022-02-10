@@ -24,8 +24,6 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
-
-
 /**
  * The Class OverviewPage.
  */
@@ -33,15 +31,16 @@ public class OverviewPage extends HeaderPageWithSash {
 
   /** The primitive section. */
   private PrimitiveSection primitiveSection;
-  
+
   /** The metadata section. */
   // should always exist
-  private MetaDataSection metadataSection;  
+  private MetaDataSection metadataSection;
 
   /**
    * Instantiates a new overview page.
    *
-   * @param aEditor the a editor
+   * @param aEditor
+   *          the a editor
    */
   public OverviewPage(MultiPageEditor aEditor) {
     super(aEditor, "UID_OverviewPage", "Overview");
@@ -50,7 +49,8 @@ public class OverviewPage extends HeaderPageWithSash {
   /**
    * Called by the 3.0 framework to fill in the contents
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   @Override
   protected void createFormContent(IManagedForm managedForm) {
@@ -60,7 +60,7 @@ public class OverviewPage extends HeaderPageWithSash {
     if (isLocalProcessingDescriptor()) {
       managedForm.addPart(new GeneralSection(editor, form.left));
       managedForm.addPart(primitiveSection = new PrimitiveSection(editor, form.left));
-      managedForm.addPart(metadataSection= new MetaDataSection(editor, form.right));
+      managedForm.addPart(metadataSection = new MetaDataSection(editor, form.right));
     } else {
       managedForm.addPart(metadataSection = new MetaDataSection(editor, form.left));
     }

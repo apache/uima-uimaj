@@ -33,7 +33,6 @@ import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -64,8 +63,6 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /** The resource bundle. */
   // Resource bundle.
   private ResourceBundle resourceBundle;
-  
-
 
   /** The form colors. */
   private static FormColors formColors;
@@ -119,7 +116,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   public final static String IMAGE_NOMREF = "one_arrow.gif";
 
   /** The plugin id. */
-  public static String pluginId ;
+  public static String pluginId;
 
   /**
    * The constructor, version 3.
@@ -148,7 +145,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
     imageRegistry.put(IMAGE_MREFOK, getImageDescriptor("arrows.gif"));
     imageRegistry.put(IMAGE_NOMREF, getImageDescriptor("one_arrow.gif"));
   }
-  
+
   /**
    * Returns the shared instance.
    *
@@ -157,7 +154,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   public static TAEConfiguratorPlugin getDefault() {
     return plugin;
   }
-  
+
   /**
    * Returns the workspace instance.
    *
@@ -170,7 +167,8 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * Returns the string from the plugin's resource bundle, or 'key' if not found.
    *
-   * @param key the key
+   * @param key
+   *          the key
    * @return the resource string
    */
   public static String getResourceString(String key) {
@@ -181,19 +179,21 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
       return key;
     }
   }
-  
+
   /**
    * This method is called when the plug-in is stopped.
    *
-   * @param context the context
-   * @throws Exception -
+   * @param context
+   *          the context
+   * @throws Exception
+   *           -
    */
   @Override
   public void stop(BundleContext context) throws Exception {
     try {
       if (null != formColors) {
         formColors.dispose();
-    }
+      }
 
     } finally {
       formColors = null;
@@ -204,8 +204,9 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * On first call, gets a formColors instance; on subsequent calls, returns that instance.
    *
-   * @param display the display
-   * @return  a formColors instance
+   * @param display
+   *          the display
+   * @return a formColors instance
    */
   public FormColors getFormColors(Display display) {
     if (null == formColors) {
@@ -228,7 +229,8 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * Gets the image.
    *
-   * @param imageFile the image file
+   * @param imageFile
+   *          the image file
    * @return the image
    */
   public static Image getImage(String imageFile) {
@@ -238,11 +240,12 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * Gets the image descriptor.
    *
-   * @param imageFile the image file
+   * @param imageFile
+   *          the image file
    * @return the image descriptor
    */
   public ImageDescriptor getImageDescriptor(String imageFile) {
-    URL url = getBundle().getEntry("icons/" + imageFile);    
+    URL url = getBundle().getEntry("icons/" + imageFile);
     return ImageDescriptor.createFromURL(url);
   }
 

@@ -17,14 +17,12 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * Clear text area.
@@ -37,13 +35,16 @@ public class NewTextEventHandler implements ActionListener {
   /**
    * Instantiates a new new text event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public NewTextEventHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

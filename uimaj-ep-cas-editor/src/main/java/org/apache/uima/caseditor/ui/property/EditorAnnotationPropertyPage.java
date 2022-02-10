@@ -27,7 +27,6 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode;
 
-
 /**
  * The Class EditorAnnotationPropertyPage.
  */
@@ -39,8 +38,9 @@ public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
    * @return the editor
    */
   AnnotationEditor getEditor() {
-    AnnotationTypeNode typeNode = (AnnotationTypeNode) getElement().getAdapter(AnnotationTypeNode.class);
-    
+    AnnotationTypeNode typeNode = (AnnotationTypeNode) getElement()
+            .getAdapter(AnnotationTypeNode.class);
+
     return typeNode.getEditor();
   }
 
@@ -56,13 +56,13 @@ public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
 
   @Override
   protected boolean saveChanges(Collection<AnnotationStyle> changedStyles) {
-    
+
     // TODO: Add method to change all styles at once, instead of writing
     // the dotCorpus file for changed style
     for (AnnotationStyle style : changedStyles) {
       getEditor().setAnnotationStyle(style);
     }
-    
+
     return true;
   }
 }

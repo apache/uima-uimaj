@@ -27,15 +27,17 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 
-
 /**
  * The Class AbstractDialogKeyVerifyJavaNames.
  */
-public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKeyVerify implements
-        VerifyKeyListener, VerifyListener {
+public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKeyVerify
+        implements VerifyKeyListener, VerifyListener {
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#newSingleLineStyledText(org.eclipse.swt.widgets.Composite, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#
+   * newSingleLineStyledText(org.eclipse.swt.widgets.Composite, java.lang.String)
    */
   @Override
   protected StyledText newSingleLineStyledText(Composite parent, String tip) {
@@ -47,9 +49,12 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   /**
    * Instantiates a new abstract dialog key verify java names.
    *
-   * @param aSection the a section
-   * @param title the title
-   * @param description the description
+   * @param aSection
+   *          the a section
+   * @param title
+   *          the title
+   * @param description
+   *          the description
    */
   protected AbstractDialogKeyVerifyJavaNames(AbstractSection aSection, String title,
           String description) {
@@ -59,7 +64,8 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   /**
    * Java name space names verify key checks for java identifier and periods.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @return true, if successful
    */
   @Override
@@ -111,7 +117,8 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   /**
    * Name part starts with digit.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return true, if successful
    */
   private boolean namePartStartsWithDigit(final String s) {
@@ -120,8 +127,8 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
     int testloc = 0;
     if (Character.isDigit(s.charAt(testloc)))
       return true;
-    for (testloc = 1 + s.indexOf('.', testloc); testloc > 0 && testloc < s.length(); testloc = 1 + s
-            .indexOf('.', testloc))
+    for (testloc = 1 + s.indexOf('.', testloc); testloc > 0
+            && testloc < s.length(); testloc = 1 + s.indexOf('.', testloc))
       if (Character.isDigit(s.charAt(testloc)))
         return true;
     return false;

@@ -38,13 +38,12 @@ import javax.swing.tree.DefaultTreeModel;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
-
 /**
  * Mock-up of dialog for reporting performance stats.
  * 
  */
 public class PerformanceReportDialog extends JDialog {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7747258424181047062L;
 
@@ -66,9 +65,12 @@ public class PerformanceReportDialog extends JDialog {
   /**
    * Instantiates a new performance report dialog.
    *
-   * @param aFrame the a frame
-   * @throws HeadlessException the headless exception
-   * @throws java.awt.HeadlessException the java.awt. headless exception
+   * @param aFrame
+   *          the a frame
+   * @throws HeadlessException
+   *           the headless exception
+   * @throws java.awt.HeadlessException
+   *           the java.awt. headless exception
    */
   public PerformanceReportDialog(Frame aFrame) throws HeadlessException {
     super(aFrame, true);
@@ -98,11 +100,15 @@ public class PerformanceReportDialog extends JDialog {
   /**
    * Display stats.
    *
-   * @param aProcessTrace the a process trace
-   * @param aNumDocsProcessed the a num docs processed
-   * @param aStatusMessage the a status message
+   * @param aProcessTrace
+   *          the a process trace
+   * @param aNumDocsProcessed
+   *          the a num docs processed
+   * @param aStatusMessage
+   *          the a status message
    */
-  public void displayStats(ProcessTrace aProcessTrace, int aNumDocsProcessed, String aStatusMessage) {
+  public void displayStats(ProcessTrace aProcessTrace, int aNumDocsProcessed,
+          String aStatusMessage) {
     statusLabel.setText(aStatusMessage);
     docsProcessedLabel.setText("Documents Processed: " + aNumDocsProcessed);
 
@@ -117,8 +123,8 @@ public class PerformanceReportDialog extends JDialog {
     totalTimeLabel.setText("Total Time: " + totalTimeSeconds + " seconds");
 
     // create root tree node
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode("100% (" + totalTime
-            + "ms) - Collection Processing Engine");
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(
+            "100% (" + totalTime + "ms) - Collection Processing Engine");
     // build tree
     it = aProcessTrace.getEvents().iterator();
     while (it.hasNext()) {
@@ -133,9 +139,12 @@ public class PerformanceReportDialog extends JDialog {
   /**
    * Builds the event tree.
    *
-   * @param aEvent the a event
-   * @param aParentNode the a parent node
-   * @param aTotalTime the a total time
+   * @param aEvent
+   *          the a event
+   * @param aParentNode
+   *          the a parent node
+   * @param aTotalTime
+   *          the a total time
    */
   public void buildEventTree(ProcessTraceEvent aEvent, DefaultMutableTreeNode aParentNode,
           long aTotalTime) {
@@ -154,8 +163,8 @@ public class PerformanceReportDialog extends JDialog {
       type = aEvent.getType();
     }
 
-    DefaultMutableTreeNode node = new DefaultMutableTreeNode(pctStr + " (" + duration + "ms) - "
-            + aEvent.getComponentName() + " (" + type + ")");
+    DefaultMutableTreeNode node = new DefaultMutableTreeNode(
+            pctStr + " (" + duration + "ms) - " + aEvent.getComponentName() + " (" + type + ")");
     aParentNode.add(node);
     Iterator it = aEvent.getSubEvents().iterator();
     while (it.hasNext()) {

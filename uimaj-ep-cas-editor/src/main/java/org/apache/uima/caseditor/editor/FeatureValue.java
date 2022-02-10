@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor;
 
-
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -27,12 +26,11 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 
-
 /**
  * The Class FeatureValue.
  */
 public final class FeatureValue implements IAdaptable {
-  
+
   /** The m structure. */
   private FeatureStructure mStructure;
 
@@ -42,14 +40,17 @@ public final class FeatureValue implements IAdaptable {
   /**
    * Initializes a new instance.
    *
-   * @param document the document
-   * @param structure the structure
-   * @param feature the feature
+   * @param document
+   *          the document
+   * @param structure
+   *          the structure
+   * @param feature
+   *          the feature
    */
   public FeatureValue(ICasDocument document, FeatureStructure structure, Feature feature) {
     Assert.isNotNull(document);
     // TODO: Remove document parameter ? Not needed anymore!
-    
+
     Assert.isNotNull(feature);
     mFeature = feature;
 
@@ -80,7 +81,8 @@ public final class FeatureValue implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes")
+  Class adapter) {
     if (AnnotationFS.class.equals(adapter)) {
       if (getValue() instanceof AnnotationFS) {
         return getValue();

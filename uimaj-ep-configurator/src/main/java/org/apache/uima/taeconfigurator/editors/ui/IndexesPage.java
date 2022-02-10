@@ -23,7 +23,6 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class IndexesPage.
  */
@@ -44,7 +43,8 @@ public class IndexesPage extends HeaderPageWithSash {
   /**
    * Instantiates a new indexes page.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public IndexesPage(MultiPageEditor editor) {
     super(editor, "Indexes");
@@ -53,7 +53,8 @@ public class IndexesPage extends HeaderPageWithSash {
   /**
    * Called by the 3.0 framework to fill in the contents
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   @Override
   protected void createFormContent(IManagedForm managedForm) {
@@ -67,8 +68,8 @@ public class IndexesPage extends HeaderPageWithSash {
     }
     if (!isIndexDescriptor()) {
       managedForm.addPart(priorityListSection = new PriorityListSection(editor, form2Panel.left));
-      managedForm.addPart(typePriorityImportSection = new TypePriorityImportSection(editor,
-              form2Panel.right));
+      managedForm.addPart(
+              typePriorityImportSection = new TypePriorityImportSection(editor, form2Panel.right));
     }
     createToolBarActions(managedForm);
   }

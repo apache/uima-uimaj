@@ -51,7 +51,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-
 /**
  * A simple CAS consumer that generates XCAS (XML representation of the CAS) files in the
  * filesystem.
@@ -76,7 +75,9 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
   /** The m doc num. */
   private int mDocNum;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
    */
   @Override
@@ -142,10 +143,14 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
   /**
    * Serialize a CAS to a file in XCAS format.
    *
-   * @param aCas          CAS to serialize
-   * @param name          output file
-   * @throws IOException           if an I/O failure occurs
-   * @throws SAXException           if an error occurs generating the XML text
+   * @param aCas
+   *          CAS to serialize
+   * @param name
+   *          output file
+   * @throws IOException
+   *           if an I/O failure occurs
+   * @throws SAXException
+   *           if an error occurs generating the XML text
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
 

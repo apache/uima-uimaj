@@ -35,7 +35,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
-
 /**
  * A combo box which contains UIMA Types.
  * 
@@ -43,7 +42,7 @@ import org.eclipse.swt.widgets.Composite;
  * @see TypeSystem
  */
 public class TypeCombo extends Composite {
-  
+
   /** The listeners. */
   private Set<ITypePaneListener> listeners = new HashSet<>();
 
@@ -52,14 +51,15 @@ public class TypeCombo extends Composite {
 
   /** The type combo. */
   private Combo typeCombo;
-  
+
   /** The type name list. */
   private List<String> typeNameList;
-  
+
   /**
    * Instantiates a new type combo.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   public TypeCombo(Composite parent) {
     super(parent, SWT.NONE);
@@ -67,7 +67,7 @@ public class TypeCombo extends Composite {
     setLayout(new FillLayout());
 
     typeCombo = new Combo(this, SWT.READ_ONLY | SWT.DROP_DOWN | SWT.BORDER);
-    
+
     typeCombo.addModifyListener(new ModifyListener() {
       @Override
       public void modifyText(ModifyEvent e) {
@@ -79,18 +79,20 @@ public class TypeCombo extends Composite {
       }
     });
   }
-  
+
   /**
    * Sets the input.
    *
-   * @param superType the super type
-   * @param typeSystem the type system
-   * @param filterTypes the filter types
+   * @param superType
+   *          the super type
+   * @param typeSystem
+   *          the type system
+   * @param filterTypes
+   *          the filter types
    */
-  public void setInput(Type superType, TypeSystem typeSystem,
-          Collection<Type> filterTypes) {
+  public void setInput(Type superType, TypeSystem typeSystem, Collection<Type> filterTypes) {
     this.typeSystem = typeSystem;
-    
+
     typeNameList = new LinkedList<>();
 
     typeNameList.add(superType.getName());
@@ -107,54 +109,57 @@ public class TypeCombo extends Composite {
     // select the super type, its the first element (and must be there)
     typeCombo.select(0);
   }
-  
+
   /**
    * Sets the input.
    *
-   * @param superType the super type
-   * @param typeSystem the type system
+   * @param superType
+   *          the super type
+   * @param typeSystem
+   *          the type system
    */
   public void setInput(Type superType, TypeSystem typeSystem) {
     setInput(superType, typeSystem, Collections.emptyList());
   }
-  
+
   /**
-   * Selects the given type or does nothing if the
-   * type is not listed.
+   * Selects the given type or does nothing if the type is not listed.
    *
-   * @param type the type
+   * @param type
+   *          the type
    */
   public void select(Type type) {
     Integer typeIndex = typeNameList.indexOf(type.getName());
-    
+
     if (typeIndex != null) {
       typeCombo.select(typeIndex);
     }
   }
-  
+
   /**
-   * Retrieves the selected type. Behavior is undefined when called
-   * before setInput.
+   * Retrieves the selected type. Behavior is undefined when called before setInput.
    * 
    * @return the selected type
    */
   public Type getType() {
     return typeSystem.getType(typeCombo.getText());
   }
-  
+
   /**
    * Adds the listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   public void addListener(ITypePaneListener listener) {
     listeners.add(listener);
   }
-  
+
   /**
    * Removes the listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   public void removeListener(ITypePaneListener listener) {
     listeners.remove(listener);

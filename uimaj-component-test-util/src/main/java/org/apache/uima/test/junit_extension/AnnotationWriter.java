@@ -43,363 +43,331 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.ProcessTrace;
 
-
 /**
- * The AnnotationWriter class writes specified annotations to an output file.
- * The encoding of the output file is UTF-8
+ * The AnnotationWriter class writes specified annotations to an output file. The encoding of the
+ * output file is UTF-8
  */
 
-public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer
-{
-	
-	/** The out file. */
-	//output file
-	private File outFile;
-	
-	/** The file writer. */
-	//output file writer
-	private OutputStreamWriter fileWriter;
-	
-	/** The tofs. */
-	//respected annotations
-	private String[] tofs;
-	
-	/** The reconfig. */
-	//check if reconfigure must be called
-	private boolean reconfig = false;
-	
-	/** The Constant featureOnlyKey. */
-	private final static String featureOnlyKey = "feature";
+public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer {
 
-	/**
-	 * Initializes this CAS Consumer with the parameters specified in the 
-	 * descriptor.
-	 * 
-	 * @throws ResourceInitializationException if there is error in 
-	 * initializing the resources
-	 */
-	@Override
-  public void initialize() throws ResourceInitializationException
-	{
+  /** The out file. */
+  // output file
+  private File outFile;
 
-		// extract configuration parameter settings
-		String oPath = (String) getUimaContext().getConfigParameterValue("outputFile");
+  /** The file writer. */
+  // output file writer
+  private OutputStreamWriter fileWriter;
 
-		//Output file should be specified in the descriptor
-		if (oPath == null)
-		{
-			//set reconfiguration - reconfig() must be called
-			this.reconfig = true;
-		}
-		else
-		{
-			// If specified output directory does not exist, try to create it
-			this.outFile = new File(oPath);
-			if (this.outFile.getParentFile() != null && !this.outFile.getParentFile().exists())
-			{
-				if (!this.outFile.getParentFile().mkdirs())
-					throw new ResourceInitializationException(
-						ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
-						new Object[] { oPath, "outputFile" });
-			}
-			try
-			{
-				this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
-								StandardCharsets.UTF_8);
-			}
-			catch (IOException e)
-			{
-				throw new ResourceInitializationException(e);
-			}
-		}
+  /** The tofs. */
+  // respected annotations
+  private String[] tofs;
 
-		//extract annotation types
-		this.tofs = (String[]) getUimaContext().getConfigParameterValue("AnnotationTypes");
-		//sort array
-		if (this.tofs != null)
-			Arrays.sort(this.tofs);
+  /** The reconfig. */
+  // check if reconfigure must be called
+  private boolean reconfig = false;
 
-	}
+  /** The Constant featureOnlyKey. */
+  private final static String featureOnlyKey = "feature";
 
-	/**
-	 * processTofs() writes als specified types an features to a HashMap.
-	 *
-	 * @param aCAS a CAS with a TypeSystem
-	 * @param someTofs the some tofs
-	 * @return HashMap - Map with all types an features.
-	 */
-	private HashMap processTofs(CAS aCAS, String[] someTofs)
-	{
-		HashMap types = new HashMap(10);
+  /**
+   * Initializes this CAS Consumer with the parameters specified in the descriptor.
+   * 
+   * @throws ResourceInitializationException
+   *           if there is error in initializing the resources
+   */
+  @Override
+  public void initialize() throws ResourceInitializationException {
 
-		for (int i = 0; i < someTofs.length; i++)
-		{
-			Type type = aCAS.getTypeSystem().getType(someTofs[i]);
+    // extract configuration parameter settings
+    String oPath = (String) getUimaContext().getConfigParameterValue("outputFile");
 
-			if (type == null) //maybe a feature
-			{
-				int index = someTofs[i].indexOf(":");
+    // Output file should be specified in the descriptor
+    if (oPath == null) {
+      // set reconfiguration - reconfig() must be called
+      this.reconfig = true;
+    } else {
+      // If specified output directory does not exist, try to create it
+      this.outFile = new File(oPath);
+      if (this.outFile.getParentFile() != null && !this.outFile.getParentFile().exists()) {
+        if (!this.outFile.getParentFile().mkdirs())
+          throw new ResourceInitializationException(
+                  ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
+                  new Object[] { oPath, "outputFile" });
+      }
+      try {
+        this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
+                StandardCharsets.UTF_8);
+      } catch (IOException e) {
+        throw new ResourceInitializationException(e);
+      }
+    }
 
-				if (index != -1)
-				{
-					String typename = someTofs[i].substring(0, index);
-					Type typeKey = aCAS.getTypeSystem().getType(typename);
+    // extract annotation types
+    this.tofs = (String[]) getUimaContext().getConfigParameterValue("AnnotationTypes");
+    // sort array
+    if (this.tofs != null)
+      Arrays.sort(this.tofs);
 
-					//get feature object (Vector) for the current type
-					Object obj = types.get(typeKey);
+  }
 
-					//if type is not included in the typelist create type and add feature
-					if (obj == null)
-					{
-						ArrayList list = new ArrayList(10);
-						Feature fs = aCAS.getTypeSystem().getFeatureByFullName(someTofs[i]);
-						list.add(0, featureOnlyKey);
-						list.add(fs);
-						types.put(typeKey, list);
-					}
-					else //add feature to type
-						{
-						//cast feature vector for the current type
-						ArrayList vec = (ArrayList) obj;
-						Feature fs = aCAS.getTypeSystem().getFeatureByFullName(someTofs[i]);
-						vec.add(fs);
-					}
+  /**
+   * processTofs() writes als specified types an features to a HashMap.
+   *
+   * @param aCAS
+   *          a CAS with a TypeSystem
+   * @param someTofs
+   *          the some tofs
+   * @return HashMap - Map with all types an features.
+   */
+  private HashMap processTofs(CAS aCAS, String[] someTofs) {
+    HashMap types = new HashMap(10);
 
-				}
-			}
-			else
-			{
-				//add type as key and a Vector as Feature container 
-				if(types.containsKey(type)){
-					ArrayList featureList = (ArrayList) types.get(type);
-					if(featureList.size() >0 && featureList.get(0).equals(featureOnlyKey)){
-						featureList.remove(0);
-					}
-					// type is already in the list do not overwrite it!
-				}else{
-					types.put(type, new ArrayList(10));
-				}
-			}
-		}
+    for (int i = 0; i < someTofs.length; i++) {
+      Type type = aCAS.getTypeSystem().getType(someTofs[i]);
 
-		return types;
-	}
+      if (type == null) // maybe a feature
+      {
+        int index = someTofs[i].indexOf(":");
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
-	 */
-	@Override
-  public synchronized void processCas(CAS aCAS) throws ResourceProcessException
-	{
-		if (this.reconfig == true)
-		{
-			throw new ResourceProcessException(
-				ResourceInitializationException.CONFIG_SETTING_ABSENT,
-				new Object[] { "outputFile" });
-		}
+        if (index != -1) {
+          String typename = someTofs[i].substring(0, index);
+          Type typeKey = aCAS.getTypeSystem().getType(typename);
 
-		//get low level CAS
-		LowLevelCAS ll_cas = aCAS.getLowLevelCAS();
+          // get feature object (Vector) for the current type
+          Object obj = types.get(typeKey);
 
-		//get low level TypeSystem
-		LowLevelTypeSystem ll_typeSystem = ll_cas.ll_getTypeSystem();
+          // if type is not included in the typelist create type and add feature
+          if (obj == null) {
+            ArrayList list = new ArrayList(10);
+            Feature fs = aCAS.getTypeSystem().getFeatureByFullName(someTofs[i]);
+            list.add(0, featureOnlyKey);
+            list.add(fs);
+            types.put(typeKey, list);
+          } else // add feature to type
+          {
+            // cast feature vector for the current type
+            ArrayList vec = (ArrayList) obj;
+            Feature fs = aCAS.getTypeSystem().getFeatureByFullName(someTofs[i]);
+            vec.add(fs);
+          }
 
-		//get types and feature interessted in
-		HashMap types = processTofs(aCAS, this.tofs);
+        }
+      } else {
+        // add type as key and a Vector as Feature container
+        if (types.containsKey(type)) {
+          ArrayList featureList = (ArrayList) types.get(type);
+          if (featureList.size() > 0 && featureList.get(0).equals(featureOnlyKey)) {
+            featureList.remove(0);
+          }
+          // type is already in the list do not overwrite it!
+        } else {
+          types.put(type, new ArrayList(10));
+        }
+      }
+    }
 
-		try
-		{
-			//iterate and print annotations
-			FSIterator typeIterator = aCAS.getAnnotationIndex().iterator();
+    return types;
+  }
 
-			for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext())
-			{
-				Iterator it = types.keySet().iterator();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
+   */
+  @Override
+  public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
+    if (this.reconfig == true) {
+      throw new ResourceProcessException(ResourceInitializationException.CONFIG_SETTING_ABSENT,
+              new Object[] { "outputFile" });
+    }
 
-				while (it.hasNext())
-				{
-					//get current type and features
-					Type currentType = (Type) it.next();
-					boolean isFeatureOnly = false;
-					
-					ArrayList featureList = (ArrayList) types.get(currentType);
-					if(featureList.size() >0 && featureList.get(0).equals(featureOnlyKey)){
-						featureList.remove(0);
-						isFeatureOnly = true;
-					}
-					Feature[] features = (Feature[]) featureList.toArray(new Feature[] {
-					});
-					
-					AnnotationFS annot = (AnnotationFS) typeIterator.get();
+    // get low level CAS
+    LowLevelCAS ll_cas = aCAS.getLowLevelCAS();
 
-					if (annot.getType().getName() == currentType.getName())
-					{
-						//only for formatting necessary
-						boolean firstFeature = true;
+    // get low level TypeSystem
+    LowLevelTypeSystem ll_typeSystem = ll_cas.ll_getTypeSystem();
 
-						String span = annot.getCoveredText();
-						if(!isFeatureOnly){
-							this.fileWriter.write(
-								annot.getType().getShortName()
-									+ "(" + annot.getBegin() + "," + annot.getEnd()	+ "): "	+ span);
-						}else{
-							this.fileWriter.write(
-								annot.getType().getShortName()
-									+ ": ");
-						}
+    // get types and feature interessted in
+    HashMap types = processTofs(aCAS, this.tofs);
 
-						for (int f = 0; f < features.length; f++)
-						{
-							if (firstFeature)
-							{
-								this.fileWriter.write("  { ");
-								firstFeature = false;
-							}
-							else
-							{
-								this.fileWriter.write(", ");
-							}
+    try {
+      // iterate and print annotations
+      FSIterator typeIterator = aCAS.getAnnotationIndex().iterator();
 
-							Feature fs = features[f];
-							int typeClass = ll_cas.ll_getTypeClass(ll_typeSystem.ll_getCodeForType(fs.getRange()));
-							this.fileWriter.write(fs.getShortName() + "=");
-							
-							switch (typeClass)
-							{
-								case LowLevelCAS.TYPE_CLASS_FLOAT :
-									this.fileWriter.write(Float.toString(annot.getFloatValue(fs)));
-									break;
+      for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
+        Iterator it = types.keySet().iterator();
 
-								case LowLevelCAS.TYPE_CLASS_INT :
-									this.fileWriter.write(Integer.toString(annot.getIntValue(fs)));
-									break;
+        while (it.hasNext()) {
+          // get current type and features
+          Type currentType = (Type) it.next();
+          boolean isFeatureOnly = false;
 
-								case LowLevelCAS.TYPE_CLASS_STRING :
-									String value = annot.getStringValue(fs);
-									if(value != null) {
-										this.fileWriter.write(value);	
-									} else {
-										this.fileWriter.write("null");
-									}
-									break;
-								
-								case LowLevelCAS.TYPE_CLASS_FS:
-								
-									FeatureStructure fStruct = annot.getFeatureValue(fs);
-									if(fStruct != null) {
-										this.fileWriter.write(fStruct.toString());	
-									} else {
-										this.fileWriter.write("null");
-									}
-									break;
-							}
-						}
+          ArrayList featureList = (ArrayList) types.get(currentType);
+          if (featureList.size() > 0 && featureList.get(0).equals(featureOnlyKey)) {
+            featureList.remove(0);
+            isFeatureOnly = true;
+          }
+          Feature[] features = (Feature[]) featureList.toArray(new Feature[] {});
 
-						if (firstFeature == false)
-						{
-							this.fileWriter.write(" }");
-						}
+          AnnotationFS annot = (AnnotationFS) typeIterator.get();
 
-						this.fileWriter.write(System.getProperty("line.separator"));
-					}
+          if (annot.getType().getName() == currentType.getName()) {
+            // only for formatting necessary
+            boolean firstFeature = true;
 
-				}
-			}
+            String span = annot.getCoveredText();
+            if (!isFeatureOnly) {
+              this.fileWriter.write(annot.getType().getShortName() + "(" + annot.getBegin() + ","
+                      + annot.getEnd() + "): " + span);
+            } else {
+              this.fileWriter.write(annot.getType().getShortName() + ": ");
+            }
 
-			this.fileWriter.flush();
-		}
-		catch (Exception ex)
-		{
-			throw new ResourceProcessException(ex);
-		}
+            for (int f = 0; f < features.length; f++) {
+              if (firstFeature) {
+                this.fileWriter.write("  { ");
+                firstFeature = false;
+              } else {
+                this.fileWriter.write(", ");
+              }
 
-	}
+              Feature fs = features[f];
+              int typeClass = ll_cas
+                      .ll_getTypeClass(ll_typeSystem.ll_getCodeForType(fs.getRange()));
+              this.fileWriter.write(fs.getShortName() + "=");
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CasConsumer_ImplBase#batchProcessComplete(org.apache.uima.util.ProcessTrace)
-	 */
-	@Override
-  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
-	{
-		 // nothing to do here 	
-	}
+              switch (typeClass) {
+                case LowLevelCAS.TYPE_CLASS_FLOAT:
+                  this.fileWriter.write(Float.toString(annot.getFloatValue(fs)));
+                  break;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
-	 */
-	@Override
-  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
-	{
-		if (this.fileWriter != null)
-		{
-			this.fileWriter.close();
-		}
-	}
+                case LowLevelCAS.TYPE_CLASS_INT:
+                  this.fileWriter.write(Integer.toString(annot.getIntValue(fs)));
+                  break;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CasConsumer_ImplBase#reconfigure()
-	 */
-	@Override
-  public void reconfigure() throws ResourceConfigurationException
-	{
-		//reset reconfiguration - is done
-		this.reconfig = false;
+                case LowLevelCAS.TYPE_CLASS_STRING:
+                  String value = annot.getStringValue(fs);
+                  if (value != null) {
+                    this.fileWriter.write(value);
+                  } else {
+                    this.fileWriter.write("null");
+                  }
+                  break;
 
-		super.reconfigure();
-		// extract configuration parameter settings
-		String oPath = (String) getUimaContext().getConfigParameterValue("outputFile");
-		File oFile = new File(oPath);
-		//if output file has changed, close exiting file and open new
-		if (!oFile.equals(this.outFile))
-		{
-			this.outFile = oFile;
-			try
-			{
-				if (this.fileWriter != null)
-					this.fileWriter.close();
+                case LowLevelCAS.TYPE_CLASS_FS:
 
-				// If specified output directory does not exist, try to create it
-				if (oFile.getParentFile() != null && !oFile.getParentFile().exists())
-				{
-					if (!oFile.getParentFile().mkdirs())
-						throw new ResourceConfigurationException(
-							ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
-							new Object[] { oPath, "outputFile" });
-				}
-				//write result specification to the output file
-				this.fileWriter = new OutputStreamWriter(new FileOutputStream(oFile, false), StandardCharsets.UTF_8);
-			}
-			catch (IOException e)
-			{
-				throw new ResourceConfigurationException();
-			}
-		}
+                  FeatureStructure fStruct = annot.getFeatureValue(fs);
+                  if (fStruct != null) {
+                    this.fileWriter.write(fStruct.toString());
+                  } else {
+                    this.fileWriter.write("null");
+                  }
+                  break;
+              }
+            }
 
-		//extract annotation types
-		this.tofs = (String[]) getUimaContext().getConfigParameterValue("AnnotationTypes");
-		//sort array
-		if (this.tofs != null)
-			Arrays.sort(this.tofs);
+            if (firstFeature == false) {
+              this.fileWriter.write(" }");
+            }
 
-	}
+            this.fileWriter.write(System.getProperty("line.separator"));
+          }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CasConsumer_ImplBase#destroy()
-	 */
-	@Override
-  public void destroy()
-	{
-		if (this.fileWriter != null)
-		{
-			try
-			{
-				this.fileWriter.close();
-			}
-			catch (IOException e)
-			{
-				// ignore IOException on destroy
-			}
-		}
-	}
+        }
+      }
+
+      this.fileWriter.flush();
+    } catch (Exception ex) {
+      throw new ResourceProcessException(ex);
+    }
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#batchProcessComplete(org.apache.uima.util.
+   * ProcessTrace)
+   */
+  @Override
+  public void batchProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
+    // nothing to do here
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.
+   * ProcessTrace)
+   */
+  @Override
+  public void collectionProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
+    if (this.fileWriter != null) {
+      this.fileWriter.close();
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#reconfigure()
+   */
+  @Override
+  public void reconfigure() throws ResourceConfigurationException {
+    // reset reconfiguration - is done
+    this.reconfig = false;
+
+    super.reconfigure();
+    // extract configuration parameter settings
+    String oPath = (String) getUimaContext().getConfigParameterValue("outputFile");
+    File oFile = new File(oPath);
+    // if output file has changed, close exiting file and open new
+    if (!oFile.equals(this.outFile)) {
+      this.outFile = oFile;
+      try {
+        if (this.fileWriter != null)
+          this.fileWriter.close();
+
+        // If specified output directory does not exist, try to create it
+        if (oFile.getParentFile() != null && !oFile.getParentFile().exists()) {
+          if (!oFile.getParentFile().mkdirs())
+            throw new ResourceConfigurationException(
+                    ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
+                    new Object[] { oPath, "outputFile" });
+        }
+        // write result specification to the output file
+        this.fileWriter = new OutputStreamWriter(new FileOutputStream(oFile, false),
+                StandardCharsets.UTF_8);
+      } catch (IOException e) {
+        throw new ResourceConfigurationException();
+      }
+    }
+
+    // extract annotation types
+    this.tofs = (String[]) getUimaContext().getConfigParameterValue("AnnotationTypes");
+    // sort array
+    if (this.tofs != null)
+      Arrays.sort(this.tofs);
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#destroy()
+   */
+  @Override
+  public void destroy() {
+    if (this.fileWriter != null) {
+      try {
+        this.fileWriter.close();
+      } catch (IOException e) {
+        // ignore IOException on destroy
+      }
+    }
+  }
 
 }

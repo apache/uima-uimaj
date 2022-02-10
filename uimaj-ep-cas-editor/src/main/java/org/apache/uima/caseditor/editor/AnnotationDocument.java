@@ -30,7 +30,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 
-
 /**
  * The <code>AnnotationDocument</code> adapts the annotation document to the eclipse Document
  * (needed for the editor).
@@ -59,7 +58,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Transform text.
    *
-   * @param text the text
+   * @param text
+   *          the text
    * @return the string
    */
   private String transformText(String text) {
@@ -100,7 +100,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Sets the document.
    *
-   * @param element the new document
+   * @param element
+   *          the new document
    */
   public void setDocument(ICasDocument element) {
     mDocument = element;
@@ -120,7 +121,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void addFeatureStructure(FeatureStructure annotation) {
@@ -132,7 +134,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
   @Override
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
@@ -144,7 +147,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void removeFeatureStructure(FeatureStructure annotation) {
@@ -156,7 +160,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param annotationsToRemove the annotations to remove
+   * @param annotationsToRemove
+   *          the annotations to remove
    */
   @Override
   public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
@@ -168,7 +173,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param annotation the annotation
+   * @param annotation
+   *          the annotation
    */
   @Override
   public void update(FeatureStructure annotation) {
@@ -180,7 +186,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param annotations the annotations
+   * @param annotations
+   *          the annotations
    */
   @Override
   public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
@@ -202,7 +209,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return the annotations
    */
   @Override
@@ -213,7 +221,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   @Override
   public void addChangeListener(ICasDocumentListener listener) {
@@ -223,7 +232,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   @Override
   public void removeChangeListener(ICasDocumentListener listener) {
@@ -234,8 +244,10 @@ class AnnotationDocument extends Document implements ICasDocument {
    * Wrap words at next space after lineLengthHint chars in a line. If the line is shorter than
    * lineLengthHint nothing happens. The space char is replaced with an line feed char.
    *
-   * @param textString the text string
-   * @param lineLengthHint the line length hint
+   * @param textString
+   *          the text string
+   * @param lineLengthHint
+   *          the line length hint
    * @return input text with line breaks
    */
   private String wrapWords(String textString, int lineLengthHint) {
@@ -274,7 +286,8 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Call is forwarded to the set document.
    *
-   * @param type the type
+   * @param type
+   *          the type
    * @return the type
    */
   @Override
@@ -304,7 +317,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   @Override
   public String getTypeSystemText() {
-    if(mDocument != null) {
+    if (mDocument != null) {
       return mDocument.getTypeSystemText();
     }
     return null;

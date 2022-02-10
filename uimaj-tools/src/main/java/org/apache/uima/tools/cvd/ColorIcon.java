@@ -25,7 +25,6 @@ import java.awt.Graphics;
 
 import javax.swing.Icon;
 
-
 /**
  * TODO: add type comment for <code>ColorIcon</code>.
  * 
@@ -39,7 +38,6 @@ public class ColorIcon implements Icon {
   /** The color. */
   private Color color = Color.black;
 
-  
   /**
    * Instantiates a new color icon.
    */
@@ -49,7 +47,8 @@ public class ColorIcon implements Icon {
   /**
    * Instantiates a new color icon.
    *
-   * @param color the color
+   * @param color
+   *          the color
    */
   public ColorIcon(Color color) {
     this();
@@ -59,7 +58,8 @@ public class ColorIcon implements Icon {
   /**
    * Sets the color.
    *
-   * @param color the new color
+   * @param color
+   *          the new color
    */
   public void setColor(Color color) {
     this.color = color;

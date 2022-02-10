@@ -40,13 +40,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class GeneralSection.
  */
 public class GeneralSection extends AbstractSection {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -68,8 +69,10 @@ public class GeneralSection extends AbstractSection {
   /**
    * Creates a section to edit general information like primitive or aggregate and C++ or Java.
    *
-   * @param aEditor          the referenced multipage editor
-   * @param parent the parent
+   * @param aEditor
+   *          the referenced multipage editor
+   * @param parent
+   *          the parent
    */
   public GeneralSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Implementation Details", null);
@@ -88,16 +91,16 @@ public class GeneralSection extends AbstractSection {
     ((GridData) sectionClient.getLayoutData()).grabExcessVerticalSpace = false;
     // FrameworkImplementation choose, 2 radio buttons
     if (isAeDescriptor() || isCasConsumerDescriptor()) {
-      toolkit.createLabel(sectionClient, "Implementation Language").setToolTipText(
-              "Choose the implementation language here.");
+      toolkit.createLabel(sectionClient, "Implementation Language")
+              .setToolTipText("Choose the implementation language here.");
 
       Composite buttons = new2ColumnComposite(sectionClient);
       cppButton = newRadioButton(buttons, "C/C++", "C/C++", NOT_SELECTED);
       javaButton = newRadioButton(buttons, "Java", "Java", SELECTED);
 
       // DescriptorType choose, 2 radio buttons
-      toolkit.createLabel(sectionClient, "Engine Type").setToolTipText(
-              "Choose the type of the engine here.");
+      toolkit.createLabel(sectionClient, "Engine Type")
+              .setToolTipText("Choose the type of the engine here.");
 
       buttons = new2ColumnComposite(sectionClient);
 
@@ -169,7 +172,8 @@ public class GeneralSection extends AbstractSection {
         if (Window.CANCEL == Utility.popOkCancel("Switching from Primitive AE",
                 "This action will clear the capabilities, reset the delegates, "
                         + "reset the parameters, reset any resource information "
-                        + "and reset the type system.  Are you sure?", MessageDialog.WARNING)) {
+                        + "and reset the type system.  Are you sure?",
+                MessageDialog.WARNING)) {
           primitiveButton.setSelection(true);
           aggregateButton.setSelection(false);
           return;
@@ -210,13 +214,13 @@ public class GeneralSection extends AbstractSection {
     if (event.widget == javaButton || event.widget == cppButton) {
       valueChanged = false;
       if (cppButton.getSelection()) {
-        editor.getAeDescription().setFrameworkImplementation(
-                setValueChanged(Constants.CPP_FRAMEWORK_NAME, editor.getAeDescription()
-                        .getFrameworkImplementation()));
+        editor.getAeDescription()
+                .setFrameworkImplementation(setValueChanged(Constants.CPP_FRAMEWORK_NAME,
+                        editor.getAeDescription().getFrameworkImplementation()));
       } else {
-        editor.getAeDescription().setFrameworkImplementation(
-                setValueChanged(Constants.JAVA_FRAMEWORK_NAME, editor.getAeDescription()
-                        .getFrameworkImplementation()));
+        editor.getAeDescription()
+                .setFrameworkImplementation(setValueChanged(Constants.JAVA_FRAMEWORK_NAME,
+                        editor.getAeDescription().getFrameworkImplementation()));
       }
       if (!valueChanged)
         return;
@@ -250,11 +254,11 @@ public class GeneralSection extends AbstractSection {
     addCapabilitySet();
     // reset parameters
     // reset the parameters not declared in a group
-    getConfigurationParameterDeclarations().setConfigurationParameters(
-            new ConfigurationParameter[0]);
+    getConfigurationParameterDeclarations()
+            .setConfigurationParameters(new ConfigurationParameter[0]);
     // reset groups
-    getConfigurationParameterDeclarations().setConfigurationGroups(
-            AbstractSection.configurationGroupArray0);
+    getConfigurationParameterDeclarations()
+            .setConfigurationGroups(AbstractSection.configurationGroupArray0);
     // reset common parameters
     getConfigurationParameterDeclarations().setCommonParameters(new ConfigurationParameter[0]);
     // reset default group name

@@ -53,8 +53,10 @@ public class FrameLeaf extends FrameComponent {
    * cannot be modified by external code.
    * 
    * @pre mydata != null
-   * @param mydata -
-   * @param encode -
+   * @param mydata
+   *          -
+   * @param encode
+   *          -
    */
   public FrameLeaf(byte[] mydata, boolean encode) {
     if (encode) {
@@ -67,7 +69,8 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre mydata != null
-   * @param mydata -
+   * @param mydata
+   *          -
    */
   public FrameLeaf(String mydata) {
     this.data = UTFConverter.convertStringToUTF(mydata);
@@ -77,9 +80,10 @@ public class FrameLeaf extends FrameComponent {
    * This method does NOT support null values in the array.
    * 
    * @pre mystring != null
-   * @pre { for (int i = 0; i &lt; mystring.length; i++) $assert(mystring[i] != null, "array elements
-   *      are non-null"); }
-   * @param mystring -
+   * @pre { for (int i = 0; i &lt; mystring.length; i++) $assert(mystring[i] != null, "array
+   *      elements are non-null"); }
+   * @param mystring
+   *          -
    */
   public FrameLeaf(String[] mystring) {
     String separator = "#";
@@ -109,7 +113,8 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre myfloat != null
-   * @param myfloat -
+   * @param myfloat
+   *          -
    */
   public FrameLeaf(float[] myfloat) {
     StringBuffer add_me = new StringBuffer();
@@ -128,7 +133,8 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre mydouble != null
-   * @param mydouble -
+   * @param mydouble
+   *          -
    */
   public FrameLeaf(double[] mydouble) {
     StringBuffer add_me = new StringBuffer();
@@ -148,7 +154,8 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre myint != null
-   * @param myint -
+   * @param myint
+   *          -
    */
   public FrameLeaf(int[] myint) {
     StringBuffer add_me = new StringBuffer();
@@ -168,7 +175,8 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre mylong != null
-   * @param mylong -
+   * @param mylong
+   *          -
    */
   public FrameLeaf(long[] mylong) {
     StringBuffer add_me = new StringBuffer();
@@ -250,6 +258,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Get the raw (usually UTF-8) frame data.
+   * 
    * @return -
    */
   public byte[] getData() {

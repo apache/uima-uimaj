@@ -24,11 +24,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 /**
  * All images in the Cas Editor are referenced here.
  *
- * Call {@link CasEditorPlugin#getTaeImageDescriptor(Images)} to retrieve
- * an actual {@link ImageDescriptor}.
+ * Call {@link CasEditorPlugin#getTaeImageDescriptor(Images)} to retrieve an actual
+ * {@link ImageDescriptor}.
  */
 public enum Images {
-
 
   /**
    * The source folder image.

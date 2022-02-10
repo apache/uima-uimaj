@@ -38,8 +38,9 @@ import org.apache.uima.internal.util.IntListIterator;
  * rejected, or inserted as duplicates. Duplicate key insertion is randomized so that the tree's
  * performance degrades gracefully in the presence of many identical keys.
  * 
- * 
+ * @deprecated Not used anymore. Will be removed in UIMA 4.
  */
+@Deprecated
 public class IntArrayRBT extends IntArrayRBTcommon {
 
   // /**

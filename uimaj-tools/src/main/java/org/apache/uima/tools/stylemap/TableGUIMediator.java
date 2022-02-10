@@ -23,14 +23,13 @@ import javax.swing.event.ListSelectionEvent;
 
 import org.apache.uima.tools.util.gui.ImageButton;
 
-
 /**
  * Mediates GI elements in StyleMapEditor keeping buttons enabled or disabled depending on whether a
  * row is selected.
  * 
  */
 public class TableGUIMediator {
-  
+
   /** The table. */
   private StyleMapTable table;
 
@@ -53,7 +52,8 @@ public class TableGUIMediator {
   /**
    * Sets the table.
    *
-   * @param t the new table
+   * @param t
+   *          the new table
    */
   public void setTable(StyleMapTable t) {
     table = t;
@@ -62,7 +62,8 @@ public class TableGUIMediator {
   /**
    * Table clicked.
    *
-   * @param ev the ev
+   * @param ev
+   *          the ev
    */
   public void tableClicked(ListSelectionEvent ev) {
     // enable down arrow if there are more rows below the selection
@@ -86,9 +87,12 @@ public class TableGUIMediator {
   /**
    * Sets the buttons.
    *
-   * @param up the up
-   * @param down the down
-   * @param delete the delete
+   * @param up
+   *          the up
+   * @param down
+   *          the down
+   * @param delete
+   *          the delete
    */
   public void setButtons(ImageButton up, ImageButton down, ImageButton delete) {
     this.up = up;
@@ -120,7 +124,8 @@ public class TableGUIMediator {
   /**
    * Sets the entry button.
    *
-   * @param but the new entry button
+   * @param but
+   *          the new entry button
    */
   // adds the Add table entry button to the mediator
   public void setEntryButton(ImageButton but) {

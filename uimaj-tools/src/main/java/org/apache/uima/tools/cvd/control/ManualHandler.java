@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.Dimension;
@@ -38,11 +37,10 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import org.apache.uima.tools.cvd.CVD;
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
- * Show the CVD manual in a Swing html widget.  Unfortunately, the html we currently produce from
- * our docbook source is too advanced for the the simple html widget, and is virtually unreadable.
- * That makes this option relatively useless atm (it's better the more recent the Java version).
+ * Show the CVD manual in a Swing html widget. Unfortunately, the html we currently produce from our
+ * docbook source is too advanced for the the simple html widget, and is virtually unreadable. That
+ * makes this option relatively useless atm (it's better the more recent the Java version).
  */
 public class ManualHandler implements ActionListener {
 
@@ -52,7 +50,8 @@ public class ManualHandler implements ActionListener {
   /**
    * Instantiates a new manual handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public ManualHandler(MainFrame frame) {
     this.main = frame;
@@ -63,7 +62,9 @@ public class ManualHandler implements ActionListener {
    */
   private class Hyperactive implements HyperlinkListener {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
      */
     @Override
@@ -85,7 +86,9 @@ public class ManualHandler implements ActionListener {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -110,16 +113,16 @@ public class ManualHandler implements ActionListener {
               msg += String.format("\n Directory doesn't exist");
             }
             JOptionPane.showMessageDialog(this.main, msg, "Error loading manual",
-                JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             return;
           }
         }
       }
       if (manURL == null) {
         String msg = "Can't find manual. The manual is loaded via the classpath,\n"
-            + "so make sure the manual folder is in the classpath.";
+                + "so make sure the manual folder is in the classpath.";
         JOptionPane.showMessageDialog(this.main, msg, "Error loading manual",
-            JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
         return;
       }
       editorPane.setPage(manURL);
@@ -130,7 +133,7 @@ public class ManualHandler implements ActionListener {
       manFrame.setVisible(true);
       URL cvdLinkUrl = new URL(manURL.toString() + "#ugr.tools.cvd");
       HyperlinkEvent e = new HyperlinkEvent(editorPane, HyperlinkEvent.EventType.ACTIVATED,
-          cvdLinkUrl);
+              cvdLinkUrl);
       editorPane.fireHyperlinkUpdate(e);
     } catch (Exception e) {
       this.main.handleException(e);

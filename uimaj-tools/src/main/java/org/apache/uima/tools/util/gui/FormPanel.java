@@ -36,12 +36,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-
 /**
  * The Class FormPanel.
  */
 public class FormPanel extends JPanel {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6935744171267722900L;
 
@@ -49,8 +48,8 @@ public class FormPanel extends JPanel {
   private static final double weights[] = { 0.0, 0.0, 0.0, 0.0 };
 
   /** The Constant anchors. */
-  private static final int anchors[] = { GridBagConstraints.NORTHEAST,
-      GridBagConstraints.NORTHWEST, GridBagConstraints.NORTHEAST, GridBagConstraints.NORTHWEST };
+  private static final int anchors[] = { GridBagConstraints.NORTHEAST, GridBagConstraints.NORTHWEST,
+      GridBagConstraints.NORTHEAST, GridBagConstraints.NORTHWEST };
 
   /** The gbl. */
   private GridBagLayout gbl;
@@ -76,7 +75,8 @@ public class FormPanel extends JPanel {
   /**
    * Instantiates a new form panel.
    *
-   * @param nrColumns the nr columns
+   * @param nrColumns
+   *          the nr columns
    */
   public FormPanel(int nrColumns) {
     this();
@@ -100,7 +100,8 @@ public class FormPanel extends JPanel {
   /**
    * Adds the.
    *
-   * @param c the c
+   * @param c
+   *          the c
    */
   public void add(JComponent c) {
     if (c instanceof JCheckBox)
@@ -117,7 +118,9 @@ public class FormPanel extends JPanel {
     componentIndex++;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.JComponent#setEnabled(boolean)
    */
   /*

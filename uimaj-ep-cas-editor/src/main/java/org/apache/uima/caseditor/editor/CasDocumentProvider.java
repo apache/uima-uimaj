@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
-
 /**
  * Provides the {@link org.apache.uima.caseditor.editor.ICasDocument} for the
  * {@link AnnotationEditor}.
@@ -46,7 +45,7 @@ public abstract class CasDocumentProvider {
    * The Class ElementInfo.
    */
   protected static class ElementInfo {
-    
+
     /** The reference count. */
     public int referenceCount;
 
@@ -56,7 +55,8 @@ public abstract class CasDocumentProvider {
     /**
      * Instantiates a new element info.
      *
-     * @param element the element
+     * @param element
+     *          the element
      */
     protected ElementInfo(Object element) {
       this.element = element;
@@ -82,7 +82,8 @@ public abstract class CasDocumentProvider {
   /**
    * Creates the element info.
    *
-   * @param element the element
+   * @param element
+   *          the element
    * @return the element info
    */
   protected ElementInfo createElementInfo(Object element) {
@@ -92,8 +93,10 @@ public abstract class CasDocumentProvider {
   /**
    * Dispose element info.
    *
-   * @param element the element
-   * @param info the info
+   * @param element
+   *          the element
+   * @param info
+   *          the info
    */
   protected void disposeElementInfo(Object element, ElementInfo info) {
   }
@@ -102,20 +105,27 @@ public abstract class CasDocumentProvider {
    * Creates the a new {@link AnnotationDocument} from the given {@link IEditorInput} element. For
    * all other elements null is returned.
    *
-   * @param element the element
+   * @param element
+   *          the element
    * @return the i cas document
-   * @throws CoreException the core exception
+   * @throws CoreException
+   *           the core exception
    */
   protected abstract ICasDocument createDocument(Object element) throws CoreException;
 
   /**
    * Do save document.
    *
-   * @param monitor the monitor
-   * @param element the element
-   * @param document the document
-   * @param overwrite the overwrite
-   * @throws CoreException the core exception
+   * @param monitor
+   *          the monitor
+   * @param element
+   *          the element
+   * @param document
+   *          the document
+   * @param overwrite
+   *          the overwrite
+   * @throws CoreException
+   *           the core exception
    */
   protected abstract void doSaveDocument(IProgressMonitor monitor, Object element,
           ICasDocument document, boolean overwrite) throws CoreException;
@@ -123,7 +133,8 @@ public abstract class CasDocumentProvider {
   /**
    * Gets the status.
    *
-   * @param element the element
+   * @param element
+   *          the element
    * @return the status
    */
   public IStatus getStatus(Object element) {
@@ -135,8 +146,10 @@ public abstract class CasDocumentProvider {
    * relation to the type system, e.g. an ide plugin could save a preference file next to the type
    * system file.
    *
-   * @param element the element
-   * @return the preference store or null if it cannot be retrieved, e.g no document was created for the input.
+   * @param element
+   *          the element
+   * @return the preference store or null if it cannot be retrieved, e.g no document was created for
+   *         the input.
    */
   // Problem: Keys maybe should be pre-fixed depending on the plugin which is storing values
   // TODO: Should it be renamed to getPersistentPreferenceStore?
@@ -145,7 +158,8 @@ public abstract class CasDocumentProvider {
   /**
    * Save type system preference store.
    *
-   * @param element the element
+   * @param element
+   *          the element
    */
   // Might fail silently, only log an error
   public abstract void saveTypeSystemPreferenceStore(Object element);
@@ -154,7 +168,8 @@ public abstract class CasDocumentProvider {
    * Retrieves the session preference store. This preference store is used to store session data
    * which should be used to initialize a freshly opened editor.
    *
-   * @param element the element
+   * @param element
+   *          the element
    * @return the session preference store
    */
   public abstract IPreferenceStore getSessionPreferenceStore(Object element);
@@ -169,9 +184,12 @@ public abstract class CasDocumentProvider {
   /**
    * Creates the type system selector form.
    *
-   * @param editor the editor
-   * @param parent the parent
-   * @param status the status
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
+   * @param status
+   *          the status
    * @return the composite
    */
   public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent,
@@ -180,7 +198,8 @@ public abstract class CasDocumentProvider {
   /**
    * Adds the element state listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   public void addElementStateListener(IElementStateListener listener) {
     elementStateListeners.add(listener);
@@ -189,7 +208,8 @@ public abstract class CasDocumentProvider {
   /**
    * Removes the element state listener.
    *
-   * @param listener the listener
+   * @param listener
+   *          the listener
    */
   public void removeElementStateListener(IElementStateListener listener) {
     elementStateListeners.remove(listener);
@@ -198,7 +218,8 @@ public abstract class CasDocumentProvider {
   /**
    * Fire element deleted.
    *
-   * @param element the element
+   * @param element
+   *          the element
    */
   protected void fireElementDeleted(Object element) {
     for (IElementStateListener listener : elementStateListeners) {
@@ -209,7 +230,8 @@ public abstract class CasDocumentProvider {
   /**
    * Fire element changed.
    *
-   * @param element the element
+   * @param element
+   *          the element
    */
   protected void fireElementChanged(Object element) {
     for (IElementStateListener listener : elementStateListeners) {
@@ -220,8 +242,10 @@ public abstract class CasDocumentProvider {
   /**
    * Fire element dirty state changed.
    *
-   * @param element the element
-   * @param isDirty the is dirty
+   * @param element
+   *          the element
+   * @param isDirty
+   *          the is dirty
    */
   protected void fireElementDirtyStateChanged(Object element, boolean isDirty) {
     for (IElementStateListener listener : elementStateListeners) {

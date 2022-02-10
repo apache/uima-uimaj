@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-
 /**
  * The Class AddCapabilityTypeDialog.
  */
@@ -110,15 +109,19 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   /**
    * Instantiates a new adds the capability type dialog.
    *
-   * @param aSection the a section
-   * @param c the c
+   * @param aSection
+   *          the a section
+   * @param c
+   *          the c
    */
   public AddCapabilityTypeDialog(AbstractSection aSection, Capability c) {
-    super(aSection, "Add Types to a Capability Set", "Mark one or more types as "
-            + ((aSection.isCasConsumerDescriptor()) ? "Input"
-                    : (aSection.isCasInitializerDescriptor() || aSection
-                            .isCollectionReaderDescriptor()) ? "Output" : "Input and/or Output")
-            + " by clicking the mouse in the corresponding column, and press OK");
+    super(aSection, "Add Types to a Capability Set",
+            "Mark one or more types as "
+                    + ((aSection.isCasConsumerDescriptor()) ? "Input"
+                            : (aSection.isCasInitializerDescriptor()
+                                    || aSection.isCollectionReaderDescriptor()) ? "Output"
+                                            : "Input and/or Output")
+                    + " by clicking the mouse in the corresponding column, and press OK");
     capabilitySection = (CapabilitySection) aSection;
     capability = c;
     enableCol1 = !aSection.isCasInitializerDescriptor() && !aSection.isCollectionReaderDescriptor();
@@ -128,17 +131,24 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   /**
    * Instantiates a new adds the capability type dialog.
    *
-   * @param aSection the a section
-   * @param c the c
-   * @param aExisting the a existing
+   * @param aSection
+   *          the a section
+   * @param c
+   *          the c
+   * @param aExisting
+   *          the a existing
    */
   public AddCapabilityTypeDialog(AbstractSection aSection, Capability c, TreeItem aExisting) {
     this(aSection, c);
     existing = aExisting;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
@@ -170,8 +180,8 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
       TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(),
               capabilitySection.getFullyQualifiedName(existing));
       setChecked(item, 1, null != tof);
-      tof = AbstractSection.getTypeOrFeature(capability.getOutputs(), capabilitySection
-              .getFullyQualifiedName(existing));
+      tof = AbstractSection.getTypeOrFeature(capability.getOutputs(),
+              capabilitySection.getFullyQualifiedName(existing));
       setChecked(item, 2, null != tof);
     }
 
@@ -186,8 +196,10 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   /**
    * Checks for type.
    *
-   * @param items the items
-   * @param name the name
+   * @param items
+   *          the items
+   * @param name
+   *          the name
    * @return true, if successful
    */
   private boolean hasType(TypeOrFeature[] items, String name) {
@@ -213,8 +225,8 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
       TreeItem item = f_tree.getItem(i);
       if (item.getText(INPUT).equals(checkedIndicator(INPUT))
               || item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))) {
-        names.add(capabilitySection.getFullyQualifiedName(item.getText(NAMESPACE), item
-                .getText(NAME)));
+        names.add(capabilitySection.getFullyQualifiedName(item.getText(NAMESPACE),
+                item.getText(NAME)));
         ins.add(item.getText(INPUT).equals(checkedIndicator(INPUT)));
         outs.add(item.getText(OUTPUT).equals(checkedIndicator(OUTPUT)));
       }
@@ -233,8 +245,10 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   /**
    * Sets the gui type name.
    *
-   * @param item the item
-   * @param typeName the type name
+   * @param item
+   *          the item
+   * @param typeName
+   *          the type name
    */
   // used by dialog
   public void setGuiTypeName(TreeItem item, String typeName) {
@@ -242,7 +256,9 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     item.setText(NAMESPACE, AbstractSection.getNameSpace(typeName));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogMultiColTable#isValid()
    */
   @Override
@@ -250,7 +266,8 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     for (int i = 0; i < types.length; i++) {
       if (!inputs[i]) {
         if (someFeatureOnType(types[i], INPUT)) {
-          setErrorMessage("This type has one or more features marked for input and can''t be removed as an Input.\nIf you want to do this, first remove the Input designation for all features on this type.");
+          setErrorMessage(
+                  "This type has one or more features marked for input and can''t be removed as an Input.\nIf you want to do this, first remove the Input designation for all features on this type.");
           return false;
         }
         // Use case: You can have
@@ -258,7 +275,8 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
         // In this case, the type must be in an input. The meaning is that
         // the AE sets or populates features on existing types.
         if (!outputs[i] && someFeatureOnType(types[i], OUTPUT) && !inputs[i]) {
-          setErrorMessage("This type has features which are output, and so must either be specified as INPUT (meaning features are populated or \"outputted\" on existing instances), or OUTPUT (meaning new instances of this type are created).  It can't be removed completely.\nIf you want to do this, first remove the features which are output for this type.");
+          setErrorMessage(
+                  "This type has features which are output, and so must either be specified as INPUT (meaning features are populated or \"outputted\" on existing instances), or OUTPUT (meaning new instances of this type are created).  It can't be removed completely.\nIf you want to do this, first remove the features which are output for this type.");
           return false;
         }
       }
@@ -269,8 +287,10 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   /**
    * return true if the type has a feature (except all-features) marked as INPUT (OUTPUT).
    *
-   * @param typeName the type name
-   * @param IO the io
+   * @param typeName
+   *          the type name
+   * @param IO
+   *          the io
    * @return true if the type has a feature (except all-features) marked as INPUT (OUTPUT)
    */
   private boolean someFeatureOnType(String typeName, int IO) {

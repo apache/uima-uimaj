@@ -70,8 +70,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.FileEditorInput;
 
-public class DefaultCasDocumentProvider extends
-        org.apache.uima.caseditor.editor.CasDocumentProvider {
+public class DefaultCasDocumentProvider
+        extends org.apache.uima.caseditor.editor.CasDocumentProvider {
 
   /**
    * Listens for resource events: If the input file for the editor is removed the editor will be
@@ -100,7 +100,7 @@ public class DefaultCasDocumentProvider extends
                 if (delta.getKind() == IResourceDelta.REMOVED) {
                   handleElementDeleted(fileInput);
                 } else if (delta.getKind() == IResourceDelta.CHANGED) {
-                  
+
                   if (isFileChangeTrackingEnabled)
                     handleElementChanged(fileInput);
                 }
@@ -168,13 +168,13 @@ public class DefaultCasDocumentProvider extends
   private Map<String, String> documentToTypeSystemMap = new HashMap<>();
 
   /**
-   * This map stores temporarily the type system that should be used to open the next document.
-   * This functionality is separated from documentToTypeSystemMap since the preference for using 
-   * the previously selected type system can be deactivated. The inlined file choose, for example, 
-   * uses this field to remember the chosen type system.
+   * This map stores temporarily the type system that should be used to open the next document. This
+   * functionality is separated from documentToTypeSystemMap since the preference for using the
+   * previously selected type system can be deactivated. The inlined file choose, for example, uses
+   * this field to remember the chosen type system.
    */
   private Map<String, String> typeSystemForNextDocumentOnly = new HashMap<>();
-  
+
   private Map<String, IPreferenceStore> sessionPreferenceStores = new HashMap<>();
 
   /**
@@ -182,7 +182,7 @@ public class DefaultCasDocumentProvider extends
    * while the editor is open.
    */
   private Map<String, PreferenceStore> typeSystemPreferences = new HashMap<>();
-  
+
   private boolean isFileChangeTrackingEnabled = true;
 
   // UIMA-2245 Remove this method together with the migration code below one day
@@ -226,20 +226,19 @@ public class DefaultCasDocumentProvider extends
       // set by the editor for this specific CAS.
       // apply that type system only if the setting is active in the preferences
       String typeSystemFileString = null;
-      
+
       String document = casFile.getFullPath().toPortableString();
-      if(typeSystemForNextDocumentOnly.get(document) != null) {
+      if (typeSystemForNextDocumentOnly.get(document) != null) {
         // the type system was already set internally. Use this one and forget the information.
         typeSystemFileString = typeSystemForNextDocumentOnly.get(document);
         typeSystemForNextDocumentOnly.put(document, null);
       }
-      
+
       IPreferenceStore prefStore = CasEditorIdePlugin.getDefault().getPreferenceStore();
       boolean useLastTypesystem = prefStore
               .getBoolean(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM);
       if (typeSystemFileString == null && useLastTypesystem) {
-        typeSystemFileString = documentToTypeSystemMap
-                .get(document);
+        typeSystemFileString = documentToTypeSystemMap.get(document);
       }
       if (typeSystemFileString != null)
         typeSystemFile = ResourcesPlugin.getWorkspace().getRoot()
@@ -278,15 +277,11 @@ public class DefaultCasDocumentProvider extends
         // colors could change completely when the a type is
         // added or removed to the type system
 
-        IFile prefFile = ResourcesPlugin
-                .getWorkspace()
-                .getRoot()
-                .getFile(
-                        new Path(getPreferenceFileForTypeSystem(typeSystemFile.getFullPath()
-                                .toPortableString())));
+        IFile prefFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
+                getPreferenceFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
 
-        PreferenceStore tsPrefStore = typeSystemPreferences.get(prefFile.getFullPath()
-                .toPortableString());
+        PreferenceStore tsPrefStore = typeSystemPreferences
+                .get(prefFile.getFullPath().toPortableString());
 
         // If lookup for store failed ...
         if (tsPrefStore == null) {
@@ -304,12 +299,8 @@ public class DefaultCasDocumentProvider extends
             // If there is DotCorpus style file and not yet a preference store file
             // the settings from the DotCorpus style file should be written into a preference store
             // file.
-            IFile styleFile = ResourcesPlugin
-                    .getWorkspace()
-                    .getRoot()
-                    .getFile(
-                            new Path(getStyleFileForTypeSystem(typeSystemFile.getFullPath()
-                                    .toPortableString())));
+            IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
+                    getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
 
             if (styleFile.exists()) {
               InputStream styleFileIn = null;
@@ -372,8 +363,7 @@ public class DefaultCasDocumentProvider extends
           typeSystemPreferences.put(prefFile.getFullPath().toPortableString(), tsPrefStore);
         }
 
-        documentToTypeSystemMap.put(document, typeSystemFile
-                .getFullPath().toPortableString());
+        documentToTypeSystemMap.put(document, typeSystemFile.getFullPath().toPortableString());
 
         IPreferenceStore store = sessionPreferenceStores.get(getTypesystemId(element));
 
@@ -382,12 +372,13 @@ public class DefaultCasDocumentProvider extends
           sessionPreferenceStores.put(getTypesystemId(element), newStore);
           newStore.addPropertyChangeListener(new SaveSessionPreferencesTrigger(element));
 
-          String sessionPreferenceString = typeSystemFile.getPersistentProperty(new QualifiedName(
-                  "", CAS_EDITOR_SESSION_PROPERTIES));
+          String sessionPreferenceString = typeSystemFile
+                  .getPersistentProperty(new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES));
 
           if (sessionPreferenceString != null) {
             try {
-              newStore.load(new ByteArrayInputStream(sessionPreferenceString.getBytes(StandardCharsets.UTF_8)));
+              newStore.load(new ByteArrayInputStream(
+                      sessionPreferenceString.getBytes(StandardCharsets.UTF_8)));
             } catch (IOException e) {
               CasEditorPlugin.log(e);
             }
@@ -400,7 +391,8 @@ public class DefaultCasDocumentProvider extends
 
         CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
 
-        ICasDocument   doc = new DocumentUimaImpl(cas, casFile, typeSystemFile.getFullPath().makeRelative().toString());
+        ICasDocument doc = new DocumentUimaImpl(cas, casFile,
+                typeSystemFile.getFullPath().makeRelative().toString());
 
         elementErrorStatus.remove(element);
 
@@ -442,13 +434,12 @@ public class DefaultCasDocumentProvider extends
         documentImpl.serialize(outStream);
 
         InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
-        
+
         isFileChangeTrackingEnabled = false;
-        
+
         try {
           file.setContents(stream, true, false, null);
-        }
-        finally {
+        } finally {
           isFileChangeTrackingEnabled = true;
         }
       }
@@ -522,8 +513,7 @@ public class DefaultCasDocumentProvider extends
   void setTypeSystemForNextDocumentOnly(String document, String typeSystem) {
     typeSystemForNextDocumentOnly.put(document, typeSystem);
   }
-  
-  
+
   @Override
   public Composite createTypeSystemSelectorForm(final ICasEditor editor, Composite parent,
           IStatus status) {
@@ -546,8 +536,8 @@ public class DefaultCasDocumentProvider extends
       public void widgetSelected(SelectionEvent e) {
 
         // Open a dialog to let the user choose a type system
-        IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(Display
-                .getCurrent().getActiveShell(), ResourcesPlugin.getWorkspace().getRoot(),
+        IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(
+                Display.getCurrent().getActiveShell(), ResourcesPlugin.getWorkspace().getRoot(),
                 "Select a Type System", "Please select a Type System:");
 
         if (resource != null) {

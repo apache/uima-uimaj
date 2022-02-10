@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class SofaMapSection.
  */
@@ -87,8 +86,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Instantiates a new sofa map section.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
    */
   public SofaMapSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Sofa Mappings (Only used in aggregate Descriptors)", titleMsg);
@@ -108,7 +109,8 @@ public class SofaMapSection extends AbstractSection {
 
     tree = newTree(sectionClient);
     Composite buttonContainer = newButtonContainer(sectionClient);
-    addButton = newPushButton(buttonContainer, S_ADD, "Click here to add a component Sofa binding.");
+    addButton = newPushButton(buttonContainer, S_ADD,
+            "Click here to add a component Sofa binding.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
 
@@ -163,8 +165,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Gets the aggr sofas.
    *
-   * @param inputCapabilityNames the input capability names
-   * @param outputCapabilityNames the output capability names
+   * @param inputCapabilityNames
+   *          the input capability names
+   * @param outputCapabilityNames
+   *          the output capability names
    * @return the aggr sofas
    */
   private String[] getAggrSofas(String[] inputCapabilityNames, String[] outputCapabilityNames) {
@@ -195,8 +199,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Fill map.
    *
-   * @param aggrKeys the aggr keys
-   * @param isInput the is input
+   * @param aggrKeys
+   *          the aggr keys
+   * @param isInput
+   *          the is input
    */
   private void fillMap(String[] aggrKeys, boolean isInput) {
 
@@ -214,8 +220,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Fill bindings.
    *
-   * @param parent the parent
-   * @param aggrSofa the aggr sofa
+   * @param parent
+   *          the parent
+   * @param aggrSofa
+   *          the aggr sofa
    */
   private void fillBindings(TreeItem parent, String aggrSofa) {
     // bindings are a string of key-name / sofa-name or "<default>"
@@ -229,7 +237,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Gets the sofa bindings for aggr sofa.
    *
-   * @param aggrSofa the aggr sofa
+   * @param aggrSofa
+   *          the aggr sofa
    * @return the sofa bindings for aggr sofa
    */
   private String[] getSofaBindingsForAggrSofa(String aggrSofa) {
@@ -300,7 +309,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Edits the aggr map.
    *
-   * @param selected the selected
+   * @param selected
+   *          the selected
    */
   private void editAggrMap(TreeItem selected) {
     // pop up window: shows all available component mappings
@@ -313,11 +323,9 @@ public class SofaMapSection extends AbstractSection {
     String aggrSofa = selected.getText();
     Map availAndBoundSofas = getAvailAndBoundSofas(aggrSofa, !AVAIL_ONLY);
     if (availAndBoundSofas.size() == 0) {
-      Utility
-              .popMessage(
-                      "No available sofas",
-                      "Because there are no sofas in the delegates that are not already bound, no sofa mapping can be created.",
-                      MessageDialog.WARNING);
+      Utility.popMessage("No available sofas",
+              "Because there are no sofas in the delegates that are not already bound, no sofa mapping can be created.",
+              MessageDialog.WARNING);
       return;
     }
 
@@ -335,7 +343,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Adds the aggr map.
    *
-   * @param selected the selected
+   * @param selected
+   *          the selected
    */
   private void addAggrMap(TreeItem selected) {
     // pop up window: shows all available component mappings
@@ -345,11 +354,9 @@ public class SofaMapSection extends AbstractSection {
     String aggrSofa = selected.getText();
     Map availAndBoundSofas = getAvailAndBoundSofas(aggrSofa, AVAIL_ONLY);
     if (availAndBoundSofas.size() == 0) {
-      Utility
-              .popMessage(
-                      "No available sofas",
-                      "Because there are no sofas in the delegates that are not already bound, no sofa mapping can be created.",
-                      MessageDialog.WARNING);
+      Utility.popMessage("No available sofas",
+              "Because there are no sofas in the delegates that are not already bound, no sofa mapping can be created.",
+              MessageDialog.WARNING);
       return;
     }
 
@@ -366,10 +373,14 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Adds the sofas to all component sofa map.
    *
-   * @param allComponentSofas the all component sofas
-   * @param key the key
-   * @param delegate the delegate
-   * @param isInput the is input
+   * @param allComponentSofas
+   *          the all component sofas
+   * @param key
+   *          the key
+   * @param delegate
+   *          the delegate
+   * @param isInput
+   *          the is input
    */
   private void addSofasToAllComponentSofaMap(Map allComponentSofas, String key,
           ResourceSpecifier delegate, boolean isInput) {
@@ -395,8 +406,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Gets the avail and bound sofas.
    *
-   * @param aggrSofa the aggr sofa
-   * @param availOnly the avail only
+   * @param aggrSofa
+   *          the aggr sofa
+   * @param availOnly
+   *          the avail only
    * @return a Map, keys = component/sofaname, value = aggrsofa or null
    */
   private Map getAvailAndBoundSofas(String aggrSofa, boolean availOnly) {
@@ -447,7 +460,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Checks if is input.
    *
-   * @param sofaName the sofa name
+   * @param sofaName
+   *          the sofa name
    * @return true, if is input
    */
   private boolean isInput(String sofaName) {
@@ -462,8 +476,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Adds the aggr.
    *
-   * @param aggrSofa the aggr sofa
-   * @param sofaNames the sofa names
+   * @param aggrSofa
+   *          the aggr sofa
+   * @param sofaNames
+   *          the sofa names
    */
   private void addAggr(String aggrSofa, String[] sofaNames) {
     SofaMapping[] newSofas = new SofaMapping[sofaNames.length];
@@ -483,7 +499,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Removes the aggr.
    *
-   * @param aggrSofa the aggr sofa
+   * @param aggrSofa
+   *          the aggr sofa
    */
   private void removeAggr(String aggrSofa) {
     Comparator comparator = new Comparator() {
@@ -496,22 +513,20 @@ public class SofaMapSection extends AbstractSection {
           return -1;
       }
     };
-    editor.getAeDescription().setSofaMappings(
-            (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), aggrSofa,
-                    SofaMapping.class, comparator));
+    editor.getAeDescription().setSofaMappings((SofaMapping[]) Utility
+            .removeElementsFromArray(getSofaMappings(), aggrSofa, SofaMapping.class, comparator));
   }
 
   /**
    * Removes the aggr.
    *
-   * @param selected the selected
+   * @param selected
+   *          the selected
    */
   private void removeAggr(TreeItem selected) {
-    if (Window.CANCEL == Utility
-            .popOkCancel(
-                    "Confirm delete of sofa mappings",
-                    "Please confirm deletion of all sofa mappings for this Aggregate Sofa name.  Note this will not delete the Sofa name.  To do that, remove the name from the Component Capabilities panel (the other panel on this page).",
-                    MessageDialog.WARNING))
+    if (Window.CANCEL == Utility.popOkCancel("Confirm delete of sofa mappings",
+            "Please confirm deletion of all sofa mappings for this Aggregate Sofa name.  Note this will not delete the Sofa name.  To do that, remove the name from the Component Capabilities panel (the other panel on this page).",
+            MessageDialog.WARNING))
       return;
     removeAggr(selected.getText());
     removeChildren(selected);
@@ -521,7 +536,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Removes a delegate map from a particular aggr sofa mapping.
    *
-   * @param selected the selected
+   * @param selected
+   *          the selected
    */
   private void removeComponentFromAggr(TreeItem selected) {
     final String aggrName = selected.getParentItem().getText();
@@ -548,9 +564,9 @@ public class SofaMapSection extends AbstractSection {
       }
     };
 
-    editor.getAeDescription().setSofaMappings(
-            (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), selected.getText(),
-                    SofaMapping.class, comparator));
+    editor.getAeDescription()
+            .setSofaMappings((SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(),
+                    selected.getText(), SofaMapping.class, comparator));
     selected.dispose();
     setFileDirty();
   }
@@ -559,13 +575,17 @@ public class SofaMapSection extends AbstractSection {
    * Called when removing a delegate from the aggr. Removes from the sofaMappings, any and all
    * mappings associated with the delegate.
    *
-   * @param componentKey the component key
-   * @param delegate the delegate
-   * @param pEditor the editor
+   * @param componentKey
+   *          the component key
+   * @param delegate
+   *          the delegate
+   * @param pEditor
+   *          the editor
    */
-   public static void removeSofaMappings(String componentKey, ResourceSpecifier delegate,
+  public static void removeSofaMappings(String componentKey, ResourceSpecifier delegate,
           MultiPageEditor pEditor) {
-    if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription) {
+    if (delegate instanceof AnalysisEngineDescription
+            || delegate instanceof CasConsumerDescription) {
       Set[] inOut = getCapabilitySofaNames((ResourceCreationSpecifier) delegate, componentKey);
       inOut[0].addAll(inOut[1]);
       final Set allDelegateComponentSofas = inOut[0];
@@ -583,16 +603,16 @@ public class SofaMapSection extends AbstractSection {
         }
       };
 
-      pEditor.getAeDescription().setSofaMappings(
-              (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(pEditor), null,
-                      SofaMapping.class, comparator));
+      pEditor.getAeDescription().setSofaMappings((SofaMapping[]) Utility.removeElementsFromArray(
+              getSofaMappings(pEditor), null, SofaMapping.class, comparator));
     }
   }
 
   /**
    * Gets the sofa only.
    *
-   * @param componentAndSofa the component and sofa
+   * @param componentAndSofa
+   *          the component and sofa
    * @return the sofa only
    */
   private String getSofaOnly(String componentAndSofa) {
@@ -605,7 +625,8 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Gets the component only.
    *
-   * @param componentAndSofa the component and sofa
+   * @param componentAndSofa
+   *          the component and sofa
    * @return the component only
    */
   private String getComponentOnly(String componentAndSofa) {
@@ -615,7 +636,9 @@ public class SofaMapSection extends AbstractSection {
     return componentAndSofa.substring(0, locOfSlash);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override

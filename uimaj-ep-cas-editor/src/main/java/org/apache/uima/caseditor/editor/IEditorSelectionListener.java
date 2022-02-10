@@ -19,15 +19,12 @@
 
 package org.apache.uima.caseditor.editor;
 
-
 /**
- * The listener interface for receiving IEditorSelection events.
- * The class that is interested in processing a IEditorSelection
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addIEditorSelectionListener</code> method. When
- * the IEditorSelection event occurs, that object's appropriate
- * method is invoked.
+ * The listener interface for receiving IEditorSelection events. The class that is interested in
+ * processing a IEditorSelection event implements this interface, and the object created with that
+ * class is registered with a component using the component's
+ * <code>addIEditorSelectionListener</code> method. When the IEditorSelection event occurs, that
+ * object's appropriate method is invoked.
  */
 public interface IEditorSelectionListener {
   /**

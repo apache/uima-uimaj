@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -28,7 +27,6 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class ColorPrefsOpenHandler.
@@ -41,7 +39,8 @@ public class ColorPrefsOpenHandler implements ActionListener {
   /**
    * Instantiates a new color prefs open handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public ColorPrefsOpenHandler(MainFrame frame) {
     this.main = frame;
@@ -50,7 +49,8 @@ public class ColorPrefsOpenHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override

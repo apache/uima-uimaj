@@ -23,22 +23,20 @@ import java.util.Collection;
 
 import org.apache.uima.cas.Type;
 
-
 /**
- * The listener interface for receiving IShowAnnotations events.
- * The class that is interested in processing a IShowAnnotations
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addIShowAnnotationsListener</code> method. When
- * the IShowAnnotations event occurs, that object's appropriate
- * method is invoked.
+ * The listener interface for receiving IShowAnnotations events. The class that is interested in
+ * processing a IShowAnnotations event implements this interface, and the object created with that
+ * class is registered with a component using the component's
+ * <code>addIShowAnnotationsListener</code> method. When the IShowAnnotations event occurs, that
+ * object's appropriate method is invoked.
  */
 public interface IShowAnnotationsListener {
-	  
-  	/**
-  	 * Selection changed.
-  	 *
-  	 * @param selection the selection
-  	 */
-  	void selectionChanged(Collection<Type> selection);
-  }
+
+  /**
+   * Selection changed.
+   *
+   * @param selection
+   *          the selection
+   */
+  void selectionChanged(Collection<Type> selection);
+}

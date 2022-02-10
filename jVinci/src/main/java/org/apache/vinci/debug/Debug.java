@@ -206,7 +206,9 @@ public class Debug {
 
   /**
    * Same function as {@link #printDebuggingMessage(String)} but easier to type.
-   * @param message -
+   * 
+   * @param message
+   *          -
    * @return -
    */
   static public String p(String message) {
@@ -215,8 +217,11 @@ public class Debug {
 
   /**
    * Same function as {@link #printDebuggingMessage(String,String)} but easier to type.
-   * @param location -
-   * @param message -
+   * 
+   * @param location
+   *          -
+   * @param message
+   *          -
    */
   static public void p(String location, String message) {
     printDebuggingMessage(location, message);

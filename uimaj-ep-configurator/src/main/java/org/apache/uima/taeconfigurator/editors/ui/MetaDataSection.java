@@ -27,13 +27,14 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class MetaDataSection.
  */
 public class MetaDataSection extends AbstractSection {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -59,16 +60,22 @@ public class MetaDataSection extends AbstractSection {
    * Creates a section to enter meta data. Including a text field for name, description, version and
    * vendor.
    *
-   * @param editor          the referenced multipage editor
-   * @param parent the parent
+   * @param editor
+   *          the referenced multipage editor
+   * @param parent
+   *          the parent
    */
   public MetaDataSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Overall Identification Information",
             "This section specifies the basic identification information for this descriptor");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.
+   * IManagedForm)
    */
   @Override
   public void initialize(IManagedForm form) {
@@ -124,8 +131,8 @@ public class MetaDataSection extends AbstractSection {
     dmd.setName(setValueChanged(nameText.getText(), dmd.getName()));
     dmd.setVersion(setValueChanged(versionText.getText(), dmd.getVersion()));
     dmd.setVendor(setValueChanged(vendorText.getText(), dmd.getVendor()));
-    dmd.setDescription(setValueChanged(multiLineFix(descriptionText.getText()), dmd
-            .getDescription()));
+    dmd.setDescription(
+            setValueChanged(multiLineFix(descriptionText.getText()), dmd.getDescription()));
 
     if (valueChanged)
       setFileDirty();

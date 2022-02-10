@@ -30,7 +30,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
 
-
 /**
  * TODO: add type comment for <code>MultiMarkup</code>.
  * 
@@ -55,9 +54,12 @@ public abstract class MultiMarkup {
     /**
      * Instantiates a new extent.
      *
-     * @param start the start
-     * @param end the end
-     * @param depth the depth
+     * @param start
+     *          the start
+     * @param end
+     *          the end
+     * @param depth
+     *          the depth
      */
     private Extent(int start, int end, int depth) {
       this.start = start;
@@ -78,10 +80,14 @@ public abstract class MultiMarkup {
     /**
      * Instantiates a new annot extent.
      *
-     * @param start the start
-     * @param end the end
-     * @param depth the depth
-     * @param annotName the annot name
+     * @param start
+     *          the start
+     * @param end
+     *          the end
+     * @param depth
+     *          the depth
+     * @param annotName
+     *          the annot name
      */
     private AnnotExtent(int start, int end, int depth, String annotName) {
       super(start, end, depth);
@@ -93,9 +99,12 @@ public abstract class MultiMarkup {
   /**
    * Creates the annotation markups.
    *
-   * @param it the it
-   * @param textLen the text len
-   * @param styleMap the style map
+   * @param it
+   *          the it
+   * @param textLen
+   *          the text len
+   * @param styleMap
+   *          the style map
    * @return the annotation extent[]
    */
   public static AnnotationExtent[] createAnnotationMarkups(FSIterator it, int textLen,
@@ -199,8 +208,10 @@ public abstract class MultiMarkup {
   /**
    * Creates the markup extents.
    *
-   * @param it the it
-   * @param textLen the text len
+   * @param it
+   *          the it
+   * @param textLen
+   *          the text len
    * @return the markup extent[]
    */
   public static MarkupExtent[] createMarkupExtents(FSIterator it, int textLen) {

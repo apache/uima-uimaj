@@ -27,7 +27,6 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 
-
 /**
  * The Class XMLTagScanner.
  */
@@ -36,7 +35,8 @@ public class XMLTagScanner extends RuleBasedScanner {
   /**
    * Instantiates a new XML tag scanner.
    *
-   * @param manager the manager
+   * @param manager
+   *          the manager
    */
   public XMLTagScanner(ColorManager manager) {
     IToken string = new Token(new TextAttribute(manager.getColor(IXMLColorConstants.STRING)));

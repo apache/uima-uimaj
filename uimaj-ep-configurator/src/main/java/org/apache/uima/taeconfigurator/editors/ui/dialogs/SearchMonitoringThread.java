@@ -22,12 +22,11 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
  * The Class SearchMonitoringThread.
  */
 public class SearchMonitoringThread extends Thread {
-  
+
   /** The m search thread. */
   private SearchThread m_searchThread;
 
@@ -37,15 +36,19 @@ public class SearchMonitoringThread extends Thread {
   /**
    * Instantiates a new search monitoring thread.
    *
-   * @param dialog the dialog
-   * @param searchThread the search thread
+   * @param dialog
+   *          the dialog
+   * @param searchThread
+   *          the search thread
    */
   public SearchMonitoringThread(FindComponentDialog dialog, SearchThread searchThread) {
     m_dialog = dialog;
     m_searchThread = searchThread;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Thread#run()
    */
   @Override

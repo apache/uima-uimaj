@@ -21,7 +21,6 @@ package org.apache.uima.caseditor.editor.editview.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
-
 /**
  * This {@link ICellEditorValidator} validates {@link String} values which represents a
  * {@link Integer}.
@@ -29,11 +28,12 @@ import org.eclipse.jface.viewers.ICellEditorValidator;
  * For validation {@link Integer#parseInt(String)} is used.
  */
 class IntegerCellEditorValidator implements ICellEditorValidator {
-  
+
   /**
    * Checks if the given value is a valid {@link Integer}.
    *
-   * @param value the value
+   * @param value
+   *          the value
    * @return null if valid otherwise an error message
    */
   @Override

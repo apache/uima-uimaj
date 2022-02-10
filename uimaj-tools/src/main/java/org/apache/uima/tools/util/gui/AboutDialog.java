@@ -38,25 +38,26 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.Level;
 
-
 /**
  * Dialog showing standard UIMA splash screen and OK button. To be used for "About" menu item in
  * GUIs.
  * 
  */
 public class AboutDialog extends JDialog {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -3901327861122722078L;
 
   /** The Constant ABOUT_TEXT. */
   private static final String ABOUT_TEXT;
-  
+
   /**
    * Instantiates a new about dialog.
    *
-   * @param aParentFrame the a parent frame
-   * @param aDialogTitle the a dialog title
+   * @param aParentFrame
+   *          the a parent frame
+   * @param aDialogTitle
+   *          the a dialog title
    */
   public AboutDialog(JFrame aParentFrame, String aDialogTitle) {
     super(aParentFrame, aDialogTitle);
@@ -69,13 +70,13 @@ public class AboutDialog extends JDialog {
     imagePanel.setBackground(Color.WHITE);
     imagePanel.add(imageLabel);
     getContentPane().add(imagePanel, BorderLayout.WEST);
-    
+
     String aboutText = ABOUT_TEXT.replaceAll("\\$\\{version\\}", UIMAFramework.getVersionString());
-       
+
     JTextArea textArea = new JTextArea(aboutText);
     textArea.setEditable(false);
     getContentPane().add(textArea, BorderLayout.CENTER);
-    
+
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(closeButton);
     getContentPane().add(buttonPanel, BorderLayout.SOUTH);
@@ -91,19 +92,19 @@ public class AboutDialog extends JDialog {
     });
   }
 
-  //Read the dialog text from a resource file
+  // Read the dialog text from a resource file
   static {
     StringBuffer buf = new StringBuffer();
     try {
-      InputStream textStream = AboutDialog.class.getResourceAsStream("about.txt"); 
+      InputStream textStream = AboutDialog.class.getResourceAsStream("about.txt");
       BufferedReader reader = new BufferedReader(new InputStreamReader(textStream));
       String line;
       while ((line = reader.readLine()) != null) {
-        buf.append(line).append('\n');      
+        buf.append(line).append('\n');
       }
     } catch (Exception e) {
       UIMAFramework.getLogger().log(Level.WARNING, "About text could not be loaded", e);
-    }    
-    ABOUT_TEXT = buf.toString();    
+    }
+    ABOUT_TEXT = buf.toString();
   }
 }

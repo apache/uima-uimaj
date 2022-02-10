@@ -151,9 +151,8 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
     } else {
       getWriter().println();
       getWriter().println("FAILURES!!!");
-      getWriter().println(
-              "Tests run: " + result.runCount() + ",  Failures: " + result.failureCount()
-                      + ",  Errors: " + result.errorCount());
+      getWriter().println("Tests run: " + result.runCount() + ",  Failures: "
+              + result.failureCount() + ",  Errors: " + result.errorCount());
     }
     getWriter().println();
   }

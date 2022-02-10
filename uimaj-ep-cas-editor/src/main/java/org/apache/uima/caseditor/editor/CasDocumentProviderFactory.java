@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorInput;
 
-
 /**
  * Factory class to produce and lookup an appropriate document provider.
  */
@@ -46,14 +45,14 @@ class CasDocumentProviderFactory {
   /** The document providers. */
   // map class_name to provider
   private Map<String, CasDocumentProvider> documentProviders = new HashMap<>();
-  
+
   /**
    * Instantiates a new cas document provider factory.
    */
   CasDocumentProviderFactory() {
 
-    IConfigurationElement[] config =
-            Platform.getExtensionRegistry().getConfigurationElementsFor(CAS_EDITOR_EXTENSION);
+    IConfigurationElement[] config = Platform.getExtensionRegistry()
+            .getConfigurationElementsFor(CAS_EDITOR_EXTENSION);
 
     for (IConfigurationElement element : config) {
 
@@ -62,7 +61,7 @@ class CasDocumentProviderFactory {
         // extract id element
         String id = element.getAttribute("id");
         String inputType = element.getAttribute("inputType");
-        
+
         Object documentProviderObject;
         try {
           documentProviderObject = element.createExecutableExtension("class");
@@ -70,7 +69,7 @@ class CasDocumentProviderFactory {
           CasEditorPlugin.log("Failed to load document provider with id: " + id, e);
           documentProviderObject = null;
         }
-        
+
         if (documentProviderObject instanceof CasDocumentProvider) {
           documentProviders.put(inputType, (CasDocumentProvider) documentProviderObject);
         }
@@ -80,48 +79,49 @@ class CasDocumentProviderFactory {
   }
 
   /**
-   * Looks up a document provider for the provided editor input.
-   * The editor input type must be cast-able to the specified inputType.
-   * The implementation tries first to map class types, and then interface types.
+   * Looks up a document provider for the provided editor input. The editor input type must be
+   * cast-able to the specified inputType. The implementation tries first to map class types, and
+   * then interface types.
    *
-   * @param input the input
+   * @param input
+   *          the input
    * @return the document provider
    */
   CasDocumentProvider getDocumentProvider(IEditorInput input) {
 
     // A class can have many types, they are defined by super classes
     // and implemented interfaces
-    
+
     // First try to match the input type to the editor input type
     // or one of its super class
     List<Class<?>> classList = new ArrayList<>();
-    
+
     for (Class<?> inputClass = input.getClass(); inputClass != null;) {
       classList.add(inputClass);
       inputClass = inputClass.getSuperclass();
     }
-    
+
     CasDocumentProvider provider = null;
     for (Class<?> inputClass : classList) {
       provider = documentProviders.get(inputClass.getName());
-      
+
       if (provider != null)
         return provider;
     }
-    
+
     // Now try to match an implemented interface to the input type
     // either of the editor input class or for one of its super classes
     if (provider == null) {
       for (Class<?> inputClass : classList) {
         for (Class<?> inputClassInterface : inputClass.getInterfaces()) {
           provider = documentProviders.get(inputClassInterface.getName());
-          
+
           if (provider != null)
             return provider;
         }
       }
     }
-    
+
     return provider;
   }
 

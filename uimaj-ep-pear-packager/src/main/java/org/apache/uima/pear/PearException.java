@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
-
 /**
  * 
  * This is the generic exception used to handle exceptions related to PEAR.
@@ -41,7 +40,6 @@ public class PearException extends Exception {
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
-  
   /**
    * Instantiates a new pear exception.
    */
@@ -51,7 +49,8 @@ public class PearException extends Exception {
   /**
    * Instantiates a new pear exception.
    *
-   * @param message the message
+   * @param message
+   *          the message
    */
   public PearException(String message) {
     super(message);
@@ -60,7 +59,8 @@ public class PearException extends Exception {
   /**
    * Instantiates a new pear exception.
    *
-   * @param cause the cause
+   * @param cause
+   *          the cause
    */
   public PearException(Throwable cause) {
     super(cause);
@@ -69,8 +69,10 @@ public class PearException extends Exception {
   /**
    * Instantiates a new pear exception.
    *
-   * @param message the message
-   * @param cause the cause
+   * @param message
+   *          the message
+   * @param cause
+   *          the cause
    */
   public PearException(String message, Throwable cause) {
     super(message, cause);
@@ -87,18 +89,18 @@ public class PearException extends Exception {
       IStatus[] sa = new IStatus[o.length];
       for (int i = 0; i < o.length; i++) {
         sa[i] = (IStatus) o[i];
-    }
+      }
       return sa;
-    }
-    else {
-        return new IStatus[0];
+    } else {
+      return new IStatus[0];
     }
   }
 
   /**
    * Gets the custom stack trace.
    *
-   * @param e the e
+   * @param e
+   *          the e
    * @return the custom stack trace
    */
   synchronized ArrayList getCustomStackTrace(Throwable e) {
@@ -115,7 +117,7 @@ public class PearException extends Exception {
       Throwable aCause = e.getCause();
       if (aCause != null) {
         a.addAll(getCustomStackTrace(aCause));
-    }
+      }
     }
     return a;
   }
@@ -123,7 +125,8 @@ public class PearException extends Exception {
   /**
    * opens an ErrorDialog with details about this exception.
    *
-   * @param shell the shell
+   * @param shell
+   *          the shell
    */
   public void openErrorDialog(Shell shell) {
     try {
@@ -132,8 +135,8 @@ public class PearException extends Exception {
       msg = msg == null ? "" : msg; //$NON-NLS-1$
       MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.ERROR, getCustomStackTrace(), msg,
               getCause());
-      ErrorDialog.openError(shell, "Operation Error", getMessage()
-              + " \nPlease see the details (below).", status, 0xFFFF);
+      ErrorDialog.openError(shell, "Operation Error",
+              getMessage() + " \nPlease see the details (below).", status, 0xFFFF);
     } catch (Throwable th) {
       th.printStackTrace();
     }

@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class CapabilitySection.
  */
@@ -160,19 +159,22 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Instantiates a new capability section.
    *
-   * @param aEditor the a editor
-   * @param parent the parent
+   * @param aEditor
+   *          the a editor
+   * @param parent
+   *          the parent
    */
   public CapabilitySection(MultiPageEditor aEditor, Composite parent) {
-    super(
-            aEditor,
-            parent,
-            "Component Capabilities",
+    super(aEditor, parent, "Component Capabilities",
             "This section describes the languages handled, and the inputs needed and outputs provided in terms of the Types and Features.");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.
+   * IManagedForm)
    */
   @Override
   public void initialize(IManagedForm form) {
@@ -183,7 +185,7 @@ public class CapabilitySection extends AbstractSection {
     toolkit.paintBordersFor(sectionClient);
 
     tt = newTree(sectionClient, SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
-//    Table table = tt.getTable();
+    // Table table = tt.getTable();
 
     // work around for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=65865
     new TreeColumn(tt, SWT.NONE).setText("                 ");
@@ -197,9 +199,7 @@ public class CapabilitySection extends AbstractSection {
     tt.addListener(SWT.MouseHover, this); // to show description
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
-    addCapabilityButton = newPushButton(
-            buttonContainer,
-            "Add Capability Set",
+    addCapabilityButton = newPushButton(buttonContainer, "Add Capability Set",
             "Analysis Engines can have one or more sets of capabilities; each one describes a set of outputs that are produced, given a particular set of inputs. Click here to add a capability set.");
     addLangButton = newPushButton(buttonContainer, "Add Language",
             "Click here to add a Language Capability to the selected set.");
@@ -233,7 +233,7 @@ public class CapabilitySection extends AbstractSection {
         TreeItem item = new TreeItem(tt, SWT.NONE);
         item.setText(TITLE_COL, CAPABILITY_SET);
         item.setData(cs[i]);
-        tt.setSelection( item ); // set default selection
+        tt.setSelection(item); // set default selection
         fillCapability(item, cs[i]);
         // if (0 == i) {
         item.setExpanded(true);
@@ -254,7 +254,7 @@ public class CapabilitySection extends AbstractSection {
    * value of hash table keyed on type name.
    */
   private static class TypeCapability {
-    
+
     /** The is input type. */
     boolean isInputType; // true if mentioned in <type>
 
@@ -269,7 +269,7 @@ public class CapabilitySection extends AbstractSection {
    * The Class FeatureCapability.
    */
   private static class FeatureCapability {
-    
+
     /** The is input feature. */
     boolean isInputFeature = false;
 
@@ -283,7 +283,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Creates the language header gui.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the table tree item
    */
   private TreeItem createLanguageHeaderGui(TreeItem parent) {
@@ -296,7 +297,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Creates the sofa header gui.
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    * @return the table tree item
    */
   private TreeItem createSofaHeaderGui(TreeItem parent) {
@@ -309,8 +311,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Fill capability.
    *
-   * @param parent the parent
-   * @param c the c
+   * @param parent
+   *          the parent
+   * @param c
+   *          the c
    */
   private void fillCapability(TreeItem parent, Capability c) {
     // first output language capabilities
@@ -420,8 +424,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Sets the gui type name.
    *
-   * @param item the item
-   * @param typeName the type name
+   * @param item
+   *          the item
+   * @param typeName
+   *          the type name
    */
   private void setGuiTypeName(TreeItem item, String typeName) {
     item.setText(TITLE_COL, TYPE_TITLE);
@@ -432,9 +438,12 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Sets the gui sofa name.
    *
-   * @param item the item
-   * @param sofaName the sofa name
-   * @param isInput the is input
+   * @param item
+   *          the item
+   * @param sofaName
+   *          the sofa name
+   * @param isInput
+   *          the is input
    */
   private void setGuiSofaName(TreeItem item, String sofaName, boolean isInput) {
     item.setData(SOFA_TITLE);
@@ -451,7 +460,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the type capability.
    *
-   * @param typeName the type name
+   * @param typeName
+   *          the type name
    * @return the type capability
    */
   private TypeCapability getTypeCapability(String typeName) {
@@ -465,8 +475,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the feature capability.
    *
-   * @param tc the tc
-   * @param featureShortName the feature short name
+   * @param tc
+   *          the tc
+   * @param featureShortName
+   *          the feature short name
    * @return the feature capability
    */
   private FeatureCapability getFeatureCapability(TypeCapability tc, String featureShortName) {
@@ -480,7 +492,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the type name from full feature name.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the type name from full feature name
    */
   public String getTypeNameFromFullFeatureName(String name) {
@@ -490,7 +503,9 @@ public class CapabilitySection extends AbstractSection {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.widgets.Event)
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractTableSection#handleEvent(org.eclipse.swt.
+   * widgets.Event)
    */
   @Override
   public void handleEvent(Event event) {
@@ -539,7 +554,7 @@ public class CapabilitySection extends AbstractSection {
     createSofaHeaderGui(item);
 
     item.setExpanded(true);
-    tt.setSelection( item );
+    tt.setSelection(item);
     if (tt.getItemCount() == 1)
       tt.getColumn(TITLE_COL).pack();
     finishAction();
@@ -548,9 +563,12 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the or create all feat item.
    *
-   * @param editItem the edit item
-   * @param column the column
-   * @param inOrOut the in or out
+   * @param editItem
+   *          the edit item
+   * @param column
+   *          the column
+   * @param inOrOut
+   *          the in or out
    * @return the or create all feat item
    */
   private void getOrCreateAllFeatItem(TreeItem editItem, int column, String inOrOut) {
@@ -566,7 +584,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the all feat item.
    *
-   * @param editItem the edit item
+   * @param editItem
+   *          the edit item
    * @return the all feat item
    */
   private TreeItem getAllFeatItem(TreeItem editItem) {
@@ -582,8 +601,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Removes the all feat item gui.
    *
-   * @param editItem the edit item
-   * @param column the column
+   * @param editItem
+   *          the edit item
+   * @param column
+   *          the column
    */
   private void removeAllFeatItemGui(TreeItem editItem, int column) {
     TreeItem allFeatItem = getAllFeatItem(editItem);
@@ -599,8 +620,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Handle edit.
    *
-   * @param editItem the edit item
-   * @param itemKind the item kind
+   * @param editItem
+   *          the edit item
+   * @param itemKind
+   *          the item kind
    */
   private void handleEdit(TreeItem editItem, int itemKind) {
     Capability c = getCapability(editItem);
@@ -622,23 +645,21 @@ public class CapabilitySection extends AbstractSection {
         // change name in all mappings
         // if switch from input to output, delete from one array, add to other,
         // mappings: no change (maybe the user switches the other items too).
-        if (Window.CANCEL == Utility
-                .popOkCancel(
-                        "Confirm Change to all Capability Sets",
-                        "This edit operation will change the Sofa in all Capability Sets in which it is defined.  Please confirm.",
-                        MessageDialog.WARNING))
+        if (Window.CANCEL == Utility.popOkCancel("Confirm Change to all Capability Sets",
+                "This edit operation will change the Sofa in all Capability Sets in which it is defined.  Please confirm.",
+                MessageDialog.WARNING))
           return;
         final Capability[] cSets = getCapabilities();
         for (int i = 0; i < cSets.length; i++) {
           boolean wasRemoved;
           String[] prevSofas;
           if (existingIsInput) {
-            cSets[i].setInputSofas((String[]) Utility.removeElementsFromArray(prevSofas = cSets[i]
-                    .getInputSofas(), existingSofaName, String.class));
+            cSets[i].setInputSofas((String[]) Utility.removeElementsFromArray(
+                    prevSofas = cSets[i].getInputSofas(), existingSofaName, String.class));
             wasRemoved = prevSofas != cSets[i].getInputSofas();
           } else {
-            cSets[i].setOutputSofas((String[]) Utility.removeElementsFromArray(prevSofas = cSets[i]
-                    .getOutputSofas(), existingSofaName, String.class));
+            cSets[i].setOutputSofas((String[]) Utility.removeElementsFromArray(
+                    prevSofas = cSets[i].getOutputSofas(), existingSofaName, String.class));
             wasRemoved = prevSofas != cSets[i].getOutputSofas();
           }
           if (wasRemoved) {
@@ -685,7 +706,8 @@ public class CapabilitySection extends AbstractSection {
           removeAllFeatItemGui(editItem, INPUT_COL);
         }
 
-        TypeOrFeature typeOutput = getTypeOrFeature(c.getOutputs(), getFullyQualifiedName(editItem));
+        TypeOrFeature typeOutput = getTypeOrFeature(c.getOutputs(),
+                getFullyQualifiedName(editItem));
 
         if (dialog.outputs[0]) {
           if (null == typeOutput) {
@@ -708,9 +730,7 @@ public class CapabilitySection extends AbstractSection {
         break;
       }
       case LANG_ITEM: {
-        CommonInputDialog dialog = new CommonInputDialog(
-                this,
-                "Edit Language",
+        CommonInputDialog dialog = new CommonInputDialog(this, "Edit Language",
                 "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
                 CommonInputDialog.LANGUAGE, editItem.getText(NAME_COL));
         if (dialogForLanguage(c, dialog) == Window.CANCEL)
@@ -744,8 +764,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Any capability set declares sofa.
    *
-   * @param name the name
-   * @param isInput the is input
+   * @param name
+   *          the name
+   * @param isInput
+   *          the is input
    * @return true, if successful
    */
   private boolean anyCapabilitySetDeclaresSofa(String name, boolean isInput) {
@@ -763,8 +785,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Handle remove.
    *
-   * @param removeItem the remove item
-   * @param itemKind the item kind
+   * @param removeItem
+   *          the remove item
+   * @param itemKind
+   *          the item kind
    */
   private void handleRemove(TreeItem removeItem, int itemKind) {
     int selectionIndex = tt.indexOf(tt.getSelection()[0]);
@@ -782,17 +806,16 @@ public class CapabilitySection extends AbstractSection {
         break;
       }
       case LANG_ITEM: {
-        c.setLanguagesSupported(stringArrayRemove(c.getLanguagesSupported(), removeItem
-                .getText(NAME_COL)));
+        c.setLanguagesSupported(
+                stringArrayRemove(c.getLanguagesSupported(), removeItem.getText(NAME_COL)));
         removeItem.dispose();
         break;
       }
       case SOFA_ITEM: {
-        if (Window.CANCEL == Utility
-                .popOkCancel(
-                        "Confirm Removal of Sofa",
-                        "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
-                                + "  Please confirm.", MessageDialog.WARNING)) {
+        if (Window.CANCEL == Utility.popOkCancel("Confirm Removal of Sofa",
+                "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
+                        + "  Please confirm.",
+                MessageDialog.WARNING)) {
           maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
@@ -817,9 +840,8 @@ public class CapabilitySection extends AbstractSection {
               return 1;
             }
           };
-          editor.getAeDescription().setSofaMappings(
-                  (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), sofaName,
-                          SofaMapping.class, comparator));
+          editor.getAeDescription().setSofaMappings((SofaMapping[]) Utility.removeElementsFromArray(
+                  getSofaMappings(), sofaName, SofaMapping.class, comparator));
 
           sofaMapSection.markStale();
         }
@@ -861,7 +883,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Removes the capability set.
    *
-   * @param c the c
+   * @param c
+   *          the c
    */
   private void removeCapabilitySet(Capability c) {
     Capability[] cs = getAnalysisEngineMetaData().getCapabilities();
@@ -876,7 +899,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Checks if is input.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is input
    */
   private boolean isInput(TreeItem item) {
@@ -886,7 +910,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Checks if is output.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return true, if is output
    */
   private boolean isOutput(TreeItem item) {
@@ -896,8 +921,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Checks if is input.
    *
-   * @param fullFeatureName the full feature name
-   * @param c the c
+   * @param fullFeatureName
+   *          the full feature name
+   * @param c
+   *          the c
    * @return true, if is input
    */
   public static boolean isInput(String fullFeatureName, Capability c) {
@@ -907,8 +934,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Checks if is output.
    *
-   * @param fullFeatureName the full feature name
-   * @param c the c
+   * @param fullFeatureName
+   *          the full feature name
+   * @param c
+   *          the c
    * @return true, if is output
    */
   public static boolean isOutput(String fullFeatureName, Capability c) {
@@ -918,20 +947,22 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Removes the feature.
    *
-   * @param c the c
-   * @param removeItem the remove item
+   * @param c
+   *          the c
+   * @param removeItem
+   *          the remove item
    */
   private void removeFeature(Capability c, TreeItem removeItem) {
     String shortFeatureName = removeItem.getText(NAME_COL);
     if (shortFeatureName.equals(ALL_FEATURES)) {
       if (isInput(removeItem)) {
-        TypeOrFeature tfItem = getTypeOrFeature(c.getInputs(), getFullyQualifiedName(removeItem
-                .getParentItem()));
+        TypeOrFeature tfItem = getTypeOrFeature(c.getInputs(),
+                getFullyQualifiedName(removeItem.getParentItem()));
         tfItem.setAllAnnotatorFeatures(false);
       }
       if (isOutput(removeItem) /* || isUpdate(removeItem) */) {
-        TypeOrFeature tfItem = getTypeOrFeature(c.getOutputs(), getFullyQualifiedName(removeItem
-                .getParentItem()));
+        TypeOrFeature tfItem = getTypeOrFeature(c.getOutputs(),
+                getFullyQualifiedName(removeItem.getParentItem()));
         tfItem.setAllAnnotatorFeatures(false);
       }
     } else {
@@ -948,7 +979,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the capability from table tree item.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the capability from table tree item
    */
   public Capability getCapabilityFromTreeItem(TreeItem item) {
@@ -958,8 +990,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Handle add lang.
    *
-   * @param selItem the sel item
-   * @param itemKind the item kind
+   * @param selItem
+   *          the sel item
+   * @param itemKind
+   *          the item kind
    */
   private void handleAddLang(TreeItem selItem, int itemKind) {
     if (itemKind == CS)
@@ -971,9 +1005,7 @@ public class CapabilitySection extends AbstractSection {
     else if (itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem().getItems()[0];
     Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
-    CommonInputDialog dialog = new CommonInputDialog(
-            this,
-            "Add Language",
+    CommonInputDialog dialog = new CommonInputDialog(this, "Add Language",
             "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
             CommonInputDialog.LANGUAGE);
     if (dialogForLanguage(c, dialog) == Window.CANCEL)
@@ -993,8 +1025,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Handle add type.
    *
-   * @param selItem the sel item
-   * @param itemKind the item kind
+   * @param selItem
+   *          the sel item
+   * @param itemKind
+   *          the item kind
    */
   private void handleAddType(TreeItem selItem, int itemKind) {
     if (itemKind == LANG || itemKind == TYPE || itemKind == SOFA)
@@ -1035,8 +1069,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Handle add sofa.
    *
-   * @param selItem the sel item
-   * @param itemKind the item kind
+   * @param selItem
+   *          the sel item
+   * @param itemKind
+   *          the item kind
    */
   private void handleAddSofa(TreeItem selItem, int itemKind) {
     if (itemKind == CS)
@@ -1069,8 +1105,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Handle add edit feature.
    *
-   * @param selItem the sel item
-   * @param itemKind the item kind
+   * @param selItem
+   *          the sel item
+   * @param itemKind
+   *          the item kind
    */
   private void handleAddEditFeature(TreeItem selItem, int itemKind) {
     if (itemKind == FEAT)
@@ -1092,10 +1130,14 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Adds the or edit feature.
    *
-   * @param dialog the dialog
-   * @param typeName the type name
-   * @param parentItem the parent item
-   * @param c the c
+   * @param dialog
+   *          the dialog
+   * @param typeName
+   *          the type name
+   * @param parentItem
+   *          the parent item
+   * @param c
+   *          the c
    */
   private void addOrEditFeature(AddCapabilityFeatureDialog dialog, String typeName, // fully
           // qualified
@@ -1113,12 +1155,10 @@ public class CapabilitySection extends AbstractSection {
     //
     // For the "all features" case, we can't set an output state for all features on an input type.
     if (dialog.allFeaturesOutput && (null == getTypeOrFeature(c.getOutputs(), typeName))) {
-      Utility
-              .popMessage(
-                      "Unable to set AllFeatures",
-                      "Skipping setting of <All Features> for output, because you must have the type specified itself"
-                              + " as an output in order to set the <All Features>.  You can individually set all the features, instead.",
-                      MessageDialog.WARNING);
+      Utility.popMessage("Unable to set AllFeatures",
+              "Skipping setting of <All Features> for output, because you must have the type specified itself"
+                      + " as an output in order to set the <All Features>.  You can individually set all the features, instead.",
+              MessageDialog.WARNING);
       dialog.allFeaturesOutput = false;
     } else
       c.setOutputs(setAllFeatures(c.getOutputs(), typeName, dialog.allFeaturesOutput));
@@ -1155,7 +1195,7 @@ public class CapabilitySection extends AbstractSection {
     }
     parentItem.setExpanded(true);
     tt.getColumn(NAME_COL).pack();
-    tt.setSelection( parentItem );
+    tt.setSelection(parentItem);
 
     c.setInputs(replaceFeaturesKeepingTypes(c.getInputs(), typeName, inputsL));
     c.setOutputs(replaceFeaturesKeepingTypes(c.getOutputs(), typeName, outputsL));
@@ -1166,7 +1206,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * New feature.
    *
-   * @param name the name
+   * @param name
+   *          the name
    * @return the type or feature
    */
   private TypeOrFeature newFeature(String name) {
@@ -1179,7 +1220,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the fully qualified name.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the fully qualified name
    */
   public String getFullyQualifiedName(TreeItem item) {
@@ -1191,8 +1233,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the fully qualified name.
    *
-   * @param namespace the namespace
-   * @param name the name
+   * @param namespace
+   *          the namespace
+   * @param name
+   *          the name
    * @return the fully qualified name
    */
   // used by dialog table -has different columns
@@ -1205,10 +1249,12 @@ public class CapabilitySection extends AbstractSection {
    * keeping all the types, and keeping all the features that belong to other types, and adding the
    * features that are passed in for one particular type in the "features" parameter.
    *
-   * @param items the items
-   * @param typeName the type name
-   * @param features -
-   *          associated with the type
+   * @param items
+   *          the items
+   * @param typeName
+   *          the type name
+   * @param features
+   *          - associated with the type
    * @return the type or feature[]
    */
   private TypeOrFeature[] replaceFeaturesKeepingTypes(TypeOrFeature[] items, String typeName,
@@ -1230,9 +1276,12 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Sets the all features.
    *
-   * @param items          Existing array of TypeOrFeature items (input or output)
-   * @param typeName the type name
-   * @param isAllFeatures          AllFeatures value
+   * @param items
+   *          Existing array of TypeOrFeature items (input or output)
+   * @param typeName
+   *          the type name
+   * @param isAllFeatures
+   *          AllFeatures value
    * @return the type or feature[]
    */
   private TypeOrFeature[] setAllFeatures(TypeOrFeature[] items, String typeName,
@@ -1272,7 +1321,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the item kind.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the item kind
    */
   private int getItemKind(TreeItem item) {
@@ -1296,7 +1346,9 @@ public class CapabilitySection extends AbstractSection {
     throw new InternalErrorCDE("invalid state");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -1318,8 +1370,10 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Dialog for language.
    *
-   * @param c the c
-   * @param dialog the dialog
+   * @param c
+   *          the c
+   * @param dialog
+   *          the dialog
    * @return the int
    */
   private int dialogForLanguage(Capability c, CommonInputDialog dialog) {
@@ -1331,11 +1385,10 @@ public class CapabilitySection extends AbstractSection {
       boolean alreadySpecified = false;
       for (int i = 0; i < languages.length; i++) {
         if (languages[i].equals(dialog.getValue())) {
-          Utility
-                  .popMessage(
-                          "Language spec already defined",
-                          "The language specification you entered is already specified.\nPlease enter a different specification, or Cancel this operation."
-                                  + "\n\nLanguage: " + dialog.getValue(), MessageDialog.ERROR);
+          Utility.popMessage("Language spec already defined",
+                  "The language specification you entered is already specified.\nPlease enter a different specification, or Cancel this operation."
+                          + "\n\nLanguage: " + dialog.getValue(),
+                  MessageDialog.ERROR);
           alreadySpecified = true;
           break;
         }
@@ -1349,7 +1402,8 @@ public class CapabilitySection extends AbstractSection {
   /**
    * Gets the capability.
    *
-   * @param item the item
+   * @param item
+   *          the item
    * @return the capability
    */
   private Capability getCapability(TreeItem item) {

@@ -54,7 +54,8 @@ public class ResolveResult extends Frame {
    * Strip the qualifications from this qualified service name.
    * 
    * @pre service_name != null
-   * @param service_name -
+   * @param service_name
+   *          -
    * @return -
    */
   static public String unqualifiedName(String service_name) {
@@ -72,7 +73,8 @@ public class ResolveResult extends Frame {
    * are explicitly specified.)
    * 
    * @pre service_name != null
-   * @param service_name -
+   * @param service_name
+   *          -
    * @return -
    */
   static public boolean isQualified(String service_name) {
@@ -87,7 +89,8 @@ public class ResolveResult extends Frame {
    * accepts either qualified or unqualified service names.
    * 
    * @pre service_name != null
-   * @param service_name -
+   * @param service_name
+   *          -
    * @return -
    */
   static public Frame composeQuery(String service_name) {
@@ -128,8 +131,10 @@ public class ResolveResult extends Frame {
    * unqualified service names.
    * 
    * @pre service_name != null
-   * @param service_name -
-   * @param mypriority -
+   * @param service_name
+   *          -
+   * @param mypriority
+   *          -
    * @return -
    */
   static public Frame composeQuery(String service_name, int mypriority) {
@@ -159,6 +164,7 @@ public class ResolveResult extends Frame {
 
   /**
    * Determine if there are more service listing to be fetched.
+   * 
    * @return -
    */
   public boolean hasMore() {

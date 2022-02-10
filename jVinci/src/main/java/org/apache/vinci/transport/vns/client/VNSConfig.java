@@ -42,7 +42,7 @@ public final class VNSConfig {
    *           if no VNS host has been specified.
    */
   @Deprecated
-public String getHost() {
+  public String getHost() {
     return VinciContext.getGlobalContext().getVNSHost();
   }
 
@@ -59,7 +59,7 @@ public String getHost() {
    * @deprecated Use VinciContext.getVNSPort() instead.
    */
   @Deprecated
-public int getPort() {
+  public int getPort() {
     return VinciContext.getGlobalContext().getVNSPort();
   }
 
@@ -67,11 +67,12 @@ public int getPort() {
    * Set the VNS hostname. Explicitly setting the VNS hostname using this method will override any
    * hostname set via the VNS_HOST java property.
    * 
-   * @param h -
+   * @param h
+   *          -
    * @deprecated Use VinciContext.setVNSHost() instead.
    */
   @Deprecated
-public void setHost(String h) {
+  public void setHost(String h) {
     VinciContext.getGlobalContext().setVNSHost(h);
   }
 
@@ -79,11 +80,12 @@ public void setHost(String h) {
    * Set the VNS port. Explicitly setting the VNS hostname using this method will override any port
    * number set via the VNS_PORT java property.
    * 
-   * @param p -
+   * @param p
+   *          -
    * @deprecated Use VinciContext.setVNSPort() instead.
    */
   @Deprecated
-public void setPort(int p) {
+  public void setPort(int p) {
     VinciContext.getGlobalContext().setVNSPort(p);
   }
 

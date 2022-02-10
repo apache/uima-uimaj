@@ -42,13 +42,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * This class is misnamed - refers really to Runtime Information.
  */
 public class PrimitiveSection extends AbstractSection {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
   @Override
@@ -77,16 +78,22 @@ public class PrimitiveSection extends AbstractSection {
    * Creates a section with a text field for the name of the annotator. Only enabled if annotator is
    * primitive Also has the operational parameters
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public PrimitiveSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Runtime Information",
             "This section describes information about how to run this component");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.
+   * IManagedForm)
    */
   @Override
   public void initialize(IManagedForm form) {
@@ -191,8 +198,9 @@ public class PrimitiveSection extends AbstractSection {
           className = dialog.open();
 
         } else {
-          SelectionDialog typeDialog = JavaUI.createTypeDialog(getSection().getShell(), editor
-                  .getEditorSite().getWorkbenchWindow(), editor.getSearchScopeForDescriptorType(),
+          SelectionDialog typeDialog = JavaUI.createTypeDialog(getSection().getShell(),
+                  editor.getEditorSite().getWorkbenchWindow(),
+                  editor.getSearchScopeForDescriptorType(),
                   IJavaElementSearchConstants.CONSIDER_CLASSES, false, "*");
           typeDialog.setTitle(MessageFormat.format("Choose the {0} implementation class",
                   new Object[] { editor.descriptorTypeString() }));
@@ -214,15 +222,14 @@ public class PrimitiveSection extends AbstractSection {
     } else if (event.widget == modifiesCas) {
       ops.setModifiesCas(setValueChangedBoolean(modifiesCas.getSelection(), ops.getModifiesCas()));
     } else if (event.widget == multipleDeploymentAllowed) {
-      ops.setMultipleDeploymentAllowed(setValueChangedBoolean(multipleDeploymentAllowed
-              .getSelection(), ops.isMultipleDeploymentAllowed()));
+      ops.setMultipleDeploymentAllowed(setValueChangedBoolean(
+              multipleDeploymentAllowed.getSelection(), ops.isMultipleDeploymentAllowed()));
     } else if (event.widget == outputsNewCASes) {
-      ops.setOutputsNewCASes(setValueChangedBoolean(outputsNewCASes.getSelection(), ops
-              .getOutputsNewCASes()));
+      ops.setOutputsNewCASes(
+              setValueChangedBoolean(outputsNewCASes.getSelection(), ops.getOutputsNewCASes()));
     } else if (event.widget == implName) {
-      editor.getAeDescription().setAnnotatorImplementationName(
-              setValueChanged(implName.getText(), editor.getAeDescription()
-                      .getAnnotatorImplementationName()));
+      editor.getAeDescription().setAnnotatorImplementationName(setValueChanged(implName.getText(),
+              editor.getAeDescription().getAnnotatorImplementationName()));
     }
     if (valueChanged)
       editor.setFileDirty();
@@ -231,7 +238,8 @@ public class PrimitiveSection extends AbstractSection {
   /**
    * Sets the enabled.
    *
-   * @param enabled          indicator for the section to be enabled.
+   * @param enabled
+   *          indicator for the section to be enabled.
    */
   public void setEnabled(boolean enabled) {
     implNameLabel.setEnabled(enabled);

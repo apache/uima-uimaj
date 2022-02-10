@@ -37,7 +37,6 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 
-
 /**
  * Wizard to edit the PEAR Installation Descriptor.
  * 
@@ -143,8 +142,10 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
   /**
    * Edits the installation descriptor.
    *
-   * @throws CoreException the core exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws CoreException
+   *           the core exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   private void editInstallationDescriptor() throws CoreException, IOException {
     handleComponentInformation();
@@ -158,9 +159,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
    */
   private void handleComponentInformation() {
     insd.setMainComponent(componentPage.compID);
-    insd
-            .setMainComponentDesc(PearInstallationDescriptor
-                    .addMacro(componentPage.compDescriptorPath));
+    insd.setMainComponentDesc(
+            PearInstallationDescriptor.addMacro(componentPage.compDescriptorPath));
   }
 
   /**
@@ -173,12 +173,12 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
 
     String os = environmentPage.osCombo.getText();
     if (os != null && os.trim().length() > 0) {
-        insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+      insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
     }
 
     String jdkVersion = environmentPage.jdkVersionCombo.getText();
     if (jdkVersion != null && jdkVersion.trim().length() > 0) {
-        insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+      insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
     }
 
   }
@@ -210,8 +210,10 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
   /**
    * See IWorkbenchWizard#init(IWorkbench, IStructuredSelection).
    *
-   * @param workbench the workbench
-   * @param selection the selection
+   * @param workbench
+   *          the workbench
+   * @param selection
+   *          the selection
    */
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     // this.workbench = workbench;

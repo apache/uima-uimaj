@@ -26,13 +26,11 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
-
 /**
- * Filters out all annotations which are not contained by one of the provided
- * annotations.
+ * Filters out all annotations which are not contained by one of the provided annotations.
  */
 public class ContainingConstraint implements FSMatchConstraint {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1;
 
@@ -43,7 +41,8 @@ public class ContainingConstraint implements FSMatchConstraint {
    * Adds an annotation in which the an other annotations must be contained to match this
    * constraint.
    *
-   * @param containingAnnotation the containing annotation
+   * @param containingAnnotation
+   *          the containing annotation
    */
   public void add(AnnotationFS containingAnnotation) {
     mContainingAnnotations.add(containingAnnotation);
@@ -52,7 +51,8 @@ public class ContainingConstraint implements FSMatchConstraint {
   /**
    * Checks if the given FeatureStructure is inside the a containing annotation.
    *
-   * @param featureStructure the feature structure
+   * @param featureStructure
+   *          the feature structure
    * @return true, if successful
    */
   @Override
@@ -76,12 +76,14 @@ public class ContainingConstraint implements FSMatchConstraint {
   /**
    * Checks if is containing.
    *
-   * @param annotation the annotation
-   * @param containing the containing
+   * @param annotation
+   *          the annotation
+   * @param containing
+   *          the containing
    * @return true, if is containing
    */
   private boolean isContaining(AnnotationFS annotation, AnnotationFS containing) {
     return containing.getBegin() <= annotation.getBegin()
-        && containing.getEnd() >= annotation.getEnd();
+            && containing.getEnd() >= annotation.getEnd();
   }
 }

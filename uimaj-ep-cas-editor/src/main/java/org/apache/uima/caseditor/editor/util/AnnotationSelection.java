@@ -31,7 +31,6 @@ import org.apache.uima.caseditor.editor.FeatureStructureSelectionIterator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-
 /**
  * The annotation collection contains only {@link AnnotationFS}s objects which are selected by a
  * {@link IStructuredSelection}.
@@ -46,7 +45,8 @@ public class AnnotationSelection {
   /**
    * Initializes the current instance.
    *
-   * @param structures the structures
+   * @param structures
+   *          the structures
    */
   public AnnotationSelection(Collection<FeatureStructure> structures) {
     mAnnotations = new ArrayList<>(structures.size());
@@ -64,17 +64,18 @@ public class AnnotationSelection {
    * Initializes a the current instance with all AnnotationFS object that are contained in the
    * {@link StructuredSelection}.
    * 
-   * Note: {@link AnnotationFS} instances will be sorted in this selection, the natural oder of
-   * the selection is destroyed
+   * Note: {@link AnnotationFS} instances will be sorted in this selection, the natural oder of the
+   * selection is destroyed
    *
-   * @param selection the selection
+   * @param selection
+   *          the selection
    */
   public AnnotationSelection(IStructuredSelection selection) {
 
     mAnnotations = new ArrayList<>(selection.size());
 
-    for (Iterator<FeatureStructure> it = new FeatureStructureSelectionIterator(selection);
-        it.hasNext();) {
+    for (Iterator<FeatureStructure> it = new FeatureStructureSelectionIterator(selection); it
+            .hasNext();) {
       FeatureStructure structure = it.next();
 
       if (structure instanceof AnnotationFS) {
@@ -139,6 +140,7 @@ public class AnnotationSelection {
 
   /**
    * Retrieves a human readable string.
+   * 
    * @return human readable string
    */
   @Override

@@ -19,16 +19,16 @@
 
 package org.apache.uima.tools.cpm;
 
-
 /**
  * The Class ElapsedTimeFormatter.
  */
 final public class ElapsedTimeFormatter {
-  
+
   /**
    * Format.
    *
-   * @param totalSecs the total secs
+   * @param totalSecs
+   *          the total secs
    * @return the string
    */
   public static String format(int totalSecs) {

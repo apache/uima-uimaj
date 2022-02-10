@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-
 /**
  * Label provider for the VarValViewerHandler.
  *
@@ -34,8 +33,10 @@ class VarValLabelProvider extends LabelProvider implements ITableLabelProvider {
   /**
    * Gets the column text.
    *
-   * @param element the element
-   * @param columnIndex the column index
+   * @param element
+   *          the element
+   * @param columnIndex
+   *          the column index
    * @return the column text
    * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
    */
@@ -59,8 +60,10 @@ class VarValLabelProvider extends LabelProvider implements ITableLabelProvider {
   /**
    * Gets the column image.
    *
-   * @param element the element
-   * @param columnIndex the column index
+   * @param element
+   *          the element
+   * @param columnIndex
+   *          the column index
    * @return the column image
    * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
    */

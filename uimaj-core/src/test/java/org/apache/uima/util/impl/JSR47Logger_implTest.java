@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import org.apache.uima.util.Level;
 import org.junit.Assert;
-
 import org.junit.jupiter.api.Test;
 
 /**

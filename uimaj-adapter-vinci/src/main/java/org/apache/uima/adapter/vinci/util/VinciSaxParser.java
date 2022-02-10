@@ -44,7 +44,8 @@ public class VinciSaxParser {
   /**
    * Sets the content handler.
    *
-   * @param aHandler the new content handler
+   * @param aHandler
+   *          the new content handler
    */
   public void setContentHandler(ContentHandler aHandler) {
     mHandler = aHandler;
@@ -53,8 +54,10 @@ public class VinciSaxParser {
   /**
    * Parses the.
    *
-   * @param aFrame the a frame
-   * @throws SAXException the SAX exception
+   * @param aFrame
+   *          the a frame
+   * @throws SAXException
+   *           the SAX exception
    */
   public void parse(VinciFrame aFrame) throws SAXException {
     parse(aFrame, true);
@@ -63,9 +66,12 @@ public class VinciSaxParser {
   /**
    * Parses the.
    *
-   * @param aFrame the a frame
-   * @param aSendStartAndEndDocEvents the a send start and end doc events
-   * @throws SAXException the SAX exception
+   * @param aFrame
+   *          the a frame
+   * @param aSendStartAndEndDocEvents
+   *          the a send start and end doc events
+   * @throws SAXException
+   *           the SAX exception
    */
   public void parse(VinciFrame aFrame, boolean aSendStartAndEndDocEvents) throws SAXException {
     if (aSendStartAndEndDocEvents) {
@@ -82,8 +88,10 @@ public class VinciSaxParser {
   /**
    * Parses the.
    *
-   * @param aFrame the a frame
-   * @throws SAXException the SAX exception
+   * @param aFrame
+   *          the a frame
+   * @throws SAXException
+   *           the SAX exception
    */
   protected void _parse(VinciFrame aFrame) throws SAXException {
     int count = aFrame.getKeyValuePairCount();

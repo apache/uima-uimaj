@@ -46,7 +46,8 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.UimaContext)
+   * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.
+   * UimaContext)
    */
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {

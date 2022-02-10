@@ -23,109 +23,127 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-
-/** 
- * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
- * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * @generated */
+/**
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017 XML source:
+ * C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * 
+ * @generated
+ */
 public class UimaMeeting extends Meeting {
 
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
-  @SuppressWarnings ("hiding")
+  @SuppressWarnings("hiding")
   public final static String _TypeName = "org.apache.uima.tutorial.UimaMeeting";
-  
-    /**
-     * The Constant typeIndexID.
-     *
-     * @generated 
-     * @ordered 
-     */
-    public static final int typeIndexID = JCasRegistry.register(UimaMeeting.class);
 
-    /**
-     * The Constant type.
-     *
-     * @generated 
-     * @ordered 
-     */
-    public static final int type = typeIndexID;
+  /**
+   * The Constant typeIndexID.
+   *
+   * @generated
+   * @ordered
+   */
+  public static final int typeIndexID = JCasRegistry.register(UimaMeeting.class);
 
-    /**
-     * Gets the type index ID.
-     *
-     * @return the type index ID
-     * @generated 
-     */
-    @Override
-    public int getTypeIndexID() {return typeIndexID;}
- 
- 
-    /**
+  /**
+   * The Constant type.
+   *
+   * @generated
+   * @ordered
+   */
+  public static final int type = typeIndexID;
+
+  /**
+   * Gets the type index ID.
+   *
+   * @return the type index ID
+   * @generated
+   */
+  @Override
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  UimaMeeting() {/* intentionally empty block */}
-    
-    /**
-     * Internal - constructor used by generator.
-     *
-     * @param type the type
-     * @param casImpl the cas impl
-     * @generated 
-     */
-    public  UimaMeeting(TypeImpl type, CASImpl casImpl) {
+  protected UimaMeeting() {
+    /* intentionally empty block */}
+
+  /**
+   * Internal - constructor used by generator.
+   *
+   * @param type
+   *          the type
+   * @param casImpl
+   *          the cas impl
+   * @generated
+   */
+  public UimaMeeting(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     readObject();
   }
-  
-    /**
-     * Instantiates a new uima meeting.
-     *
-     * @param jcas the jcas
-     * @generated 
-     */
-    public  UimaMeeting(JCas jcas) {
-    super(jcas);
-    readObject();   
-  } 
 
-
-    /**
-     * Instantiates a new uima meeting.
-     *
-     * @param jcas the jcas
-     * @param begin the begin
-     * @param end the end
-     */
-    public  UimaMeeting(JCas jcas, int begin, int end) {
-        super(jcas);
-        setBegin(begin);
-        setEnd(end);
-        readObject();
-    }
-
-  /** 
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
-   * @generated modifiable 
+  /**
+   * Instantiates a new uima meeting.
+   *
+   * @param jcas
+   *          the jcas
+   * @generated
    */
-    private void readObject() {
-    }
+  public UimaMeeting(JCas jcas) {
+    super(jcas);
+    readObject();
+  }
 
-    /**
-     *  Custom constructor taking all parameters.
-     *
-     * @param jcas the jcas
-     * @param start the start
-     * @param end the end
-     * @param room the room
-     * @param date the date
-     * @param startTime the start time
-     * @param endTime the end time
-     */
-    public  UimaMeeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date, TimeAnnot startTime, TimeAnnot endTime) {
-        super(jcas, start, end, room, date, startTime, endTime);
-    }
+  /**
+   * Instantiates a new uima meeting.
+   *
+   * @param jcas
+   *          the jcas
+   * @param begin
+   *          the begin
+   * @param end
+   *          the end
+   */
+  public UimaMeeting(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }
+
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
+  /**
+   * Custom constructor taking all parameters.
+   *
+   * @param jcas
+   *          the jcas
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param room
+   *          the room
+   * @param date
+   *          the date
+   * @param startTime
+   *          the start time
+   * @param endTime
+   *          the end time
+   */
+  public UimaMeeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date,
+          TimeAnnot startTime, TimeAnnot endTime) {
+    super(jcas, start, end, room, date, startTime, endTime);
+  }
 }

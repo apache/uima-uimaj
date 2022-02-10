@@ -153,8 +153,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     } else if (fileName.endsWith(".txt")) {
       try {
         String text = new String(Files.readAllBytes(fileToImport.toPath()), importEncoding);
-        return getDocument(fileToImport.getAbsolutePath(), text, language,
-                casFormat);
+        return getDocument(fileToImport.getAbsolutePath(), text, language, casFormat);
       } catch (IOException e) {
         return null;
       }

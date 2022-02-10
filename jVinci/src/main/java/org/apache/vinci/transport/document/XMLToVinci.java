@@ -54,10 +54,12 @@ public class XMLToVinci {
     try {
       spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
     } catch (SAXNotRecognizedException | SAXNotSupportedException
-        | ParserConfigurationException e) {
-      System.err.println("Warning: SAXParserFactory didn't recognized the feature http://apache.org/xml/features/disallow-doctype-decl");
+            | ParserConfigurationException e) {
+      System.err.println(
+              "Warning: SAXParserFactory didn't recognized the feature http://apache.org/xml/features/disallow-doctype-decl");
     }
   }
+
   /**
    * Utility class not intended to be instantiated.
    */
@@ -258,7 +260,7 @@ public class XMLToVinci {
   public static VinciFrame xmlToVinciFrame(Reader r) throws ServiceException {
     XMLReader xr;
     try {
-      synchronized(spf) {
+      synchronized (spf) {
         xr = spf.newSAXParser().getXMLReader();
       }
     } catch (SAXException e) {
@@ -271,9 +273,11 @@ public class XMLToVinci {
       try {
         xr.setFeature("http://xml.org/sax/features/namespaces", false);
       } catch (SAXNotRecognizedException e) {
-        System.err.println("Warning: XMLReader didn't recognize the feature http://xml.org/sax/features/namespaces");
+        System.err.println(
+                "Warning: XMLReader didn't recognize the feature http://xml.org/sax/features/namespaces");
       } catch (SAXNotSupportedException e) {
-        System.err.println("Warning: XMLReader doesn't support the feature http://xml.org/sax/features/namespaces");
+        System.err.println(
+                "Warning: XMLReader doesn't support the feature http://xml.org/sax/features/namespaces");
       }
       VinciFrameHandler handler = new VinciFrameHandler();
       xr.setContentHandler(handler);
@@ -292,7 +296,7 @@ public class XMLToVinci {
    * public static AFrame xmlToAFrame(Reader r) throws ServiceException { return (AFrame)
    * xmlToTransportable(r, new AFrame()); }
    */
- 
+
   /**
    * Convert the XML document (provided as a Reader) to the AFrame document model. Throws
    * ServiceException if the XML parser reports any error. WARNING: This method will silently ignore

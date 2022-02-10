@@ -28,7 +28,6 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.MultiAnnotViewerFrame;
 import org.apache.uima.tools.cvd.MultiMarkup;
 
-
 /**
  * Show the multi-annotation text window. Is anybody even using this? This is handled much better in
  * the DocumentAnalyzer.
@@ -41,13 +40,16 @@ public class ShowAnnotatedTextHandler implements ActionListener {
   /**
    * Instantiates a new show annotated text handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public ShowAnnotatedTextHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -58,8 +60,8 @@ public class ShowAnnotatedTextHandler implements ActionListener {
     FSIterator it = this.main.getIndex().iterator();
     final String text = this.main.getCas().getDocumentText();
     System.out.println("Creating extents.");
-    AnnotationExtent[] extents = MultiMarkup.createAnnotationMarkups(it, text.length(), this.main
-        .getStyleMap());
+    AnnotationExtent[] extents = MultiMarkup.createAnnotationMarkups(it, text.length(),
+            this.main.getStyleMap());
     System.out.println("Initializing text frame.");
     f.init(text, extents, this.main.getDimension(MainFrame.annotViewSizePref));
     System.out.println("Done.");

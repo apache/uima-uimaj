@@ -30,7 +30,6 @@ import java.util.SortedMap;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 
-
 /*
  * This class forwards to TypesWithNameSpaces
  * Purpose: provide content assist under Eclipse 3.2
@@ -44,72 +43,90 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
 
   /** The sorted names. */
   final private SortedMap sortedNames;
-  
+
   /**
    * Instantiates a new types with name spaces 32.
    *
-   * @param aBase the a base
+   * @param aBase
+   *          the a base
    */
   public TypesWithNameSpaces32(TypesWithNameSpaces aBase) {
     sortedNames = aBase.sortedNames;
   }
-  
+
   /** The proposal array. */
-  private CasTypeProposal [] proposalArray = null;
-  
+  private CasTypeProposal[] proposalArray = null;
+
   /**
    * The Class CasTypeProposal.
    */
-  public static class CasTypeProposal 
-      implements IContentProposal, Comparable {
-    
+  public static class CasTypeProposal implements IContentProposal, Comparable {
+
     /** The label form. */
     private final String labelForm;
-    
+
     /** The full name. */
     private final String fullName;
-    
+
     /** The compare key. */
     private final String compareKey;
-    
+
     /**
      * Instantiates a new cas type proposal.
      *
-     * @param aCompareKey the a compare key
-     * @param shortName the short name
-     * @param nameSpace the name space
+     * @param aCompareKey
+     *          the a compare key
+     * @param shortName
+     *          the short name
+     * @param nameSpace
+     *          the name space
      */
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
     CasTypeProposal(String aCompareKey, String shortName, String nameSpace) {
-      fullName = (null == nameSpace || "".equals(nameSpace))? shortName : nameSpace + "." + shortName;
-      labelForm = (null == nameSpace || "".equals(nameSpace))? shortName : shortName + " - " + nameSpace;
+      fullName = (null == nameSpace || "".equals(nameSpace)) ? shortName
+              : nameSpace + "." + shortName;
+      labelForm = (null == nameSpace || "".equals(nameSpace)) ? shortName
+              : shortName + " - " + nameSpace;
       compareKey = aCompareKey.toLowerCase();
     }
-       
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
     @Override
     public String getContent() {
       return fullName;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getCursorPosition()
      */
     @Override
     public int getCursorPosition() {
       return fullName.length();
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getDescription()
      */
     @Override
     public String getDescription() {
       return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getLabel()
      */
     @Override
@@ -119,7 +136,7 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
       else
         return fullName;
     }
-    
+
     /**
      * Gets the compare key.
      *
@@ -128,52 +145,57 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
     public String getCompareKey() {
       return compareKey;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
     public int compareTo(Object arg0) throws ClassCastException {
-        final CasTypeProposal c = (CasTypeProposal) arg0;
-        return this.compareKey.compareTo(c.getCompareKey()); 
+      final CasTypeProposal c = (CasTypeProposal) arg0;
+      return this.compareKey.compareTo(c.getCompareKey());
     }
   }
- 
+
   /**
    * Creates the proposal array.
    */
   public void createProposalArray() {
-    List r = new ArrayList(sortedNames.size()*2);
-    
+    List r = new ArrayList(sortedNames.size() * 2);
+
     // item a.b.c.name creates 2 entries in the suggestions:
-    //   compare key: a.b.c.name  label:  name - a.b.c    content: a.b.c.name
-    //   compare key: name        label:  name - a.b.c    content: a.b.c.name 
-    
+    // compare key: a.b.c.name label: name - a.b.c content: a.b.c.name
+    // compare key: name label: name - a.b.c content: a.b.c.name
+
     for (Iterator it = sortedNames.entrySet().iterator(); it.hasNext();) {
-      Map.Entry entry = (Map.Entry)it.next();
-      Set nameSpaces = (Set)entry.getValue();
+      Map.Entry entry = (Map.Entry) it.next();
+      Set nameSpaces = (Set) entry.getValue();
       for (Iterator nsi = nameSpaces.iterator(); nsi.hasNext();) {
-        String nameSpace = (String)nsi.next();
-        String shortName = (String)entry.getKey();
+        String nameSpace = (String) nsi.next();
+        String shortName = (String) entry.getKey();
         r.add(new CasTypeProposal(shortName, shortName, nameSpace));
         if (null != nameSpace) {
           r.add(new CasTypeProposal(nameSpace + "." + shortName, shortName, nameSpace));
         }
       }
     }
-    proposalArray = (CasTypeProposal[])r.toArray(new CasTypeProposal[r.size()]);
+    proposalArray = (CasTypeProposal[]) r.toArray(new CasTypeProposal[r.size()]);
     Arrays.sort(proposalArray);
   }
-  
+
   /**
    * Gets the proposal array.
    *
    * @return the proposal array
    */
-  public CasTypeProposal [] getProposalArray() {
+  public CasTypeProposal[] getProposalArray() {
     return proposalArray;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String, int)
    */
   @Override
@@ -181,9 +203,9 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
     if (null == proposalArray)
       createProposalArray();
     String keyString = contents.substring(0, position).toLowerCase();
-    CasTypeProposal key = new CasTypeProposal(keyString, null, null); 
+    CasTypeProposal key = new CasTypeProposal(keyString, null, null);
     int i = Arrays.binarySearch(proposalArray, key);
-    
+
     if (i < 0) {
       i = Math.abs(i + 1);
     }
@@ -194,6 +216,6 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
       } else
         break;
     }
-    return (CasTypeProposal[])rl.toArray(new CasTypeProposal[rl.size()]);
-  } 
+    return (CasTypeProposal[]) rl.toArray(new CasTypeProposal[rl.size()]);
+  }
 }

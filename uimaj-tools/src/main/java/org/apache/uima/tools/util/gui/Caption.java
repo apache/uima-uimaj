@@ -22,7 +22,6 @@ package org.apache.uima.tools.util.gui;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-
 /**
  * 
  * 
@@ -30,14 +29,15 @@ import javax.swing.SwingConstants;
  */
 
 public class Caption extends JLabel {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -2255251900300316894L;
 
   /**
    * Instantiates a new caption.
    *
-   * @param s the s
+   * @param s
+   *          the s
    */
   public Caption(String s) {
     super(s);

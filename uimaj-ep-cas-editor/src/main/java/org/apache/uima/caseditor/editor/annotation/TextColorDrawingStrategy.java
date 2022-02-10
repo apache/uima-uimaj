@@ -26,14 +26,14 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
-
 /**
  * The Class TextColorDrawingStrategy.
  */
 public class TextColorDrawingStrategy implements IDrawingStrategy {
 
   @Override
-  public void draw(Annotation annotation, GC gc, StyledText textWidget, int start, int length, Color color) {
+  public void draw(Annotation annotation, GC gc, StyledText textWidget, int start, int length,
+          Color color) {
     if (length > 0) {
       if (annotation instanceof EclipseAnnotationPeer) {
         if (gc != null) {

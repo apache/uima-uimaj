@@ -26,21 +26,26 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
-
 /**
  * Draws a box around an annotation.
  */
 final class BoxDrawingStrategy implements IDrawingStrategy {
-  
+
   /**
    * Draws a box around the given annotation.
    *
-   * @param annotation the annotation
-   * @param gc the gc
-   * @param textWidget the text widget
-   * @param offset the offset
-   * @param length the length
-   * @param color the color
+   * @param annotation
+   *          the annotation
+   * @param gc
+   *          the gc
+   * @param textWidget
+   *          the text widget
+   * @param offset
+   *          the offset
+   * @param length
+   *          the length
+   * @param color
+   *          the color
    */
   @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
@@ -52,21 +57,20 @@ final class BoxDrawingStrategy implements IDrawingStrategy {
         gc.setForeground(color);
 
         int correctedHeight;
-        
+
         if (bounds.height > 0) {
-          correctedHeight = bounds.height -1;
-        }
-        else {
+          correctedHeight = bounds.height - 1;
+        } else {
           correctedHeight = bounds.height;
         }
-        
+
         int correctedWidth;
-        
+
         if (bounds.width > 0)
-          correctedWidth = bounds.width -1;
+          correctedWidth = bounds.width - 1;
         else
           correctedWidth = bounds.width;
-        
+
         gc.drawRectangle(bounds.x, bounds.y, correctedWidth, correctedHeight);
       } else {
         textWidget.redrawRange(offset, length, true);

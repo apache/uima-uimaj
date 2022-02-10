@@ -79,7 +79,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * The list of government titles, read from the GovernmentTitles configuration parameter.
    */
   private String[] mGovernmentTitles;
-  
+
   /**
    * Show warning message just once
    */
@@ -132,8 +132,8 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     }
 
     // Get the value for the "ContainingType" parameter if there is one
-    String containingTypeName = (String) getContext().getConfigParameterValue(
-            "ContainingAnnotationType");
+    String containingTypeName = (String) getContext()
+            .getConfigParameterValue("ContainingAnnotationType");
     if (containingTypeName != null) {
       mContainingType = aTypeSystem.getType(containingTypeName);
       if (mContainingType == null) {
@@ -157,13 +157,14 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     try {
       // If the ResultSpec doesn't include the PersonTitle type, we have
       // nothing to do.
-      if (!getResultSpecification().containsType("example.PersonTitle",aCAS.getDocumentLanguage())) {
+      if (!getResultSpecification().containsType("example.PersonTitle",
+              aCAS.getDocumentLanguage())) {
         if (!warningMsgShown) {
           String m = String.format(
-              "No output is being produced by the PersonTitleAnnotator because the Result Specification did not contain" +
-              " a request for the type example.PersonTitle with the language '%s'%n" +
-              "  (Note: this message will only be shown once.)%n", 
-              aCAS.getDocumentLanguage());               
+                  "No output is being produced by the PersonTitleAnnotator because the Result Specification did not contain"
+                          + " a request for the type example.PersonTitle with the language '%s'%n"
+                          + "  (Note: this message will only be shown once.)%n",
+                  aCAS.getDocumentLanguage());
           System.err.println(m);
           logger.log(Level.WARNING, m);
           warningMsgShown = true;
@@ -178,32 +179,32 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
       } else {
         // Search only within annotations of type mContainingType
 
-        //v3
-        
-        for (Annotation annot : aCAS.<Annotation>select(mContainingType)) {
-          
-          String coveredText = annot.getCoveredText();  // Get text covered by this annotation
-          int annotBegin = annot.getBegin();            // Get begin position of this annotation
+        // v3
+
+        for (Annotation annot : aCAS.<Annotation> select(mContainingType)) {
+
+          String coveredText = annot.getCoveredText(); // Get text covered by this annotation
+          int annotBegin = annot.getBegin(); // Get begin position of this annotation
           annotateRange(aCAS, coveredText, annotBegin); // search for matches within this
-        
+
         }
-        
+
         // v2
-//        // Get an iterator over the annotations of type mContainingType.
-//        FSIterator it = aCAS.getAnnotationIndex(mContainingType).iterator();
-//        // Loop over the iterator.
-//        while (it.isValid()) {
-//          // Get the next annotation from the iterator
-//          AnnotationFS annot = (AnnotationFS) it.get();
-//          // Get text covered by this annotation
-//          String coveredText = annot.getCoveredText();
-//          // Get begin position of this annotation
-//          int annotBegin = annot.getBegin();
-//          // search for matches within this
-//          annotateRange(aCAS, coveredText, annotBegin);
-//          // Advance the iterator.
-//          it.moveToNext();
-//        }
+        // // Get an iterator over the annotations of type mContainingType.
+        // FSIterator it = aCAS.getAnnotationIndex(mContainingType).iterator();
+        // // Loop over the iterator.
+        // while (it.isValid()) {
+        // // Get the next annotation from the iterator
+        // AnnotationFS annot = (AnnotationFS) it.get();
+        // // Get text covered by this annotation
+        // String coveredText = annot.getCoveredText();
+        // // Get begin position of this annotation
+        // int annotBegin = annot.getBegin();
+        // // search for matches within this
+        // annotateRange(aCAS, coveredText, annotBegin);
+        // // Advance the iterator.
+        // it.moveToNext();
+        // }
       }
     } catch (Exception e) {
       throw new AnalysisEngineProcessException(e);
@@ -246,7 +247,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
   protected void annotateRange(CAS aCAS, String aText, int aBeginPos, String aTitleType,
           String[] aTitles) {
     // Loop over the matchStrings.
-    
+
     for (int i = 0; i < aTitles.length; i++) {
       // logger.log("Looking for string: " + matchStrings[i]);
       // Find a first match, if it exists.
@@ -286,7 +287,8 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
   protected void createAnnotation(CAS aCAS, int aBeginPos, int aEndPos, String aTitleType) {
     AnnotationFS title = aCAS.createAnnotation(mPersonTitleType, aBeginPos, aEndPos);
     // Set the "kind" feature if it's part of the ResultSpec
-    if (getResultSpecification().containsFeature("example.PersonTitle:Kind",aCAS.getDocumentLanguage())) {
+    if (getResultSpecification().containsFeature("example.PersonTitle:Kind",
+            aCAS.getDocumentLanguage())) {
       title.setStringValue(mPersonTitleKindFeature, aTitleType);
     }
     // Add the annotation to the index.

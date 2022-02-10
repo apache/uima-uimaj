@@ -23,7 +23,6 @@ import java.text.MessageFormat;
 
 import org.eclipse.ui.INewWizard;
 
-
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target
@@ -40,7 +39,9 @@ public class CollectionReaderNewWizard extends AbstractNewWizard implements INew
     super("Collection Reader Descriptor File");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.jface.wizard.Wizard#addPages()
    */
   @Override
@@ -49,35 +50,41 @@ public class CollectionReaderNewWizard extends AbstractNewWizard implements INew
     addPage(page);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.wizards.AbstractNewWizard#getPrototypeDescriptor(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.wizards.AbstractNewWizard#getPrototypeDescriptor(java.lang.
+   * String)
    */
   @Override
   public String getPrototypeDescriptor(String name) {
-    return MessageFormat.format(COMMON_FULL_DESCRIPTOR,
-        name,                          // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
-        "",                            // 1 parts at end of partial descriptor
-        "collectionReaderDescription",      // 2 = outer descriptor name
-        "processingResourceMetaData",  // 3 = metadata element name
-        "implementationName",          // 4 = implname element name (implementationName or annotatorImplementationName
-        "");                           // 5 = "<primative>true</primitive>" or ""
-      
-//    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<collectionReaderDescription "
-//            + XMLNS_PART
-//            + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
-//            + "<implementationName></implementationName>\n" + "<processingResourceMetaData>\n"
-//            + "<name>" + name + "</name>\n" + "<description></description>\n"
-//            + "<version>1.0</version>\n" + "<vendor></vendor>\n"
-//            + "<configurationParameters></configurationParameters>\n"
-//            + "<configurationParameterSettings></configurationParameterSettings>\n"
-//            + "<typeSystemDescription></typeSystemDescription>\n"
-//            + "<typePriorities></typePriorities>\n" + "<fsIndexCollection></fsIndexCollection>\n"
-//            + "<capabilities>\n" + "<capability>\n" + "<inputs></inputs>\n"
-//            + "<outputs></outputs>\n" + "<languagesSupported></languagesSupported>\n"
-//            + "</capability>\n" + "</capabilities>\n" + "</processingResourceMetaData>\n"
-//            + "<externalResourceDependencies></externalResourceDependencies>\n"
-//            + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
-//            + "</collectionReaderDescription>\n";
+    return MessageFormat.format(COMMON_FULL_DESCRIPTOR, name, // 0 = name of component (e.g. type
+                                                              // name, type priority name, ae
+                                                              // descriptor name)
+            "", // 1 parts at end of partial descriptor
+            "collectionReaderDescription", // 2 = outer descriptor name
+            "processingResourceMetaData", // 3 = metadata element name
+            "implementationName", // 4 = implname element name (implementationName or
+                                  // annotatorImplementationName
+            ""); // 5 = "<primative>true</primitive>" or ""
+
+    // "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<collectionReaderDescription "
+    // + XMLNS_PART
+    // + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
+    // + "<implementationName></implementationName>\n" + "<processingResourceMetaData>\n"
+    // + "<name>" + name + "</name>\n" + "<description></description>\n"
+    // + "<version>1.0</version>\n" + "<vendor></vendor>\n"
+    // + "<configurationParameters></configurationParameters>\n"
+    // + "<configurationParameterSettings></configurationParameterSettings>\n"
+    // + "<typeSystemDescription></typeSystemDescription>\n"
+    // + "<typePriorities></typePriorities>\n" + "<fsIndexCollection></fsIndexCollection>\n"
+    // + "<capabilities>\n" + "<capability>\n" + "<inputs></inputs>\n"
+    // + "<outputs></outputs>\n" + "<languagesSupported></languagesSupported>\n"
+    // + "</capability>\n" + "</capabilities>\n" + "</processingResourceMetaData>\n"
+    // + "<externalResourceDependencies></externalResourceDependencies>\n"
+    // + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
+    // + "</collectionReaderDescription>\n";
   }
 
 }

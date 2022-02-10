@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class HelpHandler.
@@ -39,20 +37,23 @@ public class HelpHandler implements ActionListener {
   /**
    * Instantiates a new help handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public HelpHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
   public void actionPerformed(ActionEvent event) {
     String msg = "There is currently no online help."
-        + "\nPlease find documentation on CVD and UIMA"
-        + "\nin the doc directory of the UIMA installation";
+            + "\nPlease find documentation on CVD and UIMA"
+            + "\nin the doc directory of the UIMA installation";
     JOptionPane.showMessageDialog(this.main, msg, "Help", JOptionPane.INFORMATION_MESSAGE);
   }
 

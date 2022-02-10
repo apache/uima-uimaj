@@ -23,29 +23,28 @@ import java.util.Collection;
 
 import org.apache.uima.cas.Type;
 
-
 /**
- * The listener interface for receiving IAnnotationEditorModify events.
- * The class that is interested in processing a IAnnotationEditorModify
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addIAnnotationEditorModifyListener</code> method. When
- * the IAnnotationEditorModify event occurs, that object's appropriate
- * method is invoked.
+ * The listener interface for receiving IAnnotationEditorModify events. The class that is interested
+ * in processing a IAnnotationEditorModify event implements this interface, and the object created
+ * with that class is registered with a component using the component's
+ * <code>addIAnnotationEditorModifyListener</code> method. When the IAnnotationEditorModify event
+ * occurs, that object's appropriate method is invoked.
  */
 public interface IAnnotationEditorModifyListener {
 
   /**
    * Called when the editor annotation mode changed.
    *
-   * @param newMode the new mode
+   * @param newMode
+   *          the new mode
    */
   void annotationModeChanged(Type newMode);
 
   /**
    * Called when the shown annotation types in the editor are changed.
    *
-   * @param shownAnnotationTypes the shown annotation types
+   * @param shownAnnotationTypes
+   *          the shown annotation types
    */
   void showAnnotationsChanged(Collection<Type> shownAnnotationTypes);
 }

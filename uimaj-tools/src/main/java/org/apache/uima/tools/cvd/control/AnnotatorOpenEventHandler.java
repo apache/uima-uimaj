@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
-
 
 /**
  * The Class AnnotatorOpenEventHandler.
@@ -39,7 +37,8 @@ public class AnnotatorOpenEventHandler implements ActionListener {
   /**
    * Instantiates a new annotator open event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public AnnotatorOpenEventHandler(MainFrame frame) {
     this.main = frame;
@@ -48,7 +47,8 @@ public class AnnotatorOpenEventHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override

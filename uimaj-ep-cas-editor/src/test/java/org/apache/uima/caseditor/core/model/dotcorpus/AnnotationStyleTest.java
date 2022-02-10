@@ -33,18 +33,18 @@ public class AnnotationStyleTest {
   /**
    * Tests the {@link AnnotationStyle#equals(Object)} method.
    */
-    @Test
-    public void testEquals() {
-    AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
-            255, 255, 0), 0);
+  @Test
+  public void testEquals() {
+    AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET,
+            new Color(255, 255, 0), 0);
 
-    AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
-            255, 255, 0), 0);
+    AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET,
+            new Color(255, 255, 0), 0);
 
     assertThat(a).isEqualTo(b);
 
-    AnnotationStyle c = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
-        255, 255, 0), 0, "config");
+    AnnotationStyle c = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET,
+            new Color(255, 255, 0), 0, "config");
 
     assertThat(a).isNotEqualTo(c);
   }
@@ -53,13 +53,13 @@ public class AnnotationStyleTest {
    * Test the {@link AnnotationStyle#hashCode()} method.
    *
    */
-    @Test
-    public void testHashCode() {
-    AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
-            255, 255, 0), 0);
+  @Test
+  public void testHashCode() {
+    AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET,
+            new Color(255, 255, 0), 0);
 
-    AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
-            255, 255, 0), 0);
+    AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET,
+            new Color(255, 255, 0), 0);
 
     assertThat(a.hashCode()).isEqualTo(b.hashCode());
   }

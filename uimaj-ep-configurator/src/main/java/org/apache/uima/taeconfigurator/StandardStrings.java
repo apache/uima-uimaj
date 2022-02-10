@@ -19,12 +19,11 @@
 
 package org.apache.uima.taeconfigurator;
 
-
 /**
  * The Interface StandardStrings.
  */
 public interface StandardStrings {
-  
+
   /** The Constant S_ADD. */
   String S_ADD = "Add...";
 

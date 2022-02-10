@@ -72,6 +72,7 @@ public class AFrame extends VinciFrame {
 
   /**
    * Get a TransportableFactory that creates new AFrames.
+   * 
    * @return -
    */
   static public TransportableFactory getAFrameFactory() {
@@ -84,7 +85,8 @@ public class AFrame extends VinciFrame {
 
   /**
    * @pre capacity &ge; 0
-   * @param capacity -
+   * @param capacity
+   *          -
    */
   public AFrame(int capacity) {
     super(capacity);
@@ -94,7 +96,8 @@ public class AFrame extends VinciFrame {
    * Create an AFrame that is a (deep) copy of the given transportable.
    * 
    * @pre t != null
-   * @param t -
+   * @param t
+   *          -
    * @return -
    */
   public static AFrame toAFrame(Transportable t) {
@@ -166,7 +169,8 @@ public class AFrame extends VinciFrame {
    * 
    * @param key
    *          The key to be associated with the value.
-   * @param val -
+   * @param val
+   *          -
    * @return The (empty) set of attributes associated with the added key.
    * 
    * @pre key != null
@@ -182,7 +186,8 @@ public class AFrame extends VinciFrame {
    * 
    * @param key
    *          The key to be associated with the value.
-   * @param val -
+   * @param val
+   *          -
    * @return The (empty) set of attributes associated with the added key.
    * 
    * @pre key != null
@@ -201,7 +206,8 @@ public class AFrame extends VinciFrame {
    * 
    * @param key
    *          The key to be associated with the value.
-   * @param val -
+   * @param val
+   *          -
    * @return The (empty) set of attributes associated with the added key.
    * 
    * @pre key != null
@@ -432,18 +438,24 @@ public class AFrame extends VinciFrame {
    * @pre in != null
    * @pre service_name != null
    * 
-   * @param in -
-   * @param service_name -
+   * @param in
+   *          -
+   * @param service_name
+   *          -
    * @return -
-   * @throws IOException -
-   * @throws ServiceException -
-   * @throws ServiceDownException -
-   * @throws VNSException -
+   * @throws IOException
+   *           -
+   * @throws ServiceException
+   *           -
+   * @throws ServiceDownException
+   *           -
+   * @throws VNSException
+   *           -
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
-  static public AFrame rpc(Transportable in, String service_name) throws IOException,
-          ServiceException, ServiceDownException, VNSException {
+  static public AFrame rpc(Transportable in, String service_name)
+          throws IOException, ServiceException, ServiceDownException, VNSException {
     return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory());
   }
 
@@ -452,21 +464,28 @@ public class AFrame extends VinciFrame {
    * @pre service_name != null
    * @pre socket_timeout &ge; 0
    * 
-   * @param in -
-   * @param service_name -
-   * @param socket_timeout -
+   * @param in
+   *          -
+   * @param service_name
+   *          -
+   * @param socket_timeout
+   *          -
    * @return -
-   * @throws IOException -
-   * @throws ServiceException -
-   * @throws ServiceDownException -
-   * @throws VNSException -
+   * @throws IOException
+   *           -
+   * @throws ServiceException
+   *           -
+   * @throws ServiceDownException
+   *           -
+   * @throws VNSException
+   *           -
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
   static public AFrame rpc(Transportable in, String service_name, int socket_timeout)
           throws IOException, ServiceException, ServiceDownException, VNSException {
-    return (AFrame) VinciClient
-            .sendAndReceive(in, service_name, getAFrameFactory(), socket_timeout);
+    return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory(),
+            socket_timeout);
   }
 
   /**
@@ -474,26 +493,34 @@ public class AFrame extends VinciFrame {
    * @pre service_name != null
    * @pre socket_timeout &ge; 0
    * 
-   * WARNING: This method relies on JDK-1.4 specific functions. USE IT ONLY if you don't need to
-   * maintain JDK1.3 compatability.
+   *      WARNING: This method relies on JDK-1.4 specific functions. USE IT ONLY if you don't need
+   *      to maintain JDK1.3 compatability.
    * 
-   * @param in -
-   * @param service_name -
-   * @param socket_timeout -
-   * @param connect_timeout -
+   * @param in
+   *          -
+   * @param service_name
+   *          -
+   * @param socket_timeout
+   *          -
+   * @param connect_timeout
+   *          -
    * @return -
-   * @throws IOException -
-   * @throws ServiceException -
-   * @throws ServiceDownException -
-   * @throws VNSException -
+   * @throws IOException
+   *           -
+   * @throws ServiceException
+   *           -
+   * @throws ServiceDownException
+   *           -
+   * @throws VNSException
+   *           -
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
   static public AFrame rpc(Transportable in, String service_name, int socket_timeout,
-          int connect_timeout) throws IOException, ServiceException, ServiceDownException,
-          VNSException {
-    return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory(),
-            socket_timeout, connect_timeout);
+          int connect_timeout)
+          throws IOException, ServiceException, ServiceDownException, VNSException {
+    return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory(), socket_timeout,
+            connect_timeout);
   }
 
   /*
@@ -505,20 +532,18 @@ public class AFrame extends VinciFrame {
    * VinciFrame, thus we can use the standard "fadd()" methods to create the // attribute list.
    * f.aadd("KEY", "value1") // Add XML element and retrieve the attribute list object
    * .fadd("attr1", "aval1") // Add an attribute for the tag. .fadd("attr2", "aval2") // Add another
-   * attribute for the tag. .fadd("attr3", "you get the point");
-   *  // Note that with fadd() you can potentially create a duplicate attribute (an XML no-no), //
-   * so the "idiot proof" method is to instead use fset(): f.aadd("VALUELESS_KEY") // Add a
-   * valueless tag that has a couple of attributes .fset("foo", "bar") .fset("foo2", 2) .fset("foo",
-   * "replaced bar");
-   *  // Here's how to create a nested AFrame: AFrame nested = new AFrame();
-   * nested.aadd("NESTED_KEY", 1234.567) .fadd("nested", "attribute"); f.aadd("NESTED_FRAME",
-   * nested) .fadd("attributename", new int[] {1,2,3});
-   *  // We can use either fadd() or aadd() to add attributeless tags, though fadd is // preferrable
-   * since it avoids creating the attributes object. nested.fadd("ATTRIBUTELESS_KEY", "done with
-   * fadd()"); nested.aadd("ANOTHER_ATTRIBUTELESS_KEY", "done with aadd()");
+   * attribute for the tag. .fadd("attr3", "you get the point"); // Note that with fadd() you can
+   * potentially create a duplicate attribute (an XML no-no), // so the "idiot proof" method is to
+   * instead use fset(): f.aadd("VALUELESS_KEY") // Add a valueless tag that has a couple of
+   * attributes .fset("foo", "bar") .fset("foo2", 2) .fset("foo", "replaced bar"); // Here's how to
+   * create a nested AFrame: AFrame nested = new AFrame(); nested.aadd("NESTED_KEY", 1234.567)
+   * .fadd("nested", "attribute"); f.aadd("NESTED_FRAME", nested) .fadd("attributename", new int[]
+   * {1,2,3}); // We can use either fadd() or aadd() to add attributeless tags, though fadd is //
+   * preferrable since it avoids creating the attributes object. nested.fadd("ATTRIBUTELESS_KEY",
+   * "done with fadd()"); nested.aadd("ANOTHER_ATTRIBUTELESS_KEY", "done with aadd()");
    * 
-   * System.out.println(f.toXML()); System.out.println();
-   *  // Querying key values: String foo_value = f.aget("VALUELESS_KEY").fgetString("foo");
+   * System.out.println(f.toXML()); System.out.println(); // Querying key values: String foo_value =
+   * f.aget("VALUELESS_KEY").fgetString("foo");
    * System.out.println("Attribute value of foo from VALUELESS_KEY: " + foo_value);
    * System.out.println("TEST: " + toAFrame(f).toXML()); }
    */

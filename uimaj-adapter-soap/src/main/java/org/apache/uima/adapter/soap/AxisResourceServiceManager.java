@@ -34,7 +34,6 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * Utility class for deploying Resources as Axis (SOAP) services. This class mantains a map between
  * Axis service names and the {@link ResourceService_impl} classes that provide the implementation
@@ -84,10 +83,12 @@ public class AxisResourceServiceManager {
    * returned. Otherwise, a new <code>ResourceService_impl</code> object will be created from the
    * information in the MessageContext.
    *
-   * @param aServiceImplClass          the class that will be instantiated when a new <code>ResourceService_impl</code> is
-   *          to be created. This must be a subclass of ResourceService_impl.
+   * @param aServiceImplClass
+   *          the class that will be instantiated when a new <code>ResourceService_impl</code> is to
+   *          be created. This must be a subclass of ResourceService_impl.
    * @return the service impl
-   * @throws AxisFault           if the configuration information could not be read
+   * @throws AxisFault
+   *           if the configuration information could not be read
    */
   public static ResourceService_impl getServiceImpl(Class aServiceImplClass) throws AxisFault {
     try {
@@ -121,8 +122,8 @@ public class AxisResourceServiceManager {
                 + " not Defined.  Check your deployment descriptor file (WSDD)");
       }
       // parse ResourceSpecifier
-      ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-              new XMLInputSource(resourceSpecifierPath));
+      ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser()
+              .parseResourceSpecifier(new XMLInputSource(resourceSpecifierPath));
 
       // Get the number of instances to create
       String numInstancesStr = (String) self.getOption(PARAM_NUM_INSTANCES);

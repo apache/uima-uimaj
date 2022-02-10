@@ -46,7 +46,7 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
   public static final String PARAM_ACTION_AFTER_CAS_MULTIPLIER = "ActionAfterCasMultiplier";
 
   public static final String PARAM_ALLOW_CONTINUE_ON_FAILURE = "AllowContinueOnFailure";
-  
+
   public static final String PARAM_FLOW = "Flow";
 
   private static final int ACTION_CONTINUE = 0;
@@ -60,14 +60,14 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
   private ArrayList<Step> mSequence;
 
   private int mActionAfterCasMultiplier;
-  
+
   private Set<String> mAEsAllowingContinueOnFailure = new HashSet<>();
 
   @Override
-public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
 
-    String[] flow = (String[])aContext.getConfigParameterValue(PARAM_FLOW);
+    String[] flow = (String[]) aContext.getConfigParameterValue(PARAM_FLOW);
     mSequence = new ArrayList<>();
     for (int i = 0; i < flow.length; i++) {
       String[] aes = flow[i].split(",");
@@ -77,7 +77,7 @@ public void initialize(FlowControllerContext aContext) throws ResourceInitializa
         Collection<String> keys = new ArrayList<>();
         keys.addAll(Arrays.asList(aes));
         mSequence.add(new ParallelStep(keys));
-      }            
+      }
     }
 
     String actionAfterCasMultiplier = (String) aContext
@@ -95,15 +95,13 @@ public void initialize(FlowControllerContext aContext) throws ResourceInitializa
     } else {
       throw new ResourceInitializationException(); // TODO
     }
-    
-    String[] aeKeysAllowingContinue = (String[])aContext
+
+    String[] aeKeysAllowingContinue = (String[]) aContext
             .getConfigParameterValue(PARAM_ALLOW_CONTINUE_ON_FAILURE);
     if (aeKeysAllowingContinue != null) {
       mAEsAllowingContinueOnFailure.addAll(Arrays.asList(aeKeysAllowingContinue));
     }
-    
-    
-      
+
   }
 
   /*
@@ -112,11 +110,13 @@ public void initialize(FlowControllerContext aContext) throws ResourceInitializa
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
   @Override
-public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     return new FixedFlowObject(0);
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
   @Override
@@ -127,24 +127,26 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     mSequence.add(new ParallelStep(new ArrayList<>(aKeys)));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
   @Override
-  public synchronized void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
+  public synchronized void removeAnalysisEngines(Collection<String> aKeys)
+          throws AnalysisEngineProcessException {
     // Remove keys from Sequence ... replace with null so step indices are still valid
     for (int i = 0; i < mSequence.size(); ++i) {
-      Step step = (Step)mSequence.get(i);
-      if (step instanceof SimpleStep && aKeys.contains(((SimpleStep)step).getAnalysisEngineKey())) {
+      Step step = (Step) mSequence.get(i);
+      if (step instanceof SimpleStep
+              && aKeys.contains(((SimpleStep) step).getAnalysisEngineKey())) {
         mSequence.set(i, null);
-      }
-      else if (step instanceof ParallelStep) {
+      } else if (step instanceof ParallelStep) {
         Collection<String> keys = new ArrayList<>(((ParallelStep) step).getAnalysisEngineKeys());
         keys.removeAll(aKeys);
         if (keys.isEmpty()) {
           mSequence.set(i, null);
-        }
-        else {
+        } else {
           mSequence.set(i, new ParallelStep(keys));
         }
       }
@@ -227,7 +229,7 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
       // if next step is a CasMultiplier, set wasPassedToCasMultiplier to true for next time
       if (stepContainsCasMultiplier(nextStep)) {
         wasPassedToCasMultiplier = true;
-    }
+      }
 
       // now send the CAS to the next AE(s) in sequence.
       return nextStep;
@@ -236,26 +238,24 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     private boolean stepContainsCasMultiplier(Step nextStep) {
       if (nextStep instanceof SimpleStep) {
         AnalysisEngineMetaData md = (AnalysisEngineMetaData) getContext()
-          .getAnalysisEngineMetaDataMap().get(((SimpleStep)nextStep).getAnalysisEngineKey());
-        return md != null && md.getOperationalProperties() != null &&
-                md.getOperationalProperties().getOutputsNewCASes();
-      }
-      else if (nextStep instanceof ParallelStep) {
-        Iterator<String> iter = ((ParallelStep)nextStep).getAnalysisEngineKeys().iterator();
+                .getAnalysisEngineMetaDataMap().get(((SimpleStep) nextStep).getAnalysisEngineKey());
+        return md != null && md.getOperationalProperties() != null
+                && md.getOperationalProperties().getOutputsNewCASes();
+      } else if (nextStep instanceof ParallelStep) {
+        Iterator<String> iter = ((ParallelStep) nextStep).getAnalysisEngineKeys().iterator();
         while (iter.hasNext()) {
-          String key = (String)iter.next();
+          String key = (String) iter.next();
           AnalysisEngineMetaData md = (AnalysisEngineMetaData) getContext()
-            .getAnalysisEngineMetaDataMap().get(key);
-          if (md != null && md.getOperationalProperties() != null &&
-                  md.getOperationalProperties().getOutputsNewCASes()) {
+                  .getAnalysisEngineMetaDataMap().get(key);
+          if (md != null && md.getOperationalProperties() != null
+                  && md.getOperationalProperties().getOutputsNewCASes()) {
             return true;
+          }
         }
-        }
+        return false;
+      } else {
         return false;
       }
-    else {
-        return false;
-    }
     }
 
     /*
@@ -264,38 +264,40 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
     @Override
-    public synchronized Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+    public synchronized Flow newCasProduced(CAS newCas, String producedBy)
+            throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       casMultiplierProducedNewCas = true;
       // start the new output CAS from the next node after the CasMultiplier that produced it
       int i = 0;
-      while (!stepContains((Step)mSequence.get(i), producedBy)) {
+      while (!stepContains((Step) mSequence.get(i), producedBy)) {
         i++;
-    }
+      }
       return new FixedFlowObject(i + 1, true);
     }
 
     private boolean stepContains(Step step, String producedBy) {
       if (step instanceof SimpleStep) {
-        return ((SimpleStep)step).getAnalysisEngineKey().equals(producedBy);
-      }
-      else if (step instanceof ParallelStep) {
-        Iterator<String> iter = ((ParallelStep)step).getAnalysisEngineKeys().iterator();
+        return ((SimpleStep) step).getAnalysisEngineKey().equals(producedBy);
+      } else if (step instanceof ParallelStep) {
+        Iterator<String> iter = ((ParallelStep) step).getAnalysisEngineKeys().iterator();
         while (iter.hasNext()) {
-          String key = (String)iter.next();
+          String key = (String) iter.next();
           if (key.equals(producedBy)) {
             return true;
           }
         }
         return false;
-      }
-      else {
+      } else {
         return false;
       }
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String, java.lang.Exception)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String,
+     * java.lang.Exception)
      */
     @Override
     public boolean continueOnFailure(String failedAeKey, Exception failure) {

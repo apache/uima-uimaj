@@ -23,7 +23,6 @@ import java.util.Collection;
 
 import org.apache.uima.cas.FeatureStructure;
 
-
 /**
  * This interface is used to notifies clients about {@link FeatureStructure} changes.
  */
@@ -63,14 +62,16 @@ public interface ICasDocumentListener {
   /**
    * This method is called if the {@link FeatureStructure} changed.
    *
-   * @param featureStructure the feature structure
+   * @param featureStructure
+   *          the feature structure
    */
   void updated(FeatureStructure featureStructure);
 
   /**
    * This method is called if the {@link FeatureStructure}s changed.
    *
-   * @param featureStructure the feature structure
+   * @param featureStructure
+   *          the feature structure
    */
   void updated(Collection<FeatureStructure> featureStructure);
 
@@ -86,10 +87,11 @@ public interface ICasDocumentListener {
    * does not indicate a structural change, but usually feature structures must be completely
    * synchronized afterward.
    *
-   * @param oldViewName the old view name
-   * @param newViewName the new view name
+   * @param oldViewName
+   *          the old view name
+   * @param newViewName
+   *          the new view name
    */
   void viewChanged(String oldViewName, String newViewName);
-
 
 }

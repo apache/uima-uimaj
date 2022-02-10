@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -31,7 +30,6 @@ import org.apache.uima.impl.UimaVersion;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 
-
 /**
  * The Class AboutHandler.
  */
@@ -43,13 +41,16 @@ public class AboutHandler implements ActionListener {
   /**
    * Instantiates a new about handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public AboutHandler(MainFrame frame) {
     this.main = frame;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -64,15 +65,14 @@ public class AboutHandler implements ActionListener {
       versionInfo = "Running Java " + javaVersion + " from " + javaVendor;
     }
     String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
-        + UIMAFramework.getVersionString() 
-        + " Copyright 2006, " + UimaVersion.getBuildYear() + " The Apache Software Foundation\n" + versionInfo + "\n";
+            + UIMAFramework.getVersionString() + " Copyright 2006, " + UimaVersion.getBuildYear()
+            + " The Apache Software Foundation\n" + versionInfo + "\n";
     Icon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);
     if (icon == null) {
-      JOptionPane.showMessageDialog(this.main, msg, "About CVD",
-          JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(this.main, msg, "About CVD", JOptionPane.INFORMATION_MESSAGE);
     } else {
-      JOptionPane.showMessageDialog(this.main, msg, "About CVD",
-          JOptionPane.INFORMATION_MESSAGE, icon);
+      JOptionPane.showMessageDialog(this.main, msg, "About CVD", JOptionPane.INFORMATION_MESSAGE,
+              icon);
     }
   }
 }

@@ -25,12 +25,11 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-
 /**
  * Workarounds for JFileChooser bugs on Windows Look and Feel.
  * 
- * For a workaround for Java bug #4711700 ( <a
- * href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4711700">
+ * For a workaround for Java bug #4711700 (
+ * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4711700">
  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4711700</a>), Call {@link #fix()} after
  * setting Windows look and feel but before creating any file choosers.
  * <p>

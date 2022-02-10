@@ -99,7 +99,6 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * A simple GUI for the RunTextAnalysis application library. Note that currently this will only run
  * under Windows since it relies on Windows-specific commands for invoking a web browser to view the
@@ -109,7 +108,7 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, ActionListener {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8795969283257780425L;
 
@@ -117,8 +116,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   private static final String HELP_MESSAGE = "Instructions for using UIMA Document Analyzer:\n\n"
           + "* In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the documents that you want\n"
-          + "to analyze.\n\n"
-          + "* In the \"Input File Format\" field, type or use the browse\n"
+          + "to analyze.\n\n" + "* In the \"Input File Format\" field, type or use the browse\n"
           + "button to select \"text\", \"xcas\", or \"xmi\".\n"
           + "* If using \"xmi\" or \"xcas\", check the \"Lenient\" box to indicate if it's OK if the annotator's type system doesn't define all the types or features in the input CAS.\n\n"
           + "* In the \"Output Directory\" field, either type or use the browse\n"
@@ -140,10 +138,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   /** The input file selector. */
   private FileSelector inputFileSelector;
-  
+
   /** The input file format combo box. */
   private JComboBox inputFileFormatComboBox;
-  
+
   /** The lenient checkbox. */
   private JCheckBox lenientCheckbox;
 
@@ -255,7 +253,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   /** The using xml detagger. */
   private boolean usingXmlDetagger;
-  
+
   /**
    * Constructor. Sets up the GUI.
    */
@@ -266,9 +264,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Instantiates a new document analyzer.
    *
-   * @param outputFileSelected the output file selected
-   * @param interactiveDA the interactive DA
-   * @param jvucrbis the jvucrbis
+   * @param outputFileSelected
+   *          the output file selected
+   * @param interactiveDA
+   *          the interactive DA
+   * @param jvucrbis
+   *          the jvucrbis
    */
   public DocumentAnalyzer(String outputFileSelected, boolean interactiveDA, boolean jvucrbis) {
     super("Document Analyzer");
@@ -341,7 +342,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Create field label captions (right-aligned JLabel):
 
     labelInputFile = new Caption(inputString);
-    
+
     labelInputFileFormat = new Caption(inputFileFormatString);
 
     labelOutputFile = new Caption(outputString);
@@ -377,63 +378,60 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     inputFileSelector.addFileSelectorListener(fsl);
     inputFileSelector.addDocumentListener(dl);
 
-        
     // UIMA-2305.
-    
+
     lenientCheckbox = new JCheckBox("Lenient deserialization");
-    lenientCheckbox.setToolTipText("Allow extra types and features in the input CAS, not defined by the annotator type system, to be ignored");
+    lenientCheckbox.setToolTipText(
+            "Allow extra types and features in the input CAS, not defined by the annotator type system, to be ignored");
     lenientCheckbox.setSelected(prefsMed.getLenient());
-    
+
     JPanel inputFileFormatPanel = new JPanel();
 
     inputFileFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    
+
     inputFileFormatComboBox = new JComboBox(new Object[] { "text", "xmi", "xcas" });
     inputFileFormatComboBox.setEditable(false);
     inputFileFormatComboBox.setSelectedItem(prefsMed.getInputFileFormat());
-    inputFileFormatComboBox.addActionListener(new ActionListener() {      
+    inputFileFormatComboBox.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
-        lenientCheckbox.setEnabled(
-            "xcas".equalsIgnoreCase(inputFileFormat) ||
-            "xmi".equalsIgnoreCase(inputFileFormat));
+        lenientCheckbox.setEnabled("xcas".equalsIgnoreCase(inputFileFormat)
+                || "xmi".equalsIgnoreCase(inputFileFormat));
       }
     });
-    
+
     String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
     lenientCheckbox.setEnabled(
-        "xcas".equalsIgnoreCase(inputFileFormat) ||
-        "xmi".equalsIgnoreCase(inputFileFormat));
+            "xcas".equalsIgnoreCase(inputFileFormat) || "xmi".equalsIgnoreCase(inputFileFormat));
 
-    
-    inputFileFormatPanel.add(inputFileFormatComboBox);        
-       
+    inputFileFormatPanel.add(inputFileFormatComboBox);
+
     inputFileFormatPanel.add(lenientCheckbox);
-    
+
     Map<String, Charset> charsetMap = Charset.availableCharsets();
     Set<String> charsets = charsetMap.keySet();
     String[] charsetArr = charsets.toArray(new String[charsets.size()]);
     encodingComboBox = new JComboBox(charsetArr);
     encodingComboBox.setEditable(false);
     encodingComboBox.setSelectedItem(prefsMed.getEncoding());
-    
+
     JPanel displayEncodingFormatPanel = new JPanel();
     displayEncodingFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    displayEncodingFormatPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));   
+    displayEncodingFormatPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     displayEncodingFormatPanel.add(labelEncoding);
     displayEncodingFormatPanel.add(encodingComboBox);
- 
+
     inputFileFormatPanel.add(displayEncodingFormatPanel);
-        
+
     outputFileSelector = new FileSelector(prefsMed.getOutputDir(), "Output Directory",
             JFileChooser.DIRECTORIES_ONLY, browserRootDir);
     // outputFileSelector.addFocusListener( tlf);
     outputFileSelector.addFileSelectorListener(fsl);
     outputFileSelector.addDocumentListener(dl);
 
-    xmlFileSelector = new FileSelector(prefsMed.getTAEfile(),
-            "Analysis Engine Descriptor XML file", JFileChooser.FILES_ONLY, browserRootDir);
+    xmlFileSelector = new FileSelector(prefsMed.getTAEfile(), "Analysis Engine Descriptor XML file",
+            JFileChooser.FILES_ONLY, browserRootDir);
     // xmlFileSelector.addFocusListener( tlf);
     xmlFileSelector.addFileSelectorListener(fsl);
     xmlFileSelector.addDocumentListener(dl);
@@ -453,7 +451,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     JPanel languagePanel = new JPanel();
     languagePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     languagePanel.add(languageComboBox);
-
 
     controlPanel.add(labelInputFile);
     controlPanel.add(inputFileSelector);
@@ -493,8 +490,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     helpMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent evt) {
-        JOptionPane.showMessageDialog(DocumentAnalyzer.this, HELP_MESSAGE,
-                "Document Analyzer Help", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(DocumentAnalyzer.this, HELP_MESSAGE, "Document Analyzer Help",
+                JOptionPane.PLAIN_MESSAGE);
       }
     });
 
@@ -594,7 +591,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   // View button clicked
@@ -605,8 +604,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       aeSpecifierFile = new File(xmlFileSelector.getSelected());
       interactive = false; // prevent re-viewing temp file
       showAnalysisResults(outputDirectory);
-    } 
-    catch (Exception ex) {
+    } catch (Exception ex) {
       displayError(ex);
     }
   }
@@ -617,7 +615,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * processing is complete, allows the user to view the results. JMP added arg for input text to
    * analyze.
    *
-   * @param analysisText the analysis text
+   * @param analysisText
+   *          the analysis text
    */
   public void analyzeDocuments(String analysisText) {
     // get field values from GUI
@@ -625,10 +624,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     File inputDir = new File(inputFileSelector.getSelected());
     if (outputFileSelector.getSelected().length() > 0) {
-        outputDirectory = new File(outputFileSelector.getSelected());
-    }
-    else {
-        outputDirectory = null;
+      outputDirectory = new File(outputFileSelector.getSelected());
+    } else {
+      outputDirectory = null;
     }
 
     // reset file pointers in case of typed-in text. JMP
@@ -638,12 +636,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       inputDir = new File(tempFileDir);
       if (!inputDir.exists()) {
         inputDir.mkdirs();
-    }
+      }
       outputFileSelected = outputFileSelector.getSelected() + "/interactive_out";
       prefsMed.setOutputDirForInteractiveMode(outputFileSelected, outputFileSelector.getSelected());
       outputDirectory = new File(outputFileSelected);
     } else {
-      analysisText = null; // 
+      analysisText = null; //
     } // should just return
 
     aeSpecifierFile = new File(xmlFileSelector.getSelected());
@@ -669,8 +667,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     } else if (inputDir.getName().equals("")) {
       displayError("An Input Directory is Required");
     } else if (!inputDir.exists()) {
-      displayError("The input directory \"" + inputFileSelector.getSelected()
-              + "\" does not exist.");
+      displayError(
+              "The input directory \"" + inputFileSelector.getSelected() + "\" does not exist.");
     } else if (!inputDir.isDirectory()) {
       displayError("The input directory (" + inputFileSelector.getSelected()
               + ") must be a directory, not a file.");
@@ -716,10 +714,11 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
             filename = filename.substring(0, filename.length() - 4);
           }
           if (!new File(inputDir, filename).exists()) {
-            int choice = JOptionPane.showConfirmDialog(DocumentAnalyzer.this, "All files in "
-                    + outputDirectory.getPath() + " will be deleted.  These files don't "
-                    + "appear to match the files in the input directory.  Is this OK?", "Confirm",
-                    JOptionPane.YES_NO_OPTION);
+            int choice = JOptionPane.showConfirmDialog(DocumentAnalyzer.this,
+                    "All files in " + outputDirectory.getPath()
+                            + " will be deleted.  These files don't "
+                            + "appear to match the files in the input directory.  Is this OK?",
+                    "Confirm", JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.NO_OPTION) {
               return;
             } else {
@@ -740,8 +739,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       // start separate thread to do component initialization and
       // processing
-      ProcessingThread thread = new ProcessingThread(inputDir, inputFileFormat, lenient, outputDirectory, aeSpecifierFile,
-              xmlTag, language, encoding);
+      ProcessingThread thread = new ProcessingThread(inputDir, inputFileFormat, lenient,
+              outputDirectory, aeSpecifierFile, xmlTag, language, encoding);
       thread.start();
     }
   }
@@ -761,8 +760,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Entity process complete.
    *
-   * @param aCas the a cas
-   * @param aStatus the a status
+   * @param aCas
+   *          the a cas
+   * @param aStatus
+   *          the a status
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
@@ -881,7 +882,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Show analysis results.
    *
-   * @param aOutputDir the a output dir
+   * @param aOutputDir
+   *          the a output dir
    */
   // this call is used when you click the "View" button
   public void showAnalysisResults(File aOutputDir) {
@@ -894,10 +896,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
 
     statsString = null;
-    
+
     // Not sure if the following code makes sense... If a style map file exists,
     // this restricts the set of types displayed by the viewer to only the types
-    // in that file.  But why is this only done in "View" mode?  It seems like this
+    // in that file. But why is this only done in "View" mode? It seems like this
     // belongs in AnnotationViewerDialog with the other code that sets up the
     // viewer (e.g., the colors) from the style map file.
     if (prefsMed.getStylemapFile().exists()) {
@@ -917,16 +919,20 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * Creates a CAS from an descriptor. Supports both local AE descriptors and remote service
    * specifiers. In the latter case the service is contacted to obtain its type system.
    *
-   * @param aDescriptorFile the a descriptor file
+   * @param aDescriptorFile
+   *          the a descriptor file
    * @return the cas
-   * @throws ResourceInitializationException -
-   * @throws InvalidXMLException -
-   * @throws IOException -
+   * @throws ResourceInitializationException
+   *           -
+   * @throws InvalidXMLException
+   *           -
+   * @throws IOException
+   *           -
    */
   protected CAS createCasFromDescriptor(String aDescriptorFile) // JMP
           throws ResourceInitializationException, InvalidXMLException, IOException {
-    ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            new XMLInputSource(aDescriptorFile));
+    ResourceSpecifier spec = UIMAFramework.getXMLParser()
+            .parseResourceSpecifier(new XMLInputSource(aDescriptorFile));
     if (spec instanceof AnalysisEngineDescription) {
       return CasCreationUtils.createCas((AnalysisEngineDescription) spec);
     } else {
@@ -938,7 +944,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Read stylemap file.
    *
-   * @param smapFile the smap file
+   * @param smapFile
+   *          the smap file
    * @return the string
    */
   protected String readStylemapFile(File smapFile) // JMP
@@ -960,7 +967,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Show analysis.
    *
-   * @param outputDir the output dir
+   * @param outputDir
+   *          the output dir
    */
   private void show_analysis(File outputDir) {
     File styleMapFile = getStyleMapFile();
@@ -980,9 +988,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     } else {
       // this version of the AnnotationViewerDialog constructor does
       // not automatically launch the viewer.
-      AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this,
-              "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
-              currentTaeOutputTypes, useGeneratedStyleMap, cas);
+      AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this, "Analysis Results",
+              prefsMed, styleMapFile, statsString, currentTypeSystem, currentTaeOutputTypes,
+              useGeneratedStyleMap, cas);
       if (usingXmlDetagger) {
         viewerDialog.setDefaultCasViewName("plainTextDocument");
       }
@@ -1080,7 +1088,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Runs the application.
    *
-   * @param args the arguments
+   * @param args
+   *          the arguments
    */
   public static void main(String[] args) {
     final DocumentAnalyzer frame = new DocumentAnalyzer();
@@ -1095,7 +1104,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * Class for dialog in which user types in text to be analyzed, and sets browser parameters.
    */
   class TextAreaViewer extends JPanel {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -7503162930412929062L;
 
@@ -1105,8 +1114,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     /**
      * Constructor for dialog.
      *
-     * @param aiDialog the ai dialog
-     * @param generatedStyleMap the generated style map
+     * @param aiDialog
+     *          the ai dialog
+     * @param generatedStyleMap
+     *          the generated style map
      */
     public TextAreaViewer(final JDialog aiDialog, boolean generatedStyleMap) {
 
@@ -1151,10 +1162,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       if (generatedStyleMap) {
         javaViewerRB.setSelected(true);
-    }
-    else {
+      } else {
         javaViewerUCRB.setSelected(true);
-    }
+      }
 
       ButtonGroup displayFormatButtonGroup = new ButtonGroup();
       displayFormatButtonGroup.add(javaViewerRB);
@@ -1232,27 +1242,36 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Run processing thread.
    *
-   * @param inputDir the input dir
-   * @param inputFileFormat the input file format
-   * @param lenient the lenient
-   * @param outputDir the output dir
-   * @param aeSpecifierFile the ae specifier file
-   * @param xmlTag the xml tag
-   * @param language the language
-   * @param encoding the encoding
+   * @param inputDir
+   *          the input dir
+   * @param inputFileFormat
+   *          the input file format
+   * @param lenient
+   *          the lenient
+   * @param outputDir
+   *          the output dir
+   * @param aeSpecifierFile
+   *          the ae specifier file
+   * @param xmlTag
+   *          the xml tag
+   * @param language
+   *          the language
+   * @param encoding
+   *          the encoding
    */
-  public void runProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File aeSpecifierFile,
-          String xmlTag, String language, String encoding) {
+  public void runProcessingThread(File inputDir, String inputFileFormat, Boolean lenient,
+          File outputDir, File aeSpecifierFile, String xmlTag, String language, String encoding) {
     try {
       // create and configure collection reader that will read input docs
       CollectionReaderDescription collectionReaderDesc = FileSystemCollectionReader
               .getDescription();
       ConfigurationParameterSettings paramSettings = collectionReaderDesc.getMetaData()
               .getConfigurationParameterSettings();
-      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
-              .getAbsolutePath());
+      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR,
+              inputDir.getAbsolutePath());
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, inputFileFormat);
-      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LENIENT, lenient ? "true" : "false");
+      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LENIENT,
+              lenient ? "true" : "false");
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       collectionReader = (FileSystemCollectionReader) UIMAFramework
@@ -1289,8 +1308,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       CasConsumerDescription casConsumerDesc = XmiWriterCasConsumer.getDescription();
       ConfigurationParameterSettings consumerParamSettings = casConsumerDesc.getMetaData()
               .getConfigurationParameterSettings();
-      consumerParamSettings.setParameterValue(XmiWriterCasConsumer.PARAM_OUTPUTDIR, outputDir
-              .getAbsolutePath());
+      consumerParamSettings.setParameterValue(XmiWriterCasConsumer.PARAM_OUTPUTDIR,
+              outputDir.getAbsolutePath());
       // declare uima.cas.TOP as an input so that ResultSpec on user's AE will be set to produce all
       // types
       casConsumerDesc.getCasConsumerMetaData().getCapabilities()[0].addInputType("uima.cas.TOP",
@@ -1304,58 +1323,57 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
                 .getConfigurationParameterSettings();
         xmlDetaggerParamSettings.setParameterValue(XmlDetagger.PARAM_TEXT_TAG, xmlTag);
         usingXmlDetagger = true;
-      }
-      else {
+      } else {
         usingXmlDetagger = false;
       }
-      
+
       // create an aggregate AE that includes the XmlDetagger (if needed), followed by
-      //th user's AE descriptor, followed by the XMI Writer CAS Consumer, using fixed flow.
-      // We use an aggregate AE here, rather than just adding the CAS Consumer to the CPE, so 
-      //that we can support the user's AE being a CAS Multiplier and we can specify sofa mappings.
+      // th user's AE descriptor, followed by the XMI Writer CAS Consumer, using fixed flow.
+      // We use an aggregate AE here, rather than just adding the CAS Consumer to the CPE, so
+      // that we can support the user's AE being a CAS Multiplier and we can specify sofa mappings.
       AnalysisEngineDescription aggDesc = UIMAFramework.getResourceSpecifierFactory()
               .createAnalysisEngineDescription();
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("UserAE", aeSpecifier);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("XmiWriter", casConsumerDesc);
-      FixedFlow flow = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();      
-            
+      FixedFlow flow = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();
+
       if (xmlDetaggerDesc != null) {
-        aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("XmlDetagger", xmlDetaggerDesc);
-        flow.setFixedFlow(new String[] {"XmlDetagger", "UserAE", "XmiWriter"});
-        
-        //to run XmlDetagger we need sofa mappings
-        //XmlDetagger's "xmlDocument" input sofa gets mapped to the default sofa
+        aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("XmlDetagger",
+                xmlDetaggerDesc);
+        flow.setFixedFlow(new String[] { "XmlDetagger", "UserAE", "XmiWriter" });
+
+        // to run XmlDetagger we need sofa mappings
+        // XmlDetagger's "xmlDocument" input sofa gets mapped to the default sofa
         SofaMapping sofaMapping1 = UIMAFramework.getResourceSpecifierFactory().createSofaMapping();
         sofaMapping1.setComponentKey("XmlDetagger");
         sofaMapping1.setComponentSofaName("xmlDocument");
         sofaMapping1.setAggregateSofaName(CAS.NAME_DEFAULT_SOFA);
-        
-        //for UserAE and XmiWriter, may default sofa to the "plainTextDocument" produced by the XmlDetagger
+
+        // for UserAE and XmiWriter, may default sofa to the "plainTextDocument" produced by the
+        // XmlDetagger
         SofaMapping sofaMapping2 = UIMAFramework.getResourceSpecifierFactory().createSofaMapping();
         sofaMapping2.setComponentKey("UserAE");
         sofaMapping2.setAggregateSofaName("plainTextDocument");
         SofaMapping sofaMapping3 = UIMAFramework.getResourceSpecifierFactory().createSofaMapping();
         sofaMapping3.setComponentKey("XmiWriter");
         sofaMapping3.setAggregateSofaName("plainTextDocument");
-                
-        aggDesc.setSofaMappings(new SofaMapping[] {sofaMapping1, sofaMapping2, sofaMapping3});
-      }
-      else {
-        //no XML detagger needed in the aggregate in flow
-        flow.setFixedFlow(new String[] { "UserAE", "XmiWriter" });          
+
+        aggDesc.setSofaMappings(new SofaMapping[] { sofaMapping1, sofaMapping2, sofaMapping3 });
+      } else {
+        // no XML detagger needed in the aggregate in flow
+        flow.setFixedFlow(new String[] { "UserAE", "XmiWriter" });
       }
 
-      
       aggDesc.getAnalysisEngineMetaData().setName("DocumentAnalyzerAE");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      aggDesc.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(
-              false);            
+      aggDesc.getAnalysisEngineMetaData().getOperationalProperties()
+              .setMultipleDeploymentAllowed(false);
       progressMonitor.setProgress(1);
 
       // instantiate AE
       // keep this a local variable - so it doesn't hang on to the ae object
-      //   preventing gc (some ae objects are huge)
+      // preventing gc (some ae objects are huge)
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aggDesc);
       mCPM.setAnalysisEngine(ae);
 
@@ -1419,12 +1437,11 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     } catch (Throwable t) {
       // special check for using XML detagger with remotes, which will generate an error
       // since sofa mappings aren't supported for remotes
-      if (usingXmlDetagger
-              && (t instanceof UIMAException)
-              && ((UIMAException) t)
-                      .hasMessageKey(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
-        displayError("The XML detagging feature is not supported for remote Analysis Engines or for Aggregates containing remotes.  "
-                + "If you are running a remote Analysis Engine the \"XML Tag Containing Text\" field must be left blank.");
+      if (usingXmlDetagger && (t instanceof UIMAException) && ((UIMAException) t).hasMessageKey(
+              ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
+        displayError(
+                "The XML detagging feature is not supported for remote Analysis Engines or for Aggregates containing remotes.  "
+                        + "If you are running a remote Analysis Engine the \"XML Tag Containing Text\" field must be left blank.");
       } else {
         displayError(t);
       }
@@ -1436,13 +1453,13 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * The Class ProcessingThread.
    */
   class ProcessingThread extends Thread {
-    
+
     /** The input dir. */
     File inputDir;
 
     /** The input file format. */
     String inputFileFormat;
-    
+
     /** The output dir. */
     File outputDir;
 
@@ -1457,24 +1474,32 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     /** The encoding. */
     String encoding;
-    
+
     /** The lenient. */
     Boolean lenient;
 
     /**
      * Instantiates a new processing thread.
      *
-     * @param inputDir the input dir
-     * @param inputFileFormat the input file format
-     * @param lenient the lenient
-     * @param outputDir the output dir
-     * @param taeSpecifierFile the tae specifier file
-     * @param xmlTag the xml tag
-     * @param language the language
-     * @param encoding the encoding
+     * @param inputDir
+     *          the input dir
+     * @param inputFileFormat
+     *          the input file format
+     * @param lenient
+     *          the lenient
+     * @param outputDir
+     *          the output dir
+     * @param taeSpecifierFile
+     *          the tae specifier file
+     * @param xmlTag
+     *          the xml tag
+     * @param language
+     *          the language
+     * @param encoding
+     *          the encoding
      */
-    ProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File taeSpecifierFile, String xmlTag,
-            String language, String encoding) {
+    ProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir,
+            File taeSpecifierFile, String xmlTag, String language, String encoding) {
       this.inputDir = inputDir;
       this.inputFileFormat = inputFileFormat;
       this.outputDir = outputDir;
@@ -1485,14 +1510,17 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       this.lenient = lenient;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Thread#run()
      */
     @Override
     public void run() {
       // Code moved outside class to make accessible by programs that call
       // DocumentAnalyzer. JMP
-      runProcessingThread(inputDir, inputFileFormat, lenient, outputDir, taeSpecifierFile, xmlTag, language, encoding);
+      runProcessingThread(inputDir, inputFileFormat, lenient, outputDir, taeSpecifierFile, xmlTag,
+              language, encoding);
     }
   }
 
@@ -1511,7 +1539,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Sets the style map file.
    *
-   * @param styleMapFile          The styleMapFile to set.
+   * @param styleMapFile
+   *          The styleMapFile to set.
    */
   public void setStyleMapFile(File styleMapFile) {
     this.userStyleMapFile = styleMapFile;
@@ -1522,9 +1551,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * 
    * @see java.awt.Component#getPreferredSize()
    */
-//  @Override
-//  public Dimension getPreferredSize() {
-//    return new Dimension(800, 350);
-//  }
+  // @Override
+  // public Dimension getPreferredSize() {
+  // return new Dimension(800, 350);
+  // }
 
 }

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -35,7 +34,6 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-
 /**
  * The Class XCASSaveHandler.
  */
@@ -47,7 +45,8 @@ public class XCASSaveHandler implements ActionListener {
   /**
    * Instantiates a new XCAS save handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public XCASSaveHandler(MainFrame frame) {
     this.main = frame;
@@ -56,7 +55,8 @@ public class XCASSaveHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override

@@ -29,13 +29,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.uima.tools.images.Images;
 
-
 /**
  * The Class MyCellRenderer.
  */
 // cell renderer for the JTable
 class MyCellRenderer extends DefaultTableCellRenderer {
-  
+
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8130948041146818381L;
 
@@ -45,13 +44,20 @@ class MyCellRenderer extends DefaultTableCellRenderer {
   /**
    * Gets the table cell renderer component.
    *
-   * @param table the table
-   * @param value the value
-   * @param isSelected the is selected
-   * @param hasFocus the has focus
-   * @param row the row
-   * @param column the column
-   * @param styleList the style list
+   * @param table
+   *          the table
+   * @param value
+   *          the value
+   * @param isSelected
+   *          the is selected
+   * @param hasFocus
+   *          the has focus
+   * @param row
+   *          the row
+   * @param column
+   *          the column
+   * @param styleList
+   *          the style list
    * @return the table cell renderer component
    */
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,

@@ -27,20 +27,19 @@ import javax.swing.JFileChooser;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.tools.cvd.MainFrame;
 
-
 /**
  * The Class FileOpenEventHandler.
  */
 public class FileOpenEventHandler implements ActionListener {
 
-  
   /** The main. */
   private final MainFrame main;
 
   /**
    * Instantiates a new file open event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public FileOpenEventHandler(MainFrame frame) {
     this.main = frame;
@@ -49,7 +48,8 @@ public class FileOpenEventHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override
@@ -75,7 +75,7 @@ public class FileOpenEventHandler implements ActionListener {
       this.main.getUndoMgr().discardAllEdits();
       this.main.setFileStatusMessage();
       this.main.setStatusbarMessage("Done loading text file " + this.main.getTextFile().getName()
-          + " in " + time.getTimeSpan() + ".");
+              + " in " + time.getTimeSpan() + ".");
     }
   }
 }

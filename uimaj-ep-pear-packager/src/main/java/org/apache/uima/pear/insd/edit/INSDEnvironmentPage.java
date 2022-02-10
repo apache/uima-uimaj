@@ -53,7 +53,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
-
 /**
  * This is wizard page to edit PEAR Installation Environment parameters.
  */
@@ -90,9 +89,12 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Constructor.
    *
-   * @param currentContainer          An IProject with the UIMA Nature
-   * @param insd          The installation Descriptor object
-   * @param wizardData          a hash table with shared information between wizard pages
+   * @param currentContainer
+   *          An IProject with the UIMA Nature
+   * @param insd
+   *          The installation Descriptor object
+   * @param wizardData
+   *          a hash table with shared information between wizard pages
    */
   public INSDEnvironmentPage(IContainer currentContainer, InstallationDescriptor insd,
           Hashtable wizardData) {
@@ -108,7 +110,8 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * See IDialogPage#createControl(Composite).
    *
-   * @param parent the parent
+   * @param parent
+   *          the parent
    */
   @Override
   public void createControl(Composite parent) {
@@ -163,7 +166,8 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Gets the first item.
    *
-   * @param tokens the tokens
+   * @param tokens
+   *          the tokens
    * @return the first item
    */
   private String getFirstItem(String tokens) {
@@ -184,8 +188,10 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Adds the combo.
    *
-   * @param parent the parent
-   * @param strLabel the str label
+   * @param parent
+   *          the parent
+   * @param strLabel
+   *          the str label
    * @return the combo
    */
   private Combo addCombo(Composite parent, String strLabel) {
@@ -215,9 +221,10 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     String selectedOS = "";
     String selectedJdkVersion = "";
 
-    selectedOS = getFirstItem(insd.getOSSpecs().getProperty(InstallationDescriptorHandler.NAME_TAG));
-    selectedJdkVersion = getFirstItem(insd.getToolkitsSpecs().getProperty(
-            InstallationDescriptorHandler.JDK_VERSION_TAG));
+    selectedOS = getFirstItem(
+            insd.getOSSpecs().getProperty(InstallationDescriptorHandler.NAME_TAG));
+    selectedJdkVersion = getFirstItem(
+            insd.getToolkitsSpecs().getProperty(InstallationDescriptorHandler.JDK_VERSION_TAG));
 
     String[] items = { "Windows", "Linux", "Windows and Linux", "AIX" };
     String selectedItem = selectedOS;
@@ -281,7 +288,8 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Gets the initial class path.
    *
-   * @param classPath the class path
+   * @param classPath
+   *          the class path
    * @return the initial class path
    */
   private String getInitialClassPath(String classPath) {
@@ -305,15 +313,14 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
         addToClassPath(classPathEntries, resultStringEntries);
 
         // add output Location
-        System.out.println("Output Location (normal): "
-                + javaProject.getOutputLocation().toOSString());
+        System.out.println(
+                "Output Location (normal): " + javaProject.getOutputLocation().toOSString());
         System.out.println("Output Location (relative): "
                 + javaProject.getOutputLocation().makeRelative().toOSString());
         System.out.println("Output Location (absolute): "
                 + javaProject.getOutputLocation().makeAbsolute().toOSString());
-        String outputLocation = "$main_root/"
-                + javaProject.getOutputLocation().makeRelative().removeFirstSegments(1)
-                        .toOSString();
+        String outputLocation = "$main_root/" + javaProject.getOutputLocation().makeRelative()
+                .removeFirstSegments(1).toOSString();
         outputLocation = outputLocation.replace('\\', '/');
         outputLocation = outputLocation.trim();
         System.out.println("Output Location (to class path): " + outputLocation);
@@ -335,20 +342,14 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
           Iterator itr = MissingLibraries.iterator();
           while (itr.hasNext())
             sb.append("\n- ").append((String) itr.next());
-          MessageDialog
-                  .openWarning(
-                          getShell(),
-                          "Missing class path entries",
-                          "The following class path entries corresponds to resources not included in your project. Please make sure all the required class path resources (except JRE and UIMA jars) are included in this project and in the PEAR class path (in the environment page of the wizard):"
-                                  + sb.toString());
+          MessageDialog.openWarning(getShell(), "Missing class path entries",
+                  "The following class path entries corresponds to resources not included in your project. Please make sure all the required class path resources (except JRE and UIMA jars) are included in this project and in the PEAR class path (in the environment page of the wizard):"
+                          + sb.toString());
         }
       }
     } catch (Throwable e) {
-      MessageDialog
-              .openWarning(
-                      getShell(),
-                      "Class Path Initialization",
-                      "The class path could not be initialized properly. Please edit the class path variable in the environment page of the wizard.");
+      MessageDialog.openWarning(getShell(), "Class Path Initialization",
+              "The class path could not be initialized properly. Please edit the class path variable in the environment page of the wizard.");
       e.printStackTrace();
     }
 
@@ -358,7 +359,8 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Tokenize class path.
    *
-   * @param classPath the class path
+   * @param classPath
+   *          the class path
    * @return the array list
    */
   /*
@@ -380,15 +382,18 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Adds the to class path.
    *
-   * @param classPathEntries the class path entries
-   * @param resultStringEntries the result string entries
+   * @param classPathEntries
+   *          the class path entries
+   * @param resultStringEntries
+   *          the result string entries
    * @return the array list
    */
   /*
    * Adds class path entries to a class path if not already included.
    * 
    */
-  private ArrayList addToClassPath(IClasspathEntry[] classPathEntries, ArrayList resultStringEntries) {
+  private ArrayList addToClassPath(IClasspathEntry[] classPathEntries,
+          ArrayList resultStringEntries) {
     if (classPathEntries != null) {
       for (int i = 0; i < classPathEntries.length; i++)
         addToClassPath(classPathEntries[i], resultStringEntries);
@@ -399,8 +404,10 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Convert to string.
    *
-   * @param stringEntries the string entries
-   * @param delim the delim
+   * @param stringEntries
+   *          the string entries
+   * @param delim
+   *          the delim
    * @return the string
    */
   /*
@@ -418,8 +425,10 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Adds the to class path.
    *
-   * @param classPathEntry the class path entry
-   * @param classPath the class path
+   * @param classPathEntry
+   *          the class path entry
+   * @param classPath
+   *          the class path
    * @return the array list
    */
   /*
@@ -439,11 +448,11 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     switch (kind) {
       case IClasspathEntry.CPE_LIBRARY:
         path = classPathEntry.getPath();
-        boolean inProject = currentContainer.getFullPath().makeAbsolute().isPrefixOf(
-                path.makeAbsolute());
+        boolean inProject = currentContainer.getFullPath().makeAbsolute()
+                .isPrefixOf(path.makeAbsolute());
 
-        System.out.println("\tProject (full absolute): "
-                + currentContainer.getFullPath().makeAbsolute());
+        System.out.println(
+                "\tProject (full absolute): " + currentContainer.getFullPath().makeAbsolute());
         System.out.println(inProject ? "\tinProject" : "Not in Project");
 
         String temp = "";
@@ -478,8 +487,10 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Contain.
    *
-   * @param classPath the class path
-   * @param classPathEntryString the class path entry string
+   * @param classPath
+   *          the class path
+   * @param classPathEntryString
+   *          the class path entry string
    * @return true, if successful
    */
   /*
@@ -518,7 +529,8 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
   /**
    * Update status.
    *
-   * @param message the message
+   * @param message
+   *          the message
    */
   private void updateStatus(String message) {
     setErrorMessage(message);

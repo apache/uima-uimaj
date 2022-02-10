@@ -62,9 +62,9 @@ public class PearMergerTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @BeforeEach
-    public void setUp() throws Exception {
-    
+  @BeforeEach
+  public void setUp() throws Exception {
+
     // create temporary working directory
     File tempFile = File.createTempFile("pear_merger_test_", "tmp");
     if (tempFile.delete()) {
@@ -77,23 +77,24 @@ public class PearMergerTest {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     if (_tempWorkingDir != null) {
       FileUtil.deleteDirectory(_tempWorkingDir);
     }
   }
-  
+
   /**
    * Runs test for org.apache.uima.pear.merger.PMController class by merging 2 sample input PEARs
    * into the output aggregate PEAR. Then, the output PEAR is installed by using
    * org.apache.uima.pear.tools.InstallationController, and the installed component is verified by
    * instantiating the aggregate TAE and creating CAS object.
    * 
-   * @throws Exception -
+   * @throws Exception
+   *           -
    */
-    @Test
-    public void testPearMerger() throws Exception {
+  @Test
+  public void testPearMerger() throws Exception {
     // check temporary working directory
     if (_tempWorkingDir == null)
       throw new FileNotFoundException("temp directory not found");
@@ -123,8 +124,8 @@ public class PearMergerTest {
     // verify the installed component
     // customize ResourceManager by adding component CLASSPATH
     ResourceManager resMngr = UIMAFramework.newDefaultResourceManager();
-    String compClassPath = InstallationController.buildComponentClassPath(insDesc
-            .getMainComponentRoot(), insDesc, false);
+    String compClassPath = InstallationController
+            .buildComponentClassPath(insDesc.getMainComponentRoot(), insDesc, false);
     // instantiate the aggregate AE
     resMngr.setExtensionClassPath(compClassPath, true);
     String compDescFilePath = insDesc.getMainComponentDesc();
@@ -136,11 +137,11 @@ public class PearMergerTest {
     // create CAS object
     CAS cas = ae.newCAS();
     Assert.assertTrue(cas != null);
-    
-    //process CAS
+
+    // process CAS
     cas.setDocumentText("Sample text for testing");
     ae.process(cas);
-    
+
     // clean-up the results
     pmController.cleanUp();
   }

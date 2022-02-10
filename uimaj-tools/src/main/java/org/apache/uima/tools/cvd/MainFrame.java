@@ -160,7 +160,6 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
  * Class comment for MainFrame.java goes here.
  * 
@@ -189,8 +188,7 @@ public class MainFrame extends JFrame {
   private static final String loggerPropertiesFileName = "org/apache/uima/tools/annot_view/Logger.properties";
 
   /** The Constant defaultText. */
-  private static final String defaultText =
-  "Load or edit text here.";
+  private static final String defaultText = "Load or edit text here.";
 
   /** The Constant titleText. */
   private static final String titleText = "CAS Visual Debugger (CVD)";
@@ -203,7 +201,7 @@ public class MainFrame extends JFrame {
 
   /** The Constant noIndexReposLabel. */
   private static final String noIndexReposLabel = "<html><b>" + htmlGrayColor
-      + "CAS Index Repository</b></html>";
+          + "CAS Index Repository</b></html>";
 
   /** The text area. */
   // The content areas.
@@ -520,8 +518,10 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    *
-   * @param iniFile the ini file
-   * @throws HeadlessException -
+   * @param iniFile
+   *          the ini file
+   * @throws HeadlessException
+   *           -
    */
   public MainFrame(File iniFile) {
     this.iniFile = iniFile;
@@ -531,7 +531,8 @@ public class MainFrame extends JFrame {
   /**
    * Run AE.
    *
-   * @param doCasReset the do cas reset
+   * @param doCasReset
+   *          the do cas reset
    */
   public void runAE(boolean doCasReset) {
     setStatusbarMessage("Running Annotator.");
@@ -544,7 +545,7 @@ public class MainFrame extends JFrame {
     internalRunAE(doCasReset);
     timer.stop();
     setStatusbarMessage("Done running AE " + this.ae.getAnalysisEngineMetaData().getName() + " in "
-        + timer.getTimeSpan() + ".");
+            + timer.getTimeSpan() + ".");
     updateIndexTree(true);
     this.allAnnotationViewerItem.setEnabled(false);
     this.isDirty = false;
@@ -569,8 +570,8 @@ public class MainFrame extends JFrame {
     }
     this.showPerfReportItem.setEnabled(false);
     timer.stop();
-    setStatusbarMessage("Done running CPC on " + this.ae.getAnalysisEngineMetaData().getName() + " in "
-        + timer.getTimeSpan() + ".");
+    setStatusbarMessage("Done running CPC on " + this.ae.getAnalysisEngineMetaData().getName()
+            + " in " + timer.getTimeSpan() + ".");
     updateIndexTree(true);
     this.allAnnotationViewerItem.setEnabled(false);
     this.isDirty = false;
@@ -580,7 +581,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the data path.
    *
-   * @param dataPath the new data path
+   * @param dataPath
+   *          the new data path
    */
   public void setDataPath(String dataPath) {
     this.dataPathName = dataPath;
@@ -589,7 +591,8 @@ public class MainFrame extends JFrame {
   /**
    * Load AE descriptor.
    *
-   * @param descriptorFile the descriptor file
+   * @param descriptorFile
+   *          the descriptor file
    */
   public void loadAEDescriptor(File descriptorFile) {
     addRecentDescFile(descriptorFile);
@@ -629,9 +632,7 @@ public class MainFrame extends JFrame {
     // TODO: properly handle CAS multiplication
     if (this.ae != null) {
       if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
-        JOptionPane
-            .showMessageDialog(
-                this,
+        JOptionPane.showMessageDialog(this,
                 "This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
                 "Warning: unsupported operation", JOptionPane.WARNING_MESSAGE);
       }
@@ -642,7 +643,8 @@ public class MainFrame extends JFrame {
   /**
    * Handle exception.
    *
-   * @param e the e
+   * @param e
+   *          the e
    */
   public void handleException(Throwable e) {
     StringBuffer msg = new StringBuffer();
@@ -652,8 +654,10 @@ public class MainFrame extends JFrame {
   /**
    * Handle exception.
    *
-   * @param e the e
-   * @param msg the msg
+   * @param e
+   *          the e
+   * @param msg
+   *          the msg
    */
   protected void handleException(Throwable e, StringBuffer msg) {
     msg.append(e.getClass().getName() + ": ");
@@ -680,7 +684,8 @@ public class MainFrame extends JFrame {
   /**
    * Show error.
    *
-   * @param msg the msg
+   * @param msg
+   *          the msg
    */
   private void showError(String msg) {
     JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
@@ -702,8 +707,8 @@ public class MainFrame extends JFrame {
         setTitle();
         addRecentTextFile(this.textFile);
       } else {
-        handleException(new IOException("File does not exist or is not readable: "
-            + this.textFile.getAbsolutePath()));
+        handleException(new IOException(
+                "File does not exist or is not readable: " + this.textFile.getAbsolutePath()));
       }
       // Add the loaded file to the recently used files list.
     } catch (UnsupportedEncodingException e) {
@@ -717,7 +722,8 @@ public class MainFrame extends JFrame {
   /**
    * Load xmi file.
    *
-   * @param xmiCasFile the xmi cas file
+   * @param xmiCasFile
+   *          the xmi cas file
    */
   public void loadXmiFile(File xmiCasFile) {
     try {
@@ -743,43 +749,45 @@ public class MainFrame extends JFrame {
     }
   }
 
-
   /**
    * Gets the mnemonic.
    *
-   * @param i the i
+   * @param i
+   *          the i
    * @return the mnemonic
    */
   private static final int getMnemonic(int i) {
     switch (i) {
-    case 1:
-      return KeyEvent.VK_1;
-    case 2:
-      return KeyEvent.VK_2;
-    case 3:
-      return KeyEvent.VK_3;
-    case 4:
-      return KeyEvent.VK_4;
-    case 5:
-      return KeyEvent.VK_5;
-    case 6:
-      return KeyEvent.VK_6;
-    case 7:
-      return KeyEvent.VK_7;
-    case 8:
-      return KeyEvent.VK_8;
-    case 9:
-      return KeyEvent.VK_9;
-    default:
-      return KeyEvent.VK_0;
+      case 1:
+        return KeyEvent.VK_1;
+      case 2:
+        return KeyEvent.VK_2;
+      case 3:
+        return KeyEvent.VK_3;
+      case 4:
+        return KeyEvent.VK_4;
+      case 5:
+        return KeyEvent.VK_5;
+      case 6:
+        return KeyEvent.VK_6;
+      case 7:
+        return KeyEvent.VK_7;
+      case 8:
+        return KeyEvent.VK_8;
+      case 9:
+        return KeyEvent.VK_9;
+      default:
+        return KeyEvent.VK_0;
     }
   }
 
   /**
    * Creates the recent text file item.
    *
-   * @param num the num
-   * @param file the file
+   * @param num
+   *          the num
+   * @param file
+   *          the file
    * @return the j menu item
    */
   private final JMenuItem createRecentTextFileItem(int num, File file) {
@@ -793,7 +801,8 @@ public class MainFrame extends JFrame {
   /**
    * Adds the recent text file.
    *
-   * @param file the file
+   * @param file
+   *          the file
    */
   private void addRecentTextFile(File file) {
     this.recentTextFiles.addFile(file);
@@ -808,8 +817,10 @@ public class MainFrame extends JFrame {
   /**
    * Creates the recent desc file item.
    *
-   * @param num the num
-   * @param file the file
+   * @param num
+   *          the num
+   * @param file
+   *          the file
    * @return the j menu item
    */
   private final JMenuItem createRecentDescFileItem(int num, File file) {
@@ -823,7 +834,8 @@ public class MainFrame extends JFrame {
   /**
    * Adds the recent desc file.
    *
-   * @param file the file
+   * @param file
+   *          the file
    */
   private void addRecentDescFile(File file) {
     this.recentDescFiles.addFile(file);
@@ -839,7 +851,7 @@ public class MainFrame extends JFrame {
    * Set the text to be analyzed.
    * 
    * @param text
-   *                The text.
+   *          The text.
    */
   public void setText(String text) {
     this.textFile = null;
@@ -851,7 +863,7 @@ public class MainFrame extends JFrame {
    * Load a text file.
    * 
    * @param textFile1
-   *                The text file.
+   *          The text file.
    */
   public void loadTextFile(File textFile1) {
     this.textFile = textFile1;
@@ -861,7 +873,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the text no title.
    *
-   * @param text the new text no title
+   * @param text
+   *          the new text no title
    */
   // Set the text.
   public void setTextNoTitle(String text) {
@@ -925,26 +938,22 @@ public class MainFrame extends JFrame {
     }
     return true;
   }
-  
+
   /**
    * Confirm overwrite.
    *
-   * @param f the f
+   * @param f
+   *          the f
    * @return true, if successful
    */
   public boolean confirmOverwrite(File f) {
     if (f.exists()) {
-      Object[] options = {"Yes, Overwrite.",
-                          "No"};
+      Object[] options = { "Yes, Overwrite.", "No" };
       int n = JOptionPane.showOptionDialog(this,
-          "File " + f.getAbsolutePath() + " exists.\nWould you like to overwrite it?",
-          
-          "Confirm Overwrite",
-          JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE,
-          null,
-          options,
-          options[1]);
+              "File " + f.getAbsolutePath() + " exists.\nWould you like to overwrite it?",
+
+              "Confirm Overwrite", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+              options, options[1]);
       if (n == 1) {
         return false;
       }
@@ -994,8 +1003,8 @@ public class MainFrame extends JFrame {
     // Cut
     this.cutAction = actionMap.get(DefaultEditorKit.cutAction);
     this.cutAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
-    this.cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
-        InputEvent.CTRL_MASK));
+    this.cutAction.putValue(Action.ACCELERATOR_KEY,
+            KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
     this.cutAction.setEnabled(false);
     JMenuItem cutItem = new JMenuItem(this.cutAction);
     cutItem.setText("Cut");
@@ -1003,8 +1012,8 @@ public class MainFrame extends JFrame {
     // Copy
     this.copyAction = actionMap.get(DefaultEditorKit.copyAction);
     this.copyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
-    this.copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
-        InputEvent.CTRL_MASK));
+    this.copyAction.putValue(Action.ACCELERATOR_KEY,
+            KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
     this.copyAction.setEnabled(false);
     JMenuItem copyItem = new JMenuItem(this.copyAction);
     copyItem.setText("Copy");
@@ -1012,8 +1021,8 @@ public class MainFrame extends JFrame {
     // Paste
     Action pasteAction = actionMap.get(DefaultEditorKit.pasteAction);
     pasteAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
-    pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
-        InputEvent.CTRL_MASK));
+    pasteAction.putValue(Action.ACCELERATOR_KEY,
+            KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
     JMenuItem pasteItem = new JMenuItem(pasteAction);
     pasteItem.setText("Paste");
     this.editMenu.add(pasteItem);
@@ -1178,7 +1187,8 @@ public class MainFrame extends JFrame {
   /**
    * Adds the cursor owning component.
    *
-   * @param comp the comp
+   * @param comp
+   *          the comp
    */
   private final void addCursorOwningComponent(Component comp) {
     this.cursorOwningComponents.add(comp);
@@ -1218,7 +1228,7 @@ public class MainFrame extends JFrame {
     // Get supported encodings from JVM
     Map<String, Charset> charsetMap = Charset.availableCharsets();
     String sysCodePage = Charset.defaultCharset().name();
-    
+
     this.codePages = new ArrayList<>();
 
     if (sysCodePage != null) {
@@ -1268,13 +1278,14 @@ public class MainFrame extends JFrame {
       this.cpButtons.add(item);
       this.cpMenu.add(item);
     }
-    
+
   }
 
   /**
    * Adds the language.
    *
-   * @param language1 the language 1
+   * @param language1
+   *          the language 1
    */
   public void addLanguage(String language1) {
     this.language = language1;
@@ -1366,8 +1377,8 @@ public class MainFrame extends JFrame {
     this.reRunMenu.addActionListener(new AnnotatorRerunEventHandler(this));
     this.reRunMenu.setEnabled(false);
     this.runOnCasMenuItem = new JMenuItem("Run AE on CAS", KeyEvent.VK_Y);
-    this.runOnCasMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        ActionEvent.CTRL_MASK));
+    this.runOnCasMenuItem
+            .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
@@ -1453,8 +1464,8 @@ public class MainFrame extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        LogFileViewer viewer = new LogFileViewer("Log file: "
-            + MainFrame.this.logFile.getAbsolutePath());
+        LogFileViewer viewer = new LogFileViewer(
+                "Log file: " + MainFrame.this.logFile.getAbsolutePath());
         viewer.addWindowListener(new CloseLogViewHandler(MainFrame.this));
         Dimension dim = getDimension(logViewSizePref);
         if (dim == null) {
@@ -1476,15 +1487,15 @@ public class MainFrame extends JFrame {
     // statusPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
     this.statusPanel.setLayout(new BoxLayout(this.statusPanel, BoxLayout.X_AXIS));
     this.statusBar = new JTextField();
-    Border innerCompound = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(
-        BevelBorder.LOWERED, Color.lightGray, Color.darkGray), BorderFactory.createEmptyBorder(0,
-        3, 0, 3));
-    Border leftCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(
-        0, 0, 0, 1), innerCompound);
-    Border middleCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory
-        .createEmptyBorder(0, 1, 0, 1), innerCompound);
-    Border rightCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory
-        .createEmptyBorder(0, 1, 0, 0), innerCompound);
+    Border innerCompound = BorderFactory.createCompoundBorder(
+            BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.lightGray, Color.darkGray),
+            BorderFactory.createEmptyBorder(0, 3, 0, 3));
+    Border leftCompoundBorder = BorderFactory
+            .createCompoundBorder(BorderFactory.createEmptyBorder(0, 0, 0, 1), innerCompound);
+    Border middleCompoundBorder = BorderFactory
+            .createCompoundBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1), innerCompound);
+    Border rightCompoundBorder = BorderFactory
+            .createCompoundBorder(BorderFactory.createEmptyBorder(0, 1, 0, 0), innerCompound);
     // statusBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     this.statusBar.setBorder(leftCompoundBorder);
     this.statusBar.setEditable(false);
@@ -1520,8 +1531,10 @@ public class MainFrame extends JFrame {
   /**
    * Sets the caret status.
    *
-   * @param dot the dot
-   * @param mark the mark
+   * @param dot
+   *          the dot
+   * @param mark
+   *          the mark
    */
   public void setCaretStatus(final int dot, final int mark) {
     if (dot == mark) {
@@ -1552,8 +1565,8 @@ public class MainFrame extends JFrame {
       textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, "Text");
       // textBorder.setTitleJustification(TitledBorder.ABOVE_TOP);
     } else {
-      textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, this.textFile
-          .getAbsolutePath());
+      textBorder = BorderFactory.createTitledBorder(this.textTitleBorder,
+              this.textFile.getAbsolutePath());
     }
     this.textScrollPane.setBorder(textBorder);
     this.textScrollPane.revalidate();
@@ -1569,7 +1582,7 @@ public class MainFrame extends JFrame {
     } else {
       this.aeStatus.setText(this.aeDescriptorFile.getName());
       this.aeStatus.setToolTipText("<html>Currently loaded AE descriptor file:<br>"
-          + this.aeDescriptorFile.getAbsolutePath() + "</html>");
+              + this.aeDescriptorFile.getAbsolutePath() + "</html>");
     }
     this.statusPanel.revalidate();
   }
@@ -1577,7 +1590,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the statusbar message.
    *
-   * @param message the new statusbar message
+   * @param message
+   *          the new statusbar message
    */
   public void setStatusbarMessage(String message) {
     // Date date = new Date();
@@ -1626,12 +1640,12 @@ public class MainFrame extends JFrame {
       InputStream ins = ClassLoader.getSystemResourceAsStream(loggerPropertiesFileName);
       // Try the current class loader if system one cannot find the file
       if (ins == null) {
-    	ins = this.getClass().getClassLoader().getResourceAsStream(loggerPropertiesFileName);
+        ins = this.getClass().getClassLoader().getResourceAsStream(loggerPropertiesFileName);
       }
       if (ins != null) {
-    	logManager.readConfiguration(ins);
+        logManager.readConfiguration(ins);
       } else {
-    	System.out.println("WARNING: failed to load "+loggerPropertiesFileName);
+        System.out.println("WARNING: failed to load " + loggerPropertiesFileName);
       }
     } catch (SecurityException e) {
       handleException(e);
@@ -1691,7 +1705,7 @@ public class MainFrame extends JFrame {
     this.sofaSelectionPanel.setVisible(false);
     this.sofaSelectionComboBox.addItemListener(new SofaSelectionListener(this));
     this.sofaSelectionComboBox
-        .setToolTipText("This CAS has multiple Views. Select the View to display.");
+            .setToolTipText("This CAS has multiple Views. Select the View to display.");
 
     JSplitPane treePairPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     treePairPane.setDividerSize(dividerSize);
@@ -1759,7 +1773,8 @@ public class MainFrame extends JFrame {
   /**
    * Setup AE.
    *
-   * @param aeFile the ae file
+   * @param aeFile
+   *          the ae file
    * @return true, if successful
    */
   protected boolean setupAE(File aeFile) {
@@ -1837,7 +1852,8 @@ public class MainFrame extends JFrame {
   /**
    * Internal run AE.
    *
-   * @param doCasReset the do cas reset
+   * @param doCasReset
+   *          the do cas reset
    */
   protected void internalRunAE(boolean doCasReset) {
     try {
@@ -1858,8 +1874,8 @@ public class MainFrame extends JFrame {
       this.sofaSelectionComboBox.removeAllItems();
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       Iterator<?> sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
-      Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
-          CAS.FEATURE_FULL_NAME_SOFAID);
+      Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem()
+              .getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
       boolean nonDefaultSofaFound = false;
       while (sofas.hasNext()) {
         SofaFS sofa = (SofaFS) sofas.next();
@@ -1933,7 +1949,8 @@ public class MainFrame extends JFrame {
   /**
    * Update index tree.
    *
-   * @param useCAS the use CAS
+   * @param useCAS
+   *          the use CAS
    */
   @SuppressWarnings("unchecked")
   public void updateIndexTree(boolean useCAS) {
@@ -1960,7 +1977,7 @@ public class MainFrame extends JFrame {
     DefaultTreeModel model = (DefaultTreeModel) this.indexTree.getModel();
     // 1.3 workaround
     TreeModelListener[] listeners = org.apache.uima.tools.cvd.tsview.MainFrame
-        .getTreeModelListeners(model);
+            .getTreeModelListeners(model);
     // TreeModelListener[] listeners = model.getTreeModelListeners();
     // System.out.println("Number of tree model listeners: " +
     // listeners.length);
@@ -1975,8 +1992,10 @@ public class MainFrame extends JFrame {
   /**
    * Update FS tree.
    *
-   * @param indexName the index name
-   * @param index1 the index 1
+   * @param indexName
+   *          the index name
+   * @param index1
+   *          the index 1
    */
   public void updateFSTree(String indexName, FSIndex index1) {
     FSTreeModel treeModel = (FSTreeModel) this.fsTree.getModel();
@@ -1986,8 +2005,10 @@ public class MainFrame extends JFrame {
   /**
    * Gets the annotations at pos.
    *
-   * @param pos the pos
-   * @param annots the annots
+   * @param pos
+   *          the pos
+   * @param annots
+   *          the annots
    * @return the annotations at pos
    */
   private ArrayList<FSNode> getAnnotationsAtPos(int pos, List<FSNode> annots) {
@@ -2009,10 +2030,14 @@ public class MainFrame extends JFrame {
   /**
    * Creates the type tree.
    *
-   * @param type the type
-   * @param ts the ts
-   * @param label the label
-   * @param ir the ir
+   * @param type
+   *          the type
+   * @param ts
+   *          the ts
+   * @param label
+   *          the label
+   * @param ir
+   *          the ir
    * @return the default mutable tree node
    */
   private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type, TypeSystem ts,
@@ -2021,7 +2046,7 @@ public class MainFrame extends JFrame {
     TypeTreeNode typeNode = new TypeTreeNode(type, label, size);
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeNode);
     // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
-    // also on method parameter "type" 
+    // also on method parameter "type"
     List<org.apache.uima.cas.Type> types = ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
@@ -2037,7 +2062,8 @@ public class MainFrame extends JFrame {
   /**
    * Load program preferences.
    *
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   private void loadProgramPreferences() throws IOException {
     if (this.iniFile == null) {
@@ -2105,8 +2131,10 @@ public class MainFrame extends JFrame {
   /**
    * Sets the preferred size.
    *
-   * @param comp the comp
-   * @param propPrefix the prop prefix
+   * @param comp
+   *          the comp
+   * @param propPrefix
+   *          the prop prefix
    */
   public void setPreferredSize(JComponent comp, String propPrefix) {
     // assert(comp != null);
@@ -2116,7 +2144,8 @@ public class MainFrame extends JFrame {
   /**
    * Gets the dimension.
    *
-   * @param propPrefix the prop prefix
+   * @param propPrefix
+   *          the prop prefix
    * @return the dimension
    */
   public Dimension getDimension(String propPrefix) {
@@ -2145,7 +2174,8 @@ public class MainFrame extends JFrame {
   /**
    * String list to string.
    *
-   * @param list the list
+   * @param list
+   *          the list
    * @return the string
    */
   private static final String stringListToString(List<String> list) {
@@ -2164,7 +2194,8 @@ public class MainFrame extends JFrame {
   /**
    * String to array list.
    *
-   * @param s the s
+   * @param s
+   *          the s
    * @return the list
    */
   private static final List<String> stringToArrayList(String s) {
@@ -2181,7 +2212,8 @@ public class MainFrame extends JFrame {
   /**
    * Save program preferences.
    *
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public void saveProgramPreferences() throws IOException {
     // File open dialog preferences.
@@ -2231,10 +2263,10 @@ public class MainFrame extends JFrame {
       }
       this.preferences.setProperty(langListPref, buf.toString());
     }
-    this.preferences.setProperty(textFileListPref, stringListToString(this.recentTextFiles
-        .toStringList()));
-    this.preferences.setProperty(descFileListPref, stringListToString(this.recentDescFiles
-        .toStringList()));
+    this.preferences.setProperty(textFileListPref,
+            stringListToString(this.recentTextFiles.toStringList()));
+    this.preferences.setProperty(descFileListPref,
+            stringListToString(this.recentDescFiles.toStringList()));
     // Write out preferences to file.
     FileOutputStream out = new FileOutputStream(this.iniFile);
     this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
@@ -2243,8 +2275,10 @@ public class MainFrame extends JFrame {
   /**
    * Save color preferences.
    *
-   * @param file the file
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public void saveColorPreferences(File file) throws IOException {
     Properties prefs1 = new Properties();
@@ -2266,8 +2300,10 @@ public class MainFrame extends JFrame {
   /**
    * Load color preferences.
    *
-   * @param file the file
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
    */
   public void loadColorPreferences(File file) throws IOException {
     Style parent = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
@@ -2305,34 +2341,36 @@ public class MainFrame extends JFrame {
     // Create a key map for focussing the index repository tree panel.
     Action focusIRAction = new FocusIRAction(this);
     String focusIRActionName = "focusIRAction";
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), focusIRActionName);
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), focusIRActionName);
     getRootPane().getActionMap().put(focusIRActionName, focusIRAction);
     // Create a key map for focussing the FS tree panel.
     Action focusFSAction = new FocusFSAction(this);
     String focusFSActionName = "focusFSAction";
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK), focusFSActionName);
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK), focusFSActionName);
     getRootPane().getActionMap().put(focusFSActionName, focusFSAction);
     // Create a key map for focussing the text area.
     Action focusTextAction = new FocusTextAction(this);
     String focusTextActionName = "focusTextAction";
-    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), focusTextActionName);
+    getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), focusTextActionName);
     getRootPane().getActionMap().put(focusTextActionName, focusTextAction);
     // Create a key map for bringing up the text area context menu.
     Action textContextAction = new TextContextMenuAction(this);
     String textContextActionName = "textContextAction";
     this.textArea.getInputMap(JComponent.WHEN_FOCUSED).put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_MASK), textContextActionName);
+            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_MASK), textContextActionName);
     this.textArea.getActionMap().put(textContextActionName, textContextAction);
   }
 
   /**
    * Show text popup.
    *
-   * @param x the x
-   * @param y the y
+   * @param x
+   *          the x
+   * @param y
+   *          the y
    */
   @SuppressWarnings("unchecked")
   public void showTextPopup(int x, int y) {
@@ -2403,7 +2441,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the dirty.
    *
-   * @param isDirty the new dirty
+   * @param isDirty
+   *          the new dirty
    */
   public void setDirty(boolean isDirty) {
     this.isDirty = isDirty;
@@ -2457,7 +2496,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the index label.
    *
-   * @param indexLabel the new index label
+   * @param indexLabel
+   *          the new index label
    */
   public void setIndexLabel(String indexLabel) {
     this.indexLabel = indexLabel;
@@ -2475,7 +2515,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the annotation index.
    *
-   * @param isAnnotationIndex the new annotation index
+   * @param isAnnotationIndex
+   *          the new annotation index
    */
   public void setAnnotationIndex(boolean isAnnotationIndex) {
     this.isAnnotationIndex = isAnnotationIndex;
@@ -2484,7 +2525,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the index.
    *
-   * @param index the new index
+   * @param index
+   *          the new index
    */
   public void setIndex(FSIndex index) {
     this.index = index;
@@ -2493,7 +2535,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the all annotation viewer item enable.
    *
-   * @param enabled the new all annotation viewer item enable
+   * @param enabled
+   *          the new all annotation viewer item enable
    */
   public void setAllAnnotationViewerItemEnable(boolean enabled) {
     this.allAnnotationViewerItem.setEnabled(enabled);
@@ -2511,7 +2554,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the file open dir.
    *
-   * @param fileOpenDir the new file open dir
+   * @param fileOpenDir
+   *          the new file open dir
    */
   public void setFileOpenDir(File fileOpenDir) {
     this.fileOpenDir = fileOpenDir;
@@ -2529,7 +2573,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the text file.
    *
-   * @param textFile the new text file
+   * @param textFile
+   *          the new text file
    */
   public void setTextFile(File textFile) {
     this.textFile = textFile;
@@ -2538,7 +2583,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the save text file enable.
    *
-   * @param enabled the new save text file enable
+   * @param enabled
+   *          the new save text file enable
    */
   public void setSaveTextFileEnable(boolean enabled) {
     this.fileSaveItem.setEnabled(enabled);
@@ -2556,7 +2602,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the undo enabled.
    *
-   * @param enabled the new undo enabled
+   * @param enabled
+   *          the new undo enabled
    */
   public void setUndoEnabled(boolean enabled) {
     this.undoItem.setEnabled(enabled);
@@ -2574,7 +2621,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the xcas file open dir.
    *
-   * @param xcasFileOpenDir the new xcas file open dir
+   * @param xcasFileOpenDir
+   *          the new xcas file open dir
    */
   public void setXcasFileOpenDir(File xcasFileOpenDir) {
     this.xcasFileOpenDir = xcasFileOpenDir;
@@ -2583,7 +2631,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the cas.
    *
-   * @param cas the new cas
+   * @param cas
+   *          the new cas
    */
   public void setCas(CAS cas) {
     this.cas = cas;
@@ -2611,7 +2660,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the rerun enabled.
    *
-   * @param enabled the new rerun enabled
+   * @param enabled
+   *          the new rerun enabled
    */
   public void setRerunEnabled(boolean enabled) {
     this.reRunMenu.setEnabled(enabled);
@@ -2621,7 +2671,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the type system viewer enabled.
    *
-   * @param enabled the new type system viewer enabled
+   * @param enabled
+   *          the new type system viewer enabled
    */
   public void setTypeSystemViewerEnabled(boolean enabled) {
     this.tsViewerItem.setEnabled(enabled);
@@ -2639,7 +2690,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the color settings dir.
    *
-   * @param colorSettingsDir the new color settings dir
+   * @param colorSettingsDir
+   *          the new color settings dir
    */
   public void setColorSettingsDir(File colorSettingsDir) {
     this.colorSettingsDir = colorSettingsDir;
@@ -2657,7 +2709,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the color setting file.
    *
-   * @param colorSettingFile the new color setting file
+   * @param colorSettingFile
+   *          the new color setting file
    */
   public void setColorSettingFile(File colorSettingFile) {
     this.colorSettingFile = colorSettingFile;
@@ -2675,7 +2728,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the annot open dir.
    *
-   * @param annotOpenDir the new annot open dir
+   * @param annotOpenDir
+   *          the new annot open dir
    */
   public void setAnnotOpenDir(File annotOpenDir) {
     this.annotOpenDir = annotOpenDir;
@@ -2693,7 +2747,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the data path name.
    *
-   * @param dataPathName the new data path name
+   * @param dataPathName
+   *          the new data path name
    */
   public void setDataPathName(String dataPathName) {
     this.dataPathName = dataPathName;
@@ -2711,7 +2766,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the code page.
    *
-   * @param codePage the new code page
+   * @param codePage
+   *          the new code page
    */
   public void setCodePage(String codePage) {
     this.codePage = codePage;
@@ -2738,7 +2794,8 @@ public class MainFrame extends JFrame {
   /**
    * Sets the language.
    *
-   * @param language the new language
+   * @param language
+   *          the new language
    */
   public void setLanguage(String language) {
     this.language = language;
@@ -2765,13 +2822,13 @@ public class MainFrame extends JFrame {
   /**
    * Sets the language prefs list.
    *
-   * @param languagePrefsList the new language prefs list
+   * @param languagePrefsList
+   *          the new language prefs list
    */
   public void setLanguagePrefsList(String languagePrefsList) {
     this.languagePrefsList = languagePrefsList;
   }
 
-  
   /**
    * Handle sofas.
    */
@@ -2783,7 +2840,7 @@ public class MainFrame extends JFrame {
     this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
     Iterator<?> sofas = ((CASImpl) getCas()).getBaseCAS().getSofaIterator();
     Feature sofaIdFeat = getCas().getTypeSystem()
-        .getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
+            .getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     boolean nonDefaultSofaFound = false;
     while (sofas.hasNext()) {
       SofaFS sofa = (SofaFS) sofas.next();
@@ -2840,7 +2897,8 @@ public class MainFrame extends JFrame {
    * window is being closed. Calling <code>setExitOnClose(false)</code> prevents that. It is then
    * the caller's task to shut down the JVM.
    *
-   * @param exitOnClose the new exit on close
+   * @param exitOnClose
+   *          the new exit on close
    */
   public void setExitOnClose(boolean exitOnClose) {
     this.exitOnClose = exitOnClose;

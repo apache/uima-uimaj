@@ -60,8 +60,10 @@ public class VinciServer extends BaseServer {
    * 
    * @param host_name
    *          The DNS hostname of the machine running this server.
-   * @param service_name -
-   * @param servable -
+   * @param service_name
+   *          -
+   * @param servable
+   *          -
    * 
    * @pre service_name != null
    * @pre host_name != null
@@ -75,8 +77,10 @@ public class VinciServer extends BaseServer {
    * Create a new server that reports the current machine's IP address as the host. This should not
    * be used for DHCP-based hosts since IP address can change.
    * 
-   * @param service_name -
-   * @param servable -
+   * @param service_name
+   *          -
+   * @param servable
+   *          -
    * @throws UnknownHostException
    *           If there is an error determining machine IP address.
    * 
@@ -95,11 +99,16 @@ public class VinciServer extends BaseServer {
    * @pre servable != null
    * @pre myPriority &ge; -1
    * @pre myInstance &ge; 0
-   * @param service_name -
-   * @param host_name -
-   * @param servable -
-   * @param myPriority -
-   * @param myInstance -
+   * @param service_name
+   *          -
+   * @param host_name
+   *          -
+   * @param servable
+   *          -
+   * @param myPriority
+   *          -
+   * @param myInstance
+   *          -
    */
   public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority,
           int myInstance) {
@@ -115,12 +124,17 @@ public class VinciServer extends BaseServer {
    * @pre host_name != null
    * @pre servable != null
    * @pre myPriority &ge; -1
-   * @param service_name -
-   * @param host_name -
-   * @param servable -
-   * @param myPriority -
+   * @param service_name
+   *          -
+   * @param host_name
+   *          -
+   * @param servable
+   *          -
+   * @param myPriority
+   *          -
    */
-  public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority) {
+  public VinciServer(String service_name, String host_name, VinciServable servable,
+          int myPriority) {
     this(service_name, host_name, servable, myPriority, 0);
   }
 
@@ -128,10 +142,14 @@ public class VinciServer extends BaseServer {
    * @pre service_name != null
    * @pre servable != null
    * @pre myPriority &ge; -1
-   * @param service_name -
-   * @param servable -
-   * @param myPriority -
-   * @throws UnknownHostException -
+   * @param service_name
+   *          -
+   * @param servable
+   *          -
+   * @param myPriority
+   *          -
+   * @throws UnknownHostException
+   *           -
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority)
           throws UnknownHostException {
@@ -143,11 +161,16 @@ public class VinciServer extends BaseServer {
    * @pre servable != null
    * @pre myPriority &ge; -1
    * @pre myInstance &ge; 0
-   * @param service_name -
-   * @param servable -
-   * @param myPriority -
-   * @param myInstance -
-   * @throws UnknownHostException -
+   * @param service_name
+   *          -
+   * @param servable
+   *          -
+   * @param myPriority
+   *          -
+   * @param myInstance
+   *          -
+   * @throws UnknownHostException
+   *           -
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority, int myInstance)
           throws UnknownHostException {
@@ -156,7 +179,9 @@ public class VinciServer extends BaseServer {
 
   /**
    * servable != null
-   * @param servable -
+   * 
+   * @param servable
+   *          -
    */
   public VinciServer(VinciServable servable) {
     super(servable);
@@ -165,6 +190,7 @@ public class VinciServer extends BaseServer {
   /**
    * Get the context associated with this server. By default clients use the global Vinci context,
    * though this can be overridden.
+   * 
    * @return -
    */
   public VinciContext getContext() {
@@ -205,7 +231,9 @@ public class VinciServer extends BaseServer {
   /**
    * Set the VinciContext to be used by this server. Set to null if you wish the global context to
    * be used.
-   * @param c -
+   * 
+   * @param c
+   *          -
    */
   public void setContext(VinciContext c) {
     context = c;
@@ -280,15 +308,17 @@ public class VinciServer extends BaseServer {
    * you want to stop the server call shutdownServing() -- this method should have probably been
    * declared "protected". You can override this method if you want the shutdown message to be
    * ignored in certain cases.
-   * @param shutdown_message -
+   * 
+   * @param shutdown_message
+   *          -
    * @return -
    */
   public boolean shutdown(String shutdown_message) {
     // Override this method if shutdown is to be ignored in certain cases (by returning
     // false). Default implementation unconditionally halts serving,
     // and hence always returns true.
-    Debug.printDebuggingMessage("VinciServer.shutdown()", "Accepted shutdown request: "
-            + shutdown_message);
+    Debug.printDebuggingMessage("VinciServer.shutdown()",
+            "Accepted shutdown request: " + shutdown_message);
     new Thread(new Runnable() {
       @Override
       public void run() {
@@ -306,17 +336,20 @@ public class VinciServer extends BaseServer {
 
   /**
    * @return -
-   * @throws ServiceDownException -
-   * @throws VNSException -
+   * @throws ServiceDownException
+   *           -
+   * @throws VNSException
+   *           -
    * @throws IllegalStateException
    *           if VNS host isn't specified.
    */
   protected int getPort() throws ServiceDownException, VNSException {
     try {
       VinciContext myContext = getContext();
-      ServeonResult response = (ServeonResult) VinciClient.sendAndReceive(ServeonResult
-              .composeQuery(serviceName, hostName, priority, instance), myContext.getVNSHost(),
-              myContext.getVNSPort(), ServeonResult.factory, myContext.getVNSServeonTimeout());
+      ServeonResult response = (ServeonResult) VinciClient.sendAndReceive(
+              ServeonResult.composeQuery(serviceName, hostName, priority, instance),
+              myContext.getVNSHost(), myContext.getVNSPort(), ServeonResult.factory,
+              myContext.getVNSServeonTimeout());
       return response.port;
     } catch (IOException e) {
       Debug.reportException(e);

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
@@ -34,9 +33,8 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-
 /**
- * Load a type system file.  Need to load type system before one can load XCAS.
+ * Load a type system file. Need to load type system before one can load XCAS.
  */
 public class TypeSystemFileOpenEventHandler implements ActionListener {
 
@@ -46,7 +44,8 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
   /**
    * Instantiates a new type system file open event handler.
    *
-   * @param frame the frame
+   * @param frame
+   *          the frame
    */
   public TypeSystemFileOpenEventHandler(MainFrame frame) {
     this.main = frame;
@@ -55,7 +54,8 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
   /**
    * Action performed.
    *
-   * @param event the event
+   * @param event
+   *          the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
   @Override
@@ -79,8 +79,7 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
           TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
           tsDesc.resolveImports();
           this.main.destroyAe();
-          this.main.setCas(CasCreationUtils
-              .createCas(tsDesc, null, new FsIndexDescription[0]));
+          this.main.setCas(CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]));
           this.main.setRunOnCasEnabled();
           this.main.setRerunEnabled(false);
           this.main.getTextArea().setText("");
@@ -88,7 +87,8 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
           this.main.setTypeSystemViewerEnabled(true);
           this.main.setEnableCasFileReadingAndWriting();
           time.stop();
-          this.main.setStatusbarMessage("Done loading type system file in " + time.getTimeSpan() + ".");
+          this.main.setStatusbarMessage(
+                  "Done loading type system file in " + time.getTimeSpan() + ".");
         } catch (Exception e) {
           e.printStackTrace();
           this.main.handleException(e);

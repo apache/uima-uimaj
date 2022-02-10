@@ -21,7 +21,6 @@ package org.apache.uima.tools.cvd;
 
 import org.apache.uima.cas.Type;
 
-
 /**
  * Class comment for TypeTreeNode.java goes here.
  * 
@@ -50,9 +49,12 @@ public class TypeTreeNode {
   /**
    * Instantiates a new type tree node.
    *
-   * @param type the type
-   * @param label the label
-   * @param size the size
+   * @param type
+   *          the type
+   * @param label
+   *          the label
+   * @param size
+   *          the size
    */
   public TypeTreeNode(Type type, String label, int size) {
     this.type = type;
@@ -60,7 +62,9 @@ public class TypeTreeNode {
     this.size = size;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

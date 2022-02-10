@@ -27,7 +27,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 
-
 /**
  * The Class ImportResBindSection.
  */
@@ -36,8 +35,10 @@ public class ImportResBindSection extends ImportSection {
   /**
    * Instantiates a new import res bind section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public ImportResBindSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Imports for External Resources and Bindings",
@@ -46,7 +47,9 @@ public class ImportResBindSection extends ImportSection {
 
   // **************************************
   // * Code to support type import section
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isAppropriate()
    */
   // **************************************
@@ -58,7 +61,8 @@ public class ImportResBindSection extends ImportSection {
   /**
    * used when hovering.
    *
-   * @param source the source
+   * @param source
+   *          the source
    * @return the description from import
    */
   @Override
@@ -66,7 +70,9 @@ public class ImportResBindSection extends ImportSection {
     return ""; // imports for resource bindings don't have descriptions
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getModelImportArray()
    */
   @Override
@@ -74,15 +80,21 @@ public class ImportResBindSection extends ImportSection {
     return getResourceManagerConfiguration().getImports();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.resource.metadata.Import[])
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.
+   * resource.metadata.Import[])
    */
   @Override
   protected void setModelImportArray(Import[] imports) {
     getResourceManagerConfiguration().setImports(imports);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#clearModelBaseValue()
    */
   @Override
@@ -91,8 +103,11 @@ public class ImportResBindSection extends ImportSection {
     getResourceManagerConfiguration().setExternalResources(externalResourceDescription0);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String,
+   * java.lang.String)
    */
   // indexes are checked and merged when the CAS is built
   @Override
@@ -118,7 +133,8 @@ public class ImportResBindSection extends ImportSection {
   /**
    * Revert.
    *
-   * @param rmc the rmc
+   * @param rmc
+   *          the rmc
    */
   private void revert(ResourceManagerConfiguration rmc) {
     getResourceManagerConfiguration()
@@ -127,7 +143,9 @@ public class ImportResBindSection extends ImportSection {
     editor.setResolvedExternalResourcesAndBindings(rmc);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#finishImportChangeAction()
    */
   @Override
@@ -135,7 +153,9 @@ public class ImportResBindSection extends ImportSection {
     editor.getResourcesPage().getResourceDependencySection().refresh(); // to change Binding flag
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#enable()
    */
   @Override

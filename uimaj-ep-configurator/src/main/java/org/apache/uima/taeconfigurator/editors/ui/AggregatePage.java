@@ -23,7 +23,6 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class AggregatePage.
  */
@@ -38,16 +37,18 @@ public class AggregatePage extends HeaderPageWithSash {
   /**
    * Instantiates a new aggregate page.
    *
-   * @param aEditor the a editor
+   * @param aEditor
+   *          the a editor
    */
   public AggregatePage(MultiPageEditor aEditor) {
     super(aEditor, "Aggregate Component Settings");
   }
 
   /**
-   *  Called by the framework to fill in the contents.
+   * Called by the framework to fill in the contents.
    *
-   * @param managedForm the managed form
+   * @param managedForm
+   *          the managed form
    */
   @Override
   protected void createFormContent(IManagedForm managedForm) {

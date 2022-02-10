@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-
 /**
  * The Class AddRemoteServiceDialog.
  */
@@ -71,7 +70,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
   /** The uri text. */
   private Text uriText;
-  
+
   /** The endpoint text. */
   private Text endpointText;
 
@@ -128,10 +127,10 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
   /** The ae or cc combo. */
   private CCombo aeOrCcCombo;
-  
+
   /** The endpoint label. */
   private Label endpointLabel;
-  
+
   /** The uri label. */
   private Label uriLabel;
 
@@ -178,19 +177,18 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   public String ignore_process_errors;
 
   /**
-   * The listener interface for receiving dialogModify events.
-   * The class that is interested in processing a dialogModify
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addDialogModifyListener</code> method. When
-   * the dialogModify event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving dialogModify events. The class that is interested in
+   * processing a dialogModify event implements this interface, and the object created with that
+   * class is registered with a component using the component's <code>addDialogModifyListener</code>
+   * method. When the dialogModify event occurs, that object's appropriate method is invoked.
    *
    * @see DialogModifyEvent
    */
   private class DialogModifyListener implements ModifyListener {
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
      */
     @Override
@@ -207,26 +205,25 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   }
 
   /**
-   * The listener interface for receiving dialogVerify events.
-   * The class that is interested in processing a dialogVerify
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addDialogVerifyListener</code> method. When
-   * the dialogVerify event occurs, that object's appropriate
-   * method is invoked.
+   * The listener interface for receiving dialogVerify events. The class that is interested in
+   * processing a dialogVerify event implements this interface, and the object created with that
+   * class is registered with a component using the component's <code>addDialogVerifyListener</code>
+   * method. When the dialogVerify event occurs, that object's appropriate method is invoked.
    *
    * @see DialogVerifyEvent
    */
   private class DialogVerifyListener implements VerifyListener {
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.swt.events.VerifyListener#verifyText(org.eclipse.swt.events.VerifyEvent)
      */
     @Override
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
-        setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
-                new Object[] { e.text }));
+        setErrorMessage(
+                MessageFormat.format("invalid character(s): ''{0}''", new Object[] { e.text }));
         e.doit = false;
       } else
         setErrorMessage("");
@@ -236,8 +233,10 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   /**
    * Instantiates a new adds the remote service dialog.
    *
-   * @param aSection the a section
-   * @param aRootPath the a root path
+   * @param aSection
+   *          the a section
+   * @param aRootPath
+   *          the a root path
    */
   public AddRemoteServiceDialog(AbstractSection aSection, String aRootPath) {
     super(aSection, "Add Remote Service",
@@ -245,47 +244,56 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     rootPath = aRootPath;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.
+   * swt.widgets.Composite)
    */
   @Override
   protected Control createDialogArea(Composite parent) {
 
     Composite composite = (Composite) super.createDialogArea(parent);
-    
+
     Composite tc1 = new2ColumnComposite(composite);
     Label tempLabel;
-    
-    setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Service kind:", S_, SWT.BEGINNING, false);    
-    aeOrCcCombo = wideCCombo(tc1, "Specify whether the Service is an Analysis Engine or a Cas Consumer",
-            "AnalysisEngine", "CasConsumer");
 
-    setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Protocol Service Type", S_, SWT.BEGINNING, false);
+    setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Service kind:", S_, SWT.BEGINNING, false);
+    aeOrCcCombo = wideCCombo(tc1,
+            "Specify whether the Service is an Analysis Engine or a Cas Consumer", "AnalysisEngine",
+            "CasConsumer");
+
+    setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Protocol Service Type", S_, SWT.BEGINNING,
+            false);
     serviceTypeCombo = wideCCombo(tc1, S_, "UIMA-AS JMS", "SOAP", "Vinci");
 
     setTextAndTip(uriLabel = new Label(tc1, SWT.NONE), "URI of service or JMS Broker:",
-       "The URI for the service, e.g. localhost", SWT.BEGINNING, false);
+            "The URI for the service, e.g. localhost", SWT.BEGINNING, false);
     uriText = wideTextInput(tc1, S_, m_dialogModifyListener);
 
     setTextAndTip(endpointLabel = new Label(tc1, SWT.NONE), "Endpoint Name (JMS Service):",
-    "For UIMA-AS JMS Services only, the endpoint name", SWT.BEGINNING, false);
+            "For UIMA-AS JMS Services only, the endpoint name", SWT.BEGINNING, false);
 
     endpointText = wideTextInput(tc1, S_, m_dialogModifyListener);
 
-    setTextAndTip(binarySerializationLabel = new Label(tc1, SWT.NONE), "Binary Serialization (JMS Service):",
-        "For UIMA-AS JMS Services only, use binary serialzation (requires all type systems be identical)", 
-        SWT.BEGINNING, false);
+    setTextAndTip(binarySerializationLabel = new Label(tc1, SWT.NONE),
+            "Binary Serialization (JMS Service):",
+            "For UIMA-AS JMS Services only, use binary serialzation (requires all type systems be identical)",
+            SWT.BEGINNING, false);
 
     binarySerializationCombo = wideCComboTF(tc1, S_);
-    
-    setTextAndTip(ignoreProcessErrorsLabel = new Label(tc1, SWT.NONE), "Ignore Process Errors (JMS Service):",
-    "For UIMA-AS JMS Services only, ignore processing errors");
-    ignoreProcessErrorsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-    ignoreProcessErrorsCombo = wideCComboTF(tc1, S_);   
+    setTextAndTip(ignoreProcessErrorsLabel = new Label(tc1, SWT.NONE),
+            "Ignore Process Errors (JMS Service):",
+            "For UIMA-AS JMS Services only, ignore processing errors");
+    ignoreProcessErrorsLabel
+            .setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+
+    ignoreProcessErrorsCombo = wideCComboTF(tc1, S_);
 
     setTextAndTip(tempLabel = new Label(tc1, SWT.NONE), "Key (a short mnemonic for this service):",
-        "also used as part of the file name", SWT.BEGINNING, false);
+            "also used as part of the file name", SWT.BEGINNING, false);
     keyText = wideTextInput(tc1, S_, m_dialogModifyListener);
     keyText.addVerifyListener(new DialogVerifyListener());
     keyTextPrev = ".xml";
@@ -295,22 +303,22 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     genFilePathUI.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     genFilePathUI.setText(rootPath + ".xml");
 
-    createWideLabel(
-            composite,
+    createWideLabel(composite,
             "Timeouts, in milliseconds.  This is ignored for the Vinci protocol.  Specify 0 to wait forever. If not specified, a default timeout is used.");
-    
+
     tc1 = new2ColumnComposite(composite);
-    
+
     setTextAndTip(timeoutProcessLabel = new Label(tc1, SWT.NONE), "Timeout: Process:",
-        "Timeout for processing a CAS", SWT.BEGINNING, false);   
+            "Timeout for processing a CAS", SWT.BEGINNING, false);
     timeoutText = wideTextInput(tc1, S_);
 
     setTextAndTip(timeoutJmsGetmetaLabel = new Label(tc1, SWT.NONE), "Timeout: (JMS) GetMeta:",
-    "Timeout for querying the metadata from a JMS service", SWT.BEGINNING, false);
+            "Timeout for querying the metadata from a JMS service", SWT.BEGINNING, false);
     timeoutGetmetaText = wideTextInput(tc1, S_);
 
-    setTextAndTip(timeoutJmsCpcLabel = new Label(tc1, SWT.NONE), "Timeout: (JMS) Collection Processing Complete:",
-    "Timeout for Collection Processing Complete", SWT.BEGINNING, false);   
+    setTextAndTip(timeoutJmsCpcLabel = new Label(tc1, SWT.NONE),
+            "Timeout: (JMS) Collection Processing Complete:",
+            "Timeout for Collection Processing Complete", SWT.BEGINNING, false);
     timeoutJmsCpcText = wideTextInput(tc1, S_);
     createWideLabel(composite,
             "For the Vinci protocol, you can optionally specify the Host/Port for the Vinci Name Service");
@@ -353,49 +361,60 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   /**
    * Wide C combo.
    *
-   * @param tc the tc
-   * @param tip the tip
-   * @param entries the entries
+   * @param tc
+   *          the tc
+   * @param tip
+   *          the tip
+   * @param entries
+   *          the entries
    * @return the c combo
    */
-  private CCombo wideCCombo(Composite tc, String tip, String ... entries) {
+  private CCombo wideCCombo(Composite tc, String tip, String... entries) {
     CCombo cc = newCCombo(tc, tip);
     for (String e : entries) {
       cc.add(e);
     }
-    ((GridData) cc.getLayoutData()).grabExcessHorizontalSpace = true;;
+    ((GridData) cc.getLayoutData()).grabExcessHorizontalSpace = true;
+    ;
     cc.select(0);
     return cc;
   }
-  
+
   /**
    * Wide C combo TF.
    *
-   * @param tc the tc
-   * @param tip the tip
+   * @param tc
+   *          the tc
+   * @param tip
+   *          the tip
    * @return the c combo
    */
   private CCombo wideCComboTF(Composite tc, String tip) {
     return wideCCombo(tc, tip, "false", "true");
   }
- 
+
   /**
    * Wide text input.
    *
-   * @param tc the tc
-   * @param tip the tip
+   * @param tc
+   *          the tc
+   * @param tip
+   *          the tip
    * @return the text
    */
   private Text wideTextInput(Composite tc, String tip) {
     return wideTextInput(tc, tip, null);
   }
-  
+
   /**
    * Wide text input.
    *
-   * @param tc the tc
-   * @param tip the tip
-   * @param listener the listener
+   * @param tc
+   *          the tc
+   * @param tip
+   *          the tip
+   * @param listener
+   *          the listener
    * @return the text
    */
   private Text wideTextInput(Composite tc, String tip, DialogModifyListener listener) {
@@ -408,9 +427,10 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     }
     return t;
   }
-  
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
   @Override
@@ -436,11 +456,11 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     ignoreProcessErrorsCombo.setEnabled(isJms);
     ignoreProcessErrorsCombo.setVisible(isJms);
 
-    boolean bEnableOk = (serviceTypeCombo.getText() != null && !serviceTypeCombo.getText().equals(
-            ""))
+    boolean bEnableOk = (serviceTypeCombo.getText() != null
+            && !serviceTypeCombo.getText().equals(""))
             && (uriText != null && !uriText.getText().trim().equals(""))
             && (keyText != null && !keyText.getText().trim().equals(""));
-    
+
     if (!bEnableOk) {
       setErrorMessage("missing URI or key");
     }
@@ -456,14 +476,12 @@ public class AddRemoteServiceDialog extends AbstractDialog {
         setErrorMessage("Invalid number, please correct.");
       }
     }
-    
-    if (isJms && 
-        (endpointText.getText() == null || 
-         endpointText.getText().trim().equals(""))) {
+
+    if (isJms && (endpointText.getText() == null || endpointText.getText().trim().equals(""))) {
       bEnableOk = false;
       setErrorMessage("missing JMS endpoint");
-    }    
-    
+    }
+
     okButton.setEnabled(bEnableOk);
     if (bEnableOk) {
       setErrorMessage("");
@@ -532,7 +550,9 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     ignore_process_errors = ignoreProcessErrorsCombo.getText();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
   @Override

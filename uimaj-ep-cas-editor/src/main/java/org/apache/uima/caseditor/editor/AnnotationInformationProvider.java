@@ -29,19 +29,19 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.swt.graphics.Point;
 
-
 /**
  * TODO: move this class to external file.
  */
 class AnnotationInformationProvider implements IInformationProvider, IInformationProviderExtension {
-  
+
   /** The m editor. */
   private AnnotationEditor mEditor;
 
   /**
    * Instantiates a new annotation information provider.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   AnnotationInformationProvider(AnnotationEditor editor) {
     mEditor = editor;
@@ -50,8 +50,10 @@ class AnnotationInformationProvider implements IInformationProvider, IInformatio
   /**
    * TODO: add comment.
    *
-   * @param textViewer the text viewer
-   * @param offset the offset
+   * @param textViewer
+   *          the text viewer
+   * @param offset
+   *          the offset
    * @return the region
    */
   @Override
@@ -65,8 +67,10 @@ class AnnotationInformationProvider implements IInformationProvider, IInformatio
   /**
    * TODO: add comment.
    *
-   * @param textViewer the text viewer
-   * @param subject the subject
+   * @param textViewer
+   *          the text viewer
+   * @param subject
+   *          the subject
    * @return null
    */
   @Override
@@ -77,8 +81,10 @@ class AnnotationInformationProvider implements IInformationProvider, IInformatio
   /**
    * TODO: add comment.
    *
-   * @param textViewer the text viewer
-   * @param subject the subject
+   * @param textViewer
+   *          the text viewer
+   * @param subject
+   *          the subject
    * @return the selected annotation
    */
   @Override

@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.action;
 
-
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -29,22 +28,22 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-
 /**
  * Widens the right side of the currently selected annotation by one.
  */
 public final class WideRightAnnotationSideAction extends BaseSelectionListenerAction {
-  
+
   /** The Constant ID. */
   public static final String ID = "WideRightAnnotationSide";
-  
+
   /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes a new instance.
    *
-   * @param editor the editor
+   * @param editor
+   *          the editor
    */
   public WideRightAnnotationSideAction(ICasEditor editor) {
     super(ID);
@@ -64,20 +63,22 @@ public final class WideRightAnnotationSideAction extends BaseSelectionListenerAc
   /**
    * Wide right annotation side.
    *
-   * @param document the document
-   * @param annotation the annotation
+   * @param document
+   *          the document
+   * @param annotation
+   *          the annotation
    */
   public static void wideRightAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     Type annotationType = annotation.getType();
     Feature endFeature = annotationType.getFeatureByBaseName("end");
-    
+
     if (annotation.getEnd() < document.getCAS().getDocumentText().length()) {
       annotation.setIntValue(endFeature, annotation.getEnd() + 1);
     }
-    
+
     document.update(annotation);
   }
-  
+
   /**
    * Increases the end index of an annotation by one.
    */

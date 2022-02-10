@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 
-
 /**
  * The Class ValueSection.
  */
@@ -99,8 +98,10 @@ public class ValueSection extends AbstractSectionParm {
   /**
    * Instantiates a new value section.
    *
-   * @param editor the editor
-   * @param parent the parent
+   * @param editor
+   *          the editor
+   * @param parent
+   *          the parent
    */
   public ValueSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Values", "Specify the value of the selected configuration parameter.");
@@ -123,8 +124,8 @@ public class ValueSection extends AbstractSectionParm {
     toolkit.paintBordersFor(sectionClient);
 
     valueTextStack = newComposite(sectionClient);
-    valueTextStack.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
-            + GridData.VERTICAL_ALIGN_FILL));
+    valueTextStack
+            .setLayoutData(new GridData(GridData.FILL_HORIZONTAL + GridData.VERTICAL_ALIGN_FILL));
     ((GridData) valueTextStack.getLayoutData()).horizontalSpan = 2;
     valueTextStack.setLayout(valueTextStackLayout = new StackLayout());
     valueTextStackLayout.marginHeight = 5;
@@ -135,8 +136,7 @@ public class ValueSection extends AbstractSectionParm {
     enableBorders(vtc2);
     toolkit.paintBordersFor(vtc1);
     toolkit.paintBordersFor(vtc2);
-    valueText = newLabeledTextField(vtc1, "Value", "Specify the value",
-            SWT.NONE);
+    valueText = newLabeledTextField(vtc1, "Value", "Specify the value", SWT.NONE);
     valueTextCombo = newLabeledCComboWithTip(vtc2, "Value",
             "Use the combo pulldown to pick True or False");
     valueTextCombo.add("true");
@@ -212,7 +212,9 @@ public class ValueSection extends AbstractSectionParm {
     enable();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm#enable()
    */
   @Override
@@ -227,8 +229,8 @@ public class ValueSection extends AbstractSectionParm {
     editButton.setEnabled(mvValue && selected > -1);
     removeButton.setEnabled(mvValue && selected > -1);
     upButton.setEnabled(mvValue && selected > 0);
-    downButton.setEnabled(mvValue && (selected > -1)
-            && (selected < (valueTable.getItemCount() - 1)));
+    downButton
+            .setEnabled(mvValue && (selected > -1) && (selected < (valueTable.getItemCount() - 1)));
     valueText.getParent().redraw();
   }
 
@@ -251,9 +253,10 @@ public class ValueSection extends AbstractSectionParm {
     else if (event.widget == addButton) {
       // open dialog to enter value
       String dataType = selectedCP.getType();
-      int validationFilter = "Boolean".equals(dataType) ? CommonInputDialog.TRUE_FALSE : "Integer"
-              .equals(dataType) ? CommonInputDialog.INTEGER
-              : "Float".equals(dataType) ? CommonInputDialog.FLOAT : CommonInputDialog.ALLOK;
+      int validationFilter = "Boolean".equals(dataType) ? CommonInputDialog.TRUE_FALSE
+              : "Integer".equals(dataType) ? CommonInputDialog.INTEGER
+                      : "Float".equals(dataType) ? CommonInputDialog.FLOAT
+                              : CommonInputDialog.ALLOK;
 
       CommonInputDialog dialog = new CommonInputDialog(this, "Add value", "Enter a value",
               validationFilter);
@@ -311,7 +314,8 @@ public class ValueSection extends AbstractSectionParm {
   /**
    * Sets the parm value.
    *
-   * @param value the new parm value
+   * @param value
+   *          the new parm value
    */
   private void setParmValue(String value) {
     if (null != value) {
@@ -324,7 +328,8 @@ public class ValueSection extends AbstractSectionParm {
   /**
    * Handle remove.
    *
-   * @param event the event
+   * @param event
+   *          the event
    */
   public void handleRemove(Event event) {
     valueTable.remove(valueTable.getSelectionIndices());
@@ -372,7 +377,8 @@ public class ValueSection extends AbstractSectionParm {
    * Sets the currently selected parameter to the specified value. The string value will be
    * converted to the appropriate data type. This method works only for single-valued parameters.
    *
-   * @param aValueString the new current parameter value
+   * @param aValueString
+   *          the new current parameter value
    */
   private void setCurrentParameterValue(String aValueString) {
 
@@ -390,11 +396,9 @@ public class ValueSection extends AbstractSectionParm {
           value = Boolean.valueOf(aValueString);
         }
       } catch (NumberFormatException e) {
-        Utility
-                .popMessage(
-                        "Invalid Number",
-                        "If typing a floating point exponent, please complete the exponent.\nOtherwise, please retype the proper kind of number",
-                        MessageDialog.ERROR);
+        Utility.popMessage("Invalid Number",
+                "If typing a floating point exponent, please complete the exponent.\nOtherwise, please retype the proper kind of number",
+                MessageDialog.ERROR);
         return;
       }
     }
@@ -450,7 +454,8 @@ public class ValueSection extends AbstractSectionParm {
   /**
    * Sets the model value.
    *
-   * @param value the new model value
+   * @param value
+   *          the new model value
    */
   private void setModelValue(Object value) {
     String groupName = master.getSelectedParamGroupName();
@@ -461,8 +466,8 @@ public class ValueSection extends AbstractSectionParm {
       for (int i = 0; i < groups.length; i++) {
         String[] groupNames = groups[i].getNames();
         for (int j = 0; j < groupNames.length; j++) {
-          if (isSameValue(value, modelSettings.getParameterValue(groupNames[j], selectedCP
-                  .getName())))
+          if (isSameValue(value,
+                  modelSettings.getParameterValue(groupNames[j], selectedCP.getName())))
             continue;
           modelSettings.setParameterValue(groupNames[j], selectedCP.getName(), value);
           changed = true;
@@ -486,8 +491,10 @@ public class ValueSection extends AbstractSectionParm {
   /**
    * Checks if is same value.
    *
-   * @param v1 the v 1
-   * @param v2 the v 2
+   * @param v1
+   *          the v 1
+   * @param v2
+   *          the v 2
    * @return true, if is same value
    */
   private boolean isSameValue(Object v1, Object v2) {
