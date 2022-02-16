@@ -31,6 +31,12 @@
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
+  <scm>
+    <tag>HEAD</tag>
+    <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
+    <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
+    <url>https://github.com/apache/uima-uimafit</url>
+  </scm>
   <properties>
     <spring.version>4.3.30.RELEASE</spring.version>
     <uima.version>3.2.0</uima.version>
@@ -381,11 +387,38 @@
       </plugins>
     </pluginManagement>
   </build>
+  
+  <profiles>
+      <profile>
+      <id>apache-release</id>
 
-  <scm>
-    <tag>HEAD</tag>
-    <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
-    <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
-    <url>https://github.com/apache/uima-uimafit</url>
-  </scm>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-java</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <!-- 
+                       - Ensure that releases are made with a Java 1.8 since that's our minimum
+                       - version atm.
+                       -->
+                      <version>[1.8,1.9)</version>
+                    </requireJavaVersion>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
