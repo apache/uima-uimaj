@@ -600,32 +600,45 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @return the expected value class
    */
   protected Class<?> getParameterExpectedValueClass(ConfigurationParameter aParam) {
-    String paramType = aParam.getType();
+    if (aParam == null) {
+      throw new UIMARuntimeException();
+    }
+
     if (aParam.isMultiValued()) {
-      if (ConfigurationParameter.TYPE_STRING.equals(paramType)) {
-        return String[].class;
-      } else if (ConfigurationParameter.TYPE_BOOLEAN.equals(paramType)) {
-        return Boolean[].class;
-      } else if (ConfigurationParameter.TYPE_INTEGER.equals(paramType)) {
-        return Integer[].class;
-      } else if (ConfigurationParameter.TYPE_FLOAT.equals(paramType)) {
-        return Float[].class;
-      }
-    } else
-    // single-valued
-    {
-      if (ConfigurationParameter.TYPE_STRING.equals(paramType)) {
-        return String.class;
-      } else if (ConfigurationParameter.TYPE_BOOLEAN.equals(paramType)) {
-        return Boolean.class;
-      } else if (ConfigurationParameter.TYPE_INTEGER.equals(paramType)) {
-        return Integer.class;
-      } else if (ConfigurationParameter.TYPE_FLOAT.equals(paramType)) {
-        return Float.class;
+      switch (aParam.getType()) {
+        case ConfigurationParameter.TYPE_STRING:
+          return String[].class;
+        case ConfigurationParameter.TYPE_BOOLEAN:
+          return Boolean[].class;
+        case ConfigurationParameter.TYPE_INTEGER:
+          return Integer[].class;
+        case ConfigurationParameter.TYPE_LONG:
+          return Long[].class;
+        case ConfigurationParameter.TYPE_FLOAT:
+          return Float[].class;
+        case ConfigurationParameter.TYPE_DOUBLE:
+          return Double[].class;
+        default:
+          throw new UIMARuntimeException();
       }
     }
-    // assert false;
-    throw new UIMARuntimeException();
+
+    switch (aParam.getType()) {
+      case ConfigurationParameter.TYPE_STRING:
+        return String.class;
+      case ConfigurationParameter.TYPE_BOOLEAN:
+        return Boolean.class;
+      case ConfigurationParameter.TYPE_INTEGER:
+        return Integer.class;
+      case ConfigurationParameter.TYPE_LONG:
+        return Long.class;
+      case ConfigurationParameter.TYPE_FLOAT:
+        return Float.class;
+      case ConfigurationParameter.TYPE_DOUBLE:
+        return Double.class;
+      default:
+        throw new UIMARuntimeException();
+    }
   }
 
   /**

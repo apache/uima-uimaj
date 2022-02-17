@@ -28,7 +28,7 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
  * <ul>
  * <li>Name</li>
  * <li>Description</li>
- * <li>Type (String, Boolean, Integer, or Float)</li>
+ * <li>Type (String, Boolean, Integer, Long, Float or Double)</li>
  * <li>Is the parameter multi-valued?</li>
  * <li>Is a value mandatory?</li>
  * <li>Overrides (see below)</li>
@@ -249,7 +249,17 @@ public interface ConfigurationParameter extends MetaDataObject {
   String TYPE_INTEGER = "Integer";
 
   /**
+   * Identifies the Long data type. Values of the parameter will be of type java.lang.Long.
+   */
+  String TYPE_LONG = "Long";
+
+  /**
    * Identifies the Float data type. Values of the parameter will be of type java.lang.Float.
    */
   String TYPE_FLOAT = "Float";
+
+  /**
+   * Identifies the Double data type. Values of the parameter will be of type java.lang.Double.
+   */
+  String TYPE_DOUBLE = "Double";
 }

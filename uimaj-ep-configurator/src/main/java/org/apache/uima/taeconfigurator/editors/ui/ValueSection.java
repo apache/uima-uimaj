@@ -261,8 +261,9 @@ public class ValueSection extends AbstractSectionParm {
       CommonInputDialog dialog = new CommonInputDialog(this, "Add value", "Enter a value",
               validationFilter);
 
-      if (dialog.open() == Window.CANCEL)
+      if (dialog.open() == Window.CANCEL) {
         return;
+      }
       TableItem item = new TableItem(valueTable, SWT.NONE);
       item.setText(dialog.getValue());
       // update model
@@ -275,8 +276,9 @@ public class ValueSection extends AbstractSectionParm {
       CommonInputDialog dialog = new CommonInputDialog(this, "Add value", "Enter a value",
               CommonInputDialog.ALLOK, item.getText());
 
-      if (dialog.open() == Window.CANCEL)
+      if (dialog.open() == Window.CANCEL) {
         return;
+      }
 
       item.setText(dialog.getValue());
       // update model
@@ -319,8 +321,9 @@ public class ValueSection extends AbstractSectionParm {
    */
   private void setParmValue(String value) {
     if (null != value) {
-      if ("".equals(value))
+      if ("".equals(value)) {
         value = null; // means clear the value
+      }
       setCurrentParameterValue(value);
     }
   }
@@ -390,8 +393,12 @@ public class ValueSection extends AbstractSectionParm {
           value = aValueString;
         } else if (ConfigurationParameter.TYPE_INTEGER.equals(paramType)) {
           value = Integer.valueOf(aValueString);
+        } else if (ConfigurationParameter.TYPE_LONG.equals(paramType)) {
+          value = Long.valueOf(aValueString);
         } else if (ConfigurationParameter.TYPE_FLOAT.equals(paramType)) {
           value = Float.valueOf(aValueString);
+        } else if (ConfigurationParameter.TYPE_DOUBLE.equals(paramType)) {
+          value = Double.valueOf(aValueString);
         } else if (ConfigurationParameter.TYPE_BOOLEAN.equals(paramType)) {
           value = Boolean.valueOf(aValueString);
         }
@@ -427,18 +434,29 @@ public class ValueSection extends AbstractSectionParm {
         for (int i = 0; i < valueArr.length; i++) {
           valueArr[i] = Integer.valueOf(aValues[i].getText());
         }
+      } else if (ConfigurationParameter.TYPE_LONG.equals(paramType)) {
+        valueArr = new Long[aValues.length];
+        for (int i = 0; i < valueArr.length; i++) {
+          valueArr[i] = Long.valueOf(aValues[i].getText());
+        }
       } else if (ConfigurationParameter.TYPE_FLOAT.equals(paramType)) {
         valueArr = new Float[aValues.length];
         for (int i = 0; i < valueArr.length; i++) {
           valueArr[i] = Float.valueOf(aValues[i].getText());
+        }
+      } else if (ConfigurationParameter.TYPE_DOUBLE.equals(paramType)) {
+        valueArr = new Double[aValues.length];
+        for (int i = 0; i < valueArr.length; i++) {
+          valueArr[i] = Double.valueOf(aValues[i].getText());
         }
       } else if (ConfigurationParameter.TYPE_BOOLEAN.equals(paramType)) {
         valueArr = new Boolean[aValues.length];
         for (int i = 0; i < valueArr.length; i++) {
           valueArr[i] = Boolean.valueOf(aValues[i].getText());
         }
-      } else
+      } else {
         throw new InternalErrorCDE("invalid state");
+      }
     } catch (NumberFormatException e) {
       Utility.popMessage("Invalid Number",
               "One or more values is not of the proper kind of number."
@@ -467,8 +485,9 @@ public class ValueSection extends AbstractSectionParm {
         String[] groupNames = groups[i].getNames();
         for (int j = 0; j < groupNames.length; j++) {
           if (isSameValue(value,
-                  modelSettings.getParameterValue(groupNames[j], selectedCP.getName())))
+                  modelSettings.getParameterValue(groupNames[j], selectedCP.getName()))) {
             continue;
+          }
           modelSettings.setParameterValue(groupNames[j], selectedCP.getName(), value);
           changed = true;
         }
@@ -484,8 +503,9 @@ public class ValueSection extends AbstractSectionParm {
         changed = true;
       }
     }
-    if (changed)
+    if (changed) {
       editor.setFileDirty();
+    }
   }
 
   /**
@@ -501,8 +521,9 @@ public class ValueSection extends AbstractSectionParm {
     if (v1 instanceof Object[]) {
       return (Arrays.equals((Object[]) v1, (Object[]) v2));
     } else {
-      if (null == v1)
+      if (null == v1) {
         return null == v2;
+      }
       return v1.equals(v2);
     }
   }
