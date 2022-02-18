@@ -199,10 +199,11 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
    */
   @Override
   public void setOverrides(String[] aOverrides) {
-    if (aOverrides == null)
+    if (aOverrides == null) {
       mOverrides = Constants.EMPTY_STRING_ARRAY;
-    else
+    } else {
       mOverrides = aOverrides.clone();
+    }
   }
 
   /*
@@ -256,25 +257,36 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
    *         parameter described by <code>aTypeName</code> and <code>aMultiValued</code>.
    */
   public static boolean typeMatch(Class aClass, String aTypeName, boolean aMultiValued) {
+    if (aTypeName == null) {
+      throw new IllegalArgumentException("Parameter type cannot be null");
+    }
+
     if (aMultiValued) {
       // aClass must be an array
-      if (!aClass.isArray())
+      if (!aClass.isArray()) {
         return false;
+      }
 
       // Component Type of the array must match
       return typeMatch(aClass.getComponentType(), aTypeName, false);
-    } else // not multi-valued
-    {
-      if (aTypeName.equals(TYPE_STRING))
+    }
+
+    // not multi-valued
+    switch (aTypeName) {
+      case ConfigurationParameter.TYPE_STRING:
         return aClass == String.class;
-      else if (aTypeName.equals(TYPE_BOOLEAN))
+      case ConfigurationParameter.TYPE_BOOLEAN:
         return aClass == Boolean.class;
-      else if (aTypeName.equals(TYPE_INTEGER))
+      case ConfigurationParameter.TYPE_INTEGER:
         return aClass == Integer.class;
-      else if (aTypeName.equals(TYPE_FLOAT))
+      case ConfigurationParameter.TYPE_LONG:
+        return aClass == Long.class;
+      case ConfigurationParameter.TYPE_FLOAT:
         return aClass == Float.class;
-      else
-        return false;
+      case ConfigurationParameter.TYPE_DOUBLE:
+        return aClass == Double.class;
+      default:
+        throw new IllegalArgumentException("Unsupported parameter type [" + aTypeName + "]");
     }
   }
 
@@ -290,8 +302,21 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
    *         data type name.
    */
   protected static boolean isValidDataTypeName(Object aTypeName) {
-    return TYPE_STRING.equals(aTypeName) || TYPE_BOOLEAN.equals(aTypeName)
-            || TYPE_INTEGER.equals(aTypeName) || TYPE_FLOAT.equals(aTypeName);
+    if (!(aTypeName instanceof String)) {
+      return false;
+    }
+
+    switch ((String) aTypeName) {
+      case ConfigurationParameter.TYPE_STRING: // fall-through
+      case ConfigurationParameter.TYPE_BOOLEAN: // fall-through
+      case ConfigurationParameter.TYPE_INTEGER: // fall-through
+      case ConfigurationParameter.TYPE_LONG: // fall-through
+      case ConfigurationParameter.TYPE_FLOAT: // fall-through
+      case ConfigurationParameter.TYPE_DOUBLE: // fall-through
+        return true;
+      default:
+        return false;
+    }
   }
 
   /**
@@ -331,10 +356,11 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
             // get text of element
             String elemText = XMLUtils.getText(curElem, aOptions.expandEnvVarRefs);
             valueList.add(elemText);
-          } else
+          } else {
             // element type does not match
             throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
                     new Object[] { aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
+          }
         }
       }
       // set property

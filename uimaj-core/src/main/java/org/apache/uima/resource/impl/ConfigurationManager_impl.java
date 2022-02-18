@@ -146,26 +146,48 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * Create the appropriate type of parameter object from the value of the external override
    */
   private Object createParam(String value, String paramType) throws ResourceConfigurationException {
-    if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
-      return createParamForClass(value, Boolean.class);
-    } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
-      return createParamForClass(value, Integer.class);
-    } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
-      return createParamForClass(value, Float.class);
-    } else { // Must be a string
-      return value;
+    if (paramType == null) {
+      throw new IllegalArgumentException("Parameter type cannot be null");
+    }
+
+    switch (paramType) {
+      case ConfigurationParameter.TYPE_STRING:
+        return value;
+      case ConfigurationParameter.TYPE_BOOLEAN:
+        return createParamForClass(value, Boolean.class);
+      case ConfigurationParameter.TYPE_INTEGER:
+        return createParamForClass(value, Integer.class);
+      case ConfigurationParameter.TYPE_LONG:
+        return createParamForClass(value, Long.class);
+      case ConfigurationParameter.TYPE_FLOAT:
+        return createParamForClass(value, Float.class);
+      case ConfigurationParameter.TYPE_DOUBLE:
+        return createParamForClass(value, Double.class);
+      default:
+        throw new IllegalArgumentException("Unsupported parameter type [" + paramType + "]");
     }
   }
 
   private Object createParams(String[] values, String paramType) {
-    if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
-      return createParamsForClass(values, Boolean.class);
-    } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
-      return createParamsForClass(values, Integer.class);
-    } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
-      return createParamsForClass(values, Float.class);
-    } else { // Must be a string
-      return values;
+    if (paramType == null) {
+      throw new IllegalArgumentException("Parameter type cannot be null");
+    }
+
+    switch (paramType) {
+      case ConfigurationParameter.TYPE_STRING:
+        return values;
+      case ConfigurationParameter.TYPE_BOOLEAN:
+        return createParamsForClass(values, Boolean.class);
+      case ConfigurationParameter.TYPE_INTEGER:
+        return createParamsForClass(values, Integer.class);
+      case ConfigurationParameter.TYPE_LONG:
+        return createParamsForClass(values, Long.class);
+      case ConfigurationParameter.TYPE_FLOAT:
+        return createParamsForClass(values, Float.class);
+      case ConfigurationParameter.TYPE_DOUBLE:
+        return createParamsForClass(values, Double.class);
+      default:
+        throw new IllegalArgumentException("Unsupported parameter type [" + paramType + "]");
     }
   }
 
@@ -186,7 +208,6 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
                 ResourceConfigurationException.EXTERNAL_OVERRIDE_NUMERIC_ERROR,
                 new Object[] { value });
       }
-      e.printStackTrace();
       throw new ResourceConfigurationException(e);
     }
 
