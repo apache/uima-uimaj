@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -46,9 +47,6 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeMismatchException;
 
-/**
- */
-
 public final class ConfigurationParameterFactory {
   private ConfigurationParameterFactory() {
     // This class is not meant to be instantiated
@@ -60,16 +58,17 @@ public final class ConfigurationParameterFactory {
    */
   private static final Map<String, String> JAVA_UIMA_TYPE_MAP = new HashMap<String, String>();
   static {
-    JAVA_UIMA_TYPE_MAP.put(Boolean.class.getName(), ConfigurationParameter.TYPE_BOOLEAN);
-    JAVA_UIMA_TYPE_MAP.put(Float.class.getName(), ConfigurationParameter.TYPE_FLOAT);
-    JAVA_UIMA_TYPE_MAP.put(Double.class.getName(), ConfigurationParameter.TYPE_FLOAT);
-    JAVA_UIMA_TYPE_MAP.put(Integer.class.getName(), ConfigurationParameter.TYPE_INTEGER);
-    JAVA_UIMA_TYPE_MAP.put(String.class.getName(), ConfigurationParameter.TYPE_STRING);
     JAVA_UIMA_TYPE_MAP.put("boolean", ConfigurationParameter.TYPE_BOOLEAN);
+    JAVA_UIMA_TYPE_MAP.put(Boolean.class.getName(), ConfigurationParameter.TYPE_BOOLEAN);
     JAVA_UIMA_TYPE_MAP.put("float", ConfigurationParameter.TYPE_FLOAT);
-    JAVA_UIMA_TYPE_MAP.put("double", ConfigurationParameter.TYPE_FLOAT);
+    JAVA_UIMA_TYPE_MAP.put(Float.class.getName(), ConfigurationParameter.TYPE_FLOAT);
+    JAVA_UIMA_TYPE_MAP.put("double", ConfigurationParameter.TYPE_DOUBLE);
+    JAVA_UIMA_TYPE_MAP.put(Double.class.getName(), ConfigurationParameter.TYPE_DOUBLE);
     JAVA_UIMA_TYPE_MAP.put("int", ConfigurationParameter.TYPE_INTEGER);
-
+    JAVA_UIMA_TYPE_MAP.put(Integer.class.getName(), ConfigurationParameter.TYPE_INTEGER);
+    JAVA_UIMA_TYPE_MAP.put("long", ConfigurationParameter.TYPE_LONG);
+    JAVA_UIMA_TYPE_MAP.put(Long.class.getName(), ConfigurationParameter.TYPE_LONG);
+    JAVA_UIMA_TYPE_MAP.put(String.class.getName(), ConfigurationParameter.TYPE_STRING);
   }
 
   /**
@@ -101,9 +100,8 @@ public final class ConfigurationParameterFactory {
               .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
 
       String[] stringValue = annotation.defaultValue();
-      if (stringValue.length == 1
-              && stringValue[0]
-                      .equals(org.apache.uima.fit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE)) {
+      if (stringValue.length == 1 && stringValue[0]
+              .equals(org.apache.uima.fit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE)) {
         return null;
       }
 
@@ -115,14 +113,18 @@ public final class ConfigurationParameterFactory {
           return Boolean.parseBoolean(stringValue[0]);
         } else if (ConfigurationParameter.TYPE_FLOAT.equals(valueType)) {
           return Float.parseFloat(stringValue[0]);
+        } else if (ConfigurationParameter.TYPE_DOUBLE.equals(valueType)) {
+          return Double.parseDouble(stringValue[0]);
         } else if (ConfigurationParameter.TYPE_INTEGER.equals(valueType)) {
           return Integer.parseInt(stringValue[0]);
+        } else if (ConfigurationParameter.TYPE_LONG.equals(valueType)) {
+          return Long.parseLong(stringValue[0]);
         } else if (ConfigurationParameter.TYPE_STRING.equals(valueType)) {
           return stringValue[0];
         }
         throw new UIMA_IllegalArgumentException(
-                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                    valueType, "type" });
+                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+                new Object[] { valueType, "type" });
       } else {
         if (ConfigurationParameter.TYPE_BOOLEAN.equals(valueType)) {
           Boolean[] returnValues = new Boolean[stringValue.length];
@@ -136,18 +138,30 @@ public final class ConfigurationParameterFactory {
             returnValues[i] = Float.parseFloat(stringValue[i]);
           }
           return returnValues;
+        } else if (ConfigurationParameter.TYPE_DOUBLE.equals(valueType)) {
+          Double[] returnValues = new Double[stringValue.length];
+          for (int i = 0; i < stringValue.length; i++) {
+            returnValues[i] = Double.parseDouble(stringValue[i]);
+          }
+          return returnValues;
         } else if (ConfigurationParameter.TYPE_INTEGER.equals(valueType)) {
           Integer[] returnValues = new Integer[stringValue.length];
           for (int i = 0; i < stringValue.length; i++) {
             returnValues[i] = Integer.parseInt(stringValue[i]);
           }
           return returnValues;
+        } else if (ConfigurationParameter.TYPE_LONG.equals(valueType)) {
+          Long[] returnValues = new Long[stringValue.length];
+          for (int i = 0; i < stringValue.length; i++) {
+            returnValues[i] = Long.parseLong(stringValue[i]);
+          }
+          return returnValues;
         } else if (ConfigurationParameter.TYPE_STRING.equals(valueType)) {
           return stringValue;
         }
         throw new UIMA_IllegalArgumentException(
-                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                    valueType, "type" });
+                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+                new Object[] { valueType, "type" });
 
       }
 
@@ -271,34 +285,78 @@ public final class ConfigurationParameterFactory {
    *          the parameter value.
    * @return the converted value.
    */
-  protected static Object convertParameterValue(ConfigurationParameter param, Object aValue) {
+  static Object convertParameterValue(ConfigurationParameter param, Object aValue) {
     Object value = aValue;
-    if (value.getClass().isArray()
-            && value.getClass().getComponentType().getName().equals("boolean")) {
-      value = ArrayUtils.toObject((boolean[]) value);
-    } else if (value.getClass().isArray()
-            && value.getClass().getComponentType().getName().equals("int")) {
-      value = ArrayUtils.toObject((int[]) value);
-    } else if (value.getClass().isArray()
-            && value.getClass().getComponentType().getName().equals("float")) {
-      value = ArrayUtils.toObject((float[]) value);
-    } else {
-      try {
-        if (param.getType().equals(ConfigurationParameter.TYPE_STRING)) {
-          SimpleTypeConverter converter = new SimpleTypeConverter();
-          PropertyEditorUtil.registerUimaFITEditors(converter);
-          if (value.getClass().isArray() || value instanceof Collection) {
-            value = converter.convertIfNecessary(value, String[].class);
-          } else {
-            value = converter.convertIfNecessary(value, String.class);
-          }
-        }
-      } catch (TypeMismatchException e) {
-        throw new IllegalArgumentException(e.getMessage(), e);
+    if (aValue == null) {
+        return null;
+    }
+    
+    if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive()) {
+      if ("boolean".equals(value.getClass().getComponentType().getName())) {
+        return ArrayUtils.toObject((boolean[]) value);
+      }
+
+      if ("int".equals(value.getClass().getComponentType().getName())) {
+        return ArrayUtils.toObject((int[]) value);
+      }
+
+      if ("long".equals(value.getClass().getComponentType().getName())) {
+        return ArrayUtils.toObject((long[]) value);
+      }
+
+      if ("float".equals(value.getClass().getComponentType().getName())) {
+        return ArrayUtils.toObject((float[]) value);
+      }
+      
+      if ("double".equals(value.getClass().getComponentType().getName())) {
+        return ArrayUtils.toObject((double[]) value);
       }
     }
 
-    return value;
+    Class<?> classForParameter = getClassForParameterType(param.getType());
+    if (value.getClass().isArray() || value instanceof Collection) {
+      classForParameter = Array.newInstance(classForParameter, 0).getClass();
+    }
+
+    try {
+      SimpleTypeConverter converter = new SimpleTypeConverter();
+      PropertyEditorUtil.registerUimaFITEditors(converter);
+      value = converter.convertIfNecessary(value, classForParameter);
+      return value;
+    } catch (TypeMismatchException e) {
+      throw new IllegalArgumentException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Gets the expected Java class for the given parameter type name.
+   * 
+   * @param paramType
+   *          parameter type name from ConfigurationParameterDeclarations
+   * 
+   * @return expected Java class for parameter values of this type
+   */
+  static Class<?> getClassForParameterType(String paramType) {
+    if (paramType == null) {
+      throw new IllegalArgumentException("Parameter type cannot be null");
+    }
+
+    switch (paramType) {
+      case ConfigurationParameter.TYPE_STRING:
+        return String.class;
+      case ConfigurationParameter.TYPE_BOOLEAN:
+        return Boolean.class;
+      case ConfigurationParameter.TYPE_INTEGER:
+        return Integer.class;
+      case ConfigurationParameter.TYPE_LONG:
+        return Long.class;
+      case ConfigurationParameter.TYPE_FLOAT:
+        return Float.class;
+      case ConfigurationParameter.TYPE_DOUBLE:
+        return Double.class;
+      default:
+        throw new IllegalArgumentException("Unsupported parameter type [" + paramType + "]");
+    }
   }
 
   /**
@@ -342,9 +400,8 @@ public final class ConfigurationParameterFactory {
    * @param configurationValues
    *          additional parameters values
    */
-  public static void setParameters(ResourceCreationSpecifier desc,
-          Class<?> componentClass, ConfigurationParameter[] configurationParameters,
-          Object[] configurationValues) {
+  public static void setParameters(ResourceCreationSpecifier desc, Class<?> componentClass,
+          ConfigurationParameter[] configurationParameters, Object[] configurationValues) {
     ConfigurationData reflectedConfigurationData = ConfigurationParameterFactory
             .createConfigurationData(componentClass);
     ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
@@ -355,7 +412,7 @@ public final class ConfigurationParameterFactory {
               configurationValues);
     }
   }
-  
+
   /**
    * This method converts configuration data provided as an array of objects and returns a
    * {@link ConfigurationData} object. This should only be used to prepare values supplied in a
@@ -382,8 +439,8 @@ public final class ConfigurationParameterFactory {
       String name = (String) configurationData[i * 2];
       Object value = configurationData[i * 2 + 1];
 
-      if (value == null
-              || ExternalResourceFactory.getResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
+      if (value == null || ExternalResourceFactory
+              .getResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
         continue;
       }
 
@@ -393,8 +450,9 @@ public final class ConfigurationParameterFactory {
       configurationValues.add(ConfigurationParameterFactory.convertParameterValue(param, value));
     }
     return new ConfigurationData(
-            configurationParameters.toArray(new ConfigurationParameter[configurationParameters
-                    .size()]), configurationValues.toArray());
+            configurationParameters
+                    .toArray(new ConfigurationParameter[configurationParameters.size()]),
+            configurationValues.toArray());
   }
 
   /**
@@ -417,8 +475,9 @@ public final class ConfigurationParameterFactory {
     }
 
     return new ConfigurationData(
-            configurationParameters.toArray(new ConfigurationParameter[configurationParameters
-                    .size()]), configurationValues.toArray(new Object[configurationValues.size()]));
+            configurationParameters
+                    .toArray(new ConfigurationParameter[configurationParameters.size()]),
+            configurationValues.toArray(new Object[configurationValues.size()]));
   }
 
   /**
@@ -529,9 +588,9 @@ public final class ConfigurationParameterFactory {
    */
   static void ensureParametersComeInPairs(Object[] configurationData) {
     if (configurationData != null && configurationData.length % 2 != 0) {
-      throw new IllegalArgumentException("Parameter arguments have to "
-              + "come in key/value pairs, but found odd number of " + "arguments ["
-              + configurationData.length + "]");
+      throw new IllegalArgumentException(
+              "Parameter arguments have to " + "come in key/value pairs, but found odd number of "
+                      + "arguments [" + configurationData.length + "]");
     }
   }
 
@@ -557,7 +616,7 @@ public final class ConfigurationParameterFactory {
         for (Parameter parameter : parameters) {
           settings.put(parameter.getName(), parameter.getValue());
         }
-      }      
+      }
 
       // Parameters supporting arbitrary objects as values
       NameValuePair[] pearParameters = pearSpec.getPearParameters();
@@ -578,8 +637,8 @@ public final class ConfigurationParameterFactory {
         settings.put(p.getName(), p.getValue());
       }
     } else {
-      throw new IllegalArgumentException("Unsupported resource specifier class [" + spec.getClass()
-              + "]");
+      throw new IllegalArgumentException(
+              "Unsupported resource specifier class [" + spec.getClass() + "]");
     }
     return settings;
   }
@@ -626,7 +685,7 @@ public final class ConfigurationParameterFactory {
       PearSpecifier spec = (PearSpecifier) aSpec;
 
       boolean found = false;
-      
+
       // Check modern parameters and if the parameter is present there, update it
       NameValuePair[] parameters = spec.getPearParameters();
       for (NameValuePair p : parameters) {
@@ -635,7 +694,7 @@ public final class ConfigurationParameterFactory {
           found = true;
         }
       }
-      
+
       // Check legacy parameters and if the parameter is present there, update it
       Parameter[] legacyParameters = spec.getParameters();
       if (legacyParameters != null) {
@@ -679,8 +738,8 @@ public final class ConfigurationParameterFactory {
       md.getConfigurationParameterSettings().setParameterValue(name,
               convertParameterValue(param, value));
     } else {
-      throw new IllegalArgumentException("Unsupported resource specifier class [" + aSpec.getClass()
-              + "]");
+      throw new IllegalArgumentException(
+              "Unsupported resource specifier class [" + aSpec.getClass() + "]");
     }
   }
 
@@ -699,10 +758,12 @@ public final class ConfigurationParameterFactory {
       return true;
     } else if (aSpec instanceof ResourceCreationSpecifier) {
       ResourceMetaData md = ((ResourceCreationSpecifier) aSpec).getMetaData();
-      return md.getConfigurationParameterDeclarations().getConfigurationParameter(null, name) != null;
+      return md.getConfigurationParameterDeclarations().getConfigurationParameter(null,
+              name) != null;
     } else if (aSpec instanceof ConfigurableDataResourceSpecifier) {
       ResourceMetaData md = ((ConfigurableDataResourceSpecifier) aSpec).getMetaData();
-      return md.getConfigurationParameterDeclarations().getConfigurationParameter(null, name) != null;
+      return md.getConfigurationParameterDeclarations().getConfigurationParameter(null,
+              name) != null;
     } else {
       return false;
     }

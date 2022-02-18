@@ -77,11 +77,11 @@ public class ConfigurationParameterFactoryTest {
 
   @Test
   public void test1() throws SecurityException, NoSuchFieldException {
-    Float value = (Float) ConfigurationParameterFactory
+    Double value = (Double) ConfigurationParameterFactory
             .getDefaultValue(ConfigurationParameterFactoryTest.class.getDeclaredField("double1"));
     assertEquals(3.1415, value, 1e-4);
 
-    Float[] values = (Float[]) ConfigurationParameterFactory
+    Double[] values = (Double[]) ConfigurationParameterFactory
             .getDefaultValue(ConfigurationParameterFactoryTest.class.getDeclaredField("double2"));
     assertEquals(1, values.length);
     assertEquals(3.3333, values[0], 1e-4);
@@ -94,7 +94,6 @@ public class ConfigurationParameterFactoryTest {
       iae = e;
     }
     assertNotNull(iae);
-
   }
 
   @Test(expected = IllegalArgumentException.class)

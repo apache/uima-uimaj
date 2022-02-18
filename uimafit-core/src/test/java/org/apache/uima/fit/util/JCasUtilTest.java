@@ -1029,7 +1029,6 @@ public class JCasUtilTest extends ComponentTestBase {
     Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
     extra.addToIndexes();
     Map<Token, List<Token>> index2 = indexCovering(jCas, Token.class, Token.class);
-    assertEquals(0, index2.get(0).size());
     assertEquals(1, index2.get(extra).size());
     assertEquals(tokens.get(3), index2.get(extra).iterator().next());
   }
@@ -1052,7 +1051,6 @@ public class JCasUtilTest extends ComponentTestBase {
     Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
     extra.addToIndexes();
     Map<Token, List<Token>> index2 = indexCovered(jCas, Token.class, Token.class);
-    assertEquals(0, index2.get(0).size());
     assertEquals(1, index2.get(extra).size());
     assertEquals(tokens.get(3), index2.get(extra).iterator().next());
   }

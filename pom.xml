@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <relativePath>uimafit-parent</relativePath>
   </parent>
   <properties>
@@ -51,22 +51,22 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-cpe</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-junit</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-assertj</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.3.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>

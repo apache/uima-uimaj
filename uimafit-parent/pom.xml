@@ -26,7 +26,7 @@
     <version>14</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
-  <version>3.2.1-SNAPSHOT</version>
+  <version>3.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
@@ -39,7 +39,7 @@
   </scm>
   <properties>
     <spring.version>4.3.30.RELEASE</spring.version>
-    <uima.version>3.2.0</uima.version>
+    <uima.version>3.3.0-SNAPSHOT</uima.version>
     <slf4j.version>1.7.26</slf4j.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -48,6 +48,7 @@
   <repositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
+      -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -56,11 +57,11 @@
         <enabled>false</enabled>
       </releases>
     </repository>
-    -->
   </repositories>
   <pluginRepositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
+      -->
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
@@ -75,7 +76,6 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
-      -->
   </pluginRepositories>
 
   <dependencies>
