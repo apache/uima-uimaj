@@ -17,7 +17,9 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -35,33 +37,13 @@
   <description>The UIMA Java SDK Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-eclipse-update-site
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/tree/master/uimaj-eclipse-update-site
-    </url>
-    <tag>uimaj-eclipse-update-site-3.2.0</tag>
-  </scm>
-
   <properties>
-    <uimaScmRoot>uimaj</uimaScmRoot>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
-
     <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
-
     <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
-    
     <dropPrevVersions>false</dropPrevVersions>
-
   </properties>
 
   <build>
-    
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +51,9 @@
         <executions>
           <execution>
             <id>copy-new-plugins</id>
-            <goals><goal>copy</goal></goals>
+            <goals>
+              <goal>copy</goal>
+            </goals>
             <configuration>
               <!-- ===================================================================
                                        the PLUGINS
@@ -174,7 +158,7 @@
            <!--       is not here, it was                            -->
            <!--       moved to uima-wide parent pom 10/2018          -->
            <!-- ==================================================== -->
- 
+
           <execution>
             <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
             <phase>package</phase>
@@ -184,10 +168,12 @@
             <configuration combine.self="override">
               <target>
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
-                
-                <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
+
+                <condition property="eclipse.home"
+                  value="${uima-maven-build-eclipse-home}">
                   <not>
-                    <equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}" />
+                    <equals arg1="${uima-maven-build-eclipse-home}"
+                      arg2="$${uima-maven-build-eclipse-home}" />
                   </not>
                 </condition>
 
@@ -195,53 +181,60 @@
                 <condition property="eclipse.home" value="${envVar.ECLIPSE_HOME}">
                   <isset property="envVar.ECLIPSE_HOME" />
                 </condition>
-                
-                <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
-                <fail unless="uima-eclipse-jar-processor" message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
+
+                <fail unless="eclipse.home"
+                  message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
+                <fail unless="uima-eclipse-jar-processor"
+                  message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
                 <!--  skip this when dropping previous versions -->
-                <if> 
-                    <equals arg1="${dropPrevVersions}" arg2="false" />
+                <if>
+                  <equals arg1="${dropPrevVersions}" arg2="false" />
                   <then>
-	                  <if>
-	                      <equals arg1="${isApacheRelease}" arg2="true" />
-	                      <then>
-	    
-	                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from dist ...release...</echo>
-	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-	                        <exec executable="svn" failonerror="true">
-	                          <arg value="checkout" />
-	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
-	                          <arg value="${eclipseUpdateSubSite}" />
-	                        </exec> 
-	                        
+                    <if>
+                      <equals arg1="${isApacheRelease}" arg2="true" />
+                      <then>
+
+                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from
+                          dist ...release...</echo>
+                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+                        <exec executable="svn" failonerror="true">
+                          <arg value="checkout" />
+                          <arg
+                            value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
+                          <arg value="${eclipseUpdateSubSite}" />
+                        </exec>
+
                         <echo>Saving original content and artifacts for the site</echo>
                         <copy todir="${project.build.directory}/saved" failonerror="true">
                           <fileset dir="${eclipseUpdateSubSite}"
                             includes="content.jar,artifacts.jar" />
                         </copy>
-        
-	                      </then>
-	                      <else>
-	                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
+
+                      </then>
+                      <else>
+                        <echo>skipping checkout of current svn dist release (because not
+                          apache-release)</echo>
 	                        <!-- https://issues.apache.org/jira/browse/UIMA-3501 -->
-	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-	                      </else>
-	                    </if>
-                   </then>
+                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+                      </else>
+                    </if>
+                  </then>
                 </if>
-                    
+
                 <echo>Save conditioned Jars prior to signing, in case of redo</echo>
-                <echo>-------------------------------------------------------</echo> 
+                <echo>-------------------------------------------------------</echo>
                 <copy todir="${project.build.directory}/saved/features" failonerror="true">
-                  <fileset dir="${eusWork}/features" includes="*.jar" />                 
+                  <fileset dir="${eusWork}/features" includes="*.jar" />
                 </copy>
                 <copy todir="${project.build.directory}/saved/plugins" failonerror="true">
-                   <fileset dir="${eusWork}/plugins" includes="*.jar" />                 
+                  <fileset dir="${eusWork}/plugins" includes="*.jar" />
                 </copy>
-                
+
                 <echo>Generate the p2 metadata and publish new artifacts</echo>
-                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}" failonerror="true">
-                  <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}"
+                  failonerror="true">
+                  <arg
+                    line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
                   <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
                   <arg line="-artifactRepository file:///${eclipseUpdateSubSite}" />
                   <arg line="-source ${eusWork}" />
@@ -251,7 +244,8 @@
                   <arg line="-append" />
                 </java>
                 <echo>Augment p2 metadata with category information</echo>
-                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}" failonerror="true">
+                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}"
+                  failonerror="true">
                   <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher" />
                   <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
                   <arg line="-categoryDefinition file:///${basedir}/category.xml" />
@@ -262,13 +256,14 @@
                   <equals arg2="true" arg1="${isApacheRelease}" />
                   <then>
                     <echo message="Generating checksums for new features and plugins" />
-                     <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM" forceoverwrite="yes">
+                    <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM"
+                      forceoverwrite="yes">
                       <fileset dir="${eusWork}">
                         <include name="**/*.gz" />
                         <include name="**/*.jar" />
                       </fileset>
                     </checksum>
-                    
+
                     <echo message="Generating gpg signatures for new features and plugins" />
                     <apply failonerror="true" dir="${eusWork}" executable="gpg">
                       <arg value="--detach-sign" />
@@ -285,13 +280,16 @@
                         <include name="**/*.sha512" />
                       </fileset>
                     </copy>
-                    <echo message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
+                    <echo
+                      message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
                     <delete dir="${eclipseUpdateSubSite}">
                       <include name="*.sha512" />
                       <include name="*.asc" />
                     </delete>
-                    <echo message="Generating checksums for updated artifacts.jar and content.jar" />
-                        <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM" forceoverwrite="yes">
+                    <echo
+                      message="Generating checksums for updated artifacts.jar and content.jar" />
+                    <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM"
+                      forceoverwrite="yes">
                       <fileset dir="${eclipseUpdateSubSite}">
                         <include name="*.jar" />
                       </fileset>
@@ -313,7 +311,7 @@
         </executions>
       </plugin>
 
-   </plugins>
+    </plugins>
   </build>
 
 </project>

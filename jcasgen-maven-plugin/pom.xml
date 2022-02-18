@@ -16,73 +16,52 @@
 	specific language governing permissions and limitations
 	under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<!-- This artifact name follows the conventions described http://books.sonatype.com/mvnref-book/reference/writing-plugins-sect-custom-plugin.html
-	     where patterns like xxx-maven-plugin and maven-xxx-plugin can be invoked just using xxx if the right settings are in place -->
-	<artifactId>jcasgen-maven-plugin</artifactId>
-	<packaging>maven-plugin</packaging>
-	<name>Apache UIMA Maven: ${project.artifactId}</name>
-	<description>A Maven Plugin for using JCasGen to generate Java classes from XML type system descriptions</description>
-	<prerequisites>
-		<maven>3.0</maven>
-	</prerequisites>
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj-parent</artifactId>
-		<version>3.3.0-SNAPSHOT</version>
-		<relativePath>../uimaj-parent/pom.xml</relativePath>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-parent</artifactId>
+    <version>3.3.0-SNAPSHOT</version>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
+  </parent>
   
- <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the
-       same as those in super poms, it cannot be inherited because
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted.
+  <!-- This artifact name follows the conventions described http://books.sonatype.com/mvnref-book/reference/writing-plugins-sect-custom-plugin.html
+       where patterns like xxx-maven-plugin and maven-xxx-plugin can be invoked just using xxx if the right settings are in place -->
+  <artifactId>jcasgen-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
 
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
+  <name>Apache UIMA Maven: ${project.artifactId}</name>
+  <description>A Maven Plugin for using JCasGen to generate Java classes from XML type system descriptions</description>
 
-  <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
-  </properties>
-  
-	<dependencies>
-		<!-- Dependencies on the Maven Plugin API and friends -->
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-plugin-api</artifactId>
-			<version>3.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-core</artifactId>
-			<version>3.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugin-tools</groupId>
-			<artifactId>maven-plugin-annotations</artifactId>
-			<version>3.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-tools</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>3.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-tools</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.version}</version>
@@ -104,39 +83,38 @@
     </dependency>
 
     <dependency>
-			<groupId>org.sonatype.plexus</groupId>
-			<artifactId>plexus-build-api</artifactId>
-			<version>0.0.7</version>
-		</dependency>
+      <groupId>org.sonatype.plexus</groupId>
+      <artifactId>plexus-build-api</artifactId>
+      <version>0.0.7</version>
+    </dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugin-testing</groupId>
-			<artifactId>maven-plugin-testing-harness</artifactId>
-			<version>2.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-jdk14</artifactId>
-		  <scope>test</scope>
-		</dependency>
-	</dependencies>
-	<build>
-	  <pluginManagement>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <version>2.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <pluginManagement>
       <plugins>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
-<!--          <version>2.8.1</version> -->
           <configuration>
             <!-- avoiding javadoc warnings caused by Mojo annotations -->
             <tagletArtifacts>
@@ -150,39 +128,38 @@
         </plugin>
       </plugins>
     </pluginManagement>
-	
-		<plugins>
-			<plugin>
-				<artifactId>maven-invoker-plugin</artifactId>
-				<!-- <version>1.7</version> 1.8 from superpom -->
-				<configuration>
-					<projectsDirectory>src/it</projectsDirectory>
-					<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-					<pomIncludes>
-						<pomInclude>*/pom.xml</pomInclude>
-					</pomIncludes>
-					<settingsFile>src/it/settings.xml</settingsFile>
-					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-					<postBuildHookScript>verify.bsh</postBuildHookScript>
-					<goals>
-						<goal>clean</goal>
-						<goal>package</goal>
-						<goal>integration-test</goal>
-					</goals>
-					<!-- change this next line by toggling the "!" character to include / exclude the long-running m2e test
-					     It is normally excluded -->
-					<invokerTest>classpath,multimodule,simple,!m2e</invokerTest>
-				</configuration>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<goals>
-							<goal>install</goal>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <projectsDirectory>src/it</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <settingsFile>src/it/settings.xml</settingsFile>
+          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+          <postBuildHookScript>verify.bsh</postBuildHookScript>
+          <goals>
+            <goal>clean</goal>
+            <goal>package</goal>
+            <goal>integration-test</goal>
+          </goals>
+          <!-- change this next line by toggling the "!" character to include / exclude the long-running m2e test
+               It is normally excluded -->
+          <invokerTest>classpath,multimodule,simple,!m2e</invokerTest>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

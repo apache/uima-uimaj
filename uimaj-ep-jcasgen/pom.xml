@@ -34,43 +34,12 @@
     the Component Descriptor Editor</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-    even though the <scm> element that follows is exactly the
-    same as those in super poms, it cannot be inherited because
-    there is some special code that computes the connection elements
-    from the chain of parent poms, if this is omitted.
-
-    Keeping this a bit factored allows cutting/pasting the <scm>
-    element, and just changing the following two properties -->
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-
   <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
 
   <dependencies>
     <!-- UIMA dependencies -->
-    <!-- don't depend on the runtime plugin, instead,
-      depend on the parts needed -->
-    <!--dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-      <scope>compile</scope>
-      </dependency -->
-
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
@@ -126,7 +95,6 @@
   </dependencies>
 
   <build>
-
     <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->
     <finalName>org.apache.uima.jcas.jcasgenp_${parsedVersion.osgiVersion}</finalName>
 

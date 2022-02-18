@@ -17,9 +17,11 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
@@ -27,37 +29,12 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-	<artifactId>aggregate-uimaj</artifactId>
-	<packaging>pom</packaging>
-	<name>Apache UIMA Aggregate: ${project.artifactId}</name>
+  <artifactId>aggregate-uimaj</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache UIMA Aggregate: ${project.artifactId}</name>
   <description>The aggregate for the base UIMA framework build and release</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the 
-       same as those in super poms, it cannot be inherited because 
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted. 
-       
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->  
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-  
-  <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
-  </properties>
-  
   <modules>
     <module>../uimaj-core</module>
     <module>../uimaj-cpe</module>
@@ -79,6 +56,6 @@
          and can't be built automatically - to build it,
          cd to the project directory and do mvn install -->
     <!--module>../uimaj-internal-tools</module-->
-    <module>../uimaj-bootstrap</module>    
-  </modules>  
+    <module>../uimaj-bootstrap</module>
+  </modules>
 </project>

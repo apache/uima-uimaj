@@ -17,7 +17,9 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -33,31 +35,6 @@
   <!-- continuation lines need to start in col 1 else manifest has extra blanks -->
   <description>Adds launch support for Analysis Engines </description>
   <url>${uimaWebsiteUrl}</url>
-
-  <!-- Special inheritance note
-    even though the <scm> element that follows is exactly the
-    same as those in super poms, it cannot be inherited because
-    there is some special code that incorrectly computes the
-    connection elements from the chain of parent poms, if this is omitted.
-
-    Keeping this a bit factored allows cutting/pasting the <scm>
-    element, and just changing the following two properties -->
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-
-  <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
-  </properties>
 
   <dependencies>
     <dependency>

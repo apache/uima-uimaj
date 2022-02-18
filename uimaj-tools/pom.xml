@@ -17,80 +17,60 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
     <version>3.3.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
-  
-	<artifactId>uimaj-tools</artifactId>
-	<packaging>jar</packaging>
-	<name>Apache UIMA Base: ${project.artifactId}: Tools</name>
+
+  <artifactId>uimaj-tools</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache UIMA Base: ${project.artifactId}: Tools</name>
   <description>Tooling supporting UIMA use</description>
   <url>${uimaWebsiteUrl}</url>
-  
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the 
-       same as those in super poms, it cannot be inherited because 
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted. 
-       
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->  
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-  
+
   <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
-  
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-cpe</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-test-util</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>test</scope>
-		</dependency>  
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-cpe</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-test-util</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <scope>test</scope>
     </dependency>
-      
-	</dependencies>
-	<build>
-		<finalName>uima-tools</finalName>
+
+  </dependencies>
+  <build>
+    <finalName>uima-tools</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <filtering>true</filtering>        
+        <filtering>true</filtering>
       </resource>
     </resources>
     <pluginManagement>
@@ -107,13 +87,12 @@
                   <exclude>src/main/resources/org/apache/uima/tools/migration/*</exclude> <!-- data for migration code -->
                   <exclude>src/main/resources/org/apache/uima/tools/util/gui/about.txt</exclude>
                   <exclude>src/test/resources/pearTests/pearMergerTests/*.pear</exclude> <!-- test data -->
-                </excludes>              
+                </excludes>
               </configuration>
             </execution>
           </executions>
-        </plugin>      
+        </plugin>
       </plugins>
     </pluginManagement>
-    
-	</build>	
+  </build>
 </project>

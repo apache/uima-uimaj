@@ -17,7 +17,9 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -28,38 +30,16 @@
   </parent>
 
   <artifactId>uimaj-ep-configurator</artifactId>
-  <packaging>jar</packaging>  
+  <packaging>jar</packaging>
   <name>Apache UIMA Eclipse: ${project.artifactId}: Descriptor Editor</name>
   <description>A frame-based editor for most of the UIMA XML 
     descriptors</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the 
-       same as those in super poms, it cannot be inherited because 
-       there is some special code that incorrectly computes the 
-       connection elements from the chain of parent poms, if this is omitted. 
-       
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->  
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-  
   <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
-  
+
   <dependencies>
     <!-- UIMA dependencies -->
     <dependency>
@@ -125,7 +105,7 @@
   </dependencies>
 
   <build>
-    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->
     <finalName>org.apache.uima.desceditor_${parsedVersion.osgiVersion}</finalName>
     <plugins>
       <plugin>
@@ -156,7 +136,7 @@
               org.eclipse.ui.ide,
               org.eclipse.ui,
               org.eclipse.core.runtime
-            </Require-Bundle>  
+            </Require-Bundle>
             <Import-Package>
               !org.eclipse.jface.text,  <!-- the ! means to exclude this -->
               !org.eclipse.jface.text.source,
