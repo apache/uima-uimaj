@@ -17,45 +17,25 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
     <version>3.3.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
-  
-	<artifactId>uimaj-examples</artifactId>
-	<packaging>jar</packaging>
-	<name>Apache UIMA Base: ${project.artifactId}: SDK Examples</name>
+
+  <artifactId>uimaj-examples</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache UIMA Base: ${project.artifactId}: SDK Examples</name>
   <description>Examples and sample code</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the 
-       same as those in super poms, it cannot be inherited because 
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted. 
-       
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-  
   <properties>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
@@ -126,10 +106,10 @@
                   <!-- Eclipse launch configurations -->
                   <exclude>src/main/run_configuration/*.launch</exclude>
                   <!-- sample data -->
-                  <exclude>src/main/data/*.txt</exclude> 
+                  <exclude>src/main/data/*.txt</exclude>
                   <exclude>src/main/resources/org/apache/uima/tutorial/ex6/*.txt</exclude>
                   <!-- readme -->
-                  <exclude>src/main/eclipseProject/*readme.txt</exclude> 
+                  <exclude>src/main/eclipseProject/*readme.txt</exclude>
                 </excludes>
               </configuration>
             </execution>
@@ -137,5 +117,5 @@
         </plugin>
       </plugins>
     </pluginManagement>
-  </build>	
+  </build>
 </project>

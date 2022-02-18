@@ -44,24 +44,10 @@
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the
-       same as those in super poms, it cannot be inherited because
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted.
-
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->
   <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
     <tag>uimaj-3.2.0</tag>
   </scm>
 
@@ -145,9 +131,6 @@
   </pluginRepositories>
 
   <properties>
-    <uimaScmRoot>uimaj</uimaScmRoot>
-    <uimaScmProject>${project.artifactId}</uimaScmProject>
-
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default

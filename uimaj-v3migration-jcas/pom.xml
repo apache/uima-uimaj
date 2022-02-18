@@ -17,9 +17,11 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
@@ -27,28 +29,11 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-	<artifactId>uimaj-v3migration-jcas</artifactId>
-	<packaging>jar</packaging>
-	<name>Apache UIMA Base: ${project.artifactId}</name>
+  <artifactId>uimaj-v3migration-jcas</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache UIMA Base: ${project.artifactId}</name>
   <description>Tools for migrating to V3 for JCas</description>
   <url>${uimaWebsiteUrl}</url>
-  
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/
-    </url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-  
-  <properties>
-    <uimaScmProject>uimaj-v3migration-jcas</uimaScmProject>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -90,7 +75,7 @@
     </dependency>
     -->
   </dependencies>
-  
+
   <build>
     <finalName>uimaj-v3migration-jcas</finalName>
   </build>
