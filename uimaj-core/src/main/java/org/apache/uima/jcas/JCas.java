@@ -1041,6 +1041,8 @@ public interface JCas extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <N extends TOP> SelectFSs<N> select(Type type) {
     return new SelectFSs_impl<>(getCasImpl()).type(type);
@@ -1053,6 +1055,8 @@ public interface JCas extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
     return new SelectFSs_impl<>(getCasImpl()).type(clazz);
@@ -1078,6 +1082,8 @@ public interface JCas extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(getCasImpl()).type(fullyQualifiedTypeName);

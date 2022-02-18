@@ -1205,6 +1205,8 @@ public interface CAS extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <T extends TOP> SelectFSs<T> select(Type type) {
     return new SelectFSs_impl<>(this).type(type);
@@ -1217,6 +1219,8 @@ public interface CAS extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <T extends TOP> SelectFSs<T> select(Class<T> clazz) {
     return new SelectFSs_impl<>(this).type(clazz);
@@ -1230,6 +1234,8 @@ public interface CAS extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <T extends TOP> SelectFSs<T> select(int jcasType) {
     return new SelectFSs_impl<>(this).type(jcasType);
@@ -1242,6 +1248,8 @@ public interface CAS extends AbstractCas {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <T extends TOP> SelectFSs<T> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);

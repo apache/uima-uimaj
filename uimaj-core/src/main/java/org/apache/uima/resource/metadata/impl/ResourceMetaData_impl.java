@@ -386,16 +386,26 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    * @return expected Java class for parameter values of this type
    */
   protected Class<?> getClassForParameterType(String paramType) {
-    if (ConfigurationParameter.TYPE_STRING.equals(paramType)) {
-      return String.class;
-    } else if (ConfigurationParameter.TYPE_BOOLEAN.equals(paramType)) {
-      return Boolean.class;
-    } else if (ConfigurationParameter.TYPE_INTEGER.equals(paramType)) {
-      return Integer.class;
-    } else if (ConfigurationParameter.TYPE_FLOAT.equals(paramType)) {
-      return Float.class;
-    } else
-      return null;
+    if (paramType == null) {
+      return null; // Legacy behavior - maybe better throw an IllegalArgumentException
+    }
+
+    switch (paramType) {
+      case ConfigurationParameter.TYPE_STRING:
+        return String.class;
+      case ConfigurationParameter.TYPE_BOOLEAN:
+        return Boolean.class;
+      case ConfigurationParameter.TYPE_INTEGER:
+        return Integer.class;
+      case ConfigurationParameter.TYPE_LONG:
+        return Long.class;
+      case ConfigurationParameter.TYPE_FLOAT:
+        return Float.class;
+      case ConfigurationParameter.TYPE_DOUBLE:
+        return Double.class;
+      default:
+        return null; // Legacy behavior - maybe better throw an IllegalArgumentException
+    }
   }
 
   /**

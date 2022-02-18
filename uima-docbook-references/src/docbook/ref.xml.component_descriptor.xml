@@ -1571,7 +1571,7 @@ uima.tcas.Annotation.</programlisting>
     <name>[String]</name> 
     <externalOverrideName>[String]</externalOverrideName> 
     <description>[String]</description> 
-    <type>String|Integer|Float|Boolean</type> 
+    <type>String|Integer|Long|Float|Double|Boolean</type> 
     <multiValued>true|false</multiValued> 
     <mandatory>true|false</mandatory>
     <overrides>
@@ -1607,8 +1607,8 @@ uima.tcas.Annotation.</programlisting>
             
             <listitem><para><emphasis role="bold">type</emphasis> &ndash; the data
               type of the parameter&apos;s value &ndash; must be one of
-              <literal>String</literal>, <literal>Integer</literal>,
-              <literal>Float</literal>, or <literal>Boolean</literal>
+              <literal>String</literal>, <literal>Integer</literal>, <literal>Long</literal>,
+              <literal>Float</literal>, <literal>Double</literal>, or <literal>Boolean</literal>
               (required).</para></listitem>
             
             <listitem><para><emphasis role="bold">multiValued</emphasis> &ndash;

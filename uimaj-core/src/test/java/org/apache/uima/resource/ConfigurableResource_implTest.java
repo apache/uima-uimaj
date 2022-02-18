@@ -19,7 +19,14 @@
 
 package org.apache.uima.resource;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.util.Arrays.array;
+
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -40,174 +47,192 @@ public class ConfigurableResource_implTest {
 
   @Test
   public void testReconfigure() throws Exception {
-    try {
-      // set up some resource metadata and create a resource
-      ResourceCreationSpecifier specifier = new MyTestSpecifier();
-      ResourceMetaData md = specifier.getMetaData();
-      md.setName("TestResource");
-      md.setDescription("Resource used for Testing the Resource_impl base class");
-      ConfigurationParameter p1 = new ConfigurationParameter_impl();
-      p1.setName("StringParam");
-      p1.setDescription("parameter with String data type");
-      p1.setType(ConfigurationParameter.TYPE_STRING);
-      ConfigurationParameter p2 = new ConfigurationParameter_impl();
-      p2.setName("IntegerParam");
-      p2.setDescription("parameter with Integer data type");
-      p2.setType(ConfigurationParameter.TYPE_INTEGER);
-      ConfigurationParameter p3 = new ConfigurationParameter_impl();
-      p3.setName("BooleanParam");
-      p3.setDescription("parameter with Boolean data type");
-      p3.setType(ConfigurationParameter.TYPE_BOOLEAN);
-      ConfigurationParameter p4 = new ConfigurationParameter_impl();
-      p4.setName("FloatParam");
-      p4.setDescription("parameter with Float data type");
-      p4.setType(ConfigurationParameter.TYPE_FLOAT);
-      ConfigurationParameter p5 = new ConfigurationParameter_impl();
-      p5.setName("StringArrayParam");
-      p5.setDescription("mutli-valued parameter with String data type");
-      p5.setType(ConfigurationParameter.TYPE_STRING);
-      p5.setMultiValued(true);
-      ConfigurationParameter p6 = new ConfigurationParameter_impl();
-      p6.setName("IntegerArrayParam");
-      p6.setDescription("multi-valued parameter with Integer data type");
-      p6.setType(ConfigurationParameter.TYPE_INTEGER);
-      p6.setMultiValued(true);
-      ConfigurationParameter p7 = new ConfigurationParameter_impl();
-      p7.setName("BooleanArrayParam");
-      p7.setDescription("multi-valued parameter with Boolean data type");
-      p7.setType(ConfigurationParameter.TYPE_BOOLEAN);
-      p7.setMultiValued(true);
-      ConfigurationParameter p8 = new ConfigurationParameter_impl();
-      p8.setName("FloatArrayParam");
-      p8.setDescription("multi-valued parameter with Float data type");
-      p8.setType(ConfigurationParameter.TYPE_FLOAT);
-      p8.setMultiValued(true);
-      md.getConfigurationParameterDeclarations().setConfigurationParameters(
-              new ConfigurationParameter[] { p1, p2, p3, p4, p5, p6, p7, p8 });
-      ConfigurableResource testResource1 = new MyTestResource();
-      testResource1.initialize(specifier, null);
+    // set up some resource metadata and create a resource
+    ConfigurationParameter pString = new ConfigurationParameter_impl();
+    pString.setName("StringParam");
+    pString.setDescription("parameter with String data type");
+    pString.setType(ConfigurationParameter.TYPE_STRING);
 
-      // valid settings
-      String[] paramNames = { "StringParam", "BooleanParam", "IntegerParam", "FloatParam",
-          "StringArrayParam", "BooleanArrayParam", "IntegerArrayParam", "FloatArrayParam" };
+    ConfigurationParameter pInteger = new ConfigurationParameter_impl();
+    pInteger.setName("IntegerParam");
+    pInteger.setDescription("parameter with Integer data type");
+    pInteger.setType(ConfigurationParameter.TYPE_INTEGER);
 
-      String theStr = "hello world";
-      Boolean theBool = Boolean.FALSE;
-      Integer theInt = 42;
-      Float theFloat = 2.718281828459045F;
-      String[] theStrArr = { "the", "quick", "brown", "fox" };
-      Boolean[] theBoolArr = { Boolean.FALSE, Boolean.TRUE };
-      Integer[] theIntArr = { 1, 2, 3 };
-      Float[] theFloatArr = { 3.0F, 3.1F, 3.14F };
+    ConfigurationParameter pLong = new ConfigurationParameter_impl();
+    pLong.setName("LongParam");
+    pLong.setDescription("parameter with Long data type");
+    pLong.setType(ConfigurationParameter.TYPE_LONG);
 
-      Object[] values = new Object[] { theStr, theBool, theInt, theFloat, theStrArr, theBoolArr,
-          theIntArr, theFloatArr };
+    ConfigurationParameter pBoolean = new ConfigurationParameter_impl();
+    pBoolean.setName("BooleanParam");
+    pBoolean.setDescription("parameter with Boolean data type");
+    pBoolean.setType(ConfigurationParameter.TYPE_BOOLEAN);
 
-      for (int i = 0; i < paramNames.length; i++) {
-        testResource1.setConfigParameterValue(paramNames[i], values[i]);
+    ConfigurationParameter pFloat = new ConfigurationParameter_impl();
+    pFloat.setName("FloatParam");
+    pFloat.setDescription("parameter with Float data type");
+    pFloat.setType(ConfigurationParameter.TYPE_FLOAT);
+
+    ConfigurationParameter pDouble = new ConfigurationParameter_impl();
+    pDouble.setName("DoubleParam");
+    pDouble.setDescription("parameter with Double data type");
+    pDouble.setType(ConfigurationParameter.TYPE_DOUBLE);
+
+    ConfigurationParameter pStringArray = new ConfigurationParameter_impl();
+    pStringArray.setName("StringArrayParam");
+    pStringArray.setDescription("mutli-valued parameter with String data type");
+    pStringArray.setType(ConfigurationParameter.TYPE_STRING);
+    pStringArray.setMultiValued(true);
+
+    ConfigurationParameter pIntegerArray = new ConfigurationParameter_impl();
+    pIntegerArray.setName("IntegerArrayParam");
+    pIntegerArray.setDescription("multi-valued parameter with Integer data type");
+    pIntegerArray.setType(ConfigurationParameter.TYPE_INTEGER);
+    pIntegerArray.setMultiValued(true);
+
+    ConfigurationParameter pLongArray = new ConfigurationParameter_impl();
+    pLongArray.setName("LongArrayParam");
+    pLongArray.setDescription("multi-valued parameter with Long data type");
+    pLongArray.setType(ConfigurationParameter.TYPE_LONG);
+    pLongArray.setMultiValued(true);
+
+    ConfigurationParameter pBooleanArray = new ConfigurationParameter_impl();
+    pBooleanArray.setName("BooleanArrayParam");
+    pBooleanArray.setDescription("multi-valued parameter with Boolean data type");
+    pBooleanArray.setType(ConfigurationParameter.TYPE_BOOLEAN);
+    pBooleanArray.setMultiValued(true);
+
+    ConfigurationParameter pFloatArray = new ConfigurationParameter_impl();
+    pFloatArray.setName("FloatArrayParam");
+    pFloatArray.setDescription("multi-valued parameter with Float data type");
+    pFloatArray.setType(ConfigurationParameter.TYPE_FLOAT);
+    pFloatArray.setMultiValued(true);
+
+    ConfigurationParameter pDoubleArray = new ConfigurationParameter_impl();
+    pDoubleArray.setName("DoubleArrayParam");
+    pDoubleArray.setDescription("multi-valued parameter with Double data type");
+    pDoubleArray.setType(ConfigurationParameter.TYPE_DOUBLE);
+    pDoubleArray.setMultiValued(true);
+
+    ConfigurationParameter[] allParameters = array(pString, pBoolean, pInteger, pLong, pFloat,
+            pDouble, pStringArray, pBooleanArray, pIntegerArray, pLongArray, pFloatArray,
+            pDoubleArray);
+
+    ResourceCreationSpecifier specifier = new MyTestSpecifier();
+    ResourceMetaData md = specifier.getMetaData();
+    md.setName("TestResource");
+    md.setDescription("Resource used for Testing the Resource_impl base class");
+    md.getConfigurationParameterDeclarations().setConfigurationParameters(allParameters);
+    ConfigurableResource testResource1 = new MyTestResource();
+    testResource1.initialize(specifier, null);
+
+    String[] paramNames = Stream.of(allParameters) //
+            .map(ConfigurationParameter::getName) //
+            .toArray(String[]::new);
+
+    // valid settings
+    String theStr = "hello world";
+    Boolean theBool = FALSE;
+    Integer theInt = 42;
+    Long theLong = 43l;
+    Float theFloat = 2.718281828459045F;
+    Double theDouble = Double.MAX_VALUE;
+    String[] theStrArr = { "the", "quick", "brown", "fox" };
+    Boolean[] theBoolArr = { FALSE, TRUE };
+    Integer[] theIntArr = { 1, 2, 3 };
+    Long[] theLongArr = { Long.MIN_VALUE, Long.MAX_VALUE, 716231278687123l };
+    Float[] theFloatArr = { 3.0F, 3.1F, 3.14F };
+    Double[] theDoubleArr = { Double.MIN_VALUE, Double.MAX_VALUE, Double.POSITIVE_INFINITY,
+        Double.NEGATIVE_INFINITY, Double.NaN, 0.3123289172312d };
+
+    Object[] values = new Object[] { theStr, theBool, theInt, theLong, theFloat, theDouble,
+        theStrArr, theBoolArr, theIntArr, theLongArr, theFloatArr, theDoubleArr };
+
+    for (int i = 0; i < paramNames.length; i++) {
+      testResource1.setConfigParameterValue(paramNames[i], values[i]);
+    }
+    testResource1.reconfigure();
+
+    // check
+    for (int i = 0; i < paramNames.length; i++) {
+      assertThat(testResource1.getConfigParameterValue(paramNames[i])).isEqualTo(values[i]);
+    }
+
+    // invalid settings
+    // wrong type
+    assertThatExceptionOfType(ResourceConfigurationException.class)
+            .as("Parameter must reject value of inappropriate type").isThrownBy(() -> {
+              testResource1.setConfigParameterValue("StringParam", 13);
+              testResource1.reconfigure();
+            });
+
+    assertThatExceptionOfType(ResourceConfigurationException.class)
+            .as("Array parameter must reject array value containing inappropriate types")
+            .isThrownBy(() -> {
+              testResource1.setConfigParameterValue("IntegerArrayParam",
+                      new Object[] { "A", "B", "C" });
+              testResource1.reconfigure();
+            });
+
+    assertThatExceptionOfType(ResourceConfigurationException.class)
+            .as("Single-valued features require a primitive value, not an array").isThrownBy(() -> {
+              testResource1.setConfigParameterValue("FloatParam", new Float[] { 0.1F, 0.2F, 0.3F });
+              testResource1.reconfigure();
+            });
+
+    assertThatExceptionOfType(ResourceConfigurationException.class)
+            .as("Multi-valued features require an array type, not a primitive value")
+            .isThrownBy(() -> {
+              testResource1.setConfigParameterValue("BooleanArrayParam", TRUE);
+              testResource1.reconfigure();
+            });
+
+    assertThatExceptionOfType(ResourceConfigurationException.class)
+            .as("Required parameter cannot ben ull").isThrownBy(() -> {
+              testResource1.setConfigParameterValue("StringParam", null);
+              testResource1.reconfigure();
+            });
+
+    // Now try a resource that defines configuration groups
+    // (instantiate metadata from XML TAE descriptor because it's convenient)
+    XMLInputSource in = new XMLInputSource(JUnitExtension
+            .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(in);
+    ResourceMetaData metadata = desc.getMetaData();
+    MyTestSpecifier spec = new MyTestSpecifier();
+    spec.setMetaData(metadata);
+    ConfigurableResource testResource2 = new MyTestResource();
+    testResource2.initialize(spec, null);
+
+    // valid settings
+    String[] groupNames = new String[] { "en", "en-US", "de", "zh" };
+    String[][] grpParamNames = {
+        new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
+        new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
+        new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
+        new String[] { "StringParam", "StringArrayParam", "FloatParam", "FloatArrayParam" } };
+    Object[][] grpValues = {
+        new Object[] { "test", new String[] { "foo", "bar" }, 1024, new Integer[] { 1, 3, 5 } },
+        new Object[] { "blah", new String[] { "abc", "def" }, 32768, new Integer[] { -1, -3, -5 } },
+        new Object[] { "?", new String[] { "+", "-" }, 112376, new Integer[] { -1, 0, 1 } },
+        new Object[] { "different", new String[] { "test", "ing" }, 49.95F,
+            new Float[] { 3.14F, 2.71F, 1.4F } } };
+
+    for (int i = 0; i < groupNames.length; i++) {
+      String[] paramsInGrp = grpParamNames[i];
+      for (int j = 0; j < paramsInGrp.length; j++) {
+        testResource2.setConfigParameterValue(groupNames[i], paramsInGrp[j], grpValues[i][j]);
       }
-      testResource1.reconfigure();
+    }
+    testResource2.reconfigure();
 
-      // check
-      for (int i = 0; i < paramNames.length; i++) {
-        Object val = testResource1.getConfigParameterValue(paramNames[i]);
-        Assert.assertEquals(val, values[i]);
+    for (int i = 0; i < groupNames.length; i++) {
+      String[] paramsInGrp = grpParamNames[i];
+      for (int j = 0; j < paramsInGrp.length; j++) {
+        Object val = testResource2.getConfigParameterValue(groupNames[i], paramsInGrp[j]);
+        Assert.assertEquals(val, grpValues[i][j]);
       }
-
-      // invalid settings
-      // wrong type
-      Exception ex = null;
-      testResource1.setConfigParameterValue("StringParam", 13);
-      try {
-        testResource1.reconfigure();
-      } catch (ResourceConfigurationException e) {
-        ex = e;
-      }
-      Assert.assertNotNull(ex);
-
-      ex = null;
-      testResource1.setConfigParameterValue("IntegerArrayParam", new Object[] { "A", "B", "C" });
-      try {
-        testResource1.reconfigure();
-      } catch (ResourceConfigurationException e) {
-        ex = e;
-      }
-      Assert.assertNotNull(ex);
-
-      // inappropriate array
-      ex = null;
-      testResource1.setConfigParameterValue("FloatParam", new Float[] { 0.1F, 0.2F, 0.3F });
-      try {
-        testResource1.reconfigure();
-      } catch (ResourceConfigurationException e) {
-        ex = e;
-      }
-      Assert.assertNotNull(ex);
-
-      // array required
-      ex = null;
-      testResource1.setConfigParameterValue("BooleanArrayParam", Boolean.TRUE);
-      try {
-        testResource1.reconfigure();
-      } catch (ResourceConfigurationException e) {
-        ex = e;
-      }
-      Assert.assertNotNull(ex);
-
-      // required parameter set to null
-      ex = null;
-      testResource1.setConfigParameterValue("StringParam", null);
-      try {
-        testResource1.reconfigure();
-      } catch (ResourceConfigurationException e) {
-        ex = e;
-      }
-      Assert.assertNotNull(ex);
-
-      // Now try a resource that defines configuration groups
-      // (instantiate metadata from XML TAE descriptor because it's convenient)
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(in);
-      ResourceMetaData metadata = desc.getMetaData();
-      MyTestSpecifier spec = new MyTestSpecifier();
-      spec.setMetaData(metadata);
-      ConfigurableResource testResource2 = new MyTestResource();
-      testResource2.initialize(spec, null);
-
-      // valid settings
-      String[] groupNames = new String[] { "en", "en-US", "de", "zh" };
-      String[][] grpParamNames = new String[][] {
-          new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
-          new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
-          new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
-          new String[] { "StringParam", "StringArrayParam", "FloatParam", "FloatArrayParam" } };
-      Object[][] grpValues = new Object[][] {
-          new Object[] { "test", new String[] { "foo", "bar" }, 1024, new Integer[] { 1, 3, 5 } },
-          new Object[] { "blah", new String[] { "abc", "def" }, 32768,
-              new Integer[] { -1, -3, -5 } },
-          new Object[] { "?", new String[] { "+", "-" }, 112376, new Integer[] { -1, 0, 1 } },
-          new Object[] { "different", new String[] { "test", "ing" }, 49.95F,
-              new Float[] { 3.14F, 2.71F, 1.4F } } };
-
-      for (int i = 0; i < groupNames.length; i++) {
-        String[] paramsInGrp = grpParamNames[i];
-        for (int j = 0; j < paramsInGrp.length; j++) {
-          testResource2.setConfigParameterValue(groupNames[i], paramsInGrp[j], grpValues[i][j]);
-        }
-      }
-      testResource2.reconfigure();
-
-      for (int i = 0; i < groupNames.length; i++) {
-        String[] paramsInGrp = grpParamNames[i];
-        for (int j = 0; j < paramsInGrp.length; j++) {
-          Object val = testResource2.getConfigParameterValue(groupNames[i], paramsInGrp[j]);
-          Assert.assertEquals(val, grpValues[i][j]);
-        }
-      }
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
     }
   }
 
