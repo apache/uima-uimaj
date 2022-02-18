@@ -104,9 +104,9 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
+import org.xmlunit.assertj3.XmlAssert;
 
 /**
  * Tests the TextAnalysisEngine_impl class.
@@ -1729,7 +1729,7 @@ public class AnalysisEngine_implTest {
 
     String inXml = FileCompare.file2String(inFile);
     String cloneXml = FileCompare.file2String(cloneFile);
-    XMLAssert.assertXMLEqual(inXml, cloneXml);
+    XmlAssert.assertThat(cloneXml).and(inXml).areIdentical();
     // When building from a source distribution the descriptor may not have
     // appropriate line-ends so compute the length as if always 1 byte.
     int diff = fileLength(cloneFile) - fileLength(inFile);
