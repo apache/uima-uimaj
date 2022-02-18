@@ -38,9 +38,8 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.testTypeSystem_arrays.OfShorts;
 import org.apache.uima.testTypeSystem_arrays.OfStrings;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj3.XmlAssert;
 
 public class CasToInlineXmlTest {
 
@@ -160,14 +159,8 @@ public class CasToInlineXmlTest {
         break;
       }
     }
-    boolean whitespaceFlag = XMLUnit.getIgnoreWhitespace();
-    XMLUnit.setIgnoreWhitespace(true);
-    try {
-      XMLAssert.assertXMLEqual(expected, result);
-    } finally {
-      XMLUnit.setIgnoreWhitespace(whitespaceFlag);
-    }
-    // assertEquals(expected, result.trim());
+
+    XmlAssert.assertThat(result).and(expected).ignoreWhitespace().areIdentical();
   }
 
   private String canonicalizeNl(String s) {

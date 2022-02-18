@@ -57,10 +57,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
+import org.xmlunit.assertj3.XmlAssert;
 
 public class JsonCasSerializerTest {
   // @formatter:off
@@ -584,7 +584,7 @@ public class JsonCasSerializerTest {
     if (doJson) {
       assertEquals(ce, r);
     } else {
-      XMLAssert.assertXMLEqual(ce, r);
+      XmlAssert.assertThat(r).and(ce).areIdentical();
     }
   }
 

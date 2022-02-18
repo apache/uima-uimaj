@@ -141,6 +141,7 @@
     <jackson-version>2.13.1</jackson-version>
     <junit-version>5.8.2</junit-version>
     <assertj-version>3.22.0</assertj-version>
+    <xmlunit-version>2.9.0</xmlunit-version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -190,9 +191,14 @@
         <version>${slf4j-version}</version>
       </dependency>
       <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>1.6</version>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${xmlunit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj3</artifactId>
+        <version>${xmlunit-version}</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
