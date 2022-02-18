@@ -229,6 +229,8 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   <N extends T> SelectFSs<N> select(Type type);
 
@@ -239,6 +241,8 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   <N extends T> SelectFSs<N> select(Class<N> clazz);
 
@@ -260,6 +264,8 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    *          the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures of that type and its
    *         subtypes
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   <N extends T> SelectFSs<N> select(String fullyQualifiedTypeName);
 

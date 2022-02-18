@@ -192,16 +192,26 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     return this;
   }
 
-  /*
-   * TYPE if not specified defaults to the index's uppermost type.
+  /**
+   * Select the index's uppermost type.
    */
+  public <N extends T> SelectFSs_impl<N> anyType() {
+    this.ti = (TypeImpl) null;
+    return (SelectFSs_impl<N>) this;
+  }
 
   public <N extends T> SelectFSs_impl<N> type(Type uimaType) {
+    if (uimaType == null) {
+      throw new IllegalArgumentException("Must specify a type");
+    }
     this.ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
 
   public <N extends T> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
+    if (fullyQualifiedTypeName == null) {
+      throw new IllegalArgumentException("Must specify a type");
+    }
     this.ti = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
     return (SelectFSs_impl<N>) this;
   }
@@ -212,6 +222,9 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   }
 
   public <N extends T> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
+    if (jcasClass_dot_class == null) {
+      throw new IllegalArgumentException("Must specify a type");
+    }
     this.ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
     return (SelectFSs_impl<N>) this;
   }
@@ -609,8 +622,9 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   }
 
   private void maybeValidateAltSource() {
-    if (!isAltSource)
+    if (!isAltSource) {
       return;
+    }
 
     if (index != null || boundsUse != BoundsUse.notBounded || isAllViews || isFollowing
             || isPreceding || startingFs != null) {
@@ -1717,8 +1731,9 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public boolean isEmpty() {
-    if (this.limit == 0)
+    if (this.limit == 0) {
       return true;
+    }
     return fsIterator().size() == 0;
   }
 

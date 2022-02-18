@@ -55,6 +55,8 @@ public interface SelectViaCopyToArray<T extends FeatureStructure> {
    * @param <U>
    *          generic type being selected
    * @return a new instance of SelectFSs
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <U extends T> SelectFSs<U> select(Type filterByType) {
     return select().type(filterByType);
@@ -68,6 +70,8 @@ public interface SelectViaCopyToArray<T extends FeatureStructure> {
    * @param <U>
    *          generic type being selected
    * @return a new instance of SelectFSs
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <U extends T> SelectFSs<U> select(Class<U> filterByType) {
     return select().type(filterByType);
@@ -94,6 +98,8 @@ public interface SelectViaCopyToArray<T extends FeatureStructure> {
    * @param <U>
    *          generic type being selected
    * @return a new instance of SelectFSs
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   default <U extends T> SelectFSs<U> select(String filterByType) {
     return select().type(filterByType);

@@ -103,6 +103,8 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @param <U>
    *          generic type being selected
    * @return a new instance of SelectFSs
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   public <U extends T> SelectFSs<U> select(Type filterByType) {
     return new SelectFSs_impl<>(this).type(filterByType);
@@ -116,6 +118,8 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @param <U>
    *          generic type being selected
    * @return a new instance of SelectFSs
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   public <U extends T> SelectFSs<U> select(Class<U> filterByType) {
     return new SelectFSs_impl<>(this).type(filterByType);
@@ -138,10 +142,12 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * Treat an FSArray as a source for SelectFSs.
    * 
    * @param filterByType
-   *          only includes elements of this type (fully qualifined type name)
+   *          only includes elements of this type (fully qualified type name)
    * @param <U>
    *          generic type being selected
    * @return a new instance of SelectFSs
+   * @throws IllegalArgumentException
+   *           if no type is specified.
    */
   public <U extends T> SelectFSs<U> select(String filterByType) {
     return new SelectFSs_impl<>(this).type(filterByType);
