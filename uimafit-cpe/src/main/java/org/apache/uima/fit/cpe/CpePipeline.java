@@ -127,33 +127,38 @@ public final class CpePipeline {
     CollectionProcessingEngine engine = builder.createCpe(status);
 
     engine.process();
-    try {
+    while (status.isProcessing) {
       synchronized (status) {
-        while (status.isProcessing) {
+        try {
           status.wait();
+        } catch (InterruptedException e) {
+          // Do nothing
+        }
+
+        if (status.exceptions.size() > 0) {
+          if (engine.isProcessing()) {
+            engine.kill();
+          }
+
+          throw new AnalysisEngineProcessException(status.exceptions.get(0));
         }
       }
-    } catch (InterruptedException e) {
-      // Do nothing
-    }
-
-    if (status.exceptions.size() > 0) {
-      throw new AnalysisEngineProcessException(status.exceptions.get(0));
     }
   }
-  
+
   private static boolean mayContainCasMultiplier(final AnalysisEngineDescription desc) {
     if (desc.isPrimitive()) {
-      return desc.getAnalysisEngineMetaData().getOperationalProperties().isMultipleDeploymentAllowed();
+      return desc.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed();
     }
-    
+
     for (MetaDataObject mdo : desc.getDelegateAnalysisEngineSpecifiersWithImports().values()) {
       if (mdo instanceof Import) {
         // The imported delegate might be a CAS multiplier, but we cannot really tell without
         // risking an exception. So let's just assume it does.
         return true;
       }
-      
+
       if (mdo instanceof AnalysisEngineDescription) {
         AnalysisEngineDescription aed = (AnalysisEngineDescription) mdo;
         if (aed.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
@@ -161,7 +166,7 @@ public final class CpePipeline {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -176,15 +181,18 @@ public final class CpePipeline {
       if (arg1.isException()) {
         for (Exception e : arg1.getExceptions()) {
           exceptions.add(e);
+          synchronized (this) {
+            notify();
+          }
         }
       }
     }
 
     @Override
     public void aborted() {
-      synchronized (this) {
-        if (isProcessing) {
-          isProcessing = false;
+      if (isProcessing) {
+        isProcessing = false;
+        synchronized (this) {
           notify();
         }
       }
@@ -197,9 +205,9 @@ public final class CpePipeline {
 
     @Override
     public void collectionProcessComplete() {
-      synchronized (this) {
-        if (isProcessing) {
-          isProcessing = false;
+      if (isProcessing) {
+        isProcessing = false;
+        synchronized (this) {
           notify();
         }
       }
