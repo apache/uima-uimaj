@@ -28,8 +28,10 @@ import java.util.WeakHashMap;
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestWatcher;
 
 /**
  * Provides a {@link CAS} object which is automatically reset before the test. The idea of this
@@ -39,7 +41,8 @@ import org.junit.runner.Description;
  * handed out to any thread are reset (except any CASes which may meanwhile have been garbage
  * collected).
  */
-public final class ManagedCas extends TestWatcher {
+public final class ManagedCas
+        implements TestWatcher, BeforeTestExecutionCallback, AfterAllCallback {
   private final ThreadLocal<CAS> casHolder;
 
   private final static Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
@@ -85,7 +88,12 @@ public final class ManagedCas extends TestWatcher {
   }
 
   @Override
-  protected void starting(Description description) {
+  public void beforeTestExecution(ExtensionContext aContext) throws Exception {
     managedCases.forEach(cas -> cas.reset());
+  }
+
+  @Override
+  public void afterAll(ExtensionContext aContext) throws Exception {
+    casHolder.set(null);
   }
 }

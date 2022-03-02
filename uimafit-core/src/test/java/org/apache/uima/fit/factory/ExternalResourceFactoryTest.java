@@ -74,7 +74,6 @@ import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
@@ -129,7 +128,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     StringWriter outerXml2 = new StringWriter();
     outer.toXML(outerXml2);
 
-    Assert.assertEquals(outerXml.toString(), outerXml2.toString());
+    assertThat(outerXml.toString()).isEqualTo(outerXml2.toString());
   }
 
   /**

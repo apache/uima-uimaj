@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -26,10 +28,6 @@ import java.util.logging.Logger;
 import org.apache.uima.fit.testing.util.DisableLogging;
 import org.junit.jupiter.api.Test;
 
-import junit.framework.Assert;
-
-/**
- */
 public class DisableLoggingTest {
 
   @Test
@@ -61,18 +59,18 @@ public class DisableLoggingTest {
 
     // log to the buffer
     Logger.getLogger("foo").info("Hello!");
-    Assert.assertEquals("Hello!", buffer.toString());
+    assertThat(buffer.toString()).isEqualTo("Hello!");
 
     // disable logging, and make sure nothing is written to the buffer
     buffer.setLength(0);
     Level level = DisableLogging.disableLogging();
     Logger.getLogger("bar").info("Hello!");
-    Assert.assertEquals("", buffer.toString());
+    assertThat(buffer).isEmpty();
 
     // enable logging, and make sure things are written to the buffer
     DisableLogging.enableLogging(level);
     Logger.getLogger("baz").info("Hello!");
-    Assert.assertEquals("Hello!", buffer.toString());
+    assertThat(buffer.toString()).isEqualTo("Hello!");
 
     // try disabling logging with a logger that has its own handler
     buffer.setLength(0);
@@ -93,7 +91,7 @@ public class DisableLoggingTest {
     });
     level = DisableLogging.disableLogging();
     logger.info("Hello!");
-    Assert.assertEquals("", buffer.toString());
+    assertThat(buffer).isEmpty();
     DisableLogging.enableLogging(level);
 
     // restore the original handlers
@@ -101,6 +99,5 @@ public class DisableLoggingTest {
     for (Handler handler : handlers) {
       topLogger.addHandler(handler);
     }
-
   }
 }
