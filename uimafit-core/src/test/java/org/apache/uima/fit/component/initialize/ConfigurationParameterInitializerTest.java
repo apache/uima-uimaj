@@ -25,6 +25,7 @@ import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.collections4.SetUtils.unmodifiableSet;
 import static org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer.initialize;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -694,11 +695,10 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   @Test
   public void testMandatoryParameterSetToNull() throws Exception {
-    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class,
-            DefaultValueAE2.PARAM_COLOR, null);
-    DefaultValueAE2 ae = new DefaultValueAE2();
-    assertThatExceptionOfType(ResourceInitializationException.class)
-            .isThrownBy(() -> ae.initialize(aed.getUimaContext()));
+    assertThatExceptionOfType(ResourceInitializationException.class) //
+            .isThrownBy(() -> createEngine( //
+                    DefaultValueAE2.class, //
+                    DefaultValueAE2.PARAM_COLOR, null));
   }
 
   /**
@@ -729,11 +729,10 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   @Test
   public void testNonUimaCompatibleParameterValue() throws Exception {
-    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class, null,
-            DefaultValueAE2.PARAM_COLOR, new Point(1, 2));
-    DefaultValueAE2 ae = new DefaultValueAE2();
-    assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> ae.initialize(aed.getUimaContext()));
+    assertThatExceptionOfType(IllegalArgumentException.class) //
+            .isThrownBy(() -> createEngine( //
+                    DefaultValueAE2.class, null, //
+                    DefaultValueAE2.PARAM_COLOR, new Point(1, 2)));
   }
 
   /**
@@ -821,7 +820,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     }
   }
 
-  public static enum Color {
+  public enum Color {
     RED, GREEN, BLUE
   }
 
