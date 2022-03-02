@@ -250,13 +250,11 @@
             <configuration>
               <source>
                 def noticeFile = new File(project.basedir.path + "/NOTICE");
-                if
-                (noticeFile.exists()) {
-                project.properties.postNoticeText = noticeFile.text;
-                println "Loaded NOTICE file content into property [postNoticeText]"
-                }
-                else {
-                println "No NOTICE file was found - content not loaded into property [postNoticeText]"
+                if (noticeFile.exists()) {
+                  project.properties.postNoticeText = noticeFile.text;
+                  println "Loaded NOTICE file content into property [postNoticeText]"
+                } else {
+                  println "No NOTICE file was found - content not loaded into property [postNoticeText]"
                 }
               </source>
             </configuration>
