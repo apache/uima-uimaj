@@ -81,11 +81,11 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
   public static final String ILLEGAL_STRING_VALUE = "ILLEGAL_STRING_VALUE";
 
-  /** Error applying FS constraString: no type "{0}" in current type system. */
+  /** Error applying FS constraint: no type "{0}" in current type system. */
   public static final String UNKNOWN_CONSTRAINT_TYPE = "UNKNOWN_CONSTRAINT_TYPE";
 
   /**
-   * Error applying FS constraString: no feature "{0}" in current type system.
+   * Error applying FS constraint: no feature "{0}" in current type system.
    */
   public static final String UNKNOWN_CONSTRAINT_FEAT = "UNKNOWN_CONSTRAINT_FEAT";
 
