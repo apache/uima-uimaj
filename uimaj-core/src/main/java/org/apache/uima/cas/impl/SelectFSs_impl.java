@@ -204,6 +204,14 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     if (uimaType == null) {
       throw new IllegalArgumentException("Must specify a type");
     }
+
+    if (view.getTypeSystemImpl() != ((TypeImpl) uimaType).getTypeSystem()) {
+      Type type = view.getTypeSystem().getType(uimaType.getName());
+      if (type == null) {
+        throw new IllegalArgumentException("Undefined type: [" + uimaType.getName() + "]");
+      }
+    }
+
     this.ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
@@ -212,7 +220,13 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     if (fullyQualifiedTypeName == null) {
       throw new IllegalArgumentException("Must specify a type");
     }
-    this.ti = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
+
+    TypeImpl type = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
+    if (type == null) {
+      throw new IllegalArgumentException("Undefined type: [" + fullyQualifiedTypeName + "]");
+    }
+
+    this.ti = type;
     return (SelectFSs_impl<N>) this;
   }
 

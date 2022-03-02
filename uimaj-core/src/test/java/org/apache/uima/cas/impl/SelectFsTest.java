@@ -27,6 +27,7 @@ import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
 import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
 import static org.apache.uima.cas.text.AnnotationPredicates.overlappingAtEnd;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,12 +37,14 @@ import java.util.stream.Stream;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
@@ -50,6 +53,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -81,7 +85,7 @@ public class SelectFsTest {
   static File typeSystemFile1 = JUnitExtension
           .getFile("ExampleCas/testTypeSystem_token_sentence_no_features.xml");
 
-  public void setup(Mode aMode, String[] aPrioTypeNames) throws Exception {
+  public void setup(Mode aMode, String... aPrioTypeNames) throws Exception {
     mode = aMode;
     typeSystemDescription = UIMAFramework.getXMLParser()
             .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
@@ -1770,6 +1774,47 @@ public class SelectFsTest {
     it.moveTo(seekPoint);
 
     assertThat(it.isValid()).isFalse();
+  }
+
+  @Test
+  public void thatSelectingNonExistingTypeCreatesException() throws Exception {
+    setup(Mode.ANNOTATION_FIRST);
+
+    Type tokenType = cas.getCasType(Token.class);
+    CAS localCas = CasCreationUtils.createCas();
+
+    assertThat((Iterable<Annotation>) localCas.select(Annotation.class))
+            .as("Select existing type by JCas cover-class") //
+            .isEmpty();
+
+    assertThatExceptionOfType(CASRuntimeException.class) //
+            .isThrownBy(() -> localCas.select(Token.class))
+            .as("Select non-existing type by JCas cover-class");
+
+    assertThat((Iterable<TOP>) localCas.select(localCas.getAnnotationType()))
+            .as("Select existing type by CAS type") //
+            .isEmpty();
+
+    assertThatExceptionOfType(IllegalArgumentException.class) //
+            .isThrownBy(() -> localCas.select(tokenType))
+            .as("Select non-existing type by CAS type (obtained from another CAS)");
+
+    assertThat((Iterable<TOP>) localCas.select(Annotation.type))
+            .as("Select existing type by JCas type ID") //
+            .isEmpty();
+
+    assertThatExceptionOfType(CASRuntimeException.class) //
+            .isThrownBy(() -> localCas.select(Token.type))
+            .as("Select non-existing type by JCas type ID");
+
+    assertThat((Iterable<TOP>) localCas.select(Annotation._TypeName))
+            .as("Select existing type by type name") //
+            .isEmpty();
+
+    assertThatExceptionOfType(IllegalArgumentException.class) //
+            .isThrownBy(() -> localCas.select(Token._TypeName))
+            .as("Select non-existing type by type name");
+
   }
 
   @SuppressWarnings("unchecked")
