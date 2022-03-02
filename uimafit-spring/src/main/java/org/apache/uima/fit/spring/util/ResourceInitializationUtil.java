@@ -33,7 +33,8 @@ public class ResourceInitializationUtil {
   /**
    * Initialize an existing object as a Spring bean.
    */
-  public static <T> T initializeBean(AutowireCapableBeanFactory aBeanFactory, T aBean, String aName) {
+  public static <T> T initializeBean(AutowireCapableBeanFactory aBeanFactory, T aBean,
+          String aName) {
     @SuppressWarnings("unchecked")
     T wrappedBean = (T) aBeanFactory.initializeBean(aBean, aName);
     aBeanFactory.autowireBean(aBean);

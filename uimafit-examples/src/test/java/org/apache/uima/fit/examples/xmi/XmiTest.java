@@ -19,7 +19,7 @@
 package org.apache.uima.fit.examples.xmi;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -33,7 +33,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test demonstrates testing a "downstream" AnalysisEngine by means of an XMI-serialized CAS.
@@ -48,12 +48,9 @@ public class XmiTest extends ExamplesTestBase {
    */
   @Test
   public void testWithoutXmi() throws Exception {
-    AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class,
-            typeSystemDescription);
-    AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class,
-            typeSystemDescription);
-    AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class,
-            typeSystemDescription);
+    AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class, typeSystemDescription);
+    AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class, typeSystemDescription);
+    AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class, typeSystemDescription);
     jCas.setDocumentText("betgetjetletmetnetpetsetvetwetyet");
     SimplePipeline.runPipeline(jCas, a1, a2, a3);
 
@@ -79,8 +76,7 @@ public class XmiTest extends ExamplesTestBase {
   public void testWithXmi() throws Exception {
     jCas = JCasFactory.createJCas("src/test/resources/org/apache/uima/fit/examples/xmi/1.xmi",
             typeSystemDescription);
-    AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class,
-            typeSystemDescription);
+    AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class, typeSystemDescription);
     a3.process(jCas);
     Sentence sentence = JCasUtil.selectByIndex(jCas, Sentence.class, 0);
     assertEquals("metnetpetsetvetwetyet", sentence.getCoveredText());
@@ -129,7 +125,8 @@ public class XmiTest extends ExamplesTestBase {
   }
 
   /**
-   * creates a sentence from the beginning of each token whose pos tag is "m" to the end of the text.
+   * creates a sentence from the beginning of each token whose pos tag is "m" to the end of the
+   * text.
    */
   public static class Annotator3 extends JCasAnnotator_ImplBase {
     @Override

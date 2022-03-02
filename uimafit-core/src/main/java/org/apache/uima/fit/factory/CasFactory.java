@@ -69,7 +69,7 @@ public final class CasFactory {
    * 
    * @param aText
    *          the document text to be set in the new CAS.
-   * @param aLanguage 
+   * @param aLanguage
    *          the document language to be set in the new CAS.
    * @return a new CAS
    * @throws ResourceInitializationException
@@ -86,7 +86,7 @@ public final class CasFactory {
     }
     return cas;
   }
-  
+
   /**
    * Creates a new {@link CAS}. The type system is detected automatically using
    * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type priorities are
@@ -106,7 +106,7 @@ public final class CasFactory {
   }
 
   /**
-   * Creates a new {@link CAS} from type system descriptor files found by name. No auto-detection 
+   * Creates a new {@link CAS} from type system descriptor files found by name. No auto-detection
    * for type priorities, or indexes is performed.
    * 
    * @param typeSystemDescriptorNames

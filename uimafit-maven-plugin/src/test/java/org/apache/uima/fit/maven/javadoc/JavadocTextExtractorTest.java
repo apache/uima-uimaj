@@ -18,12 +18,12 @@
  */
 package org.apache.uima.fit.maven.javadoc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
 import org.apache.uima.fit.maven.util.Util;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.thoughtworks.qdox.model.JavaSource;
 
@@ -34,7 +34,7 @@ public class JavadocTextExtractorTest {
     String doc = getJavadoc("value1", "PARAM_VALUE_1");
     assertEquals("Documentation for value 1", doc);
   }
-  
+
   @Test
   public void testDocOnParameterWithName() throws Exception {
     String doc = getJavadoc("value2", "PARAM_VALUE_2");
@@ -62,7 +62,7 @@ public class JavadocTextExtractorTest {
   private String getJavadoc(String aParameter, String aNameConstant) throws IOException {
     // Create the Java parser and parse the source code into an abstract syntax tree
     JavaSource source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
-    
+
     return Util.getParameterDocumentation(source, aParameter, aNameConstant);
   }
 }

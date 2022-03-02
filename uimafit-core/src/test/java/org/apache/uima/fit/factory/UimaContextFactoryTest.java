@@ -18,11 +18,11 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -31,11 +31,11 @@ public class UimaContextFactoryTest {
 
   @Test
   public void test() throws ResourceInitializationException {
-    UimaContext context = UimaContextFactory
-            .createUimaContext("myBoolean", true, "myBooleans", new Boolean[] { true, false, true,
-                false }, "myFloat", 1.0f, "myFloats", new Float[] { 2.0f, 2.1f, 3.0f }, "myInt", 1,
-                    "myInts", new Integer[] { 2, 3, 4 }, "myString", "yourString", "myStrings",
-                    new String[] { "yourString1", "yourString2", "yourString3" });
+    UimaContext context = UimaContextFactory.createUimaContext("myBoolean", true, "myBooleans",
+            new Boolean[] { true, false, true, false }, "myFloat", 1.0f, "myFloats",
+            new Float[] { 2.0f, 2.1f, 3.0f }, "myInt", 1, "myInts", new Integer[] { 2, 3, 4 },
+            "myString", "yourString", "myStrings",
+            new String[] { "yourString1", "yourString2", "yourString3" });
     assertEquals(true, context.getConfigParameterValue("myBoolean"));
     Boolean[] myBooleans = (Boolean[]) context.getConfigParameterValue("myBooleans");
     assertEquals(4, myBooleans.length);

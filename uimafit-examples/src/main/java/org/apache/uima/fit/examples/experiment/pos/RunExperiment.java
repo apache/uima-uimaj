@@ -59,10 +59,9 @@ public class RunExperiment {
     // or in the extracted examples from the binary distribution.
     String samplePosFileName;
     if (new File("src/main/resources").exists()) {
-        samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt";
-    }
-    else {
-        samplePosFileName = "src/org/apache/uima/fit/examples/pos/sample-gold.txt";
+      samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt";
+    } else {
+      samplePosFileName = "src/org/apache/uima/fit/examples/pos/sample-gold.txt";
     }
 
     // The lineReader simply copies the lines from the input file into the
@@ -75,16 +74,16 @@ public class RunExperiment {
     // The goldTagger parses the data in the default view into Token objects
     // along with their part-of-speech tags which will be added to the
     // GOLD_VIEW
-    AnalysisEngineDescription goldTagger = AnalysisEngineFactory.createEngineDescription(
-            GoldTagger.class);
+    AnalysisEngineDescription goldTagger = AnalysisEngineFactory
+            .createEngineDescription(GoldTagger.class);
     builder.add(goldTagger);
 
     // The textCopier creates the SYSTEM_VIEW and set the text of this view
     // to that of the text found in GOLD_VIEW
     AnalysisEngineDescription textCopier = AnalysisEngineFactory.createEngineDescription(
-            ViewTextCopierAnnotator.class,
-            ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, ViewNames.GOLD_VIEW,
-            ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, ViewNames.SYSTEM_VIEW);
+            ViewTextCopierAnnotator.class, ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME,
+            ViewNames.GOLD_VIEW, ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME,
+            ViewNames.SYSTEM_VIEW);
     builder.add(textCopier);
 
     // The sentenceAndTokenCopier copies Token and Sentence annotations in
@@ -95,14 +94,14 @@ public class RunExperiment {
             ViewNames.SYSTEM_VIEW);
 
     // The baselineTagger is run on the SYSTEM_VIEW
-    AnalysisEngineDescription baselineTagger = AnalysisEngineFactory.createEngineDescription(
-            BaselineTagger.class);
+    AnalysisEngineDescription baselineTagger = AnalysisEngineFactory
+            .createEngineDescription(BaselineTagger.class);
     builder.add(baselineTagger, CAS.NAME_DEFAULT_SOFA, ViewNames.SYSTEM_VIEW);
 
     // The evaluator will compare the part-of-speech tags in the SYSTEM_VIEW
     // with those in the GOLD_VIEW
-    AnalysisEngineDescription evaluator = AnalysisEngineFactory.createEngineDescription(
-            Evaluator.class);
+    AnalysisEngineDescription evaluator = AnalysisEngineFactory
+            .createEngineDescription(Evaluator.class);
     builder.add(evaluator);
 
     // The xWriter writes out the contents of each CAS (one per sentence) to

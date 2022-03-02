@@ -18,9 +18,9 @@
  */
 package org.apache.uima.fit.descriptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TypeOrFeature;
@@ -29,7 +29,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.testAes.Annotator4;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -38,8 +38,8 @@ public class TypeCapabilityTest extends ComponentTestBase {
 
   @Test
   public void testTC() throws ResourceInitializationException {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
-            Annotator4.class, typeSystemDescription);
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(Annotator4.class,
+            typeSystemDescription);
     Capability[] capabilities = aed.getAnalysisEngineMetaData().getCapabilities();
     assertEquals(1, capabilities.length);
     Capability capability = capabilities[0];

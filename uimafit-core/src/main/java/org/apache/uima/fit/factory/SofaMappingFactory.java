@@ -36,7 +36,8 @@ public final class SofaMappingFactory {
    * <p>
    * WARNING: in version 0.9.12 the ordering of the parameters was changed! The order used to be
    * aggregateSofaName, componentKey, componentSofaName. This was changed because it seemed an
-   * unnatural ordering.</p>
+   * unnatural ordering.
+   * </p>
    * 
    * @param componentKey
    *          the key/name used by the aggregate analysis engine for the component whose view is

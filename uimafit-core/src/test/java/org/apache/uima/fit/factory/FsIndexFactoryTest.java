@@ -20,7 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileOutputStream;
 
@@ -38,14 +38,15 @@ import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */
 public class FsIndexFactoryTest extends ComponentTestBase {
   @Test
   public void testCreateIndexCollection() throws Exception {
-    org.apache.uima.resource.metadata.FsIndexCollection fsIndexCollection = createFsIndexCollection(IndexTestComponent.class);
+    org.apache.uima.resource.metadata.FsIndexCollection fsIndexCollection = createFsIndexCollection(
+            IndexTestComponent.class);
 
     assertEquals(2, fsIndexCollection.getFsIndexes().length);
 
@@ -112,7 +113,8 @@ public class FsIndexFactoryTest extends ComponentTestBase {
       @FsIndex(label = "index1", type = Token.class, kind = FsIndex.KIND_SORTED, keys = {
           @FsIndexKey(featureName = "begin", comparator = FsIndexKey.REVERSE_STANDARD_COMPARE),
           @FsIndexKey(featureName = "end", comparator = FsIndexKey.STANDARD_COMPARE) }),
-      @FsIndex(label = "index2", type = Sentence.class, kind = FsIndex.KIND_SET, keys = { @FsIndexKey(featureName = "begin", comparator = FsIndexKey.STANDARD_COMPARE) }) })
+      @FsIndex(label = "index2", type = Sentence.class, kind = FsIndex.KIND_SET, keys = {
+          @FsIndexKey(featureName = "begin", comparator = FsIndexKey.STANDARD_COMPARE) }) })
   public static class IndexTestComponent extends JCasAnnotator_ImplBase {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {

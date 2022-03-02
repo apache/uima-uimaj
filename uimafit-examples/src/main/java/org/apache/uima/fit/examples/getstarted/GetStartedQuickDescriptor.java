@@ -30,8 +30,8 @@ import org.xml.sax.SAXException;
 
 public class GetStartedQuickDescriptor {
 
-  public static void main(String[] args) throws ResourceInitializationException,
-          FileNotFoundException, SAXException, IOException {
+  public static void main(String[] args)
+          throws ResourceInitializationException, FileNotFoundException, SAXException, IOException {
     // uimaFIT automatically uses all type systems listed in META-INF/org.apache.uima.fit/types.txt
 
     // Instantiate the analysis engine using the value "uimaFIT" for the parameter

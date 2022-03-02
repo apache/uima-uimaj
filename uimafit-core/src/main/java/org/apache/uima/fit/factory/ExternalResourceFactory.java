@@ -159,8 +159,8 @@ public final class ExternalResourceFactory {
       ResourceCreationSpecifierFactory.setConfigurationParameters(meta,
               reflectedConfigurationData.configurationParameters,
               reflectedConfigurationData.configurationValues);
-      ResourceCreationSpecifierFactory.setConfigurationParameters(meta,
-              cfg.configurationParameters, cfg.configurationValues);
+      ResourceCreationSpecifierFactory.setConfigurationParameters(meta, cfg.configurationParameters,
+              cfg.configurationValues);
 
       ConfigurableDataResourceSpecifier_impl spec1 = new ConfigurableDataResourceSpecifier_impl();
       spec1.setUrl("");
@@ -170,7 +170,8 @@ public final class ExternalResourceFactory {
       List<Parameter> params = new ArrayList<Parameter>();
       if (aParams != null) {
         for (int i = 0; i < aParams.length / 2; i++) {
-          if (ExternalResourceFactory.getResourceParameterType(aParams[i * 2 + 1]) != ResourceValueType.NO_RESOURCE) {
+          if (ExternalResourceFactory
+                  .getResourceParameterType(aParams[i * 2 + 1]) != ResourceValueType.NO_RESOURCE) {
             continue;
           }
 
@@ -199,6 +200,7 @@ public final class ExternalResourceFactory {
 
   /**
    * Create an external resource description for a {@link SharedResourceObject}.
+   * 
    * @param aUrl
    *          the URL from which the resource is initialized.
    * @param aInterface
@@ -210,14 +212,15 @@ public final class ExternalResourceFactory {
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createSharedResourceDescription(
-          String aUrl, Class<? extends SharedResourceObject> aInterface, Object... aParams) {
-    return createNamedResourceDescriptionUsingUrl(uniqueResourceKey(aInterface.getName()), aInterface,
-            aUrl, aParams);
+  public static ExternalResourceDescription createSharedResourceDescription(String aUrl,
+          Class<? extends SharedResourceObject> aInterface, Object... aParams) {
+    return createNamedResourceDescriptionUsingUrl(uniqueResourceKey(aInterface.getName()),
+            aInterface, aUrl, aParams);
   }
 
   /**
    * Create an external resource description for a {@link SharedResourceObject}.
+   * 
    * @param aUrl
    *          the URL from which the resource is initialized.
    * @param aInterface
@@ -229,14 +232,15 @@ public final class ExternalResourceFactory {
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createSharedResourceDescription(
-          URL aUrl, Class<? extends SharedResourceObject> aInterface, Object... aParams) {
-    return createNamedResourceDescriptionUsingUrl(uniqueResourceKey(aInterface.getName()), aInterface,
-            aUrl.toString(), aParams);
+  public static ExternalResourceDescription createSharedResourceDescription(URL aUrl,
+          Class<? extends SharedResourceObject> aInterface, Object... aParams) {
+    return createNamedResourceDescriptionUsingUrl(uniqueResourceKey(aInterface.getName()),
+            aInterface, aUrl.toString(), aParams);
   }
 
   /**
    * Create an external resource description for a {@link SharedResourceObject}.
+   * 
    * @param aFile
    *          the file from which the resource is initialized.
    * @param aInterface
@@ -248,8 +252,8 @@ public final class ExternalResourceFactory {
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createSharedResourceDescription(
-          File aFile, Class<? extends SharedResourceObject> aInterface, Object... aParams) {
+  public static ExternalResourceDescription createSharedResourceDescription(File aFile,
+          Class<? extends SharedResourceObject> aInterface, Object... aParams) {
     try {
       return createSharedResourceDescription(aFile.toURI().toURL(), aInterface, aParams);
     } catch (MalformedURLException e) {
@@ -274,8 +278,9 @@ public final class ExternalResourceFactory {
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createNamedResourceDescriptionUsingUrl(final String aName,
-          Class<? extends SharedResourceObject> aInterface, String aUrl, Object... aParams) {
+  public static ExternalResourceDescription createNamedResourceDescriptionUsingUrl(
+          final String aName, Class<? extends SharedResourceObject> aInterface, String aUrl,
+          Object... aParams) {
     // Extract ExternalResourceDescriptions from configurationData
     List<ExternalResourceBinding> bindings = new ArrayList<ExternalResourceBinding>();
     List<ExternalResourceDescription> descs = new ArrayList<ExternalResourceDescription>();
@@ -319,8 +324,8 @@ public final class ExternalResourceFactory {
    * @return the description.
    * @see FileResourceSpecifier
    */
-  public static ExternalResourceDescription createNamedFileResourceDescription(
-          final String aName, String aUrl) {
+  public static ExternalResourceDescription createNamedFileResourceDescription(final String aName,
+          String aUrl) {
     ExternalResourceDescription extRes = new ExternalResourceDescription_impl();
     extRes.setName(aName);
     FileResourceSpecifier frs = new FileResourceSpecifier_impl();
@@ -385,13 +390,11 @@ public final class ExternalResourceFactory {
     // Get the type of class/interface a resource has to implement to bind to the annotated field.
     // If no API is set, get it from the annotated field type.
     Class<? extends Resource> api = era.api();
-    
+
     // If no API is specified, look at the annotated field
     if (api == Resource.class) {
-      if (
-              Resource.class.isAssignableFrom(field.getType()) || 
-              SharedResourceObject.class.isAssignableFrom(field.getType())
-      ) {
+      if (Resource.class.isAssignableFrom(field.getType())
+              || SharedResourceObject.class.isAssignableFrom(field.getType())) {
         // If no API is set, check if the field type is already a resource type
         api = (Class<? extends Resource>) field.getType();
       } else {
@@ -440,8 +443,8 @@ public final class ExternalResourceFactory {
    * @throws ResourceInitializationException
    *           if the external resource dependencies could not be created
    */
-  public static ExternalResourceDependency[] createResourceDependencies(
-          Class<?> cls) throws ResourceInitializationException {
+  public static ExternalResourceDependency[] createResourceDependencies(Class<?> cls)
+          throws ResourceInitializationException {
     Map<String, ExternalResourceDependency> depMap = new HashMap<String, ExternalResourceDependency>();
     ExternalResourceFactory.createResourceDependencies(cls, cls, depMap);
     Collection<ExternalResourceDependency> deps = depMap.values();
@@ -463,8 +466,8 @@ public final class ExternalResourceFactory {
       ExternalResourceDependency dep = createResourceDependency(field);
 
       if (dependencies.containsKey(dep.getKey())) {
-        throw new ResourceInitializationException(new IllegalStateException("Key [" + dep.getKey()
-                + "] may only be used on a single field."));
+        throw new ResourceInitializationException(new IllegalStateException(
+                "Key [" + dep.getKey() + "] may only be used on a single field."));
       }
 
       dependencies.put(dep.getKey(), dep);
@@ -556,7 +559,7 @@ public final class ExternalResourceFactory {
           throws InvalidXMLException {
     bindResourceUsingUrl(aDesc, aKey, aUrl);
   }
-  
+
   /**
    * Scan the given resource specifier for external resource dependencies and whenever a dependency
    * is encountered that has the specified key, the resource will be bound.
@@ -624,8 +627,8 @@ public final class ExternalResourceFactory {
    * @see CustomResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, Class<?> aApi,
-          Class<? extends Resource> aRes, String... aParams) throws InvalidXMLException,
-          ClassNotFoundException {
+          Class<? extends Resource> aRes, String... aParams)
+          throws InvalidXMLException, ClassNotFoundException {
     // Appending a disambiguation suffix it possible to have multiple instances of the same
     // resource with different settings to different keys.
     ExternalResourceDescription extRes = createNamedResourceDescription(
@@ -857,10 +860,8 @@ public final class ExternalResourceFactory {
 
     // If not, create one
     if (!found) {
-      setResourceDependencies(
-              aDesc,
-              ArrayUtils.add(deps,
-                      createResourceDependency(aKey, aApi, false, null)));
+      setResourceDependencies(aDesc,
+              ArrayUtils.add(deps, createResourceDependency(aKey, aApi, false, null)));
     }
   }
 
@@ -890,8 +891,7 @@ public final class ExternalResourceFactory {
    * @throws IllegalArgumentException
    *           if the sub-class passed is not supported.
    */
-  private static ExternalResourceDependency[] getResourceDependencies(
-          ResourceSpecifier aDesc) {
+  private static ExternalResourceDependency[] getResourceDependencies(ResourceSpecifier aDesc) {
     if (aDesc instanceof CollectionReaderDescription) {
       return ((CollectionReaderDescription) aDesc).getExternalResourceDependencies();
     } else if (aDesc instanceof AnalysisEngineDescription) {
@@ -928,8 +928,8 @@ public final class ExternalResourceFactory {
       if (deps == null) {
         deps = new ExternalResourceDependency[] {};
       }
-      aDesc.setExternalResourceDependencies(ArrayUtils.add(deps,
-              createResourceDependency(aKey, aImpl, false, null)));
+      aDesc.setExternalResourceDependencies(
+              ArrayUtils.add(deps, createResourceDependency(aKey, aImpl, false, null)));
     }
     bindResourceUsingUrl(aDesc, aKey, aImpl, aUrl, aParams);
   }
@@ -999,8 +999,8 @@ public final class ExternalResourceFactory {
 
   /**
    * Create a binding for the given external resource in the given resource manager. This method
-   * also scans the given external resource for any nested external resources and creates
-   * bindings for them as well.
+   * also scans the given external resource for any nested external resources and creates bindings
+   * for them as well.
    * 
    * @param aResMgrCfg
    *          the resource manager to create the binding in.
@@ -1008,18 +1008,19 @@ public final class ExternalResourceFactory {
    *          what key to bind to.
    * @param aRes
    *          the resource that should be bound.
-   * @deprecated Use {@link #bindResourceOnce(ResourceManagerConfiguration, String, ExternalResourceDescription)}
+   * @deprecated Use
+   *             {@link #bindResourceOnce(ResourceManagerConfiguration, String, ExternalResourceDescription)}
    */
   @Deprecated
   public static void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo,
           ExternalResourceDescription aRes) {
     bindResourceOnce(aResMgrCfg, aBindTo, aRes);
   }
-  
+
   /**
    * Create a binding for the given external resource in the given resource manager. This method
-   * also scans the given external resource for any nested external resources and creates
-   * bindings for them as well.
+   * also scans the given external resource for any nested external resources and creates bindings
+   * for them as well.
    * <p>
    * <b>NOTE:</b>If you use this method on resource manager configurations of aggregate analysis
    * engine descriptions because it will <b>not have any effects on the delegate analysis
@@ -1057,10 +1058,10 @@ public final class ExternalResourceFactory {
     bindNestedResources(aRes, bindings, resources);
 
     // Commit everything to the resource manager configuration
-    aResMgrCfg.setExternalResourceBindings(bindings.values().toArray(
-            new ExternalResourceBinding[bindings.size()]));
-    aResMgrCfg.setExternalResources(resources.values().toArray(
-            new ExternalResourceDescription[resources.size()]));
+    aResMgrCfg.setExternalResourceBindings(
+            bindings.values().toArray(new ExternalResourceBinding[bindings.size()]));
+    aResMgrCfg.setExternalResources(
+            resources.values().toArray(new ExternalResourceDescription[resources.size()]));
   }
 
   /**
@@ -1072,14 +1073,15 @@ public final class ExternalResourceFactory {
    *          what key to bind to.
    * @param aNestedRes
    *          the resource that should be bound.
-   * @deprecated Use {@link #bindResourceOnce(ExternalResourceDescription, String, ExternalResourceDescription)}
+   * @deprecated Use
+   *             {@link #bindResourceOnce(ExternalResourceDescription, String, ExternalResourceDescription)}
    */
   @Deprecated
   public static void bindResource(ExternalResourceDescription aRes, String aBindTo,
           ExternalResourceDescription aNestedRes) {
     bindResourceOnce(aRes, aBindTo, aNestedRes);
   }
-  
+
   /**
    * Create a binding for the given external resource in the given resource. This method also scans
    * the given external resource for any nested external resources and creates bindings for them as
@@ -1271,8 +1273,7 @@ public final class ExternalResourceFactory {
     ExternalResourceBinding extResBind = createResourceBinding(aBindTo, aRes);
     aResMgrCfg.addExternalResourceBinding(extResBind);
   }
-  
-  
+
   /**
    * Create a binding for the given external resource in resource manager configuration of the given
    * resource creation specified. If no resource manager configuration exists yet, it is created.
@@ -1293,7 +1294,8 @@ public final class ExternalResourceFactory {
    * @param aRes
    *          the resource that should be bound.
    */
-  public static void bindResourceOnceWithoutNested(ResourceCreationSpecifier aDesc, String aBindTo, String aRes) {
+  public static void bindResourceOnceWithoutNested(ResourceCreationSpecifier aDesc, String aBindTo,
+          String aRes) {
     ResourceManagerConfiguration resMgrCfg = aDesc.getResourceManagerConfiguration();
     if (resMgrCfg == null) {
       resMgrCfg = new ResourceManagerConfiguration_impl();
@@ -1346,19 +1348,17 @@ public final class ExternalResourceFactory {
       if (value == null) {
         continue;
       }
-      
+
       // Store External Resource parameters separately
       ResourceValueType type = getResourceParameterType(value);
       if (type == ResourceValueType.PRIMITIVE) {
         ExternalResourceDescription description = (ExternalResourceDescription) value;
         extRes.put(key, description);
-      }
-      else if (type.isMultiValued()) {
+      } else if (type.isMultiValued()) {
         Collection<ExternalResourceDescription> resList;
         if (type == ResourceValueType.ARRAY) {
           resList = asList((ExternalResourceDescription[]) value);
-        }
-        else {
+        } else {
           resList = (Collection<ExternalResourceDescription>) value;
         }
 
@@ -1372,7 +1372,7 @@ public final class ExternalResourceFactory {
           params.add(res);
           n++;
         }
-        
+
         // Record the list and attach the list elements to the list
         extRes.put(key, createResourceDescription(ResourceList.class, params.toArray()));
       }
@@ -1380,24 +1380,23 @@ public final class ExternalResourceFactory {
 
     return extRes;
   }
-  
+
   /**
-   * Determine which kind of external resource the given value is. This is only meant for
-   * uimaFIT internal use. This method is required by the ConfigurationParameterFactory, so it is
-   * package private instead of private.
+   * Determine which kind of external resource the given value is. This is only meant for uimaFIT
+   * internal use. This method is required by the ConfigurationParameterFactory, so it is package
+   * private instead of private.
    */
   static ResourceValueType getResourceParameterType(Object aValue) {
     if (aValue == null) {
       return ResourceValueType.NO_RESOURCE;
     }
-    
+
     boolean isResourcePrimitive = aValue instanceof ExternalResourceDescription;
-    boolean isResourceArray = aValue.getClass().isArray()
-            && ExternalResourceDescription.class.isAssignableFrom(aValue.getClass()
-                    .getComponentType());
-    boolean isResourceCollection = (Collection.class.isAssignableFrom(aValue
-            .getClass()) && !((Collection) aValue).isEmpty() && ((Collection) aValue)
-            .iterator().next() instanceof ExternalResourceDescription);
+    boolean isResourceArray = aValue.getClass().isArray() && ExternalResourceDescription.class
+            .isAssignableFrom(aValue.getClass().getComponentType());
+    boolean isResourceCollection = (Collection.class.isAssignableFrom(aValue.getClass())
+            && !((Collection) aValue).isEmpty()
+            && ((Collection) aValue).iterator().next() instanceof ExternalResourceDescription);
     if (isResourcePrimitive) {
       return ResourceValueType.PRIMITIVE;
     } else if (isResourceArray) {
@@ -1408,7 +1407,7 @@ public final class ExternalResourceFactory {
       return ResourceValueType.NO_RESOURCE;
     }
   }
-  
+
   /**
    * Create an instance of a UIMA shared/external resource class.
    * 
@@ -1423,8 +1422,8 @@ public final class ExternalResourceFactory {
    * @throws ResourceInitializationException
    *           if there was a problem instantiating the resource.
    */
-  public static <R extends Resource> R createResource(Class<R> resourceClass,
-          Object... params) throws ResourceInitializationException {
+  public static <R extends Resource> R createResource(Class<R> resourceClass, Object... params)
+          throws ResourceInitializationException {
     return createResource(resourceClass, null, params);
   }
 
@@ -1450,18 +1449,14 @@ public final class ExternalResourceFactory {
     ExternalResourceDescription res = createResourceDescription(resourceClass, params);
     return (R) produceResource(resourceClass, res.getResourceSpecifier(), resMgr, emptyMap());
   }
-  
+
   /**
    * Types of external resource values.
    */
   static enum ResourceValueType {
-    NO_RESOURCE,
-    PRIMITIVE,
-    ARRAY,
-    COLLECTION;
-    
-    public boolean isMultiValued()
-    {
+    NO_RESOURCE, PRIMITIVE, ARRAY, COLLECTION;
+
+    public boolean isMultiValued() {
       return this == COLLECTION || this == ARRAY;
     }
   }

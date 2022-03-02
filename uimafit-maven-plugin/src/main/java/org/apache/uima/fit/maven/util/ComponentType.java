@@ -17,6 +17,7 @@
  * under the License.
  */
 package org.apache.uima.fit.maven.util;
+
 public enum ComponentType {
   COLLECTION_READER, ANALYSIS_ENGINE, NONE;
 }

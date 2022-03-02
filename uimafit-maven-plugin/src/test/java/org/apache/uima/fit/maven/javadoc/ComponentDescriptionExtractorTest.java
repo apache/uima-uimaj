@@ -18,10 +18,10 @@
  */
 package org.apache.uima.fit.maven.javadoc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.fit.maven.util.Util;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.thoughtworks.qdox.model.JavaSource;
 

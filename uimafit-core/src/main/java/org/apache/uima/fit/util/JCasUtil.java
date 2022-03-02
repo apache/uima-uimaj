@@ -109,11 +109,11 @@ public final class JCasUtil {
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
-  public static <T extends AnnotationFS> Iterator<T> iterator(AnnotationFS container,
-          Class<T> type, boolean ambiguous, boolean strict) {
+  public static <T extends AnnotationFS> Iterator<T> iterator(AnnotationFS container, Class<T> type,
+          boolean ambiguous, boolean strict) {
     CAS cas = container.getCAS();
-    return ((AnnotationIndex<T>) cas.getAnnotationIndex(CasUtil.getType(cas, type))).subiterator(
-            container, ambiguous, strict);
+    return ((AnnotationIndex<T>) cas.getAnnotationIndex(CasUtil.getType(cas, type)))
+            .subiterator(container, ambiguous, strict);
   }
 
   /**
@@ -210,7 +210,7 @@ public final class JCasUtil {
           int aBegin, int aEnd) {
     return cast(CasUtil.selectAt(jCas.getCas(), getType(jCas, type), aBegin, aEnd));
   }
-  
+
   /**
    * Get a single annotations of the given type at the specified offsets.
    * 
@@ -264,8 +264,8 @@ public final class JCasUtil {
    * @see Subiterator
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends Annotation> List<T> selectBetween(final Class<T> type,
-          AnnotationFS ann1, AnnotationFS ann2) {
+  public static <T extends Annotation> List<T> selectBetween(final Class<T> type, AnnotationFS ann1,
+          AnnotationFS ann2) {
     return cast(CasUtil.selectBetween(CasUtil.getType(ann1.getCAS(), type), ann1, ann2));
   }
 
@@ -305,8 +305,8 @@ public final class JCasUtil {
    * subtype of that type.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
-   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in the
+   * span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param <T>
    *          the JCas type.
@@ -333,8 +333,8 @@ public final class JCasUtil {
    * subtype of that type.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
-   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in the
+   * span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param <T>
    *          the JCas type.
@@ -360,12 +360,13 @@ public final class JCasUtil {
    * <p>
    * <b>Note:</b> this is significantly slower than using
    * {@link #selectCovered(JCas, Class, AnnotationFS)}. It is possible to use
-   * {@code  selectCovered(jCas, cls, new Annotation(jCas, int, int))}, but that will allocate memory
-   * in the jCas for the new annotation. If you do that repeatedly many times, memory may fill up.
+   * {@code  selectCovered(jCas, cls, new Annotation(jCas, int, int))}, but that will allocate
+   * memory in the jCas for the new annotation. If you do that repeatedly many times, memory may
+   * fill up.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the given begin/end or where both the begin/end are included in
-   * the span of the given span. Partially overlapping annotations are not returned.
+   * offsets are equal to the given begin/end or where both the begin/end are included in the span
+   * of the given span. Partially overlapping annotations are not returned.
    * 
    * @param <T>
    *          the JCas type.
@@ -485,8 +486,8 @@ public final class JCasUtil {
    * is properly contained within the span of the 'covering' annotation. Partially overlapping
    * annotations are not returned.
    * <p>
-   * When querying for the annotations covering a given annotation, the given annotation itself
-   * is never returned, even if it is of the queried type.   
+   * When querying for the annotations covering a given annotation, the given annotation itself is
+   * never returned, even if it is of the queried type.
    * 
    * @param <T>
    *          the covered JCAs type.
@@ -503,23 +504,23 @@ public final class JCasUtil {
    */
   public static <T extends Annotation, S extends Annotation> Map<T, List<S>> indexCovering(
           JCas jCas, Class<? extends T> type, Class<? extends S> coveringType) {
-    return cast(CasUtil.indexCovering(jCas.getCas(), getType(jCas, type),
-            getType(jCas, coveringType)));
+    return cast(
+            CasUtil.indexCovering(jCas.getCas(), getType(jCas, type), getType(jCas, coveringType)));
   }
 
   /**
    * Create an index for quickly lookup up the annotations covered by a particular annotation. This
    * is preferable to using {@link #selectCovered(JCas, Class, int, int)} because the overhead of
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
-   * The order of entries in the map is not defined. However, lists of covered annotations in
-   * the map are guaranteed to be in the same order as in the UIMA default annotation index.
+   * The order of entries in the map is not defined. However, lists of covered annotations in the
+   * map are guaranteed to be in the same order as in the UIMA default annotation index.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
-   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in the
+   * span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * <p>
-   * When querying for the annotations covered by a given annotation, the given annotation itself
-   * is never returned, even if it is of the queried type.
+   * When querying for the annotations covered by a given annotation, the given annotation itself is
+   * never returned, even if it is of the queried type.
    * 
    * @param <T>
    *          the covering JCas type.
@@ -534,48 +535,48 @@ public final class JCasUtil {
    * @return the index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends Annotation, S extends Annotation> Map<T, List<S>> indexCovered(
-          JCas jCas, Class<? extends T> type, Class<? extends S> coveredType) {
-    return cast(CasUtil
-            .indexCovered(jCas.getCas(), getType(jCas, type), getType(jCas, coveredType)));
+  public static <T extends Annotation, S extends Annotation> Map<T, List<S>> indexCovered(JCas jCas,
+          Class<? extends T> type, Class<? extends S> coveredType) {
+    return cast(
+            CasUtil.indexCovered(jCas.getCas(), getType(jCas, type), getType(jCas, coveredType)));
   }
 
   /**
-   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does
    * not use subiterators and does not respect type prioritites.
    * 
    * @param aType
    *          a UIMA type.
-   * @param  aBoundaryAnnotation
+   * @param aBoundaryAnnotation
    *          the covering annotation.
    * @return a list of overlapping annotations.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
-   */  
+   */
   public static <T extends Annotation> List<T> selectOverlapping(Class<T> aType,
           AnnotationFS aBoundaryAnnotation) {
     return cast(CasUtil.selectOverlapping(getType(aBoundaryAnnotation.getJCas(), aType),
             aBoundaryAnnotation));
   }
-  
+
   /**
-   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does
    * not use subiterators and does not respect type prioritites.
    * 
    * @param aJCas
    *          a CAS.
    * @param aType
    *          a UIMA type.
-   * @param  aBoundaryAnnotation
+   * @param aBoundaryAnnotation
    *          the covering annotation.
    * @return a list of overlapping annotations.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
-   */  
+   */
   public static <T extends Annotation> List<T> selectOverlapping(JCas aJCas, Class<T> aType,
           AnnotationFS aBoundaryAnnotation) {
     return cast(
             CasUtil.selectOverlapping(aJCas.getCas(), getType(aJCas, aType), aBoundaryAnnotation));
   }
-  
+
   /**
    * Get a list of annotations of the given annotation type overlapping the given span. Does not use
    * subiterators and does not respect type prioritites.
@@ -590,12 +591,12 @@ public final class JCasUtil {
    *          end offset.
    * @return a list of overlapping annotations.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
-   */  
+   */
   public static <T extends Annotation> List<T> selectOverlapping(JCas aJCas, Class<T> aType,
-          int aBegin, int aEnd) {    
+          int aBegin, int aEnd) {
     return cast(CasUtil.selectOverlapping(aJCas.getCas(), getType(aJCas, aType), aBegin, aEnd));
   }
-  
+
   /**
    * Check if the given annotation contains any annotation of the given type.
    * 

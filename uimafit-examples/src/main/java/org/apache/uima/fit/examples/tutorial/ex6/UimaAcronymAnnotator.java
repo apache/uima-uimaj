@@ -71,14 +71,13 @@ public class UimaAcronymAnnotator extends JCasAnnotator_ImplBase {
   public static void main(String[] args) throws Exception {
     File outputDirectory = new File("target/examples/tutorial/ex6/");
     outputDirectory.mkdirs();
-    
-    AnalysisEngineDescription aed = createEngineDescription(
-            UimaAcronymAnnotator.class,
+
+    AnalysisEngineDescription aed = createEngineDescription(UimaAcronymAnnotator.class,
             UimaAcronymAnnotator.RES_ACRONYM_TABLE,
             createSharedResourceDescription(
                     "file:org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt",
                     StringMapResource_impl.class));
-    
+
     aed.toXML(new FileOutputStream(new File(outputDirectory, "UimaAcronymAnnotator.xml")));
   }
 }

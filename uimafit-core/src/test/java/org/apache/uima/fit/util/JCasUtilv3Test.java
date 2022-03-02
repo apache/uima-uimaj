@@ -34,12 +34,12 @@ import static org.apache.uima.fit.util.JCasUtil.selectSingleAt;
 import static org.apache.uima.fit.util.JCasUtil.toText;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +67,7 @@ import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link JCasUtil}.
@@ -88,7 +88,8 @@ public class JCasUtilv3Test extends ComponentTestBase {
     for (Token t : select(jCas, Token.class)) {
       // The naive approach is assumed to be correct
       // uimaFIT: selectCovered(jCas, Sentence.class, t.getBegin(), t.getEnd());
-      List<Sentence> stem1 = jCas.select(Sentence.class).coveredBy(t.getBegin(), t.getEnd()).asList();
+      List<Sentence> stem1 = jCas.select(Sentence.class).coveredBy(t.getBegin(), t.getEnd())
+              .asList();
       // uimaFIT: selectCovered(jCas, Sentence.class, t);
       List<Sentence> stem2 = jCas.select(Sentence.class).coveredBy(t).asList();
       check(jCas, t, stem1, stem2);
@@ -116,7 +117,8 @@ public class JCasUtilv3Test extends ComponentTestBase {
     for (Token t : select(jCas, Token.class)) {
       // The naive approach is assumed to be correct
       // uimaFIT: selectCovered(jCas, Sentence.class, t.getBegin(), t.getEnd());
-      List<Sentence> stem1 = jCas.select(Sentence.class).coveredBy(t.getBegin(), t.getEnd()).asList();
+      List<Sentence> stem1 = jCas.select(Sentence.class).coveredBy(t.getBegin(), t.getEnd())
+              .asList();
       // uimaFIT: selectCovered(jCas, Sentence.class, t);
       List<Sentence> stem2 = jCas.select(Sentence.class).coveredBy(t).asList();
       check(jCas, t, stem1, stem2);
@@ -133,26 +135,27 @@ public class JCasUtilv3Test extends ComponentTestBase {
 
       JCas jcas = cas.getJCas();
       Collection<Sentence> sentences = select(jcas, Sentence.class);
-      
+
       long timeNaive = 0;
       long timeOptimized = 0;
-      
+
       // Prepare the index
       long timeIndexed = System.currentTimeMillis();
       Map<Sentence, List<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
       timeIndexed = System.currentTimeMillis() - timeIndexed;
-      
+
       // -- The order of entries in the index is NOT defined!
       // Check that order of indexed sentences corresponds to regular CAS-index order
       // List<Sentence> relevantSentences = new ArrayList<>(sentences);
       // relevantSentences.retainAll(index.keySet());
       // assertEquals(relevantSentences, new ArrayList<>(index.keySet()));
-      
+
       for (Sentence t : sentences) {
         long ti = System.currentTimeMillis();
         // The naive approach is assumed to be correct
         // uimaFIT: selectCovered(jcas, Token.class, t.getBegin(), t.getEnd());
-        List<Token> expected = jcas.select(Token.class).coveredBy(t.getBegin(), t.getEnd()).asList();
+        List<Token> expected = jcas.select(Token.class).coveredBy(t.getBegin(), t.getEnd())
+                .asList();
         timeNaive += System.currentTimeMillis() - ti;
 
         // Record time for optimized selectCovered
@@ -168,7 +171,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
 
         check(jcas, t, expected, actual1);
         check(jcas, t, expected, actual2);
-        
+
         // System.out.printf("%n--- OK ---------------%n%n");
       }
       System.out.printf(
@@ -242,12 +245,14 @@ public class JCasUtilv3Test extends ComponentTestBase {
         List<Sentence> actual = jcas.select(Sentence.class).between(t1, t2).asList();
         timeOptimized += System.currentTimeMillis() - ti;
 
-        assertEquals("Naive: Searching between " + t1 + " and " + t2, reference, actual);
+        assertThat(actual) //
+                .as("Naive: Searching between " + t1 + " and " + t2) //
+                .isEqualTo(reference);
       }
 
       System.out.format("Speed up factor %.2f [naive:%d optimized:%d diff:%d]\n",
-              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized, timeNaive
-                      - timeOptimized);
+              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized,
+              timeNaive - timeOptimized);
     }
   }
 
@@ -322,7 +327,9 @@ public class JCasUtilv3Test extends ComponentTestBase {
     // print(a1);
     // System.out.println("--- Optimized");
     // print(a2);
-    assertEquals("Container: [" + t.getBegin() + ".." + t.getEnd() + "]", a1, a2);
+    assertThat(a1) //
+            .as("Container: [" + t.getBegin() + ".." + t.getEnd() + "]") //
+            .isEqualTo(a2);
   }
 
   @Test
@@ -331,8 +338,9 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
-        // uimaFIT: toText(JCasUtil.select(jCas, Token.class))
-        jCas.select(Token.class).map(AnnotationFS::getCoveredText).collect(Collectors.toList()));
+            // uimaFIT: toText(JCasUtil.select(jCas, Token.class))
+            jCas.select(Token.class).map(AnnotationFS::getCoveredText)
+                    .collect(Collectors.toList()));
   }
 
   @Test
@@ -350,12 +358,14 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertEquals("Rot", jCas.select(Token.class).backwards().get(3).getCoveredText());
     // uimaFIT: assertNull(JCasUtil.selectByIndex(jCas, Token.class, -5));
     assertThatExceptionOfType(CASRuntimeException.class)
-        .isThrownBy(() -> jCas.select(Token.class).backwards().get(4))
-        .withMessage("CAS does not contain any '" + Token.class.getName() + "' instances  shifted by: 4.");
+            .isThrownBy(() -> jCas.select(Token.class).backwards().get(4))
+            .withMessage("CAS does not contain any '" + Token.class.getName()
+                    + "' instances  shifted by: 4.");
     // uimaFIT: assertNull(JCasUtil.selectByIndex(jCas, Token.class, 4));
     assertThatExceptionOfType(CASRuntimeException.class)
-        .isThrownBy(() -> jCas.select(Token.class).backwards().get(4))
-        .withMessage("CAS does not contain any '" + Token.class.getName() + "' instances  shifted by: 4.");
+            .isThrownBy(() -> jCas.select(Token.class).backwards().get(4))
+            .withMessage("CAS does not contain any '" + Token.class.getName()
+                    + "' instances  shifted by: 4.");
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -441,7 +451,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
 
     // uimaFIT: selectSingleRelative(jCas, Token.class, token.get(1), -1)
-    Token preceding =  jCas.select(Token.class).startAt(token.get(1)).get(-1);
+    Token preceding = jCas.select(Token.class).startAt(token.get(1)).get(-1);
     assertEquals(token.get(0).getCoveredText(), preceding.getCoveredText());
 
     // selectSingleRelative(jCas, Token.class, token.get(1), 1);
@@ -455,13 +465,13 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
-    
+
     for (Token token : tokens) {
       new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
-    }    
-    
-    Token lastToken = tokens.get(tokens.size()-1);
-    Token preLastToken = tokens.get(tokens.size()-2);
+    }
+
+    Token lastToken = tokens.get(tokens.size() - 1);
+    Token preLastToken = tokens.get(tokens.size() - 2);
     // uimaFIT selectSingleRelative(jCas, AnalyzedText.class, lastToken, -1);
     AnalyzedText a = jCas.select(AnalyzedText.class).startAt(lastToken).shifted(-1).get();
     assertEquals(preLastToken.getBegin(), a.getBegin());
@@ -474,20 +484,20 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
-    
+
     for (Token token : tokens) {
       new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
-    }    
-    
+    }
+
     Token firstToken = tokens.get(0);
     Token secondToken = tokens.get(1);
-    // uimaFIT: 
+    // uimaFIT:
     // AnalyzedText a = selectSingleRelative(jCas, AnalyzedText.class, firstToken, 1);
     AnalyzedText a = jCas.select(AnalyzedText.class).startAt(firstToken).get(1);
     assertEquals(secondToken.getBegin(), a.getBegin());
     assertEquals(secondToken.getEnd(), a.getEnd());
   }
-  
+
   // Actually, in UIMAv3 this does not fail - and it is ok to not fail
   @Deprecated()
   @Test
@@ -496,18 +506,18 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
-    
+
     for (Token token : tokens) {
       new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
-    }    
-    
+    }
+
     Token firstToken = tokens.get(0);
     // uimaFIT:
     // assertThatExceptionOfType(IllegalArgumentException.class)
-    //    .isThrownBy(() -> selectSingleRelative(jCas, AnalyzedText.class, firstToken, 0));
-    
+    // .isThrownBy(() -> selectSingleRelative(jCas, AnalyzedText.class, firstToken, 0));
+
     assertThat(jCas.select(AnalyzedText.class).startAt(firstToken).shifted(0).get())
-        .isSameAs(jCas.select(AnalyzedText.class).get());
+            .isSameAs(jCas.select(AnalyzedText.class).get());
   }
 
   @Test
@@ -516,11 +526,11 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
-    
+
     for (Token token : tokens) {
       new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
-    }    
-    
+    }
+
     Token firstToken = tokens.get(0);
     // uimaFIT: selectSingleRelative(jCas, Token.class, firstToken, 0);
     assertEquals(firstToken, jCas.select(Token.class).startAt(firstToken).shifted(0).get());
@@ -533,8 +543,8 @@ public class JCasUtilv3Test extends ComponentTestBase {
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
 
     // uimaFIT: selectFollowing(jCas, Token.class, token.get(1), 1).get(0).getCoveredText())
-    assertEquals(token.get(2).getCoveredText(), jCas.select(Token.class).following(token.get(1))
-            .get().getCoveredText());
+    assertEquals(token.get(2).getCoveredText(),
+            jCas.select(Token.class).following(token.get(1)).get().getCoveredText());
   }
 
   @Test
@@ -544,8 +554,8 @@ public class JCasUtilv3Test extends ComponentTestBase {
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
 
     // uimaFIT: selectPreceding(jCas, Token.class, token.get(1), 1).get(0).getCoveredText());
-    assertEquals(token.get(0).getCoveredText(), jCas.select(Token.class).preceding(token.get(1))
-            .get().getCoveredText());
+    assertEquals(token.get(0).getCoveredText(),
+            jCas.select(Token.class).preceding(token.get(1)).get().getCoveredText());
   }
 
   @Test
@@ -553,12 +563,12 @@ public class JCasUtilv3Test extends ComponentTestBase {
     String text = "a b c d e";
     tokenBuilder.buildTokens(jCas, text);
     new Token(jCas, 2, 7).addToIndexes();
-    
+
     Token c = JCasUtil.selectAt(jCas, Token.class, 4, 5).get(0);
 
     // uimaFIT: selectPreceding(jCas, Token.class, c, 2);
     List<Token> preceedingTokens = jCas.select(Token.class).preceding(c).limit(2).asList();
-    
+
     assertEquals(2, preceedingTokens.size());
     assertEquals("b", preceedingTokens.get(1).getCoveredText());
     assertEquals("a", preceedingTokens.get(0).getCoveredText());
@@ -573,12 +583,12 @@ public class JCasUtilv3Test extends ComponentTestBase {
     new Token(jCas, 3, 4).addToIndexes();
     new Token(jCas, 4, 5).addToIndexes();
     new Token(jCas, 1, 3).addToIndexes();
-    
+
     Token c = JCasUtil.selectAt(jCas, Token.class, 2, 3).get(0);
 
     // selectPreceding(jCas, Token.class, c, 2);
     List<Token> preceedingTokens = jCas.select(Token.class).preceding(c).limit(2).asList();
-    
+
     assertEquals(2, preceedingTokens.size());
     assertEquals("b", preceedingTokens.get(1).getCoveredText());
     assertEquals("a", preceedingTokens.get(0).getCoveredText());
@@ -590,13 +600,13 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
-    
+
     for (Token token : tokens) {
       new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
-    }    
-    
-    Token lastToken = tokens.get(tokens.size()-1);
-    Token preLastToken = tokens.get(tokens.size()-2);
+    }
+
+    Token lastToken = tokens.get(tokens.size() - 1);
+    Token preLastToken = tokens.get(tokens.size() - 2);
     // selectPreceding(jCas, AnalyzedText.class, lastToken, 1).get(0);
     AnalyzedText a = jCas.select(AnalyzedText.class).preceding(lastToken).limit(1).get();
     assertEquals(preLastToken.getBegin(), a.getBegin());
@@ -609,11 +619,11 @@ public class JCasUtilv3Test extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, text);
 
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
-    
+
     for (Token token : tokens) {
       new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
-    }    
-    
+    }
+
     Token firstToken = tokens.get(0);
     Token secondToken = tokens.get(1);
     // selectFollowing(jCas, AnalyzedText.class, firstToken, 1).get(0);
@@ -674,12 +684,12 @@ public class JCasUtilv3Test extends ComponentTestBase {
     List<Token> following1 = jCas.select(Token.class).following(sentence).limit(1).asList();
     assertEquals(Arrays.asList("D"), JCasUtil.toText(following1));
     assertEquals(Arrays.asList(d), following1);
-    
+
     // uimaFIT: selectFollowing(this.jCas, Token.class, sentence, 2);
     List<Token> following2 = jCas.select(Token.class).following(sentence).limit(2).asList();
     assertEquals(Arrays.asList("D", "E"), JCasUtil.toText(following2));
     assertEquals(Arrays.asList(d, e), following2);
-    
+
     // uimaFIT: selectFollowing(this.jCas, Token.class, sentence, 3);
     List<Token> following3 = jCas.select(Token.class).following(sentence).limit(3).asList();
     assertEquals(Arrays.asList("D", "E"), JCasUtil.toText(following3));
@@ -738,10 +748,10 @@ public class JCasUtilv3Test extends ComponentTestBase {
 
     // uimaFIT:
     // assertThatExceptionOfType(IllegalArgumentException.class)
-    //    .isThrownBy(() -> selectSingle(jcas, Token.class)); 
-    
+    // .isThrownBy(() -> selectSingle(jcas, Token.class));
+
     assertThatExceptionOfType(CASRuntimeException.class)
-        .isThrownBy(() -> jcas.select(Token.class).single()); 
+            .isThrownBy(() -> jcas.select(Token.class).single());
 
     new Token(jcas, 0, 1).addToIndexes();
 
@@ -752,12 +762,12 @@ public class JCasUtilv3Test extends ComponentTestBase {
 
     // uimaFIT:
     // assertThatExceptionOfType(IllegalArgumentException.class)
-    //    .isThrownBy(() -> selectSingle(jcas, Token.class))
-    //    .as("selectSingle must fail if there is more than one annotation of the type"); 
+    // .isThrownBy(() -> selectSingle(jcas, Token.class))
+    // .as("selectSingle must fail if there is more than one annotation of the type");
 
     assertThatExceptionOfType(CASRuntimeException.class)
-      .isThrownBy(() -> jcas.select(Token.class).single())
-      .as("selectSingle must fail if there is more than one annotation of the type"); 
+            .isThrownBy(() -> jcas.select(Token.class).single())
+            .as("selectSingle must fail if there is more than one annotation of the type");
   }
 
   @Test
@@ -801,10 +811,11 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertNotNull(getView(jcas, "view1", null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetNonExistingView() throws Exception {
     JCas jcas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
-    assertNull(getView(jcas, "view1", false));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> getView(jcas, "view1", false));
   }
 
   @Test
@@ -824,13 +835,14 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertEquals("uima.tcas.Annotation", jCas.getCasType(Annotation.class).getName());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetNonAnnotationType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
     // There is no alternative in UIMA v3
-    getAnnotationType(jCas, TOP.class);
+    assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> getAnnotationType(jCas, TOP.class));
   }
 
   @Test
@@ -861,7 +873,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     // Check the first token is not contained in any sentence
     assertFalse(!index.get(tokens.get(0)).isEmpty());
   }
-  
+
   @Test
   public void testSelectAt() throws Exception {
     this.jCas.setDocumentText("A B C D E");
@@ -878,7 +890,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     }
 
     List<Token> tokensAt = selectAt(jCas, Token.class, c.getBegin(), c.getEnd());
-    
+
     assertEquals(2, tokensAt.size());
     assertEquals(c.getBegin(), tokensAt.get(0).getBegin());
     assertEquals(c.getEnd(), tokensAt.get(0).getEnd());
@@ -904,21 +916,19 @@ public class JCasUtilv3Test extends ComponentTestBase {
     try {
       selectSingleAt(jCas, Token.class, c.getBegin(), c.getEnd());
       fail("Expected exception not thrown");
-    }
-    catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException ex) {
       // Ignore.
     }
 
     try {
       selectSingleAt(jCas, Token.class, 1, 4);
       fail("Expected exception not thrown");
-    }
-    catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException ex) {
       // Ignore.
     }
 
     Token tokenAt = selectSingleAt(jCas, Token.class, b.getBegin(), b.getEnd());
-  
+
     assertEquals(b.getBegin(), tokenAt.getBegin());
     assertEquals(b.getEnd(), tokenAt.getEnd());
   }

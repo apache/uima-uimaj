@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceManagerFactory {
   private static final Logger LOG = LoggerFactory.getLogger(ResourceManagerFactory.class);
-  
+
   private static ResourceManagerCreator resourceManagerCreator = new DefaultResourceManagerCreator();
 
   private ResourceManagerFactory() {
@@ -99,12 +99,12 @@ public class ResourceManagerFactory {
       short maj = UimaVersion.getMajorVersion();
       short min = UimaVersion.getMinorVersion();
       short rev = UimaVersion.getBuildRevision();
-      boolean uimaCoreIgnoresContextClassloader = 
-              (maj == 2 && (min < 10 || (min == 10 && rev < 3))) || // version < 2.10.3
-              (maj == 3 && ((min == 0 && rev < 1)));                // version < 3.0.1
+      boolean uimaCoreIgnoresContextClassloader = (maj == 2 && (min < 10 || (min == 10 && rev < 3)))
+              || // version < 2.10.3
+              (maj == 3 && ((min == 0 && rev < 1))); // version < 3.0.1
       if (uimaCoreIgnoresContextClassloader) {
-        LOG.trace("Detected UIMA version " + maj + "." + min + "." + rev + 
-                " which ignores the thread context classloader, setting it explicitly");
+        LOG.trace("Detected UIMA version " + maj + "." + min + "." + rev
+                + " which ignores the thread context classloader, setting it explicitly");
         resMgr.setExtensionClassLoader(ClassLoaderUtils.findClassloader(), true);
       }
 

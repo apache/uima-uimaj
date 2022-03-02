@@ -42,14 +42,14 @@ import org.apache.uima.resource.ResourceManager;
 public class JCasIterable implements Iterable<JCas> {
 
   private final ResourceManager resMgr;
-  
+
   private final CollectionReaderDescription reader;
 
   private final AnalysisEngineDescription[] engines;
 
   /**
-   * Iterate over the documents loaded by the collection reader, running the analysis engines on each
-   * one before yielding them. When created with this constructor, analysis engines by default
+   * Iterate over the documents loaded by the collection reader, running the analysis engines on
+   * each one before yielding them. When created with this constructor, analysis engines by default
    * receive a collectionProcessComplete call when all documents have been read from the reader and
    * all components get destroyed.
    * 
@@ -64,8 +64,8 @@ public class JCasIterable implements Iterable<JCas> {
   }
 
   /**
-   * Iterate over the documents loaded by the collection reader, running the analysis engines on each
-   * one before yielding them. When created with this constructor, analysis engines by default
+   * Iterate over the documents loaded by the collection reader, running the analysis engines on
+   * each one before yielding them. When created with this constructor, analysis engines by default
    * receive a collectionProcessComplete call when all documents have been read from the reader and
    * all components get destroyed.
    * 

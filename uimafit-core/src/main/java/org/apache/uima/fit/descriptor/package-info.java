@@ -20,4 +20,3 @@
  * uimaFIT annotations used for dependency injection.
  */
 package org.apache.uima.fit.descriptor;
-

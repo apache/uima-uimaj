@@ -27,7 +27,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * 
@@ -47,9 +47,9 @@ public class ComponentTestBase {
     try {
       TYPE_SYSTEM_DESCRIPTION.set(TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-      TypePriorities tp = TypePrioritiesFactory.createTypePriorities(new String[] {
-          "org.apache.uima.fit.type.Sentence", "org.apache.uima.fit.type.AnalyzedText",
-          "org.apache.uima.fit.type.Token" });
+      TypePriorities tp = TypePrioritiesFactory
+              .createTypePriorities(new String[] { "org.apache.uima.fit.type.Sentence",
+                  "org.apache.uima.fit.type.AnalyzedText", "org.apache.uima.fit.type.Token" });
       TYPE_PRIORITIES.set(tp);
 
       JCas jCas = CasCreationUtils.createCas(TYPE_SYSTEM_DESCRIPTION.get(), tp, null).getJCas();
@@ -77,7 +77,7 @@ public class ComponentTestBase {
    * (~100ms on my laptop). Instead, we will have one JCas per thread sitting around that we will
    * reset everytime a new test is called.
    */
-  @Before
+  @BeforeEach
   public void setUp() {
     jCas = JCAS.get();
     jCas.reset();

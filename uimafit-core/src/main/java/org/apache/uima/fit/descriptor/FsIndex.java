@@ -59,7 +59,7 @@ public @interface FsIndex {
 
   /**
    * The type of the index as name. As an alternative, the index can be defined using a class with
-   * {@link #type()}. One method or the other must be used to set the index type. 
+   * {@link #type()}. One method or the other must be used to set the index type.
    * 
    * @see FsIndexDescription#getTypeName()
    * 
@@ -69,7 +69,7 @@ public @interface FsIndex {
 
   /**
    * The type of the index as class. As an alternative, the index can be defined using a type name
-   * with {@link #typeName()}. One method or the other must be used to set the index type. 
+   * with {@link #typeName()}. One method or the other must be used to set the index type.
    * 
    * @see FsIndexDescription#getTypeName()
    * 

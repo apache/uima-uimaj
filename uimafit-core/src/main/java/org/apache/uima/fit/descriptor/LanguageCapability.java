@@ -26,9 +26,11 @@ import java.lang.annotation.Target;
 /**
  * Provides information on the languages supported by a component.
  * 
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}LanguageCapability({ "en", "de" })
- * </code></pre>
+ * </code>
+ * </pre>
  */
 
 @Retention(RetentionPolicy.RUNTIME)

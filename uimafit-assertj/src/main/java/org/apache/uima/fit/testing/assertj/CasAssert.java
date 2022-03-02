@@ -23,16 +23,12 @@ import org.apache.uima.cas.CAS;
 /**
  * Asserts related to the {@link CAS}.
  */
-public class CasAssert
-    extends CasAssert_ImplBase<CasAssert, CAS>
-{
-    public CasAssert(CAS actual)
-    {
-        super(actual, CasAssert.class);
-    }
+public class CasAssert extends CasAssert_ImplBase<CasAssert, CAS> {
+  public CasAssert(CAS actual) {
+    super(actual, CasAssert.class);
+  }
 
-    public static CasAssert assertThat(CAS actual)
-    {
-        return new CasAssert(actual);
-    }
+  public static CasAssert assertThat(CAS actual) {
+    return new CasAssert(actual);
+  }
 }

@@ -26,9 +26,11 @@ import java.lang.annotation.Target;
 /**
  * Provides information on the MIME types supported by a component.
  * 
- * <pre><code>
+ * <pre>
+ * <code>
  * {@literal @}MimeTypeCapability({ "application/xml", "text/html" })
- * </code></pre>
+ * </code>
+ * </pre>
  */
 
 @Retention(RetentionPolicy.RUNTIME)

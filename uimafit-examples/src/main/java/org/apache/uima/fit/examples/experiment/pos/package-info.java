@@ -20,4 +20,3 @@
  * Example for an UIMA-based experiment running an analysis and evaluating the results.
  */
 package org.apache.uima.fit.examples.experiment.pos;
-

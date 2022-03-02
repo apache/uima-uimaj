@@ -39,8 +39,8 @@ import org.springframework.context.ApplicationContextAware;
  * Allowing UIMA components to access beans from a {@link ApplicationContext context}.
  * 
  */
-public class SpringContextResourceManager extends ResourceManager_impl implements
-        ApplicationContextAware {
+public class SpringContextResourceManager extends ResourceManager_impl
+        implements ApplicationContextAware {
   private ApplicationContext context;
 
   private boolean autowireEnabled = false;

@@ -41,8 +41,7 @@ public class XmiWriter extends JCasConsumer_ImplBase {
       outputDirectory.mkdirs();
       CasIOUtil.writeXmi(aJCas, new File(outputDirectory, count + ".xmi"));
       count++;
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }

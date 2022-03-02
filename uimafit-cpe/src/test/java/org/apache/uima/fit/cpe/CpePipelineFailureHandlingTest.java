@@ -34,11 +34,11 @@ import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Progress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CpePipelineFailureHandlingTest {
   private static AtomicInteger processed = new AtomicInteger(0);
-  
+
   @Test
   public void test() throws Exception {
     int failAfter = 50;
@@ -51,9 +51,8 @@ public class CpePipelineFailureHandlingTest {
       // Ignore
     }
 
-    assertThat(processed.get())
-      .as("CPE stop processing soon after reader threw an exception")
-      .isBetween(failAfter, failAfter + getRuntime().availableProcessors());
+    assertThat(processed.get()).as("CPE stop processing soon after reader threw an exception")
+            .isBetween(failAfter, failAfter + getRuntime().availableProcessors());
   }
 
   public static class Reader extends JCasCollectionReader_ImplBase {

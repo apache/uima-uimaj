@@ -20,8 +20,8 @@ package org.apache.uima.fit.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -37,7 +37,7 @@ import org.apache.uima.fit.type.Token;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * I initially thought that the behavior of mapping the default view to another yet-to-be-created
@@ -49,8 +49,8 @@ import org.junit.Test;
 public class ViewCreatorAnnotatorTest extends ComponentTestBase {
 
   @Test
-  public void testViewCreatorAnnotator() throws ResourceInitializationException,
-          AnalysisEngineProcessException, CASException {
+  public void testViewCreatorAnnotator()
+          throws ResourceInitializationException, AnalysisEngineProcessException, CASException {
     AnalysisEngine viewCreator = AnalysisEngineFactory.createEngine(ViewCreatorAnnotator.class,
             typeSystemDescription, ViewCreatorAnnotator.PARAM_VIEW_NAME, "myView");
     viewCreator.process(jCas);
@@ -71,8 +71,7 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
     engine.process(jCas);
     assertEquals("some", JCasUtil.selectByIndex(jCas, Token.class, 0).getCoveredText());
 
-    engine = AnalysisEngineFactory.createEngine(SofaUnawareAnnotator.class,
-            typeSystemDescription);
+    engine = AnalysisEngineFactory.createEngine(SofaUnawareAnnotator.class, typeSystemDescription);
     jCas.reset();
     engine.process(jCas);
     assertEquals("some", JCasUtil.selectByIndex(jCas, Token.class, 0).getCoveredText());
@@ -86,55 +85,51 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @SuppressWarnings("javadoc")
   @Test
   public void testOtherViewAware() throws Exception {
-    AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
-            SofaAwareAnnotator.class, typeSystemDescription);
+    AnalysisEngineDescription description = AnalysisEngineFactory
+            .createEngineDescription(SofaAwareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
-    
+
     Throwable thrown = catchThrowable(() -> {
       // Avoid exception being logged to the console
       HideOutput hider = null;
       try {
         hider = new HideOutput();
         engine.process(jCas);
-      }
-      finally {
+      } finally {
         if (hider != null) {
           hider.restoreOutput();
         }
       }
     });
-    
-    assertThat(thrown)
-        .as("Exception thrown when view does not exist")
-        .hasRootCauseInstanceOf(CASRuntimeException.class)
-        .hasStackTraceContaining("No sofaFS with name myView found");
+
+    assertThat(thrown).as("Exception thrown when view does not exist")
+            .hasRootCauseInstanceOf(CASRuntimeException.class)
+            .hasStackTraceContaining("No sofaFS with name myView found");
   }
 
   @Test
-  public void testOtherViewUnaware() throws ResourceInitializationException,
-          AnalysisEngineProcessException {
-    AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
-            SofaUnawareAnnotator.class, typeSystemDescription);
+  public void testOtherViewUnaware()
+          throws ResourceInitializationException, AnalysisEngineProcessException {
+    AnalysisEngineDescription description = AnalysisEngineFactory
+            .createEngineDescription(SofaUnawareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
-    
+
     Throwable thrown = catchThrowable(() -> {
       // Avoid exception being logged to the console
       HideOutput hider = null;
       try {
         hider = new HideOutput();
         engine.process(jCas);
-      }
-      finally {
+      } finally {
         if (hider != null) {
           hider.restoreOutput();
         }
       }
     });
-    
-    assertThat(thrown)
-        .as("Exception thrown when view does not exist")
-        .hasRootCauseInstanceOf(CASRuntimeException.class)
-        .hasStackTraceContaining("No sofaFS with name myView found");
+
+    assertThat(thrown).as("Exception thrown when view does not exist")
+            .hasRootCauseInstanceOf(CASRuntimeException.class)
+            .hasStackTraceContaining("No sofaFS with name myView found");
 
   }
 
@@ -145,15 +140,15 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @SuppressWarnings("javadoc")
   @Test
   public void testSofaInitializer() throws Exception {
-    AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
-            SofaAwareAnnotator.class, typeSystemDescription);
+    AnalysisEngineDescription description = AnalysisEngineFactory
+            .createEngineDescription(SofaAwareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
     AnalysisEngine viewCreator = AnalysisEngineFactory.createEngine(ViewCreatorAnnotator.class,
             typeSystemDescription, ViewCreatorAnnotator.PARAM_VIEW_NAME, "myView");
     viewCreator.process(jCas);
     engine.process(jCas);
-    assertEquals("some", JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0)
-            .getCoveredText());
+    assertEquals("some",
+            JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0).getCoveredText());
 
     // here I run again with viewCreator running twice to make sure it
     // does the right thing when the view
@@ -162,8 +157,8 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
     viewCreator.process(jCas);
     viewCreator.process(jCas);
     engine.process(jCas);
-    assertEquals("some", JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0)
-            .getCoveredText());
+    assertEquals("some",
+            JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0).getCoveredText());
 
     description = AnalysisEngineFactory.createEngineDescription(SofaUnawareAnnotator.class,
             typeSystemDescription);
@@ -171,15 +166,15 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
     jCas.reset();
     viewCreator.process(jCas);
     engine.process(jCas);
-    assertEquals("some", JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0)
-            .getCoveredText());
+    assertEquals("some",
+            JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0).getCoveredText());
 
     jCas.reset();
     viewCreator.process(jCas);
     viewCreator.process(jCas);
     engine.process(jCas);
-    assertEquals("some", JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0)
-            .getCoveredText());
+    assertEquals("some",
+            JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0).getCoveredText());
   }
 
   @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA)

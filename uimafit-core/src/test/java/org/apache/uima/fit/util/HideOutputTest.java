@@ -18,17 +18,14 @@
  */
 package org.apache.uima.fit.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import junit.framework.Assert;
-
 import org.apache.uima.fit.testing.util.HideOutput;
-import org.junit.Test;
-
-/**
- */
+import org.junit.jupiter.api.Test;
 
 public class HideOutputTest {
 
@@ -50,15 +47,15 @@ public class HideOutputTest {
       HideOutput ho = new HideOutput();
       System.out.print(message);
       System.err.print(message);
-      Assert.assertEquals("", stringOut.toString());
-      Assert.assertEquals("", stringErr.toString());
+      assertThat(stringOut.toString()).isEmpty();
+      assertThat(stringErr.toString()).isEmpty();
 
       // check that data is again written to stdout and stderr after restoring
       ho.restoreOutput();
       System.out.print(message);
       System.err.print(message);
-      Assert.assertEquals(message, stringOut.toString());
-      Assert.assertEquals(message, stringErr.toString());
+      assertThat(stringOut.toString()).isEqualTo(message);
+      assertThat(stringErr.toString()).isEqualTo(message);
     }
     // restore stdout and stderr at the end of the test
     finally {
@@ -67,6 +64,5 @@ public class HideOutputTest {
       stringOut.close();
       stringErr.close();
     }
-
   }
 }

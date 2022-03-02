@@ -43,7 +43,8 @@ public final class CapabilityFactory {
    * Creates a single capability consisting of the information in the {@link SofaCapability} and
    * {@link TypeCapability} annotations for the class.
    * 
-   * @param componentClass a class with capability annotations
+   * @param componentClass
+   *          a class with capability annotations
    * @return capabilities extracted from the class
    */
   public static Capability createCapability(Class<?> componentClass) {
@@ -55,7 +56,7 @@ public final class CapabilityFactory {
             MimeTypeCapability.class);
     boolean languageCapabilityPresent = ReflectionUtil.isAnnotationPresent(componentClass,
             LanguageCapability.class);
-    
+
     // Skip if no capability annotations are present at all
     if (!sofaCapabilityPresent && !typeCapabilityPresent && !mimeTypeCapabilityPresent
             && !languageCapabilityPresent) {
@@ -73,7 +74,7 @@ public final class CapabilityFactory {
       }
       capability.setLanguagesSupported(languages);
     }
-    
+
     if (mimeTypeCapabilityPresent) {
       MimeTypeCapability annotation = ReflectionUtil.getAnnotation(componentClass,
               MimeTypeCapability.class);
@@ -83,9 +84,10 @@ public final class CapabilityFactory {
       }
       capability.setMimeTypesSupported(mimeTypes);
     }
-    
+
     if (sofaCapabilityPresent) {
-      SofaCapability annotation = ReflectionUtil.getAnnotation(componentClass, SofaCapability.class);
+      SofaCapability annotation = ReflectionUtil.getAnnotation(componentClass,
+              SofaCapability.class);
       String[] inputSofas = annotation.inputSofas();
       if (inputSofas.length == 1 && inputSofas[0].equals(SofaCapability.NO_DEFAULT_VALUE)) {
         inputSofas = new String[0];
@@ -100,7 +102,8 @@ public final class CapabilityFactory {
     }
 
     if (typeCapabilityPresent) {
-      TypeCapability annotation = ReflectionUtil.getAnnotation(componentClass, TypeCapability.class);
+      TypeCapability annotation = ReflectionUtil.getAnnotation(componentClass,
+              TypeCapability.class);
       String[] inputTypesOrFeatureNames = annotation.inputs();
       capability.setInputs(createTypesOrFeatures(inputTypesOrFeatureNames));
       String[] outputTypesOrFeatureNames = annotation.outputs();

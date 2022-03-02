@@ -22,7 +22,6 @@ import static org.apache.uima.fit.cpe.CpePipeline.runPipeline;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -34,16 +33,15 @@ import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CpePipelineTest {
   @Test
   public void test() throws Exception {
     runPipeline( //
-            createReaderDescription(Reader.class), 
-            createEngineDescription(Annotator.class),
+            createReaderDescription(Reader.class), createEngineDescription(Annotator.class),
             createEngineDescription(Writer.class));
-    
+
     assertThat(Writer.MARKER_SEEN).isEqualTo(MARKER);
   }
 
@@ -71,7 +69,9 @@ public class CpePipelineTest {
 
     @Override
     public boolean hasNext() throws IOException, CollectionException {
-      assertTrue("typeSystemInit() has not been called", initTypeSystemCalled);
+      assertThat(initTypeSystemCalled) //
+              .as("typeSystemInit() has not been called") //
+              .isTrue();
       return this.current < this.size;
     }
 

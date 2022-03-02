@@ -20,27 +20,22 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-/**
- */
 public class JCasBuilderTest extends ComponentTestBase {
-  @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
-
   @Test
-  public void test() throws Exception {
+  public void test(@TempDir Path folder) throws Exception {
     JCasBuilder jb = new JCasBuilder(jCas);
     jb.add("This sentence is not annotated. ");
     jb.add("But this sentences is annotated. ", Sentence.class);
@@ -58,9 +53,9 @@ public class JCasBuilderTest extends ComponentTestBase {
     jb.add(begin, Sentence.class);
     jb.close();
 
-    File outputFile = new File(folder.getRoot(), "dump-output.txt");
-    AnalysisEngine writer = createEngine(CasDumpWriter.class, CasDumpWriter.PARAM_OUTPUT_FILE,
-            outputFile.getPath());
+    File outputFile = folder.resolve("dump-output.txt").toFile();
+    AnalysisEngine writer = createEngine(CasDumpWriter.class, //
+            CasDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
     writer.process(jb.getJCas());
 
     String reference = readFileToString(

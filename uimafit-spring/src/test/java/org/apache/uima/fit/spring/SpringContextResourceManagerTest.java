@@ -21,7 +21,7 @@ package org.apache.uima.fit.spring;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnceWithoutNested;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -30,7 +30,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -80,8 +80,8 @@ public class SpringContextResourceManagerTest {
     final GenericApplicationContext ctx = new GenericApplicationContext();
     AnnotationConfigUtils.registerAnnotationConfigProcessors(ctx);
     ctx.registerBeanDefinition("springBean",
-            BeanDefinitionBuilder.genericBeanDefinition(String.class)
-                    .addConstructorArgValue("BEAN").getBeanDefinition());
+            BeanDefinitionBuilder.genericBeanDefinition(String.class).addConstructorArgValue("BEAN")
+                    .getBeanDefinition());
     ctx.refresh();
     return ctx;
   }

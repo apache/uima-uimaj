@@ -80,8 +80,8 @@ public class ExternalResourceExample {
    * Illustrate how to configure the annotator with the shared model object.
    */
   public static void main(String[] args) throws Exception {
-    ExternalResourceDescription extDesc = createSharedResourceDescription(
-            new File("somemodel.bin"), SharedModel.class);
+    ExternalResourceDescription extDesc = createSharedResourceDescription(new File("somemodel.bin"),
+            SharedModel.class);
 
     // Binding external resource to each Annotator individually
     AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class, Annotator.RES_MODEL,

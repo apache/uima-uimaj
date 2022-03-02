@@ -20,7 +20,7 @@
 package org.apache.uima.fit.spring;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -38,7 +38,7 @@ import org.apache.uima.impl.UIMAFramework_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ResourceCreationSpecifier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -83,14 +83,13 @@ public class UimaFactoryInjectionTest {
     final GenericApplicationContext ctx = new GenericApplicationContext();
     AnnotationConfigUtils.registerAnnotationConfigProcessors(ctx);
     ctx.registerBeanDefinition("otherBean",
-            BeanDefinitionBuilder.genericBeanDefinition(String.class)
-                    .addConstructorArgValue("BEAN").getBeanDefinition());
+            BeanDefinitionBuilder.genericBeanDefinition(String.class).addConstructorArgValue("BEAN")
+                    .getBeanDefinition());
 
     ctx.registerBeanDefinition("analysisEngineFactory", BeanDefinitionBuilder
             .genericBeanDefinition(AnalysisEngineFactory_impl.class).getBeanDefinition());
-    ctx.registerBeanDefinition("casConsumerFactory",
-            BeanDefinitionBuilder.genericBeanDefinition(CasConsumerFactory_impl.class)
-                    .getBeanDefinition());
+    ctx.registerBeanDefinition("casConsumerFactory", BeanDefinitionBuilder
+            .genericBeanDefinition(CasConsumerFactory_impl.class).getBeanDefinition());
     ctx.registerBeanDefinition("casInitializerFactory", BeanDefinitionBuilder
             .genericBeanDefinition(CasInitializerFactory_impl.class).getBeanDefinition());
     ctx.registerBeanDefinition("collectionReaderFactory", BeanDefinitionBuilder

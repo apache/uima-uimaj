@@ -21,8 +21,8 @@ package org.apache.uima.fit.examples.tutorial.ex6;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.examples.tutorial.type.Meeting;
@@ -32,7 +32,7 @@ import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Example6Test {
 
@@ -51,7 +51,8 @@ public class Example6Test {
     AnalysisEngine engine = createEngine(builder.createAggregateDescription());
 
     JCas jCas = engine.newJCas();
-    jCas.setDocumentText("Let's meet to talk about the CPE. The meeting is over at Yorktown 01-144");
+    jCas.setDocumentText(
+            "Let's meet to talk about the CPE. The meeting is over at Yorktown 01-144");
     new Meeting(jCas, 0, 33).addToIndexes();
 
     engine.process(jCas);

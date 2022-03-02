@@ -18,8 +18,8 @@
  */
 package org.apache.uima.fit.factory.initializable;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
@@ -27,34 +27,38 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.UimaContextFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InitializableFactoryTest {
 
   @Test
   public void testInitializableFactory() throws Exception {
-    UimaContext context = UimaContextFactory.createUimaContext(
-            InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
+    UimaContext context = UimaContextFactory
+            .createUimaContext(InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
     InitializableClass ic = InitializableFactory.create(context, InitializableClass.class);
-    assertTrue(ic.booleanParameter);
+    assertThat(ic.booleanParameter).isTrue();
 
     NotInitializableClass nic = InitializableFactory.create(context, NotInitializableClass.class);
-    assertFalse(nic.booleanParameter);
+    assertThat(nic.booleanParameter).isFalse();
   }
 
-  @Test(expected = ResourceInitializationException.class)
+  @Test
   public void testBadConstructor() throws ResourceInitializationException {
-    UimaContext context = UimaContextFactory.createUimaContext(
-            InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
-    InitializableFactory.create(context, NoDefaultConstructor.class);
+    UimaContext context = UimaContextFactory
+            .createUimaContext(InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
+
+    assertThatExceptionOfType(ResourceInitializationException.class)
+            .isThrownBy(() -> InitializableFactory.create(context, NoDefaultConstructor.class));
   }
 
   public static class InitializableClass implements Initializable {
 
     public static final String PARAM_BOOLEAN_PARAMETER = "booleanParameter";
+
     @ConfigurationParameter
     public boolean booleanParameter = false;
 
+    @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
       ConfigurationParameterInitializer.initialize(this, context);
     }
@@ -63,6 +67,7 @@ public class InitializableFactoryTest {
   public static class NotInitializableClass {
 
     public static final String PARAM_BOOLEAN_PARAMETER = "booleanParameter";
+
     @ConfigurationParameter
     public boolean booleanParameter = false;
 
@@ -74,9 +79,11 @@ public class InitializableFactoryTest {
   public static class InitializableFileNamer implements Initializable {
 
     public static final String PARAM_STRING_PARAMETER = "stringParameter";
+
     @ConfigurationParameter
     public String stringParameter = "hello";
 
+    @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
       ConfigurationParameterInitializer.initialize(this, context);
     }
@@ -89,6 +96,7 @@ public class InitializableFactoryTest {
   public static class NotInitializableFileNamer {
 
     public static final String PARAM_STRING_PARAMETER = "stringParameter";
+
     @ConfigurationParameter
     public String stringParameter = "hello";
 

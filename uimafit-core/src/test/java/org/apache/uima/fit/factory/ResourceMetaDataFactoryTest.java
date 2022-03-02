@@ -18,11 +18,11 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ResourceMetaDataFactoryTest {
 

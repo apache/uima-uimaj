@@ -22,37 +22,31 @@ import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTyp
 
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class JCasFactoryBenchmark
-{
+public class JCasFactoryBenchmark {
   @Test
   public void benchmarkCreateTypeSystemDescription() throws Exception {
-    Benchmark template = new Benchmark("TEMPLATE")
-      .repeat(1000);
-    
+    Benchmark template = new Benchmark("TEMPLATE").repeat(1000);
+
     new Benchmark("createTypeSystemDescription", template)
-      .measure(() -> createTypeSystemDescription())
-      .run();
+            .measure(() -> createTypeSystemDescription()).run();
   }
-	
+
   @Test
   public void benchmarkCreateJCas() throws Exception {
-    Benchmark template = new Benchmark("TEMPLATE")
-      .repeat(1000);
-    
-    TypeSystemDescription tsd = createTypeSystemDescription();
-    
-    new Benchmark("create CAS", template)
-      .measure(() -> CasCreationUtils.createCas(tsd, null, null))
-      .run();
+    Benchmark template = new Benchmark("TEMPLATE").repeat(1000);
 
-    new Benchmark("create JCas (fresh TSD)", template)
-      .measure(() -> CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas())
-      .run();
-    
+    TypeSystemDescription tsd = createTypeSystemDescription();
+
+    new Benchmark("create CAS", template).measure(() -> CasCreationUtils.createCas(tsd, null, null))
+            .run();
+
+    new Benchmark("create JCas (fresh TSD)", template).measure(
+            () -> CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas())
+            .run();
+
     new Benchmark("create JCas (re-use TSD)", template)
-      .measure(() -> CasCreationUtils.createCas(tsd, null, null).getJCas())
-      .run();
+            .measure(() -> CasCreationUtils.createCas(tsd, null, null).getJCas()).run();
   }
 }

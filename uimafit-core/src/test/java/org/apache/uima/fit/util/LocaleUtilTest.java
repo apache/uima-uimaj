@@ -20,12 +20,12 @@ package org.apache.uima.fit.util;
 
 import static org.apache.uima.fit.util.LocaleUtil.createLocale;
 import static org.apache.uima.fit.util.LocaleUtil.getLocaleConstant;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -50,7 +50,8 @@ public class LocaleUtilTest {
     assertEquals(new Locale("ko", "KR"), createLocale("ko-KR"));
     assertEquals(new Locale("es", "ES", "Traditional_WIN"), createLocale("es-ES-Traditional_WIN"));
     assertEquals(new Locale("en", "US", "Colorado"), createLocale("en-US-Colorado"));
-    assertEquals(new Locale("en", "US", "Colorado-Boulder"), createLocale("en-US-Colorado-Boulder"));
+    assertEquals(new Locale("en", "US", "Colorado-Boulder"),
+            createLocale("en-US-Colorado-Boulder"));
     assertEquals(new Locale("de", "", "POSIX"), createLocale("de--POSIX"));
     // The following examples were taken from the javadoc for java.util.Locale.toString()
     assertEquals(new Locale("en"), createLocale("en"));

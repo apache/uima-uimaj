@@ -40,9 +40,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 
 public class SelectionAssert {
-  public static void assertSelection(RelativePosition aCondition, RelativeAnnotationPredicate aPredicate, 
-      List<TestCase> aTestCases)
-      throws Exception {
+  public static void assertSelection(RelativePosition aCondition,
+          RelativeAnnotationPredicate aPredicate, List<TestCase> aTestCases) throws Exception {
     CAS cas = CasCreationUtils.createCas();
     Type type = cas.getAnnotationType();
 
@@ -66,60 +65,59 @@ public class SelectionAssert {
         });
 
         softly.assertThat(aPredicate.apply(cas, type, x, y)).as(testCase.getDescription())
-            .isEqualTo(testCase.getValidPositions().contains(aCondition));
+                .isEqualTo(testCase.getValidPositions().contains(aCondition));
       }
     }
   }
 
-  public static void assertSelectionIsEqualOnRandomData(TypeByContextSelector aExpected, TypeByContextSelector aActual)
-      throws Exception {
+  public static void assertSelectionIsEqualOnRandomData(TypeByContextSelector aExpected,
+          TypeByContextSelector aActual) throws Exception {
     final int ITERATIONS = 30;
     final int TYPES = 5;
 
-    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
-    
+    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
+            .createTypeSystemDescription();
+
     Map<String, Type> types = new LinkedHashMap<>();
     for (int i = 0; i < TYPES; i++) {
       String typeName = "test.Type" + (i + 1);
       tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
       types.put(typeName, null);
     }
-    
+
     CAS randomCas = CasCreationUtils.createCas(tsd, null, null, null);
 
     for (String typeName : types.keySet()) {
       types.put(typeName, randomCas.getTypeSystem().getType(typeName));
     }
-    
+
     System.out.print("Iteration: ");
     try {
       Iterator<Type> ti = types.values().iterator();
       Type type1 = ti.next();
       Type type2 = ti.next();
-      
+
       for (int i = 0; i < ITERATIONS; i++) {
         if (i % 10 == 0) {
           System.out.print(i);
-        }
-        else {
+        } else {
           System.out.print(".");
         }
-  
+
         initRandomCas(randomCas, 3 * i, 0, types.values().toArray(new Type[types.size()]));
-  
-        for (Annotation context : randomCas.<Annotation>select(type1)) {
+
+        for (Annotation context : randomCas.<Annotation> select(type1)) {
           List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
           List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
-  
+
           assertThat(actual)
-              .as("Selected [%s] with context [%s]@[%d..%d]", type2.getShortName(), 
-                  type1.getShortName(), context.getBegin(), context.getEnd())
-              .containsExactlyElementsOf(expected);
+                  .as("Selected [%s] with context [%s]@[%d..%d]", type2.getShortName(),
+                          type1.getShortName(), context.getBegin(), context.getEnd())
+                  .containsExactlyElementsOf(expected);
         }
       }
       System.out.print(ITERATIONS);
-    }
-    finally {
+    } finally {
       System.out.println();
     }
   }
@@ -154,7 +152,7 @@ public class SelectionAssert {
   public static interface TypeByContextSelector {
     List<AnnotationFS> select(CAS aCas, Type aType, Annotation aContext);
   }
-  
+
   @FunctionalInterface
   public static interface RelativePositionPredicate {
     boolean apply(int beginA, int endA, int beginB, int endB);
@@ -164,10 +162,11 @@ public class SelectionAssert {
     private final String description;
 
     private final Function<RelativePositionPredicate, Boolean> predicate;
-    
+
     private final List<RelativePosition> validPositions;
 
-    public TestCase(String aDescription, Function<RelativePositionPredicate, Boolean> aPredicate, List<RelativePosition> aValidPositions) {
+    public TestCase(String aDescription, Function<RelativePositionPredicate, Boolean> aPredicate,
+            List<RelativePosition> aValidPositions) {
       description = aDescription;
       predicate = aPredicate;
       validPositions = aValidPositions;
@@ -180,7 +179,7 @@ public class SelectionAssert {
     public Function<RelativePositionPredicate, Boolean> getTest() {
       return predicate;
     }
-    
+
     public List<RelativePosition> getValidPositions() {
       return validPositions;
     }

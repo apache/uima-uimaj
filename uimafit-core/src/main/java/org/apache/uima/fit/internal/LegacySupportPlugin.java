@@ -36,7 +36,8 @@ public interface LegacySupportPlugin {
    *          the modern annotation type.
    * @return {@code true} if a legacy version of the annotation is present.
    */
-  boolean isAnnotationPresent(AccessibleObject aObject, Class<? extends Annotation> aAnnotationClass);
+  boolean isAnnotationPresent(AccessibleObject aObject,
+          Class<? extends Annotation> aAnnotationClass);
 
   /**
    * Checks if a legacy version of the given modern annotation is present.
@@ -84,22 +85,23 @@ public interface LegacySupportPlugin {
    */
   <L extends Annotation, M extends Annotation> M getAnnotation(Class<?> aObject,
           Class<M> aAnnotationClass);
-//
-//  /**
-//   * Get the default value of a property of the annotation. This is used for example to get the
-//   * default name of a configuration parameter.
-//   * 
-//   * @param aObject
-//   *          an object that has a legacy annotation.
-//   * @param aAnnotationClass
-//   *          the modern annotation type.
-//   * @param aProperty
-//   *          a property of the annotation, e.g. {@code "name"} (see
-//   *          {@link ConfigurationParameter#name()})
-//   * @return
-//   */
-//  <M extends Annotation> Object getDefaultValue(AccessibleObject aObject, Class<M> aAnnotationClass,
-//          String aProperty);
+  //
+  // /**
+  // * Get the default value of a property of the annotation. This is used for example to get the
+  // * default name of a configuration parameter.
+  // *
+  // * @param aObject
+  // * an object that has a legacy annotation.
+  // * @param aAnnotationClass
+  // * the modern annotation type.
+  // * @param aProperty
+  // * a property of the annotation, e.g. {@code "name"} (see
+  // * {@link ConfigurationParameter#name()})
+  // * @return
+  // */
+  // <M extends Annotation> Object getDefaultValue(AccessibleObject aObject, Class<M>
+  // aAnnotationClass,
+  // String aProperty);
 
   /**
    * Get all currently accessible descriptor locations for the given type.

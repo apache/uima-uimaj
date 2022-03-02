@@ -41,8 +41,8 @@ import org.apache.uima.jcas.JCas;
  * NOTE: this class extends {@link JCasFlowController_ImplBase}
  */
 
-public class ReversableTestFlowController extends
-        org.apache.uima.fit.component.JCasFlowController_ImplBase {
+public class ReversableTestFlowController
+        extends org.apache.uima.fit.component.JCasFlowController_ImplBase {
 
   public static final String PARAM_REVERSE_ORDER = "reverseOrder";
   @ConfigurationParameter(defaultValue = "false")

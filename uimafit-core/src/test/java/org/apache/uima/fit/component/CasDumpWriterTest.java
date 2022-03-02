@@ -19,28 +19,24 @@
 package org.apache.uima.fit.component;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class CasDumpWriterTest {
 
-  @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
-
   @Test
-  public void test() throws Exception {
-    File outputFile = new File(folder.getRoot(), "dump-output.txt");
+  public void test(@TempDir Path folder) throws Exception {
+    File outputFile = folder.resolve("dump-output.txt").toFile();
 
     AnalysisEngine writer = AnalysisEngineFactory.createEngine(CasDumpWriter.class,
             CasDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
@@ -49,8 +45,8 @@ public class CasDumpWriterTest {
     writer.process(jcas);
     assertTrue(outputFile.exists());
 
-    String reference = readFileToString(
-            new File("src/test/resources/data/reference/test.xmi.dump"), "UTF-8").trim();
+    String reference = readFileToString(new File("src/test/resources/data/reference/test.xmi.dump"),
+            "UTF-8").trim();
     String actual = readFileToString(outputFile, "UTF-8").trim();
     actual = actual.replaceAll("\r\n", "\n");
 

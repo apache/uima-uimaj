@@ -61,18 +61,18 @@ public class JCasIterator implements Iterator<JCas> {
   private final JCas jCas;
 
   private final ResourceManager resMgr;
-  
+
   private boolean selfComplete = false;
 
   private boolean selfDestroy = false;
-  
+
   private boolean destroyed = false;
-  
+
   private boolean resourceManagerCreatedInternally = false;
 
   /**
-   * Iterate over the documents loaded by the given reader, running the analysis engines on each
-   * one before yielding them. By default, components <b>DO get</b> life-cycle events, such as
+   * Iterate over the documents loaded by the given reader, running the analysis engines on each one
+   * before yielding them. By default, components <b>DO get</b> life-cycle events, such as
    * collectionProcessComplete or destroy when this constructor is used.
    * 
    * @param aReader
@@ -89,10 +89,10 @@ public class JCasIterator implements Iterator<JCas> {
           throws CASException, ResourceInitializationException {
     this(null, aReader, aEngines);
   }
-  
+
   /**
-   * Iterate over the documents loaded by the given reader, running the analysis engines on each
-   * one before yielding them. By default, components <b>DO get</b> life-cycle events, such as
+   * Iterate over the documents loaded by the given reader, running the analysis engines on each one
+   * before yielding them. By default, components <b>DO get</b> life-cycle events, such as
    * collectionProcessComplete or destroy when this constructor is used.
    * 
    * @param aResMgr
@@ -114,25 +114,24 @@ public class JCasIterator implements Iterator<JCas> {
           throws CASException, ResourceInitializationException {
     selfComplete = true;
     selfDestroy = true;
-    
+
     if (aResMgr == null) {
       resMgr = newResourceManager();
       resourceManagerCreatedInternally = true;
-    }
-    else {
+    } else {
       resMgr = aResMgr;
       resourceManagerCreatedInternally = false;
     }
-    
+
     collectionReader = produceCollectionReader(aReader, resMgr, null);
 
     analysisEngines = new AnalysisEngine[] {
         produceAnalysisEngine(createEngineDescription(aEngines), resMgr, null) };
-    
+
     jCas = createCas(resMgr, collectionReader, analysisEngines);
     collectionReader.typeSystemInit(jCas.getTypeSystem());
   }
-  
+
   /**
    * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
    * one before yielding them. By default, components <b>do NOT get</b> life-cycle events, such as
@@ -168,11 +167,11 @@ public class JCasIterator implements Iterator<JCas> {
    *           if the JCas could not be initialized
    */
   public JCasIterator(final CollectionReader aReader,
-          final TypeSystemDescription aTypeSystemDescription) throws CASException,
-          ResourceInitializationException {
+          final TypeSystemDescription aTypeSystemDescription)
+          throws CASException, ResourceInitializationException {
     this(aReader, createEngine(NoOpAnnotator.class, aTypeSystemDescription));
   }
-  
+
   /**
    * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
    * one before yielding them. By default, components <b>do NOT get</b> life-cycle events, such as
@@ -198,12 +197,11 @@ public class JCasIterator implements Iterator<JCas> {
     if (aResMgr == null) {
       resMgr = newResourceManager();
       resourceManagerCreatedInternally = true;
-    }
-    else {
+    } else {
       resMgr = aResMgr;
       resourceManagerCreatedInternally = false;
     }
-    
+
     collectionReader = aReader;
     analysisEngines = aEngines;
 
@@ -212,8 +210,7 @@ public class JCasIterator implements Iterator<JCas> {
   }
 
   private JCas createCas(final ResourceManager aResMgr, final CollectionReader aReader,
-          final AnalysisEngine... aEngines) throws CASException, ResourceInitializationException
-  {
+          final AnalysisEngine... aEngines) throws CASException, ResourceInitializationException {
     Collection<MetaDataObject> metaData = new ArrayList<MetaDataObject>();
     metaData.add(aReader.getProcessingResourceMetaData());
     for (AnalysisEngine ae : aEngines) {
@@ -222,13 +219,13 @@ public class JCasIterator implements Iterator<JCas> {
 
     return CasCreationUtils.createCas(metaData, null, aResMgr).getJCas();
   }
-  
+
   @Override
   public boolean hasNext() {
     if (destroyed) {
       return false;
     }
-    
+
     boolean error = true;
     try {
       boolean hasOneMore = collectionReader.hasNext();

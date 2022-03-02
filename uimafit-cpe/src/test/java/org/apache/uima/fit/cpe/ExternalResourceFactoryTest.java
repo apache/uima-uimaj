@@ -22,9 +22,8 @@ package org.apache.uima.fit.cpe;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +47,7 @@ import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ParameterizedDataResource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link ExternalResource} annotations.
@@ -60,10 +59,10 @@ public class ExternalResourceFactoryTest {
     ExternalResourceDescription extDesc = createResourceDescription(ResourceWithAssert.class);
 
     // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
-            MultiBindAE.RES_KEY, extDesc);
-    AnalysisEngineDescription aed2 = createEngineDescription(MultiBindAE.class,
-            MultiBindAE.RES_KEY, extDesc);
+    AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class, MultiBindAE.RES_KEY,
+            extDesc);
+    AnalysisEngineDescription aed2 = createEngineDescription(MultiBindAE.class, MultiBindAE.RES_KEY,
+            extDesc);
 
     // Check the external resource was injected
     MultiBindAE.reset();
@@ -147,12 +146,12 @@ public class ExternalResourceFactoryTest {
     ExternalResourceDescription extDesc4 = createResourceDescription(ResourceWithAssert.class);
 
     ExternalResourceDescription mv1 = createResourceDescription(MultiValuedResource.class,
-            MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc1,
-                extDesc2 });
+            MultiValuedResource.RES_RESOURCE_LIST,
+            new ExternalResourceDescription[] { extDesc1, extDesc2 });
 
     ExternalResourceDescription mv2 = createResourceDescription(MultiValuedResource.class,
-            MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc3,
-                extDesc4 });
+            MultiValuedResource.RES_RESOURCE_LIST,
+            new ExternalResourceDescription[] { extDesc3, extDesc4 });
 
     AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(mv1, mv2));
@@ -160,8 +159,8 @@ public class ExternalResourceFactoryTest {
     CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class), aed);
   }
 
-  public static final class MultiValuedResourceAE extends
-          org.apache.uima.fit.component.JCasAnnotator_ImplBase {
+  public static final class MultiValuedResourceAE
+          extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
     static final String RES_RESOURCE_ARRAY = "resourceArray";
 
     @ExternalResource(key = RES_RESOURCE_ARRAY)
@@ -171,19 +170,15 @@ public class ExternalResourceFactoryTest {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-      assertNotNull("Resource array is null", resourceArray);
-      assertEquals(2, resourceArray.length);
-      assertTrue("Resource array element 0 is not a DummyResource",
-              resourceArray[0] instanceof ResourceWithAssert);
-      assertTrue("Resource array element 1 is not a DummyResource",
-              resourceArray[1] instanceof ResourceWithAssert);
-      assertTrue(resourceArray[0] != resourceArray[1]);
+      assertThat(resourceArray).extracting(item -> item instanceof ResourceWithAssert)
+              .containsExactly(true, true);
+      assertThat(resourceArray[0]).isNotSameAs(resourceArray[1]);
 
       resources.add(resourceArray[0]);
       resources.add(resourceArray[1]);
 
-//      System.out.printf("Element object 0: %d%n", resourceArray[0].hashCode());
-//      System.out.printf("Element object 1: %d%n", resourceArray[1].hashCode());
+      // System.out.printf("Element object 0: %d%n", resourceArray[0].hashCode());
+      // System.out.printf("Element object 1: %d%n", resourceArray[1].hashCode());
 
       for (ResourceWithAssert res : resourceArray) {
         res.doAsserts();
@@ -201,19 +196,15 @@ public class ExternalResourceFactoryTest {
 
     @Override
     public void doAsserts() {
-      assertNotNull("Resource array is null", resourceList);
-      assertEquals(2, resourceList.size());
-      assertTrue("Resource array element 0 is not a MultiValuedResourceAE",
-              resourceList.get(0) instanceof ResourceWithAssert);
-      assertTrue("Resource array element 1 is not a MultiValuedResourceAE",
-              resourceList.get(1) instanceof ResourceWithAssert);
-      assertTrue(resourceList.get(0) != resourceList.get(1));
+      assertThat(resourceList).extracting(item -> item instanceof ResourceWithAssert)
+              .containsExactly(true, true);
+      assertThat(resourceList.get(0)).isNotSameAs(resourceList.get(1));
 
       resources.add(resourceList.get(0));
       resources.add(resourceList.get(1));
 
-//      System.out.printf("Element object 0: %d%n", resourceList.get(0).hashCode());
-//      System.out.printf("Element object 1: %d%n", resourceList.get(1).hashCode());
+      // System.out.printf("Element object 0: %d%n", resourceList.get(0).hashCode());
+      // System.out.printf("Element object 1: %d%n", resourceList.get(1).hashCode());
 
       for (ResourceWithAssert res : resourceList) {
         res.doAsserts();
@@ -241,7 +232,7 @@ public class ExternalResourceFactoryTest {
         assertEquals(prevHashCode, res.hashCode());
       }
 
-//      System.out.println(getClass().getSimpleName() + ": " + res);
+      // System.out.println(getClass().getSimpleName() + ": " + res);
     }
 
     public static void reset() {
@@ -255,7 +246,8 @@ public class ExternalResourceFactoryTest {
     }
   }
 
-  public static final class AnnotatedDataResource extends Resource_ImplBase implements DataResource {
+  public static final class AnnotatedDataResource extends Resource_ImplBase
+          implements DataResource {
     public static final String PARAM_URI = "Uri";
 
     @ConfigurationParameter(name = PARAM_URI, mandatory = true)
@@ -282,8 +274,8 @@ public class ExternalResourceFactoryTest {
     }
   }
 
-  public static final class AnnotatedParametrizedDataResource extends Resource_ImplBase implements
-          ParameterizedDataResource {
+  public static final class AnnotatedParametrizedDataResource extends Resource_ImplBase
+          implements ParameterizedDataResource {
     public static final String PARAM_EXTENSION = "Extension";
 
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)

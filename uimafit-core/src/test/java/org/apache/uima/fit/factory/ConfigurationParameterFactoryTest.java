@@ -18,14 +18,16 @@
  */
 package org.apache.uima.fit.factory;
 
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createPrimitiveParameter;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -37,15 +39,17 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.impl.Parameter_impl;
 import org.apache.uima.resource.impl.PearSpecifier_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationParameterFactoryTest {
 
   public static final String PARAM_DOUBLE_1 = "double1";
+
   @ConfigurationParameter(name = PARAM_DOUBLE_1, mandatory = true, defaultValue = "3.1415")
   private Double double1;
 
   public static final String PARAM_DOUBLE_2 = "double2";
+
   @ConfigurationParameter(name = PARAM_DOUBLE_2, mandatory = true, defaultValue = "3.3333")
   private Double[] double2;
 
@@ -88,18 +92,19 @@ public class ConfigurationParameterFactoryTest {
 
     IllegalArgumentException iae = null;
     try {
-      ConfigurationParameterFactory.getDefaultValue(ConfigurationParameterFactoryTest.class
-              .getDeclaredField("double3"));
+      ConfigurationParameterFactory
+              .getDefaultValue(ConfigurationParameterFactoryTest.class.getDeclaredField("double3"));
     } catch (IllegalArgumentException e) {
       iae = e;
     }
     assertNotNull(iae);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void test2() throws Exception {
-    ConfigurationParameterFactory.createPrimitiveParameter(ConfigurationParameterFactoryTest.class
-            .getDeclaredField("double3"));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> createPrimitiveParameter(
+                    ConfigurationParameterFactoryTest.class.getDeclaredField("double3")));
   }
 
   @ConfigurationParameter
@@ -111,7 +116,8 @@ public class ConfigurationParameterFactoryTest {
     org.apache.uima.resource.metadata.ConfigurationParameter cp = ConfigurationParameterFactory
             .createPrimitiveParameter(field1);
     assertEquals("param1", cp.getName());
-   assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
+    assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING,
+            cp.getType());
     assertEquals("", cp.getDescription());
     assertTrue(cp.isMandatory());
     assertFalse(cp.isMultiValued());
@@ -170,7 +176,8 @@ public class ConfigurationParameterFactoryTest {
     org.apache.uima.resource.metadata.ConfigurationParameter cp = ConfigurationParameterFactory
             .createPrimitiveParameter(field4);
     assertEquals("param4", cp.getName());
-    assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
+    assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING,
+            cp.getType());
     assertEquals("", cp.getDescription());
     assertTrue(cp.isMandatory());
     assertTrue(cp.isMultiValued());
@@ -225,13 +232,12 @@ public class ConfigurationParameterFactoryTest {
     spec.setPearParameters( //
             new NameValuePair_impl("modernKey", 1), //
             new NameValuePair_impl("key", true));
-    
+
     Map<String, Object> params = ConfigurationParameterFactory.getParameterSettings(spec);
-    
+
     assertThat(params).containsOnly( //
             entry("legacyKey", "legacyValue"), //
-            entry("modernKey", 1), 
-            entry("key", true));
+            entry("modernKey", 1), entry("key", true));
   }
 
   @Test
@@ -240,7 +246,7 @@ public class ConfigurationParameterFactoryTest {
     spec.setPearParameters(new NameValuePair_impl("key", 1));
 
     ConfigurationParameterFactory.setParameter(spec, "key", 2);
-    
+
     assertThat(spec.getPearParameters()).containsOnly(new NameValuePair_impl("key", 2));
   }
 
@@ -249,7 +255,7 @@ public class ConfigurationParameterFactoryTest {
     PearSpecifier_impl spec = new PearSpecifier_impl();
 
     ConfigurationParameterFactory.setParameter(spec, "key", "value");
-    
+
     assertThat(spec.getPearParameters()).containsOnly(new NameValuePair_impl("key", "value"));
   }
 
@@ -260,7 +266,8 @@ public class ConfigurationParameterFactoryTest {
     spec.setParameters(new Parameter_impl("legacyKey", "legacyValue"));
 
     ConfigurationParameterFactory.setParameter(spec, "legacyKey", "newLegacyValue");
-    
-    assertThat(spec.getParameters()).containsOnly(new Parameter_impl("legacyKey", "newLegacyValue"));
+
+    assertThat(spec.getParameters())
+            .containsOnly(new Parameter_impl("legacyKey", "newLegacyValue"));
   }
 }

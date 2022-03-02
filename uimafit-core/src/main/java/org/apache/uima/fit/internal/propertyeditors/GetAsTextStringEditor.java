@@ -63,8 +63,8 @@ public class GetAsTextStringEditor extends PropertyEditorSupport {
       } else if (Enum.class.isAssignableFrom(value.getClass())) {
         super.setValue(String.valueOf(value));
       } else {
-        throw new IllegalArgumentException("Unable to convert " + value.getClass()
-                + " to String. No PropertyEditor found.");
+        throw new IllegalArgumentException(
+                "Unable to convert " + value.getClass() + " to String. No PropertyEditor found.");
       }
     }
   }

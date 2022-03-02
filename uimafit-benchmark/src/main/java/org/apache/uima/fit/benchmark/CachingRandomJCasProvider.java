@@ -22,6 +22,7 @@ import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;

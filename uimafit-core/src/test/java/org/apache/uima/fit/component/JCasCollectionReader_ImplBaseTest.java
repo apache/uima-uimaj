@@ -19,10 +19,11 @@
 package org.apache.uima.fit.component;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
@@ -32,18 +33,14 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Progress;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test {@link JCasCollectionReader_ImplBase}
  * 
  */
 public class JCasCollectionReader_ImplBaseTest {
-
-  @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
 
   /**
    * Test using a simple reader reading one text file.
@@ -52,12 +49,12 @@ public class JCasCollectionReader_ImplBaseTest {
    *           if an error occurs.
    */
   @Test
-  public void test() throws Exception {
-    File file = folder.newFile("test.txt");
+  public void test(@TempDir Path folder) throws Exception {
+    File file = folder.resolve("test.txt").toFile();
     FileUtils.write(file, "Aaa Bbbb Cc Dddd eeee ff .", "UTF-8");
 
-    CollectionReader reader = createReader(SingleTextReader.class,
-            SingleTextReader.PARAM_FILE, file.getPath());
+    CollectionReader reader = createReader(SingleTextReader.class, SingleTextReader.PARAM_FILE,
+            file.getPath());
 
     CAS cas = CasCreationUtils.createCas(reader.getProcessingResourceMetaData());
     reader.getNext(cas);
@@ -72,10 +69,12 @@ public class JCasCollectionReader_ImplBaseTest {
     @ConfigurationParameter(name = PARAM_FILE, mandatory = true)
     private File file;
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       return file != null;
     }
 
+    @Override
     public Progress[] getProgress() {
       return new Progress[0];
     }

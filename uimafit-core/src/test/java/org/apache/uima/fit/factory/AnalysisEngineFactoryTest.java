@@ -27,12 +27,13 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.generateDelegate
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.sanitizeDelegateKey;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -87,15 +88,15 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
-import org.xmlunit.assertj.XmlAssert;
+import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj3.XmlAssert;
 
 public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
   @Test
   public void testViewAE() throws Exception {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
-            Annotator4.class, typeSystemDescription);
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(Annotator4.class,
+            typeSystemDescription);
     AnalysisEngine ae = AnalysisEngineFactory.createEngine(aed, "A");
 
     JCas aView = jCas.createView("A");
@@ -129,19 +130,18 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
     jCas = engine.newJCas();
     tokenBuilder.buildTokens(jCas, "word");
-    FSIterator<Annotation> tokensInSentence = jCas.getAnnotationIndex().subiterator(
-            JCasUtil.selectByIndex(jCas, Sentence.class, 0));
+    FSIterator<Annotation> tokensInSentence = jCas.getAnnotationIndex()
+            .subiterator(JCasUtil.selectByIndex(jCas, Sentence.class, 0));
     assertFalse(tokensInSentence.hasNext());
 
     prioritizedTypeNames = new String[] { "org.apache.uima.fit.type.Sentence",
         "org.apache.uima.fit.type.Token" };
-    engine = AnalysisEngineFactory.createEngine(
-            org.apache.uima.fit.component.NoOpAnnotator.class, typeSystemDescription,
-            prioritizedTypeNames, (Object[]) null);
+    engine = AnalysisEngineFactory.createEngine(org.apache.uima.fit.component.NoOpAnnotator.class,
+            typeSystemDescription, prioritizedTypeNames, (Object[]) null);
     jCas = engine.newJCas();
     tokenBuilder.buildTokens(jCas, "word");
-    tokensInSentence = jCas.getAnnotationIndex().subiterator(
-            JCasUtil.selectByIndex(jCas, Sentence.class, 0));
+    tokensInSentence = jCas.getAnnotationIndex()
+            .subiterator(JCasUtil.selectByIndex(jCas, Sentence.class, 0));
     assertTrue(tokensInSentence.hasNext());
 
   }
@@ -169,13 +169,13 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     aggregateEngine.process(jCas);
 
     assertEquals("Anyone up for a game of Foosball?", jCas.getDocumentText());
-    assertEquals("Any(o)n(e) (u)p f(o)r (a) g(a)m(e) (o)f F(oo)sb(a)ll?", jCas.getView("A")
-            .getDocumentText());
+    assertEquals("Any(o)n(e) (u)p f(o)r (a) g(a)m(e) (o)f F(oo)sb(a)ll?",
+            jCas.getView("A").getDocumentText());
     assertEquals("?AFaaabeeffgllmnnoooooprsuy", jCas.getView("B").getDocumentText());
-    assertEquals("(((((((((())))))))))?AFaaabeeffgllmnnoooooprsuy", jCas.getView("C")
-            .getDocumentText());
-    assertEquals("yusrpooooonnmllgffeebaaaFA?", jCas.getView(ViewNames.REVERSE_VIEW)
-            .getDocumentText());
+    assertEquals("(((((((((())))))))))?AFaaabeeffgllmnnoooooprsuy",
+            jCas.getView("C").getDocumentText());
+    assertEquals("yusrpooooonnmllgffeebaaaFA?",
+            jCas.getView(ViewNames.REVERSE_VIEW).getDocumentText());
 
   }
 
@@ -206,13 +206,13 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     aggregateEngine.process(jCas);
 
     assertEquals("Anyone up for a game of Foosball?", jCas.getDocumentText());
-    assertEquals("Any(o)n(e) (u)p f(o)r (a) g(a)m(e) (o)f F(oo)sb(a)ll?", jCas.getView("A")
-            .getDocumentText());
+    assertEquals("Any(o)n(e) (u)p f(o)r (a) g(a)m(e) (o)f F(oo)sb(a)ll?",
+            jCas.getView("A").getDocumentText());
     assertEquals("?AFaaabeeffgllmnnoooooprsuy", jCas.getView("B").getDocumentText());
-    assertEquals("(((((((((())))))))))?AFaaabeeffgllmnnoooooprsuy", jCas.getView("C")
-            .getDocumentText());
-    assertEquals("yusrpooooonnmllgffeebaaaFA?", jCas.getView(ViewNames.REVERSE_VIEW)
-            .getDocumentText());
+    assertEquals("(((((((((())))))))))?AFaaabeeffgllmnnoooooprsuy",
+            jCas.getView("C").getDocumentText());
+    assertEquals("yusrpooooonnmllgffeebaaaFA?",
+            jCas.getView(ViewNames.REVERSE_VIEW).getDocumentText());
 
     CasIOUtil.readJCas(jCas, new File("src/test/resources/data/docs/test.xmi"));
     AnalysisEngine ae1 = AnalysisEngineFactory.createEngine(NoOpAnnotator.class,
@@ -224,8 +224,8 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
   @Test
   public void testReflectPrimitiveDescription() throws ResourceInitializationException {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
-            Annotator2.class, typeSystemDescription, typePriorities);
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(Annotator2.class,
+            typeSystemDescription, typePriorities);
     Capability[] capabilities = aed.getAnalysisEngineMetaData().getCapabilities();
     assertEquals(1, capabilities.length);
     String[] inputSofas = capabilities[0].getInputSofas();
@@ -289,11 +289,12 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     testConfigurationParameter(aed, ParameterizedAE.PARAM_FLOAT_6,
             ConfigurationParameter.TYPE_FLOAT, true, true, null);
     testConfigurationParameter(aed, ParameterizedAE.PARAM_FLOAT_7,
-            ConfigurationParameter.TYPE_FLOAT, true, true, new Float[] { 1.1111f, 2.2222f, 3.333f });
+            ConfigurationParameter.TYPE_FLOAT, true, true,
+            new Float[] { 1.1111f, 2.2222f, 3.333f });
 
-    AnalysisEngine ae = AnalysisEngineFactory
-            .createEngine(aed, ParameterizedAE.PARAM_FLOAT_3, 3.1415f,
-                    ParameterizedAE.PARAM_FLOAT_6, new Float[] { 2.71828183f }, "file2", "foo/bar");
+    AnalysisEngine ae = AnalysisEngineFactory.createEngine(aed, ParameterizedAE.PARAM_FLOAT_3,
+            3.1415f, ParameterizedAE.PARAM_FLOAT_6, new Float[] { 2.71828183f }, "file2",
+            "foo/bar");
     Object paramValue = ae.getAnalysisEngineMetaData().getConfigurationParameterSettings()
             .getParameterValue(ParameterizedAE.PARAM_FLOAT_3);
     assertEquals(paramValue, 3.1415f);
@@ -308,13 +309,11 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     ConfigurationParameterDeclarations cpd = aed.getMetaData()
             .getConfigurationParameterDeclarations();
     ConfigurationParameter cp = cpd.getConfigurationParameter(null, parameterName);
-    assertNotNull("Parameter [" + parameterName + "] does not exist!", cp);
-    assertEquals("Parameter [" + parameterName + "] has wrong name", parameterName, cp.getName());
-    assertEquals("Parameter [" + parameterName + "] has wrong type", parameterType, cp.getType());
-    assertEquals("Parameter [" + parameterName + "] has wrong mandatory flag", mandatory,
-            cp.isMandatory());
-    assertEquals("Parameter [" + parameterName + "] has wrong multi-value flag", multiValued,
-            cp.isMultiValued());
+    assertThat(cp).as("Parameter [%s] exists", parameterName).isNotNull();
+    assertThat(cp.getName()).isEqualTo(parameterName);
+    assertThat(cp.getType()).isEqualTo(parameterType);
+    assertThat(cp.isMandatory()).isEqualTo(mandatory);
+    assertThat(cp.isMultiValued()).isEqualTo(multiValued);
     ConfigurationParameterSettings cps = aed.getMetaData().getConfigurationParameterSettings();
     Object actualValue = cps.getParameterValue(parameterName);
     if (parameterValue == null) {
@@ -338,8 +337,8 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
   @Test
   public void testPrimitiveDescription() throws ResourceInitializationException {
 
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
-            NoOpAnnotator.class, typeSystemDescription);
+    AnalysisEngineDescription aed = AnalysisEngineFactory
+            .createEngineDescription(NoOpAnnotator.class, typeSystemDescription);
     assertNotNull(aed);
     // assertEquals("org.apache.uima.fit.type.TypeSystem",
     // aed.getAnalysisEngineMetaData().getTypeSystem().getImports()[0].getName());
@@ -351,102 +350,112 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
    */
   @Test
   public void testComponentAnnotationOnAncestor() throws Exception {
-    AnalysisEngineDescription desc1 = AnalysisEngineFactory.createEngineDescription(
-            PristineAnnotatorClass.class, (Object[]) null);
-    assertTrue(
-            "Multiple deployment should be allowed on " + desc1.getAnnotatorImplementationName(),
-            desc1.getAnalysisEngineMetaData().getOperationalProperties()
-                    .isMultipleDeploymentAllowed());
+    AnalysisEngineDescription desc1 = AnalysisEngineFactory
+            .createEngineDescription(PristineAnnotatorClass.class, (Object[]) null);
+    assertThat(desc1.getAnalysisEngineMetaData().getOperationalProperties()
+            .isMultipleDeploymentAllowed())
+                    .as("Multiple deployment should be allowed on %s",
+                            desc1.getAnnotatorImplementationName())
+                    .isTrue();
 
-    AnalysisEngineDescription desc2 = AnalysisEngineFactory.createEngineDescription(
-            UnannotatedAnnotatorClass.class, (Object[]) null);
-    assertFalse(
-            "Multiple deployment should be prohibited on " + desc2.getAnnotatorImplementationName(),
-            desc2.getAnalysisEngineMetaData().getOperationalProperties()
-                    .isMultipleDeploymentAllowed());
+    AnalysisEngineDescription desc2 = AnalysisEngineFactory
+            .createEngineDescription(UnannotatedAnnotatorClass.class, (Object[]) null);
+    assertThat(desc2.getAnalysisEngineMetaData().getOperationalProperties()
+            .isMultipleDeploymentAllowed())
+                    .as("Multiple deployment should be prohibited on %s",
+                            desc2.getAnnotatorImplementationName())
+                    .isFalse();
 
-    AnalysisEngineDescription desc3 = AnalysisEngineFactory.createEngineDescription(
-            AnnotatedAnnotatorClass.class, (Object[]) null);
-    assertTrue(
-            "Multiple deployment should be allowed  on " + desc3.getAnnotatorImplementationName(),
-            desc3.getAnalysisEngineMetaData().getOperationalProperties()
-                    .isMultipleDeploymentAllowed());
+    AnalysisEngineDescription desc3 = AnalysisEngineFactory
+            .createEngineDescription(AnnotatedAnnotatorClass.class, (Object[]) null);
+    assertThat(desc3.getAnalysisEngineMetaData().getOperationalProperties()
+            .isMultipleDeploymentAllowed())
+                    .as("Multiple deployment should be allowed  on "
+                            + desc3.getAnnotatorImplementationName())
+                    .isTrue();
   }
 
   /*
    * This test case illustrates that UIMA throws an exception unless the multipleDeploymentAllowed
    * flag is properly set to false when mixing multi-deployment and non-multi-deployment AEs.
    */
-  @Test(expected = ResourceInitializationException.class)
+  @Test
   public void testAAEMultipleDeploymentPolicyProblem() throws Exception {
     {
-      AnalysisEngineDescription desc1 = AnalysisEngineFactory.createEngineDescription(
-              PristineAnnotatorClass.class, (Object[]) null);
-      assertTrue(
-              "Multiple deployment should be allowed on " + desc1.getAnnotatorImplementationName(),
-              desc1.getAnalysisEngineMetaData().getOperationalProperties()
-                      .isMultipleDeploymentAllowed());
+      AnalysisEngineDescription desc1 = AnalysisEngineFactory
+              .createEngineDescription(PristineAnnotatorClass.class, (Object[]) null);
+      assertThat(desc1.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed())
+                      .as("Multiple deployment should be allowed on "
+                              + desc1.getAnnotatorImplementationName())
+                      .isTrue();
 
-      AnalysisEngineDescription desc2 = AnalysisEngineFactory.createEngineDescription(
-              UnannotatedAnnotatorClass.class, (Object[]) null);
-      assertFalse(
-              "Multiple deployment should be prohibited on "
-                      + desc2.getAnnotatorImplementationName(), desc2.getAnalysisEngineMetaData()
-                      .getOperationalProperties().isMultipleDeploymentAllowed());
+      AnalysisEngineDescription desc2 = AnalysisEngineFactory
+              .createEngineDescription(UnannotatedAnnotatorClass.class, (Object[]) null);
+      assertThat(desc2.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed())
+                      .as("Multiple deployment should be prohibited on "
+                              + desc2.getAnnotatorImplementationName())
+                      .isFalse();
 
-      AnalysisEngineDescription aae = AnalysisEngineFactory
-              .createEngineDescription(desc1, desc2);
+      AnalysisEngineDescription aae = AnalysisEngineFactory.createEngineDescription(desc1, desc2);
       aae.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-      UIMAFramework.produceAnalysisEngine(aae);
+
+      assertThatExceptionOfType(ResourceInitializationException.class)
+              .isThrownBy(() -> UIMAFramework.produceAnalysisEngine(aae));
     }
   }
 
   @Test
   public void testAAEMultipleDeploymentPolicy() throws Exception {
     {
-      AnalysisEngineDescription desc1 = AnalysisEngineFactory.createEngineDescription(
-              PristineAnnotatorClass.class, (Object[]) null);
-      assertTrue(
-              "Multiple deployment should be allowed on " + desc1.getAnnotatorImplementationName(),
-              desc1.getAnalysisEngineMetaData().getOperationalProperties()
-                      .isMultipleDeploymentAllowed());
+      AnalysisEngineDescription desc1 = AnalysisEngineFactory
+              .createEngineDescription(PristineAnnotatorClass.class, (Object[]) null);
+      assertThat(desc1.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed())
+                      .as("Multiple deployment should be allowed on "
+                              + desc1.getAnnotatorImplementationName())
+                      .isTrue();
 
-      AnalysisEngineDescription desc2 = AnalysisEngineFactory.createEngineDescription(
-              UnannotatedAnnotatorClass.class, (Object[]) null);
-      assertFalse(
-              "Multiple deployment should be prohibited on "
-                      + desc2.getAnnotatorImplementationName(), desc2.getAnalysisEngineMetaData()
-                      .getOperationalProperties().isMultipleDeploymentAllowed());
+      AnalysisEngineDescription desc2 = createEngineDescription(UnannotatedAnnotatorClass.class,
+              (Object[]) null);
+      assertThat(desc2.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed())
+                      .as("Multiple deployment should be prohibited on "
+                              + desc2.getAnnotatorImplementationName())
+                      .isFalse();
 
-      AnalysisEngineDescription aae = AnalysisEngineFactory
-              .createEngineDescription(desc1, desc2);
+      AnalysisEngineDescription aae = createEngineDescription(desc1, desc2);
       UIMAFramework.produceAnalysisEngine(aae);
 
-      assertFalse("Multiple deployment should be prohibited on AAE", aae
-              .getAnalysisEngineMetaData().getOperationalProperties().isMultipleDeploymentAllowed());
+      assertThat(aae.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed()) //
+                      .as("Multiple deployment should be prohibited on AAE").isFalse();
     }
 
     {
-      AnalysisEngineDescription desc1 = AnalysisEngineFactory.createEngineDescription(
-              PristineAnnotatorClass.class, (Object[]) null);
-      assertTrue(
-              "Multiple deployment should be allowed on " + desc1.getAnnotatorImplementationName(),
-              desc1.getAnalysisEngineMetaData().getOperationalProperties()
-                      .isMultipleDeploymentAllowed());
+      AnalysisEngineDescription desc1 = AnalysisEngineFactory
+              .createEngineDescription(PristineAnnotatorClass.class, (Object[]) null);
+      assertThat(desc1.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed())
+                      .as("Multiple deployment should be allowed on "
+                              + desc1.getAnnotatorImplementationName())
+                      .isTrue();
 
-      AnalysisEngineDescription desc3 = AnalysisEngineFactory.createEngineDescription(
-              AnnotatedAnnotatorClass.class, (Object[]) null);
-      assertTrue(
-              "Multiple deployment should be allowed  on " + desc3.getAnnotatorImplementationName(),
-              desc3.getAnalysisEngineMetaData().getOperationalProperties()
-                      .isMultipleDeploymentAllowed());
+      AnalysisEngineDescription desc3 = AnalysisEngineFactory
+              .createEngineDescription(AnnotatedAnnotatorClass.class, (Object[]) null);
+      assertThat(desc3.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed())
+                      .as("Multiple deployment should be allowed  on "
+                              + desc3.getAnnotatorImplementationName())
+                      .isTrue();
 
-      AnalysisEngineDescription aae = AnalysisEngineFactory
-              .createEngineDescription(desc1, desc3);
+      AnalysisEngineDescription aae = AnalysisEngineFactory.createEngineDescription(desc1, desc3);
       UIMAFramework.produceAnalysisEngine(aae);
 
-      assertTrue("Multiple deployment should be prohibited on AAE", aae.getAnalysisEngineMetaData()
-              .getOperationalProperties().isMultipleDeploymentAllowed());
+      assertThat(aae.getAnalysisEngineMetaData().getOperationalProperties()
+              .isMultipleDeploymentAllowed()).as("Multiple deployment should be prohibited on AAE")
+                      .isTrue();
     }
   }
 
@@ -501,19 +510,21 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     AnalysisEngineFactory.createEngineDescription(ParameterizedAE.class, typeSystemDescription);
   }
 
-  @Test(expected = ResourceInitializationException.class)
+  @Test
   public void testIssue5b() throws ResourceInitializationException {
-    AnalysisEngineFactory.createEngine(ParameterizedAE.class, typeSystemDescription);
+    assertThatExceptionOfType(ResourceInitializationException.class) //
+            .isThrownBy(() -> createEngine(ParameterizedAE.class, typeSystemDescription));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnbalancedComponentAndNames() throws ResourceInitializationException {
     List<AnalysisEngineDescription> descriptions = new ArrayList<AnalysisEngineDescription>();
     descriptions.add(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class));
     descriptions.add(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class));
     List<String> names = new ArrayList<String>();
 
-    createEngineDescription(descriptions, names, null, null, null);
+    assertThatExceptionOfType(IllegalArgumentException.class) //
+            .isThrownBy(() -> createEngineDescription(descriptions, names, null, null, null));
   }
 
   /**
@@ -533,120 +544,120 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
             typeSystem, null, null, null, null, null, null);
 
     // Try configuring priorities on the aggregate
-    AnalysisEngineDescription aae = createEngineDescription(asList(ae), asList("ae1"),
-            extraPrios, null, null);
+    AnalysisEngineDescription aae = createEngineDescription(asList(ae), asList("ae1"), extraPrios,
+            null, null);
 
     AnalysisEngine engine = createEngine(aae);
     ProcessingResourceMetaData meta = engine.getProcessingResourceMetaData();
-    
-    // When the meta data from the ae and the aae are merged in the engine, then it should be a 
+
+    // When the meta data from the ae and the aae are merged in the engine, then it should be a
     // new instance.
-    assertFalse("Merged meta-data is same instance as original",
-            aae.getMetaData().hashCode() == meta.hashCode());
-    assertFalse("Merged meta-data is same instance as original",
-            ae.getMetaData().hashCode() == meta.hashCode());
-    
+    assertThat(aae.getMetaData()) //
+            .as("Merged meta-data is not same instance as original") //
+            .isNotSameAs(meta);
+    assertThat(ae.getMetaData()) //
+            .as("Merged meta-data is not same instance as original") //
+            .isNotSameAs(meta);
+
     // Check that the priorities arrived
     TypePriorities expected = ((ProcessingResourceMetaData) aae.getMetaData()).getTypePriorities();
     TypePriorities actual = meta.getTypePriorities();
     assertArrayEquals(expected.getPriorityLists()[0].getTypes(),
             actual.getPriorityLists()[0].getTypes());
   }
-  
+
   @Test
   public void serializeComponent() throws Exception {
     File reference = new File("src/test/resources/data/reference/SerializationTestAnnotator.xml");
-    
-    File target = new File("target/test-output/AnalysisEngineFactoryTest/SerializationTestAnnotator.xml");
+
+    File target = new File(
+            "target/test-output/AnalysisEngineFactoryTest/SerializationTestAnnotator.xml");
     target.getParentFile().mkdirs();
-    
+
     AnalysisEngineDescription desc = createEngineDescription(SerializationTestAnnotator.class);
     try (OutputStream os = new FileOutputStream(target)) {
       desc.toXML(os);
     }
-    
+
     String actual = FileUtils.readFileToString(target, "UTF-8");
     String expected = FileUtils.readFileToString(reference, "UTF-8");
     XmlAssert.assertThat(actual).and(expected).ignoreWhitespace().areIdentical();
   }
-  
+
   @Test
   public void testPear() throws Exception {
     // Install PEAR package
     PackageBrowser instPear = PackageInstaller.installPackage(
-            new File("target/test-output/AnalysisEngineFactoryTest/testPear"), 
+            new File("target/test-output/AnalysisEngineFactoryTest/testPear"),
             new File("src/test/resources/pear/DateTime.pear"), true);
 
     // Create analysis engine from the installed PEAR package
     XMLInputSource in = new XMLInputSource(instPear.getComponentPearDescPath());
     PearSpecifier specifier = UIMAFramework.getXMLParser().parsePearSpecifier(in);
-    
+
     AnalysisEngine ae = createEngine(createEngineDescription(specifier));
-    
-    // Create a CAS with a sample document text and process the CAS   
+
+    // Create a CAS with a sample document text and process the CAS
     CAS cas = ae.newCAS();
     cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM");
     cas.setDocumentLanguage("en");
     ae.process(cas);
   }
-  
+
   @Test
-  public void thatCreateEngineDescriptorAutoDetectionWorks() throws Exception
-  {
+  public void thatCreateEngineDescriptorAutoDetectionWorks() throws Exception {
     AnalysisEngineDescription aed = createEngineDescription(NoOpAnnotator.class);
-    
+
     TypeSystemDescription tsd = createTypeSystemDescription();
-    assertThat(tsd.getType(Token.class.getName()))
-        .as("Token type auto-detection")
-        .isNotNull();
-    assertThat(tsd.getType(Sentence.class.getName()))
-        .as("Sentence type auto-detection")
-        .isNotNull();
-    assertThat(tsd.getType(AnalyzedText.class.getName()))
-        .as("AnalyzedText type auto-detection")
-        .isNotNull();
+    assertThat(tsd.getType(Token.class.getName())).as("Token type auto-detection").isNotNull();
+    assertThat(tsd.getType(Sentence.class.getName())).as("Sentence type auto-detection")
+            .isNotNull();
+    assertThat(tsd.getType(AnalyzedText.class.getName())).as("AnalyzedText type auto-detection")
+            .isNotNull();
 
     TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
     assertThat(typePrioritiesLists.length).isEqualTo(1);
-    assertThat(typePrioritiesLists[0].getTypes())
-        .as("Type priorities auto-detection")
-        .containsExactly(Sentence.class.getName(), AnalyzedText.class.getName(), Token.class.getName());
+    assertThat(typePrioritiesLists[0].getTypes()).as("Type priorities auto-detection")
+            .containsExactly(Sentence.class.getName(), AnalyzedText.class.getName(),
+                    Token.class.getName());
 
-    FsIndexDescription[] indexes = aed.getAnalysisEngineMetaData().getFsIndexCollection().getFsIndexes();
+    FsIndexDescription[] indexes = aed.getAnalysisEngineMetaData().getFsIndexCollection()
+            .getFsIndexes();
     assertThat(indexes.length).isEqualTo(1);
-    assertThat(indexes[0])
-        .extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName, FsIndexDescription::getKind)
-        .containsExactly("Automatically Scanned Index", Token.class.getName(), FsIndexDescription.KIND_SORTED);
+    assertThat(indexes[0]).extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName,
+            FsIndexDescription::getKind).containsExactly("Automatically Scanned Index",
+                    Token.class.getName(), FsIndexDescription.KIND_SORTED);
   }
-  
+
   @Test
   public void thatGenerationOfDelegateKeysWorks() {
-    AnalysisEngineDescription desc = getResourceSpecifierFactory().createAnalysisEngineDescription();
+    AnalysisEngineDescription desc = getResourceSpecifierFactory()
+            .createAnalysisEngineDescription();
     desc.setImplementationName("i.am.a.Teapot");
-    
+
     desc.setPrimitive(false);
     assertThat(generateDelegateKey(desc, 0)) //
-      .as("Aggregates use 'aggregate' if no name is set in their metadata") //
-      .isEqualTo("aggregate-0");
+            .as("Aggregates use 'aggregate' if no name is set in their metadata") //
+            .isEqualTo("aggregate-0");
 
     desc.setPrimitive(true);
     assertThat(generateDelegateKey(desc, 0)) //
-      .as("Primitives use the class name if no name is set in their metadata") //
-      .isEqualTo("i.am.a.Teapot-0");
+            .as("Primitives use the class name if no name is set in their metadata") //
+            .isEqualTo("i.am.a.Teapot-0");
 
     desc.setPrimitive(true);
     desc.getAnalysisEngineMetaData().setName("Primitive");
     assertThat(generateDelegateKey(desc, 0)) //
-      .as("If a name is set in the metdata, that is used") //
-      .isEqualTo("Primitive-0");
+            .as("If a name is set in the metdata, that is used") //
+            .isEqualTo("Primitive-0");
 
     desc.setPrimitive(false);
     desc.getAnalysisEngineMetaData().setName("Aggregate");
     assertThat(generateDelegateKey(desc, 0)) //
-      .as("If a name is set in the metdata, that is used") //
-      .isEqualTo("Aggregate-0");
+            .as("If a name is set in the metdata, that is used") //
+            .isEqualTo("Aggregate-0");
   }
-  
+
   @Test
   public void thatDelegateKeySanitationWorks() {
     assertThat(sanitizeDelegateKey(null)).isEqualTo(null);

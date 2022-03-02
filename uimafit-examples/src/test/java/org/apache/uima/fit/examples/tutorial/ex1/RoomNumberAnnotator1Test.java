@@ -18,8 +18,8 @@
  */
 package org.apache.uima.fit.examples.tutorial.ex1;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.examples.tutorial.type.RoomNumber;
@@ -28,7 +28,7 @@ import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class demonstrates some simple tests using uimaFIT. A slightly better set of tests can be
@@ -70,8 +70,8 @@ public class RoomNumberAnnotator1Test {
   public void testRNA2() throws Exception {
     TypeSystemDescription typeSystemDescription = TypeSystemDescriptionFactory
             .createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
-    AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory.createEngine(
-            RoomNumberAnnotator.class, typeSystemDescription);
+    AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory
+            .createEngine(RoomNumberAnnotator.class, typeSystemDescription);
     JCas jCas = roomNumberAnnotatorAE.newJCas();
     jCas.setDocumentText("The meeting is over at Yorktown 01-144");
     roomNumberAnnotatorAE.process(jCas);

@@ -74,9 +74,10 @@ public class SingleFileXReader extends CasCollectionReader_ImplBase {
     } else if (xmlScheme.equals(XCAS)) {
       useXMI = false;
     } else {
-      throw new ResourceInitializationException(String.format(
-              "parameter '%1$s' must be either '%2$s' or '%3$s' or left empty.", PARAM_XML_SCHEME,
-              XMI, XCAS), null);
+      throw new ResourceInitializationException(
+              String.format("parameter '%1$s' must be either '%2$s' or '%3$s' or left empty.",
+                      PARAM_XML_SCHEME, XMI, XCAS),
+              null);
     }
 
   }

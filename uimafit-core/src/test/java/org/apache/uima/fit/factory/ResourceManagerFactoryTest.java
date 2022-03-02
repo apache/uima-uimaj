@@ -23,17 +23,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ResourceManagerFactoryTest {
   public static class SimpleResource extends Resource_ImplBase {
     // Nothing to do
   }
-  
+
   @Test
   public void thatResourceCanBeCreated() throws Exception {
     SimpleResource sut = createResource(SimpleResource.class);
-    
+
     assertThat(sut).isInstanceOf(SimpleResource.class);
   }
 
@@ -41,13 +41,12 @@ public class ResourceManagerFactoryTest {
     public @ConfigurationParameter int intValue;
     public @ConfigurationParameter String stringValue;
   }
-  
+
   @Test
   public void thatResourceCanBeParametrized() throws Exception {
-    ResourceWithParameters sut = createResource(ResourceWithParameters.class,
-            "intValue", "1",
+    ResourceWithParameters sut = createResource(ResourceWithParameters.class, "intValue", "1",
             "stringValue", "test");
-    
+
     assertThat(sut).isInstanceOf(ResourceWithParameters.class);
     assertThat(sut.intValue).isEqualTo(1);
     assertThat(sut.stringValue).isEqualTo("test");

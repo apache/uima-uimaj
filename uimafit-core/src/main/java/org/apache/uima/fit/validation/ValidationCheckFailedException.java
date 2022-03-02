@@ -28,8 +28,8 @@ public class ValidationCheckFailedException extends ValidationCheckException {
     super();
   }
 
-  public ValidationCheckFailedException(String aMessage, Throwable aCause, boolean aEnableSuppression,
-          boolean aWritableStackTrace) {
+  public ValidationCheckFailedException(String aMessage, Throwable aCause,
+          boolean aEnableSuppression, boolean aWritableStackTrace) {
     super(aMessage, aCause, aEnableSuppression, aWritableStackTrace);
   }
 

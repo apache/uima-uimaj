@@ -44,7 +44,7 @@ public final class JCasFactory {
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    */
   public static JCas createText(String aText) throws ResourceInitializationException, CASException {
@@ -59,19 +59,19 @@ public final class JCasFactory {
    * 
    * @param aText
    *          the document text to be set in the new JCas.
-   * @param aLanguage 
+   * @param aLanguage
    *          the document language to be set in the new JCas.
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    */
   public static JCas createText(String aText, String aLanguage)
           throws ResourceInitializationException, CASException {
     return CasFactory.createText(aText, aLanguage).getJCas();
   }
-  
+
   /**
    * Creates a new {@link JCas}. The type system is detected automatically using
    * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type priorities are
@@ -81,7 +81,7 @@ public final class JCasFactory {
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    */
   public static JCas createJCas() throws ResourceInitializationException, CASException {
@@ -98,7 +98,7 @@ public final class JCasFactory {
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    */
   public static JCas createJCas(String... typeSystemDescriptorNames)
@@ -115,7 +115,7 @@ public final class JCasFactory {
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    */
   public static JCas createJCasFromPath(String... typeSystemDescriptorPaths)
@@ -132,7 +132,7 @@ public final class JCasFactory {
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    */
   public static JCas createJCas(TypeSystemDescription typeSystemDescription)
@@ -150,7 +150,7 @@ public final class JCasFactory {
    * @return a new JCas
    * @throws ResourceInitializationException
    *           if the CAS could not be initialized
-   * @throws CASException 
+   * @throws CASException
    *           if the JCas could not be initialized
    * @throws IOException
    *           if there is a problem reading the file

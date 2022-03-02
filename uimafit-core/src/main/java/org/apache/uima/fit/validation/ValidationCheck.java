@@ -23,26 +23,28 @@ package org.apache.uima.fit.validation;
  * mechanism.
  */
 public interface ValidationCheck {
-  
+
   /**
    * Fail the check with the given message.
    * 
-   * @param aMessage the failure message.
-   * @throws ValidationCheckFailedException an exception carrying the failure message.
+   * @param aMessage
+   *          the failure message.
+   * @throws ValidationCheckFailedException
+   *           an exception carrying the failure message.
    */
-  default void fail(String aMessage) throws ValidationCheckFailedException
-  {
+  default void fail(String aMessage) throws ValidationCheckFailedException {
     throw new ValidationCheckFailedException(aMessage);
   }
 
   /**
    * Skip the check with the given reason.
    * 
-   * @param aMessage the skip reason.
-   * @throws ValidationCheckSkippedException an exception carrying the failure message.
+   * @param aMessage
+   *          the skip reason.
+   * @throws ValidationCheckSkippedException
+   *           an exception carrying the failure message.
    */
-  default void skip(String aMessage) throws ValidationCheckSkippedException
-  {
+  default void skip(String aMessage) throws ValidationCheckSkippedException {
     throw new ValidationCheckSkippedException(aMessage);
   }
 }

@@ -56,8 +56,8 @@ public final class InitializableFactory {
       ClassLoader cl = ClassLoaderUtils.findClassloader(context);
       cls = Class.forName(className, true, cl).asSubclass(superClass);
     } catch (Exception e) {
-      throw new ResourceInitializationException(new IllegalStateException("classname = "
-              + className + " superClass = " + superClass.getName(), e));
+      throw new ResourceInitializationException(new IllegalStateException(
+              "classname = " + className + " superClass = " + superClass.getName(), e));
     }
     return create(context, cls);
   }
@@ -79,8 +79,8 @@ public final class InitializableFactory {
       ClassLoader cl = ClassLoaderUtils.findClassloader();
       return Class.forName(className, true, cl).asSubclass(superClass);
     } catch (Exception e) {
-      throw new ResourceInitializationException(new IllegalStateException("classname = "
-              + className + " superClass = " + superClass.getName(), e));
+      throw new ResourceInitializationException(new IllegalStateException(
+              "classname = " + className + " superClass = " + superClass.getName(), e));
     }
   }
 

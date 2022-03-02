@@ -18,12 +18,12 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AnnotationFactoryTest extends ComponentTestBase {
 

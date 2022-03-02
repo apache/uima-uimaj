@@ -198,7 +198,7 @@ public class CasIOUtil {
   public static void readJCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readCas(aJCas.getCas(), aFile);
   }
-  
+
   /**
    * 
    * @param aJCas
@@ -213,7 +213,7 @@ public class CasIOUtil {
   public static void readXmi(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readXmi(aJCas.getCas(), aFile);
   }
-  
+
   /**
    * 
    * @param aJCas

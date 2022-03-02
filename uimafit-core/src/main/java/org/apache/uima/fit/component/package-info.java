@@ -20,4 +20,3 @@
  * uimaFIT-enhanced base classes for UIMA components and some simple components.
  */
 package org.apache.uima.fit.component;
-

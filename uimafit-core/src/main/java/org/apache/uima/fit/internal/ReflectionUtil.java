@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * INTERNAL API - Utility methods to access Java annotations.
  */
@@ -89,7 +88,8 @@ public final class ReflectionUtil {
    * @param aName
    *          the field name
    * @return the fields for the class of the object
-   * @throws NoSuchFieldException if there is no such field
+   * @throws NoSuchFieldException
+   *           if there is no such field
    */
   public static Field getField(final Class<?> aClass, final String aName)
           throws NoSuchFieldException {
@@ -146,14 +146,13 @@ public final class ReflectionUtil {
     if (aObject.getAnnotation(aAnnotationClass) != null) {
       return true;
     }
-    
+
     // If not present, check if an equivalent legacy annotation is present
     return LegacySupport.getInstance().isAnnotationPresent(aObject, aAnnotationClass);
   }
-  
+
   /**
-   * Equivalent to {@link Class#isAnnotationPresent(Class)} but handles uimaFIT legacy
-   * annotations.
+   * Equivalent to {@link Class#isAnnotationPresent(Class)} but handles uimaFIT legacy annotations.
    * 
    * @param aObject
    *          the object to analyze
@@ -168,11 +167,11 @@ public final class ReflectionUtil {
     if (aObject.getAnnotation(aAnnotationClass) != null) {
       return true;
     }
-    
+
     // If not present, check if an equivalent legacy annotation is present
     return LegacySupport.getInstance().isAnnotationPresent(aObject, aAnnotationClass);
   }
-  
+
   /**
    * Equivalent to {@link AccessibleObject#getAnnotation(Class)} but handles uimaFIT legacy
    * annotations.
@@ -186,8 +185,7 @@ public final class ReflectionUtil {
    * @return the annotation
    */
   public static <T extends Annotation> T getAnnotation(AccessibleObject aObject,
-          Class<T> aAnnotationClass) 
-  {
+          Class<T> aAnnotationClass) {
     T annotation = aObject.getAnnotation(aAnnotationClass);
     if (annotation == null) {
       annotation = LegacySupport.getInstance().getAnnotation(aObject, aAnnotationClass);
@@ -196,8 +194,7 @@ public final class ReflectionUtil {
   }
 
   /**
-   * Equivalent to {@link Class#getAnnotation(Class)} but handles uimaFIT legacy
-   * annotations.
+   * Equivalent to {@link Class#getAnnotation(Class)} but handles uimaFIT legacy annotations.
    * 
    * @param <T>
    *          the annotation type
@@ -208,8 +205,7 @@ public final class ReflectionUtil {
    * @return the annotation
    */
   public static <T extends Annotation> T getAnnotation(Class<?> aObject,
-          Class<T> aAnnotationClass) 
-  {
+          Class<T> aAnnotationClass) {
     T annotation = aObject.getAnnotation(aAnnotationClass);
     if (annotation == null) {
       annotation = LegacySupport.getInstance().getAnnotation(aObject, aAnnotationClass);

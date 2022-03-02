@@ -24,11 +24,11 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 
 /**
  * INTERNAL API - Helper resource used when an {@link ExternalResource} annotation is used on an
- * array or collection field. 
+ * array or collection field.
  */
 public class ResourceList extends Resource_ImplBase {
   public static final String ELEMENT_KEY = "ELEMENT";
-  
+
   public static final String PARAM_SIZE = "size";
   @ConfigurationParameter(name = PARAM_SIZE, mandatory = true)
   private int size;
@@ -36,7 +36,7 @@ public class ResourceList extends Resource_ImplBase {
   public ResourceList() {
     // Nothing to do
   }
-  
+
   public int getSize() {
     return size;
   }

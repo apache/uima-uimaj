@@ -29,8 +29,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * 
  */
 @OperationalProperties(outputsNewCases = true)
-public abstract class JCasMultiplier_ImplBase extends
-        org.apache.uima.analysis_component.JCasMultiplier_ImplBase {
+public abstract class JCasMultiplier_ImplBase
+        extends org.apache.uima.analysis_component.JCasMultiplier_ImplBase {
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);

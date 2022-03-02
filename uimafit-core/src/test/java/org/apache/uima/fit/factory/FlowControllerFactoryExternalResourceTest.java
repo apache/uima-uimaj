@@ -40,7 +40,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.apache.uima.fit.factory.FlowControllerFactory.createFlowControllerDescription;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -53,7 +53,7 @@ import org.apache.uima.flow.CasFlow_ImplBase;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.Step;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -62,10 +62,8 @@ public class FlowControllerFactoryExternalResourceTest {
   public void testAutoExternalResourceBinding() throws Exception {
     AggregateBuilder builder = new AggregateBuilder();
     builder.add(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class));
-    builder.setFlowControllerDescription(createFlowControllerDescription(
-            TestFlowController.class,
-            TestFlowController.PARAM_RESOURCE,
-            createResourceDescription(TestExternalResource.class,
+    builder.setFlowControllerDescription(createFlowControllerDescription(TestFlowController.class,
+            TestFlowController.PARAM_RESOURCE, createResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
     AnalysisEngine aggregateEngine = builder.createAggregate();
     aggregateEngine.process(aggregateEngine.newCAS());

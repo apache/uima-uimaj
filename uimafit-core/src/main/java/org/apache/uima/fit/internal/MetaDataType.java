@@ -22,7 +22,5 @@ package org.apache.uima.fit.internal;
  * INTERNAL API - Kinds of meta data uimaFIT uses.
  */
 public enum MetaDataType {
-  TYPE_SYSTEM,
-  FS_INDEX,
-  TYPE_PRIORITIES;
+  TYPE_SYSTEM, FS_INDEX, TYPE_PRIORITIES;
 }

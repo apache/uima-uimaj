@@ -46,7 +46,8 @@ public class ExtendedExternalResourceDescription_impl extends ExternalResourceDe
   }
 
   /**
-   * @param aExternalResourceBindings the external resource bindings
+   * @param aExternalResourceBindings
+   *          the external resource bindings
    */
   public void setExternalResourceBindings(
           Collection<ExternalResourceBinding> aExternalResourceBindings) {
@@ -64,7 +65,8 @@ public class ExtendedExternalResourceDescription_impl extends ExternalResourceDe
   }
 
   /**
-   * @param aExternalResourceDescriptions the external resource descriptions
+   * @param aExternalResourceDescriptions
+   *          the external resource descriptions
    */
   public void setExternalResources(
           Collection<ExternalResourceDescription> aExternalResourceDescriptions) {
