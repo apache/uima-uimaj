@@ -28,7 +28,7 @@ import org.apache.uima.jcas.JCas;
 /**
  * Used to test if metadata gets correctly serialized to XML.
  */
-@LanguageCapability({"en", "de"})
+@LanguageCapability({ "en", "de" })
 @MimeTypeCapability({ "application/xml", "text/html" })
 @SofaCapability(inputSofas = "input1", outputSofas = "output1")
 public class SerializationTestAnnotator extends JCasAnnotator_ImplBase {

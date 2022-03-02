@@ -18,25 +18,24 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FlowControllerFactoryTest {
 
   @Test
-  public void testResourceMetaData() throws Exception
-  {
+  public void testResourceMetaData() throws Exception {
     FlowControllerDescription desc = FlowControllerFactory
             .createFlowControllerDescription(TestFlowController.class);
-    
+
     org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
-    
+
     assertEquals("dummy", meta.getName());
     assertEquals("1.0", meta.getVersion());
     assertEquals("Just a dummy", meta.getDescription());
@@ -45,8 +44,8 @@ public class FlowControllerFactoryTest {
   }
 
   @ResourceMetaData(name = "dummy", version = "1.0", description = "Just a dummy", copyright = "ASL 2.0", vendor = "uimaFIT")
-  public class TestFlowController extends
-  org.apache.uima.fit.component.JCasFlowController_ImplBase {
+  public class TestFlowController
+          extends org.apache.uima.fit.component.JCasFlowController_ImplBase {
 
     @Override
     public Flow computeFlow(JCas aJCas) throws AnalysisEngineProcessException {

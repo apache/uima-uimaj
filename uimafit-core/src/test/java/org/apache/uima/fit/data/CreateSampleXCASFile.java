@@ -42,13 +42,10 @@ public class CreateSampleXCASFile {
     JCas jCas = JCasFactory.createJCas();
     // quote from http://www.gutenberg.org/files/20417/20417-h/20417-h.htm
     String text = "... the more knowledge advances the more it becomes possible to condense it into little books.";
-    tokenBuilder
-            .buildTokens(
-                    jCas,
-                    text,
-                    "... the more knowledge advances the more it becomes possible to condense it into little books . ",
-                    ". T M K A T M I B P T C I I L B .",
-                    "... the more knowledge advance the more it become possible to condense it into little book . ");
+    tokenBuilder.buildTokens(jCas, text,
+            "... the more knowledge advances the more it becomes possible to condense it into little books . ",
+            ". T M K A T M I B P T C I I L B .",
+            "... the more knowledge advance the more it become possible to condense it into little book . ");
 
     FileOutputStream out = new FileOutputStream("src/test/resources/data/docs/test.xcas");
     XCASSerializer ser = new XCASSerializer(jCas.getTypeSystem());

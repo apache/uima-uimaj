@@ -24,8 +24,8 @@ import static org.apache.uima.fit.validation.ValidationResult.error;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.fit.validation.ValidationResult;
 import org.apache.uima.fit.validation.JCasValidationCheck;
+import org.apache.uima.fit.validation.ValidationResult;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 

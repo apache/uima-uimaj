@@ -111,7 +111,7 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
 
   @ConfigurationParameter(name = PARAM_SORT, mandatory = true, defaultValue = "false")
   private boolean sort;
-    
+
   private InExPattern[] cookedTypePatterns;
 
   private PrintWriter out;
@@ -211,18 +211,18 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
           if (name != 0) {
             return name;
           }
-          
+
           // Last resort: try the address.
           if (aO1 instanceof FeatureStructureImpl && aO2 instanceof FeatureStructureImpl) {
             return ((FeatureStructureImpl) aO1).getAddress()
                     - ((FeatureStructureImpl) aO2).getAddress();
           }
-          
+
           // Fall back to name.
           return name;
         }
       });
-      
+
       annotationIterator = sortedFS.iterator();
     }
 
@@ -239,7 +239,7 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
       processFeatureStructure(annotation);
     }
   }
-  
+
   private void processFeatureStructure(FeatureStructure aFS) {
     String meta = aFS.toString();
     for (String line : meta.split("\n")) {
@@ -257,7 +257,8 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
   }
 
   private void processView(CAS aCAS) {
-    out.println("-------- View " + aCAS.getViewName() + " begin ----------------------------------");
+    out.println(
+            "-------- View " + aCAS.getViewName() + " begin ----------------------------------");
     out.println();
 
     processDocumentMetadata(aCAS);

@@ -29,8 +29,7 @@ import org.assertj.core.api.AbstractAssert;
 /**
  * Asserts related to {@link ValidationCheck} implementations.
  */
-public class ValidationCheckAssert
-        extends AbstractAssert<ValidationCheckAssert, ValidationCheck> {
+public class ValidationCheckAssert extends AbstractAssert<ValidationCheckAssert, ValidationCheck> {
   public ValidationCheckAssert(ValidationCheck actual) {
     super(actual, ValidationCheckAssert.class);
   }

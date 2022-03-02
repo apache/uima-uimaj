@@ -19,7 +19,7 @@
 package org.apache.uima.fit.component;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Progress;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -56,8 +56,8 @@ public class JCasCollectionReader_ImplBaseTest {
     File file = folder.newFile("test.txt");
     FileUtils.write(file, "Aaa Bbbb Cc Dddd eeee ff .", "UTF-8");
 
-    CollectionReader reader = createReader(SingleTextReader.class,
-            SingleTextReader.PARAM_FILE, file.getPath());
+    CollectionReader reader = createReader(SingleTextReader.class, SingleTextReader.PARAM_FILE,
+            file.getPath());
 
     CAS cas = CasCreationUtils.createCas(reader.getProcessingResourceMetaData());
     reader.getNext(cas);

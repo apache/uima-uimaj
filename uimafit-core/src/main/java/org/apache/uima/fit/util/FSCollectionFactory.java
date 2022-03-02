@@ -123,7 +123,7 @@ public abstract class FSCollectionFactory {
    * 
    * @param <T>
    *          the feature structure type
-      * @param aIndex
+   * @param aIndex
    *          the index to convert.
    * @return the wrapped index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
@@ -611,18 +611,18 @@ public abstract class FSCollectionFactory {
   public static <T extends TOP> FSList<T> createFSList(CAS aCas, T... aValues) {
     return createFSList(aCas, asList(aValues));
   }
-  
+
   public static <T extends TOP> FSList<T> createFSList(CAS aCas, Collection<T> aValues) {
     if (aValues == null) {
       return null;
     }
-    
+
     TypeSystem ts = aCas.getTypeSystem();
 
     if (aValues.size() == 0) {
       return aCas.emptyFSList();
     }
-    
+
     Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
     Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
     Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
@@ -644,7 +644,6 @@ public abstract class FSCollectionFactory {
     return (FSList<T>) list;
   }
 
-
   public static FloatList createFloatList(JCas aJCas, float... aValues) {
     return createFloatList(aJCas.getCas(), aValues);
   }
@@ -653,7 +652,7 @@ public abstract class FSCollectionFactory {
     if (aValues == null) {
       return null;
     }
-    
+
     TypeSystem ts = aCas.getTypeSystem();
 
     Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST);
@@ -661,7 +660,7 @@ public abstract class FSCollectionFactory {
     if (aValues.length == 0) {
       return aCas.createFS(emptyType);
     }
-    
+
     Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST);
     Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
     Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
@@ -684,11 +683,12 @@ public abstract class FSCollectionFactory {
     return (T) list;
   }
 
-  public static <T extends FeatureStructure> T createFloatList(CAS aCas, Collection<Float> aValues) {
+  public static <T extends FeatureStructure> T createFloatList(CAS aCas,
+          Collection<Float> aValues) {
     if (aValues == null) {
       return null;
     }
-    
+
     TypeSystem ts = aCas.getTypeSystem();
 
     Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST);
@@ -696,7 +696,7 @@ public abstract class FSCollectionFactory {
     if (aValues.size() == 0) {
       return aCas.createFS(emptyType);
     }
-    
+
     Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST);
     Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
     Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
@@ -730,7 +730,7 @@ public abstract class FSCollectionFactory {
     if (aValues == null) {
       return null;
     }
-    
+
     TypeSystem ts = aCas.getTypeSystem();
 
     Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST);
@@ -738,7 +738,7 @@ public abstract class FSCollectionFactory {
     if (aValues.length == 0) {
       return aCas.createFS(emptyType);
     }
-    
+
     Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
     Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
     Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
@@ -761,11 +761,12 @@ public abstract class FSCollectionFactory {
     return (T) list;
   }
 
-  public static <T extends FeatureStructure> T createIntegerList(CAS aCas, Collection<Integer> aValues) {
+  public static <T extends FeatureStructure> T createIntegerList(CAS aCas,
+          Collection<Integer> aValues) {
     if (aValues == null) {
       return null;
     }
-    
+
     TypeSystem ts = aCas.getTypeSystem();
 
     Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST);
@@ -773,7 +774,7 @@ public abstract class FSCollectionFactory {
     if (aValues.size() == 0) {
       return aCas.createFS(emptyType);
     }
-    
+
     Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
     Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
     Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
@@ -806,12 +807,13 @@ public abstract class FSCollectionFactory {
   public static <T extends FeatureStructure> T createStringList(CAS aCas, String... aValues) {
     return createStringList(aCas, asList(aValues));
   }
-  
-  public static <T extends FeatureStructure> T createStringList(CAS aCas, Collection<String> aValues) {
+
+  public static <T extends FeatureStructure> T createStringList(CAS aCas,
+          Collection<String> aValues) {
     if (aValues == null) {
       return null;
     }
-    
+
     TypeSystem ts = aCas.getTypeSystem();
 
     Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_STRING_LIST);
@@ -819,7 +821,7 @@ public abstract class FSCollectionFactory {
     if (aValues.size() == 0) {
       return aCas.createFS(emptyType);
     }
-    
+
     Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST);
     Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
     Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
@@ -883,7 +885,8 @@ public abstract class FSCollectionFactory {
     }
   }
 
-  private static class AnnotationIndexAdapter<T extends AnnotationFS> extends AbstractCollection<T> {
+  private static class AnnotationIndexAdapter<T extends AnnotationFS>
+          extends AbstractCollection<T> {
     private final AnnotationIndex<T> index;
 
     public AnnotationIndexAdapter(AnnotationIndex<T> aIndex) {

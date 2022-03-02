@@ -29,8 +29,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * 
  */
 @OperationalProperties(outputsNewCases = true)
-public abstract class CasMultiplier_ImplBase extends
-        org.apache.uima.analysis_component.CasMultiplier_ImplBase {
+public abstract class CasMultiplier_ImplBase
+        extends org.apache.uima.analysis_component.CasMultiplier_ImplBase {
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);

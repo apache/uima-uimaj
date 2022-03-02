@@ -18,11 +18,11 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.fit.component.NoOpAnnotator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

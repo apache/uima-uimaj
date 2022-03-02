@@ -39,61 +39,53 @@ import org.junit.runner.Description;
  * handed out to any thread are reset (except any JCases which may meanwhile have been garbage
  * collected).
  */
-public final class ManagedJCas
-    extends TestWatcher
-{
-    private final ThreadLocal<JCas> casHolder;
-    
-    private final static Set<JCas> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
+public final class ManagedJCas extends TestWatcher {
+  private final ThreadLocal<JCas> casHolder;
 
-    /**
-     * Provides a JCas with an auto-detected type system.
-     */
-    public ManagedJCas()
-    {
-        casHolder = ThreadLocal.withInitial(() -> {
-            try {
-                JCas cas = createJCas();
-                managedCases.add(cas);
-                return cas;
-            }
-            catch (UIMAException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+  private final static Set<JCas> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
-    /**
-     * Provides a JCas with the specified type system.
-     * 
-     * @param aTypeSystemDescription
-     *            the type system used to initialize the CAS.
-     */
-    public ManagedJCas(TypeSystemDescription aTypeSystemDescription)
-    {
-        casHolder = ThreadLocal.withInitial(() -> {
-            try {
-                JCas cas = createJCas(aTypeSystemDescription);
-                managedCases.add(cas);
-                return cas;
-            }
-            catch (UIMAException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+  /**
+   * Provides a JCas with an auto-detected type system.
+   */
+  public ManagedJCas() {
+    casHolder = ThreadLocal.withInitial(() -> {
+      try {
+        JCas cas = createJCas();
+        managedCases.add(cas);
+        return cas;
+      } catch (UIMAException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
 
-    /**
-     * @return the JCas object managed by this rule.
-     */
-    public JCas get()
-    {
-        return casHolder.get();
-    }
+  /**
+   * Provides a JCas with the specified type system.
+   * 
+   * @param aTypeSystemDescription
+   *          the type system used to initialize the CAS.
+   */
+  public ManagedJCas(TypeSystemDescription aTypeSystemDescription) {
+    casHolder = ThreadLocal.withInitial(() -> {
+      try {
+        JCas cas = createJCas(aTypeSystemDescription);
+        managedCases.add(cas);
+        return cas;
+      } catch (UIMAException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
 
-    @Override
-    protected void starting(Description description)
-    {
-        managedCases.forEach(cas -> cas.reset());
-    }
+  /**
+   * @return the JCas object managed by this rule.
+   */
+  public JCas get() {
+    return casHolder.get();
+  }
+
+  @Override
+  protected void starting(Description description) {
+    managedCases.forEach(cas -> cas.reset());
+  }
 }

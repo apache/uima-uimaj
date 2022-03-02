@@ -56,6 +56,7 @@ public final class ExternalResourceInitializer {
 
   /**
    * Configure a component from the given context.
+   * 
    * @param object
    *          the component.
    * @param context
@@ -101,7 +102,7 @@ public final class ExternalResourceInitializer {
       if (!ReflectionUtil.isAnnotationPresent(field, ExternalResource.class)) {
         continue;
       }
-      
+
       ExternalResource era = ReflectionUtil.getAnnotation(field, ExternalResource.class);
 
       // Get the resource key. If it is a nested resource, also get the prefix.
@@ -124,20 +125,20 @@ public final class ExternalResourceInitializer {
 
       // Sanity checks
       if (value == null && era.mandatory()) {
-        throw new ResourceInitializationException(new IllegalStateException("Mandatory resource ["
-                + key + "] is not set on [" + baseCls + "]"));
+        throw new ResourceInitializationException(new IllegalStateException(
+                "Mandatory resource [" + key + "] is not set on [" + baseCls + "]"));
       }
 
       // Now record the setting and optionally apply it to the given
       // instance.
       if (value != null) {
         field.setAccessible(true);
-        
+
         try {
           if (value instanceof ResourceList) {
             // Value is a multi-valued resource
             ResourceList resList = (ResourceList) value;
-            
+
             // We cannot do this in ResourceList because the resource doesn't have access to
             // the UIMA context we use here. Resources are initialize with their own contexts
             // by the UIMA framework!
@@ -151,20 +152,19 @@ public final class ExternalResourceInitializer {
             SimpleTypeConverter converter = new SimpleTypeConverter();
             value = converter.convertIfNecessary(elements, field.getType());
           }
-          
+
           try {
             field.set(object, value);
           } catch (IllegalAccessException e) {
             throw new ResourceInitializationException(e);
           }
-        }
-        finally {          
+        } finally {
           field.setAccessible(false);
         }
       }
     }
   }
-  
+
   private static Object getResourceObject(UimaContext aContext, String aKey)
           throws ResourceInitializationException {
     Object value;
@@ -222,10 +222,10 @@ public final class ExternalResourceInitializer {
       // have to rely on the UIMA implementation details and access the internal resource
       // map via reflection. If the resource manager is not derived from the default
       // UIMA resource manager, then we cannot really do anything here.
-      throw new IllegalStateException("Unsupported resource manager implementation ["
-              + resMgr.getClass() + "]");
+      throw new IllegalStateException(
+              "Unsupported resource manager implementation [" + resMgr.getClass() + "]");
     }
-    
+
     return resMgr.getExternalResources();
   }
 }

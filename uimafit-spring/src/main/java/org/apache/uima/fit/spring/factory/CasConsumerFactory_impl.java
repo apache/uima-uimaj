@@ -32,8 +32,8 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  */
-public class CasConsumerFactory_impl extends org.apache.uima.impl.CasConsumerFactory_impl implements
-        ApplicationContextAware {
+public class CasConsumerFactory_impl extends org.apache.uima.impl.CasConsumerFactory_impl
+        implements ApplicationContextAware {
   private ApplicationContext applicationContext;
 
   public void setApplicationContext(ApplicationContext aApplicationContext) throws BeansException {

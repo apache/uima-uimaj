@@ -23,10 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import junit.framework.Assert;
-
 import org.apache.uima.fit.testing.util.DisableLogging;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import junit.framework.Assert;
 
 /**
  */

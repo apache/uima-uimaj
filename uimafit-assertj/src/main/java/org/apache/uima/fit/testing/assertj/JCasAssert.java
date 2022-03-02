@@ -23,16 +23,12 @@ import org.apache.uima.jcas.JCas;
 /**
  * Asserts related to the {@link JCas}.
  */
-public class JCasAssert
-    extends CasAssert_ImplBase<JCasAssert, JCas>
-{
-    public JCasAssert(JCas actual)
-    {
-        super(actual, JCasAssert.class);
-    }
+public class JCasAssert extends CasAssert_ImplBase<JCasAssert, JCas> {
+  public JCasAssert(JCas actual) {
+    super(actual, JCasAssert.class);
+  }
 
-    public static JCasAssert assertThat(JCas actual)
-    {
-        return new JCasAssert(actual);
-    }
+  public static JCasAssert assertThat(JCas actual) {
+    return new JCasAssert(actual);
+  }
 }

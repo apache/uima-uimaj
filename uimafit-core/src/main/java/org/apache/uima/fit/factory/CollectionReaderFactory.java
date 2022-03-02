@@ -163,9 +163,9 @@ public final class CollectionReaderFactory {
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
    * @return The AnalysisEngine created from the XML descriptor and the configuration parameters.
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if the descriptor could not be created or if the component could not be instantiated
-   * @throws InvalidXMLException 
+   * @throws InvalidXMLException
    *           if the descriptor could not be created
    * @throws IOException
    *           if the descriptor could not be read
@@ -191,9 +191,9 @@ public final class CollectionReaderFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The AnalysisEngine created from the XML descriptor and the configuration parameters.
    * @deprecated use {@link #createReader(String, Object...)}
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if the descriptor could not be created or if the component could not be instantiated
-   * @throws InvalidXMLException 
+   * @throws InvalidXMLException
    *           if the descriptor could not be created
    * @throws IOException
    *           if the descriptor could not be read
@@ -220,9 +220,8 @@ public final class CollectionReaderFactory {
    * @throws ResourceInitializationException
    *           if the component could not be initialized
    */
-  public static CollectionReader createReader(
-          Class<? extends CollectionReader> readerClass, Object... configurationData)
-          throws ResourceInitializationException {
+  public static CollectionReader createReader(Class<? extends CollectionReader> readerClass,
+          Object... configurationData) throws ResourceInitializationException {
     TypeSystemDescription tsd = createTypeSystemDescription();
     return createReader(readerClass, tsd, (TypePriorities) null, configurationData);
   }
@@ -266,9 +265,9 @@ public final class CollectionReaderFactory {
    * @throws ResourceInitializationException
    *           if the component could not be initialized
    */
-  public static CollectionReader createReader(
-          Class<? extends CollectionReader> readerClass, TypeSystemDescription typeSystem,
-          Object... configurationData) throws ResourceInitializationException {
+  public static CollectionReader createReader(Class<? extends CollectionReader> readerClass,
+          TypeSystemDescription typeSystem, Object... configurationData)
+          throws ResourceInitializationException {
     return createReader(readerClass, typeSystem, (TypePriorities) null, configurationData);
   }
 
@@ -311,15 +310,15 @@ public final class CollectionReaderFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The CollectionReader created and initialized with the type system and configuration
    *         parameters.
-   * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, String[], Object...)}
+   * @deprecated use
+   *             {@link #createReaderDescription(Class, TypeSystemDescription, String[], Object...)}
    * @throws ResourceInitializationException
    *           if the component could not be initialized
    */
   @Deprecated
-  public static CollectionReader createReader(
-          Class<? extends CollectionReader> readerClass, TypeSystemDescription typeSystem,
-          String[] prioritizedTypeNames, Object... configurationData)
-          throws ResourceInitializationException {
+  public static CollectionReader createReader(Class<? extends CollectionReader> readerClass,
+          TypeSystemDescription typeSystem, String[] prioritizedTypeNames,
+          Object... configurationData) throws ResourceInitializationException {
     TypePriorities typePriorities = createTypePriorities(prioritizedTypeNames);
     return createReader(readerClass, typeSystem, typePriorities, configurationData);
   }
@@ -339,10 +338,11 @@ public final class CollectionReaderFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The CollectionReader created and initialized with the type system and configuration
    *         parameters.
-   * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, String[], Object...)}
+   * @deprecated use
+   *             {@link #createReaderDescription(Class, TypeSystemDescription, String[], Object...)}
    * @throws ResourceInitializationException
    *           if the component could not be initialized
-   *           
+   * 
    * @deprecated use {@link #createReader(Class, TypeSystemDescription, String[], Object...)}
    */
   @Deprecated
@@ -369,15 +369,14 @@ public final class CollectionReaderFactory {
    * @throws ResourceInitializationException
    *           if the component could not be initialized
    */
-  public static CollectionReader createReader(
-          Class<? extends CollectionReader> readerClass, TypeSystemDescription typeSystem,
-          TypePriorities typePriorities, Object... configurationData)
-          throws ResourceInitializationException {
-    CollectionReaderDescription desc = createReaderDescription(readerClass, typeSystem, typePriorities,
-            configurationData);
+  public static CollectionReader createReader(Class<? extends CollectionReader> readerClass,
+          TypeSystemDescription typeSystem, TypePriorities typePriorities,
+          Object... configurationData) throws ResourceInitializationException {
+    CollectionReaderDescription desc = createReaderDescription(readerClass, typeSystem,
+            typePriorities, configurationData);
     return createReader(desc);
   }
-  
+
   /**
    * @param readerClass
    *          The class of the CollectionReader to be created.
@@ -392,7 +391,7 @@ public final class CollectionReaderFactory {
    *         parameters.
    * @throws ResourceInitializationException
    *           if the component could not be initialized
-   *           
+   * 
    * @deprecated use {@link #createReader(Class, TypeSystemDescription, TypePriorities, Object...)}
    */
   @Deprecated
@@ -438,7 +437,7 @@ public final class CollectionReaderFactory {
    *         parameters.
    * @throws ResourceInitializationException
    *           if the component could not be initialized
-   *           
+   * 
    * @deprecated use {@link #createReader(CollectionReaderDescription, Object...)}
    */
   @Deprecated
@@ -488,7 +487,7 @@ public final class CollectionReaderFactory {
    *         configuration parameters
    * @throws ResourceInitializationException
    *           if the descriptor could not be set up
-   *          
+   * 
    * @deprecated use {@link #createReaderDescription(Class, Object...)}
    */
   @Deprecated
@@ -518,7 +517,8 @@ public final class CollectionReaderFactory {
   public static CollectionReaderDescription createReaderDescription(
           Class<? extends CollectionReader> readerClass, TypeSystemDescription typeSystem,
           Object... configurationData) throws ResourceInitializationException {
-    return createReaderDescription(readerClass, typeSystem, (TypePriorities) null, configurationData);
+    return createReaderDescription(readerClass, typeSystem, (TypePriorities) null,
+            configurationData);
   }
 
   /**
@@ -536,7 +536,7 @@ public final class CollectionReaderFactory {
    *         configuration parameters
    * @throws ResourceInitializationException
    *           if the descriptor could not be set up
-   *          
+   * 
    * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, Object...)}
    */
   @Deprecated
@@ -583,15 +583,17 @@ public final class CollectionReaderFactory {
    *         configuration parameters
    * @throws ResourceInitializationException
    *           if the descriptor could not be set up
-   *          
-   * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, String[], Object...)}
+   * 
+   * @deprecated use
+   *             {@link #createReaderDescription(Class, TypeSystemDescription, String[], Object...)}
    */
   @Deprecated
   public static CollectionReaderDescription createDescription(
           Class<? extends CollectionReader> readerClass, TypeSystemDescription typeSystem,
           String[] prioritizedTypeNames, Object... configurationData)
           throws ResourceInitializationException {
-    return createReaderDescription(readerClass, typeSystem, prioritizedTypeNames, configurationData);
+    return createReaderDescription(readerClass, typeSystem, prioritizedTypeNames,
+            configurationData);
   }
 
   /**
@@ -614,8 +616,8 @@ public final class CollectionReaderFactory {
           Class<? extends CollectionReader> readerClass, TypeSystemDescription typeSystem,
           TypePriorities typePriorities, Object... configurationData)
           throws ResourceInitializationException {
-    return createReaderDescription(readerClass, typeSystem, typePriorities, (FsIndexCollection) null,
-            (Capability[]) null, configurationData);
+    return createReaderDescription(readerClass, typeSystem, typePriorities,
+            (FsIndexCollection) null, (Capability[]) null, configurationData);
   }
 
   /**
@@ -632,8 +634,9 @@ public final class CollectionReaderFactory {
    *         configuration parameters
    * @throws ResourceInitializationException
    *           if the descriptor could not be set up
-   *          
-   * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, TypePriorities, Object...)}
+   * 
+   * @deprecated use
+   *             {@link #createReaderDescription(Class, TypeSystemDescription, TypePriorities, Object...)}
    */
   @Deprecated
   public static CollectionReaderDescription createDescription(
@@ -700,7 +703,8 @@ public final class CollectionReaderFactory {
    * @throws ResourceInitializationException
    *           if the descriptor could not be set up
    * 
-   * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], Object...)}
+   * @deprecated use
+   *             {@link #createReaderDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], Object...)}
    */
   @Deprecated
   public static CollectionReaderDescription createDescription(
@@ -710,7 +714,7 @@ public final class CollectionReaderFactory {
     return createReaderDescription(readerClass, typeSystem, typePriorities, indexes, capabilities,
             configurationData);
   }
-  
+
   /**
    * 
    * @param readerClass
@@ -760,7 +764,8 @@ public final class CollectionReaderFactory {
    *         configuration parameters
    * @throws ResourceInitializationException
    *           if the descriptor could not be set up
-   * @deprecated use {@link #createReaderDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], ConfigurationParameter[], Object[])}
+   * @deprecated use
+   *             {@link #createReaderDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], ConfigurationParameter[], Object[])}
    */
   @Deprecated
   public static CollectionReaderDescription createDescription(
@@ -856,7 +861,7 @@ public final class CollectionReaderFactory {
 
     return desc;
   }
-  
+
   /**
    * The factory method for creating CollectionReaderDescription objects for a given class,
    * TypeSystemDescription, TypePriorities, capabilities, and configuration data

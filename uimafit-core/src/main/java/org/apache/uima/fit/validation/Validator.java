@@ -64,7 +64,7 @@ public class Validator {
 
     return summary;
   }
-  
+
   public ValidationSummary check(CAS cas) throws ValidationException {
     ValidationSummary summary = new ValidationSummary();
 
@@ -91,7 +91,7 @@ public class Validator {
 
     return summary;
   }
-  
+
   public Collection<ValidationCheck> getChecks() {
     return checks;
   }
@@ -145,10 +145,7 @@ public class Validator {
      *          names of check classes to be excluded.
      */
     public Validator.Builder excludingByName(String... className) {
-      stream(className)
-          .map(Pattern::quote)
-          .map(Pattern::compile)
-          .forEach(excludePatterns::add);
+      stream(className).map(Pattern::quote).map(Pattern::compile).forEach(excludePatterns::add);
       return this;
     }
 
@@ -161,9 +158,7 @@ public class Validator {
      *          regular expressions matching check class names to be excluded.
      */
     public Validator.Builder excludingByPattern(String... patterns) {
-      stream(patterns)
-          .map(Pattern::compile)
-          .forEach(excludePatterns::add);
+      stream(patterns).map(Pattern::compile).forEach(excludePatterns::add);
       return this;
     }
 
@@ -180,7 +175,7 @@ public class Validator {
       stream(types).forEach(excludeTypes::add);
       return this;
     }
-    
+
     /**
      * Retain only checks with the given names. Subtypes of the given classes are not retained.
      * <p>
@@ -190,10 +185,7 @@ public class Validator {
      *          names of check classes to be included.
      */
     public Validator.Builder includingByName(String... className) {
-      stream(className)
-          .map(Pattern::quote)
-          .map(Pattern::compile)
-          .forEach(includePatterns::add);
+      stream(className).map(Pattern::quote).map(Pattern::compile).forEach(includePatterns::add);
       return this;
     }
 
@@ -206,9 +198,7 @@ public class Validator {
      *          regular expressions matching check class names to be included.
      */
     public Validator.Builder includingByPattern(String... patterns) {
-      stream(patterns)
-          .map(Pattern::compile)
-          .forEach(includePatterns::add);
+      stream(patterns).map(Pattern::compile).forEach(includePatterns::add);
       return this;
     }
 
@@ -227,8 +217,7 @@ public class Validator {
     }
 
     private Validator.Builder autoDetectChecks() {
-      stream(load(ValidationCheck.class).spliterator(), false)
-              .forEachOrdered(checks::add);
+      stream(load(ValidationCheck.class).spliterator(), false).forEachOrdered(checks::add);
       return this;
     }
 
@@ -236,25 +225,25 @@ public class Validator {
       if (!skipAutoDetection) {
         autoDetectChecks();
       }
-      
+
       if (!includePatterns.isEmpty()) {
         checks.removeIf(check -> includePatterns.stream()
                 .noneMatch(p -> p.matcher(check.getClass().getName()).matches()));
       }
-      
+
       if (!includeTypes.isEmpty()) {
         checks.removeIf(check -> includeTypes.stream()
                 .noneMatch(t -> t.isAssignableFrom(check.getClass())));
       }
-      
+
       if (!excludePatterns.isEmpty()) {
         checks.removeIf(check -> excludePatterns.stream()
                 .anyMatch(p -> p.matcher(check.getClass().getName()).matches()));
       }
-      
+
       if (!excludeTypes.isEmpty()) {
-        checks.removeIf(check -> excludeTypes.stream()
-                .anyMatch(t -> t.isAssignableFrom(check.getClass())));
+        checks.removeIf(
+                check -> excludeTypes.stream().anyMatch(t -> t.isAssignableFrom(check.getClass())));
       }
 
       return new Validator(checks);

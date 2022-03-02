@@ -34,57 +34,50 @@ import org.assertj.core.api.Fail;
  * Asserts related to the {@link CAS}.
  */
 public class CasAssert_ImplBase<SELF extends CasAssert_ImplBase<SELF, ACTUAL>, ACTUAL>
-    extends AbstractAssert<SELF, ACTUAL>
-{
-    public CasAssert_ImplBase(ACTUAL aActual, Class<?> aSelfType)
-    {
-        super(aActual, aSelfType);
+        extends AbstractAssert<SELF, ACTUAL> {
+  public CasAssert_ImplBase(ACTUAL aActual, Class<?> aSelfType) {
+    super(aActual, aSelfType);
+  }
+
+  protected ValidationSummary validate(Validator aValidator) throws ValidationException {
+    if (actual instanceof CAS) {
+      return aValidator.check((CAS) actual);
     }
-    
-    protected ValidationSummary validate(Validator aValidator) throws ValidationException
-    {
-        if (actual instanceof CAS) {
-            return aValidator.check((CAS) actual);
-        }
-        if (actual instanceof JCas) {
-            return aValidator.check((JCas) actual);
-        }
-        
-        throw new IllegalArgumentException(
-                "Unsupported CAS implementation [" + actual.getClass().getName() + "]");
+    if (actual instanceof JCas) {
+      return aValidator.check((JCas) actual);
     }
 
-    /**
-     * Checks that CAS is valid using the auto-detected validation checks.
-     */
-    public SELF isValid()
-    {
-        return isValidUsing(new Validator.Builder().build());
+    throw new IllegalArgumentException(
+            "Unsupported CAS implementation [" + actual.getClass().getName() + "]");
+  }
+
+  /**
+   * Checks that CAS is valid using the auto-detected validation checks.
+   */
+  public SELF isValid() {
+    return isValidUsing(new Validator.Builder().build());
+  }
+
+  /**
+   * Checks that CAS is valid using the given validator.
+   */
+  public SELF isValidUsing(Validator aValidator) {
+    isNotNull();
+
+    try {
+      ValidationSummary summary = validate(aValidator);
+
+      String messageBuffer = summary.getResults().stream()
+              .filter(r -> r.getSeverity().isEquallyOrMoreSevereThan(ERROR))
+              .map(r -> format("[%s] %s", r.getSource(), r.getMessage())).collect(joining("\n"));
+
+      if (messageBuffer.length() > 0) {
+        Fail.fail(messageBuffer);
+      }
+    } catch (ValidationException e) {
+      Fail.fail("Unable to validate CAS", e);
     }
-    
-    /**
-     * Checks that CAS is valid using the given validator.
-     */
-    public SELF isValidUsing(Validator aValidator)
-    {
-        isNotNull();
 
-        try {
-            ValidationSummary summary = validate(aValidator);
-
-            String messageBuffer = summary.getResults().stream()
-                    .filter(r -> r.getSeverity().isEquallyOrMoreSevereThan(ERROR))
-                    .map(r -> format("[%s] %s", r.getSource(), r.getMessage()))
-                    .collect(joining("\n"));
-
-            if (messageBuffer.length() > 0) {
-                Fail.fail(messageBuffer);
-            }
-        }
-        catch (ValidationException e) {
-            Fail.fail("Unable to validate CAS", e);
-        }
-
-        return myself;
-    }
+    return myself;
+  }
 }

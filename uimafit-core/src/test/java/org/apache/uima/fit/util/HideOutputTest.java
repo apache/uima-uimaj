@@ -22,10 +22,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import junit.framework.Assert;
-
 import org.apache.uima.fit.testing.util.HideOutput;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import junit.framework.Assert;
 
 /**
  */

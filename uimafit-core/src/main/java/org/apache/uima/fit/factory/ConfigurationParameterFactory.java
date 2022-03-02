@@ -288,9 +288,9 @@ public final class ConfigurationParameterFactory {
   static Object convertParameterValue(ConfigurationParameter param, Object aValue) {
     Object value = aValue;
     if (aValue == null) {
-        return null;
+      return null;
     }
-    
+
     if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive()) {
       if ("boolean".equals(value.getClass().getComponentType().getName())) {
         return ArrayUtils.toObject((boolean[]) value);
@@ -307,7 +307,7 @@ public final class ConfigurationParameterFactory {
       if ("float".equals(value.getClass().getComponentType().getName())) {
         return ArrayUtils.toObject((float[]) value);
       }
-      
+
       if ("double".equals(value.getClass().getComponentType().getName())) {
         return ArrayUtils.toObject((double[]) value);
       }

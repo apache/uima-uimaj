@@ -22,6 +22,7 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.util.LifeCycleUtil.collectionProcessComplete;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,11 +80,11 @@ public final class SimplePipeline {
    *          and call the other runPipeline method.
    * @throws IOException
    *           if there is an I/O problem in the reader
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if there is a problem initializing or running the pipeline.
-   * @throws CollectionException 
+   * @throws CollectionException
    *           if there is a problem initializing or running the pipeline.
-   * @throws AnalysisEngineProcessException 
+   * @throws AnalysisEngineProcessException
    *           if there is a problem initializing or running the pipeline.
    */
   public static void runPipeline(final CollectionReader reader,
@@ -93,12 +94,12 @@ public final class SimplePipeline {
     try {
       // Create AAE
       final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
-  
+
       // Instantiate AAE
       aae = createEngine(aaeDesc);
-  
+
       // Create CAS from merged metadata
-      final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()), 
+      final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()),
               null, reader.getResourceManager());
       reader.typeSystemInit(cas.getTypeSystem());
 
@@ -128,21 +129,25 @@ public final class SimplePipeline {
    * External resources can be shared between the reader and the analysis engines.
    * </p>
    * <p>
-   * This method is suitable for the batch-processing of sets of documents where the overheaded
-   * of instantiating the pipeline components does not significantly impact the overall runtime
-   * of the pipeline. If you need to avoid this overhead, e.g. because you wish to run a pipeline
-   * on individual documents, then you should not use this method. Instead, create a CAS using
-   * {@link JCasFactory}, create a reader instance using {@link CollectionReaderFactory#createReader},
-   * create an engine instance using {@link AnalysisEngineFactory#createEngine} and then use
-   * a loop to process the data, resetting the CAS after each step.
+   * This method is suitable for the batch-processing of sets of documents where the overheaded of
+   * instantiating the pipeline components does not significantly impact the overall runtime of the
+   * pipeline. If you need to avoid this overhead, e.g. because you wish to run a pipeline on
+   * individual documents, then you should not use this method. Instead, create a CAS using
+   * {@link JCasFactory}, create a reader instance using
+   * {@link CollectionReaderFactory#createReader}, create an engine instance using
+   * {@link AnalysisEngineFactory#createEngine} and then use a loop to process the data, resetting
+   * the CAS after each step.
    * </p>
-   * <pre><code>
+   * 
+   * <pre>
+   * <code>
    *   while (reader.hasNext()) {
    *     reader.getNext(cas);
    *     engine.process(cas);
    *     cas.reset();
    *   }
-   * </code></pre>
+   * </code>
+   * </pre>
    * 
    * @param readerDesc
    *          The CollectionReader that loads the documents into the CAS.
@@ -152,11 +157,11 @@ public final class SimplePipeline {
    *          and call the other runPipeline method.
    * @throws IOException
    *           if there is an I/O problem in the reader
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if there is a problem initializing or running the pipeline.
-   * @throws CollectionException 
+   * @throws CollectionException
    *           if there is a problem initializing or running the pipeline.
-   * @throws AnalysisEngineProcessException 
+   * @throws AnalysisEngineProcessException
    *           if there is a problem initializing or running the pipeline.
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
@@ -167,16 +172,16 @@ public final class SimplePipeline {
     ResourceManager resMgr = null;
     try {
       resMgr = ResourceManagerFactory.newResourceManager();
-      
+
       // Create the components
       reader = UIMAFramework.produceCollectionReader(readerDesc, resMgr, null);
-  
+
       // Create AAE
       final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
-  
+
       // Instantiate AAE
       aae = UIMAFramework.produceAnalysisEngine(aaeDesc, resMgr, null);
-  
+
       // Create CAS from merged metadata
       final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()),
               null, resMgr);
@@ -222,11 +227,11 @@ public final class SimplePipeline {
    *          a sequence of analysis engines
    * @throws IOException
    *           if there is an I/O problem in the reader
-   * @throws CollectionException 
+   * @throws CollectionException
    *           if there is a problem initializing or running the pipeline.
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if there is a problem initializing or running the pipeline.
-   * @throws AnalysisEngineProcessException 
+   * @throws AnalysisEngineProcessException
    *           if there is a problem initializing or running the pipeline.
    */
   public static void runPipeline(final CollectionReader reader, final AnalysisEngine... engines)
@@ -234,7 +239,7 @@ public final class SimplePipeline {
           CollectionException {
     runPipeline(reader.getResourceManager(), reader, engines);
   }
-  
+
   /**
    * <p>
    * Provides a simple way to run a pipeline for a given collection reader and sequence of analysis
@@ -258,11 +263,11 @@ public final class SimplePipeline {
    *          a sequence of analysis engines
    * @throws IOException
    *           if there is an I/O problem in the reader
-   * @throws ResourceInitializationException 
+   * @throws ResourceInitializationException
    *           if there is a problem initializing or running the pipeline.
-   * @throws CollectionException 
+   * @throws CollectionException
    *           if there is a problem initializing or running the pipeline.
-   * @throws AnalysisEngineProcessException 
+   * @throws AnalysisEngineProcessException
    *           if there is a problem initializing or running the pipeline.
    */
   public static void runPipeline(final ResourceManager aResMgr, final CollectionReader reader,
@@ -310,10 +315,10 @@ public final class SimplePipeline {
     try {
       // Create aggregate AE
       final AnalysisEngineDescription aaeDesc = createEngineDescription(aDescs);
-  
+
       // Instantiate
       aae = createEngine(aaeDesc);
-      
+
       // Process
       aae.process(aCas);
 

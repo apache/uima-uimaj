@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.fit.util.JCasUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

@@ -89,7 +89,7 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   public Set<String> getStrings9() {
     return strings9;
   }
-  
+
   public Set<String> getStrings10() {
     return strings10;
   }
@@ -110,8 +110,8 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   }
 
   public static final String PARAM_BOOLEAN_3 = "boolean3";
-  @ConfigurationParameter(name = PARAM_BOOLEAN_3, mandatory = true, defaultValue = { "true",
-      "true", "false" })
+  @ConfigurationParameter(name = PARAM_BOOLEAN_3, mandatory = true, defaultValue = { "true", "true",
+      "false" })
   private Boolean[] boolean3;
 
   public static final String PARAM_BOOLEAN_4 = "boolean4";
@@ -311,7 +311,7 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   public List<File> getFiles10() {
     return files10;
   }
-  
+
   public float[] getFloat4() {
     return float4;
   }
@@ -402,13 +402,13 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   private Pattern regex1;
 
   public static final String PARAM_REGEX_2 = "regex2";
-  @ConfigurationParameter(name = PARAM_REGEX_2, defaultValue=".*uimaFIT.*")
+  @ConfigurationParameter(name = PARAM_REGEX_2, defaultValue = ".*uimaFIT.*")
   private Pattern regex2;
-  
+
   public Pattern getRegex1() {
     return regex1;
   }
-  
+
   public Pattern getRegex2() {
     return regex2;
   }

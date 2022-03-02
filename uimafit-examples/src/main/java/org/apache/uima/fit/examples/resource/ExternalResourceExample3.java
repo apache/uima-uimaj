@@ -70,9 +70,7 @@ public class ExternalResourceExample3 {
    * Illustrate how to configure the annotator with a chainable resource
    */
   public static void main(String[] args) throws Exception {
-    AnalysisEngineDescription aed = createEngineDescription(
-            Annotator2.class,
-            Annotator2.RES_MODEL,
+    AnalysisEngineDescription aed = createEngineDescription(Annotator2.class, Annotator2.RES_MODEL,
             createResourceDescription(ChainableResource.class,
                     ChainableResource.RES_CHAINED_RESOURCE,
                     createResourceDescription(ChainableResource.class)));

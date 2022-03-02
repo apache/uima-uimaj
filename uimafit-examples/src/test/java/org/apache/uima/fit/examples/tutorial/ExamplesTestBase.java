@@ -32,7 +32,7 @@ import org.apache.uima.fit.examples.tutorial.type.UimaMeeting;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class ExamplesTestBase {
   private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
@@ -43,7 +43,8 @@ public class ExamplesTestBase {
 
   static {
     try {
-      TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
+      TypeSystemDescription tsd = createTypeSystemDescription(
+              "org.apache.uima.fit.examples.TypeSystem");
       TYPE_SYSTEM_DESCRIPTION.set(tsd);
 
       TypePriorities tp = createTypePriorities(DateAnnotation.class, DateTimeAnnotation.class,
@@ -69,7 +70,7 @@ public class ExamplesTestBase {
    * (~100ms on my laptop). Instead, we will have one JCas per thread sitting around that we will
    * reset everytime a new test is called.
    */
-  @Before
+  @BeforeEach
   public void setUp() {
     jCas = JCAS.get();
     jCas.reset();

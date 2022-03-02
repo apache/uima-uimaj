@@ -24,22 +24,31 @@ package org.apache.uima.fit.util;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.ArrayUtils.toObject;
 import static org.apache.uima.fit.util.FSCollectionFactory.create;
-import static org.apache.uima.fit.util.FSCollectionFactory.*;
+import static org.apache.uima.fit.util.FSCollectionFactory.createArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createByteArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createByteArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createDoubleArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createDoubleArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createFSArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createFSList;
+import static org.apache.uima.fit.util.FSCollectionFactory.createFloatArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createFloatArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createFloatList;
+import static org.apache.uima.fit.util.FSCollectionFactory.createIntArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createIntArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createIntegerList;
+import static org.apache.uima.fit.util.FSCollectionFactory.createLongArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createLongArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createShortArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createShortArrayFS;
+import static org.apache.uima.fit.util.FSCollectionFactory.createStringArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createStringArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createStringList;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.apache.uima.fit.util.FSCollectionFactory.fillArray;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,8 +60,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -63,7 +72,7 @@ public class FSCollectionFactoryTest {
 
   private Collection<Annotation> tokens;
 
-  @Before
+  @BeforeEach
   public void init() throws Exception {
     jcas = JCasFactory.createJCas();
 
@@ -90,36 +99,34 @@ public class FSCollectionFactoryTest {
   @Test
   public void testCreateFSArray() {
     assertEquals(tokenFSs, create(createArrayFS(jcas.getCas(), tokenFSs)));
-    assertEquals(
-            tokenFSs,
-            create(createArrayFS(jcas.getCas(),
-                    tokenFSs.toArray(new FeatureStructure[tokenFSs.size()]))));
+    assertEquals(tokenFSs, create(
+            createArrayFS(jcas.getCas(), tokenFSs.toArray(new FeatureStructure[tokenFSs.size()]))));
     assertEquals(tokens, create(createArrayFS(jcas.getCas(), tokens)));
     assertEquals(tokens, create(createFSArray(jcas, tokens)));
     assertEquals(tokens,
             create(createArrayFS(jcas.getCas(), tokens.toArray(new Annotation[tokens.size()]))));
-    assertEquals(tokens, create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()]))));
     assertEquals(tokens,
-            create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()])), Token.class));
+            create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()]))));
+    assertEquals(tokens, create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()])),
+            Token.class));
   }
 
   @Test
   public void testCreateBooleanArray() {
     assertEquals(asList(true, false),
             asList(toObject(createBooleanArrayFS(jcas.getCas(), asList(true, false)).toArray())));
+    assertEquals(asList(true, false), asList(toObject(
+            createBooleanArrayFS(jcas.getCas(), new boolean[] { true, false }).toArray())));
     assertEquals(asList(true, false),
-            asList(toObject(createBooleanArrayFS(jcas.getCas(), new boolean[] { true, false })
-                    .toArray())));
-    assertEquals(asList(true, false), asList(toObject(createBooleanArray(jcas, asList(true, false))
-            .toArray())));
+            asList(toObject(createBooleanArray(jcas, asList(true, false)).toArray())));
     assertEquals(asList(true, false),
             asList(toObject(createBooleanArray(jcas, new boolean[] { true, false }).toArray())));
   }
 
   @Test
   public void testCreateByteArray() {
-    assertEquals(asList((byte) 0, (byte) 1),
-            asList(toObject(createByteArrayFS(jcas.getCas(), asList((byte) 0, (byte) 1)).toArray())));
+    assertEquals(asList((byte) 0, (byte) 1), asList(
+            toObject(createByteArrayFS(jcas.getCas(), asList((byte) 0, (byte) 1)).toArray())));
     assertEquals(asList((byte) 0, (byte) 1),
             asList(toObject(createByteArrayFS(jcas.getCas(), new byte[] { 0, 1 }).toArray())));
     assertEquals(asList((byte) 0, (byte) 1),
@@ -132,10 +139,10 @@ public class FSCollectionFactoryTest {
   public void testCreateDoubleArray() {
     assertEquals(asList(0.0, 1.0),
             asList(toObject(createDoubleArrayFS(jcas.getCas(), asList(0.0, 1.0)).toArray())));
+    assertEquals(asList(0.0, 1.0), asList(
+            toObject(createDoubleArrayFS(jcas.getCas(), new double[] { 0.0, 1.0 }).toArray())));
     assertEquals(asList(0.0, 1.0),
-            asList(toObject(createDoubleArrayFS(jcas.getCas(), new double[] { 0.0, 1.0 }).toArray())));
-    assertEquals(asList(0.0, 1.0), asList(toObject(createDoubleArray(jcas, asList(0.0, 1.0))
-            .toArray())));
+            asList(toObject(createDoubleArray(jcas, asList(0.0, 1.0)).toArray())));
     assertEquals(asList(0.0, 1.0),
             asList(toObject(createDoubleArray(jcas, new double[] { 0.0, 1.0 }).toArray())));
   }
@@ -144,10 +151,10 @@ public class FSCollectionFactoryTest {
   public void testCreateFloatArray() {
     assertEquals(asList(0.0f, 1.0f),
             asList(toObject(createFloatArrayFS(jcas.getCas(), asList(0.0f, 1.0f)).toArray())));
+    assertEquals(asList(0.0f, 1.0f), asList(
+            toObject(createFloatArrayFS(jcas.getCas(), new float[] { 0.0f, 1.0f }).toArray())));
     assertEquals(asList(0.0f, 1.0f),
-            asList(toObject(createFloatArrayFS(jcas.getCas(), new float[] { 0.0f, 1.0f }).toArray())));
-    assertEquals(asList(0.0f, 1.0f), asList(toObject(createFloatArray(jcas, asList(0.0f, 1.0f))
-            .toArray())));
+            asList(toObject(createFloatArray(jcas, asList(0.0f, 1.0f)).toArray())));
     assertEquals(asList(0.0f, 1.0f),
             asList(toObject(createFloatArray(jcas, new float[] { 0.0f, 1.0f }).toArray())));
   }
@@ -159,20 +166,23 @@ public class FSCollectionFactoryTest {
 
   @Test
   public void testCreateIntArray() {
-    assertEquals(asList(0, 1), asList(toObject(createIntArrayFS(jcas.getCas(), asList(0, 1))
-            .toArray())));
-    assertEquals(asList(0, 1), asList(toObject(createIntArrayFS(jcas.getCas(), new int[] { 0, 1 })
-            .toArray())));
+    assertEquals(asList(0, 1),
+            asList(toObject(createIntArrayFS(jcas.getCas(), asList(0, 1)).toArray())));
+    assertEquals(asList(0, 1),
+            asList(toObject(createIntArrayFS(jcas.getCas(), new int[] { 0, 1 }).toArray())));
     assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas, asList(0, 1)).toArray())));
-    assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas, new int[] { 0, 1 }).toArray())));
+    assertEquals(asList(0, 1),
+            asList(toObject(createIntArray(jcas, new int[] { 0, 1 }).toArray())));
   }
 
   @Test
   public void testFillIntegerArray() {
-    assertArrayEquals(new int[] {0, 1}, fillArray(new IntegerArray(jcas, 2), asList(0, 1)).toArray());
-    assertArrayEquals(new int[] {0, 1}, fillArray(new IntegerArray(jcas, 2), 0, 1).toArray());
-    assertArrayEquals(new int[] {0, 1}, fillArray(new IntegerArray(jcas, 2), asList(0, 1)).toArray());
-    assertArrayEquals(new int[] {0, 1}, fillArray(new IntegerArray(jcas, 2), 0, 1).toArray());
+    assertArrayEquals(new int[] { 0, 1 },
+            fillArray(new IntegerArray(jcas, 2), asList(0, 1)).toArray());
+    assertArrayEquals(new int[] { 0, 1 }, fillArray(new IntegerArray(jcas, 2), 0, 1).toArray());
+    assertArrayEquals(new int[] { 0, 1 },
+            fillArray(new IntegerArray(jcas, 2), asList(0, 1)).toArray());
+    assertArrayEquals(new int[] { 0, 1 }, fillArray(new IntegerArray(jcas, 2), 0, 1).toArray());
   }
 
   @Test
@@ -182,20 +192,19 @@ public class FSCollectionFactoryTest {
 
   @Test
   public void testCreateLongArray() {
-    assertEquals(asList(0l, 1l), asList(toObject(createLongArrayFS(jcas.getCas(), asList(0l, 1l))
-            .toArray())));
+    assertEquals(asList(0l, 1l),
+            asList(toObject(createLongArrayFS(jcas.getCas(), asList(0l, 1l)).toArray())));
     assertEquals(asList(0l, 1l),
             asList(toObject(createLongArrayFS(jcas.getCas(), new long[] { 0l, 1l }).toArray())));
     assertEquals(asList(0l, 1l), asList(toObject(createLongArray(jcas, asList(0l, 1l)).toArray())));
-    assertEquals(asList(0l, 1l), asList(toObject(createLongArray(jcas, new long[] { 0l, 1l })
-            .toArray())));
+    assertEquals(asList(0l, 1l),
+            asList(toObject(createLongArray(jcas, new long[] { 0l, 1l }).toArray())));
   }
 
   @Test
   public void testCreateShortArray() {
-    assertEquals(
-            asList((short) 0, (short) 1),
-            asList(toObject(createShortArrayFS(jcas.getCas(), asList((short) 0, (short) 1)).toArray())));
+    assertEquals(asList((short) 0, (short) 1), asList(
+            toObject(createShortArrayFS(jcas.getCas(), asList((short) 0, (short) 1)).toArray())));
     assertEquals(asList((short) 0, (short) 1),
             asList(toObject(createShortArrayFS(jcas.getCas(), new short[] { 0, 1 }).toArray())));
     assertEquals(asList((short) 0, (short) 1),
@@ -206,8 +215,8 @@ public class FSCollectionFactoryTest {
 
   @Test
   public void testCreateStringArray() {
-    assertEquals(asList("0", "1"), asList(createStringArrayFS(jcas.getCas(), asList("0", "1"))
-            .toArray()));
+    assertEquals(asList("0", "1"),
+            asList(createStringArrayFS(jcas.getCas(), asList("0", "1")).toArray()));
     assertEquals(asList("0", "1"),
             asList(createStringArrayFS(jcas.getCas(), new String[] { "0", "1" }).toArray()));
     assertEquals(asList("0", "1"), asList(createStringArray(jcas, asList("0", "1")).toArray()));

@@ -39,61 +39,53 @@ import org.junit.runner.Description;
  * handed out to any thread are reset (except any CASes which may meanwhile have been garbage
  * collected).
  */
-public final class ManagedCas
-    extends TestWatcher
-{
-    private final ThreadLocal<CAS> casHolder;
-    
-    private final static Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
+public final class ManagedCas extends TestWatcher {
+  private final ThreadLocal<CAS> casHolder;
 
-    /**
-     * Provides a CAS with an auto-detected type system.
-     */
-    public ManagedCas()
-    {
-        casHolder = ThreadLocal.withInitial(() -> {
-            try {
-                CAS cas = createCas();
-                managedCases.add(cas);
-                return cas;
-            }
-            catch (UIMAException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+  private final static Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
-    /**
-     * Provides a CAS with the specified type system.
-     * 
-     * @param aTypeSystemDescription
-     *            the type system used to initialize the CAS.
-     */
-    public ManagedCas(TypeSystemDescription aTypeSystemDescription)
-    {
-        casHolder = ThreadLocal.withInitial(() -> {
-            try {
-                CAS cas = createCas(aTypeSystemDescription);
-                managedCases.add(cas);
-                return cas;
-            }
-            catch (UIMAException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+  /**
+   * Provides a CAS with an auto-detected type system.
+   */
+  public ManagedCas() {
+    casHolder = ThreadLocal.withInitial(() -> {
+      try {
+        CAS cas = createCas();
+        managedCases.add(cas);
+        return cas;
+      } catch (UIMAException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
 
-    /**
-     * @return the CAS object managed by this rule.
-     */
-    public CAS get()
-    {
-        return casHolder.get();
-    }
+  /**
+   * Provides a CAS with the specified type system.
+   * 
+   * @param aTypeSystemDescription
+   *          the type system used to initialize the CAS.
+   */
+  public ManagedCas(TypeSystemDescription aTypeSystemDescription) {
+    casHolder = ThreadLocal.withInitial(() -> {
+      try {
+        CAS cas = createCas(aTypeSystemDescription);
+        managedCases.add(cas);
+        return cas;
+      } catch (UIMAException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
 
-    @Override
-    protected void starting(Description description)
-    {
-        managedCases.forEach(cas -> cas.reset());
-    }
+  /**
+   * @return the CAS object managed by this rule.
+   */
+  public CAS get() {
+    return casHolder.get();
+  }
+
+  @Override
+  protected void starting(Description description) {
+    managedCases.forEach(cas -> cas.reset());
+  }
 }

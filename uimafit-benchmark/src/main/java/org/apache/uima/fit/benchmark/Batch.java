@@ -42,11 +42,11 @@ public class Batch {
   public List<Measurement> getMeasurements() {
     return measurements;
   }
-  
+
   public void setTimeLimitExceeded(boolean aTimeLimitExceeded) {
     timeLimitExceeded = aTimeLimitExceeded;
   }
-  
+
   public boolean isTimeLimitExceeded() {
     return timeLimitExceeded;
   }

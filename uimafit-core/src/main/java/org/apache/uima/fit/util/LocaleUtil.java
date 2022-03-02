@@ -57,7 +57,8 @@ public final class LocaleUtil {
    * passed into the multi-parameter constructors of Locale. The passed in string should not contain
    * more than two hyphens as the Locale constructor with the most params is three.
    * 
-   * @param localeString the locale string
+   * @param localeString
+   *          the locale string
    * @return the parsed locale
    */
   public static Locale createLocale(String localeString) {
@@ -78,7 +79,8 @@ public final class LocaleUtil {
    * passes through to getLocaleConstant. If this returns null, then this method passes through to
    * createLocale.
    * 
-   * @param localeString the locale string
+   * @param localeString
+   *          the locale string
    * @return the parsed locale
    */
   public static Locale getLocale(String localeString) {

@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory.testRes;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -37,9 +37,9 @@ public class TestSharedResourceObject implements SharedResourceObject {
   private String value;
 
   public void assertConfiguredOk() {
-//    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
+    // System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
     // Ensure normal parameters get passed to External Resource
-    assertEquals(EXPECTED_VALUE, value);
+    assertThat(value).isEqualTo(EXPECTED_VALUE);
   }
 
   @Override

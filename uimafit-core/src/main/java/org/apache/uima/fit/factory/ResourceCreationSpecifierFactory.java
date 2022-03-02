@@ -126,7 +126,8 @@ public final class ResourceCreationSpecifierFactory {
 
     ConfigurationParameterFactory.ensureParametersComeInPairs(configurationData);
 
-    ConfigurationParameter[] configurationParameters = new ConfigurationParameter[configurationData.length / 2];
+    ConfigurationParameter[] configurationParameters = new ConfigurationParameter[configurationData.length
+            / 2];
     Object[] configurationValues = new Object[configurationData.length / 2];
 
     for (int i = 0; i < configurationValues.length; i++) {

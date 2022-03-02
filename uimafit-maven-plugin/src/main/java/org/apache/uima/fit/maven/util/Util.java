@@ -54,13 +54,13 @@ public final class Util {
   }
 
   public static String getComponentDocumentation(JavaSource aAst, String aComponentTypeName) {
-//    if (aComponentType.getName().contains("$")) {
-//      // rec 2013-01-27: see comment on bindings resolving in ComponentDescriptionExtractor
-//      getLog().warn(
-//              "Inner classes not supported. Component description for [" + aComponentType.getName()
-//                      + "] cannot be extracted. ");
-//      return null;
-//    }
+    // if (aComponentType.getName().contains("$")) {
+    // // rec 2013-01-27: see comment on bindings resolving in ComponentDescriptionExtractor
+    // getLog().warn(
+    // "Inner classes not supported. Component description for [" + aComponentType.getName()
+    // + "] cannot be extracted. ");
+    // return null;
+    // }
 
     for (JavaClass clazz : aAst.getClasses()) {
       if (clazz.asType().getFullyQualifiedName().equals(aComponentTypeName)) {
@@ -70,13 +70,11 @@ public final class Util {
 
     return null;
   }
-  
-  public static String postProcessJavaDoc(String aJavaDoc)
-  {
+
+  public static String postProcessJavaDoc(String aJavaDoc) {
     if (aJavaDoc == null) {
       return null;
-    }
-    else {
+    } else {
       return aJavaDoc.replaceAll("\\{@[^ ]+ ([^}]+)\\}", "$1");
     }
   }
@@ -91,9 +89,8 @@ public final class Util {
     if (aParameterNameConstantField != null) {
       JavaField field = clazz.getFieldByName(aParameterNameConstantField);
       if (field == null) {
-        throw new IllegalArgumentException("Parameter name constant ["
-                + aParameterNameConstantField + "] not found in class ["
-                + clazz.asType().getFullyQualifiedName() + "]");
+        throw new IllegalArgumentException("Parameter name constant [" + aParameterNameConstantField
+                + "] not found in class [" + clazz.asType().getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
     }
@@ -102,8 +99,8 @@ public final class Util {
     if (javadoc == null) {
       JavaField field = clazz.getFieldByName(aParameterField);
       if (field == null) {
-        throw new IllegalArgumentException("No parameter field [" + aParameterField
-                + "] in class [" + clazz.asType().getFullyQualifiedName() + "]");
+        throw new IllegalArgumentException("No parameter field [" + aParameterField + "] in class ["
+                + clazz.asType().getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
     }
@@ -124,8 +121,8 @@ public final class Util {
    * Create a class loader which covers the classes compiled in the current project and all
    * dependencies.
    */
-  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog, String aIncludeScopeThreshold)
-          throws MojoExecutionException {
+  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog,
+          String aIncludeScopeThreshold) throws MojoExecutionException {
     List<URL> urls = new ArrayList<URL>();
     try {
       for (Object object : aProject.getCompileClasspathElements()) {
@@ -134,15 +131,15 @@ public final class Util {
         urls.add(new File(path).toURI().toURL());
       }
     } catch (IOException e) {
-      throw new MojoExecutionException("Unable to assemble classpath: "
-              + ExceptionUtils.getRootCauseMessage(e), e);
+      throw new MojoExecutionException(
+              "Unable to assemble classpath: " + ExceptionUtils.getRootCauseMessage(e), e);
     } catch (DependencyResolutionRequiredException e) {
-      throw new MojoExecutionException("Unable to resolve dependencies: "
-              + ExceptionUtils.getRootCauseMessage(e), e);
+      throw new MojoExecutionException(
+              "Unable to resolve dependencies: " + ExceptionUtils.getRootCauseMessage(e), e);
     }
-    
+
     ScopeArtifactFilter filter = new ScopeArtifactFilter(aIncludeScopeThreshold);
-    
+
     for (Artifact dep : (Set<Artifact>) aProject.getArtifacts()) {
       try {
         if (!filter.include(dep)) {
@@ -151,15 +148,15 @@ public final class Util {
                   + ")");
           continue;
         }
-        
+
         if (dep.getFile() == null) {
           aLog.debug("Not generating classpath entry for unresolved artifact: " + dep.getGroupId()
-                  + ":" + dep.getArtifactId() + ":" + dep.getVersion()+ " (" + dep.getScope()
+                  + ":" + dep.getArtifactId() + ":" + dep.getVersion() + " (" + dep.getScope()
                   + ")");
           // Unresolved file because it is in the wrong scope (e.g. test?)
           continue;
         }
-                
+
         aLog.debug("Classpath entry: " + dep.getGroupId() + ":" + dep.getArtifactId() + ":"
                 + dep.getVersion() + " -> " + dep.getFile());
         urls.add(dep.getFile().toURI().toURL());

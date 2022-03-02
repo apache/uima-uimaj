@@ -19,8 +19,8 @@
 package org.apache.uima.fit.validation;
 
 /**
- * Exception by a particular validation check. These exceptions should not abort the validation
- * but rather be rendered as results for the particular check.
+ * Exception by a particular validation check. These exceptions should not abort the validation but
+ * rather be rendered as results for the particular check.
  */
 public abstract class ValidationCheckException extends ValidationException {
   private static final long serialVersionUID = -5685006985598972648L;

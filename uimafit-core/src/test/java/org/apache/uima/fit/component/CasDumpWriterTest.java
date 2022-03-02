@@ -19,18 +19,17 @@
 package org.apache.uima.fit.component;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class CasDumpWriterTest {
@@ -49,8 +48,8 @@ public class CasDumpWriterTest {
     writer.process(jcas);
     assertTrue(outputFile.exists());
 
-    String reference = readFileToString(
-            new File("src/test/resources/data/reference/test.xmi.dump"), "UTF-8").trim();
+    String reference = readFileToString(new File("src/test/resources/data/reference/test.xmi.dump"),
+            "UTF-8").trim();
     String actual = readFileToString(outputFile, "UTF-8").trim();
     actual = actual.replaceAll("\r\n", "\n");
 

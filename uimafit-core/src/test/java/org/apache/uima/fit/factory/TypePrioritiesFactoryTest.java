@@ -22,6 +22,7 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.type.Sentence;
@@ -30,7 +31,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the {@link TypePrioritiesFactory}.
@@ -46,7 +47,7 @@ public class TypePrioritiesFactoryTest {
     assertThat(prio.getPriorityLists()).hasSize(1);
     assertThat(prio.getPriorityLists()[0].getTypes()).containsExactly(CAS.TYPE_NAME_ANNOTATION);
   }
-  
+
   @Test
   public void testCreateTypePrioritiesFromClasses() throws Exception {
     TypePriorities prio = createTypePriorities(Annotation.class);
@@ -56,20 +57,21 @@ public class TypePrioritiesFactoryTest {
     assertThat(prio.getPriorityLists()).hasSize(1);
     assertThat(prio.getPriorityLists()[0].getTypes()).containsExactly(CAS.TYPE_NAME_ANNOTATION);
   }
-  
-  @Test(expected = IllegalArgumentException.class)
+
+  @Test
   public void testCreateTypePrioritiesFromBadClasses() throws Exception {
-    TypePriorities prio = createTypePriorities((Class) Integer.class);
+    assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> createTypePriorities((Class) Integer.class));
   }
-  
+
   @Test
   public void testAutoDetectTypePriorities() throws Exception {
     TypePriorities prio = createTypePriorities();
 
     TypePriorityList[] typePrioritiesLists = prio.getPriorityLists();
     assertThat(typePrioritiesLists.length).isEqualTo(1);
-    assertThat(typePrioritiesLists[0].getTypes())
-        .as("Type priorities auto-detection")
-        .containsExactly(Sentence.class.getName(), Token.class.getName());
+    assertThat(typePrioritiesLists[0].getTypes()) //
+            .as("Type priorities auto-detection")
+            .containsExactly(Sentence.class.getName(), Token.class.getName());
   }
 }

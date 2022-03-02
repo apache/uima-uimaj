@@ -38,7 +38,8 @@ public final class ClassLoaderUtils {
    * <li>The {@link UimaContext} in the {@link UimaContextHolder} of the current thread(if any)</li>
    * <li>The current thread-context classloader (if any)</li>
    * <li>The classloader through which uimaFIT (i.e. this class) was loaded.</li>
-   * <li>For backwards compatibility then delegates to {@link ClassUtils#getDefaultClassLoader()}</li>
+   * <li>For backwards compatibility then delegates to
+   * {@link ClassUtils#getDefaultClassLoader()}</li>
    * </ol>
    *
    * @return a classloader or {@code null} if no suitable classloader could be found.

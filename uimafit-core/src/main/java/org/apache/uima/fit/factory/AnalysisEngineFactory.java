@@ -848,7 +848,7 @@ public final class AnalysisEngineFactory {
   public static AnalysisEngineDescription createEngineDescription(PearSpecifier pearSpecifier,
           Object... configurationData) throws InvalidXMLException, IOException {
     ConfigurationParameterFactory.ensureParametersComeInPairs(configurationData);
-    
+
     if (configurationData != null) {
       for (int i = 0; i < configurationData.length / 2; i++) {
         String name = (String) configurationData[i * 2];
@@ -856,19 +856,20 @@ public final class AnalysisEngineFactory {
         ConfigurationParameterFactory.setParameter(pearSpecifier, name, value);
       }
     }
-    
+
     AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
     desc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     desc.setPrimitive(false);
     desc.getDelegateAnalysisEngineSpecifiersWithImports().put(pearSpecifier.getPearPath(),
             pearSpecifier);
-    
+
     FixedFlow fixedFlow = new FixedFlow_impl();
     fixedFlow.setFixedFlow(new String[] { pearSpecifier.getPearPath() });
     desc.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
-    
+
     return desc;
   }
+
   /**
    * Get an {@link AnalysisEngineDescription} from an XML descriptor file and a set of configuration
    * parameters.
@@ -1503,7 +1504,7 @@ public final class AnalysisEngineFactory {
     return createEngineDescription(asList(analysisEngineDescriptions), asList(names), null, null,
             null);
   }
-  
+
   // Intentionally package-private! We need this in the AggregateBuilder and we would like to test
   // it, but it shouldn't really be part of the public API.
   static String generateDelegateKey(AnalysisEngineDescription aAed, int aIndex) {
@@ -1512,44 +1513,42 @@ public final class AnalysisEngineFactory {
       if (sanitizedName != null) {
         return sanitizedName + "-" + aIndex;
       }
-    } 
+    }
 
     if (aAed.isPrimitive()) {
       return aAed.getImplementationName() + "-" + aIndex;
     }
-    
+
     return "aggregate-" + aIndex;
   }
-  
+
   static String sanitizeDelegateKey(String name) {
     if (name == null) {
       return null;
     }
-    
+
     String trimmedName = name.trim();
     if (trimmedName.isEmpty()) {
       return null;
     }
-    
+
     StringBuilder buf = new StringBuilder();
     for (int i = 0; i < trimmedName.length(); i++) {
       char c = trimmedName.charAt(i);
       if (isWhitespace(c) || c == '_') {
-        if (buf.length() > 0 && buf.charAt(buf.length()-1) != '_') {
+        if (buf.length() > 0 && buf.charAt(buf.length() - 1) != '_') {
           buf.append('_');
         }
-      }
-      else if (!isJavaIdentifierPart(c)) {
+      } else if (!isJavaIdentifierPart(c)) {
         return null;
-      }
-      else {
+      } else {
         buf.append(c);
       }
     }
-    
+
     return buf.toString();
   }
-  
+
   /**
    * Create and configure an aggregate {@link AnalysisEngine} from several component descriptions.
    * 

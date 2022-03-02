@@ -34,7 +34,7 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.util.Progress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

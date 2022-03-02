@@ -17,7 +17,9 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.uima</groupId>
@@ -38,9 +40,12 @@
     <url>https://github.com/apache/uima-uimafit</url>
   </scm>
   <properties>
-    <spring.version>4.3.30.RELEASE</spring.version>
-    <uima.version>3.3.0-SNAPSHOT</uima.version>
-    <slf4j.version>1.7.26</slf4j.version>
+    <spring-version>4.3.30.RELEASE</spring-version>
+    <uima-version>3.3.0-SNAPSHOT</uima-version>
+    <slf4j-version>1.7.36</slf4j-version>
+    <junit-version>5.8.2</junit-version>
+    <assertj-version>3.22.0</assertj-version>
+    <xmlunit-version>2.9.0</xmlunit-version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <api_check_oldVersion>3.1.0</api_check_oldVersion>
@@ -82,30 +87,45 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <version>4.13.2</version>
     </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit-version}</version>
       </dependency>
       <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>1.6</version>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-migrationsupport</artifactId>
+        <version>${junit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${junit-version}</version>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.15.0</version>
+        <version>${assertj-version}</version>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-assertj</artifactId>
-        <version>2.6.4</version>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${xmlunit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj3</artifactId>
+        <version>${xmlunit-version}</version>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -125,47 +145,47 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${slf4j-version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>    
+        <version>${slf4j-version}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-core</artifactId>
-        <version>${uima.version}</version>
+        <version>${uima-version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-cpe</artifactId>
-        <version>${uima.version}</version>
+        <version>${uima-version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-tools</artifactId>
-        <version>${uima.version}</version>
+        <version>${uima-version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>${spring.version}</version>
+        <version>${spring-version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -230,12 +250,13 @@
             <configuration>
               <source>
                 def noticeFile = new File(project.basedir.path + "/NOTICE");
-                if (noticeFile.exists()) {
-                  project.properties.postNoticeText = noticeFile.text;
-                  println "Loaded NOTICE file content into property [postNoticeText]"
+                if
+                (noticeFile.exists()) {
+                project.properties.postNoticeText = noticeFile.text;
+                println "Loaded NOTICE file content into property [postNoticeText]"
                 }
                 else {
-                  println "No NOTICE file was found - content not loaded into property [postNoticeText]"
+                println "No NOTICE file was found - content not loaded into property [postNoticeText]"
                 }
               </source>
             </configuration>
@@ -336,7 +357,7 @@
         <plugin>
           <groupId>org.apache.uima</groupId>
           <artifactId>jcasgen-maven-plugin</artifactId>
-          <version>${uima.version}</version>
+          <version>${uima-version}</version>
         </plugin>
         <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
@@ -387,9 +408,9 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
   <profiles>
-      <profile>
+    <profile>
       <id>apache-release</id>
 
       <build>

@@ -83,12 +83,12 @@ public final class DescriptionUtils {
       aeDelegate.getAnalysisEngineMetaData().setTypeSystem(null);
       aeDelegate.getAnalysisEngineMetaData().setTypePriorities(null);
       aeDelegate.getAnalysisEngineMetaData().setFsIndexCollection(null);
-      
+
       if (firstDelegate == null) {
         firstDelegate = aeDelegate;
       }
     }
-    
+
     // Type systems cannot be set on aggregates, so set it on the first delegate instead
     firstDelegate.getAnalysisEngineMetaData().setTypeSystem(meta.getTypeSystem());
     // The rest can be set on the aggregate
@@ -113,7 +113,7 @@ public final class DescriptionUtils {
       aDesc.setResourceManagerConfiguration(resMgrCfg);
     }
 
-    resMgrCfg.setExternalResources(resources.values().toArray(
-            new ExternalResourceDescription[resources.size()]));
+    resMgrCfg.setExternalResources(
+            resources.values().toArray(new ExternalResourceDescription[resources.size()]));
   }
 }

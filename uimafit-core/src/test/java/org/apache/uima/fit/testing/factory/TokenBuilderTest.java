@@ -18,8 +18,8 @@
  */
 package org.apache.uima.fit.testing.factory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.ComponentTestBase;
@@ -37,7 +36,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.pear.util.FileUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -48,12 +47,9 @@ public class TokenBuilderTest extends ComponentTestBase {
   public void test1() {
     String text = "What if we built a rocket ship made of cheese?"
             + "We could fly it to the moon for repairs.";
-    tokenBuilder
-            .buildTokens(
-                    jCas,
-                    text,
-                    "What if we built a rocket ship made of cheese ? \r\n We could fly it to the moon for repairs .",
-                    "A B C D E F G H I J K L M N O P Q R S T U");
+    tokenBuilder.buildTokens(jCas, text,
+            "What if we built a rocket ship made of cheese ? \r\n We could fly it to the moon for repairs .",
+            "A B C D E F G H I J K L M N O P Q R S T U");
 
     FSIndex<Annotation> sentenceIndex = jCas.getAnnotationIndex(Sentence.type);
     assertEquals(2, sentenceIndex.size());
@@ -87,12 +83,9 @@ public class TokenBuilderTest extends ComponentTestBase {
   public void test2() {
     String text = "What if we built a rocket ship made of cheese? \n"
             + "We could fly it to the moon for repairs.";
-    tokenBuilder
-            .buildTokens(
-                    jCas,
-                    text,
-                    "What if we built a rocket ship made of cheese ? \n We could fly it to the moon for repairs .",
-                    "A B C D E F G H I J K L M N O P Q R S T U");
+    tokenBuilder.buildTokens(jCas, text,
+            "What if we built a rocket ship made of cheese ? \n We could fly it to the moon for repairs .",
+            "A B C D E F G H I J K L M N O P Q R S T U");
 
     Token token = JCasUtil.selectByIndex(jCas, Token.class, 10);
     testToken(token, "?", 45, 46, "K", null);
@@ -102,12 +95,9 @@ public class TokenBuilderTest extends ComponentTestBase {
     jCas.reset();
     text = "What if we built a rocket ship made of cheese? \n"
             + "We could fly it to the moon for repairs.";
-    tokenBuilder
-            .buildTokens(
-                    jCas,
-                    text,
-                    "What if we built a rocket ship made of cheese ?\nWe could fly it to the moon for repairs .",
-                    "A B C D E F G H I J K L M N O P Q R S T U");
+    tokenBuilder.buildTokens(jCas, text,
+            "What if we built a rocket ship made of cheese ?\nWe could fly it to the moon for repairs .",
+            "A B C D E F G H I J K L M N O P Q R S T U");
 
     token = JCasUtil.selectByIndex(jCas, Token.class, 10);
     testToken(token, "?", 45, 46, "K", null);
@@ -206,7 +196,7 @@ public class TokenBuilderTest extends ComponentTestBase {
     assertEquals('.', unixNewlinesBytes[13]);
     assertEquals(0x0A, unixNewlinesBytes[14]);
     assertEquals('s', unixNewlinesBytes[15]);
-    
+
     String text = FileUtil.loadTextFile(unixNewlines, "UTF-8");
     text = text.substring(1); // remove "\uFEFF" character from beginning of text
     tokenBuilder.buildTokens(jCas, text);

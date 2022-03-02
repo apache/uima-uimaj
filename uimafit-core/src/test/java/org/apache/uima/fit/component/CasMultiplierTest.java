@@ -22,7 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.iteratePipeline;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
@@ -36,32 +36,32 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class CasMultiplierTest {
   @Test
   public void testRunPipeline() throws Exception {
     CollectionReaderDescription reader = createReaderDescription(Reader.class);
-    
+
     AnalysisEngineDescription incrementor = createEngineDescription(TextIncrementor.class);
-    
+
     AnalysisEngineDescription consumer = createEngineDescription(Consumer.class);
-    
+
     runPipeline(reader, incrementor, incrementor, incrementor, consumer);
-    
+
     assertEquals(13, Consumer.textResult);
   }
 
-  @Ignore("UIMA-3470 not fixed yet")
+  @Disabled("UIMA-3470 not fixed yet")
   @Test
   public void testIteratePipelineOnText() throws Exception {
     CollectionReaderDescription reader = createReaderDescription(Reader.class);
-    
+
     AnalysisEngineDescription incrementor = createEngineDescription(TextIncrementor.class);
-    
+
     AnalysisEngineDescription consumer = createEngineDescription(Consumer.class);
-    
+
     int expectedResult = 4;
     for (JCas jcas : iteratePipeline(reader, incrementor, incrementor, incrementor, consumer)) {
       assertEquals(expectedResult, Consumer.textResult);
@@ -73,11 +73,11 @@ public class CasMultiplierTest {
   @Test
   public void testIteratePipelineOnFeature() throws Exception {
     CollectionReaderDescription reader = createReaderDescription(Reader.class);
-    
+
     AnalysisEngineDescription incrementor = createEngineDescription(FeatureIncrementor.class);
-    
+
     AnalysisEngineDescription consumer = createEngineDescription(Consumer.class);
-    
+
     int expectedResult = 4;
     for (JCas jcas : iteratePipeline(reader, incrementor, incrementor, incrementor, consumer)) {
       assertEquals(expectedResult, Consumer.featureResult);
@@ -86,16 +86,15 @@ public class CasMultiplierTest {
     }
   }
 
-  public static class Reader extends CasCollectionReader_ImplBase
-  {
+  public static class Reader extends CasCollectionReader_ImplBase {
     private int generated = 0;
-    
+
     @Override
     public void getNext(CAS aCAS) throws IOException, CollectionException {
       generated++;
       aCAS.setDocumentText(Integer.toString(generated));
       aCAS.setDocumentLanguage(Integer.toString(generated));
-//      System.out.printf("%nGenerated: %s%n", aCAS.getDocumentText());
+      // System.out.printf("%nGenerated: %s%n", aCAS.getDocumentText());
     }
 
     @Override
@@ -108,18 +107,17 @@ public class CasMultiplierTest {
       return null;
     }
   }
-  
+
   /**
    * Takes in a CAS, interprets its text as an integer, adds one to it, and creates a new CAS with
    * the new value as text.
    */
-  public static class TextIncrementor extends CasMultiplier_ImplBase
-  {
+  public static class TextIncrementor extends CasMultiplier_ImplBase {
     private boolean inputReceived = false;
     private boolean outputCreated = false;
-    
+
     private int value = -1;
-    
+
     @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       return inputReceived && !outputCreated;
@@ -129,13 +127,13 @@ public class CasMultiplierTest {
     public AbstractCas next() throws AnalysisEngineProcessException {
       outputCreated = true;
       inputReceived = false;
-      
+
       CAS output = getEmptyCAS();
-      output.setDocumentText(Integer.toString(value+1));
+      output.setDocumentText(Integer.toString(value + 1));
       value = -1;
-      
-//      System.out.printf("  Out    : %s%n", output.getDocumentText());
-      
+
+      // System.out.printf(" Out : %s%n", output.getDocumentText());
+
       return output;
     }
 
@@ -143,12 +141,12 @@ public class CasMultiplierTest {
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
       outputCreated = false;
       inputReceived = true;
-      
+
       value = Integer.valueOf(aCAS.getDocumentText());
-      
-//      System.out.printf("  In     : %s%n", aCAS.getDocumentText());
+
+      // System.out.printf(" In : %s%n", aCAS.getDocumentText());
     }
-  }    
+  }
 
   /**
    * Takes in a CAS, interprets its text as an integer, adds one to it, and creates a new CAS with
@@ -171,36 +169,34 @@ public class CasMultiplierTest {
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
       int n = Integer.parseInt(aCAS.getDocumentLanguage());
-//      System.out.printf("  In     : %s%n", aCAS.getDocumentLanguage());
+      // System.out.printf(" In : %s%n", aCAS.getDocumentLanguage());
 
       n++;
       aCAS.setDocumentLanguage(Integer.toString(n));
-//      System.out.printf("  Out    : %s%n", aCAS.getDocumentLanguage());
+      // System.out.printf(" Out : %s%n", aCAS.getDocumentLanguage());
     }
   }
-  
-  public static class Consumer extends CasAnnotator_ImplBase
-  {
+
+  public static class Consumer extends CasAnnotator_ImplBase {
     public static int textResult = -1;
     public static int featureResult = -1;
-    
+
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
       super.initialize(aContext);
       textResult = -1;
       featureResult = -1;
     }
-    
+
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
-//      System.out.printf("Text result   : %s%n", aCAS.getDocumentText());
+      // System.out.printf("Text result : %s%n", aCAS.getDocumentText());
       textResult = Integer.valueOf(aCAS.getDocumentText());
-      
-//      System.out.printf("Feature result   : %s%n", aCAS.getDocumentLanguage());
+
+      // System.out.printf("Feature result : %s%n", aCAS.getDocumentLanguage());
       try {
         featureResult = Integer.valueOf(aCAS.getDocumentLanguage());
-      }
-      catch (NumberFormatException e) {
+      } catch (NumberFormatException e) {
         featureResult = -2;
       }
     }

@@ -22,8 +22,8 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.fit.cpe.CpePipeline.runPipeline;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,46 +42,45 @@ import org.apache.uima.fit.component.CasConsumer_ImplBase;
 import org.apache.uima.fit.component.CasMultiplier_ImplBase;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CasMultiplierTest {
   /**
-   * Simulates a CPE with CAS multipliers that always read one CAS and always produce one CAS.
-   * It actually appears to work despite CPE not supporting CAS multipliers.
+   * Simulates a CPE with CAS multipliers that always read one CAS and always produce one CAS. It
+   * actually appears to work despite CPE not supporting CAS multipliers.
    */
   @SuppressWarnings("javadoc")
   @Test
   public void testRunPipeline() throws Exception {
     CollectionReaderDescription reader = createReaderDescription(Reader.class);
-    
+
     AnalysisEngineDescription incrementor = createEngineDescription(Incrementor.class);
-    
+
     AnalysisEngineDescription consumer = createEngineDescription(Consumer.class);
-    
+
     AnalysisEngineDescription aggregate = createEngineDescription(incrementor, incrementor,
             incrementor, consumer);
-    
+
     runPipeline(reader, aggregate);
-    
+
     // The order in which the consumer sees the CASes is arbitrary, in particular because we never
     // tell the CPE that the aggregate which contains the consumer cannot be scaled out.
     assertFalse(aggregate.getAnalysisEngineMetaData().getOperationalProperties()
             .isMultipleDeploymentAllowed());
     Collections.sort(Consumer.result);
-    
-    assertEquals(asList(4,5,6,7,8,9,10,11,12,13), Consumer.result);
+
+    assertEquals(asList(4, 5, 6, 7, 8, 9, 10, 11, 12, 13), Consumer.result);
   }
 
-  public static class Reader extends CasCollectionReader_ImplBase
-  {
+  public static class Reader extends CasCollectionReader_ImplBase {
     private int generated = 0;
-    
+
     @Override
     public void getNext(CAS aCAS) throws IOException, CollectionException {
       generated++;
       aCAS.setDocumentText(Integer.toString(generated));
-//      System.out.printf("%n[%s] Generated: %s%n", Thread.currentThread().getName(),
-//              aCAS.getDocumentText());
+      // System.out.printf("%n[%s] Generated: %s%n", Thread.currentThread().getName(),
+      // aCAS.getDocumentText());
     }
 
     @Override
@@ -94,18 +93,17 @@ public class CasMultiplierTest {
       return null;
     }
   }
-  
+
   /**
    * Takes in a CAS, interprets its text as an integer, adds one to it, and creates a new CAS with
    * the new value as text.
    */
-  public static class Incrementor extends CasMultiplier_ImplBase
-  {
+  public static class Incrementor extends CasMultiplier_ImplBase {
     private boolean inputReceived = false;
     private boolean outputCreated = false;
-    
+
     private int value = -1;
-    
+
     @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       return inputReceived && !outputCreated;
@@ -115,13 +113,13 @@ public class CasMultiplierTest {
     public AbstractCas next() throws AnalysisEngineProcessException {
       outputCreated = true;
       inputReceived = false;
-      
+
       CAS output = getEmptyCAS();
-      output.setDocumentText(Integer.toString(value+1));
+      output.setDocumentText(Integer.toString(value + 1));
       value = -1;
-      
-//      System.out.printf("[%s]   Out    : %s%n", Thread.currentThread().getName(),
-//              output.getDocumentText());
+
+      // System.out.printf("[%s] Out : %s%n", Thread.currentThread().getName(),
+      // output.getDocumentText());
 
       return output;
     }
@@ -130,27 +128,26 @@ public class CasMultiplierTest {
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
       outputCreated = false;
       inputReceived = true;
-      
+
       value = Integer.valueOf(aCAS.getDocumentText());
-      
-//      System.out.printf("[%s]   In     : %s%n", Thread.currentThread().getName(),
-//              aCAS.getDocumentText());
+
+      // System.out.printf("[%s] In : %s%n", Thread.currentThread().getName(),
+      // aCAS.getDocumentText());
     }
   }
-  
-  public static class Consumer extends CasConsumer_ImplBase
-  {
+
+  public static class Consumer extends CasConsumer_ImplBase {
     public static List<Integer> result;
-    
+
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
       super.initialize(aContext);
       result = new ArrayList<>();
     }
-    
+
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
-//      System.out.printf("Result   : %s%n", aCAS.getDocumentText());
+      // System.out.printf("Result : %s%n", aCAS.getDocumentText());
       result.add(Integer.valueOf(aCAS.getDocumentText()));
     }
   }

@@ -41,7 +41,8 @@ public final class ResourceMetaDataFactory {
    *          the class that may carry the {@link org.apache.uima.fit.descriptor.ResourceMetaData}
    *          annotation
    */
-  public static void configureResourceMetaData(ResourceMetaData aMetaData, Class<?> aComponentClass) {
+  public static void configureResourceMetaData(ResourceMetaData aMetaData,
+          Class<?> aComponentClass) {
     org.apache.uima.fit.descriptor.ResourceMetaData componentAnno = ReflectionUtil
             .getInheritableAnnotation(org.apache.uima.fit.descriptor.ResourceMetaData.class,
                     aComponentClass);
@@ -64,12 +65,12 @@ public final class ResourceMetaDataFactory {
       aMetaData.setVersion(emptyAsNull(componentAnno.version()));
     }
   }
-  
+
   /**
    * Used when the version of a component is unknown.
    */
   private static final String DEFAULT_VERSION = "unknown";
-  
+
   /**
    * Used when the description of a component is unknown.
    */
@@ -82,8 +83,7 @@ public final class ResourceMetaDataFactory {
    *          the class to analyze
    * @return the default copyright
    */
-  public static String getDefaultCopyright(Class<?> aComponentClass)
-  {
+  public static String getDefaultCopyright(Class<?> aComponentClass) {
     // rec 2013-01-27: Basically just here for completeness - no idea where to one could obtain
     // a copyright information for the class. Possibly from some LICENSE file in the JAR which
     // contains the class.
@@ -97,8 +97,7 @@ public final class ResourceMetaDataFactory {
    *          the class to analyze
    * @return the default version
    */
-  public static String getDefaultVersion(Class<?> aComponentClass)
-  {
+  public static String getDefaultVersion(Class<?> aComponentClass) {
     // TODO This method could try to obtain a version from the package of the component
     // aComponentClass.getPackage().getImplementationVersion()
     return DEFAULT_VERSION;
@@ -111,31 +110,28 @@ public final class ResourceMetaDataFactory {
    *          the class to analyze
    * @return the default description
    */
-  public static String getDefaultDescription(Class<?> aComponentClass)
-  {
+  public static String getDefaultDescription(Class<?> aComponentClass) {
     return DEFAULT_DESCRIPTION;
   }
-  
+
   /**
    * Get the default vendor of a component class.
    * 
    * @param aComponentClass
    *          the class to analyze
-      * @return the package name of the component, if the component is in a package, otherwise
+   * @return the package name of the component, if the component is in a package, otherwise
    *         {@code null}.
    */
-  public static String getDefaultVendor(Class<?> aComponentClass)
-  {
+  public static String getDefaultVendor(Class<?> aComponentClass) {
     // TODO This method could try to obtain a vendor from the package of the component
     // aComponentClass.getPackage().getImplementationVendor()
     if (aComponentClass.getPackage() != null) {
       return aComponentClass.getPackage().getName();
-    }
-    else {
+    } else {
       return null;
     }
   }
-  
+
   /**
    * Get the default name of a component class.
    * 
@@ -143,16 +139,14 @@ public final class ResourceMetaDataFactory {
    *          the class to analyze
    * @return the fully qualified name of the class.
    */
-  public static String getDefaultName(Class<?> aComponentClass)
-  {
+  public static String getDefaultName(Class<?> aComponentClass) {
     return aComponentClass.getName();
   }
-  
+
   private static String emptyAsNull(String aString) {
     if (aString == null || aString.length() == 0) {
       return null;
-    }
-    else {
+    } else {
       return aString;
     }
   }

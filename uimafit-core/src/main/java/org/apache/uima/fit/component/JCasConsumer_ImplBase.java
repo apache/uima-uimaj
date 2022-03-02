@@ -31,8 +31,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * 
  */
 @OperationalProperties(multipleDeploymentAllowed = false)
-public abstract class JCasConsumer_ImplBase extends
-        org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
+public abstract class JCasConsumer_ImplBase
+        extends org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);

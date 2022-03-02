@@ -61,7 +61,7 @@ public final class CasUtil {
   private CasUtil() {
     // No instances
   }
-  
+
   /**
    * Get an iterator over the given feature structures type.
    * 
@@ -124,11 +124,9 @@ public final class CasUtil {
     String typeName = aTypename;
     if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
       typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
-    }
-    else if (FeatureStructure.class.getName().equals(aTypename)) {
+    } else if (FeatureStructure.class.getName().equals(aTypename)) {
       typeName = CAS.TYPE_NAME_TOP;
-    }
-    else if (AnnotationFS.class.getName().equals(aTypename)) {
+    } else if (AnnotationFS.class.getName().equals(aTypename)) {
       typeName = CAS.TYPE_NAME_ANNOTATION;
     }
     final Type type = aCas.getTypeSystem().getType(typeName);
@@ -138,8 +136,8 @@ public final class CasUtil {
       while (i.hasNext()) {
         sb.append(i.next().getName()).append('\n');
       }
-      throw new IllegalArgumentException("Undeclared type [" + aTypename + "]. Available types: "
-              + sb);
+      throw new IllegalArgumentException(
+              "Undeclared type [" + aTypename + "]. Available types: " + sb);
     }
     return type;
   }
@@ -262,7 +260,7 @@ public final class CasUtil {
     requireAnnotationType(cas, type);
     return cas.getAnnotationIndex(type).select().asList();
   }
-  
+
   /**
    * Get all annotations of the given type at the specified offsets.
    * 
@@ -276,9 +274,10 @@ public final class CasUtil {
    *          the end offset.
    * @return the annotations at the specified offsets.
    */
-  public static List<AnnotationFS> selectAt(final CAS aCas, final Type aType, int aBegin, int aEnd) {
+  public static List<AnnotationFS> selectAt(final CAS aCas, final Type aType, int aBegin,
+          int aEnd) {
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
-    
+
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = aCas.getAnnotationIndex(aType).iterator();
 
@@ -291,7 +290,7 @@ public final class CasUtil {
     while (it.isValid() && (it.get()).getEnd() > aEnd) {
       it.moveToNext();
     }
-    
+
     while (it.isValid()) {
       AnnotationFS a = it.get();
       // If the offsets do not match the specified offets, we're done
@@ -301,7 +300,7 @@ public final class CasUtil {
       it.moveToNext();
       list.add(a);
     }
-    
+
     return list;
   }
 
@@ -318,22 +317,23 @@ public final class CasUtil {
    *          the end offset.
    * @return the single annotation at the specified offsets.
    */
-  public static AnnotationFS selectSingleAt(final CAS aCas, final Type aType, int aBegin, int aEnd) {
+  public static AnnotationFS selectSingleAt(final CAS aCas, final Type aType, int aBegin,
+          int aEnd) {
     List<AnnotationFS> list = selectAt(aCas, aType, aBegin, aEnd);
 
     if (list.isEmpty()) {
       throw new IllegalArgumentException("CAS does not contain any [" + aType.getName() + "] at ["
               + aBegin + "," + aEnd + "]");
     }
-    
+
     if (list.size() > 1) {
-      throw new IllegalArgumentException("CAS contains more than one [" + aType.getName()
-              + "] at [" + aBegin + "," + aEnd + "]");
+      throw new IllegalArgumentException("CAS contains more than one [" + aType.getName() + "] at ["
+              + aBegin + "," + aEnd + "]");
     }
 
     return list.get(0);
   }
-  
+
   /**
    * Get a list of annotations of the given annotation type located between two annotations. Does
    * not use subiterators and does not respect type priorities. Zero-width annotations what lie on
@@ -393,7 +393,7 @@ public final class CasUtil {
     int end = right.getBegin();
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
-    
+
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type).iterator();
 
@@ -461,14 +461,14 @@ public final class CasUtil {
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations of the given type to find the covered annotations. Does not use
    * subiterators and does not respect type prioritites. Was adapted from {@link Subiterator}. Uses
-   * the same approach except that type priorities are ignored. 
+   * the same approach except that type priorities are ignored.
    * <p>
    * The covering annotation is never returned itself, even if it is of the queried-for type or a
    * subtype of that type.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
-   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in the
+   * span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param type
    *          a UIMA type.
@@ -492,8 +492,8 @@ public final class CasUtil {
    * subtype of that type.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
-   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in the
+   * span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param cas
    *          a CAS.
@@ -505,12 +505,13 @@ public final class CasUtil {
    * @see Subiterator
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static List<AnnotationFS> selectCovered(CAS cas, Type type, AnnotationFS coveringAnnotation) {
+  public static List<AnnotationFS> selectCovered(CAS cas, Type type,
+          AnnotationFS coveringAnnotation) {
     int begin = coveringAnnotation.getBegin();
     int end = coveringAnnotation.getEnd();
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
-    
+
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type).iterator();
 
@@ -582,12 +583,13 @@ public final class CasUtil {
    * <p>
    * <b>Note:</b> this is significantly slower than using
    * {@link #selectCovered(CAS, Type, AnnotationFS)}. It is possible to use
-   * {@code  selectCovered(cas, type, new Annotation(jCas, int, int))}, but that will allocate memory
-   * in the jCas for the new annotation. If you do that repeatedly many times, memory may fill up.
+   * {@code  selectCovered(cas, type, new Annotation(jCas, int, int))}, but that will allocate
+   * memory in the jCas for the new annotation. If you do that repeatedly many times, memory may
+   * fill up.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the given begin/end or where both the begin/end are included in
-   * the span of the given span. Partially overlapping annotations are not returned.
+   * offsets are equal to the given begin/end or where both the begin/end are included in the span
+   * of the given span. Partially overlapping annotations are not returned.
    * 
    * @param cas
    *          a CAS.
@@ -604,8 +606,8 @@ public final class CasUtil {
   public static List<AnnotationFS> selectCovered(CAS cas, Type type, int begin, int end) {
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
-    
-    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
+
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type).iterator();
 
     // Skip annotations whose start is before the start parameter.
@@ -648,6 +650,7 @@ public final class CasUtil {
    * <p>
    * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
    * {@link #indexCovering(CAS, Type, Type)} or a {@link ContainmentIndex}.
+   * 
    * @param type
    *          a UIMA type.
    * @param coveredAnnotation
@@ -684,11 +687,12 @@ public final class CasUtil {
    * @return a return value.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static List<AnnotationFS> selectCovering(CAS cas, Type type, AnnotationFS coveredAnnotation) {
+  public static List<AnnotationFS> selectCovering(CAS cas, Type type,
+          AnnotationFS coveredAnnotation) {
 
     return selectCovering(cas, type, coveredAnnotation.getBegin(), coveredAnnotation.getEnd());
   }
-  
+
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
@@ -715,11 +719,11 @@ public final class CasUtil {
   public static List<AnnotationFS> selectCovering(CAS cas, Type type, int begin, int end) {
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
-    
-    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
+
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> iter = type == null ? cas.getAnnotationIndex().iterator()
             : cas.getAnnotationIndex(type).iterator();
-    
+
     while (iter.hasNext()) {
       AnnotationFS a = iter.next();
       if ((a.getBegin() <= begin) && (a.getEnd() >= end)) {
@@ -739,8 +743,8 @@ public final class CasUtil {
    * is properly contained within the span of the 'covering' annotation. Partially overlapping
    * annotations are not returned.
    * <p>
-   * When querying for the annotations covering a given annotation, the given annotation itself
-   * is never returned, even if it is of the queried type.   
+   * When querying for the annotations covering a given annotation, the given annotation itself is
+   * never returned, even if it is of the queried type.
    * 
    * @param cas
    *          a CAS.
@@ -783,15 +787,16 @@ public final class CasUtil {
    * Create an index for quickly lookup up the annotations covered by a particular annotation. This
    * is preferable to using {@link #selectCovered(CAS, Type, int, int)} because the overhead of
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
-   * The order of entries in the map is not defined. However, lists of covered annotations in
-   * the map are guaranteed to be in the same order as in the UIMA default annotation index.
+   * The order of entries in the map is not defined. However, lists of covered annotations in the
+   * map are guaranteed to be in the same order as in the UIMA default annotation index.
    * <p>
    * The method only returns properly covered annotations, that is annotations where the begin/end
-   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
-   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in the
+   * span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * <p>
-   * When querying for the annotations covered by a given annotation, the given annotation itself
-   * is never returned, even if it is of the queried type.   * 
+   * When querying for the annotations covered by a given annotation, the given annotation itself is
+   * never returned, even if it is of the queried type. *
+   * 
    * @param cas
    *          a CAS.
    * @param type
@@ -816,24 +821,24 @@ public final class CasUtil {
         }
       }
     };
-    
+
     // Get the covering and covered annotations
     Collection<AnnotationFS> collType = select(cas, type);
     Collection<AnnotationFS> collCoveredType = select(cas, coveredType);
-    
+
     // Convert them into array for faster access
     AnnotationFS[] typeArray = collType.toArray(new AnnotationFS[collType.size()]);
     AnnotationFS[] coveredTypeArray = collCoveredType
             .toArray(new AnnotationFS[collCoveredType.size()]);
-    
+
     // Keeps currently "open" annotations in a sorted order
     Deque<AnnotationFS> memory = new ArrayDeque<>();
-    //Deque<AnnotationFS> memory2 = new ArrayDeque<>();
-    
+    // Deque<AnnotationFS> memory2 = new ArrayDeque<>();
+
     // Array cursors
     int o = 0;
     int i = 0;
-    
+
     while ((o < typeArray.length || !memory.isEmpty()) && i < coveredTypeArray.length) {
       // Always make sure the memory contains at least one covering annotation to compare against
       if (memory.isEmpty()) {
@@ -841,15 +846,15 @@ public final class CasUtil {
         o++;
       }
       AnnotationFS bottom = memory.peek();
-      
+
       // Fast-forward over annotations which cannot be covered by the bottom element because they
       // start earlier.
       AnnotationFS iFS = coveredTypeArray[i];
-      while (i < coveredTypeArray.length-1 && iFS.getBegin() < bottom.getBegin()) {
+      while (i < coveredTypeArray.length - 1 && iFS.getBegin() < bottom.getBegin()) {
         i++;
         iFS = coveredTypeArray[i];
       }
-      
+
       // Cache begin/end of current covered annotation for faster access
       int iFSbegin = iFS.getBegin();
       int iFSend = iFS.getEnd();
@@ -863,7 +868,7 @@ public final class CasUtil {
           memory.push(typeArray[o]);
           o++;
         }
-        
+
         // Record covered annotations
         for (AnnotationFS covering : memory) {
           if (covering.getBegin() <= iFSbegin && iFS.getEnd() <= covering.getEnd()) {
@@ -877,13 +882,12 @@ public final class CasUtil {
             }
           }
         }
-        
+
+        i++;
+      } else {
         i++;
       }
-      else {
-        i++;
-      }
-        
+
       // Purge covering annotations from memory that cannot match anymore given the currently
       // exampled covered annotation
       // Alternative implementation: re-uses memory
@@ -900,41 +904,40 @@ public final class CasUtil {
   }
 
   /**
-   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does
    * not use subiterators and does not respect type prioritites.
    * 
    * @param aType
    *          a UIMA type.
-   * @param  aBoundaryAnnotation
+   * @param aBoundaryAnnotation
    *          the covering annotation.
    * @return a list of overlapping annotations.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
-   */  
-  public static List<AnnotationFS> selectOverlapping(Type aType,
-          AnnotationFS aBoundaryAnnotation) {
+   */
+  public static List<AnnotationFS> selectOverlapping(Type aType, AnnotationFS aBoundaryAnnotation) {
     return selectOverlapping(aBoundaryAnnotation.getCAS(), aType, aBoundaryAnnotation.getBegin(),
             aBoundaryAnnotation.getEnd());
-  }  
-  
+  }
+
   /**
-   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does
    * not use subiterators and does not respect type prioritites.
    * 
    * @param aCas
    *          a CAS.
    * @param aType
    *          a UIMA type.
-   * @param  aBoundaryAnnotation
+   * @param aBoundaryAnnotation
    *          the covering annotation.
    * @return a list of overlapping annotations.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
-   */  
+   */
   public static List<AnnotationFS> selectOverlapping(CAS aCas, Type aType,
           AnnotationFS aBoundaryAnnotation) {
     return selectOverlapping(aCas, aType, aBoundaryAnnotation.getBegin(),
             aBoundaryAnnotation.getEnd());
-  }  
-  
+  }
+
   /**
    * Get a list of annotations of the given annotation type overlapping the given span. Does not use
    * subiterators and does not respect type prioritites.
@@ -949,11 +952,11 @@ public final class CasUtil {
    *          end offset.
    * @return a list of overlapping annotations.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
-   */  
+   */
   public static List<AnnotationFS> selectOverlapping(CAS aCas, Type aType, int aSelBegin,
           int aSelEnd) {
     requireAnnotationType(aCas, aType);
-    
+
     List<AnnotationFS> annotations = new ArrayList<>();
     for (AnnotationFS t : aCas.getAnnotationIndex(aType)) {
       int begin = t.getBegin();
@@ -963,18 +966,18 @@ public final class CasUtil {
       if (aSelBegin != begin && begin >= aSelEnd) {
         break;
       }
-      
+
       // not yet there
       if (aSelBegin != begin && end <= aSelBegin) {
         continue;
       }
-      
+
       annotations.add(t);
     }
 
     return annotations;
   }
-  
+
   /**
    * This method exists simply as a convenience method for unit testing. It is not very efficient
    * and should not, in general be used outside the context of unit testing.
@@ -992,7 +995,7 @@ public final class CasUtil {
   public static AnnotationFS selectByIndex(CAS cas, Type type, int index) {
     requireAnnotationType(cas, type);
 
-    // withSnapshotIterators() not needed here since we return only one result   
+    // withSnapshotIterators() not needed here since we return only one result
     FSIterator<AnnotationFS> i = cas.getAnnotationIndex(type).iterator();
     int n = index;
     i.moveToFirst();
@@ -1038,7 +1041,7 @@ public final class CasUtil {
 
     return result;
   }
-  
+
   /**
    * Get the single instance of the specified type from the CAS.
    * 
@@ -1145,11 +1148,11 @@ public final class CasUtil {
       // The moveTo operation also does not yield an iterator being invalid because it points
       // *before the first* index entry, at max it points *to the first* index entry, so this
       // case also does not need to be handled.
-      
+
       // No need to do additional seeks here (as done in selectCovered) because the current method
       // does not have to worry about type priorities - it never returns annotations that have
       // the same offset as the reference annotation.
-      
+
       // make sure we're past the end of the reference annotation
       while (itr.isValid() && itr.get().getBegin() < aAnchor.getEnd()) {
         itr.moveToNext();
@@ -1166,11 +1169,10 @@ public final class CasUtil {
       }
     } else if (cas.getTypeSystem().subsumes(aAnchor.getType(), type)) {
       return aAnchor;
-    }
-    else {
+    } else {
       throw new IllegalArgumentException(
               "Relative position cannot be 0 if the type of the anchor annotator does not subsume "
-              + "the selected type.");
+                      + "the selected type.");
     }
   }
 
@@ -1195,10 +1197,10 @@ public final class CasUtil {
     List<AnnotationFS> precedingAnnotations = new ArrayList<AnnotationFS>();
 
     // Seek annotation in index
-    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
     itr.moveTo(anchor);
-    
+
     // If the insertion point is beyond the index, move back to the last.
     if (!itr.isValid()) {
       itr.moveToLast();
@@ -1206,7 +1208,7 @@ public final class CasUtil {
         return precedingAnnotations;
       }
     }
-    
+
     int anchorBegin = anchor.getBegin();
 
     // Zero-width annotations are in the index *after* the wider annotations starting at the same
@@ -1220,7 +1222,7 @@ public final class CasUtil {
         break;
       }
     }
-    
+
     // make sure we're past the beginning of the reference annotation
     while (itr.isValid() && itr.get().getEnd() > anchorBegin) {
       itr.moveToPrevious();
@@ -1232,11 +1234,8 @@ public final class CasUtil {
 
       int curEnd = cur.getEnd();
 
-      if (
-              (curEnd <= anchorBegin
-              || (cur.getBegin() == curEnd && curEnd == anchorBegin))
-              && cur != anchor
-      ) {
+      if ((curEnd <= anchorBegin || (cur.getBegin() == curEnd && curEnd == anchorBegin))
+              && cur != anchor) {
         precedingAnnotations.add(cur);
         i++;
       }
@@ -1266,10 +1265,10 @@ public final class CasUtil {
     requireAnnotationType(cas, type);
 
     // Seek annotation in index
-    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
     itr.moveTo(anchor);
-    
+
     int anchorBegin = anchor.getBegin();
     int anchorEnd = anchor.getEnd();
 
@@ -1292,19 +1291,17 @@ public final class CasUtil {
         while (itr.isValid() && itr.getNvc().getBegin() == anchorBegin) {
           itr.moveToPrevious();
         }
-        
+
         if (!itr.isValid()) {
           itr.moveToFirst();
-        }
-        else {
+        } else {
           itr.moveToNext();
         }
-      }
-      else {
+      } else {
         itr.moveToFirst();
       }
     }
-    
+
     // make sure we're past the end of the reference annotation
     while (itr.isValid() && itr.get().getBegin() < anchorEnd) {
       itr.moveToNext();
@@ -1316,10 +1313,10 @@ public final class CasUtil {
       AnnotationFS cur = itr.get();
       if (cur != anchor && cur.getBegin() >= anchorEnd) {
         followingAnnotations.add(cur);
-        i ++;
+        i++;
       }
     }
-    
+
     return followingAnnotations;
   }
 
@@ -1337,7 +1334,7 @@ public final class CasUtil {
   public static <T extends TOP> boolean exists(CAS aCas, Type aType) {
     return CasUtil.iterator(aCas, aType).hasNext();
   }
-  
+
   /**
    * Convenience method to get the specified view or a default view if the requested view does not
    * exist. The default can also be {@code null}.
@@ -1422,8 +1419,7 @@ public final class CasUtil {
     return text;
   }
 
-  public static boolean isAnnotationType(CAS aCas, Type aType)
-  {
+  public static boolean isAnnotationType(CAS aCas, Type aType) {
     return aCas.getTypeSystem().subsumes(aCas.getAnnotationType(), aType);
   }
 

@@ -39,7 +39,7 @@ import java.util.Locale;
 import java.util.function.BiFunction;
 
 import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationParameterFactory_ParameterValueConversionTest {
   @Test

@@ -61,15 +61,14 @@ public class BenchmarkGroup {
     }
 
     System.out.printf("%n%nSorted by execution time:%n");
-    benchmarks.stream()
-        .filter(b -> !b.isIgnored())
-        .sorted(comparing(Benchmark::getAverageDuration))
-        .forEach(benchmark -> {
-          System.out.printf("AVG: %.3fms (%10s total) -- %s%n", 
-              benchmark.toMs(benchmark.getAverageDuration()),
-              formatDurationWords(round(benchmark.toMs(benchmark.getCumulativeDuration())), true, true), 
-              benchmark.getName());
-        });
+    benchmarks.stream().filter(b -> !b.isIgnored()).sorted(comparing(Benchmark::getAverageDuration))
+            .forEach(benchmark -> {
+              System.out.printf("AVG: %.3fms (%10s total) -- %s%n",
+                      benchmark.toMs(benchmark.getAverageDuration()),
+                      formatDurationWords(round(benchmark.toMs(benchmark.getCumulativeDuration())),
+                              true, true),
+                      benchmark.getName());
+            });
 
     System.out.printf(">>>>>>>>>>>>>>>>>>%n%n");
   }

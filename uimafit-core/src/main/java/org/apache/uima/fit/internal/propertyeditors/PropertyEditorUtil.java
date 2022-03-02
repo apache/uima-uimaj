@@ -38,7 +38,8 @@ public final class PropertyEditorUtil {
   /**
    * Register the property editors provided by uimaFIT in the given property editor registry.
    * 
-   * @param aRegistry a property editor registry
+   * @param aRegistry
+   *          a property editor registry
    */
   public static void registerUimaFITEditors(PropertyEditorRegistry aRegistry) {
     aRegistry.registerCustomEditor(Charset.class, new CharsetEditor());

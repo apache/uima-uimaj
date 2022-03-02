@@ -23,8 +23,8 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderFromPath;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
@@ -47,17 +47,17 @@ import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.Progress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CollectionReaderFactoryTest extends ComponentTestBase {
 
   @Test
   public void testCreateCollectionReader() throws UIMAException, IOException {
 
-    CollectionReader reader = CollectionReaderFactory.createReader(
-            SingleFileXReader.class, typeSystemDescription, 
-            SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi", 
-            SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
+    CollectionReader reader = CollectionReaderFactory.createReader(SingleFileXReader.class,
+            typeSystemDescription, SingleFileXReader.PARAM_FILE_NAME,
+            "src/test/resources/data/docs/test.xmi", SingleFileXReader.PARAM_XML_SCHEME,
+            SingleFileXReader.XMI);
 
     JCasIterator jCasIterator = new JCasIterator(reader, typeSystemDescription);
     jCas = jCasIterator.next();
@@ -68,8 +68,7 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
     assertEquals("A", token.getPos());
     assertEquals("all", token.getStem());
 
-    reader = createReader(
-            "org.apache.uima.fit.factory.testCrs.SingleFileXReader",
+    reader = createReader("org.apache.uima.fit.factory.testCrs.SingleFileXReader",
             SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
             SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
 
@@ -109,42 +108,37 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void thatCreateReaderDescriptorAutoDetectionWorks() throws Exception
-  {
+  public void thatCreateReaderDescriptorAutoDetectionWorks() throws Exception {
     CollectionReaderDescription aed = createReaderDescription(TestCR.class);
-    
+
     TypeSystemDescription tsd = createTypeSystemDescription();
-    assertThat(tsd.getType(Token.class.getName()))
-        .as("Token type auto-detection")
-        .isNotNull();
-    assertThat(tsd.getType(Sentence.class.getName()))
-        .as("Sentence type auto-detection")
-        .isNotNull();
-    assertThat(tsd.getType(AnalyzedText.class.getName()))
-        .as("AnalyzedText type auto-detection")
-        .isNotNull();
+    assertThat(tsd.getType(Token.class.getName())).as("Token type auto-detection").isNotNull();
+    assertThat(tsd.getType(Sentence.class.getName())).as("Sentence type auto-detection")
+            .isNotNull();
+    assertThat(tsd.getType(AnalyzedText.class.getName())).as("AnalyzedText type auto-detection")
+            .isNotNull();
 
     TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
     assertThat(typePrioritiesLists.length).isEqualTo(1);
-    assertThat(typePrioritiesLists[0].getTypes())
-        .as("Type priorities auto-detection")
-        .containsExactly(Sentence.class.getName(), AnalyzedText.class.getName(), Token.class.getName());
+    assertThat(typePrioritiesLists[0].getTypes()).as("Type priorities auto-detection")
+            .containsExactly(Sentence.class.getName(), AnalyzedText.class.getName(),
+                    Token.class.getName());
 
-    FsIndexDescription[] indexes = aed.getCollectionReaderMetaData().getFsIndexCollection().getFsIndexes();
+    FsIndexDescription[] indexes = aed.getCollectionReaderMetaData().getFsIndexCollection()
+            .getFsIndexes();
     assertThat(indexes.length).isEqualTo(1);
-    assertThat(indexes[0])
-        .extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName, FsIndexDescription::getKind)
-        .containsExactly("Automatically Scanned Index", Token.class.getName(), FsIndexDescription.KIND_SORTED);
+    assertThat(indexes[0]).extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName,
+            FsIndexDescription::getKind).containsExactly("Automatically Scanned Index",
+                    Token.class.getName(), FsIndexDescription.KIND_SORTED);
   }
 
   @Test
-  public void testResourceMetaData() throws Exception
-  {
+  public void testResourceMetaData() throws Exception {
     CollectionReaderDescription desc = CollectionReaderFactory
             .createReaderDescription(TestCR.class);
-    
+
     org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
-    
+
     assertEquals("dummy", meta.getName());
     assertEquals("1.0", meta.getVersion());
     assertEquals("Just a dummy", meta.getDescription());
@@ -152,8 +146,6 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
     assertEquals("uimaFIT", meta.getVendor());
   }
 
-  
-  
   @ResourceMetaData(name = "dummy", version = "1.0", description = "Just a dummy", copyright = "ASL 2.0", vendor = "uimaFIT")
   private class TestCR extends CollectionReader_ImplBase {
 

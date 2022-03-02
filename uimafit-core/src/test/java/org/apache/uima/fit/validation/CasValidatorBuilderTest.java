@@ -22,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.fit.validation.checks.EndAfterBeginCheckForTesting;
 import org.apache.uima.fit.validation.checks.EndSameAsBeginCheckForTesting;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CasValidatorBuilderTest {
 
   private Validator.Builder sut;
 
-  @Before
+  @BeforeEach
   public void setup() {
     sut = new Validator.Builder();
   }
@@ -41,8 +41,7 @@ public class CasValidatorBuilderTest {
 
     Validator validator = sut.build();
 
-    assertThat(validator.getChecks())
-            .extracting(Object::getClass)
+    assertThat(validator.getChecks()).extracting(Object::getClass)
             .containsExactly((Class) EndSameAsBeginCheckForTesting.class);
   }
 
@@ -53,8 +52,7 @@ public class CasValidatorBuilderTest {
 
     Validator validator = sut.build();
 
-    assertThat(validator.getChecks())
-            .extracting(Object::getClass)
+    assertThat(validator.getChecks()).extracting(Object::getClass)
             .containsExactly((Class) EndSameAsBeginCheckForTesting.class);
   }
 }

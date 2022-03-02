@@ -77,8 +77,9 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          the feature name for the stem for your token type. This assumes that there is a single
    *          string feature for which to put your stem. null is an ok value.
    */
-  public TokenBuilder(final Class<TOKEN_TYPE> aTokenClass, final Class<SENTENCE_TYPE> aSentenceClass,
-          String aPosFeatureName, String aStemFeatureName) {
+  public TokenBuilder(final Class<TOKEN_TYPE> aTokenClass,
+          final Class<SENTENCE_TYPE> aSentenceClass, String aPosFeatureName,
+          String aStemFeatureName) {
     tokenClass = aTokenClass;
     sentenceClass = aSentenceClass;
     setPosFeatureName(aPosFeatureName);
@@ -92,7 +93,8 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    * @param <T>
    *          the type system token type (e.g. org.apache.uima.fit.examples.type.Token)
    * @param <S>
-   *          the type system sentence type (e.g. {@code org.apache.uima.fit.examples.type.Sentence})
+   *          the type system sentence type (e.g.
+   *          {@code org.apache.uima.fit.examples.type.Sentence})
    * @param aTokenClass
    *          the class of your token type from your type system (e.g.
    *          {@code org.apache.uima.fit.type.Token})
@@ -247,8 +249,8 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
         while (!aText.startsWith(tokenString, offset)) {
           offset++;
           if (offset > aText.length()) {
-            throw new IllegalArgumentException(String.format("unable to find string %s",
-                    tokenString));
+            throw new IllegalArgumentException(
+                    String.format("unable to find string %s", tokenString));
           }
         }
 

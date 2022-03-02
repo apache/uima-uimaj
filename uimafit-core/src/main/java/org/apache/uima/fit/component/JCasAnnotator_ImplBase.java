@@ -27,8 +27,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * Base class for JCas annotators which initializes itself based on annotations.
  * 
  */
-public abstract class JCasAnnotator_ImplBase extends
-        org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
+public abstract class JCasAnnotator_ImplBase
+        extends org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);

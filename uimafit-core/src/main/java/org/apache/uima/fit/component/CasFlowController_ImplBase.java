@@ -26,8 +26,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 /**
  */
 
-public abstract class CasFlowController_ImplBase extends
-        org.apache.uima.flow.CasFlowController_ImplBase {
+public abstract class CasFlowController_ImplBase
+        extends org.apache.uima.flow.CasFlowController_ImplBase {
   @Override
   public void initialize(final FlowControllerContext context)
           throws ResourceInitializationException {

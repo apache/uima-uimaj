@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ResourceMetaData {
-  
+
   /**
    * Gets the name of this Resource.
    * 
@@ -40,7 +40,7 @@ public @interface ResourceMetaData {
    * @return the name of this Resource
    */
   String name() default "";
-  
+
   /**
    * Gets the copyright notice for this Resource.
    * 
@@ -58,7 +58,7 @@ public @interface ResourceMetaData {
    * @return the description of this Resource
    */
   String description() default "";
-  
+
   /**
    * Gets the vendor of this Resource.
    * 
@@ -67,7 +67,7 @@ public @interface ResourceMetaData {
    * @return the vendor of this Resource, as a String
    */
   String vendor() default "";
-  
+
   /**
    * Gets the version number of this Resource.
    * 

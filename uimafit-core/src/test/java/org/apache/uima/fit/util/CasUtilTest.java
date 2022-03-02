@@ -50,10 +50,11 @@ import static org.apache.uima.fit.util.CasUtil.selectPreceding;
 import static org.apache.uima.fit.util.CasUtil.toText;
 import static org.apache.uima.fit.util.SelectionAssert.assertSelection;
 import static org.apache.uima.fit.util.SelectionAssert.assertSelectionIsEqualOnRandomData;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +73,7 @@ import org.apache.uima.fit.util.SelectionAssert.TestCase;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link JCasUtil}.
@@ -81,7 +82,7 @@ import org.junit.Test;
 public class CasUtilTest extends ComponentTestBase {
   private List<TestCase> defaultPredicatesTestCases = union(NON_ZERO_WIDTH_TEST_CASES,
           ZERO_WIDTH_TEST_CASES);
-  
+
   @Test
   public void testGetType() {
     String text = "Rot wood cheeses dew?";
@@ -100,28 +101,30 @@ public class CasUtilTest extends ComponentTestBase {
     assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class).getName());
     assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class.getName()).getName());
     assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class).getName());
-    assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class.getName())
-            .getName());
+    assertEquals("uima.tcas.Annotation",
+            getAnnotationType(cas, Annotation.class.getName()).getName());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetNonExistingType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
     CAS cas = jCas.getCas();
 
-    getType(cas, Token.class.getName() + "_dummy");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> getType(cas, Token.class.getName() + "_dummy"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetNonAnnotationType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
     CAS cas = jCas.getCas();
 
-    getAnnotationType(cas, TOP.class);
+    assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> getAnnotationType(cas, TOP.class));
   }
 
   @Test
@@ -151,8 +154,7 @@ public class CasUtilTest extends ComponentTestBase {
     assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
             toText(select(cas, getType(cas, Token.class.getName()))));
 
-    assertEquals(
-            asList("Rot", "wood", "cheeses", "dew?"),
+    assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
             toText((Collection<AnnotationFS>) (Collection) selectFS(cas,
                     getType(cas, Token.class.getName()))));
   }
@@ -174,11 +176,11 @@ public class CasUtilTest extends ComponentTestBase {
     }
 
     // Print what is expected
-//    for (FeatureStructure fs : allFS) {
-//      System.out.println("Type: " + fs.getType().getName() + "]");
-//    }
-//    System.out
-//            .println("Tokens: [" + toText(select(cas, getType(cas, Token.class.getName()))) + "]");
+    // for (FeatureStructure fs : allFS) {
+    // System.out.println("Type: " + fs.getType().getName() + "]");
+    // }
+    // System.out
+    // .println("Tokens: [" + toText(select(cas, getType(cas, Token.class.getName()))) + "]");
 
     // Document Annotation, one sentence and 4 tokens.
     assertEquals(6, allFS.size());
@@ -219,124 +221,109 @@ public class CasUtilTest extends ComponentTestBase {
     assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
             toText((Iterable<AnnotationFS>) (Iterable) selectFS(cas, getType(cas, Token.class))));
   }
-  
+
   @Test
   public void testExists() throws UIMAException {
     CAS cas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null);
 
     Type tokenType = CasUtil.getAnnotationType(cas, Token.class);
-    
+
     assertFalse(exists(cas, tokenType));
 
     cas.addFsToIndexes(cas.createAnnotation(tokenType, 0, 1));
 
     assertTrue(exists(cas, tokenType));
   }
-  
+
   @Test
   public void thatSelectFollowingBehaviorAlignsWithPrecedingPredicate() throws Exception {
     // In order to find annotations that X is preceding, we select the following annotations
-    assertSelection(
-        PRECEDING,
-        (cas, type, x, y) -> selectFollowing(cas, type, x, MAX_VALUE).contains(y),
-        defaultPredicatesTestCases);
+    assertSelection(PRECEDING,
+            (cas, type, x, y) -> selectFollowing(cas, type, x, MAX_VALUE).contains(y),
+            defaultPredicatesTestCases);
   }
-  
+
   @Test
-  public void thatSelectPrecedingBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
-  {
+  public void thatSelectPrecedingBehaviorAlignsWithPrecedingPredicateOnRandomData()
+          throws Exception {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> preceding(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> selectPreceding(cas, type, context, MAX_VALUE));
+            (cas, type, context) -> cas.getAnnotationIndex(type).select()
+                    .filter(candidate -> preceding(candidate, context)).collect(toList()),
+            (cas, type, context) -> selectPreceding(cas, type, context, MAX_VALUE));
   }
 
   @Test
   public void thatSelectPrecedingBehaviorAlignsWithFollowingPredicate() throws Exception {
     // In order to find annotations that X is following, we select the preceding annotations
-    assertSelection(
-        FOLLOWING,
-        (cas, type, x, y) -> selectPreceding(cas, type, x, MAX_VALUE).contains(y),
-        defaultPredicatesTestCases);
+    assertSelection(FOLLOWING,
+            (cas, type, x, y) -> selectPreceding(cas, type, x, MAX_VALUE).contains(y),
+            defaultPredicatesTestCases);
   }
-  
+
   @Test
-  public void thatSelectFollowingBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
-  {
+  public void thatSelectFollowingBehaviorAlignsWithFollowingPredicateOnRandomData()
+          throws Exception {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> following(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> selectFollowing(cas, type, context, MAX_VALUE));
+            (cas, type, context) -> cas.getAnnotationIndex(type).select()
+                    .filter(candidate -> following(candidate, context)).collect(toList()),
+            (cas, type, context) -> selectFollowing(cas, type, context, MAX_VALUE));
   }
 
   @Test
   public void thatSelectCoveringBehaviorAlignsWithCoveredByPredicate() throws Exception {
     // X covered by Y means that Y is covering X, so we need to select the covering annotations
     // below.
-    assertSelection(
-        COVERED_BY,
-        (cas, type, x, y) -> selectCovering(cas, type, x).contains(y),
-        defaultPredicatesTestCases);
+    assertSelection(COVERED_BY, (cas, type, x, y) -> selectCovering(cas, type, x).contains(y),
+            defaultPredicatesTestCases);
   }
-  
+
   @Test
-  public void thatSelectCoveredBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
-  {
+  public void thatSelectCoveredBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> coveredBy(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> selectCovered(cas, type, context));
+            (cas, type, context) -> cas.getAnnotationIndex(type).select()
+                    .filter(candidate -> coveredBy(candidate, context)).collect(toList()),
+            (cas, type, context) -> selectCovered(cas, type, context));
   }
 
   @Test
   public void thatSelectCoveredBehaviorAlignsWithCoveringPredicate() throws Exception {
     // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
     // below.
-    assertSelection(
-        COVERING,
-        (cas, type, x, y) -> selectCovered(cas, type, x).contains(y),
-        defaultPredicatesTestCases);
+    assertSelection(COVERING, (cas, type, x, y) -> selectCovered(cas, type, x).contains(y),
+            defaultPredicatesTestCases);
   }
 
   @Test
-  public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
-  {
+  public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covering(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> selectCovering(cas, type, context));
+            (cas, type, context) -> cas.getAnnotationIndex(type).select()
+                    .filter(candidate -> covering(candidate, context)).collect(toList()),
+            (cas, type, context) -> selectCovering(cas, type, context));
   }
-  
+
   @Test
   public void thatSelectAtBehaviorAlignsWithColocatedPredicate() throws Exception {
     // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
     // below.
-    assertSelection(
-        COLOCATED,
-        (cas, type, x, y) -> selectAt(cas, type, x.getBegin(), x.getEnd()).contains(y),
-        defaultPredicatesTestCases);
-  }  
+    assertSelection(COLOCATED,
+            (cas, type, x, y) -> selectAt(cas, type, x.getBegin(), x.getEnd()).contains(y),
+            defaultPredicatesTestCases);
+  }
 
   @Test
-  public void thatSelectAtBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
-  {
+  public void thatSelectAtBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception {
     assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> colocated(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> selectAt(cas, type, context.getBegin(), context.getEnd()));
+            (cas, type, context) -> cas.getAnnotationIndex(type).select()
+                    .filter(candidate -> colocated(candidate, context)).collect(toList()),
+            (cas, type, context) -> selectAt(cas, type, context.getBegin(), context.getEnd()));
   }
-  
+
   @SafeVarargs
   public static <T> List<T> union(List<T>... aLists) {
-      List<T> all = new ArrayList<>();
-      for (List<T> list : aLists) {
-        all.addAll(list);
-      }
-      return all;
+    List<T> all = new ArrayList<>();
+    for (List<T> list : aLists) {
+      all.addAll(list);
+    }
+    return all;
   }
 }

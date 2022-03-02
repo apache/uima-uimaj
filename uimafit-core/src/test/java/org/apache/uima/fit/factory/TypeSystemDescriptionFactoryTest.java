@@ -19,13 +19,13 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

@@ -53,7 +53,7 @@ public class Benchmark {
   private LongSupplier timer = () -> System.currentTimeMillis();
   private DoubleFunction<Double> toMs = n -> n;
   private long timeLimitMs = 5 * 1000;
-  
+
   private boolean ignore = false;
 
   private List<Batch> batches = new ArrayList<>();
@@ -72,28 +72,26 @@ public class Benchmark {
     this(aName);
     applyTemplate(aTemplate);
   }
-  
+
   public Benchmark ignore(boolean aIgnore) {
     ignore = aIgnore;
     return this;
   }
-  
+
   public boolean isIgnored() {
     return ignore;
   }
 
-  public Benchmark limit(long aLimit)
-  {
+  public Benchmark limit(long aLimit) {
     timeLimitMs = aLimit;
     return this;
   }
-  
+
   public long getTimeLimitMs() {
     return timeLimitMs;
   }
 
-  public void applyTemplate(Benchmark aTemplate)
-  {
+  public void applyTemplate(Benchmark aTemplate) {
     initializer = aTemplate.initializer;
 
     baseRepeat = aTemplate.baseRepeat;
@@ -150,14 +148,14 @@ public class Benchmark {
     Batch batch = new Batch(aMagnitude);
 
     initializer.accept(aMagnitude);
-    
+
     long initTime = System.currentTimeMillis();
     for (int i = 0; i < baseRepeat; i++) {
       long startTime = timer.getAsLong();
       try {
         subject.run();
         batch.addMeasurement(new Measurement(i, timer.getAsLong() - startTime));
-        
+
         if (System.currentTimeMillis() > initTime + getTimeLimitMs()) {
           batch.setTimeLimitExceeded(true);
           break;
@@ -172,13 +170,12 @@ public class Benchmark {
 
   public void run() {
     stats = null;
-    
+
     if (verbose) {
       System.out.printf("%n%s%n", StringUtils.repeat("=", name.length()));
       System.out.printf("%s%n", name);
       System.out.printf("%s%n", StringUtils.repeat("=", name.length()));
-    }
-    else {
+    } else {
       System.out.printf("%s: ", name);
     }
 
@@ -192,7 +189,7 @@ public class Benchmark {
       }
       Batch results = runBatch(magnitude);
       if (!ignore) {
-          batches.add(results);
+        batches.add(results);
       }
       magnitude = magnitudeIncrement.apply(magnitude);
       n++;
@@ -223,42 +220,34 @@ public class Benchmark {
   }
 
   public Measurement getSlowestMeasurement() {
-    return getBatches().stream()
-        .flatMap(b -> b.getMeasurements().stream())
-        .max(comparing(Measurement::getDuration))
-        .get();
+    return getBatches().stream().flatMap(b -> b.getMeasurements().stream())
+            .max(comparing(Measurement::getDuration)).get();
   }
-  
-  public DescriptiveStatistics getStats()
-  {
+
+  public DescriptiveStatistics getStats() {
     if (stats == null) {
       stats = new DescriptiveStatistics();
-      getBatches().stream()
-          .flatMap(b -> b.getMeasurements().stream())
-          .mapToLong(Measurement::getDuration)
-          .forEach(stats::addValue);
+      getBatches().stream().flatMap(b -> b.getMeasurements().stream())
+              .mapToLong(Measurement::getDuration).forEach(stats::addValue);
     }
     return stats;
   }
-  
-  public double toMs(double duration) 
-  {
+
+  public double toMs(double duration) {
     return toMs.apply(duration);
   }
-  
-  public String batchToString(Batch aBatch)
-  {
+
+  public String batchToString(Batch aBatch) {
     DescriptiveStatistics batchStats = new DescriptiveStatistics();
-    
+
     StringBuilder sb = new StringBuilder();
-    sb.append("[").append(String.format("%7d/%7d | ", aBatch.getMagnitude(), 
-        aBatch.getMeasurements().size()));
+    sb.append("[").append(
+            String.format("%7d/%7d | ", aBatch.getMagnitude(), aBatch.getMeasurements().size()));
     int failures = 0;
     for (Measurement m : aBatch.getMeasurements()) {
       if (m.failed()) {
         failures++;
-      }
-      else {
+      } else {
         batchStats.addValue(m.getDuration());
       }
     }
@@ -276,8 +265,8 @@ public class Benchmark {
 
   /** Get CPU time in nanoseconds. */
   public static long cpuTime() {
-    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
-    if(bean.isCurrentThreadCpuTimeSupported( )) {
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+    if (bean.isCurrentThreadCpuTimeSupported()) {
       return bean.getCurrentThreadCpuTime();
     }
     throw new UnsupportedOperationException(CPU_TIME_NOT_SUPPORTED_MSG);
@@ -285,8 +274,8 @@ public class Benchmark {
 
   /** Get user time in nanoseconds. */
   public static long userTime() {
-    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
-    if(bean.isCurrentThreadCpuTimeSupported( )) {
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+    if (bean.isCurrentThreadCpuTimeSupported()) {
       return bean.getCurrentThreadUserTime();
     }
     throw new UnsupportedOperationException(CPU_TIME_NOT_SUPPORTED_MSG);
@@ -294,9 +283,9 @@ public class Benchmark {
 
   /** Get static system time in nanoseconds. */
   public static long system() {
-    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
-    if(bean.isCurrentThreadCpuTimeSupported( )) {
-      return bean.getCurrentThreadCpuTime( ) - bean.getCurrentThreadUserTime( );
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+    if (bean.isCurrentThreadCpuTimeSupported()) {
+      return bean.getCurrentThreadCpuTime() - bean.getCurrentThreadUserTime();
     }
     throw new UnsupportedOperationException(CPU_TIME_NOT_SUPPORTED_MSG);
   }

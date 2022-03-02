@@ -22,8 +22,8 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.fit.util.FSUtil.getFeature;
 import static org.apache.uima.fit.util.FSUtil.setFeature;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,7 +42,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FSUtilTest {
   @Test
@@ -64,7 +64,7 @@ public class FSUtilTest {
     String[] PRIMITIVE_TYPES = { CAS.TYPE_NAME_BOOLEAN, CAS.TYPE_NAME_BYTE, CAS.TYPE_NAME_DOUBLE,
         CAS.TYPE_NAME_FLOAT, CAS.TYPE_NAME_INTEGER, CAS.TYPE_NAME_LONG, CAS.TYPE_NAME_SHORT,
         CAS.TYPE_NAME_STRING };
-    
+
     String[] LIST_TYPES = { CAS.TYPE_NAME_FLOAT_LIST, CAS.TYPE_NAME_FS_LIST,
         CAS.TYPE_NAME_INTEGER_LIST, CAS.TYPE_NAME_STRING_LIST };
 
@@ -80,26 +80,28 @@ public class FSUtilTest {
       String baseName = StringUtils.substringAfterLast(t, ".");
       type.addFeature(baseName + "Value", "", t);
     }
-    
+
     // Add feature types
     type.addFeature("TopValue", "", CAS.TYPE_NAME_TOP);
     type.addFeature("AnnotationValue", "", CAS.TYPE_NAME_ANNOTATION);
     type.addFeature("TopArrayValue", "", CAS.TYPE_NAME_FS_ARRAY, CAS.TYPE_NAME_TOP, false);
-    type.addFeature("AnnotationArrayValue", "", CAS.TYPE_NAME_FS_ARRAY, CAS.TYPE_NAME_ANNOTATION, false);
+    type.addFeature("AnnotationArrayValue", "", CAS.TYPE_NAME_FS_ARRAY, CAS.TYPE_NAME_ANNOTATION,
+            false);
     type.addFeature("TopListValue", "", CAS.TYPE_NAME_FS_LIST, CAS.TYPE_NAME_TOP, false);
-    type.addFeature("AnnotationListValue", "", CAS.TYPE_NAME_FS_LIST, CAS.TYPE_NAME_ANNOTATION, false);
-    
+    type.addFeature("AnnotationListValue", "", CAS.TYPE_NAME_FS_LIST, CAS.TYPE_NAME_ANNOTATION,
+            false);
+
     // Avoid using JCasFactory here because we want to initialize only CAS *not* JCas.
     CAS cas = CasCreationUtils.createCas(tsd, null, null);
-    
+
     if (aActivateJCas) {
       cas.getJCas();
     }
-    
+
     Type annotationType = cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION);
 
     final FeatureStructure fs = cas.createFS(cas.getTypeSystem().getType("MyType"));
-    
+
     setFeature(fs, "BooleanValue", true);
     assertEquals(true, getFeature(fs, "BooleanValue", Boolean.class));
     assertEquals(true, getFeature(fs, "BooleanValue", Object.class));
@@ -114,7 +116,7 @@ public class FSUtilTest {
     assertTrue(1d == getFeature(fs, "DoubleValue", Double.class));
     assertTrue(1d == (double) getFeature(fs, "DoubleValue", Object.class));
     assertThat(getFeature(fs, "DoubleValue", Object.class).getClass()).isEqualTo(Double.class);
-    
+
     setFeature(fs, "FloatValue", 1f);
     assertTrue(1f == getFeature(fs, "FloatValue", Float.class));
     assertTrue(1f == (float) getFeature(fs, "FloatValue", Object.class));
@@ -124,22 +126,22 @@ public class FSUtilTest {
     assertTrue(1 == getFeature(fs, "IntegerValue", Integer.class));
     assertTrue(1 == (int) getFeature(fs, "IntegerValue", Object.class));
     assertThat(getFeature(fs, "IntegerValue", Object.class).getClass()).isEqualTo(Integer.class);
-    
+
     setFeature(fs, "LongValue", 1l);
     assertTrue(1l == getFeature(fs, "LongValue", Long.class));
     assertTrue(1l == (long) getFeature(fs, "LongValue", Object.class));
     assertThat(getFeature(fs, "LongValue", Object.class).getClass()).isEqualTo(Long.class);
-    
+
     setFeature(fs, "ShortValue", (short) 1);
     assertTrue(((short) 1) == getFeature(fs, "ShortValue", Short.class));
     assertTrue(((short) 1) == (short) getFeature(fs, "ShortValue", Short.class));
     assertThat(getFeature(fs, "ShortValue", Object.class).getClass()).isEqualTo(Short.class);
-    
+
     setFeature(fs, "StringValue", "set");
     assertEquals("set", getFeature(fs, "StringValue", String.class));
     assertEquals("set", getFeature(fs, "StringValue", Object.class));
     assertThat(getFeature(fs, "StringValue", Object.class).getClass()).isEqualTo(String.class);
-    
+
     final ArrayFS arrayArg = cas.createArrayFS(1);
     final AnnotationFS arrayElem = cas.createAnnotation(annotationType, 0, 1);
     arrayArg.set(0, arrayElem);
@@ -147,8 +149,7 @@ public class FSUtilTest {
     assertThat(getFeature(fs, "TopValue", FeatureStructure.class)).isEqualTo(arrayArg);
     assertThat(getFeature(fs, "TopValue", List.class)).containsExactly(arrayElem);
     assertThat((List) getFeature(fs, "TopValue", Object.class)).containsExactly(arrayElem);
-    assertThat(getFeature(fs, "TopValue", ArrayFS.class).toArray())
-            .containsExactly(arrayElem);
+    assertThat(getFeature(fs, "TopValue", ArrayFS.class).toArray()).containsExactly(arrayElem);
     assertThat(getFeature(fs, "TopValue", TOP.class).getClass()).isEqualTo(FSArray.class);
 
     final AnnotationFS annVal = cas.createAnnotation(annotationType, 0, 1);
@@ -157,8 +158,7 @@ public class FSUtilTest {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
       assertThat(getFeature(fs, "AnnotationValue", TOP.class)).isEqualTo(annVal);
-    }
-    else {
+    } else {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
     }
@@ -198,7 +198,7 @@ public class FSUtilTest {
     assertThat(getFeature(fs, "BooleanArrayValue", List.class)).containsExactly(true, false);
     assertThat((List<Boolean>) getFeature(fs, "BooleanArrayValue", Object.class))
             .containsExactly(true, false);
-    
+
     setFeature(fs, "ByteArrayValue", new byte[] { 0, 1 });
     setFeature(fs, "DoubleArrayValue", new double[] { 0d, 1d });
     setFeature(fs, "FloatArrayValue", new float[] { 0f, 1f });
@@ -229,12 +229,12 @@ public class FSUtilTest {
     setFeature(fs, "ShortArrayValue", asList((short) 0, (short) 1));
     setFeature(fs, "StringArrayValue", asList("one", "two"));
     setFeature(fs, "TopArrayValue", asList(cas.createArrayFS(1), cas.createDoubleArrayFS(1)));
-    setFeature(fs, "AnnotationArrayValue", asList(cas.createAnnotation(annotationType, 0, 1), 
+    setFeature(fs, "AnnotationArrayValue", asList(cas.createAnnotation(annotationType, 0, 1),
             cas.createAnnotation(annotationType, 1, 2)));
-    assertEquals(0, ((List<AnnotationFS>) getFeature(fs, "AnnotationArrayValue", List.class))
-            .get(0).getBegin());
-    assertEquals(1, ((List<AnnotationFS>) getFeature(fs, "AnnotationArrayValue", List.class))
-            .get(1).getBegin());
+    assertEquals(0, ((List<AnnotationFS>) getFeature(fs, "AnnotationArrayValue", List.class)).get(0)
+            .getBegin());
+    assertEquals(1, ((List<AnnotationFS>) getFeature(fs, "AnnotationArrayValue", List.class)).get(1)
+            .getBegin());
     assertEquals(0, ((List<AnnotationFS>) getFeature(fs, "AnnotationArrayValue", Vector.class))
             .get(0).getBegin());
     assertEquals(1, ((List<AnnotationFS>) getFeature(fs, "AnnotationArrayValue", Vector.class))
@@ -245,9 +245,8 @@ public class FSUtilTest {
     setFeature(fs, "StringListValue", new String[] { "one", "two" });
     setFeature(fs, "TopListValue",
             new FeatureStructure[] { cas.createArrayFS(1), cas.createDoubleArrayFS(1) });
-    setFeature(fs, "AnnotationListValue", new AnnotationFS[] { 
-            cas.createAnnotation(annotationType, 0, 1), 
-            cas.createAnnotation(annotationType, 1, 2) } );
+    setFeature(fs, "AnnotationListValue", new AnnotationFS[] {
+        cas.createAnnotation(annotationType, 0, 1), cas.createAnnotation(annotationType, 1, 2) });
     assertEquals(0, getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[0].getBegin());
     assertEquals(1, getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[1].getBegin());
     if (aActivateJCas) {
@@ -257,16 +256,16 @@ public class FSUtilTest {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[0].getClass().getName());
     }
-      
+
     setFeature(fs, "FloatListValue", asList(0f, 1f));
     setFeature(fs, "IntegerListValue", asList(0, 1));
     setFeature(fs, "StringListValue", asList("one", "two"));
     setFeature(fs, "TopListValue", asList(cas.createArrayFS(1), cas.createDoubleArrayFS(1)));
-    setFeature(fs, "AnnotationListValue", asList(cas.createAnnotation(annotationType, 0, 1), 
+    setFeature(fs, "AnnotationListValue", asList(cas.createAnnotation(annotationType, 0, 1),
             cas.createAnnotation(annotationType, 1, 2)));
-    assertEquals(0, ((List<AnnotationFS>) getFeature(fs, "AnnotationListValue", List.class))
-            .get(0).getBegin());
-    assertEquals(1, ((List<AnnotationFS>) getFeature(fs, "AnnotationListValue", List.class))
-            .get(1).getBegin());
-  }  
+    assertEquals(0, ((List<AnnotationFS>) getFeature(fs, "AnnotationListValue", List.class)).get(0)
+            .getBegin());
+    assertEquals(1, ((List<AnnotationFS>) getFeature(fs, "AnnotationListValue", List.class)).get(1)
+            .getBegin());
+  }
 }

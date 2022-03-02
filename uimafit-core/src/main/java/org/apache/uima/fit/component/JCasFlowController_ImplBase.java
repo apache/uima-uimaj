@@ -26,8 +26,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 /**
  */
 
-public abstract class JCasFlowController_ImplBase extends
-        org.apache.uima.flow.JCasFlowController_ImplBase {
+public abstract class JCasFlowController_ImplBase
+        extends org.apache.uima.flow.JCasFlowController_ImplBase {
   @Override
   public void initialize(final FlowControllerContext context)
           throws ResourceInitializationException {

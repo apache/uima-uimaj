@@ -23,32 +23,27 @@ import static org.apache.uima.fit.util.FSUtil.setFeature;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class FSUtilBenchmark {
-	private static JCas jcas;
-	private static Token fs;
+  private static JCas jcas;
+  private static Token fs;
 
-	@BeforeClass
+  @BeforeAll
   public static void setupOnce() throws Exception {
-  	jcas = JCasFactory.createText("test");
-  	fs = new Token(jcas, 0, 1);
-  	fs.addToIndexes();
+    jcas = JCasFactory.createText("test");
+    fs = new Token(jcas, 0, 1);
+    fs.addToIndexes();
   }
 
-	@Test
+  @Test
   public void benchmarkSetFeature() {
-    Benchmark template = new Benchmark("TEMPLATE")
-      .timer(System::nanoTime, t -> t / 1000)
-      .repeat(1_000_000);
+    Benchmark template = new Benchmark("TEMPLATE").timer(System::nanoTime, t -> t / 1000)
+            .repeat(1_000_000);
 
-    new Benchmark("set feature string JCas", template)
-      .measure(() -> fs.setPos("NN"))
-      .run();
+    new Benchmark("set feature string JCas", template).measure(() -> fs.setPos("NN")).run();
 
-    new Benchmark("set feature string", template)
-      .measure(() -> setFeature(fs, "pos", "NN"))
-      .run();
+    new Benchmark("set feature string", template).measure(() -> setFeature(fs, "pos", "NN")).run();
   }
 }

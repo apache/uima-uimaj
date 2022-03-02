@@ -24,7 +24,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -33,13 +33,12 @@ public class DefaultPackageAETest extends ComponentTestBase {
 
   @Test
   public void testPackageLessAE() throws Exception {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
-            DefaultPackageAE.class, (Object[]) null);
+    AnalysisEngineDescription aed = AnalysisEngineFactory
+            .createEngineDescription(DefaultPackageAE.class, (Object[]) null);
     jCas.setDocumentText("some text");
     SimplePipeline.runPipeline(jCas, aed);
 
-    aed = AnalysisEngineFactory
-            .createEngineDescription(DefaultPackageAE2.class, (Object[]) null);
+    aed = AnalysisEngineFactory.createEngineDescription(DefaultPackageAE2.class, (Object[]) null);
     jCas.reset();
     jCas.setDocumentText("some text");
     SimplePipeline.runPipeline(jCas, aed);

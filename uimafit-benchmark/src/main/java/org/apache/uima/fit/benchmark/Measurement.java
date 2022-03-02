@@ -19,46 +19,44 @@
 package org.apache.uima.fit.benchmark;
 
 public class Measurement {
-    private final int run;
-    private final long duration;
-    private final Exception exception;
-    
-    public Measurement(int aRun, long aDuration) {
-      run = aRun;
-      duration = aDuration;
-      exception = null;
-    }
-    
-    public Measurement(int aRun, long aDuration, Exception aException) {
-      exception = aException;
-      run = aRun;
-      duration = aDuration;
-    }
+  private final int run;
+  private final long duration;
+  private final Exception exception;
 
-    public int getRun() {
-      return run;
-    }
-    
-    public long getDuration() {
-      return duration;
-    }
-    
-    public Exception getException() {
-      return exception;
-    }
-    
-    public boolean failed() {
-      return exception != null;
-    }
-    
-    @Override
-    public String toString()
-    {
-      if (failed()) {
-        return "[" + run + ": FAIL]";
-      }
-      else {
-        return "[" + run + ": " + duration + "]";
-      }
+  public Measurement(int aRun, long aDuration) {
+    run = aRun;
+    duration = aDuration;
+    exception = null;
+  }
+
+  public Measurement(int aRun, long aDuration, Exception aException) {
+    exception = aException;
+    run = aRun;
+    duration = aDuration;
+  }
+
+  public int getRun() {
+    return run;
+  }
+
+  public long getDuration() {
+    return duration;
+  }
+
+  public Exception getException() {
+    return exception;
+  }
+
+  public boolean failed() {
+    return exception != null;
+  }
+
+  @Override
+  public String toString() {
+    if (failed()) {
+      return "[" + run + ": FAIL]";
+    } else {
+      return "[" + run + ": " + duration + "]";
     }
   }
+}

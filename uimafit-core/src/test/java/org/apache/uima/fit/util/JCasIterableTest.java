@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.ComponentTestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JCasIterableTest extends ComponentTestBase {
 

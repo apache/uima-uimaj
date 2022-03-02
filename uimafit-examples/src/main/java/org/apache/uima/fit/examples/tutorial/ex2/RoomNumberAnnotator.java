@@ -34,9 +34,9 @@ import org.apache.uima.jcas.JCas;
  * Defining configuration parameters in this way in combination with using the
  * {@link JCasAnnotator_ImplBase uimaFIT's JCasAnnotator_ImplBase} class obviates the need for an
  * initialize method at all because the super class initialize method calls
- * {@link ConfigurationParameterInitializer#initialize}. This method
- * initializes member variables annotated as configuration parameters using the configuration
- * parameter information provided in the UimaContext.
+ * {@link ConfigurationParameterInitializer#initialize}. This method initializes member variables
+ * annotated as configuration parameters using the configuration parameter information provided in
+ * the UimaContext.
  * 
  * This class was copied from the uimaj-examples project and modified in following ways:
  * <ul>
