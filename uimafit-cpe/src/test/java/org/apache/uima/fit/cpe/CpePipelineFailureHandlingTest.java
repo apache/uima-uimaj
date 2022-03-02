@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.cpe;
 
+import static java.lang.Runtime.getRuntime;
 import static org.apache.uima.fit.cpe.CpePipeline.runPipeline;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
@@ -51,8 +52,8 @@ public class CpePipelineFailureHandlingTest {
     }
 
     assertThat(processed.get())
-      .as("CPE stopped processing after reader threw an exception")
-      .isEqualTo(failAfter);
+      .as("CPE stop processing soon after reader threw an exception")
+      .isBetween(failAfter, failAfter + getRuntime().availableProcessors());
   }
 
   public static class Reader extends JCasCollectionReader_ImplBase {
