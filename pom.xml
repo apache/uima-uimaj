@@ -122,6 +122,8 @@
                   <!-- These configuration files cannot bear a license header -->
                   <exclude>.github/**/*</exclude>
                   <exclude>CONTRIBUTING.md</exclude>
+                  <exclude>src/main/eclipse/org.eclipse.jdt.core.prefs</exclude>
+                  <exclude>src/main/eclipse/org.eclipse.jdt.ui.prefs</exclude>
                 </excludes>
               </configuration>
             </execution>

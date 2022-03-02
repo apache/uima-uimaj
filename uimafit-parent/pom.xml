@@ -82,6 +82,29 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -92,7 +115,7 @@
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
+        <artifactId>junit-jupiter-engine</artifactId>
         <version>${junit-version}</version>
       </dependency>
       <dependency>
@@ -225,10 +248,13 @@
         <configuration>
           <failOnWarning>true</failOnWarning>
           <ignoredDependencies combine.children="append">
+            <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
+            <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+            <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+            <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
             <!-- 
               - Logging is used via reflection and cannot be detected by Maven
             -->
-            <ignoredDependency>junit:junit</ignoredDependency>
             <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
           </ignoredDependencies>
         </configuration>
