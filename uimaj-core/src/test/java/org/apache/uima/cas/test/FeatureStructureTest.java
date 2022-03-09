@@ -18,11 +18,35 @@
  */
 package org.apache.uima.cas.test;
 
+import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_HEAD;
+import static org.apache.uima.cas.CAS.FEATURE_BASE_NAME_TAIL;
+import static org.apache.uima.cas.CAS.FEATURE_FULL_NAME_BEGIN;
+import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER;
+import static org.apache.uima.cas.CAS.TYPE_NAME_NON_EMPTY_FS_LIST;
+import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
+import static org.apache.uima.cas.CAS.TYPE_NAME_TOP;
+import static org.apache.uima.cas.test.CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE;
+import static org.apache.uima.cas.test.CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.DESCR_FEAT;
+import static org.apache.uima.cas.test.CASTestSetup.GROUP_1;
 import static org.apache.uima.cas.test.CASTestSetup.GROUP_1_LANGUAGES;
+import static org.apache.uima.cas.test.CASTestSetup.GROUP_2;
 import static org.apache.uima.cas.test.CASTestSetup.GROUP_2_LANGUAGES;
+import static org.apache.uima.cas.test.CASTestSetup.LANG1;
+import static org.apache.uima.cas.test.CASTestSetup.LANG2;
+import static org.apache.uima.cas.test.CASTestSetup.LANG_PAIR;
+import static org.apache.uima.cas.test.CASTestSetup.LEMMA_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.LEMMA_LIST_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.SENT_LEN_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.TOKEN_DOUBLE_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.TOKEN_FLOAT_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.TOKEN_LONG_FEAT_Q;
 import static org.apache.uima.cas.test.CASTestSetup.TOKEN_TYPE;
 import static org.apache.uima.cas.test.CASTestSetup.TOKEN_TYPE_FEAT;
+import static org.apache.uima.cas.test.CASTestSetup.TOKEN_TYPE_FEAT_Q;
+import static org.apache.uima.cas.test.CASTestSetup.TOKEN_TYPE_TYPE;
 import static org.apache.uima.cas.test.CASTestSetup.WORD_TYPE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.Assert.assertEquals;
@@ -76,6 +100,7 @@ public class FeatureStructureTest {
   private Feature descr;
   private Feature tokenTypeFeat;
   private Feature lemmaFeat;
+  private Feature lemmaListFeat;
   private Feature sentLenFeat;
   private Feature tokenFloatFeat;
   private Feature tokenLongFeat;
@@ -92,76 +117,78 @@ public class FeatureStructureTest {
     ts = (TypeSystemImpl) cas.getTypeSystem();
     assertTrue(ts != null);
 
-    topType = ts.getType(CAS.TYPE_NAME_TOP);
+    topType = ts.getType(TYPE_NAME_TOP);
     assertTrue(topType != null);
 
-    stringType = ts.getType(CAS.TYPE_NAME_STRING);
+    stringType = ts.getType(TYPE_NAME_STRING);
     assertTrue(stringType != null);
 
-    tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
+    tokenType = ts.getType(TOKEN_TYPE);
     assertTrue(stringType != null);
 
-    intType = ts.getType(CAS.TYPE_NAME_INTEGER);
+    intType = ts.getType(TYPE_NAME_INTEGER);
     assertTrue(intType != null);
 
-    tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    tokenTypeType = ts.getType(TOKEN_TYPE_TYPE);
     assertTrue(tokenTypeType != null);
 
-    wordType = ts.getType(CASTestSetup.WORD_TYPE);
+    wordType = ts.getType(WORD_TYPE);
     assertTrue(wordType != null);
 
-    arrayFsWithSubtypeType = ts.getType(CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE);
+    arrayFsWithSubtypeType = ts.getType(ARRAYFSWITHSUBTYPE_TYPE);
     assertTrue(arrayFsWithSubtypeType != null);
 
-    arrayFsWithSubtypeTypeFeat = ts
-            .getFeatureByFullName(CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q);
+    arrayFsWithSubtypeTypeFeat = ts.getFeatureByFullName(ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q);
 
-    group1Type = ts.getType(CASTestSetup.GROUP_1);
+    group1Type = ts.getType(GROUP_1);
     assertTrue(group1Type != null);
 
-    group2Type = ts.getType(CASTestSetup.GROUP_2);
+    group2Type = ts.getType(GROUP_2);
     assertTrue(group2Type != null);
 
-    tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    tokenTypeFeat = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
     assertTrue(tokenTypeFeat != null);
 
-    lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
+    lemmaFeat = ts.getFeatureByFullName(LEMMA_FEAT_Q);
     assertTrue(lemmaFeat != null);
 
-    sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
+    lemmaListFeat = ts.getFeatureByFullName(LEMMA_LIST_FEAT_Q);
+    assertTrue(lemmaListFeat != null);
+
+    sentLenFeat = ts.getFeatureByFullName(SENT_LEN_FEAT_Q);
     assertTrue(sentLenFeat != null);
 
-    tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    tokenFloatFeat = ts.getFeatureByFullName(TOKEN_FLOAT_FEAT_Q);
     assertTrue(tokenFloatFeat != null);
 
-    tokenDoubleFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_DOUBLE_FEAT_Q);
+    tokenDoubleFeat = ts.getFeatureByFullName(TOKEN_DOUBLE_FEAT_Q);
     assertTrue(tokenDoubleFeat != null);
 
-    tokenLongFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_LONG_FEAT_Q);
+    tokenLongFeat = ts.getFeatureByFullName(TOKEN_LONG_FEAT_Q);
     assertTrue(tokenLongFeat != null);
 
-    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    startFeature = ts.getFeatureByFullName(FEATURE_FULL_NAME_BEGIN);
     assertTrue(startFeature != null);
 
-    langPairType = ts.getType(CASTestSetup.LANG_PAIR);
+    langPairType = ts.getType(LANG_PAIR);
     assertTrue(langPairType != null);
 
-    lang1 = langPairType.getFeatureByBaseName(CASTestSetup.LANG1);
+    lang1 = langPairType.getFeatureByBaseName(LANG1);
     assertTrue(lang1 != null);
 
-    lang2 = langPairType.getFeatureByBaseName(CASTestSetup.LANG2);
+    lang2 = langPairType.getFeatureByBaseName(LANG2);
     assertTrue(lang2 != null);
 
-    descr = langPairType.getFeatureByBaseName(CASTestSetup.DESCR_FEAT);
+    descr = langPairType.getFeatureByBaseName(DESCR_FEAT);
     assertTrue(descr != null);
 
-    neListType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
+    neListType = ts.getType(TYPE_NAME_NON_EMPTY_FS_LIST);
     assertTrue(neListType != null);
 
-    tlFeature = neListType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+    tlFeature = neListType.getFeatureByBaseName(FEATURE_BASE_NAME_TAIL);
     assertTrue(tlFeature != null);
 
-    hdFeature = neListType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    hdFeature = neListType.getFeatureByBaseName(FEATURE_BASE_NAME_HEAD);
     assertTrue(hdFeature != null);
   }
 
@@ -207,8 +234,10 @@ public class FeatureStructureTest {
   public void testGetType() {
     Type tokenType1 = ts.getType(TOKEN_TYPE);
     Type wordType1 = ts.getType(WORD_TYPE);
+
     FeatureStructure word = cas.createFS(wordType1);
     FeatureStructure token = cas.createFS(tokenType1);
+
     assertTrue(word.getType().equals(wordType1));
     assertTrue(token.getType().equals(tokenType1));
   }
@@ -272,7 +301,7 @@ public class FeatureStructureTest {
     assertEquals(fs.getBegin(), 3);
     assertEquals(fs.getEnd(), 5);
     assertEquals(sofa, fs.getSofa());
-    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
+    assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
     assertEquals(ttfv, token.getFeatureValue(tokenTypeFeat));
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
@@ -296,7 +325,7 @@ public class FeatureStructureTest {
     assertEquals(token.getBegin(), 0);
     assertEquals(token.getEnd(), 0);
     assertEquals(sofa, token.getSofa());
-    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(0.0f);
+    assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(0.0f);
     assertEquals(null, token.getFeatureValue(tokenTypeFeat));
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
@@ -305,12 +334,18 @@ public class FeatureStructureTest {
   @Test
   public void testSetArrayValuedFeature() {
     FeatureStructure testFS = cas.createFS(arrayFsWithSubtypeType);
-    assertTrue(testFS.getFeatureValue(arrayFsWithSubtypeTypeFeat) == null);
+
+    assertThat(testFS.getFeatureValue(arrayFsWithSubtypeTypeFeat)) //
+            .as("Initial value is null") //
+            .isNull();
+
     ArrayFS arrayFS = cas.createArrayFS(1);
     testFS.setFeatureValue(arrayFsWithSubtypeTypeFeat, arrayFS);
-    assertTrue(true);
+    assertThat(testFS.getFeatureValue(arrayFsWithSubtypeTypeFeat)) //
+            .isSameAs(arrayFS);
 
     assertThatExceptionOfType(CASRuntimeException.class) //
+            .as("Array-valued feature cannot be set with non-array value") //
             .isThrownBy(() -> testFS.setFeatureValue(arrayFsWithSubtypeTypeFeat, testFS));
   }
 
@@ -349,19 +384,32 @@ public class FeatureStructureTest {
             .extracting(CASRuntimeException::getMessageKey) //
             .isEqualTo(CASRuntimeException.INAPPROP_RANGE_NOT_FS);
 
-    assertTrue(token.getStringValue(lemmaFeat) == null);
-    String testString = "test";
-    token.setStringValue(lemmaFeat, testString);
-    assertTrue(token.getStringValue(lemmaFeat).equals(testString));
-    testString = "";
-    token.setStringValue(lemmaFeat, testString);
-    assertTrue(token.getStringValue(lemmaFeat).equals(testString));
+    assertThat(token.getStringValue(lemmaFeat)) //
+            .as("String feature value is initially null") //
+            .isNull();
+
+    token.setStringValue(lemmaFeat, "test");
+    assertThat(token.getStringValue(lemmaFeat)) //
+            .isEqualTo("test");
+
+    token.setStringValue(lemmaFeat, "");
+    assertThat(token.getStringValue(lemmaFeat)) //
+            .isEqualTo("");
+
+    assertThatExceptionOfType(CASRuntimeException.class) //
+            .as("Cannot set boolean value on string array feature") //
+            .isThrownBy(() -> token.setBooleanValue(lemmaListFeat, true));
+
+    assertThatExceptionOfType(CASRuntimeException.class) //
+            .as("Cannot set string value on string array feature") //
+            .isThrownBy(() -> token.setStringValue(lemmaListFeat, "test"));
 
     // test low level
     token.setFeatureValue(tokenTypeFeat, word);
     int fsRef = token._id();
     int fc = ((FeatureImpl) tokenTypeFeat).getCode();
     assertEquals(llcas.ll_getIntValue(fsRef, fc), word._id());
+
     int word2_id = llcas.ll_createFS(((TypeImpl) wordType).getCode());
     TOP word2 = llcas.ll_getFSForRef(word2_id);
     // TOP word2 = cas.createFS(wordType);
