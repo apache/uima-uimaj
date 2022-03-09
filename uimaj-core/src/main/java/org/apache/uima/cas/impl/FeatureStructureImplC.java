@@ -585,7 +585,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setStringValue(Feature feat, String v) {
-    checkFeatRange(feat, "String");
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) {
+      featureValueValidation(feat, v); // verifies feat can take a string
+    }
     subStringRangeCheck(feat, v);
     _setRefValueCJ((FeatureImpl) feat, v);
   }
