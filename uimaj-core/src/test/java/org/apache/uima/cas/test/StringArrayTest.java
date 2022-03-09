@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.test;
 
+import static org.apache.uima.cas.TypeSystem.FEATURE_SEPARATOR;
+import static org.apache.uima.cas.test.CASTestSetup.LEMMA_LIST_FEAT;
+import static org.apache.uima.cas.test.CASTestSetup.TOKEN_TYPE;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.uima.cas.CAS;
@@ -44,13 +48,9 @@ public class StringArrayTest {
   private TypeSystem ts;
 
   @BeforeEach
-  public void setUp() {
-    try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-      this.ts = this.cas.getTypeSystem();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
+  public void setUp() throws Exception {
+    this.cas = CASInitializer.initCas(new CASTestSetup(), null);
+    this.ts = this.cas.getTypeSystem();
   }
 
   @AfterEach
@@ -64,66 +64,44 @@ public class StringArrayTest {
     StringArrayFS array = this.cas.createStringArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
-    boolean exceptionCaught = false;
-    try {
-      array.get(0);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertTrue(exceptionCaught);
-    array = this.cas.createStringArrayFS(3);
-    try {
-      array.set(0, "1");
-      array.set(1, "2");
-      array.set(2, "3");
-    } catch (ArrayIndexOutOfBoundsException e) {
-      assertTrue(false);
-    }
-    String[] stringArray = array.toStringArray();
-    assertTrue(array.size() == stringArray.length);
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class) //
+            .isThrownBy(() -> array.get(0));
+
+    StringArrayFS array2 = this.cas.createStringArrayFS(3);
+    array2.set(0, "1");
+    array2.set(1, "2");
+    array2.set(2, "3");
+
+    String[] stringArray = array2.toStringArray();
+    assertTrue(array2.size() == stringArray.length);
     for (int i = 0; i < stringArray.length; i++) {
-      assertTrue(stringArray[i].equals(array.get(i)));
+      assertTrue(stringArray[i].equals(array2.get(i)));
     }
-    exceptionCaught = false;
-    try {
-      array.set(-1, "1");
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertTrue(exceptionCaught);
-    exceptionCaught = false;
-    try {
-      array.set(4, "1");
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertTrue(exceptionCaught);
-    assertTrue(array.get(0).equals("1"));
-    assertTrue(array.get(1).equals("2"));
-    assertTrue(array.get(2).equals("3"));
-    exceptionCaught = false;
-    try {
-      array.get(-1);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertTrue(exceptionCaught);
-    exceptionCaught = false;
-    try {
-      array.get(4);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertTrue(exceptionCaught);
-    // Check that we can't create arrays smaller than 0.
-    exceptionCaught = false;
-    try {
-      array = this.cas.createStringArrayFS(-1);
-    } catch (CASRuntimeException e) {
-      exceptionCaught = true;
-      assertTrue(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE));
-    }
-    assertTrue(exceptionCaught);
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class) //
+            .as("Cannot set value at index < 0") //
+            .isThrownBy(() -> array2.set(-1, "1"));
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class) //
+            .as("Cannot set value at index beyond end of the array") //
+            .isThrownBy(() -> array2.set(4, "1"));
+
+    assertTrue(array2.get(0).equals("1"));
+    assertTrue(array2.get(1).equals("2"));
+    assertTrue(array2.get(2).equals("3"));
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class) //
+            .as("Cannot get value at index < 0") //
+            .isThrownBy(() -> array2.get(-1));
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class) //
+            .as("Cannot get value at index beyond end of the array") //
+            .isThrownBy(() -> array2.get(4));
+
+    assertThatExceptionOfType(CASRuntimeException.class) //
+            .as("We can't create arrays smaller than 0")
+            .isThrownBy(() -> this.cas.createStringArrayFS(-1)) //
+            .extracting(CASRuntimeException::getMessageKey) //
+            .isEqualTo(CASRuntimeException.ILLEGAL_ARRAY_SIZE);
   }
 
   @Test
@@ -160,8 +138,7 @@ public class StringArrayTest {
 
   @Test
   public void testStringArrayValue() {
-    String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-            + CASTestSetup.LEMMA_LIST_FEAT;
+    String lemmaListName = TOKEN_TYPE + FEATURE_SEPARATOR + LEMMA_LIST_FEAT;
     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
     String[] javaArray = { "1", "2", "3" };
@@ -178,8 +155,7 @@ public class StringArrayTest {
 
   @Test
   public void testStringArrayNullValue() throws Exception {
-    String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-            + CASTestSetup.LEMMA_LIST_FEAT;
+    String lemmaListName = TOKEN_TYPE + FEATURE_SEPARATOR + LEMMA_LIST_FEAT;
     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
     StringArrayFS casArray = this.cas.createStringArrayFS(3);
@@ -196,5 +172,4 @@ public class StringArrayTest {
     LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
     assertTrue(llc.ll_getStringArrayValue(llc.ll_getFSRef(casArray), 1) == null);
   }
-
 }

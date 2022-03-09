@@ -585,9 +585,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setStringValue(Feature feat, String v) {
-    // if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat); // done by _setRefValueCJ
-    // if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v); // verifies
-    // feat can take a string
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) {
+      featureValueValidation(feat, v); // verifies feat can take a string
+    }
     subStringRangeCheck(feat, v);
     _setRefValueCJ((FeatureImpl) feat, v);
   }
@@ -618,10 +618,12 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public void setFeatureValue(Feature feat, FeatureStructure v) {
     FeatureImpl fi = (FeatureImpl) feat;
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
-    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION)
+    }
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) {
       featureValueValidation(feat, v);
+    }
     // no need to check for index corruption because fs refs can't be index keys
     _setRefValueCommon(fi, _maybeGetBaseForPearFs((TOP) v));
     _casView.maybeLogUpdate(this, fi);
@@ -710,8 +712,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     CASImpl.setFeatureValueFromString(this, (FeatureImpl) feat, s);
   }
 
@@ -731,8 +734,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
               "boolean, byte, short, int, or float", fi.getRange().getName());
 
     }
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(fi);
+    }
     _casView.setWithCheckAndJournal((TOP) this, fi.getCode(), () -> _setIntValueCommon(fi, v));
 
   }
@@ -751,8 +755,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(),
               "long or double", fi.getRange().getName());
     }
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(fi);
+    }
     _casView.setLongValue(this, fi, v);
   }
 
@@ -787,8 +792,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int",
               fi.getRange().getName());
     }
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(fi);
+    }
     _casView.setWithCheckAndJournal((TOP) this, fi.getCode(), () -> _setRefValueCommon(fi, v));
 
   }
@@ -818,8 +824,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 //@formatter:on
   @Override
   public boolean getBooleanValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     checkFeatRange(feat, "Boolean");
     return _getBooleanValueNc((FeatureImpl) feat);
   }
@@ -863,8 +870,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public int getIntValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     checkFeatRange(feat, "Integer");
     return _getIntValueCommon((FeatureImpl) feat);
   }
@@ -879,8 +887,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public long getLongValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     checkFeatRange(feat, "Long");
     return _getLongValueNc((FeatureImpl) feat);
   }
@@ -901,8 +910,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public float getFloatValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     checkFeatRange(feat, "Float");
     return _getFloatValueNc(((FeatureImpl) feat).getAdjustedOffset());
   }
@@ -917,8 +927,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public double getDoubleValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     checkFeatRange(feat, "Double");
     return _getDoubleValueNc((FeatureImpl) feat);
   }
@@ -933,8 +944,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public String getStringValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     // checkFeatRange(feat, "String");
     return _getStringValueNc((FeatureImpl) feat);
   }
@@ -949,8 +961,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public TOP getFeatureValue(Feature feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) {
       _Check_feature_defined_for_this_type(feat);
+    }
     _check_feature_range_is_FeatureStructure(feat, this);
     return _getFeatureValueNc((FeatureImpl) feat);
   }
@@ -1049,8 +1062,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (obj instanceof FeatureStructureImplC) {
       FeatureStructureImplC c2 = (FeatureStructureImplC) obj;
 
-      if (c2._id != this._id)
+      if (c2._id != this._id) {
         return false;
+      }
 
       return (_casView == null && c2._casView == null) || (_casView != null && c2._casView != null
               && (_casView == c2._casView || _casView.getBaseCAS() == c2._casView.getBaseCAS()));
