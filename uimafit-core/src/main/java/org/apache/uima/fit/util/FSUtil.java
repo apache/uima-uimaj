@@ -109,6 +109,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, boolean... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, boolean... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setBooleanValue(feat, aValue[0]);
@@ -121,6 +125,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, byte... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, byte... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setByteValue(feat, aValue[0]);
@@ -133,6 +141,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, double... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, double... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setDoubleValue(feat, aValue[0]);
@@ -145,6 +157,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, float... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, float... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setFloatValue(feat, aValue[0]);
@@ -159,6 +175,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, int... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, int... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setIntValue(feat, aValue[0]);
@@ -173,6 +193,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, long... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, long... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setLongValue(feat, aValue[0]);
@@ -185,6 +209,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, short... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, short... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setShortValue(feat, aValue[0]);
@@ -197,6 +225,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, String... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, String... aValue) {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setStringValue(feat, aValue[0]);
@@ -211,6 +243,10 @@ public class FSUtil {
 
   public static void setFeature(FeatureStructure aFS, String aFeature, FeatureStructure... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  public static void setFeature(FeatureStructure aFS, Feature feat, FeatureStructure... aValue) {
     if (feat.getRange().isArray()) {
       aFS.setFeatureValue(feat, createArrayFS(aFS.getCAS(), aValue));
     } else if (aValue == null) {
@@ -225,9 +261,14 @@ public class FSUtil {
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings("rawtypes")
   public static void setFeature(FeatureStructure aFS, String aFeature, Collection aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
+    setFeature(aFS, feat, aValue);
+  }
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public static void setFeature(FeatureStructure aFS, Feature feat, Collection aValue) {
     if (aValue == null) {
       aFS.setFeatureValue(feat, null);
     } else if (feat.getRange().isArray()) {
