@@ -40,7 +40,7 @@
   <url>${uimaWebsiteUrl}</url>
 
   <properties>
-    <jiraVersion>3.2.0SDK</jiraVersion>   
+    <jiraVersion>3.3.0SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
