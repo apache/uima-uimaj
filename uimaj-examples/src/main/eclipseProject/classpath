@@ -18,47 +18,47 @@
    under the License.    
 -->
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima-core.jar">
-		<attributes>
-		  <!-- Strings file:/C:/Program Files/apache-uima are replaced
-		       by the adjustExamplePaths script with the UIMA install location -->
-			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
-		</attributes>
-	</classpathentry>		
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima-document-annotation.jar">
-		<attributes>
-			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
-		</attributes>
-	</classpathentry>		
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima-cpe.jar">
-		<attributes>
-			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
-		</attributes>
-	</classpathentry>		
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima-tools.jar">
-			<attributes>
-			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
-		</attributes>
-	</classpathentry>	
+  <classpathentry kind="src" path="src"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/uima-core.jar">
+    <attributes>
+      <!-- Strings file:/C:/Program Files/apache-uima are replaced
+           by the adjustExamplePaths script with the UIMA install location -->
+      <attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="UIMA_HOME/lib/uima-document-annotation.jar">
+    <attributes>
+      <attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="UIMA_HOME/lib/uima-cpe.jar">
+    <attributes>
+      <attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="UIMA_HOME/lib/uima-tools.jar">
+      <attributes>
+      <attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="UIMA_HOME/lib/uimaj-json.jar">
     <attributes>
       <attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
     </attributes>
-  </classpathentry>     
-			
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/jVinci.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/jackson-core-2.9.2.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/uimaj-v3migration-jcas.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/procyon-compilertools-0.5.32.jar"/>
+  </classpathentry>
+
+  <classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/jVinci.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/jackson-core-2.13.1.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/uimaj-v3migration-jcas.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/procyon-compilertools-0.5.32.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/procyon-core-0.5.32.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/javaparser-core-3.2.2.jar"/>
-  <classpathentry kind="var" path="UIMA_HOME/lib/slf4j-api-1.7.25.jar"/>
-  <classpathentry kind="var" path="UIMA_HOME/lib/slf4j-jdk14-1.7.25.jar"/>
-	<classpathentry kind="lib" path="resources"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/slf4j-api-1.7.36.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/slf4j-jdk14-1.7.36.jar"/>
+  <classpathentry kind="lib" path="resources"/>
+  <classpathentry kind="output" path="bin"/>
 </classpath>
 
 
