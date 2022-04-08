@@ -526,10 +526,12 @@ public class CasCreationUtilsTest {
       cas.createFS(subtypeHandle);
       FSIterator iter = cas.getAnnotationIndex().iterator();
       while (iter.isValid()) {
-        if (iter.get().getType() == subtypeHandle) // expected
+        if (iter.get().getType() == subtypeHandle) {
           break;
-        if (iter.get().getType() == supertypeHandle) // unexpected
+        }
+        if (iter.get().getType() == supertypeHandle) {
           fail();
+        }
         iter.moveToNext();
       }
 
@@ -669,23 +671,8 @@ public class CasCreationUtilsTest {
               + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
               + pathSep
               + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
-
-      File descFile2 = JUnitExtension
-              .getFile("CasCreationUtilsTest/AggregateTaeWithSoapDelegate.xml");
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(descFile2));
-      Map mergedTypes2 = new HashMap();
-      Map failedRemotes = new HashMap();
-      ProcessingResourceMetaData mergedMetaData2 = CasCreationUtils
-              .mergeDelegateAnalysisEngineMetaData(desc2, resMgr, mergedTypes2, failedRemotes);
-      assertTrue(failedRemotes.containsKey("/RemoteDelegate"));
-      // ((Exception)failedRemotes.get("/RemoteDelegate")).printStackTrace();
-      assertTrue(mergedMetaData2.getTypeSystem().getTypes().length > 0);
-
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-
   }
-
 }

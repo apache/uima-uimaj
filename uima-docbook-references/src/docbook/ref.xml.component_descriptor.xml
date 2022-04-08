@@ -2420,15 +2420,14 @@ if (uimaContext != null) {
     <para>The UIMA SDK is extensible to support different types of remote services. In future
       versions, there may be different variations of service client descriptors that cater
       to different types of services. For now, the only type of service client descriptor is
-      the <literal>uriSpecifier</literal>, which supports the SOAP and Vinci
-      protocols.</para>
+      the <literal>uriSpecifier</literal>, which supports the Vinci protocol.</para>
     
     
     <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
 <uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
   <resourceType>AnalysisEngine | CasConsumer </resourceType>
   <uri>[URI]</uri> 
-  <protocol>SOAP | SOAPwithAttachments | Vinci</protocol> 
+  <protocol>Vinci</protocol> 
   <timeout>[Integer]</timeout>
   <parameters>
     <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
@@ -2446,9 +2445,8 @@ if (uimaContext != null) {
       that in the case of Vinci, this will be the service name, which is looked up in the Vinci
       Naming Service.)</para>
     
-    <para>The <literal>protocol</literal> element may be set to SOAP,
-      SOAPwithAttachments, or Vinci; other protocols may be added later. These specify the
-      particular data transport format that will be used.</para>
+    <para>The <literal>protocol</literal> element may be set to Vinci; other protocols may be added
+      later. These specify the particular data transport format that will be used.</para>
     
     <para>The <literal>timeout</literal> element is optional. If present, it specifies
       the number of milliseconds to wait for a request to be processed before an exception is

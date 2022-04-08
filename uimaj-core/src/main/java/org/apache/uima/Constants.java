@@ -24,13 +24,21 @@ package org.apache.uima;
 public abstract class Constants {
   /**
    * A constant indicating the name of the "SOAP" protocol for service communication.
+   * 
+   * @deprecated SOAP protocol is no longer supported since UIMA v3.3.0. Constant to be removed in
+   *             UIMAv4.
    */
+  @Deprecated
   public static final String PROTOCOL_SOAP = "SOAP";
 
   /**
    * A constant indicating the name of the "SOAP with Attachments" protocol for service
    * communication.
+   * 
+   * @deprecated SOAP protocol is no longer supported since UIMA v3.3.0. Constant to be removed in
+   *             UIMAv4.
    */
+  @Deprecated
   public static final String PROTOCOL_SOAP_WITH_ATTACHMENTS = "SOAPwithAttachments";
 
   /**

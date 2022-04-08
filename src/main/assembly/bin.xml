@@ -104,18 +104,6 @@ under the License.
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.apache.uima:uimaj-adapter-soap</include>
-      </includes>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-      <outputFileNameMapping>uima-adapter-soap.jar</outputFileNameMapping>
-      <outputDirectory>lib</outputDirectory>
-      <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
-    </dependencySet>
-    <dependencySet>
-      <includes>
         <include>org.apache.uima:uimaj-adapter-vinci</include>
       </includes>
       <unpack>false</unpack>

@@ -32,9 +32,6 @@ if "%JAVA_HOME%"=="" (set UIMA_JAR_CALL=jar) else (set "UIMA_JAR_CALL=%JAVA_HOME
 cd jVinci\src\main\java
 "%UIMA_JAR_CALL%" -uvf "%UIMA_HOME%\lib\jVinci.jar" *
 
-cd ..\..\..\..\uimaj-adapter-soap\src\main\java
-"%UIMA_JAR_CALL%" -uvf "%UIMA_HOME%\lib\uima-adapter-soap.jar" *
-
 cd ..\..\..\..\uimaj-adapter-vinci\src\main\java
 "%UIMA_JAR_CALL%" -uvf "%UIMA_HOME%\lib\uima-adapter-vinci.jar" *
 

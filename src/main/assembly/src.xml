@@ -267,15 +267,6 @@ under the License.
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
-      <directory>../uimaj-adapter-soap</directory>
-      <outputDirectory>/uimaj-adapter-soap</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
       <directory>../uimaj-adapter-vinci</directory>
       <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
       <excludes>

@@ -17,51 +17,35 @@
  * under the License.
  */
 
-package org.apache.uima.analysis_engine.service.impl;
-
-import java.util.Map;
+package org.apache.uima.analysis_engine.impl;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
-import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
-import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
-import org.apache.uima.analysis_engine.impl.EmptyCasIterator;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.resource.ResourceConfigurationException;
-import org.apache.uima.resource.ResourceServiceException;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UimaTimer;
 
 /**
- * Base class for analysis engine service adapters. Implements the {@link AnalysisEngine} interface
- * by communicating with an Analysis Engine service. This insulates the application from having to
- * know whether it is calling a local AnalysisEngine or a remote service.
- * <p>
- * Subclasses must provide an implementation of the {@link #initialize(ResourceSpecifier,Map)}
- * method, which must create an {@link AnalysisEngineServiceStub} object that can communicate with
- * the remote service. The stub must be passed to the {@link #setStub(AnalysisEngineServiceStub)}
- * method of this class.
+ * Base class for analysis engine processor adapters. Used for embedded (functional) processors.
  */
-public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBase
+public abstract class AnalysisEngineProcessorAdapter extends AnalysisEngineImplBase
         implements TextAnalysisEngine, CasConsumer {
 
   /**
    * current class
    */
-  private static final Class<AnalysisEngineServiceAdapter> CLASS_NAME = AnalysisEngineServiceAdapter.class;
+  private static final Class<AnalysisEngineProcessorAdapter> CLASS_NAME = AnalysisEngineProcessorAdapter.class;
 
   /**
-   * The stub that communicates with the remote service.
+   * The stub that talks to the actual implementation.
    */
-  private AnalysisEngineServiceStub mStub;
+  private AnalysisEngineProcessorStub mStub;
 
   /**
    * The resource metadata, cached so that service does not have to be called each time metadata is
@@ -75,13 +59,13 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
   private UimaTimer mTimer = UIMAFramework.newTimer();
 
   /**
-   * Sets the stub to be used to communicate with the remote service. Subclasses must call this from
-   * their <code>initialize</code> method.
+   * Sets the stub to be used to actual implementation. Subclasses must call this from their
+   * <code>initialize</code> method.
    * 
    * @param aStub
    *          the stub for the remote service
    */
-  protected void setStub(AnalysisEngineServiceStub aStub) {
+  protected void setStub(AnalysisEngineProcessorStub aStub) {
     mStub = aStub;
   }
 
@@ -90,7 +74,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    * 
    * @return the stub for the remote service
    */
-  protected AnalysisEngineServiceStub getStub() {
+  protected AnalysisEngineProcessorStub getStub() {
     return mStub;
   }
 
@@ -99,14 +83,8 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   @Override
   public ResourceMetaData getMetaData() {
-    try {
-      if (mCachedMetaData == null && getStub() != null) {
-        mCachedMetaData = getStub().callGetMetaData();
-      }
-      return mCachedMetaData;
-    } catch (ResourceServiceException e) {
-      throw new UIMARuntimeException(e);
-    }
+
+    return getStub() != null ? getStub().getMetaData() : null;
   }
 
   /**
@@ -128,7 +106,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE", getResourceName());
     try {
       // invoke service
-      getStub().callProcess(aCAS);
+      getStub().process(aCAS);
 
       // log end of event
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "process",
@@ -137,10 +115,9 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
       // we don't support CasMultiplier services yet, so this always returns
       // an empty iterator
       return new EmptyCasIterator();
+    } catch (AnalysisEngineProcessException e) {
+      throw e;
     } catch (Exception e) {
-      // log exception
-      UIMAFramework.getLogger(CLASS_NAME).log(Level.SEVERE, "", e);
-      // rethrow as AnalysisEngineProcessException
       throw new AnalysisEngineProcessException(e);
     } finally {
       mTimer.stopIt();
@@ -198,20 +175,12 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
 
   @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
-    try {
-      getStub().callBatchProcessComplete();
-    } catch (ResourceServiceException e) {
-      throw new AnalysisEngineProcessException(e);
-    }
+    getStub().batchProcessComplete();
   }
 
   @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    try {
-      getStub().callCollectionProcessComplete();
-    } catch (ResourceServiceException e) {
-      throw new AnalysisEngineProcessException(e);
-    }
+    getStub().collectionProcessComplete();
   }
 
   /**

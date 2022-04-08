@@ -16,45 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.analysis_engine;
+package org.apache.uima.analysis_engine.impl;
 
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.resource.ResourceServiceException;
-import org.apache.uima.resource.ResourceServiceStub;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
  * A stub that calls a remote AnalysisEngine service.
  */
-public interface AnalysisEngineServiceStub extends ResourceServiceStub {
+public interface AnalysisEngineProcessorStub {
+  /**
+   * Performs service call to retrieve resource meta data.
+   * 
+   * @return metadata for the Resource
+   */
+  ResourceMetaData getMetaData();
+
   /**
    * Performs service call to process an entity.
    * 
    * @param aCAS
    *          the CAS to process
-   * @throws ResourceServiceException
-   *           tbd
    */
-  void callProcess(CAS aCAS) throws ResourceServiceException;
+  void process(CAS aCAS) throws AnalysisEngineProcessException;
 
   /**
-   * Performs service call to inform the AnalysisEngine that the processing of a batch has been
-   * completed.
-   * 
-   * @throws ResourceServiceException
-   *           tbd
+   * Notify the stub that all items in the batch have been processed.
    */
-  default void callBatchProcessComplete() throws ResourceServiceException {
+  default void batchProcessComplete() throws AnalysisEngineProcessException {
     // No action by default.
   }
 
   /**
-   * Performs service call to inform the AnalysisEngine that the processing of a collection has been
-   * completed.
-   * 
-   * @throws ResourceServiceException
-   *           tbd
+   * Notify the stub that all items in the collection have been processed.
    */
-  default void callCollectionProcessComplete() throws ResourceServiceException {
+  default void collectionProcessComplete() throws AnalysisEngineProcessException {
     // No action by default.
+  }
+
+  /**
+   * Called when this stub is no longer needed, so resources can be cleaned up.
+   */
+  default void destroy() {
+    // No action by default
   }
 }

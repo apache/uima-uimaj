@@ -51,7 +51,6 @@
 		     duplicate="preserve"
 	  	   >
 	  	<fileset dir="${srcBaseDir}/jVinci/src/main/java" excludes="**/.svn*" erroronmissingdir="false"/>
-	  	<fileset dir="${srcBaseDir}/uimaj-adapter-soap/src/main/java" excludes="**/.svn*" erroronmissingdir="false"/>
 	  	<fileset dir="${srcBaseDir}/uimaj-adapter-vinci/src/main/java" excludes="**/.svn*" erroronmissingdir="false"/>
 	  	<fileset dir="${srcBaseDir}/uimaj-as-activemq/src/main/java" excludes="**/.svn*" erroronmissingdir="false"/>
 	  	<fileset dir="${srcBaseDir}/uimaj-as-camel/src/main/java" excludes="**/.svn*" erroronmissingdir="false"/>

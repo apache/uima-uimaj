@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_component;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
