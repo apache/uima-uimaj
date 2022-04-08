@@ -30,10 +30,8 @@ import java.io.Serializable;
  * Serialize and Deserialize arbitrary objects to/from byte arrays, using standard Java object
  * serialization/deserialization support.
  * 
- * Used in the Vinci and Soap transports to serialize/deserialize CASSerializer objects or
- * CASCompleteSerializer objects (includes type system and index definitions) or (for SOAP)
- * arbitrary objects
- * 
+ * Used in the Vinci transport to serialize/deserialize CASSerializer objects or
+ * CASCompleteSerializer objects (includes type system and index definitions).
  * 
  * This class is abstract only to prevent instantiation. All the methods are static.
  */

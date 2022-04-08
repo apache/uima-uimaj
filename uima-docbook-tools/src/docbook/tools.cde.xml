@@ -362,13 +362,12 @@ under the License.
     </screenshot></para>
       
       <para>To define a remote service you specify the Service Kind, Protocol Service Type,
-        URI and Key. You can also specify a Timeout in milliseconds, used by the SOAP and
-        JMS services,
+        URI and Key. You can also specify a Timeout in milliseconds, used by the JMS services,
         and a VNS Host and Port used by the Vinci Service. 
         The JMS service has additional timeouts and other parameters you may specify. 
         Just like when one adds an engine from
         the file system, you have the option of adding the engine to the end of the flow. The
-        Component Descriptor Editor currently only supports Vinci and SOAP services using
+        Component Descriptor Editor currently only supports Vinci services using
         this dialog.</para>
       
       <para>Remote engines are added to the descriptor using the

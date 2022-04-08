@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.uima.Constants;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.resource.PearSpecifier;
@@ -207,8 +208,9 @@ public class AggregateSection extends AbstractSection {
       for (int i = 0; i < priorOrderedKeys.length; i++) {
         if (keys.contains(priorOrderedKeys[i])) {
           Object o = delegates.get(priorOrderedKeys[i]);
-          if (o instanceof Import)
+          if (o instanceof Import) {
             addFile(o, priorOrderedKeys[i]);
+          }
           keys.remove(priorOrderedKeys[i]);
         }
       }
@@ -218,8 +220,9 @@ public class AggregateSection extends AbstractSection {
       while (itKeys.hasNext()) {
         String key = (String) itKeys.next();
         Object o = delegates.get(key);
-        if (o instanceof Import)
+        if (o instanceof Import) {
           addFile(o, key);
+        }
       }
       packTable(filesTable);
     }
@@ -233,22 +236,20 @@ public class AggregateSection extends AbstractSection {
    */
   @Override
   public void handleEvent(Event event) {
-    if (event.widget == addButton)
+    if (event.widget == addButton) {
       handleAdd();
-    else if (event.widget == removeButton
-            || (event.type == SWT.KeyUp && event.character == SWT.DEL))
+    } else if (event.widget == removeButton
+            || (event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove();
-    else if (event.widget == addToFlowButton)
+    } else if (event.widget == addToFlowButton) {
       handleAddToFlow();
-    else if (event.widget == removeFromFlowButton)
+    } else if (event.widget == removeFromFlowButton) {
       handleRemoveFromFlow();
-    else if (event.widget == addRemoteButton)
+    } else if (event.widget == addRemoteButton) {
       handleAddRemote();
-    else if (event.widget == findAnalysisEngineButton)
+    } else if (event.widget == findAnalysisEngineButton) {
       handleFindAnalysisEngine();
-
-    // actions on table
-    else if (event.widget == filesTable) {
+    } else if (event.widget == filesTable) {
       if (event.type == SWT.Selection) {
         // if no delegate is selected disable edit and remove
         boolean bEnableButtons = (filesTable.getSelectionCount() > 0);
@@ -361,8 +362,9 @@ public class AggregateSection extends AbstractSection {
 
     FlowNodes flow = new FlowNodes(getAnalysisEngineMetaData().getFlowConstraints());
     String[] savedFlowNodes = flow.getFlow();
-    if (null == savedFlowNodes)
+    if (null == savedFlowNodes) {
       savedFlowNodes = stringArray0;
+    }
 
     // item may be in the flow 0, 1 or more times
 
@@ -456,21 +458,27 @@ public class AggregateSection extends AbstractSection {
   }
 
   /** The Constant REMOTE_TEMPLATE. */
-  private final static String REMOTE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-          + "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
-          + "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
-          "  <uri>{1}</uri> \n" + // sURI
-          "  <protocol>{2}</protocol>\n" + // SOAP or Vinci
-          "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
-          "\n</uriSpecifier>";
+  private final static String REMOTE_TEMPLATE = // @formatter:off
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + //
+      "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n" + //
+      "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
+      "  <uri>{1}</uri> \n" + // sURI
+      "  <protocol>{2}</protocol>\n" + // e.g. Vinci
+      "  <timeout>{3}</timeout>" + //
+      "  {4}" + // <parameters> for VNS </parameters>
+      "\n</uriSpecifier>"; // @formatter:on
 
   /** The Constant REMOTE_JMS_TEMPLATE. */
-  private final static String REMOTE_JMS_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-          + "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
-          + "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n"
-          + "  <parameters>\n" + "    <parameter name=\"brokerURL\" value=\"{0}\"/>\n"
-          + "    <parameter name=\"endpoint\"  value=\"{1}\"/>\n" + "{2}" + "  </parameters>\n"
-          + "</customResourceSpecifier>";
+  private final static String REMOTE_JMS_TEMPLATE = // @formatter:off
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + //
+      "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n" + //
+      "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n" + //
+      "  <parameters>\n" + //
+      "    <parameter name=\"brokerURL\" value=\"{0}\"/>\n" + //
+      "    <parameter name=\"endpoint\"  value=\"{1}\"/>\n" + //
+      "{2}" + //
+      "  </parameters>\n" + //
+      "</customResourceSpecifier>"; // @formatter:on
 
   /**
    * Handle add remote.
@@ -479,12 +487,14 @@ public class AggregateSection extends AbstractSection {
     String sDescriptorPath = editor.getFile().getParent().getLocation().toString() + '/';
     AddRemoteServiceDialog dialog = new AddRemoteServiceDialog(this, sDescriptorPath);
     dialog.open();
-    if (dialog.getReturnCode() == Window.CANCEL)
+    if (dialog.getReturnCode() == Window.CANCEL) {
       return;
+    }
 
     String sServiceType = dialog.getSelectedServiceTypeName();
-    if (sServiceType != null && !sServiceType.equals("UIMA-AS JMS") && !sServiceType.equals("SOAP")
-            && !sServiceType.equals("Vinci")) {
+    if (sServiceType != null && !sServiceType.equals("UIMA-AS JMS")
+            && !sServiceType.equals(Constants.PROTOCOL_SOAP)
+            && !sServiceType.equals(Constants.PROTOCOL_VINCI)) {
       return;
     }
     String sURI = dialog.getSelectedUri();
@@ -509,8 +519,9 @@ public class AggregateSection extends AbstractSection {
                   new Object[] { dialog.vnsPort });
         }
 
-        if (vnsHostPort.length() > 0)
+        if (vnsHostPort.length() > 0) {
           vnsHostPort = "\n  <parameters>" + vnsHostPort + "  </parameters>";
+        }
 
         printWriter.println(MessageFormat.format(REMOTE_TEMPLATE,
                 new Object[] { dialog.aeOrCc, sURI, sServiceType, dialog.timeout, vnsHostPort }));
@@ -570,8 +581,9 @@ public class AggregateSection extends AbstractSection {
             "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor",
             "Specify a name pattern and/or additional constraints, and then push the Search button",
             delegateComponentStringHeadersLC);
-    if (Window.CANCEL == dialog1.open())
+    if (Window.CANCEL == dialog1.open()) {
       return;
+    }
 
     List matchingDelegateComponentDescriptors = dialog1.getMatchingDelegateComponentDescriptors();
     List matchingDelegateComponentDescriptions = dialog1.getMatchingDelegateComponentDescriptions();
@@ -585,8 +597,9 @@ public class AggregateSection extends AbstractSection {
 
     PickTaeForTypesDialog dialog2 = new PickTaeForTypesDialog(this, editor.getFile().getName(),
             matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
-    if (Window.CANCEL == dialog2.open())
+    if (Window.CANCEL == dialog2.open()) {
       return;
+    }
 
     String[] selectedDelegateComponentDescriptors = dialog2
             .getSelectedDelegateComponentDescriptors();
@@ -679,8 +692,9 @@ public class AggregateSection extends AbstractSection {
 
     // read the content and merge into our model
     XMLizable inputDescription = readImport(imp, fileName, isImportByName);
-    if (null == inputDescription)
+    if (null == inputDescription) {
       return false;
+    }
 
     if (!(inputDescription instanceof AnalysisEngineDescription)
             && !(inputDescription instanceof CasConsumerDescription)
@@ -836,8 +850,9 @@ public class AggregateSection extends AbstractSection {
   private void addFile(Object o, String keyName) {
     Import impItem = (Import) o;
     String fileName = impItem.getLocation();
-    if (null == fileName || (0 == fileName.length()))
+    if (null == fileName || (0 == fileName.length())) {
       fileName = impItem.getName();
+    }
     // create new TableItem
     TableItem item = new TableItem(filesTable, SWT.NONE);
     item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR));

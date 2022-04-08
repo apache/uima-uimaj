@@ -49,7 +49,6 @@
   </classpathentry>     
 			
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-soap.jar"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/jVinci.jar"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/jackson-core-2.9.2.jar"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/uimaj-v3migration-jcas.jar"/>

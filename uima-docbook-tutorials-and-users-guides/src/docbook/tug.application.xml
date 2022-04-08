@@ -1203,15 +1203,11 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       Analysis Engine or CAS Consumer can then be called from a remote machine using various network
       protocols.</para>
     
-    <para>The UIMA SDK provides support for two communications protocols:
+    <para>The UIMA SDK provides support for the following communications protocols:
       
       <itemizedlist spacing="compact">
         <listitem>
-          <para>SOAP, the standard Web Services protocol</para>
-        </listitem>
-        
-        <listitem>
-          <para>Vinci, a lightweight version of SOAP, included as a part of Apache UIMA. </para>
+          <para>Vinci, a lightweight protocol, included as a part of Apache UIMA.</para>
         </listitem>
       </itemizedlist></para>
     
@@ -1220,8 +1216,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       <orderedlist>
         <listitem>
           <para>An Analysis Engine can create a proxy to a remote service; this proxy acts like a local component, but
-            connects to the remote. The proxy has limited error handling and retry capabilities. Both Vinci and SOAP
-            are supported.</para>
+            connects to the remote. The proxy has limited error handling and retry capabilities. The Vinci protocol is supported.</para>
         </listitem>
         
         <listitem>
@@ -1231,148 +1226,6 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             communications protocol. </para>
         </listitem>
       </orderedlist></para>
-    
-    <section id="ugr.tug.application.how_to_deploy_as_soap">
-      <title>Deploying a UIMA Component as a SOAP Service</title>
-      <titleabbrev>Deploying as SOAP Service</titleabbrev>
-      
-      <para>To deploy a UIMA component as a SOAP Web Service, you need to first install the following software
-        components:
-        
-        <itemizedlist spacing="compact">
-          <listitem>
-            <para>Apache Tomcat 5.0 or 5.5 ( <ulink url="http://jakarta.apache.org/tomcat/"/>) </para>
-          </listitem>
-          
-          <listitem>
-            <para>Apache Axis 1.3 or 1.4 (<ulink url="http://ws.apache.org/axis/"/>) </para>
-          </listitem>
-        </itemizedlist></para>
-      
-      <para>Later versions of these components will likely also work, but have not been tested.</para>
-      
-      <para>Next, you need to do the following setup steps:
-        
-        <itemizedlist>
-          <listitem>
-            <para>Set the CATALINA_HOME environment variable to the location where Tomcat is installed.</para>
-          </listitem>
-          
-          <listitem>
-            <para>Copy all of the JAR files from <literal>%UIMA_HOME%/lib</literal> to the
-              <literal>%CATALINA_HOME%/webapps/axis/WEB-INF/lib</literal> in your installation.</para>
-          </listitem>
-          
-          <listitem>
-            <para>Copy your JAR files for the UIMA components that you wish to
-              <literal>%CATALINA_HOME%/webapps/axis/WEB-INF/lib</literal> in your installation.</para>
-          </listitem>
-          
-          <listitem>
-            <para><emphasis role="bold-italic">IMPORTANT</emphasis>: any time you add JAR files to Tomcat (for
-              instance, in the above 2 steps), you must shutdown and restart Tomcat before it
-              <quote>notices</quote> this. So now, please shutdown and restart Tomcat.</para>
-          </listitem>
-          
-          <listitem>
-            <para>All the Java classes for the UIMA Examples are packaged in the
-              <literal>uima-examples.jar</literal> file which is included in the
-              <literal>%UIMA_HOME%/lib</literal> folder.</para>
-          </listitem>
-          
-          <listitem>
-            <para>In addition, if an annotator needs to locate resource files in the classpath, those resources
-              must be available in the Axis classpath, so copy these also to
-              <literal>%CATALINA_HOME%/webapps/axis/WEB-INF/classes</literal> .</para>
-            
-            <para>As an example, if you are deploying the GovernmentTitleRecognizer (found in
-              <literal>examples/descriptors/analysis_engine/
-              GovernmentOfficialRecognizer_RegEx_TAE</literal>) as a SOAP service, you need to copy the file
-              <literal>examples/resources/GovernmentTitlePatterns.dat</literal> into
-              <literal>.../WEB-INF/classes</literal>. </para>
-          </listitem>
-        </itemizedlist></para>
-      
-      <para>Test your installation of Tomcat and Axis by starting Tomcat and going to
-        <literal>http://localhost:8080/axis/happyaxis.jsp</literal> in your browser. Check to be sure that
-        this reports that all of the required Axis libraries are present. One common missing file may be
-        activation.jar, which you can get from java.sun.com.</para>
-      
-      <para>After completing these setup instructions, you can deploy Analysis Engines or CAS Consumers as SOAP web
-        services by using the <literal>deploytool</literal> utility, with is located in the
-        <literal>/bin</literal> directory of the UIMA SDK. <literal>deploytool</literal> is a command line
-        program utility that takes as an argument a web services deployment descriptors (WSDD file); example WSDD
-        files are provided in the <literal>examples/deploy/soap</literal> directory of the UIMA SDK. Deployment
-        Descriptors have been provided for deploying and undeploying some of the example Analysis Engines that come
-        with the SDK.</para>
-      
-      <para>As an example, the WSDD file for deploying the example Person Title annotator looks like this (important
-        parts are in bold italics):
-        
-        
-        <programlisting>&lt;deployment name="<emphasis role="bold-italic">PersonTitleAnnotator</emphasis>" 
-            xmlns="http://xml.apache.org/axis/wsdd/" 
-            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"&gt;
-
-  &lt;service name="<emphasis role="bold-italic">urn:PersonTitleAnnotator</emphasis>" provider="java:RPC"&gt;
-
-    &lt;parameter name="scope" value="Request"/&gt;
-
-    &lt;parameter name="className" 
-      value="org.apache.uima.reference_impl.analysis_engine
-                .service.soap.AxisAnalysisEngineService_impl"/&gt;
-
-    &lt;parameter name="allowedMethods" value="getMetaData process"/&gt;
-    &lt;parameter name="allowedRoles" value="*"/&gt;
-    &lt;parameter name="resourceSpecifierPath" 
-      value="<emphasis role="bold-italic">C:/Program Files/apache/uima/examples/
-           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis>"/&gt;
-
-    &lt;parameter name="numInstances" value="3"/&gt;
-
-    &lt;!-- Type Mappings omitted from this document; 
-          you will not need to edit them. --&gt;
-
-    &lt;typeMapping .../&gt;
-    &lt;typeMapping .../&gt;
-    &lt;typeMapping .../&gt;
-
-  &lt;/service&gt;
-
-&lt;/deployment&gt;</programlisting></para>
-      
-      <para>To modify this WSDD file to deploy your own Analysis Engine or CAS Consumer, just replace the areas
-        indicated in bold italics (deployment name, service name, and resource specifier path) with values
-        appropriate for your component.</para>
-      
-      <para>The <literal>numInstances</literal> parameter specifies how many instances of your Analysis Engine
-        or CAS Consumer will be created. This allows your service to support multiple clients concurrently. When a
-        new request comes in, if all of the instances are busy, the new request will wait until an instance becomes
-        available.</para>
-      
-      <para>To deploy the Person Title annotator service, issue the following command:
-        
-        
-        <programlisting>C:/Program Files/apache/uima/bin&gt;deploytool 
-../examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
-      
-      <para>Test if the deployment was successful by starting up a browser, pointing it to your Tomcat
-        installation's <quote>axis</quote> webpage (e.g., <literal>http://localhost:8080/axis</literal>)
-        and clicking on the List link. This should bring up a page which shows the deployed services, where you should
-        see the service you just deployed.</para>
-      
-      <para>The other components can be deployed by replacing
-        <literal>Deploy_PersonTitleAnnotator.wsdd</literal> with one of the other Deploy descriptors in the
-        deploy directory. The deploytool utility can also undeploy services when passed one of the Undeploy
-        descriptors.</para> <note>
-      <para>The <literal>deploytool</literal> shell script assumes that the web services are to be installed at
-        <literal>http://localhost:8080/axis</literal>. If this is not the case, you will need to update the shell
-        script appropriately.</para> </note>
-      
-      <para>Once you have deployed your component as a web service, you may call it from a remote machine. See <xref
-          linkend="ugr.tug.application.how_to_call_a_uima_service"/> for instructions.</para>
-      
-    </section>
     
     <section id="ugr.tug.application.how_to_deploy_a_vinci_service">
       <title>Deploying a UIMA Component as a Vinci Service</title>
@@ -1461,58 +1314,9 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       <para>To do this, you use a <emphasis>service client descriptor</emphasis> in place of the usual Analysis
         Engine or CAS Consumer Descriptor. A service client descriptor is a simple XML file that indicates the
         location of the remote service and a few parameters. Example service client descriptors are provided in the
-        UIMA SDK under the directories <literal>examples/descriptors/soapService</literal> and
-        <literal>examples/descriptors/vinciService</literal>. The contents of these descriptors are
-        explained below.</para>
+        UIMA SDK under the directories <literal>examples/descriptors/vinciService</literal>. The 
+        contents of these descriptors are explained below.</para>
       
-      <para>Also, before you can call a SOAP service, you need to have the necessary Axis JAR files in your classpath.
-        If you use any of the scripts in the <literal>bin</literal> directory of the UIMA installation to launch your
-        application, such as documentAnalyzer, these JARs are added to the classpath, automatically, using the
-        <literal>CATALINA_HOME</literal> environment variable. The required files are the following (all part
-        of the Apache Axis download)
-        
-        <itemizedlist spacing="compact">
-          <listitem>
-            <para>activation.jar</para>
-          </listitem>
-          <listitem>
-            <para>axis.jar</para>
-          </listitem>
-          <listitem>
-            <para>commons-discovery.jar</para>
-          </listitem>
-          <listitem>
-            <para>commons-logging.jar</para>
-          </listitem>
-          <listitem>
-            <para>jaxrpc.jar</para>
-          </listitem>
-          <listitem>
-            <para>saaj.jar</para>
-          </listitem>
-        </itemizedlist></para>
-      
-      <section id="ugr.tug.application.soap_service_client_descriptor">
-        <title>SOAP Service Client Descriptor</title>
-        
-        <para>The descriptor used to call the PersonTitleAnnotator SOAP service from the example above is:
-          
-          
-          <programlisting><![CDATA[<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
-   <resourceType>AnalysisEngine</resourceType>
-   <uri>http://localhost:8080/axis/services/urn:PersonTitleAnnotator</uri>
-    <protocol>SOAP</protocol>
-    <timeout>60000</timeout>           
-</uriSpecifier>]]></programlisting></para>
-        
-        <para>The &lt;resourceType&gt; element must contain either AnalysisEngine or CasConsumer. This
-          specifies what type of component you expect to be at the specified service address.</para>
-        
-        <para>The &lt;uri&gt; element describes which service to call. It specifies the host (localhost, in this
-          example) and the service name (urn:PersonTitleAnnotator), which must match the name specified in the
-          deployment descriptor used to deploy the service.</para>
-        
-      </section>
       <section id="ugr.tug.application.vinci_service_client_descriptor">
         <title>Vinci Service Client Descriptor</title>
         
@@ -1739,7 +1543,7 @@ Exception: Connection refused: connect</programlisting>
       <para>There are two types of timeout settings in UIMA, the <emphasis>client timeout</emphasis> and the
         <emphasis>server socket timeout</emphasis>. The client timeout is usually the most important, it
         specifies how long that client is willing to wait for the service to process each CAS. The client timeout can be
-        specified for both Vinci and SOAP. The server socket timeout (Vinci only) specifies how long the service
+        specified for Vinci. The server socket timeout (Vinci only) specifies how long the service
         holds the connection open between calls from the client. After this amount of time, the server will presume
         the client may have gone away - and it <quote>cleans up</quote>, releasing any resources it is holding. The
         next call to process on the service will cause the client to re-establish its connection with the service

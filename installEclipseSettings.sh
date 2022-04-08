@@ -35,7 +35,6 @@ installPrefs jVinci
 installPrefs uima-docbook-tutorials-and-users-guides
 installPrefs PearPackagingMavenPlugin
 installPrefs uimaj-test-util
-installPrefs uimaj-adapter-soap
 installPrefs uimaj-eclipse-feature-runtime
 installPrefs uima-docbook-references
 installPrefs uimaj-ep-cas-editor

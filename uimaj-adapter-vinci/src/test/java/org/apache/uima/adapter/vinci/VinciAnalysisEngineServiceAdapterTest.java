@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.adapter.vinci;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,10 +27,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.URISpecifier;
 import org.junit.jupiter.api.Test;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class VinciAnalysisEngineServiceAdapterTest.
- */
 public class VinciAnalysisEngineServiceAdapterTest {
 
   /**
@@ -52,7 +47,7 @@ public class VinciAnalysisEngineServiceAdapterTest {
     uriSpec.setUri(NON_EXISTENT_URI);
 
     // test incorrect protocol
-    uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+    uriSpec.setProtocol("BAD_PROTOCOL");
     VinciAnalysisEngineServiceAdapter adapter = new VinciAnalysisEngineServiceAdapter();
     boolean result = adapter.initialize(uriSpec, null);
     assertThat(result).isFalse();

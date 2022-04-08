@@ -217,7 +217,7 @@ public class BinaryCasSerDes {
   // *********************************
 
   /**
-   * Deserializer for Java-object serialized instance of CASSerializer Used by Soap
+   * Deserializer for Java-object serialized instance of CASSerializer.
    * 
    * @param ser
    *          - The instance to convert back to a CAS
