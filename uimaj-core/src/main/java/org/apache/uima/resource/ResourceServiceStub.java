@@ -16,15 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.resource;
 
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
  * A stub that calls a remote AnalysisEngine service.
- * 
- * 
  */
 public interface ResourceServiceStub {
   /**
@@ -39,5 +36,7 @@ public interface ResourceServiceStub {
   /**
    * Called when this stub is no longer needed, so any open connections can be closed.
    */
-  void destroy();
+  default void destroy() {
+    // No action by default
+  }
 }
