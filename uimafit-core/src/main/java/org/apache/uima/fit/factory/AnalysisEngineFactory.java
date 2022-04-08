@@ -43,6 +43,10 @@ import java.util.Map.Entry;
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_component.AnalysisComponent;
+import org.apache.uima.analysis_component.CasProcessor;
+import org.apache.uima.analysis_component.CasProcessorAnnotator;
+import org.apache.uima.analysis_component.JCasProcessor;
+import org.apache.uima.analysis_component.JCasProcessorAnnotator;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.impl.AggregateAnalysisEngine_impl;
@@ -1799,4 +1803,34 @@ public final class AnalysisEngineFactory {
     return createEngineDescription(analysisEngineDescriptions, componentNames, typePriorities,
             sofaMappings, flowControllerDescription);
   }
+
+    /**
+     * Create an analysis engine from a processor function.
+     * 
+     * @param aJCasAnnotator
+     *            the processor function.
+     * @return the ready-to-use analysis engine
+     * @throws ResourceInitializationException
+     *             of there was a problem creating the engine.
+     */
+    public static AnalysisEngine createEngine(JCasProcessor<? extends Exception> aJCasAnnotator)
+        throws ResourceInitializationException
+    {
+        return JCasProcessorAnnotator.of(aJCasAnnotator);
+    }
+
+    /**
+     * Create an analysis engine from a processor function.
+     * 
+     * @param aCasAnnotator
+     *            the processor function.
+     * @return the ready-to-use analysis engine
+     * @throws ResourceInitializationException
+     *             of there was a problem creating the engine.
+     */
+    public static AnalysisEngine createEngine(CasProcessor<? extends Exception> aCasAnnotator)
+        throws ResourceInitializationException
+    {
+        return CasProcessorAnnotator.of(aCasAnnotator);
+    }
 }
