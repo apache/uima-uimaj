@@ -35,8 +35,7 @@ public class JCasProcessorAnnotator extends AnalysisEngineProcessorAdapter {
   private ResourceMetaData metaData;
   private JCasProcessor<? extends Exception> delegate;
 
-  public JCasProcessorAnnotator(
-          JCasProcessor<? extends Exception> aJCasAnnotator) {
+  public JCasProcessorAnnotator(JCasProcessor<? extends Exception> aJCasAnnotator) {
     metaData = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineMetaData();
     delegate = aJCasAnnotator;
   }
@@ -77,8 +76,7 @@ public class JCasProcessorAnnotator extends AnalysisEngineProcessorAdapter {
     };
   }
 
-  public static JCasProcessorAnnotator of(
-          JCasProcessor<? extends AnalysisEngineProcessException> aJCasAnnotator)
+  public static JCasProcessorAnnotator of(JCasProcessor<? extends Exception> aJCasAnnotator)
           throws ResourceInitializationException {
     JCasProcessorAnnotator engine = new JCasProcessorAnnotator(aJCasAnnotator);
     engine.initialize(null, null);
