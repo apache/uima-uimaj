@@ -62,7 +62,7 @@ import org.apache.uima.util.CasIOUtils;
  * 1) create an instance of this class
  * 2) add a Cas to it (via addCAS methods)
  * 3) use the instance of this class as the argument to anObjectOutputStream.writeObject(anInstanceOfThisClass)
- *    In UIMA this is done in the SerializationUtils class; it appears to be used for SOAP and Vinci service adapters.
+ *    In UIMA this is done in the SerializationUtils class; it appears to be used for Vinci service adapters.
  * 
  * There are also custom serialization methods that serialize to outputStreams.
  * 
@@ -78,7 +78,7 @@ import org.apache.uima.util.CasIOUtils;
  *     
  * This class is for internal use.  Some of the serialized formats are readable by the C++
  * implementation, and used for efficiently transferring CASes between Java frameworks and other ones.
- * Others are used with Vinci or SOAP to communicate to remote annotators.
+ * Others are used with Vinci to communicate to remote annotators.
  * 
  * To serialize the type definition and index specifications for a CAS
  * 

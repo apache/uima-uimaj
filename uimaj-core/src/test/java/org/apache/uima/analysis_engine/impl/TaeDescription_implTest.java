@@ -191,7 +191,7 @@ public class TaeDescription_implTest {
       delegateTaeMap.put("Empty", primDesc2);
       URISpecifier uriSpec = new URISpecifier_impl();
       uriSpec.setUri("http://www.incubator.apache.org/uima");
-      uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+      uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
               .createExternalResourceDependency();
       dep.setKey("ResourceKey");
@@ -211,15 +211,6 @@ public class TaeDescription_implTest {
       binding.setResourceName("Resource1");
       aggregateDesc.setResourceManagerConfiguration(resMgrCfg);
 
-      // AsbCreationSpecifier asbSpec = new AsbCreationSpecifier_impl();
-      // asbSpec.getAsbMetaData().setAsynchronousModeSupported(true);
-      // asbSpec.getAsbMetaData().setSupportedProtocols(new String[]{Constants.PROTOCOL_SOAP});
-      // aggregateDesc.setAsbSpecifier(asbSpec);
-      // AnalysisSequencerCrea1tionSpecifier seqSpec = new
-      // AnalysisSequencerCreationSpecifier_impl();
-      // seqSpec.getAnalysisSequencerMetaData().setSupportedPreconditionTypes(
-      // new String[]{SimplePrecondition.PRECONDITION_TYPE});
-      // aggregateDesc.setSequencerSpecifier(seqSpec);
       md = aggregateDesc.getAnalysisEngineMetaData();
       md.setName("Test Aggregate TAE");
       md.setDescription("Does not do anything useful.");

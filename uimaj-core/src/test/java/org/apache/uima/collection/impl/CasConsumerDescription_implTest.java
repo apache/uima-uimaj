@@ -156,7 +156,7 @@ public class CasConsumerDescription_implTest {
 
       URISpecifier uriSpec = new URISpecifier_impl();
       uriSpec.setUri("http://www.incubator.apache.org/uima");
-      uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+      uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
               .createExternalResourceDependency();
       dep.setKey("ResourceKey");

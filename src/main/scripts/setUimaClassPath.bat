@@ -31,7 +31,6 @@ goto EXIT
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uima-cpe.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uima-tools.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uima-examples.jar
-@set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uima-adapter-soap.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uima-adapter-vinci.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\activation.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\axis.jar

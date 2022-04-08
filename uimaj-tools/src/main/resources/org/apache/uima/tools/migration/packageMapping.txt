@@ -1,7 +1,4 @@
 com.ibm.uima org.apache.uima
-com.ibm.uima.reference_impl.analysis_engine.service.soap org.apache.uima.adapter.soap
-com.ibm.uima.reference_impl.resource.service.soap org.apache.uima.adapter.soap
-com.ibm.uima.reference_impl.resource.service.soap.axis11 org.apache.uima.adapter.soap.axis11
 com.ibm.uima.reference_impl.analysis_engine.service.vinci org.apache.uima.adapter.vinci
 com.ibm.uima.reference_impl.analysis_engine.service.vinci.util org.apache.uima.adapter.vinci.util
 com.ibm.uima.reference_impl.collection.service.vinci org.apache.uima.adapter.vinci

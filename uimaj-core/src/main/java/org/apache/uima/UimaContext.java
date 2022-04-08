@@ -462,7 +462,7 @@ public interface UimaContext {
    * Session object for each client, and this method would return the appropriate Session object for
    * the component to use for the current call.
    * <p>
-   * Note that Session support is NOT implemented in any of the service wrappers (Vinci, SOAP)
+   * Note that Session support is NOT implemented in any of the service wrappers (e.g. Vinci)
    * currently provided in the UIMA SDK.
    * 
    * @return the current Session object

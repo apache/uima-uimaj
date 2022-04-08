@@ -593,8 +593,7 @@ under the License.
       tightly-coupled</emphasis> (running in the same process) or <emphasis role="bold">
       loosely-coupled</emphasis> (running in separate processes or even on different
       machines). The framework supports a number of remote protocols for loose coupling
-      deployments of aggregate analysis engines, including SOAP (which stands for Simple
-      Object Access Protocol, a standard Web Services communications protocol).</para>
+      deployments of aggregate analysis engines.</para>
     
     <para>The UIMA framework facilitates the deployment of AEs as remote services by using an
       adapter layer that automatically creates the necessary infrastructure in response to

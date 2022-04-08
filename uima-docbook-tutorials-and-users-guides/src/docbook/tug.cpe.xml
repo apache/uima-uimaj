@@ -1056,13 +1056,7 @@ mCPE.process();</programlisting></para>
       information). Service naming and location are provided by a <emphasis>Vinci Naming
       Service</emphasis>, or <emphasis>VNS</emphasis>. For managed CAS Processors, the
       CPE uses its own internal VNS. For non-managed CAS Processors, a separate VNS must be
-      running.</para> <note><para>The UIMA SDK also supports using unmanaged remote
-    services via the web-standard SOAP communications protocol (see <olink
-      targetdoc="&uima_docs_tutorial_guides;"
-      targetptr="ugr.tug.application.how_to_deploy_as_soap"/>. This approach is
-    based on a proxy implementation, where the proxy is essentially running in an integrated
-    mode. To use this approach with the CPM, use the Integrated mode, with the component being
-    an Aggregate which, in turn, connects to a remote service. </para></note>
+      running.</para>
     
     <para>The CPE Configurator tool currently only supports constructing CPEs that deploy
       CAS Processors in integrated mode. To deploy CAS Processors in any other mode, the CPE

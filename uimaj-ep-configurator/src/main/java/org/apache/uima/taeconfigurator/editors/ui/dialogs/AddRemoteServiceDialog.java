@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
 import java.text.MessageFormat;
 
+import org.apache.uima.Constants;
 import org.apache.uima.taeconfigurator.CDEpropertyPage;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.SWT;
@@ -195,12 +196,14 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     public void modifyText(ModifyEvent e) {
       String text = genFilePathUI.getText();
       int pos = text.lastIndexOf(keyTextPrev);
-      if (pos == -1)
+      if (pos == -1) {
         pos = text.length();
+      }
       keyTextPrev = keyText.getText() + ".xml";
       genFilePathUI.setText(text.substring(0, pos) + keyTextPrev);
-      if (okButton != null)
+      if (okButton != null) {
         enableOK();
+      }
     }
   }
 
@@ -225,8 +228,9 @@ public class AddRemoteServiceDialog extends AbstractDialog {
         setErrorMessage(
                 MessageFormat.format("invalid character(s): ''{0}''", new Object[] { e.text }));
         e.doit = false;
-      } else
+      } else {
         setErrorMessage("");
+      }
     }
   }
 
@@ -266,7 +270,8 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
     setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Protocol Service Type", S_, SWT.BEGINNING,
             false);
-    serviceTypeCombo = wideCCombo(tc1, S_, "UIMA-AS JMS", "SOAP", "Vinci");
+    serviceTypeCombo = wideCCombo(tc1, S_, "UIMA-AS JMS", Constants.PROTOCOL_SOAP,
+            Constants.PROTOCOL_VINCI);
 
     setTextAndTip(uriLabel = new Label(tc1, SWT.NONE), "URI of service or JMS Broker:",
             "The URI for the service, e.g. localhost", SWT.BEGINNING, false);

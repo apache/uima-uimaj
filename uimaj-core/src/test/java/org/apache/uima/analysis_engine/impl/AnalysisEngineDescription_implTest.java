@@ -232,12 +232,6 @@ public class AnalysisEngineDescription_implTest {
     primDesc2.getAnalysisEngineMetaData()
             .setCapabilities(new Capability[] { new Capability_impl() });
     delegateTaeMap.put("Empty", primDesc2);
-    // Can't use URI specifier if we try to produce resource, because it maps to either a SOAP or
-    // VINCI adapter,
-    // and that adapter is not on the class path for this causes a failure in loading
-    // URISpecifier uriSpec = new URISpecifier_impl();
-    // uriSpec.setUri("http://incubator.apache.org/uima");
-    // uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
     FileResourceSpecifier fileResSpec = new FileResourceSpecifier_impl();
     fileResSpec.setFileUrl(TEST_DATA_FILE.toURL().toString());
     FlowControllerDeclaration fcDecl = new FlowControllerDeclaration_impl();
@@ -269,15 +263,6 @@ public class AnalysisEngineDescription_implTest {
     resMgrCfg.setExternalResourceBindings(new ExternalResourceBinding[] { binding });
     aggregateDesc.setResourceManagerConfiguration(resMgrCfg);
 
-    // AsbCreationSpecifier asbSpec = new AsbCreationSpecifier_impl();
-    // asbSpec.getAsbMetaData().setAsynchronousModeSupported(true);
-    // asbSpec.getAsbMetaData().setSupportedProtocols(new String[]{Constants.PROTOCOL_SOAP});
-    // aggregateDesc.setAsbSpecifier(asbSpec);
-    // AnalysisSequencerCrea1tionSpecifier seqSpec = new
-    // AnalysisSequencerCreationSpecifier_impl();
-    // seqSpec.getAnalysisSequencerMetaData().setSupportedPreconditionTypes(
-    // new String[]{SimplePrecondition.PRECONDITION_TYPE});
-    // aggregateDesc.setSequencerSpecifier(seqSpec);
     md = aggregateDesc.getAnalysisEngineMetaData();
     md.setName("Test Aggregate TAE");
     md.setDescription("Does not do anything useful.");
