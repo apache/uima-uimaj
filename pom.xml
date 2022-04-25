@@ -266,8 +266,11 @@
                 <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
+                  <!-- These markdown files cannot bear a license header -->
                   <exclude>NOTICE.md</exclude>
                   <exclude>src/main/bin_distr_license_notices/NOTICE.md</exclude>
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>.github/**/*</exclude>
                   <exclude>src/main/eclipse/org.eclipse.jdt.core.prefs</exclude>
                   <exclude>src/main/eclipse/org.eclipse.jdt.ui.prefs</exclude>
                   <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->

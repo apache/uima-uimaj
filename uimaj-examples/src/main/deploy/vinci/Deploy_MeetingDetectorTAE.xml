@@ -23,7 +23,7 @@
    
 <deployment name="Vinci Meeting Detector TAE">
   <service name="uima.tutorial.MeetingDetectorTAE" provider="vinci">
-    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache-uima/examples/descriptors/tutorial/ex4/MeetingDetectorTAE.xml"/>
+    <parameter name="resourceSpecifierPath" value="descriptors/tutorial/ex4/MeetingDetectorTAE.xml"/>
     <parameter name="numInstances" value="1"/>
   </service>
 </deployment>
