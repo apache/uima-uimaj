@@ -44,13 +44,6 @@
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <scm>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/</url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-
   <!-- The repositories and pluginRepositories section is duplicated from
        the parent pom one, and adds the Apache Snapshot Nexus repository
        where UIMA snapshots are deployed.  This is needed if for instance,
