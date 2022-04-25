@@ -58,6 +58,7 @@ with some support for Perl, Python and TCL.
 * [UIMA-6418] Added support for component parameters of type "long" and "double" 
 * [UIMA-6358] Added platform-independent methods for setting the datapath in a resource manager
 * [UIMA-6374] Added an extensive CAS (de)serialization test suit
+* [UIMA-6431] Added support for using lambda functions as CAS processors
 * [UIMA-6412] Changed CPMEngine from using a thread group to using an executor service
 * [UIMA-6389] Fixed exceptions being swallowed when using Log4J2 through its SLF4J API
 * [UIMA-6386] Fixed wrong UIMA session being set on the ConfigurationManager in aggregates
