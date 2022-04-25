@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -47,8 +47,4 @@
       </releases>
     </repository>
   </repositories>  
-
-  <scm>
-    <tag>uimaj-3.3.0</tag>
-  </scm>
 </project>
