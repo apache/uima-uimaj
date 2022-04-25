@@ -166,7 +166,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target combine.self="override">
+              <target>
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
 
                 <condition property="eclipse.home"
