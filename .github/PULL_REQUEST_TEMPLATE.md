@@ -13,7 +13,7 @@
 * [ ] PR adds/updates documentation
 
 **Organizational**
-- [ ] PR includes new dependencies. 
-      <small>Only dependencies under [approved licenses](http://www.apache.org/legal/resolved.html#category-a)
+- [ ] PR includes new dependencies. <br>
+      <sub><sup>Only dependencies under [approved licenses](http://www.apache.org/legal/resolved.html#category-a)
       are allowed. LICENSE and NOTICE files in the respective modules where dependencies have been
-      added as well as in the project root have been updated.</small>
+      added as well as in the project root have been updated.</sup></sub>
