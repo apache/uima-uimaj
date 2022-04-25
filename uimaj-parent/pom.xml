@@ -37,7 +37,7 @@
 
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.3.0</version>
+  <version>3.3.1-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -391,6 +391,9 @@
   </profiles>
 
   <scm>
-    <tag>uimaj-3.3.0</tag>
+    <tag>uimaj-3.2.0</tag>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
   </scm>
 </project>
