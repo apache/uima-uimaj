@@ -266,6 +266,8 @@
                 <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>.github/**/*</exclude>
                   <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson</exclude>
                   <exclude>src/main/eclipse/org.eclipse.jdt.core.prefs</exclude>
                   <exclude>src/main/eclipse/org.eclipse.jdt.ui.prefs</exclude>
