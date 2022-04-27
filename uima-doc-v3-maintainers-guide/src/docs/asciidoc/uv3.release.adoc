@@ -82,15 +82,19 @@ The Maven release plugin will complain if there are still any `SNAPSHOT` depende
 ====
 Edit the POM of the top level thing being released, to add the property:
 
+----
 <jiraVersion>2.10.2SDK</jiraVersion>
+----
 
-replacing the 2.10.2SDK with the actual Jira version name for the Jira release being done. This value is used during release processing to automatically generate a report of the list of Jira issues that are included in this release. Change "2.10.2SDK"" to be the actual jira version name, which you can get from the Jira url by going to https://issues.apache.org/jira/browse/UIMA and selecting "Releases" and then going to the particular version and copying its name.
+replacing the `2.10.2SDK` with the actual Jira version name for the Jira release being done. This value is used during release processing to automatically generate a report of the list of Jira issues that are included in this release. Change `2.10.2SDK` to be the actual jira version name, which you can get from the Jira URL by going to https://issues.apache.org/jira/browse/UIMA and selecting **Releases** and then going to the particular version and copying its name.
 
-You can also generate this report manually (for instance, if you want to have a look at what it will produce) by going to top level project being released (e.g., uimaj-distr) and issuing the maven command:
+You can also generate this report manually (for instance, if you want to have a look at what it will produce) by going to top level project being released (e.g., `uima-uimaj`) and issuing the maven command:
 
+----
 mvn changes:jira-report -N
+----
 
-Each time this plugin is run, it creates an updated report in the top level of this project. This report doesn't need to be checked into source control. It will be regenerated and copied into the distribution archives (source and binary) during a release. The RELEASE_NOTES.html files have been updated to refer to this generated report.
+Each time this plugin is run, it creates an updated report in the top level of this project. This report doesn't need to be checked into source control. It will be regenerated and copied into the distribution archives (source and binary) during a release. The `RELEASE_NOTES.html` files have been updated to refer to this generated report.
 
 Running the mvn release... command will cause this report to be generated or updated, every time the command is run. So it is important that the POM is updated to include the internal Jira version number, so the right report is generated.
 ====
