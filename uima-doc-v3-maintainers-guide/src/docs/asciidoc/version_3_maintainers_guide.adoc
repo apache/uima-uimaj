@@ -5,9 +5,9 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License. You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -15,20 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-@Library('uima-build-jenkins-shared-library@feature/UIMA-6437-Allow-publishing-HTML-documentation-from-Jenkinsfile') _
+= Apache UIMA™
+:Author: Apache UIMA™ Development Community
+:toc-title: UIMA Maintainer's Guide
 
-defaultPipeline {
-  // The Eclipse libraries that our plugins depend unfortunately on required Java 11
-  jdk = 'jdk_11_latest'
-  extraMavenArguments = '-Pjacoco,pmd,run-rat-report'
-  documentation = [[
-    allowMissing: false,
-    alwaysLinkToLastBuild: true,
-    keepAll: false,
-    reportDir: 'uima-doc-v3-maintainers-guide/target/site/d',
-    includes: '**/*',
-    reportFiles: 'version_3_maintainers_guide.html',
-    reportName: 'Maintainers Guide',
-    reportTitles: 'Maintainers Guide'
-  ]]
-}
+The document is a manual for maintainers of Apache UIMA, specifically focusing on aspects such as
+preparing releases etc. Although this is part of the documentation of the UIMA Java SDK, many
+aspects also apply to other Apache UIMA sub-projects.
+
+include::common_book_info.adoc[leveloffset=+1]
+
+include::uv3.release.adoc[leveloffset=+1]

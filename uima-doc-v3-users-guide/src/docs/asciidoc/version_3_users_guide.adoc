@@ -19,7 +19,7 @@
 :Author: Apache UIMA™ Development Community
 :toc-title: UIMA 3 User's Guide
 
-The document is a manual for users of Apache UIMA, specifically focussing on the new
+The document is a manual for users of Apache UIMA, specifically focusing on the new
 features introduced in version 3.
 
 include::common_book_info.adoc[leveloffset=+1]
