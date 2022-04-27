@@ -25,4 +25,6 @@ aspects also apply to other Apache UIMA sub-projects.
 
 include::common_book_info.adoc[leveloffset=+1]
 
+include::uv3.one-time-setup.adoc[leveloffset=+1]
+
 include::uv3.release.adoc[leveloffset=+1]

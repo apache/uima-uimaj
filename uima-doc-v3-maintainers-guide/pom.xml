@@ -88,6 +88,8 @@
             <product-website-url>https://uima.apache.org</product-website-url>
             <icons>font</icons>
             <experimental>true</experimental>
+            <linkcss>false</linkcss>
+            <copycss>true</copycss>
           </attributes>
           <requires>
             <require>asciidoctor-pdf</require>

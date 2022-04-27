@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-= UIMA Release Process
+= Release Process
 
 The Apache UIMA project mainly releases:
 
@@ -34,11 +34,9 @@ As part of the planning, new issues are created and typically one somebody assig
 
 There is no fixed release schedule. Anybody may ask for the preparation of a new release. A committer then has to step up to act as the release manager and to perform the release process. 
 
-== Maintainer one-time setup
-
-FIXME: link:https://uima.apache.org/one-time-release-setup.html[old website]
-
 == Performing the release
+
+=== Preparations
 
 * {empty}
 +
@@ -105,6 +103,18 @@ Update the parent-pom settings for API change reports setting `api_check_old_ver
 ====
 * {empty}
 +
+.Check that the Eclipse `.classpath` files which are checked in as part of the examples have the proper version numbers for their JARs
+[%collapsible]
+====
+If the release includes Eclipse projects as examples and the release includes also new or updated dependencies, the Eclipse `.classpath` files in the example projects may need to be updated to include the new libraries.
+
+NOTE: There may be a generation process involved. E.g. in the UIMA Java SDK, the template for the `.classpath` files can be found in `uimaj-examples/src/main/eclipseProject/classpath`.
+====
+
+=== Building
+
+* {empty}
++
 .Clean local m2 repository
 [%collapsible]
 ====
@@ -115,6 +125,15 @@ mvn dependency:purge-local-repository
 Note that this will immediately re-resolve the dependencies from the maven repositories you have configured.
 
 For many multi-module projects, this will fail because it purges things that other modules need. So, the alternative is to just delete the .m2/.../uima/... directory on your build machine.
+====
+* {empty}
++
+.Commit all changes and check out in a new clean build location
+[%collapsible]
+====
+Make sure all changes are checked into source control. Then checkout (not export) from source control the project(s) you'll be building, into a new *build* location, and do all the building from there.
+
+If you instead choose to build from your *working* source control checkout, insure it's up-to-date with all changes that others may have checked into the release branch.
 ====
 * {empty}
 +
@@ -136,24 +155,6 @@ The `-Papache-release` is used to have the build mimic the build actions that wo
 The build includes a generated set of Jira issues fixed (closed or resolved) in this release. To make this accurate, go through the Jiras and ensure the ones you are including in the release are closed/resolved, and that the "Fixed in release xxx" is set for each Jira issue that is part of the release.
 
 There is a saved "filter" you can adjust for this that will display all fixed Jira issues with no Fixed in release xxx assigned. You can go through subsets of this (use the filter to pick the subset you want) and do "bulk Jira changes" to update multiples of these in parallel, if that makes sense.
-====
-* {empty}
-+
-.Check that the Eclipse `.classpath` files which are checked in as part of the examples have the proper version numbers for their JARs
-[%collapsible]
-====
-If the release includes Eclipse projects as examples and the release includes also new or updated dependencies, the Eclipse `.classpath` files in the example projects may need to be updated to include the new libraries.
-
-NOTE: There may be a generation process involved. E.g. in the UIMA Java SDK, the template for the `.classpath` files can be found in `uimaj-examples/src/main/eclipseProject/classpath`.
-====
-* {empty}
-+
-.Commit all changes and check out in a new clean build location
-[%collapsible]
-====
-Make sure all changes are checked into source control. Then checkout (not export) from source control the project(s) you'll be building, into a new *build* location, and do all the building from there.
-
-If you instead choose to build from your *working* source control checkout, insure it's up-to-date with all changes that others may have checked into the release branch.
 ====
 * {empty}
 +
@@ -184,6 +185,9 @@ Exception to this: `-SNAPSHOT` suffixes are not updated for references within pl
 
 Note that any JARs, Zips, Tars, tar.gz artifacts must be signed by the Release Manager. When `-Papache-release` is active, the GPG Maven Plugin runs and signs the artifacts with the user's default GPG key. If you have multiple keys on your system, make sure to switch default to the right key before the release.
 ====
+
+=== Staging
+
 * {empty}
 +
 .Close the staging repository at http://repository.apache.org/
@@ -264,6 +268,9 @@ FIXME: Eclipse update site process needs updating...
 
 For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
 ====
+
+=== Voting
+
 * {empty}
 +
 .Call for a vote on the developer mailing list using the email template below
@@ -340,6 +347,9 @@ Thanks to all who voted!
 -- __Release manager name__
 ----
 ====
+
+=== Publishing
+
 * {empty}
 +
 .Copy the release artifacts from the staging spot to the dist spot in SVN
