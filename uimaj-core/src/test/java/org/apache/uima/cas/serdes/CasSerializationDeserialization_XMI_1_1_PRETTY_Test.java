@@ -49,15 +49,15 @@ public class CasSerializationDeserialization_XMI_1_1_PRETTY_Test {
   private static final int RANDOM_CAS_ITERATIONS = 20;
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
-          new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
+          new CasSerDesCycleConfiguration(FORMAT + " - DEFAULT", //
                   (a, b) -> serdes(a, b, FORMAT, DEFAULT, PRESERVE_ORIGINAL_TSI)),
-          new CasSerDesCycleConfiguration(FORMAT + " / LENIENT", //
+          new CasSerDesCycleConfiguration(FORMAT + " - LENIENT", //
                   (a, b) -> serdes(a, b, FORMAT, LENIENT, PRESERVE_ORIGINAL_TSI)));
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
-          new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //
+          new CasDesSerCycleConfiguration(FORMAT + " - DEFAULT", //
                   (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, DEFAULT)),
-          new CasDesSerCycleConfiguration(FORMAT + " / LENIENT", //
+          new CasDesSerCycleConfiguration(FORMAT + " - LENIENT", //
                   (a, b) -> desser(createCasMaybeWithTypesystem(a), a, b, FORMAT, LENIENT)));
 
   private static List<SerRefTestScenario> serRefScenarios() {

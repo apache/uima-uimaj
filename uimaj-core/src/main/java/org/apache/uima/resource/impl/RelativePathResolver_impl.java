@@ -112,6 +112,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
     mDataPath = unmodifiableList(Arrays.stream(aPaths) //
             .map(File::getPath) //
+            .map(s-> s.replace(File.separator, "/"))
             .collect(toList()));
     mBaseUrls = new URL[aPaths.length];
     for (int i = 0; i < aPaths.length; i++) {
