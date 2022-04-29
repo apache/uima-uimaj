@@ -46,15 +46,15 @@ public class CasSerializationDeserialization_BINARY_TSI_Test {
   private static final int RANDOM_CAS_ITERATIONS = 20;
 
   private static final List<CasSerDesCycleConfiguration> serDesCycles = asList( //
-          new CasSerDesCycleConfiguration(FORMAT + " / DEFAULT", //
+          new CasSerDesCycleConfiguration(FORMAT + " - DEFAULT", //
                   (a, b) -> serdes(a, b, FORMAT, DEFAULT)),
-          new CasSerDesCycleConfiguration(FORMAT + " / REINIT", //
+          new CasSerDesCycleConfiguration(FORMAT + " - REINIT", //
                   (a, b) -> serdes(a, b, FORMAT, REINIT)));
 
   private static final List<CasDesSerCycleConfiguration> desSerCycles = asList( //
-          new CasDesSerCycleConfiguration(FORMAT + " / DEFAULT", //
+          new CasDesSerCycleConfiguration(FORMAT + " - DEFAULT", //
                   (a, b) -> desser(createCas(), a, b, FORMAT, DEFAULT)),
-          new CasDesSerCycleConfiguration(FORMAT + " / REINIT", //
+          new CasDesSerCycleConfiguration(FORMAT + " - REINIT", //
                   (a, b) -> desser(createCas(), a, b, FORMAT, REINIT)));
 
   private static List<SerRefTestScenario> serRefScenarios() {

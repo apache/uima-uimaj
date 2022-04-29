@@ -103,7 +103,7 @@ public class SerRefTestScenario implements Runnable {
             .as("Reference file must exists at %s", referenceCasFile) //
             .exists();
     assertThat(contentOf(targetCasFile.toFile())) //
-            .isEqualTo(contentOf(referenceCasFile.toFile()));
+            .isEqualToNormalizingNewlines(contentOf(referenceCasFile.toFile()));
   }
 
   private void serialize(CAS aSourceCas, Path aTargetCasFile) {
