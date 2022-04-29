@@ -15,20 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-@Library('uima-build-jenkins-shared-library@feature/UIMA-6437-Allow-publishing-HTML-documentation-from-Jenkinsfile') _
+@Library('uima-build-jenkins-shared-library') _
 
 defaultPipeline {
   // The Eclipse libraries that our plugins depend unfortunately on required Java 11
   jdk = 'jdk_11_latest'
   extraMavenArguments = '-Pjacoco,pmd,run-rat-report'
-  documentation = [[
-    allowMissing: false,
-    alwaysLinkToLastBuild: true,
-    keepAll: false,
-    reportDir: 'uima-doc-v3-maintainers-guide/target/site/d',
-    includes: '**/*',
-    reportFiles: 'version_3_maintainers_guide.html',
-    reportName: 'Maintainers Guide',
-    reportTitles: 'Maintainers Guide'
-  ]]
 }
