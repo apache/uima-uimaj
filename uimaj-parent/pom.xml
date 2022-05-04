@@ -289,6 +289,7 @@
               <!-- default configuration -->
             <configuration>
               <excludes combine.children="append">
+                <exclude>**/.tycho-consumer-pom.xml</exclude>
                 <!-- Eclipse launch files - no need for a license -->
                 <exclude>**/run_configuration/*.launch</exclude>
               </excludes>

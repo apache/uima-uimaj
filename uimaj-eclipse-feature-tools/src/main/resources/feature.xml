@@ -18,7 +18,7 @@
    under the License.    
 -->
 <feature
-      id="org.apache.uima.tools"
+      id="org.apache.uima.tools.feature.group"
       label="%featureName"
       version="${parsedVersion.osgiVersion}"
       provider-name="%providerName">

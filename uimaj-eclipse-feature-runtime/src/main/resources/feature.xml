@@ -18,7 +18,7 @@
    under the License.    
 -->
 <feature
-      id="org.apache.uima.runtime"
+      id="org.apache.uima.runtime.feature.group"
       label="%featureName"
       version="${parsedVersion.osgiVersion}"
       provider-name="%providerName">
@@ -27,14 +27,22 @@
       This feature packages the UIMA runtime libraries plugin.
    </description>
 
-   <copyright>%copyright</copyright>
+   <copyright>
+      %copyright
+   </copyright>
 
-   <license url="%licenseURL">%license</license>
+   <license url="%licenseURL">
+      %license
+   </license>
 
    <url>
-      <!-- note: following url must end in slash per tip #1 at http://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html -->
       <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/uima/eclipse-update-site/"/>
    </url>
+
+   <requires>
+      <import plugin="org.slf4j.api"/>
+      <import plugin="org.eclipse.m2e.maven.runtime.slf4j.simple"/>
+   </requires>
 
    <plugin
          id="org.apache.uima.runtime"
@@ -43,9 +51,4 @@
          version="${parsedVersion.osgiVersion}"
          unpack="false"/>
 
-   <requires>
-      <import plugin="org.slf4j.api"/>
-      <import plugin="org.eclipse.m2e.maven.runtime.slf4j.simple"/>
-   </requires>
-     
 </feature>
