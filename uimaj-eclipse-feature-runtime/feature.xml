@@ -48,7 +48,7 @@
          id="org.apache.uima.runtime"
          download-size="0"
          install-size="0"
-         version="3.3.0.SNAPSHOT"
+         version="3.3.0.qualifier"
          unpack="false"/>
 
 </feature>
