@@ -98,7 +98,7 @@
 
     <repository>
       <id>${eclipseP2RepoId}</id>
-      <url>${eclipseP2RepoUrl}</url>
+      <url>https://download.eclipse.org/releases/2018-12/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -131,6 +131,8 @@
   </pluginRepositories>
 
   <properties>
+    <tycho-version>2.7.2</tycho-version>
+  
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
@@ -147,7 +149,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
-    <eclipseP2RepoUrl>https://download.eclipse.org/releases/2018-12/</eclipseP2RepoUrl>
 
     <api_check_oldVersion>3.2.0</api_check_oldVersion>
   </properties>
@@ -396,6 +397,67 @@
             </plugin>
           </plugins>
         </pluginManagement>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>tycho-module</id>
+      <activation>
+        <file>
+          <exists>marker-file-identifying-tycho-module</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>tycho-maven-plugin</artifactId>
+            <version>${tycho-version}</version>
+            <extensions>true</extensions>
+          </plugin>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <version>${tycho-version}</version>
+            <configuration>
+              <pomDependencies>consider</pomDependencies>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <preparationGoals>
+                org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata
+                org.apache.maven.plugins:maven-scm-plugin:1.9.5:add
+                org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin
+              </preparationGoals>
+              <completionGoals>
+                org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata
+                org.apache.maven.plugins:maven-scm-plugin:1.9.5:add
+                org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin
+              </completionGoals>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-cli</id>
+                <goals>
+                  <goal>add</goal>
+                  <goal>checkin</goal>
+                </goals>
+                <configuration>
+                  <includes>**/META-INF/MANIFEST.MF, **/feature.xml, **/*.product,**/category.xml</includes>
+                  <excludes>**/target/**</excludes>
+                  <message>Changing the Eclipse files versions</message>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>

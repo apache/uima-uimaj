@@ -19,7 +19,7 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,26 +29,33 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>aggregate-uimaj-eclipse-plugins</artifactId>
+  <artifactId>uimaj-maven-p2-site</artifactId>
   <packaging>pom</packaging>
-  <name>Apache UIMA Aggregate: ${project.artifactId}</name>
-  <description>The aggregate for building the Eclipse plugins 
-    that are part of the base UIMA framework</description>
+
+  <name>Apache UIMA Eclipse: ${project.artifactId}</name>
+  <description>The UIMA Java SDK Eclipse P2 Maven update site</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <modules>
-    <module>../uimaj-ep-debug</module>
-    <module>../uimaj-ep-jcasgen</module>
-    <module>../uimaj-ep-configurator</module>
-    <module>../uimaj-ep-pear-packager</module>
-    <module>../uimaj-ep-launcher</module>
-    <module>../uimaj-ep-cas-editor</module>
-    <module>../uimaj-ep-cas-editor-ide</module>
-    <module>../uimaj-ep-runtime</module>
-
-    <module>../uimaj-eclipse-feature-tools</module>
-    <module>../uimaj-eclipse-feature-runtime</module>
-    <module>../uimaj-eclipse-update-site</module>
-    <module>../uimaj-maven-p2-site</module>
-  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <id>maven-p2-site</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>assemble-maven-repository</goal>
+            </goals>
+            <configuration>
+              <includeReactor>true</includeReactor>
+              <includeDependencies>false</includeDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

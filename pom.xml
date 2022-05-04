@@ -283,6 +283,7 @@
                   <exclude>uimaj-cpe/**</exclude>
                   <exclude>uimaj-document-annotation/**</exclude>
                   <exclude>uimaj-eclipse-*/**</exclude>
+                  <exclude>uimaj-maven-p2-site/**</exclude>
                   <exclude>uimaj-ep-*/**</exclude>
                   <exclude>uimaj-examples/**</exclude>
                   <exclude>uimaj-test-util/**</exclude>

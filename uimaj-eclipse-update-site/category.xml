@@ -20,10 +20,10 @@
    ***************************************************************
    -->
 <site>
-   <feature url="features/org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar" id="org.apache.uima.runtime" version="${parsedVersion.osgiVersion}">
+   <feature url="features/org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar" id="org.apache.uima.runtime" version="3.3.0.qualifier">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.tools_${parsedVersion.osgiVersion}.jar" id="org.apache.uima.tools" version="${parsedVersion.osgiVersion}">
+   <feature url="features/org.apache.uima.tools_${parsedVersion.osgiVersion}.jar" id="org.apache.uima.tools" version="3.3.0.qualifier">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
    <category-def name="uima-tooling-and-runtimes" label="Apache UIMA Eclipse tooling and runtime support">
