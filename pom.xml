@@ -39,6 +39,13 @@
   <description>The top project for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <scm>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
+    <tag>uimaj-3.2.0</tag>
+  </scm>
+
   <properties>
     <jiraVersion>3.2.0SDK</jiraVersion>   
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
