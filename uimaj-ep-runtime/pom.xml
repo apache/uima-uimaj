@@ -196,7 +196,9 @@
                   org.apache.vinci.transport.vns.service
                 </_exportcontents>
     
-                <Import-Package>org.slf4j*,
+                <Import-Package>
+                  org.slf4j*,
+                  com.apple.eio;resolution:=optional,
                   !com.strobel.assembler,
                   !com.strobel.assembler.metadata,
                   !com.strobel.decompiler,

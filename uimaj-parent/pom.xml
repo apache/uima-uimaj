@@ -131,7 +131,8 @@
   </pluginRepositories>
 
   <properties>
-    <tycho-version>2.7.2</tycho-version>
+    <!-- versions >= 2.7.1 seem to have a bug that they embed bundle JARs -->
+    <tycho-version>2.7.0</tycho-version>
   
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.

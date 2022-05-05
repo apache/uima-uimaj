@@ -52,6 +52,8 @@
             <configuration>
               <includeReactor>true</includeReactor>
               <includeDependencies>false</includeDependencies>
+              <includeManaged>false</includeManaged>
+              <includeTransitiveDependencies>false</includeTransitiveDependencies>
             </configuration>
           </execution>
         </executions>
