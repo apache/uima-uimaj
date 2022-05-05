@@ -327,7 +327,12 @@
               <goal>checkin</goal>
             </goals>
             <configuration>
-              <includes>**/META-INF/MANIFEST.MF, **/feature.xml, **/*.product,**/category.xml</includes>
+              <includes>
+                uimaj-eclipse-*/META-INF/MANIFEST.MF, 
+                uimaj-eclipse-*/feature.xml, 
+                uimaj-eclipse-*/*.product,
+                uimaj-eclipse-*/category.xml
+              </includes>
               <excludes>**/target/**</excludes>
               <message>Changing the Eclipse files versions</message>
             </configuration>
