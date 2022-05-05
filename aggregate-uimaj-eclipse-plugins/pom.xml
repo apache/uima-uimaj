@@ -49,6 +49,6 @@
     <module>../uimaj-eclipse-feature-tools</module>
     <module>../uimaj-eclipse-feature-runtime</module>
     <module>../uimaj-eclipse-update-site</module>
-    <module>../uimaj-maven-p2-site</module>
+    <module>../uimaj-eclipse-maven-p2-site</module>
   </modules>
 </project>

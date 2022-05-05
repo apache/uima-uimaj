@@ -29,7 +29,7 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>uimaj-maven-p2-site</artifactId>
+  <artifactId>uimaj-eclipse-maven-p2-site</artifactId>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
