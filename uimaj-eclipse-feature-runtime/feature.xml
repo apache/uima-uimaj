@@ -157,7 +157,7 @@ Apache UIMA is a trademark of the Apache Software Foundation in the United State
          id="org.apache.uima.runtime"
          download-size="0"
          install-size="0"
-         version="3.3.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
