@@ -396,6 +396,11 @@
                         <include name="uimaj-${project.version}-*.tar.gz.sha512"/>
                       </fileset>
                     </copy>
+                    <copy todir="${staging-local-root}/${staging-folder}/eclipse-update-site">
+                      <fileset dir="uimaj-eclipse-update-site/target/repository">
+                        <include name="**/*"/>
+                      </fileset>
+                    </copy>
                   </target>
                 </configuration>
               </execution>
