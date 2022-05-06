@@ -369,6 +369,8 @@
                   <buildNumberPropertyName>candidate-id</buildNumberPropertyName>
                   <timestampPropertyName>staging-timestamp</timestampPropertyName>
                   <shortRevisionLength>7</shortRevisionLength>
+                  <timestampFormat>yyyyMMddHHmm</timestampFormat>
+                  <timezone>Z</timezone>
                 </configuration>
               </execution>
             </executions>
