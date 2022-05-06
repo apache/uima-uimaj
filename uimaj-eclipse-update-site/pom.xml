@@ -35,6 +35,11 @@
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Java SDK Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
+  
+  <properties>
+    <maven.install.skip>true</maven.install.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -48,4 +53,17 @@
       <version>3.3.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <skipArchive>true</skipArchive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -121,11 +121,19 @@
       <name>artifactory.openntf.org</name>
       <url>https://artifactory.openntf.org/openntf</url>
     </pluginRepository>
+
+    <pluginRepository>
+      <id>tycho-snapshots</id>
+      <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
   </pluginRepositories>
 
   <properties>
     <!-- versions >= 2.7.1 seem to have a bug that they embed bundle JARs -->
-    <tycho-version>2.7.0</tycho-version>
+    <tycho-version>2.7.3-SNAPSHOT</tycho-version>
   
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
