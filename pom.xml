@@ -41,7 +41,6 @@
 
   <properties>
     <jiraVersion>3.3.0SDK</jiraVersion>   
-    <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>
@@ -332,6 +331,13 @@
     
     <profile>
       <id>apache-release</id>
+
+      <properties>
+        <releaseCandidateNum></releaseCandidateNum>
+        <staging-scm-root>scm:svn:https://dist.apache.org/repos/dist/dev/uima/</staging-scm-root>
+        <staging-local-root>${project.build.directory}/staging</staging-local-root>
+        <staging-folder>${project.artifactId}-${project.version}-RC-${staging-timestamp}-${candidate-id}</staging-folder>
+      </properties>
       
       <build>
         <!-- Run jira report -->
@@ -339,6 +345,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-changes-plugin</artifactId>
+            <inherited>false</inherited>
             <executions>
               <execution>
                 <id>default-cli</id>
@@ -346,9 +353,99 @@
                   <fixVersionIds>${jiraVersion}</fixVersionIds>
                 </configuration>
               </execution>
-            </executions>  
+            </executions>
           </plugin>
-        </plugins>     
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>generate-candidate-id</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>create</goal>
+                </goals>
+                <configuration>
+                  <buildNumberPropertyName>candidate-id</buildNumberPropertyName>
+                  <timestampPropertyName>staging-timestamp</timestampPropertyName>
+                  <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${staging-local-root}/${staging-folder}" />
+                    <copy todir="${staging-local-root}/${staging-folder}">
+                      <fileset dir="${project.build.directory}">
+                        <include name="uimaj-${project.version}-*.zip"/>
+                        <include name="uimaj-${project.version}-*.zip.asc"/>
+                        <include name="uimaj-${project.version}-*.zip.sha512"/>
+                        <include name="uimaj-${project.version}-*.tar.gz"/>
+                        <include name="uimaj-${project.version}-*.tar.gz.asc"/>
+                        <include name="uimaj-${project.version}-*.tar.gz.sha512"/>
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <inherited>false</inherited>
+            <configuration>
+              <connectionType>developerConnection</connectionType>
+              <developerConnectionUrl>${staging-scm-root}</developerConnectionUrl>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkout-staging</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>checkout</goal>
+                </goals>
+                <configuration>
+                  <checkoutDirectory>${staging-local-root}</checkoutDirectory>
+                </configuration>
+              </execution>
+              <execution>
+                <id>add-staging-files</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>add</goal>
+                </goals>
+                <configuration>
+                  <basedir>${staging-local-root}</basedir>
+                  <includes>${staging-folder}/**/*</includes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>commit-staging-files</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>checkin</goal>
+                </goals>
+                <configuration>
+                  <basedir>${staging-local-root}</basedir>
+                  <message>Staging release artifacts for ${project.artifactId}-${project.version}-RC-${staging-timestamp}-${candidate-id}</message>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
     
