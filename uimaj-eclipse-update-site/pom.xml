@@ -25,12 +25,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <relativePath />
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>3.2.0</version>
+  <version>3.3.0</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
@@ -40,7 +40,7 @@
   <properties>
     <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
     <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
-    <dropPrevVersions>false</dropPrevVersions>
+    <dropPrevVersions>true</dropPrevVersions>
   </properties>
 
   <build>
@@ -165,7 +165,7 @@
             <goals>
               <goal>run</goal>
             </goals>
-            <configuration combine.self="override">
+            <configuration>
               <target>
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
 

@@ -15,8 +15,24 @@ link that entity to a reference dataset, then Apache UIMA provides:
 * any many additional features!
 
 Note the Apache UIMA Java SDK only provides a framework for building analytics but it does not 
-provide any analytics. However, there are various [third-parties](#uima-component-providers) that build on Apache UIMA
-and that provide collections of analysis components or ready-made solutions.
+provide any analytics. However, there are various [third-parties](#uima-component-providers) that
+build on Apache UIMA and that provide collections of analysis components or ready-made solutions.
+
+#### System requirements
+
+Apache UIMA v3.0.0 and later requires Java version 8; it has been tested with Java 11 and Java 8.
+
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later.
+
+Running the migration tool on class files requires running with a Java JDK, not a Java JRE.
+
+The supported platforms are: Windows, Linux, and macOS. Other Java platform implementations should
+work but have not been significantly tested.
+
+Many of the scripts in the `/bin` directory invoke Java. They use the value of the environment 
+variable, `JAVA_HOME`, to locate the Java to use; if it is not set, they invoke `java` expecting to find
+an appropriate Java in your `PATH` variable. 
+
 
 #### Using Apache UIMA Java SDK
 
@@ -28,7 +44,7 @@ to your project:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
-  <version>3.2.0</version>
+  <version>3.3.0</version>
 </dependency>
 ```
 
@@ -39,7 +55,7 @@ Apache uimaFIT is a separate dependency that you can add:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
-  <version>3.2.0</version>
+  <version>3.3.0</version>
 </dependency>
 ```
 
@@ -145,11 +161,51 @@ for (var anno : cas.<Annotation>select(entityType)) {
 
 To build Apache UIMA, you need at least a Java 8 JDK and a recent Maven 3 version.
 
-After cloning the repository, change into the repository directory and run the following command:
+After extracting the source distribution ZIP or cloning the repository, change into the created
+directory and run the following command:
 
 ```
 mvn clean install
 ```
+
+For more details, please see http://uima.apache.org/building-uima.html   
+
+
+#### Running examples from the source/binary distribution
+
+You can download the source and binary distributions from the 
+[Apache UIMA website](https://uima.apache.org/downloads.cgi).
+
+##### Environment Variables
+
+After you have unpacked the Apache UIMA distribution from the package of your choice (e.g. `.zip` or 
+`.gz`), perform the steps below to set up UIMA so that it will function properly.
+
+* Set `JAVA_HOME` to the directory of your JRE installation you would like to use for UIMA.  
+* Set `UIMA_HOME` to the `apache-uima` directory of your unpacked Apache UIMA distribution
+* Append `UIMA_HOME/bin` to your `PATH`
+* Please run the script `UIMA_HOME/bin/adjustExamplePaths.bat` (or `.sh`), to update 
+  paths in the examples based on the actual `UIMA_HOME` directory path. 
+  This script runs a Java program; you must either have `java` in your `PATH` or set the environment 
+  variable `JAVA_HOME` to a suitable JRE.
+
+    Note: The Mac OS X operating system procedures for setting up global environment
+    variables are described here: see http://developer.apple.com/qa/qa2001/qa1067.html.
+      
+##### Verifying Your Installation
+
+To test the installation, run the `documentAnalyzer.bat` (or `.sh`) file located in the `bin` subdirectory. 
+This should pop up a *Document Analyzer* window. Set the values displayed in this GUI to as follows:
+
+* Input Directory: `UIMA_HOME/examples/data`
+* Output Directory: `UIMA_HOME/examples/data/processed`
+* Location of Analysis Engine XML Descriptor: `UIMA_HOME/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml`
+
+Replace `UIMA_HOME` above with the path of your Apache UIMA installation.
+
+Next, click the *Run* button, which should, after a brief pause, pop up an *Analyzed Results* window. 
+Double-click on one of the documents to display the analysis results for that document.
+
 
 #### UIMA component providers
 
