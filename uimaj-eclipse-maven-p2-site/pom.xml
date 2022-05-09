@@ -54,6 +54,7 @@
               <includeDependencies>false</includeDependencies>
               <includeManaged>false</includeManaged>
               <includeTransitiveDependencies>false</includeTransitiveDependencies>
+              <includePGPSignature>${tycho-include-gpg-signatures}</includePGPSignature>
             </configuration>
           </execution>
         </executions>
