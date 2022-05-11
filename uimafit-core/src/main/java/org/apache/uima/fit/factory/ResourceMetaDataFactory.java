@@ -44,8 +44,7 @@ public final class ResourceMetaDataFactory {
   public static void configureResourceMetaData(ResourceMetaData aMetaData,
           Class<?> aComponentClass) {
     org.apache.uima.fit.descriptor.ResourceMetaData componentAnno = ReflectionUtil
-            .getInheritableAnnotation(org.apache.uima.fit.descriptor.ResourceMetaData.class,
-                    aComponentClass);
+            .getAnnotation(aComponentClass, org.apache.uima.fit.descriptor.ResourceMetaData.class);
 
     if (componentAnno == null) {
       // Default handling if no annotation is present.
