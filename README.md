@@ -33,7 +33,9 @@ different set of descriptor files for each run or even a script that
 generates such descriptor files. uimaFIT is type system agnostic and
 does not depend on (or provide) a specific type system.
 
-uimaFIT is a library that provides factories, injection, and testing utilities for UIMA. The following list highlights some of the features uimaFIT provides:
+uimaFIT is a library that provides factories, injection, and testing 
+utilities for UIMA. The following list highlights some of the features 
+uimaFIT provides:
 
 * **Factories:** simplify instantiating UIMA components programmatically 
   without descriptor files. For example, to instantiate an AnalysisEngine a
@@ -86,7 +88,7 @@ following:
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>3.2.0</version>
+      <version>3.3.0</version>
     </dependency>
 
 
