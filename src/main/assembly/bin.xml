@@ -14,7 +14,7 @@ software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
-under the License.    
+under the License.
 -->
 
 <assembly>
@@ -24,12 +24,11 @@ under the License.
     <!--format>tar.bz2</format-->  <!-- to speed up builds -->
     <format>zip</format>
   </formats>
-  
+
   <includeBaseDirectory>true</includeBaseDirectory>
-  
+
   <baseDirectory>/apache-uima</baseDirectory>
-  
-  
+
   <dependencySets>
     <!-- Because our artifactIds are uimaj-xxx but our jars are uima-xxx,
     I need a separate dependency set for each module so that I can
@@ -45,7 +44,7 @@ under the License.
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode> 
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -56,7 +55,7 @@ under the License.
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -66,8 +65,8 @@ under the License.
       <outputFileNameMapping>uima-cpe.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -77,8 +76,8 @@ under the License.
       <outputFileNameMapping>uima-document-annotation.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -88,8 +87,8 @@ under the License.
       <outputFileNameMapping>uima-examples.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -100,8 +99,8 @@ under the License.
       <outputFileNameMapping>uima-tools.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -112,8 +111,8 @@ under the License.
       <outputFileNameMapping>uima-adapter-vinci.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -124,8 +123,8 @@ under the License.
       <outputFileNameMapping>jVinci.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -136,10 +135,9 @@ under the License.
       <outputFileNameMapping>uimaj-json.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
-    
     <dependencySet>
       <includes>
         <include>org.apache.uima:uimaj-v3migration-jcas</include>
@@ -149,10 +147,10 @@ under the License.
       <outputFileNameMapping>uimaj-v3migration-jcas.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
-        
+
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
       <includes>
@@ -170,35 +168,35 @@ under the License.
       <outputDirectory>eclipsePlugins</outputDirectory>
       <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
-    
+
     <!--  loggers and other lib 3rd party jars not renamed -->
     <dependencySet>
       <includes>
         <include>com.fasterxml.jackson.core:jackson-core</include>
-        <include>org.bitbucket.mstrobel:procyon-compilertools</include>      
+        <include>org.bitbucket.mstrobel:procyon-compilertools</include>
         <include>org.bitbucket.mstrobel:procyon-core</include>
         <include>com.github.javaparser:javaparser-core</include>
         <include>org.slf4j:slf4j-api</include>
-        <!--  log4j not default included 
+        <!--  log4j not default included
         <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
         <include>org.apache.logging.log4j:log4j-core</include>
         <include>org.apache.logging.log4j:log4j-api</include>
          -->
         <!-- hook to built-in Java backend for slf4j included -->
-        <include>org.slf4j:slf4j-jdk14</include> 
+        <include>org.slf4j:slf4j-jdk14</include>
       </includes>
       <unpack>false</unpack>
       <scope>runtime</scope>
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
     </dependencySet>
   </dependencySets>
-  
+
   <!-- Add other files - scripts, documentation, examples -->
   <fileSets>
     <fileSet>
@@ -206,37 +204,37 @@ under the License.
       <outputDirectory>bin</outputDirectory>
       <includes><include>*.sh</include></includes>
       <fileMode>755</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>src/main/scripts</directory>
       <outputDirectory>bin</outputDirectory>
       <excludes><exclude>*.sh</exclude></excludes>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>src/main/properties</directory>
       <outputDirectory>config</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
-           
-    <!-- copy standard top level files -->        
+
+    <!-- copy standard top level files -->
     <fileSet>
       <directory>.</directory>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode> 
+      <directoryMode>755</directoryMode>
       <includes>
         <include>README*</include>
         <include>readme*</include>
         <include>RELEASE_NOTES*</include>
         <include>Release-Notes*</include>
-        <include>issuesFixed/**</include>      
-      </includes>       
+        <include>issuesFixed/**</include>
+      </includes>
     </fileSet>
-    
+
     <fileSet>
       <directory>target/site/apidocs</directory>
       <outputDirectory>docs/d/api</outputDirectory>
@@ -244,10 +242,10 @@ under the License.
         <exclude>options</exclude>
         <exclude>packages</exclude>
         <exclude>files</exclude>
-        <exclude>argfile</exclude>        
+        <exclude>argfile</exclude>
       </excludes>
       <fileMode>444</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
 
     <!-- docbooks -->
@@ -255,34 +253,33 @@ under the License.
       <directory>uima-docbook-overview-and-setup/target/site/</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>uima-docbook-references/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet>    
+      <directoryMode>755</directoryMode>
+    </fileSet>
     <fileSet>
       <directory>uima-docbook-tools/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet>    
+      <directoryMode>755</directoryMode>
+    </fileSet>
     <fileSet>
       <directory>uima-docbook-tutorials-and-users-guides/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>uima-doc-v3-users-guide/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
-    
-    
+
     <!-- examples -->
     <fileSet>
       <directory>uimaj-examples/src/main</directory>
@@ -296,7 +293,7 @@ under the License.
         <include>run_configuration/**</include>
       </includes>
     </fileSet>
-    
+
     <fileSet>
       <directory>uimaj-examples/src/main/java</directory>
       <outputDirectory>examples/src</outputDirectory>
@@ -306,7 +303,7 @@ under the License.
         <exclude>org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</exclude>
       </excludes>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>uimaj-examples/src/main/data</directory>
@@ -314,75 +311,75 @@ under the License.
       <fileMode>644</fileMode>
       <!-- next mode 777 because some examples write into dir
            and we want to eliminate failures due to write permissions -->
-      <directoryMode>777</directoryMode>        
+      <directoryMode>777</directoryMode>
     </fileSet>
-    
+
     <!-- Copy the API Change reports -->
     <fileSet>
       <directory>uimaj-core/api-change-report</directory>
       <outputDirectory>uimaj-core/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>uimaj-cpe/api-change-report</directory>
       <outputDirectory>uimaj-cpe/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
     <fileSet>
       <directory>uimaj-json/api-change-report</directory>
       <outputDirectory>uimaj-json/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
     </fileSet>
   </fileSets>
- 
+
   <files>
     <!-- copy bin distr license and notice -->
     <file>
-      <source>src/main/bin_distr_license_notices/LICENSE</source>
+      <source>src/main/bin_distr_license_notices/LICENSE.txt</source>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
     </file>
-    <file> 
-      <source>src/main/bin_distr_license_notices/NOTICE</source>
+    <file>
+      <source>src/main/bin_distr_license_notices/NOTICE.md</source>
       <outputDirectory></outputDirectory>
-      <fileMode>644</fileMode>    
+      <fileMode>644</fileMode>
     </file>
-  
+
     <file>
       <source>uimaj-examples/src/main/eclipseProject/project</source>
       <outputDirectory>examples</outputDirectory>
       <destName>.project</destName>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
     </file>
     <file>
       <source>uimaj-examples/src/main/eclipseProject/classpath</source>
       <outputDirectory>examples</outputDirectory>
       <destName>.classpath</destName>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
     </file>
     <file>
       <source>uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</source>
       <outputDirectory>examples/ecore_src</outputDirectory>
       <destName>readme.txt</destName>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
     </file>
     <file>
       <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
     </file>
     <file>
       <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
     </file>
     <file>
       <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
     </file>
     <file>
       <source>api-change-report.html</source>
