@@ -32,7 +32,7 @@
     <relativePath>uimafit-parent</relativePath>
   </parent>
   <properties>
-    <jiraVersion>3.2.0uimaFIT</jiraVersion>
+    <jiraVersion>3.3.0uimaFIT</jiraVersion>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
