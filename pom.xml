@@ -52,13 +52,6 @@
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>
 
-  <scm>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/</url>
-    <tag>uimaj-3.2.0</tag>
-  </scm>
-
   <!-- dependencies that go into the various builds via dependency-sets -->
   <!-- version is specified here -->
   <!-- default scope is compile -->
