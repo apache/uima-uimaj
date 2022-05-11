@@ -20,7 +20,7 @@
 <feature
       id="org.apache.uima.tools"
       label="UIMA Tools (includes Runtime)"
-      version="3.3.0.qualifier"
+      version="3.4.0.qualifier"
       provider-name="Apache Software Foundation">
 
    <description>
@@ -153,7 +153,7 @@ Apache UIMA is a trademark of the Apache Software Foundation in the United State
 
    <includes
          id="org.apache.uima.runtime"
-         version="3.3.0.qualifier"
+         version="3.4.0.qualifier"
          name="UIMA Runtime plugin feature"/>
 
    <requires>
