@@ -25,8 +25,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,9 @@ public class RelativePathResolver_implTest {
   private final static String PATH_SEP = System.getProperty("path.separator");
   private RelativePathResolver_impl sut;
 
-  private final static String[] expectedElements = { "/this/is/a/test", "/another/test" };
+  private final static String element1 =  "/this/is/a/test";
+  private final static String element2 =  "/another/test" ;
+  private final static String[] expectedElements = { element1, element2 };
   private final static String expectedPath = String.join(PATH_SEP, expectedElements);
 
   @BeforeEach
@@ -101,6 +105,7 @@ public class RelativePathResolver_implTest {
 
   @SuppressWarnings("deprecation")
   private void assertThatGettersReturnTheRightValues(RelativePathResolver_impl aResolver) {
+    
     assertThat(aResolver.getDataPathElements()) //
             .containsExactly(expectedElements);
 
