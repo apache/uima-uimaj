@@ -55,38 +55,6 @@
     <uima-version>3.3.0</uima-version>
     <xmlunit-version>2.9.0</xmlunit-version>
   </properties>
-  <repositories>
-    <!--
-      - For UIMA/uimaFIT SNAPSHOTs
-      -->
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <!--
-      - For UIMA/uimaFIT SNAPSHOTs
-      -->
-    <pluginRepository>
-      <id>apache.snapshots.plugins</id>
-      <name>Apache Snapshot Repository - Maven plugins</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
   
   <dependencies>
     <dependency>
@@ -215,6 +183,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
