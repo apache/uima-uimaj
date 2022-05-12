@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-parent</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.3.0</version>
     <relativePath>../uimafit-parent</relativePath>
   </parent>
   <artifactId>uimafit-assertj</artifactId>
@@ -31,7 +31,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>3.3.1-SNAPSHOT</version>
+      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
