@@ -18,17 +18,22 @@
  */
 package org.apache.uima.fit.component;
 
+import static java.nio.file.Files.newInputStream;
 import static org.apache.commons.io.FileUtils.readFileToString;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.util.CasIOUtil;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.util.CasIOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -38,11 +43,14 @@ public class CasDumpWriterTest {
   public void test(@TempDir Path folder) throws Exception {
     File outputFile = folder.resolve("dump-output.txt").toFile();
 
-    AnalysisEngine writer = AnalysisEngineFactory.createEngine(CasDumpWriter.class,
+    AnalysisEngineDescription writer = createEngineDescription(CasDumpWriter.class, //
             CasDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
-    JCas jcas = writer.newJCas();
-    CasIOUtil.readJCas(jcas, new File("src/test/resources/data/docs/test.xmi"));
-    writer.process(jcas);
+
+    JCas jcas = JCasFactory.createJCas();
+    try (InputStream is = newInputStream(Paths.get("src/test/resources/data/docs/test.xmi"))) {
+        CasIOUtils.load(is, jcas.getCas());
+    }
+    runPipeline(jcas, writer);
     assertTrue(outputFile.exists());
 
     String reference = readFileToString(new File("src/test/resources/data/reference/test.xmi.dump"),
