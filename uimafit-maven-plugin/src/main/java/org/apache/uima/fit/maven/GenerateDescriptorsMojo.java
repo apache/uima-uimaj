@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
  */
 @Mojo(name = "generate", defaultPhase = PROCESS_CLASSES, requiresDependencyResolution = TEST, requiresDependencyCollection = TEST)
 public class GenerateDescriptorsMojo extends AbstractMojo {
-  @Component
+  @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
 
   @Component
@@ -124,7 +124,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
 
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
-            new String[] { "class" });
+        new String[] { "class" });
 
     componentLoader = Util.getClassloader(project, getLog(), includeScope);
 
@@ -152,27 +152,27 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         ResourceCreationSpecifier desc = null;
         ProcessingResourceMetaData metadata = null;
         switch (Util.getType(componentLoader, clazz)) {
-          case ANALYSIS_ENGINE:
-            AnalysisEngineDescription aeDesc = createEngineDescription(clazz);
-            metadata = aeDesc.getAnalysisEngineMetaData();
-            desc = aeDesc;
-            break;
-          case COLLECTION_READER:
-            CollectionReaderDescription crDesc = createReaderDescription(clazz);
-            metadata = crDesc.getCollectionReaderMetaData();
-            desc = crDesc;
-          default:
-            // Do nothing
+        case ANALYSIS_ENGINE:
+          AnalysisEngineDescription aeDesc = createEngineDescription(clazz);
+          metadata = aeDesc.getAnalysisEngineMetaData();
+          desc = aeDesc;
+          break;
+        case COLLECTION_READER:
+          CollectionReaderDescription crDesc = createReaderDescription(clazz);
+          metadata = crDesc.getCollectionReaderMetaData();
+          desc = crDesc;
+        default:
+          // Do nothing
         }
 
         if (desc != null) {
           switch (addTypeSystemDescriptions) {
-            case EMBEDDED:
-              embedTypeSystems(metadata);
-              break;
-            case NONE: // fall-through
-            default:
-              // Do nothing
+          case EMBEDDED:
+            embedTypeSystems(metadata);
+            break;
+          case NONE: // fall-through
+          default:
+            // Do nothing
           }
 
           File out = new File(outputDirectory, clazzPath + ".xml");
@@ -196,8 +196,8 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       }
     }
 
-    getLog().info(
-            "Generated " + countGenerated + " descriptor" + (countGenerated != 1 ? "s." : "."));
+    getLog()
+        .info("Generated " + countGenerated + " descriptor" + (countGenerated != 1 ? "s." : "."));
 
     // Write META-INF/org.apache.uima.fit/components.txt unless skipped and unless there are no
     // components
@@ -208,23 +208,25 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         FileUtils.fileWrite(path.getPath(), encoding, componentsManifest.toString());
       } catch (IOException e) {
         handleError("Cannot write components manifest to [" + path + "]"
-                + ExceptionUtils.getRootCauseMessage(e), e);
+            + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
 
     if (addOutputDirectoryAsResourceDirectory && countGenerated > 0) {
       Path absoluteDescriptorOutputPath = outputDirectory.toPath().toAbsolutePath();
       Path absoluteBuildOutputDirectory = Paths.get(project.getBuild().getOutputDirectory())
-              .toAbsolutePath();
+          .toAbsolutePath();
       Path absoluteBuildTestOutputDirectory = Paths.get(project.getBuild().getTestOutputDirectory())
-              .toAbsolutePath();
+          .toAbsolutePath();
 
-      // Add the output folder as a new resource folder if any descriptors were generated and only
-      // if the descriptors were generated directly into the build output folder. The latter can
+      // Add the output folder as a new resource folder if any descriptors were generated and
+      // only
+      // if the descriptors were generated directly into the build output folder. The latter
+      // can
       // be the case if the mojo is executed in a late build phase where the resources plugin
       // doesn't run anymore.
       if (!absoluteBuildOutputDirectory.equals(absoluteDescriptorOutputPath)
-              && !absoluteBuildTestOutputDirectory.equals(absoluteDescriptorOutputPath)) {
+          && !absoluteBuildTestOutputDirectory.equals(absoluteDescriptorOutputPath)) {
         Resource resource = new Resource();
         resource.setDirectory(outputDirectory.getPath());
         resource.setFiltering(false);
@@ -243,7 +245,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   }
 
   private void embedTypeSystems(ProcessingResourceMetaData metadata)
-          throws ResourceInitializationException {
+      throws ResourceInitializationException {
     TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
     TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription();
     metadata.setTypeSystem(tsDesc);

@@ -18,83 +18,43 @@
   ~ under the License.
 -->
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-        
-    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-        
-    <primitive>true</primitive>
-        
-    <annotatorImplementationName>TestAnnotator</annotatorImplementationName>
-        
-    <analysisEngineMetaData>
-                
-        <name>TestAnnotator</name>
-                
-        <description>Test annotator.</description>
-                
-        <version>1.0-SNAPSHOT</version>
-                
-        <vendor>Apache UIMA</vendor>
-                
-        <copyright>Copyright by the respective authors.</copyright>
-                
-        <configurationParameters/>
-                
-        <configurationParameterSettings/>
-                
-        <typeSystemDescription>
-                        
-            <types>
-                                
-                <typeDescription>
-                                        
-                    <name>org.apache.uima.fit.type.CompileType</name>
-                                        
-                    <description/>
-                                        
-                    <supertypeName>uima.tcas.Annotation</supertypeName>
-                                    
-                </typeDescription>
-                                
-                <typeDescription>
-                                        
-                    <name>org.apache.uima.fit.type.TestType</name>
-                                        
-                    <description/>
-                                        
-                    <supertypeName>uima.tcas.Annotation</supertypeName>
-                                    
-                </typeDescription>
-                                
-                <typeDescription>
-                                        
-                    <name>org.apache.uima.fit.type.TestType2</name>
-                                        
-                    <description/>
-                                        
-                    <supertypeName>uima.tcas.Annotation</supertypeName>
-                                    
-                </typeDescription>
-                            
-            </types>
-                    
-        </typeSystemDescription>
-                
-        <typePriorities/>
-                
-        <fsIndexCollection/>
-                
-        <capabilities/>
-                
-        <operationalProperties>
-                        
-            <modifiesCas>true</modifiesCas>
-                        
-            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-                        
-            <outputsNewCASes>false</outputsNewCASes>
-                    
-        </operationalProperties>
-            
-    </analysisEngineMetaData>
-    
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>TestAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>TestAnnotator</name>
+    <description>Test annotator.</description>
+    <version>1.0-SNAPSHOT</version>
+    <vendor>Apache UIMA</vendor>
+    <copyright>Copyright by the respective authors.</copyright>
+    <configurationParameters />
+    <configurationParameterSettings />
+    <typeSystemDescription>
+      <types>
+        <typeDescription>
+          <name>org.apache.uima.fit.type.CompileType</name>
+          <description />
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+        <typeDescription>
+          <name>org.apache.uima.fit.type.TestType</name>
+          <description />
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+        <typeDescription>
+          <name>org.apache.uima.fit.type.TestType2</name>
+          <description />
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+      </types>
+    </typeSystemDescription>
+    <typePriorities />
+    <fsIndexCollection />
+    <capabilities />
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
 </analysisEngineDescription>
