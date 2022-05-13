@@ -78,7 +78,7 @@ import javassist.bytecode.annotation.StringMemberValue;
  */
 @Mojo(name = "enhance", defaultPhase = PROCESS_CLASSES, requiresDependencyResolution = TEST, requiresDependencyCollection = TEST)
 public class EnhanceMojo extends AbstractMojo {
-  @Component
+  @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
 
   @Component
@@ -187,7 +187,7 @@ public class EnhanceMojo extends AbstractMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
-            new String[] { "class" });
+        new String[] { "class" });
     componentLoader = Util.getClassloader(project, getLog(), includeScope);
 
     // Set up class pool with all the project dependencies and the project classes themselves
@@ -199,7 +199,7 @@ public class EnhanceMojo extends AbstractMojo {
 
     // Determine where to write the missing meta data report file
     File reportFile = new File(project.getBuild().getDirectory(),
-            "uimafit-missing-meta-data-report.txt");
+        "uimafit-missing-meta-data-report.txt");
 
     // Read existing report
     if (generateMissingMetaDataReport) {
@@ -251,7 +251,7 @@ public class EnhanceMojo extends AbstractMojo {
         ctClazz = classPool.get(clazzName);
       } catch (NotFoundException e) {
         throw new MojoExecutionException(
-                "Class [" + clazzName + "] not found in class pool: " + getRootCauseMessage(e), e);
+            "Class [" + clazzName + "] not found in class pool: " + getRootCauseMessage(e), e);
       }
 
       // Get the source file
@@ -289,17 +289,15 @@ public class EnhanceMojo extends AbstractMojo {
         }
       } catch (IOException e) {
         throw new MojoExecutionException(
-                "Enhanced class [" + clazzName + "] cannot be written: " + getRootCauseMessage(e),
-                e);
+            "Enhanced class [" + clazzName + "] cannot be written: " + getRootCauseMessage(e), e);
       } catch (CannotCompileException e) {
         throw new MojoExecutionException(
-                "Enhanced class [" + clazzName + "] cannot be compiled: " + getRootCauseMessage(e),
-                e);
+            "Enhanced class [" + clazzName + "] cannot be compiled: " + getRootCauseMessage(e), e);
       }
     }
 
     getLog().info("Enhanced " + countEnhanced + " class" + (countEnhanced != 1 ? "es" : "") + " ("
-            + countAlreadyEnhanced + " already enhanced).");
+        + countAlreadyEnhanced + " already enhanced).");
 
     if (generateMissingMetaDataReport) {
       // Remove any classes from the report that are no longer part of the build
@@ -312,7 +310,7 @@ public class EnhanceMojo extends AbstractMojo {
 
       if (failOnMissingMetaData && !reportData.isEmpty()) {
         throw new MojoFailureException("Component meta data missing. A report of the missing "
-                + "meta data can be found in " + reportFile);
+            + "meta data can be found in " + reportFile);
       }
     }
   }
@@ -325,7 +323,7 @@ public class EnhanceMojo extends AbstractMojo {
     ConstPool constPool = classFile.getConstPool();
 
     AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile
-            .getAttribute(AnnotationsAttribute.visibleTag);
+        .getAttribute(AnnotationsAttribute.visibleTag);
 
     // Create annotation attribute if it does not exist
     if (annoAttr == null) {
@@ -346,12 +344,12 @@ public class EnhanceMojo extends AbstractMojo {
    * Enhance resource meta data
    */
   private void enhanceResourceMetaData(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz,
-          Multimap<String, String> aReportData) {
+      Multimap<String, String> aReportData) {
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
 
     AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile
-            .getAttribute(AnnotationsAttribute.visibleTag);
+        .getAttribute(AnnotationsAttribute.visibleTag);
 
     // Create annotation attribute if it does not exist
     if (annoAttr == null) {
@@ -364,25 +362,25 @@ public class EnhanceMojo extends AbstractMojo {
       a = new Annotation(ResourceMetaData.class.getName(), constPool);
       // Add a name, otherwise there will be none in the generated descriptor.
       a.addMemberValue("name",
-              new StringMemberValue(ResourceMetaDataFactory.getDefaultName(aClazz), constPool));
+          new StringMemberValue(ResourceMetaDataFactory.getDefaultName(aClazz), constPool));
     }
 
     // Update description from JavaDoc
     String doc = Util.getComponentDocumentation(aAST, aClazz.getName());
     enhanceMemberValue(a, "description", doc, overrideComponentDescription,
-            ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool, aReportData, aClazz);
+        ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool, aReportData, aClazz);
 
     // Update version
     enhanceMemberValue(a, "version", componentVersion, overrideComponentVersion,
-            ResourceMetaDataFactory.getDefaultVersion(aClazz), constPool, aReportData, aClazz);
+        ResourceMetaDataFactory.getDefaultVersion(aClazz), constPool, aReportData, aClazz);
 
     // Update vendor
     enhanceMemberValue(a, "vendor", componentVendor, overrideComponentVendor,
-            ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool, aReportData, aClazz);
+        ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool, aReportData, aClazz);
 
     // Update copyright
     enhanceMemberValue(a, "copyright", componentCopyright, overrideComponentCopyright,
-            ResourceMetaDataFactory.getDefaultCopyright(aClazz), constPool, aReportData, aClazz);
+        ResourceMetaDataFactory.getDefaultCopyright(aClazz), constPool, aReportData, aClazz);
 
     // Replace annotation
     annoAttr.addAnnotation(a);
@@ -404,11 +402,12 @@ public class EnhanceMojo extends AbstractMojo {
    * @param aOverride
    *          set value even if it is already set
    * @param aDefault
-   *          default value set by uimaFIT - if the member has this value, it is considered unset
+   *          default value set by uimaFIT - if the member has this value, it is considered
+   *          unset
    */
   private void enhanceMemberValue(Annotation aAnnotation, String aName, String aNewValue,
-          boolean aOverride, String aDefault, ConstPool aConstPool,
-          Multimap<String, String> aReportData, Class<?> aClazz) {
+      boolean aOverride, String aDefault, ConstPool aConstPool,
+      Multimap<String, String> aReportData, Class<?> aClazz) {
     String value = getStringMemberValue(aAnnotation, aName);
     boolean isEmpty = value.length() == 0;
     boolean isDefault = value.equals(aDefault);
@@ -439,12 +438,12 @@ public class EnhanceMojo extends AbstractMojo {
    * Enhance descriptions in configuration parameters.
    */
   private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz,
-          Multimap<String, String> aReportData) throws MojoExecutionException {
+      Multimap<String, String> aReportData) throws MojoExecutionException {
     // Get the parameter name constants
     Map<String, String> parameterNameFields = getParameterConstants(aClazz,
-            parameterNameConstantPrefixes);
+        parameterNameConstantPrefixes);
     Map<String, String> resourceNameFields = getParameterConstants(aClazz,
-            externalResourceNameConstantPrefixes);
+        externalResourceNameConstantPrefixes);
 
     // Fetch configuration parameters from the @ConfigurationParameter annotations in the
     // compiled class. We only need the fields in the class itself. Superclasses should be
@@ -461,7 +460,7 @@ public class EnhanceMojo extends AbstractMojo {
         pname = ConfigurationParameterFactory.createPrimitiveParameter(field).getName();
         // Extract JavaDoc for this resource from the source file
         pdesc = Util.getParameterDocumentation(aAST, field.getName(),
-                parameterNameFields.get(pname));
+            parameterNameFields.get(pname));
       }
 
       // Is this an external resource?
@@ -471,7 +470,7 @@ public class EnhanceMojo extends AbstractMojo {
         pname = ExternalResourceFactory.createResourceDependency(field).getKey();
         // Extract JavaDoc for this resource from the source file
         pdesc = Util.getParameterDocumentation(aAST, field.getName(),
-                resourceNameFields.get(pname));
+            resourceNameFields.get(pname));
       } else {
         continue;
       }
@@ -487,7 +486,7 @@ public class EnhanceMojo extends AbstractMojo {
       try {
         CtField ctField = aCtClazz.getField(field.getName());
         AnnotationsAttribute annoAttr = (AnnotationsAttribute) ctField.getFieldInfo()
-                .getAttribute(AnnotationsAttribute.visibleTag);
+            .getAttribute(AnnotationsAttribute.visibleTag);
 
         // Locate and update annotation
         if (annoAttr != null) {
@@ -496,19 +495,20 @@ public class EnhanceMojo extends AbstractMojo {
           // Update existing annotation
           for (Annotation a : annotations) {
             if (a.getTypeName()
-                    .equals(org.apache.uima.fit.descriptor.ConfigurationParameter.class.getName())
-                    || a.getTypeName()
-                            .equals(org.apache.uima.fit.descriptor.ExternalResource.class.getName())
-                    || a.getTypeName().equals("org.uimafit.descriptor.ConfigurationParameter")
-                    || a.getTypeName().equals("org.uimafit.descriptor.ExternalResource")) {
+                .equals(org.apache.uima.fit.descriptor.ConfigurationParameter.class.getName())
+                || a.getTypeName()
+                    .equals(org.apache.uima.fit.descriptor.ExternalResource.class.getName())
+                || a.getTypeName().equals("org.uimafit.descriptor.ConfigurationParameter")
+                || a.getTypeName().equals("org.uimafit.descriptor.ExternalResource")) {
               if (a.getMemberValue("description") == null) {
                 a.addMemberValue("description",
-                        new StringMemberValue(pdesc, aCtClazz.getClassFile().getConstPool()));
+                    new StringMemberValue(pdesc, aCtClazz.getClassFile().getConstPool()));
                 getLog().debug("Enhanced description of " + type + " [" + pname + "]");
                 // Replace updated annotation
                 annoAttr.addAnnotation(a);
               } else {
-                // Extract configuration parameter information from the uimaFIT annotation
+                // Extract configuration parameter information from the uimaFIT
+                // annotation
                 // We only want to override if the description is not set yet.
                 getLog().debug("Not overwriting description of " + type + " [" + pname + "] ");
               }
@@ -520,7 +520,7 @@ public class EnhanceMojo extends AbstractMojo {
         ctField.getFieldInfo().addAttribute(annoAttr);
       } catch (NotFoundException e) {
         throw new MojoExecutionException("Field [" + field.getName() + "] not found in byte code: "
-                + ExceptionUtils.getRootCauseMessage(e), e);
+            + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
   }
@@ -552,7 +552,7 @@ public class EnhanceMojo extends AbstractMojo {
         result.put(parameterName, f.getName());
       } catch (IllegalAccessException e) {
         getLog().warn("Unable to access name constant field [" + f.getName() + "]: "
-                + ExceptionUtils.getRootCauseMessage(e), e);
+            + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
     return result;
@@ -563,7 +563,7 @@ public class EnhanceMojo extends AbstractMojo {
       return Util.parseSource(aSourceFile, encoding);
     } catch (IOException e) {
       throw new MojoExecutionException("Unable to parse source file [" + aSourceFile + "]: "
-              + ExceptionUtils.getRootCauseMessage(e), e);
+          + ExceptionUtils.getRootCauseMessage(e), e);
     }
   }
 
@@ -589,7 +589,7 @@ public class EnhanceMojo extends AbstractMojo {
    * Write a report on any meta data missing from components.
    */
   private void writeMissingMetaDataReport(File aReportFile, Multimap<String, String> aReportData)
-          throws MojoExecutionException {
+      throws MojoExecutionException {
     String[] classes = aReportData.keySet().toArray(new String[aReportData.keySet().size()]);
     Arrays.sort(classes);
 
@@ -616,7 +616,7 @@ public class EnhanceMojo extends AbstractMojo {
       }
     } catch (IOException e) {
       throw new MojoExecutionException("Unable to write missing meta data report to [" + aReportFile
-              + "]" + ExceptionUtils.getRootCauseMessage(e), e);
+          + "]" + ExceptionUtils.getRootCauseMessage(e), e);
     } finally {
       IOUtils.closeQuietly(out);
     }
@@ -626,7 +626,7 @@ public class EnhanceMojo extends AbstractMojo {
    * Read the missing meta data report from a previous run.
    */
   private void readMissingMetaDataReport(File aReportFile, Multimap<String, String> aReportData)
-          throws MojoExecutionException {
+      throws MojoExecutionException {
     if (!aReportFile.exists()) {
       // Ignore if the file is missing
       return;
@@ -657,8 +657,7 @@ public class EnhanceMojo extends AbstractMojo {
       }
     } catch (IOException e) {
       throw new MojoExecutionException(
-              "Unable to read missing meta data report: " + ExceptionUtils.getRootCauseMessage(e),
-              e);
+          "Unable to read missing meta data report: " + ExceptionUtils.getRootCauseMessage(e), e);
     } finally {
       LineIterator.closeQuietly(i);
     }
