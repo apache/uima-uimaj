@@ -27,4 +27,6 @@ include::common_book_info.adoc[leveloffset=+1]
 
 include::uv3.one-time-setup.adoc[leveloffset=+1]
 
+include::uv3.project_structure.adoc[leveloffset=+1]
+
 include::uv3.release.adoc[leveloffset=+1]

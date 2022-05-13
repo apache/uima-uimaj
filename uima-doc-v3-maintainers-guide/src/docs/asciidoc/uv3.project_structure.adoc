@@ -1,0 +1,51 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+= Project structure
+
+To keep the folder structure lean so it doesn't dominate the view when looking at a repository in GitHub, the project should conform to the following structure. This should allow the contents of the `README.md` file to still be visible without too much scrolling
+when visiting the project's repository in a web browser.
+
+`README.md` ::
+  Version-independent description of the project
+
+`RELEASE_NOTES.md` ::
+  Specific information about the last release.
+
+`NOTICE.txt` ::
+  Copyright information
+
+`LICENSE.txt` ::
+  License information
+
+`Jenkinsfile` ::
+  Configuration file for building the project on the ASF Jenkins.
+
+`pom.xml` ::
+  Entry point for Maven-based (Java) projects.
+
+`.asf.yaml` ::
+  Configuration file for the ASF GitHub integration.
+
+`.gitignore` / `.gitattributes`` ::
+  Git configuration files as required
+
+`.github` ::
+  GitHub configuration and tempalte files
+
+`src/` ::
+  Folder containing the actual source code.
