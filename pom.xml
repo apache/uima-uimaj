@@ -89,7 +89,7 @@
               <windowtitle>Apache uimaFIT ${project.version} User-Level API Documentation</windowtitle>
               <notimestamp>true</notimestamp>
               <links>
-                <link>http://uima.apache.org/d/uimaj-${uima.version}/apidocs/</link>
+                <link>https://uima.apache.org/d/uimaj-${uima-version}/apidocs/</link>
               </links>
               <groups>
                 <group>
