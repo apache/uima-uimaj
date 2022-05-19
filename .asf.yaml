@@ -18,6 +18,14 @@
 github:
   description: "Apache UIMA uimaFIT"
   homepage: https://uima.apache.org/
+  dependabot_alerts:  true
+  dependabot_updates: false
+  notifications:
+    commits:      commits@uima.apache.org
+    issues:       dev@uima.apache.org
+    pullrequests: dev@uima.apache.org
+    jobs:         dev@uima.apache.org
+    jira_options: link label
   labels:
   - apache
   - uima
@@ -30,3 +38,35 @@ github:
     squash:  true
     merge:   true
     rebase:  false
+  del_branch_on_merge: true
+  protected_branches:
+    main:
+     required_status_checks:
+        strict: true
+        contexts:
+          - continuous-integration/jenkins/pr-merge
+    main-v2:
+     required_status_checks:
+        strict: true
+        contexts:
+          - continuous-integration/jenkins/pr-merge
+    release/2.0.x:
+     required_status_checks:
+        strict: true
+        contexts:
+          - continuous-integration/jenkins/pr-merge
+    release/2.1.x:
+     required_status_checks:
+        strict: true
+        contexts:
+          - continuous-integration/jenkins/pr-merge
+    release/3.0.x:
+     required_status_checks:
+        strict: true
+        contexts:
+          - continuous-integration/jenkins/pr-merge
+    release/3.2.x:
+     required_status_checks:
+        strict: true
+        contexts:
+          - continuous-integration/jenkins/pr-merge
