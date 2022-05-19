@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15-SNAPSHOT</version>
+    <version>15-meep</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -119,20 +119,9 @@
       <name>artifactory.openntf.org</name>
       <url>https://artifactory.openntf.org/openntf</url>
     </pluginRepository>
-
-    <pluginRepository>
-      <id>tycho-snapshots</id>
-      <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
   </pluginRepositories>
 
   <properties>
-    <!-- versions >= 2.7.1 seem to have a bug that they embed bundle JARs -->
-    <tycho-version>2.7.3-SNAPSHOT</tycho-version>
-  
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
@@ -290,52 +279,9 @@
               <!-- default configuration -->
             <configuration>
               <excludes combine.children="append">
-                <exclude>**/.tycho-consumer-pom.xml</exclude>
                 <!-- Eclipse launch files - no need for a license -->
                 <exclude>**/run_configuration/*.launch</exclude>
               </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <!-- 
-            - We do not need the 'org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin' goal 
-            - here because the release plugin automatically commits twice during the 'prepare' phase
-            -->
-          <preparationGoals>
-            org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata
-            org.apache.maven.plugins:maven-scm-plugin:1.9.5:add
-          </preparationGoals>
-          <completionGoals>
-            org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata
-            org.apache.maven.plugins:maven-scm-plugin:1.9.5:add
-          </completionGoals>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-scm-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-cli</id>
-            <goals>
-              <goal>add</goal>
-              <goal>checkin</goal>
-            </goals>
-            <configuration>
-              <includes>
-                uimaj-eclipse-*/META-INF/MANIFEST.MF, 
-                uimaj-eclipse-*/feature.xml, 
-                uimaj-eclipse-*/*.product,
-                uimaj-eclipse-*/category.xml
-              </includes>
-              <excludes>**/target/**</excludes>
-              <message>Changing the Eclipse files versions</message>
             </configuration>
           </execution>
         </executions>
@@ -344,37 +290,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>apache-release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>enforce-java</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireJavaVersion>
-                      <!-- 
-                       - Ensure that releases are made with a Java 1.8 since that's our minimum
-                       - version atm.
-                       -->
-                      <version>[1.8,1.9)</version>
-                    </requireJavaVersion>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <profile>
       <id>jacoco</id>
       <build>
@@ -438,33 +353,6 @@
             </plugin>
           </plugins>
         </pluginManagement>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>tycho-module</id>
-      <activation>
-        <file>
-          <exists>marker-file-identifying-tycho-module</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>tycho-maven-plugin</artifactId>
-            <version>${tycho-version}</version>
-            <extensions>true</extensions>
-          </plugin>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>target-platform-configuration</artifactId>
-            <version>${tycho-version}</version>
-            <configuration>
-              <pomDependencies>consider</pomDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
       </build>
     </profile>
   </profiles>
