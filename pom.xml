@@ -47,7 +47,7 @@
   </scm>
 
   <properties>
-    <jiraVersion>3.3.0SDK</jiraVersion>   
+    <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}SDK</jiraVersion>
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>
