@@ -19,32 +19,17 @@
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
-import org.apache.commons.io.*;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.xmlunit.assertj3.XmlAssert;
 
-try
 {
-	String reference = IOUtils.toString(new File(basedir, 
-		"reference/TestAnnotator.xml").toURI().toURL());
-	String actual = IOUtils.toString(new File(basedir, 
-		"target/classes/TestAnnotator.xml").toURI().toURL());
-
-    // In a local build, I get indented XML but on the Apache Jenkins I get non-indented XML. This
-    // settings tells XMLUnit to ignore this difference in whitespace - rec 2013-02-16
-	XMLUnit.setIgnoreWhitespace(true);
-	Diff diff = XMLUnit.compareXML(reference, actual);
-
-	if (!diff.identical()) {
-        System.out.println("Actual descriptor does not match expected descriptor: " + diff);
-        return false;
-	}	
-}
-catch( Throwable t )
-{
-    t.printStackTrace();
-    return false;
+  File reference = new File(basedir, "reference/TestAnnotator.xml");
+  File actual = new File(basedir, "target/classes/TestAnnotator.xml");
+  
+  // In a local build, I get indented XML but on the Apache Jenkins I get non-indented XML. This
+  // settings tells XMLUnit to ignore this difference in whitespace - rec 2013-02-16
+  System.out.println("Comparing expected ["+reference+"] vs actual ["+actual+"]");
+  XmlAssert.assertThat(actual).and(reference)
+    .ignoreComments().normalizeWhitespace().areIdentical();
 }
 
 return true;
