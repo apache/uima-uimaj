@@ -109,7 +109,7 @@ Running the mvn release... command will cause this report to be generated or upd
 ====
 * {empty}
 +
-.Update API comparison version in POM
+.Update API reference version in POM
 [%collapsible]
 ====
 Update the parent-pom settings for API change reports setting `api_check_old_version` to the correct previous version to use.
@@ -217,10 +217,12 @@ If you forget something and close the staging repository too soon, just continue
 ====
 * {empty}
 +
-.Upload artifacts from `target/checkout/target` to a subdirectory of the release staging spot
+.Check that files have been auto-staged (or stage manually)
 [%collapsible]
 ====
-We have a spot at https://dist.apache.org/repos/dist/dev/uima/ for all the artifacts to be released via the Apache mirror system. This is where you put the release candidates.
+We have a spot at https://dist.apache.org/repos/dist/dev/uima/ for staging all the release candidate artifacts to be later fully released via the Apache mirror system.
+
+The UIMA Parent POM offsets an auto-staging mechanism for release candidate artifacts that you should use. If it is not usable for you, then you have to stage the artifacts manually.
 
 Be sure to copy artifacts from the build-from tag spot, which should have a path like: `...[top level project]/target/checkout/target`. Note this is **NOT** from `[top level project]/target`. Doing this will guarantee that you're posting the artifacts built from the tag (which could be different from the `release:prepare` build in /target if someone snuck in a svn commit at the right moment.)
 
@@ -235,28 +237,28 @@ Do not add files like POMs which have line-endings, if they have signatures; the
 ====
 * {empty}
 +
-.Update the version in the `uimaj-eclipse-update-site`
+.Update the version in the `uimaj-eclipse-update-site` **(deprecated)**
 [%collapsible]
 ====
-FIXME: Eclipse update site process needs updating...
+**Deprecated:** Use Tycho instead to build update sites along with every regular build.
 
 For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
 ====
 * {empty}
 +
-.Set `dropPrevVersions` to `true` in the `uimaj-eclipse-update-site` POM
+.Set `dropPrevVersions` to `true` in the `uimaj-eclipse-update-site` POM **(deprecated)**
 [%collapsible]
 ====
-FIXME: Eclipse update site process needs updating...
+**Deprecated:** Use Tycho instead to build update sites along with every regular build.
 
 For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
 ====
 * {empty}
 +
-.Build the `uimaj-eclipse-update-site` module with {{-Papache-release}}
+.Build the `uimaj-eclipse-update-site` module with {{-Papache-release}} **(deprecated)**
 [%collapsible]
 ====
-FIXME: needs update!
+**Deprecated:** Use Tycho instead to build update sites along with every regular build.
 
 For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
 
@@ -274,9 +276,11 @@ If you changed the composite site, bump up the version of .../build/uima-eclipse
 ====
 * {empty}
 +
-.Upload the update site to a subdirectory of the release staging spot and *commit* (*Caution:* the update site contains a `.svn` folder that needs to be removed!)
+.Upload the update site to a subdirectory of the release staging spot and *commit* (*Caution:* the update site contains a `.svn` folder that needs to be removed!)  **(deprecated)**
 [%collapsible]
 ====
+**Deprecated:** Use auto-staging instead.
+
 FIXME: Eclipse update site process needs updating...
 
 For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
