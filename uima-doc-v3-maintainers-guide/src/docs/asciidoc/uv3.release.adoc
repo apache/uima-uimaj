@@ -47,10 +47,10 @@ Our development branches (i.e. `main` and `maintenance/*`) should be protected, 
 ====
 * {empty}
 +
-.Update `README` file
+.Update `README.md` file
 [%collapsible]
 ====
-Make sure that any README files have been updated with the latest release information and release numbers.
+If `README.md` file contains version references, update them. E.g. if you have a Maven dependency snippet in there. Optimally, the `README.md` file should not have any contents that need to change from version to version.
 ====
 * {empty}
 +
@@ -77,9 +77,18 @@ The Maven release plugin will complain if there are still any `SNAPSHOT` depende
 ====
 * {empty}
 +
-.Update Jira version in POM for fixed-issues report
+.Update Jira version in POM for fixed-issues report **(deprecated)**
 [%collapsible]
 ====
+**Deprecated**
+
+Set the property to based on version variables to avoid having to update it every time.
+
+    <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}SUFFIX</jiraVersion>
+
+
+----
+
 Edit the POM of the top level thing being released, to add the property:
 
 ----

@@ -17,8 +17,9 @@
 
 = Project structure
 
-To keep the folder structure lean so it doesn't dominate the view when looking at a repository in GitHub, the project should conform to the following structure. This should allow the contents of the `README.md` file to still be visible without too much scrolling
-when visiting the project's repository in a web browser.
+// REC: The following may not be necessary if we simply add `#readme` to all links to the repo e.g. in the documentation and on the website
+// To keep the folder structure lean so it doesn't dominate the view when looking at a repository in GitHub, the project should conform to the following structure. This should allow the contents of the `README.md` file to still be visible without too much scrolling when visiting the project's repository in a web browser.
+
 
 `README.md` ::
   Version-independent description of the project
@@ -47,5 +48,5 @@ when visiting the project's repository in a web browser.
 `.github` ::
   GitHub configuration and tempalte files
 
-`src/` ::
-  Folder containing the actual source code.
+// `src/` ::
+//   Folder containing the actual source code.
