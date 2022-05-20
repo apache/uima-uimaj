@@ -32,7 +32,7 @@
     <relativePath>uimafit-parent</relativePath>
   </parent>
   <properties>
-    <jiraVersion>3.2.0uimaFIT</jiraVersion>
+    <jiraVersion>3.3.0uimaFIT</jiraVersion>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
@@ -145,29 +145,34 @@
     <module>uimafit-benchmark</module>
     <module>uimafit-parent</module>
   </modules>
-
+  
   <profiles>
     <profile>
       <id>apache-release</id>
+
       <build>
-        <!-- Run jira report -->
-        <!-- depends on having -DjiraVersion set -->
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <version>2.11</version>
+            <artifactId>maven-antrun-plugin</artifactId>
             <inherited>false</inherited>
             <executions>
               <execution>
-                <id>default-cli</id>
+                <phase>install</phase>
                 <goals>
-                  <goal>jira-report</goal>
+                  <goal>run</goal>
                 </goals>
-                <phase>generate-resources</phase>
                 <configuration>
-                  <fixVersionIds>${jiraVersion}</fixVersionIds>
-                  <component>uimaFIT,uimaFIT-Maven-Plugin</component>
+                  <target>
+                    <mkdir dir="${staging-local-root}/${staging-folder}" />
+                    <copy todir="${staging-local-root}/${staging-folder}">
+                      <fileset dir="${project.build.directory}">
+                        <include name="uimafit-${project.version}-*.zip" />
+                        <include name="uimafit-${project.version}-*.zip.asc" />
+                        <include name="uimafit-${project.version}-*.zip.sha512" />
+                      </fileset>
+                    </copy>
+                  </target>
                 </configuration>
               </execution>
             </executions>
