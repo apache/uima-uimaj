@@ -24,39 +24,47 @@ Additionally, you have to add an execution to your project's root Maven POM that
 Below is an example of how to copy the release artifacts to the local staging spot. The variables `${staging-local-root}` and `${staging-folder}` are provided by the UIMA Parent POM.
 
     <profiles>
-        <profile>
+      <profile>
         <id>apache-release</id>
         <build>
-            <plugins>
+          <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <inherited>false</inherited>
+              <executions>
                 <execution>
-                    <phase>install</phase>
-                    <goals>
+                  <phase>install</phase>
+                  <goals>
                     <goal>run</goal>
-                    </goals>
-                    <configuration>
+                  </goals>
+                  <configuration>
                     <target>
-                        <mkdir dir="${staging-local-root}/${staging-folder}" />
-                        <copy todir="${staging-local-root}/${staging-folder}">
+                      <mkdir dir="${staging-local-root}/${staging-folder}" />
+                      <copy todir="${staging-local-root}/${staging-folder}">
                         <fileset dir="${project.build.directory}">
-                            <include name="uimafit-${project.version}-*.zip" />
-                            <include name="uimafit-${project.version}-*.zip.asc" />
-                            <include name="uimafit-${project.version}-*.zip.sha512" />
+                          <include name="uimafit-${project.version}-*.zip" />
+                          <include name="uimafit-${project.version}-*.zip.asc" />
+                          <include name="uimafit-${project.version}-*.zip.sha512" />
                         </fileset>
-                        </copy>
+                      </copy>
                     </target>
-                    </configuration>
+                  </configuration>
                 </execution>
-                </executions>
+              </executions>
             </plugin>
-            </plugins>
+          </plugins>
         </build>
-        </profile>
+      </profile>
     </profiles>
+
+Also, it is necessary to add credentials to the `settings.xml` for the server to which the release candidate artifacts are staged. Normally, the server is `dist.apache.org`, so you need to add an entry such as e.g. 
+
+    <server>
+      <id>dist.apache.org</id>
+      <username>USERNAME</username>
+      <password>ENCRYPTED_PASSWORD</password>
+    </server>
 
 To test the auto-staging mechanism, you can set up a local Subversion repository and then run a build that skips the Maven Deploy Plugin and which is configured to use your local Subversion repo for auto-staging:
 
