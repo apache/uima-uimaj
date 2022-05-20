@@ -334,14 +334,83 @@ Thanks.
 ====
 * {empty}
 +
-.VOTE (wait at least for 72 hours, at least 3 +1 votes required for release)
+.Mandatory release candidate signatures and hashes validation
+[%collapsible]
+====
+**Before casting +1 binding votes, individuals are REQUIRED to download all signed source code packages onto their own hardware, verify that they meet all requirements of ASF policy on releases as described below, validate all cryptographic signatures, compile as provided, and test the result on their own platform.**
+
+.Create a release candidate validation folder
+----
+% mkdir rc-validation
+% cd rc-validation
+----
+
+First we fetch the staged artifacts from the ASF staging spot as well as from the ASF Maven staging repository. If there is an Eclipse update site, it should be included under the ASF staging spot.
+
+.Fetch artifacts
+----
+% svn co https://dist.apache.org/repos/dist/dev/uima/RELEASE-CANDIDATE-ID
+% lftp -e "mirror org; exit" https://repository.apache.org/content/repositories/STAGING-REPO-ID
+----
+
+.Check GPG signatures
+----
+% find org -not '(' -name '*.md5' -or -name '*.sha*' -or -name '*.asc' -or -name 'maven-metadata.xml'  ')' -type f -print0 | xargs -I '{}' -0 -n1 gpg --verify '{}'.asc '{}'
+----
+
+.Check SHA512 hashes
+----
+% find . -name "*.sha512" -print0 | xargs -n1 -0 -I '{}' zsh -c 'cd `dirname {}`; sha512sum -c `basename {}`'
+----
+
+Checking SHA1/MD5 is a bit tedious because the hashsum files do not contain the filename and so the `sha1sum` and `md5sum` checking functionality does not work. We have to do set up a little script to help us.
+
+.Check SHA1/MD5 hashes
+----
+% cat > checkHashes.sh <ENTER>
+tmp="$(mktemp /tmp/tmp.XXXXXXXXXX)"
+md5hash=`cat $1.md5`
+sha1hash=`cat $1.sha1`
+echo "$sha1hash $1" > "$tmp"
+printf "SHA1 "
+sha1sum -c "$tmp"
+echo "$md5hash $1" > "$tmp"
+printf "MD5  "
+md5sum -c "$tmp"
+rm "$tmp"
+<CTRL-D>
+
+% chmod +x checkHashes.sh
+
+% find org -not '(' -name '*.md5' -or -name '*.sha*' -or -name '*.asc' -or -name 'maven-metadata.xml'  ')' -type f -print0 | xargs -I '{}' -0 -n1 ./checkHashes.sh '{}'
+
+% rm checkHashes.sh
+----
+
+For more information on the ASF release policy, please see the official link:https://www.apache.org/legal/release-policy.html[Release Policy] document.
+====
+* {empty}
++
+.Additional release quality checking
+[%collapsible]
+====
+* Check the issues-fixed report
+* Check the release notes
+* Run a local build from the sources zip
+* Install plugins into Eclipse
+* Try out an example
+* ...
+====
+* {empty}
++
+.Vote
 [%collapsible]
 ====
 See also https://www.apache.org/foundation/voting.html
 ====
 * {empty}
 +
-.Post vote results to the developer mailing list (sign mail using same GPG key that was used to sign release)
+.Close vote and post vote results to the developer mailing list (wait at least for 72 hours, at least 3 +1 votes required for release, sign mail using same GPG key that was used to sign release)
 [%collapsible]
 ====
 .Example vote results mail
