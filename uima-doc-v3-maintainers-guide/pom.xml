@@ -17,7 +17,9 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -27,9 +29,9 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>uima-doc-v3-users-guide</artifactId>
+  <artifactId>uima-doc-v3-maintainers-guide</artifactId>
   <packaging>pom</packaging>
-  <name>Apache UIMA SDK Documentation - Version 3 User's Guide</name>
+  <name>Apache UIMA SDK Documentation - Version 3 Maintainer's Guide</name>
   <url>${uimaWebsiteUrl}</url>
 
   <properties>
@@ -73,7 +75,7 @@
           </execution>
         </executions>
         <configuration>
-          <sourceDocumentName>version_3_users_guide.adoc</sourceDocumentName>
+          <sourceDocumentName>version_3_maintainers_guide.adoc</sourceDocumentName>
           <outputDirectory>${project.build.directory}/site/d</outputDirectory>
           <attributes>
             <doctype>book</doctype>
@@ -82,9 +84,12 @@
             <docinfo1>true</docinfo1>
             <project-version>${project.version}</project-version>
             <revnumber>${project.version}</revnumber>
-            <product-name>Apache UIMA Version 3 User's Guide</product-name>
+            <product-name>Apache UIMA Version 3 Maintainer's Guide</product-name>
             <product-website-url>https://uima.apache.org</product-website-url>
             <icons>font</icons>
+            <experimental>true</experimental>
+            <linkcss>false</linkcss>
+            <copycss>true</copycss>
           </attributes>
           <requires>
             <require>asciidoctor-pdf</require>
