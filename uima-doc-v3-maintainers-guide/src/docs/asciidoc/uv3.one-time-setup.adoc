@@ -17,7 +17,7 @@
 
 = Maintainer Setup
 
-== Java
+== Platform: Java
 
 Most Apache UIMA code is written in Java. To build it, you need a recent Java Development Kit (JDK) which can be obtained from the link:https://adoptium.net[Eclipse Adoptium] project - but there are also plenty of other JDK vendors offering free JDKs (or even ones with commercial support).
 
@@ -47,3 +47,31 @@ You can download the latest Maven version from https://maven.apache.org/download
 * Download the latest Apache Maven from .
 * Set up your `PATH`` to use this version.
 * (Optional, but is needed for some JVM/platforms, to give the JVM enough room to build things). Set the environment variable `MAVEN_OPTS` to `-Xmx800m  -XX:MaxPermSize=256m`
+
+=== Maven toolchains
+
+To ensure that an Apache UIMA build is actually compatible with the minimum system 
+requirements, it is important to build it against a minimum requirements environment.
+However, it is possible that Maven or plugins we use no longer are able to run on the
+same minimum system requirements that Apache UIMA aims to meet and thus for building,
+you may need e.g. a never Java version. To ensure that we can still build against
+the desired target environment, we use the link:https://maven.apache.org/plugins/maven-toolchains-plugin/[Maven Toolchains Plugin].
+
+Using this plugin requires that you have a `toolchains.xml` file, typically in your
+`~/.m2` folder. This file should contains at least a toolchain declaration for the
+Apache UIMA minimum Java version, e.g.:
+
+.Example `toolchains.xml` file
+----
+<toolchains>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8</version>
+    </provides>
+    <configuration>
+      <jdkHome>/PATH/TO/A/JDK_1_8/INSTALLATION</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>
+----
