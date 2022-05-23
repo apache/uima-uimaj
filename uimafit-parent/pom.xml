@@ -43,7 +43,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <api_check_oldVersion>3.2.0</api_check_oldVersion>
-  
+
     <assertj-version>3.22.0</assertj-version>
     <commons-io-version>2.11.0</commons-io-version>
     <commons-lang3-version>3.12.0</commons-lang3-version>
@@ -87,7 +87,7 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -226,6 +226,24 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>${maven.compiler.target}</version>
+            </jdk>
+          </toolchains>
+        </configuration>
+      </plugin>
+      <plugin>
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6351 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
@@ -277,7 +295,7 @@
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>
+              <source><![CDATA[
                 def noticeFile = new File(project.basedir.path + "/NOTICE");
                 if (noticeFile.exists()) {
                   project.properties.postNoticeText = noticeFile.text;
@@ -285,7 +303,7 @@
                 } else {
                   println "No NOTICE file was found - content not loaded into property [postNoticeText]"
                 }
-              </source>
+              ]]></source>
             </configuration>
           </execution>
         </executions>
