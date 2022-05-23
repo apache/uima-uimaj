@@ -34,6 +34,11 @@
   <description>UIMA Eclipse Plugin Feature for base uima tooling</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <properties>
+    <!-- https://issues.apache.org/jira/browse/UIMA-6462 -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.uima</groupId>
