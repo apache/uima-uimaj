@@ -239,6 +239,24 @@
 
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>${maven.compiler.target}</version>
+            </jdk>
+          </toolchains>
+        </configuration>
+      </plugin>
+      <plugin>
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
