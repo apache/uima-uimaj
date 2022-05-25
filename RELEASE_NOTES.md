@@ -1,43 +1,49 @@
-Apache uimaFIT (TM) v3.2.0
+Apache uimaFIT (TM) v3.3.0
 ==========================
 
-What's New in 3.2.0
--------------------
+This is a feature and bugfix release. 
 
-uimaFIT 3.2.0 is a feature and bugfix release. On supported platforms, it serves mostly as 
-a drop-in replacement for previous uimaFIT 3.x versions. However, the behavior of the various
-select methods was slightly adapted in edge cases to align with the update behavior of the UIMA Java
-SDK SelectFS API.  For details, please refer to the migration section in the documentation in the
-Apache UIMA Java SDK 3.2.0.
+## Notable changes in this release
 
-Notable changes in this release include:
+### New Features and improvements
 
-#### New Features and improvements
+* [UIMA-6431] - Use lambda functions as CAS processors
+* [UIMA-6422] - `FSUtil.setFeature()` should offer signatures that accept a Feature
+* [UIMA-6392] - Better delegate key generation in aggregate engine
+* [UIMA-6424] - Upgrade uimaFIT to JUnit 5
+* [UIMA-6426] - Upgrade to UIMA Java SDK 3.3.0
+* [UIMA-6432] - Upgrade dependencies (uimaFIT 3.3.0)
 
-* [UIMA-6242] - uimaFIT Maven plugin should fail on error by default
-* [UIMA-6263] - CAS validation support
-* [UIMA-6270] - Add selectOverlapping to (J)CasUtil
-* [UIMA-6311] - Add generated resources output folder as resource folder
-* [UIMA-6312] - Better PEAR parameter support
-* [UIMA-6232] - Reduce overhead of createTypeSystemDescription() and friends
+### Bugs fixed
 
-#### Bugs fixed
-
-* [UIMA-6226] - uimaFIT maven plugin "generate" fails to import type systems from dependencies
-* [UIMA-6240] - Failure to resolve type system imports when generating descriptors
-* [UIMA-6275] - InitializableFactory is not smart enough to find a suitable classloader
-* [UIMA-6286] - select following finds zero-width annotation at reference end position
-* [UIMA-6292] - selectCovering is slow
-* [UIMA-6294] - SelectFS.at(annotation) does not return the correct result
-* [UIMA-6314] - Align preceding/following with predicate in UIMA core
-
+* [UIMA-6384] - Parallelism argument in `CpePipeline` is ignored
+* [UIMA-6385] - Potential resource key clash in environments with multiple classloaders
+* [UIMA-6391] - `CpePipeline` should kill CPE if reader throws exception
+* [UIMA-6396] - uimaFIT maven plugin mixes up test and compile scopes
+* [UIMA-6417] - Problems setting numeric parameter values
+* [UIMA-6446] - Complexities around enhancing classes with their resource name
  
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
-  https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.2.0uimaFIT
+  https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.0uimaFIT
 
+### API changes
 
-Supported Platforms
--------------------
+#### Inheritance of `@ResourceMetaData`
 
-uimaFIT 3.2.0 requires Java 1.8 or higher, UIMA 3.2.0 or higher, and the Spring Framework 4.3.30 or higher.
+The `@ResourceMetaData` is no longer "inherited" by sub-classes of the annotated component class (cf.
+UIMA-6446).
+
+#### JUnit upgrade
+
+The JUnit module has been upgraded from JUnit 4 to JUnit 5 along with the rest of the test code
+switching to JUnit 5. If you use the unit test helpers from this module, you also have to upgrade
+your tests to JUnit 5.
+
+### Supported Platforms
+
+uimaFIT 3.3.0 should be used in combination with 
+
+* Java 1.8 or higher
+* UIMA Java SDK 3.3.0 or higher
+* Spring Framework 5.3.20 or higher
