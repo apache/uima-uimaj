@@ -38,6 +38,7 @@ There is no fixed release schedule. Anybody may ask for the preparation of a new
 
 === Preparations
 
+[no-bullet]
 * {empty}
 +
 .Create release issue and release preparation branch 
@@ -126,6 +127,7 @@ NOTE: There may be a generation process involved. E.g. in the UIMA Java SDK, the
 
 === Building
 
+[no-bullet]
 * {empty}
 +
 .Clean local m2 repository
@@ -201,6 +203,7 @@ Note that any JARs, Zips, Tars, tar.gz artifacts must be signed by the Release M
 
 === Staging
 
+[no-bullet]
 * {empty}
 +
 .Close the staging repository at http://repository.apache.org/
@@ -288,6 +291,7 @@ For a general background on how we build P2 sites, including Composite update si
 
 === Voting
 
+[no-bullet]
 * {empty}
 +
 .Call for a vote on the developer mailing list using the email template below
@@ -442,6 +446,7 @@ Thanks to all who voted!
 
 === Publishing
 
+[no-bullet]
 * {empty}
 +
 .Copy the release artifacts from the staging spot to the dist spot in SVN
