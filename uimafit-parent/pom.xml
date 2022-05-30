@@ -25,7 +25,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15-SNAPSHOT</version>
+    <version>15</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
   <version>3.3.0-SNAPSHOT</version>
@@ -50,43 +50,11 @@
     <junit-version>5.8.2</junit-version>
     <groovy-version>3.0.10</groovy-version>
     <mockito-version>4.4.0</mockito-version>
-    <spring-version>5.3.19</spring-version>
+    <spring-version>5.3.20</spring-version>
     <slf4j-version>1.7.36</slf4j-version>
     <uima-version>3.3.0</uima-version>
     <xmlunit-version>2.9.0</xmlunit-version>
   </properties>
-  <repositories>
-    <!--
-      - For UIMA/uimaFIT SNAPSHOTs
-      -->
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <!--
-      - For UIMA/uimaFIT SNAPSHOTs
-      -->
-    <pluginRepository>
-      <id>apache.snapshots.plugins</id>
-      <name>Apache Snapshot Repository - Maven plugins</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <dependency>
