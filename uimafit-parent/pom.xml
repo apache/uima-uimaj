@@ -55,38 +55,6 @@
     <uima-version>3.3.0</uima-version>
     <xmlunit-version>2.9.0</xmlunit-version>
   </properties>
-  <repositories>
-    <!--
-      - For UIMA/uimaFIT SNAPSHOTs
-      -->
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <!--
-      - For UIMA/uimaFIT SNAPSHOTs
-      -->
-    <pluginRepository>
-      <id>apache.snapshots.plugins</id>
-      <name>Apache Snapshot Repository - Maven plugins</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <dependency>
@@ -247,7 +215,7 @@
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6351 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.3</version>
+        <version>0.15.7</version>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
