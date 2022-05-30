@@ -247,7 +247,7 @@
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6351 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.7</version>
+        <version>0.15.3</version>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
