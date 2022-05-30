@@ -46,4 +46,4 @@ uimaFIT 3.3.0 should be used in combination with
 
 * Java 1.8 or higher
 * UIMA Java SDK 3.3.0 or higher
-* Spring Framework 5.3.19 or higher
+* Spring Framework 5.3.20 or higher
