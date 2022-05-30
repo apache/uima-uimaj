@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15-SNAPSHOT</version>
+    <version>15</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
