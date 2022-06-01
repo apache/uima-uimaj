@@ -186,6 +186,11 @@ public class JCasFeatureOffsetTest {
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
       synchronized (getClassLoadingLock(name)) {
+        Class<?> alreadyLoadedClazz = findLoadedClass(name);
+        if (alreadyLoadedClazz != null) {
+          return alreadyLoadedClazz;
+        }
+
         Class<?> clazz = getParent().loadClass(name);
 
         if (!TOP.class.isAssignableFrom(clazz)) {
