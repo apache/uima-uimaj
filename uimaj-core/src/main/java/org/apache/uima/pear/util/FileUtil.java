@@ -64,13 +64,16 @@ import org.apache.uima.util.impl.Constants;
  * The <code>FileUtil</code> class provides utility methods for working with general files.
  */
 public class FileUtil {
+  private static final char DOT = '.';
   private static final String UTF8_ENCODING = "UTF-8";
   private static final String ASCII_ENCODING = "ASCII";
-  private static final String XML_EXTENSION = ".xml";
-  private static final String BACKUP_EXTENSION = ".bak";
-  private static final String ZIP_EXTENSION = ".zip";
-  private static final char UNIX_SEPARATOR = '/';
-  private static final char WINDOWS_SEPARATOR = '\\';
+  private static final String XML_EXTENSION = DOT + "xml";
+  private static final String BACKUP_EXTENSION = DOT + "bak";
+  private static final String ZIP_EXTENSION = DOT + "zip";
+  private static final char UNIX_SEPARATOR_CHAR = '/';
+  private static final char WINDOWS_SEPARATOR_CHAR = '\\';
+  private static final String UNIX_SEPARATOR = String.valueOf(UNIX_SEPARATOR_CHAR);
+  private static final String WINDOWS_SEPARATOR = String.valueOf(WINDOWS_SEPARATOR_CHAR);
 
   /**
    * The <code>FileTimeComparator</code> class allows comparing 'last modified' time in 2 given
@@ -122,7 +125,8 @@ public class FileUtil {
      *          The given file extension.
      */
     public DirFileFilter(String dirPath, String fileExt) {
-      _dirPath = (dirPath != null) ? dirPath.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR) : null;
+      _dirPath = (dirPath != null) ? dirPath.replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR)
+              : null;
       if (fileExt != null) {
         _fileExt = fileExt.startsWith(".") ? fileExt.toLowerCase() : "." + fileExt.toLowerCase();
       } else {
@@ -142,7 +146,8 @@ public class FileUtil {
       if (_dirPath != null) {
         String parentDir = file.getParent();
         dirAccepted = parentDir != null
-                && parentDir.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR).startsWith(_dirPath);
+                && parentDir.replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR)
+                        .startsWith(_dirPath);
       }
       if (_fileExt != null) {
         extAccepted = file.getPath().toLowerCase().endsWith(_fileExt);
@@ -165,7 +170,7 @@ public class FileUtil {
      *          The given file name for filtering.
      */
     public NameFileFilter(String fileName) {
-      _fileName = fileName.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+      _fileName = fileName.replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR);
     }
 
     /**
@@ -175,11 +180,11 @@ public class FileUtil {
      */
     @Override
     public boolean accept(File file) {
-      String filePath = file.getAbsolutePath().replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+      String filePath = file.getAbsolutePath().replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR);
       if (filePath.endsWith(_fileName)) {
         if (filePath.length() > _fileName.length()) {
           char prevChar = filePath.charAt(filePath.length() - _fileName.length() - 1);
-          if (prevChar == ':' || prevChar == UNIX_SEPARATOR) {
+          if (prevChar == ':' || prevChar == UNIX_SEPARATOR_CHAR) {
             return true;
           }
         } else {
@@ -348,6 +353,14 @@ public class FileUtil {
     return counter;
   }
 
+  private static String normalizeToUnix(String aPath) {
+    if (aPath == null) {
+      return null;
+    }
+
+    return aPath.replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR);
+  }
+
   /**
    * Computes relative path to a given file from a given reference directory, if both the reference
    * directory and the file are in the same logical file system (partition).
@@ -364,17 +377,15 @@ public class FileUtil {
    */
   public static String computeRelativePath(File referenceDir, File file) throws IOException {
     // get canonical path expressions
-    String refPath = referenceDir.getCanonicalPath().replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
-    String filePath = file.getCanonicalPath().replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+    String refPath = normalizeToUnix(referenceDir.getCanonicalPath());
+    String filePath = normalizeToUnix(file.getCanonicalPath());
     // compute relative path from reference dir to file dir-tree
     StringBuffer relBuffer = new StringBuffer();
     while (refPath != null && !filePath.startsWith(refPath)) {
       relBuffer.append("../");
-      refPath = (new File(refPath)).getParent();
-      if (refPath != null) {
-        refPath = refPath.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
-      }
+      refPath = normalizeToUnix((new File(refPath)).getParent());
     }
+
     if (refPath != null) {
       // construct relative path
       String subPath = filePath.substring(refPath.length());
@@ -513,7 +524,7 @@ public class FileUtil {
   public static Collection<File> createDirList(JarFile archive) throws IOException {
     ArrayList<File> listOfDirs = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
-    int nameEndIndex = archive.getName().lastIndexOf('.');
+    int nameEndIndex = archive.getName().lastIndexOf(DOT);
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
             : archive.getName();
     File rootDir = new File(rootDirPath);
@@ -601,7 +612,7 @@ public class FileUtil {
   public static Collection<File> createFileList(JarFile archive) throws IOException {
     ArrayList<File> listOfFiles = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
-    int nameEndIndex = archive.getName().lastIndexOf('.');
+    int nameEndIndex = archive.getName().lastIndexOf(DOT);
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
             : archive.getName();
     File rootDir = new File(rootDirPath);
@@ -756,33 +767,49 @@ public class FileUtil {
           throws IOException {
     long totalBytes = 0;
     byte[] block = new byte[4096];
+
+    String prefix = normalizeToUnix(targetDir.getCanonicalPath());
+    if (!prefix.endsWith(UNIX_SEPARATOR)) {
+      prefix = prefix + UNIX_SEPARATOR_CHAR;
+    }
+
     Enumeration<JarEntry> jarList = jarFile.entries();
     while (jarList.hasMoreElements()) {
       JarEntry jarEntry = jarList.nextElement();
-      if (!jarEntry.isDirectory()) {
-        // check that file is accepted
-        if (filter != null && !filter.accept(new File(jarEntry.getName()))) {
-          continue;
-        }
-        // extract file
-        File file = new File(targetDir, jarEntry.getName());
-        // make sure the file directory exists
-        File dir = file.getParentFile();
-        if (!dir.exists() && !dir.mkdirs()) {
-          throw new IOException("could not create directory " + dir.getAbsolutePath());
-        }
-        try (BufferedInputStream iStream = new BufferedInputStream(
-                jarFile.getInputStream(jarEntry));
-                BufferedOutputStream oStream = new BufferedOutputStream(
-                        new FileOutputStream(file))) {
-          int bCount = 0;
-          while ((bCount = iStream.read(block)) > 0) {
-            totalBytes += bCount;
-            oStream.write(block, 0, bCount);
-          }
+      if (jarEntry.isDirectory()) {
+        continue;
+      }
+
+      // check that file is accepted
+      if (filter != null && !filter.accept(new File(jarEntry.getName()))) {
+        continue;
+      }
+
+      // make sure the file directory exists
+      File file = new File(targetDir, jarEntry.getName());
+
+      if (!normalizeToUnix(file.getCanonicalPath()).startsWith(prefix)) {
+        throw new IOException(
+                "Can only write within target folder [" + targetDir.getAbsolutePath()
+                        + "]. Please validate ZIP contents.");
+      }
+
+      File dir = file.getParentFile();
+      if (!dir.exists() && !dir.mkdirs()) {
+        throw new IOException("Could not create directory [" + dir.getAbsolutePath() + "]");
+      }
+
+      // extract file
+      try (BufferedInputStream iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
+              BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(file))) {
+        int bCount = 0;
+        while ((bCount = iStream.read(block)) > 0) {
+          totalBytes += bCount;
+          oStream.write(block, 0, bCount);
         }
       }
     }
+
     return totalBytes;
   }
 
@@ -810,9 +837,9 @@ public class FileUtil {
    */
   public static String getFileNameExtension(String fileName) {
     StringBuffer buffer = new StringBuffer();
-    int begIndex = fileName.lastIndexOf('.');
+    int begIndex = fileName.lastIndexOf(DOT);
     if (begIndex > 0) {
-      buffer.append('.');
+      buffer.append(DOT);
       for (int i = begIndex + 1; i < fileName.length(); i++) {
         char ch = fileName.charAt(i);
         if (Character.isLetterOrDigit(ch)) {
@@ -865,8 +892,8 @@ public class FileUtil {
    * @return The relative path of the given object, located in the given root directory.
    */
   public static String getRelativePath(File rootDir, String absolutePath) {
-    String rootDirPath = rootDir.getAbsolutePath().replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
-    String objectPath = absolutePath.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+    String rootDirPath = normalizeToUnix(rootDir.getAbsolutePath());
+    String objectPath = normalizeToUnix(absolutePath);
     if (objectPath.startsWith(rootDirPath)) {
       objectPath = objectPath.substring(rootDirPath.length());
     }
@@ -1037,7 +1064,7 @@ public class FileUtil {
   public static Properties loadPropertiesFromJar(String propFilePath, JarFile jarFile)
           throws IOException {
     Properties properties = null;
-    String name = propFilePath.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+    String name = normalizeToUnix(propFilePath);
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
       try (InputStream iStream = jarFile.getInputStream(jarEntry)) {
@@ -1156,7 +1183,7 @@ public class FileUtil {
    */
   public static String loadTextFileFromJar(String filePath, JarFile jarFile) throws IOException {
     String content = null;
-    String name = filePath.replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+    String name = normalizeToUnix(filePath);
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
       try (BufferedReader iStream = new BufferedReader(
@@ -1177,7 +1204,7 @@ public class FileUtil {
   public static String localPathToFileUrl(String path) {
     // get absolute path
     File file = new File(path);
-    String absPath = file.getAbsolutePath().replace(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+    String absPath = normalizeToUnix(file.getAbsolutePath());
     // construct file URL
     StringBuffer urlBuffer = new StringBuffer("file:///");
     urlBuffer.append(absPath.replace(':', '|'));
@@ -1238,7 +1265,7 @@ public class FileUtil {
     // for general text file - supporting ASCII encoding only
     String encoding = ASCII_ENCODING;
     // check file extension
-    int extIndex = textFile.getName().lastIndexOf('.');
+    int extIndex = textFile.getName().lastIndexOf(DOT);
     String fileExt = (extIndex > 0) ? textFile.getName().substring(extIndex) : null;
     if (XML_EXTENSION.equalsIgnoreCase(fileExt)) {
       // for XML file - supporting UTF-8 (ASCII) and UTF-16 encodings
@@ -1434,7 +1461,7 @@ public class FileUtil {
   public static File zipFile(File file2zip) throws IOException {
     // construct zipped file path
     String zipFileName = file2zip.getName();
-    int extIndex = zipFileName.lastIndexOf('.');
+    int extIndex = zipFileName.lastIndexOf(DOT);
     zipFileName = (extIndex >= 0) ? zipFileName.substring(0, extIndex) + ZIP_EXTENSION
             : zipFileName + ZIP_EXTENSION;
     File zipFile = new File(file2zip.getParentFile(), zipFileName);
@@ -1455,33 +1482,15 @@ public class FileUtil {
   public static File zipFile(File file2zip, File zippedFile) throws IOException {
     byte[] block = new byte[4096];
     int inBytes = 0;
-    FileInputStream iStream = null;
-    ZipOutputStream oStream = null;
-    try {
-      // open input stream
-      iStream = new FileInputStream(file2zip);
+    try (FileInputStream iStream = new FileInputStream(file2zip);
+            ZipOutputStream oStream = new ZipOutputStream(new FileOutputStream(zippedFile));) {
       // create ZipEntry, using input file name
       ZipEntry zipEntry = new ZipEntry(file2zip.getName());
-      // open compressed output stream
-      oStream = new ZipOutputStream(new FileOutputStream(zippedFile));
       // add new ZipEntry
       oStream.putNextEntry(zipEntry);
       // read input stream and write to output stream
       while ((inBytes = iStream.read(block)) > 0) {
         oStream.write(block, 0, inBytes);
-      }
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-        }
       }
     }
     return zippedFile;

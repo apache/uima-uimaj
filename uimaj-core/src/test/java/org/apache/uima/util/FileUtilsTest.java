@@ -18,13 +18,21 @@
  */
 package org.apache.uima.util;
 
+import static org.apache.uima.pear.util.FileUtil.extractFilesFromJar;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class FileUtilsTest {
   @Test
@@ -45,12 +53,8 @@ public class FileUtilsTest {
   }
 
   @Test
-  public void testReadWriteTempFile() throws IOException {
-    final String tmpDirPath = System.getProperty("java.io.tmpdir");
-    assertNotNull("java.io.tmpdir system property not available", tmpDirPath);
-    File tmpDir = FileUtils.createTempDir(new File(tmpDirPath), "fileUtilsTest");
-    File tmpFile1 = FileUtils.createTempFile("test", null, tmpDir);
-    File tmpFile2 = FileUtils.createTempFile("test", null, tmpDir);
+  public void testReadWriteTempFile(@TempDir Path aTempDir) throws IOException {
+    File tmpFile2 = aTempDir.resolve("file2.txt").toFile();
     final String text = "This is some text to test file writing.  Add an Umlaut for encoding tests:"
             + "\n  Greetings from T\u00FCbingen!\n";
     final String utf8 = "UTF-8";
@@ -61,8 +65,21 @@ public class FileUtilsTest {
     // assertEquals(text, FileUtils.file2String(tmpFile1));
 
     FileUtils.saveString2File(text, tmpFile2, utf8);
-    assertEquals(text, FileUtils.file2String(tmpFile2, utf8));
+    assertThat(FileUtils.file2String(tmpFile2, utf8)).isEqualTo(text);
+  }
 
-    FileUtils.deleteRecursive(tmpDir);
+  @Test
+  void thatAllFilesGoToTargetFolder(@TempDir Path aTempDir) throws Exception {
+    File zipFile = aTempDir.resolve("test.zip").toFile();
+
+    try (ZipOutputStream oStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+      ZipEntry zipEntry = new ZipEntry("../whoops.txt");
+      oStream.putNextEntry(zipEntry);
+    }
+
+    File target = aTempDir.resolve("target").toFile();
+    assertThatExceptionOfType(IOException.class)
+            .isThrownBy(() -> extractFilesFromJar(new JarFile(zipFile), target))
+            .withMessageContaining("Can only write within target folder");
   }
 }
