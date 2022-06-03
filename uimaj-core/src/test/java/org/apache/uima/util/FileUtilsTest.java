@@ -78,8 +78,11 @@ public class FileUtilsTest {
     }
 
     File target = aTempDir.resolve("target").toFile();
-    assertThatExceptionOfType(IOException.class)
-            .isThrownBy(() -> extractFilesFromJar(new JarFile(zipFile), target))
-            .withMessageContaining("Can only write within target folder");
+
+    try (JarFile jarFile = new JarFile(zipFile)) {
+      assertThatExceptionOfType(IOException.class)
+              .isThrownBy(() -> extractFilesFromJar(jarFile, target))
+              .withMessageContaining("Can only write within target folder");
+    }
   }
 }
