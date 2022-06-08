@@ -38,8 +38,8 @@ public class RelativePathResolver_implTest {
   private final static String PATH_SEP = System.getProperty("path.separator");
   private RelativePathResolver_impl sut;
 
-  private final static String element1 =  "/this/is/a/test";
-  private final static String element2 =  "/another/test" ;
+  private final static String element1 = "/this/is/a/test";
+  private final static String element2 = "/another/test";
   private final static String[] expectedElements = { element1, element2 };
   private final static String expectedPath = String.join(PATH_SEP, expectedElements);
 
@@ -105,7 +105,7 @@ public class RelativePathResolver_implTest {
 
   @SuppressWarnings("deprecation")
   private void assertThatGettersReturnTheRightValues(RelativePathResolver_impl aResolver) {
-    
+
     assertThat(aResolver.getDataPathElements()) //
             .containsExactly(expectedElements);
 
