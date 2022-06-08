@@ -18,5 +18,5 @@
 @Library('uima-build-jenkins-shared-library') _
 
 defaultPipeline {
-  extraMavenArguments = '-Pjacoco,spotbugs,pmd'
+  extraMavenArguments = '-Pjacoco,spotbugs,pmd,run-rat-report -Ddisable-rc-auto-staging'
 }
