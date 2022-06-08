@@ -42,6 +42,13 @@
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
+  <scm>
+    <tag>uimaj-3.2.0</tag>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
+  </scm>
+
   <!-- The repositories and pluginRepositories section is duplicated from
        the parent pom one, and adds the Apache Snapshot Nexus repository
        where UIMA snapshots are deployed.  This is needed if for instance,
@@ -388,12 +395,20 @@
         </pluginManagement>
       </build>
     </profile>
-  </profiles>
 
-  <scm>
-    <tag>uimaj-3.2.0</tag>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/</url>
-  </scm>
+    <profile>
+      <id>spotbugs</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs-maven-plugin</artifactId>
+              <version>4.7.0.0</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 </project>
