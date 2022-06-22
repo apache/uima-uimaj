@@ -392,9 +392,9 @@ public interface UimaContext {
    * &lt;externalResourceDependencies&gt; section of the descriptor.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPathElementsgetDataPath() data path} and the class path.
-   * However, this usage is deprecated and support may be dropped in future versions. ALL external
-   * resource dependencies should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
