@@ -19,7 +19,6 @@
 
 package org.apache.uima.impl;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,7 +30,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
@@ -56,9 +54,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class UimaContext_implTest {
-  protected final List<String> TEST_DATAPATH = asList( //
-          JUnitExtension.getFile("AnnotatorContextTest").getPath(),
-          JUnitExtension.getFile("ResourceTest").getPath());
+  protected final String[] TEST_DATAPATH = { //
+      JUnitExtension.getFile("AnnotatorContextTest").getPath(),
+      JUnitExtension.getFile("ResourceTest").getPath() };
 
   protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension
           .getFile("ResourceTest/spaces in dir name").getPath();
@@ -78,7 +76,7 @@ public class UimaContext_implTest {
     try {
       // configure ResourceManager to allow test components to locate their resources
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
-      rm.setDataPathElements(TEST_DATAPATH.toArray(new String[TEST_DATAPATH.size()]));
+      rm.setDataPathElements(TEST_DATAPATH);
       rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
 
       // create a UimaContext with Config Params and Resources
@@ -897,8 +895,8 @@ public class UimaContext_implTest {
 
   @Test
   public void testGetDataPathElements() throws Exception {
-    assertThat(mContext.getDataPathElements()).containsExactlyElementsOf(TEST_DATAPATH);
-    assertThat(mContext2.getDataPathElements()).containsExactlyElementsOf(TEST_DATAPATH);
+    assertThat(mContext.getDataPathElements()).containsExactly(TEST_DATAPATH);
+    assertThat(mContext2.getDataPathElements()).containsExactly(TEST_DATAPATH);
   }
 
   @Test
