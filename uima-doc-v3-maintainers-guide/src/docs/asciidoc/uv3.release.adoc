@@ -343,6 +343,8 @@ Thanks.
 ====
 **Before casting +1 binding votes, individuals are REQUIRED to download all signed source code packages onto their own hardware, verify that they meet all requirements of ASF policy on releases as described below, validate all cryptographic signatures, compile as provided, and test the result on their own platform.**
 
+_Source_: https://www.apache.org/legal/release-policy.html#release-approval
+
 .Create a release candidate validation folder
 ----
 % mkdir rc-validation
@@ -395,6 +397,19 @@ rm "$tmp"
 % rm checkHashes.sh
 ----
 
+.Check that the contents of the sources ZIP match the repository tag
+----
+% wget https://github.com/apache/[project]/archive/[release-commit-hash].zip
+% unzip [release-commit-hash].zip
+% diff -r ...
+----
+
+.Run a local build from the sources ZIP
+Typically, we have Maven projects, so this would running a Maven Build
+----
+% mvn clean install
+----
+
 For more information on the ASF release policy, please see the link:https://www.apache.org/legal/release-policy.html[Apache Release Policy] document.
 ====
 * {empty}
@@ -404,7 +419,6 @@ For more information on the ASF release policy, please see the link:https://www.
 ====
 * Check the issues-fixed report
 * Check the release notes
-* Run a local build from the sources zip
 * Install plugins into Eclipse
 * Try out an example
 * ...
