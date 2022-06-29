@@ -78,7 +78,7 @@ The Maven release plugin will complain if there are still any `SNAPSHOT` depende
 ====
 * {empty}
 +
-.Update Jira version in POM for fixed-issues report **(deprecated)**
+.**[deprecated]** Update Jira version in POM for fixed-issues report
 [%collapsible]
 ====
 **Deprecated**
@@ -240,7 +240,7 @@ Do not add files like POMs which have line-endings, if they have signatures; the
 ====
 * {empty}
 +
-.Update the version in the `uimaj-eclipse-update-site` **(deprecated)**
+.**[deprecated]** Update the version in the `uimaj-eclipse-update-site`
 [%collapsible]
 ====
 **Deprecated:** Use Tycho instead to build update sites along with every regular build.
@@ -249,7 +249,7 @@ For a general background on how we build P2 sites, including Composite update si
 ====
 * {empty}
 +
-.Set `dropPrevVersions` to `true` in the `uimaj-eclipse-update-site` POM **(deprecated)**
+.**[deprecated]** Set `dropPrevVersions` to `true` in the `uimaj-eclipse-update-site` POM
 [%collapsible]
 ====
 **Deprecated:** Use Tycho instead to build update sites along with every regular build.
@@ -258,7 +258,7 @@ For a general background on how we build P2 sites, including Composite update si
 ====
 * {empty}
 +
-.Build the `uimaj-eclipse-update-site` module with {{-Papache-release}} **(deprecated)**
+.**[deprecated]** Build the `uimaj-eclipse-update-site` module with {{-Papache-release}}
 [%collapsible]
 ====
 **Deprecated:** Use Tycho instead to build update sites along with every regular build.
@@ -511,12 +511,20 @@ Merge the release preparation pull request just like any other PR via the GitHub
 .Update website
 [%collapsible]
 ====
+.Update downloads
 Update the download page of the UIMA website to make the new release artifacts available. This is done indirectly, by editing both the `downloads.xml` page and also by adding entries to the `xdocs/stylesheets/project.xml` page - follow the previous examples.
 
+.Update documentation
 Also, things not needed to be mirrored go into our website: in the `docs/d` directory. Currently, this includes `the RELEASE_NOTES` (plus `issuesFixed`) for the release, the new documentation, and the Javadocs.
 
-Copy `RELEASE_NOTES` and `issuesFixed` from the top level project (where the mvn `release:perform` was done from) in the directory `target/checkout/` ... to the the website in `docs/d/[project-version]`.
+Copy `RELEASE_NOTES` and `issuesFixed` from the top level project (where the mvn `release:perform` was done from) in the directory `target/checkout/` ... to the the website in `docs/d/[project]-current`. The documentation for the latest release should always be in the `[project]-current` folder. A copy of that should be created under `https://svn.apache.org/repos/asf/uima/site/archive/docs/d/[project]-[version]`.
 
+.Example
+----
+svn copy -m "Creating versioned copy of current release documentation in archive" https://svn.apache.org/repos/asf/uima/site/trunk/uima-website/docs/d/ruta-current https://svn.apache.org/repos/asf/uima/site/trunk/uima-website/docs/d/ruta-3.2.0
+----
+
+.Update news
 Our main UIMA website has a **News** section that should be updated with news of the release. There are 2 place to update: One is the `index.xml` file, which has a one-line summary (at the bottom) that references a link within the `new.xml` page; and a new entry in the `news.xml` page itself. Follow previous examples.
 ====
 * {empty}
