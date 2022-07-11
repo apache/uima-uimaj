@@ -80,6 +80,7 @@ public class CasSerializationDeserialization_XMI_1_1_PRETTY_Test {
   private static List<SerDesTestScenario> randomSerDesScenarios() {
     return SerDesCasIOTestUtils.serDesScenarios(serDesCycles,
             MultiFeatureRandomCasDataSuite.builder() //
+                    .withEmptyArrays(false) //
                     .withIterations(RANDOM_CAS_ITERATIONS) //
                     .withStringArrayMode(NULL_STRINGS_AS_EMPTY) //
                     .build(),
