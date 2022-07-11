@@ -16,7 +16,7 @@
 #
 
 github:
-  description: "UIMA Java SDK, version 3 (in main), 2 (in main-v2)"
+  description: "Apache UIMA Java SDK"
   homepage: https://uima.apache.org
   dependabot_alerts:  true
   dependabot_updates: false
@@ -30,10 +30,11 @@ github:
   - apache
   - uima
   - text-analysis
+  - java
   features:
     wiki: false
-    issues: false
-    projects: false
+    issues: true
+    projects: true
   enabled_merge_buttons:
     squash:  true
     merge:   true
