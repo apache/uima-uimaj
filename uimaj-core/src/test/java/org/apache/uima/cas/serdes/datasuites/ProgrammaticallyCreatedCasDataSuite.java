@@ -26,11 +26,15 @@ import static java.lang.Float.POSITIVE_INFINITY;
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.CAS.TYPE_NAME_DOUBLE;
 import static org.apache.uima.cas.CAS.TYPE_NAME_FLOAT;
+import static org.apache.uima.cas.CAS.TYPE_NAME_FLOAT_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_FLOAT_LIST;
+import static org.apache.uima.cas.CAS.TYPE_NAME_FS_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_FS_LIST;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER;
+import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_INTEGER_LIST;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
+import static org.apache.uima.cas.CAS.TYPE_NAME_STRING_ARRAY;
 import static org.apache.uima.cas.CAS.TYPE_NAME_STRING_LIST;
 import static org.apache.uima.cas.CAS.TYPE_NAME_TOP;
 import static org.apache.uima.util.CasCreationUtils.createCas;
@@ -41,11 +45,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FloatArrayFS;
+import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -120,8 +127,14 @@ public class ProgrammaticallyCreatedCasDataSuite
                             typeSystemWithFloatingPointSpecialValues(), null, null, null)) //
                     .build(),
             CasSourceTargetConfiguration.builder() //
-                    .withTitle("casWithFsList") //
-                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithFsList)
+                    .withTitle("casWithLists") //
+                    .withSourceCasSupplier(ProgrammaticallyCreatedCasDataSuite::casWithListFeatures)
+                    .withTargetCasSupplier(CasCreationUtils::createCas) //
+                    .build(),
+            CasSourceTargetConfiguration.builder() //
+                    .withTitle("casWithArrays") //
+                    .withSourceCasSupplier(
+                            ProgrammaticallyCreatedCasDataSuite::casWithArrayFeatures)
                     .withTargetCasSupplier(CasCreationUtils::createCas) //
                     .build());
   }
@@ -247,7 +260,7 @@ public class ProgrammaticallyCreatedCasDataSuite
     return tsd;
   }
 
-  public static TypeSystemDescription typeSystemWithFsListFeature() throws Exception {
+  public static TypeSystemDescription typeSystemWithListFeatures() throws Exception {
     TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
             .createTypeSystemDescription();
 
@@ -274,6 +287,39 @@ public class ProgrammaticallyCreatedCasDataSuite
 
     TypeDescription stringListHolderMr = tsd.addType("StringListHolderMR", null, TYPE_NAME_TOP);
     stringListHolderMr.addFeature("stringList", null, TYPE_NAME_STRING_LIST, TYPE_NAME_STRING,
+            true);
+
+    return tsd;
+  }
+
+  public static TypeSystemDescription typeSystemWithArrayFeatures() throws Exception {
+    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
+            .createTypeSystemDescription();
+
+    TypeDescription fsArrayHolder = tsd.addType("FsArrayHolder", null, TYPE_NAME_TOP);
+    fsArrayHolder.addFeature("fsArray", null, TYPE_NAME_FS_ARRAY, TYPE_NAME_TOP, false);
+
+    TypeDescription fsArrayHolderMr = tsd.addType("FsArrayHolderMR", null, TYPE_NAME_TOP);
+    fsArrayHolderMr.addFeature("fsArray", null, TYPE_NAME_FS_ARRAY, TYPE_NAME_TOP, true);
+
+    TypeDescription intArrayHolder = tsd.addType("IntArrayHolder", null, TYPE_NAME_TOP);
+    intArrayHolder.addFeature("intArray", null, TYPE_NAME_INTEGER_ARRAY, TYPE_NAME_INTEGER, false);
+
+    TypeDescription intArrayHolderMr = tsd.addType("IntArrayHolderMR", null, TYPE_NAME_TOP);
+    intArrayHolderMr.addFeature("intArray", null, TYPE_NAME_INTEGER_ARRAY, TYPE_NAME_INTEGER, true);
+
+    TypeDescription floatArrayHolder = tsd.addType("FloatArrayHolder", null, TYPE_NAME_TOP);
+    floatArrayHolder.addFeature("floatArray", null, TYPE_NAME_FLOAT_ARRAY, TYPE_NAME_FLOAT, false);
+
+    TypeDescription floatArrayHolderMr = tsd.addType("FloatArrayHolderMR", null, TYPE_NAME_TOP);
+    floatArrayHolderMr.addFeature("floatArray", null, TYPE_NAME_FLOAT_ARRAY, TYPE_NAME_FLOAT, true);
+
+    TypeDescription stringArrayHolder = tsd.addType("StringArrayHolder", null, TYPE_NAME_TOP);
+    stringArrayHolder.addFeature("stringArray", null, TYPE_NAME_STRING_ARRAY, TYPE_NAME_STRING,
+            false);
+
+    TypeDescription stringArrayHolderMr = tsd.addType("StringArrayHolderMR", null, TYPE_NAME_TOP);
+    stringArrayHolderMr.addFeature("stringArray", null, TYPE_NAME_STRING_ARRAY, TYPE_NAME_STRING,
             true);
 
     return tsd;
@@ -315,8 +361,8 @@ public class ProgrammaticallyCreatedCasDataSuite
     return cas;
   }
 
-  public static CAS casWithFsList() throws Exception {
-    CAS cas = createCas(typeSystemWithFsListFeature(), null, null, null);
+  public static CAS casWithListFeatures() throws Exception {
+    CAS cas = createCas(typeSystemWithListFeatures(), null, null, null);
 
     AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
     AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 2);
@@ -373,6 +419,110 @@ public class ProgrammaticallyCreatedCasDataSuite
     stringListHolderMr.setFeatureValue(stringListHolderMrType.getFeatureByBaseName("stringList"),
             cas.emptyStringList().push("blah").push("blub"));
     cas.addFsToIndexes(stringListHolderMr);
+
+    return cas;
+  }
+
+  public static CAS casWithArrayFeatures() throws Exception {
+    CAS cas = createCas(typeSystemWithArrayFeatures(), null, null, null);
+
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 2);
+    FeatureStructure[] fsArrayValue = { a1, a2 };
+
+    ArrayFS<FeatureStructure> arrayFs = cas.createArrayFS(fsArrayValue.length);
+    arrayFs.copyFromArray(fsArrayValue, 0, 0, fsArrayValue.length);
+    cas.addFsToIndexes(arrayFs);
+
+    Type fsArrayHolderType = cas.getTypeSystem().getType("FsArrayHolder");
+    FeatureStructure fsArrayHolder = cas.createFS(fsArrayHolderType);
+    ArrayFS<FeatureStructure> arrayFs1 = cas.createArrayFS(fsArrayValue.length);
+    arrayFs1.copyFromArray(fsArrayValue, 0, 0, fsArrayValue.length);
+    fsArrayHolder.setFeatureValue(fsArrayHolderType.getFeatureByBaseName("fsArray"), arrayFs1);
+    cas.addFsToIndexes(fsArrayHolder);
+
+    FeatureStructure fsArrayHolderEmpty = cas.createFS(fsArrayHolderType);
+    fsArrayHolderEmpty.setFeatureValue(fsArrayHolderType.getFeatureByBaseName("fsArray"),
+            cas.emptyFSArray());
+    cas.addFsToIndexes(fsArrayHolder);
+
+    Type fsArrayHolderMrType = cas.getTypeSystem().getType("FsArrayHolderMR");
+    FeatureStructure fsArrayHolderMr = cas.createFS(fsArrayHolderMrType);
+    ArrayFS<FeatureStructure> arrayFsMr = cas.createArrayFS(fsArrayValue.length);
+    arrayFsMr.copyFromArray(fsArrayValue, 0, 0, fsArrayValue.length);
+    fsArrayHolderMr.setFeatureValue(fsArrayHolderMrType.getFeatureByBaseName("fsArray"), arrayFsMr);
+    cas.addFsToIndexes(fsArrayHolderMr);
+
+    int[] intArrayValue = { 1, 2 };
+
+    Type intArrayHolderType = cas.getTypeSystem().getType("IntArrayHolder");
+    FeatureStructure intArrayHolder = cas.createFS(intArrayHolderType);
+    IntArrayFS intArray = cas.createIntArrayFS(intArrayValue.length);
+    intArray.copyFromArray(intArrayValue, 0, 0, intArrayValue.length);
+    intArrayHolder.setFeatureValue(intArrayHolderType.getFeatureByBaseName("intArray"), intArray);
+    cas.addFsToIndexes(intArrayHolder);
+
+    FeatureStructure intArrayHolderEmpty = cas.createFS(intArrayHolderType);
+    intArrayHolderEmpty.setFeatureValue(intArrayHolderType.getFeatureByBaseName("intArray"),
+            cas.emptyIntegerArray());
+    cas.addFsToIndexes(intArrayHolderEmpty);
+
+    Type intArrayHolderMrType = cas.getTypeSystem().getType("IntArrayHolderMR");
+    FeatureStructure intArrayHolderMr = cas.createFS(intArrayHolderMrType);
+    IntArrayFS intArrayMr = cas.createIntArrayFS(intArrayValue.length);
+    intArrayMr.copyFromArray(intArrayValue, 0, 0, intArrayValue.length);
+    intArrayHolderMr.setFeatureValue(intArrayHolderMrType.getFeatureByBaseName("intArray"),
+            intArrayMr);
+    cas.addFsToIndexes(intArrayHolderMr);
+
+    float[] floatArrayValue = { -1.0f, 0.0f, 1.0f, NaN, NEGATIVE_INFINITY, POSITIVE_INFINITY,
+        MIN_VALUE, MAX_VALUE };
+
+    Type floatArrayHolderType = cas.getTypeSystem().getType("FloatArrayHolder");
+    FeatureStructure floatArrayHolder = cas.createFS(floatArrayHolderType);
+    FloatArrayFS floatArray = cas.createFloatArrayFS(floatArrayValue.length);
+    floatArray.copyFromArray(floatArrayValue, 0, 0, floatArrayValue.length);
+    floatArrayHolder.setFeatureValue(floatArrayHolderType.getFeatureByBaseName("floatArray"),
+            floatArray);
+    cas.addFsToIndexes(floatArrayHolder);
+
+    FeatureStructure floatArrayHolderEmpty = cas.createFS(floatArrayHolderType);
+    floatArrayHolderEmpty.setFeatureValue(floatArrayHolderType.getFeatureByBaseName("floatArray"),
+            cas.emptyFloatArray());
+    cas.addFsToIndexes(floatArrayHolderEmpty);
+
+    Type floatArrayHolderMrType = cas.getTypeSystem().getType("FloatArrayHolderMR");
+    FeatureStructure floatArrayHolderMr = cas.createFS(floatArrayHolderMrType);
+    FloatArrayFS floatArrayMr = cas.createFloatArrayFS(floatArrayValue.length);
+    floatArrayMr.copyFromArray(floatArrayValue, 0, 0, floatArrayValue.length);
+    floatArrayHolderMr.setFeatureValue(floatArrayHolderMrType.getFeatureByBaseName("floatArray"),
+            floatArrayMr);
+    cas.addFsToIndexes(floatArrayHolderMr);
+
+    String[] stringArrayValue = { "blah", "blub" };
+
+    // We do not push null or the empty string here because different formats handle it differently
+    // and we have tests for that in other places
+    Type stringArrayHolderType = cas.getTypeSystem().getType("StringArrayHolder");
+    FeatureStructure stringArrayHolder = cas.createFS(stringArrayHolderType);
+    StringArrayFS stringArray = cas.createStringArrayFS(stringArrayValue.length);
+    stringArray.copyFromArray(stringArrayValue, 0, 0, stringArrayValue.length);
+    stringArrayHolder.setFeatureValue(stringArrayHolderType.getFeatureByBaseName("stringArray"),
+            stringArray);
+    cas.addFsToIndexes(stringArrayHolder);
+
+    FeatureStructure stringArrayHolderEmpty = cas.createFS(stringArrayHolderType);
+    stringArrayHolderEmpty.setFeatureValue(
+            stringArrayHolderType.getFeatureByBaseName("stringArray"), cas.emptyStringArray());
+    cas.addFsToIndexes(stringArrayHolderEmpty);
+
+    Type stringArrayHolderMrType = cas.getTypeSystem().getType("StringArrayHolderMR");
+    FeatureStructure stringArrayHolderMr = cas.createFS(stringArrayHolderMrType);
+    StringArrayFS stringArrayMr = cas.createStringArrayFS(stringArrayValue.length);
+    stringArrayMr.copyFromArray(stringArrayValue, 0, 0, stringArrayValue.length);
+    stringArrayHolderMr.setFeatureValue(stringArrayHolderMrType.getFeatureByBaseName("stringArray"),
+            stringArrayMr);
+    cas.addFsToIndexes(stringArrayHolderMr);
 
     return cas;
   }
