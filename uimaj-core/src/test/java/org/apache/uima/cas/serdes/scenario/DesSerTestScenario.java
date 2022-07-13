@@ -121,6 +121,12 @@ public class DesSerTestScenario implements Runnable {
     assertThat(contentOf(aTargetCasFile.toFile())).isEqualTo(contentOf(aReferenceCasFile.toFile()));
   }
 
+  public static void assertFileContentsAreEqualNormalizingNewlines(Path aTargetCasFile,
+          Path aReferenceCasFile) {
+    assertThat(contentOf(aTargetCasFile.toFile()))
+            .isEqualToNormalizingNewlines(contentOf(aReferenceCasFile.toFile()));
+  }
+
   /**
    * Builder to build {@link DesSerTestScenario}.
    */
