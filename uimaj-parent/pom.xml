@@ -290,10 +290,11 @@
         </configuration>
         <dependencies>
           <dependency>
-            <!-- Need to check if we still need this with 0.15.7 and if yes move to UIMA Parent POM -->
+            <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
+            <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
-            <version>2.5.14</version>
+            <version>2.5.17</version>
           </dependency>
         </dependencies>
       </plugin>
