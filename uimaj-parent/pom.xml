@@ -274,6 +274,7 @@
         <configuration>
           <parameter>
             <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>com\.strobel\..*</ignoreMissingClassesByRegularExpression>
               <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
