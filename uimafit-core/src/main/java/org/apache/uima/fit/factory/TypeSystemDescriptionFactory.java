@@ -125,26 +125,9 @@ public final class TypeSystemDescriptionFactory {
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
         List<TypeSystemDescription> tsdList = new ArrayList<>();
-        for (String location : scanTypeDescriptors()) {
-          try {
-            XMLInputSource xmlInputType1 = new XMLInputSource(location);
-            tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
-            LOG.debug("Detected type system at [{}]", location);
-          } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-          } catch (InvalidXMLException e) {
-            LOG.warn("[{}] is not a type file. Ignoring.", location, e);
-          }
-        }
 
-        ServiceLoader<TypeSystemDescriptionProvider> loader = ServiceLoader
-                .load(TypeSystemDescriptionProvider.class);
-        loader.forEach(tsdp -> {
-          for (TypeSystemDescription _tsd : tsdp.listTypeSystemDescriptions()) {
-            tsdList.add(_tsd);
-            LOG.debug("Loaded SPI-provided type system at [{}]", _tsd.getSourceUrlString());
-          }
-        });
+        loadTypeSystemDscriptionsFromScannedLocations(tsdList);
+        loadTypeSystemDescriptionsFromSPIs(tsdList);
 
         LOG.trace("Merging type systems and resolving imports...");
         ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
@@ -153,6 +136,32 @@ public final class TypeSystemDescriptionFactory {
       }
     }
     return (TypeSystemDescription) tsd.clone();
+  }
+
+  static void loadTypeSystemDscriptionsFromScannedLocations(List<TypeSystemDescription> tsdList)
+          throws ResourceInitializationException {
+    for (String location : scanTypeDescriptors()) {
+      try {
+        XMLInputSource xmlInputType1 = new XMLInputSource(location);
+        tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
+        LOG.debug("Detected type system at [{}]", location);
+      } catch (IOException e) {
+        throw new ResourceInitializationException(e);
+      } catch (InvalidXMLException e) {
+        LOG.warn("[{}] is not a type file. Ignoring.", location, e);
+      }
+    }
+  }
+
+  static void loadTypeSystemDescriptionsFromSPIs(List<TypeSystemDescription> tsdList) {
+    ServiceLoader<TypeSystemDescriptionProvider> loader = ServiceLoader
+            .load(TypeSystemDescriptionProvider.class);
+    loader.forEach(provider -> {
+      for (TypeSystemDescription desc : provider.listTypeSystemDescriptions()) {
+        tsdList.add(desc);
+        LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
+      }
+    });
   }
 
   /**
