@@ -77,36 +77,10 @@ public class CasSerializationDeserialization_XMI_1_0_PRETTY_Test {
     return SerDesCasIOTestUtils.programmaticSerDesScenarios(serDesCycles);
   }
 
-  // private static List<DesSerTestScenario> desSerScenarios() {
-  // TestType type;
-  //
-  // Class<?> testClass = CasSerializationDeserialization_XMI_1_0_PRETTY_Test.class;
-  //
-  // List<DesSerTestScenario> scenarios = new ArrayList<>();
-  // DesSerTestScenario.builder() //
-  // .withTitle("multipleEmptyFSArrays") //
-  // .withSourceCasFile(Paths.get(
-  // "src/test/resources/XmiFileDataSuite/tsv3-testStackedComplexSlotFeatureWithoutSlotFillers/data.xmi"))
-  // //
-  // .withReferenceCasFile(DES_REF.getReferenceFolder(testClass)
-  // .resolve("tsv3-testStackedComplexSlotFeatureWithoutSlotFillers")
-  // .resolve("data.xmi")) //
-  // .withTargetBasePath(DES_REF.getTargetFolder(testClass)
-  // .resolve("tsv3-testStackedComplexSlotFeatureWithoutSlotFillers")) //
-  // .withCycle((a, b) -> {
-  // CAS buffer = createCasMaybeWithTypesystem(a);
-  // des(buffer, a, DEFAULT);
-  // Type linkHostType = buffer.getTypeSystem().getType("webanno.custom.ComplexLinkHost");
-  // List<Annotation> linkHosts = buffer.<Annotation> select(linkHostType).asList();
-  // FSArray array1 = (FSArray) linkHosts.get(0)
-  // .getFeatureValue(linkHostType.getFeatureByBaseName("links"));
-  // }); //
-  // return scenarios;
-  // }
-
   private static List<SerDesTestScenario> randomSerDesScenarios() {
     return SerDesCasIOTestUtils.serDesScenarios(serDesCycles,
             MultiFeatureRandomCasDataSuite.builder() //
+                    .withEmptyArrays(false) //
                     .withIterations(RANDOM_CAS_ITERATIONS) //
                     .withStringArrayMode(NULL_STRINGS_AS_EMPTY) //
                     .build(),
