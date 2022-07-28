@@ -25,6 +25,95 @@ Thus is becomes possible for a UIMA component provider to have component's type 
 
 == Making types auto-detectable
 
+=== Using the Java Service Provide Interface
+
+The Java Service Provide Interface (SPI) mechanism is a standard approach in Java for building
+extensible software. In our case, we want to make uimaFIT aware of type system descriptions, index
+definitions or type priority lists so that when we create a new CAS or analysis component, they are
+automatically pre-configured with these.
+
+To enable this auto-detection, the UIMA Core Java SDK provides defines interfaces:
+
+* `org.apache.uima.spi.FsIndexCollectionProvider`
+* `org.apache.uima.spi.TypePrioritiesProvider`
+* `org.apache.uima.spi.TypeSystemDescriptionProvider`
+
+Java code that wants to announce types, indexes or type priorities must implement one or more of
+these interfaces in a provider class. We will make an example for type system descriptions. It works
+in the same way for indexes and type priorities.
+
+The following provider class publishes types from a type system description XML file located it can
+access via the classpath at `/org/apache/uima/examples/types/TypeSystem.xml`:
+
+[source,java]
+----
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+
+import java.util.List;
+
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.spi.TypeSystemDescriptionProvider;
+
+public class MyTypeSystemProvider implements TypeSystemDescriptionProvider {
+
+  @Override
+  public List<TypeSystemDescription> listTypeSystemDescriptions() {
+    return asList(createTypeSystemDescription("org.apache.uima.examples.types.TypeSystem"));
+  }
+}
+----
+
+You may also consider a slightly more advanced implementation that pre-resolves any imports that
+may be contained in the loaded descriptors. This is important if you are in an environment with
+multiple classloaders such as an OSGI environment.
+
+[source,java]
+----
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.spi.TypeSystemDescriptionProvider;
+import org.apache.uima.util.InvalidXMLException;
+
+public class MyAdvancedTypeSystemProvider implements TypeSystemDescriptionProvider {
+
+  @Override
+  public List<TypeSystemDescription> listTypeSystemDescriptions() {
+    ResourceManager resMgr = new ResourceManager_impl(getClass().getClassLoader());
+    try {
+      TypeSystemDescription tsd = createTypeSystemDescription(
+              "org.apache.uima.examples.types.TypeSystem");
+      tsd.resolveImports(resMgr);
+      return asList(tsd);
+    } catch (InvalidXMLException e) {
+      UIMAFramework.getLogger().error("Unable to load type system", e);
+      return Collections.emptyList();
+    } finally {
+      resMgr.destroy();
+    }
+  }
+}
+----
+
+In a proper implementation, you might care to use a better error handling, use your own loggers
+instead of the framework logger, maybe load additional type system descriptions, etc.
+
+Once the provider class has been implemented, it needs to be registered with the SPI mechanism.
+To do that, create a text file with the name of the implemented interface in `META-INF/services`, e.g.
+`META-INF/services/org.apache.uima.spi.TypeSystemDescriptionProvider`. Into that file, add the name of
+the provider class implementation, e.g. `foo.bar.MyTypeSystemProvider`. If you have multiple provider
+classes for the given interface, add them all, one class per line.
+
+=== Legacy approach
+
 The provider of a type system should create a file [path]_META-INF/org.apache.uima.fit/types.txt_ in the classpath.
 This file should define the locations of the type system descriptions.
 Assume that a type `org.apache.uima.fit.type.Token` is specified in the TSD [path]_org/apache/uima/fit/type/Token.xml_, then the file should have the following contents:
