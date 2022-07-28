@@ -717,7 +717,7 @@ public class CasToComparableText {
           values.stream().filter(v -> v instanceof FeatureStructure).filter(v -> !seen.contains(v))
                   .forEach(v -> toProcess.add((FeatureStructure) v));
         }
-
+      } else {
         for (Feature feature : fs.getType().getFeatures()) {
           if (feature.getRange().isPrimitive()) {
             continue;
@@ -736,7 +736,7 @@ public class CasToComparableText {
             List<Object> featureValues = multiValuedFeatureStructureToList(
                     fs.getFeatureValue(feature));
 
-            if (values != null) {
+            if (featureValues != null) {
               for (Object value : featureValues) {
                 if (value instanceof FeatureStructure && !seen.contains(value)) {
                   toProcess.add((FeatureStructure) value);
