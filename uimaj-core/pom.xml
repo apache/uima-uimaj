@@ -28,7 +28,8 @@
   </parent>
 
   <artifactId>uimaj-core</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
+  
   <name>Apache UIMA Base: ${project.artifactId}</name>
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
@@ -151,7 +152,6 @@
           5 work when run separately or by mvn, but fail when running all tests from Eclipse:
               Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
       -->
-
    <!--
     <dependency>
       <groupId>net.sf.saxon</groupId>
@@ -163,55 +163,18 @@
  
     <dependency>
       <groupId>net.sf.saxon</groupId>
-        <artifactId>saxon</artifactId>
-        <version>8.7</version>
-        <scope>test</scope>
+      <artifactId>saxon</artifactId>
+      <version>8.7</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
-        <artifactId>saxon-dom</artifactId>
-        <version>8.7</version>
-        <scope>test</scope>
+      <artifactId>saxon-dom</artifactId>
+      <version>8.7</version>
+      <scope>test</scope>
     </dependency>
   -->
     
-    <!-- For decompiling recompiling jcas experiments -->
-    <!--
-    <dependency>
-      <groupId>org.eclipse.jdt.core.compiler</groupId>
-      <artifactId>ecj</artifactId>
-      <version>4.4.2</version>
-    </dependency>
-    -->
-    
-    <!-- needed for UimaDecompiler class-->
-    <dependency>  <!-- Apache v2 license  2016 checked -->
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.32</version>
-    </dependency>
-    
-    <!-- Apache v2 license  2016 checked. Also transitive include from above, 
-         listed here so that binary assembly for distribution includes the jar -->
-    <dependency>
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-core</artifactId>
-      <version>0.5.32</version>
-    </dependency>
-    
-    <!-- for reading / transforming / generating JCas cover classes -->
-<!--     <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm</artifactId>
-      <version>5.0.4</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-tree</artifactId>
-      <version>5.0.4</version>
-    </dependency>
- -->
   </dependencies>
 
   <build>
@@ -290,6 +253,31 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
+            <_dsannotations>*</_dsannotations>
+            <_metatypeannotations>*</_metatypeannotations>
+            <Import-Package>
+              !org.apache.uima,
+              !org.apache.uima.*,
+              !com.apple.eio,
+              org.slf4j.impl;resolution:=optional,
+              org.apache.logging.log4j.*;resolution:=optional,
+              org.apache.logging.slf4j.*;resolution:=optional,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.apache.uima,
+              org.apache.uima.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    
       <!-- experiment with CLIRR
         gets fatal error: 
         

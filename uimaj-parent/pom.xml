@@ -34,7 +34,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15</version>
+    <version>16-SNAPSHOT</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -270,10 +270,16 @@
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.3</version>
+        <version>0.15.7</version>
         <configuration>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.build.finalName}.jar</path>
+            </file>
+          </newVersion>
           <parameter>
             <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>com\.strobel\..*</ignoreMissingClassesByRegularExpression>
               <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
