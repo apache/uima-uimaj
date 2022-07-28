@@ -184,20 +184,6 @@
     </dependency>
     -->
     
-    <!-- needed for UimaDecompiler class-->
-    <dependency>  <!-- Apache v2 license  2016 checked -->
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.32</version>
-    </dependency>
-    
-    <!-- Apache v2 license  2016 checked. Also transitive include from above, 
-         listed here so that binary assembly for distribution includes the jar -->
-    <dependency>
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-core</artifactId>
-      <version>0.5.32</version>
-    </dependency>
     
     <!-- for reading / transforming / generating JCas cover classes -->
 <!--     <dependency>
