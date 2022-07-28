@@ -98,7 +98,7 @@
 
     <repository>
       <id>${eclipseP2RepoId}</id>
-      <url>${eclipseP2RepoUrl}</url>
+      <url>https://download.eclipse.org/releases/2018-12/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -147,7 +147,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
-    <eclipseP2RepoUrl>https://download.eclipse.org/releases/2018-12/</eclipseP2RepoUrl>
 
     <api_check_oldVersion>3.2.0</api_check_oldVersion>
   </properties>
@@ -239,10 +238,10 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- Can be removed after updating to the UIMA Parent POM 15 or higher  -->
+          <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.4</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -251,6 +250,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
+        <!-- Version can be removed after updating to the UIMA Parent POM 16 or higher  -->
         <version>3.1.0</version>
         <executions>
           <execution>
@@ -269,6 +269,7 @@
       </plugin>
     
       <plugin>
+        <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
         <version>4.7.0.0</version>
@@ -278,7 +279,8 @@
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.3</version>
+        <!-- Version can be removed after updating to the UIMA Parent POM 16 or higher  -->
+        <version>0.15.7</version>
         <configuration>
           <parameter>
             <ignoreMissingClassesByRegularExpressions>
@@ -288,9 +290,11 @@
         </configuration>
         <dependencies>
           <dependency>
+            <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
+            <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
-            <version>2.5.14</version>
+            <version>2.5.17</version>
           </dependency>
         </dependencies>
       </plugin>
