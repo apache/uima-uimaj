@@ -34,12 +34,14 @@ public class MultiFeatureRandomCasDataSuite extends AbstractCollection<CasSource
         implements CasDataSuite {
   private final int sizeFactor;
   private final StringArrayMode stringArrayMode;
+  private final boolean emptyArrays;
   private final int iterations;
 
   private MultiFeatureRandomCasDataSuite(Builder builder) {
     sizeFactor = builder.sizeFactor;
     stringArrayMode = builder.stringArrayMode;
     iterations = builder.iterations;
+    emptyArrays = builder.emtpyArrays;
   }
 
   @Override
@@ -48,7 +50,9 @@ public class MultiFeatureRandomCasDataSuite extends AbstractCollection<CasSource
 
     for (int n = 0; n < iterations; n++) {
       MultiFeatureRandomCasGenerator randomizer = MultiFeatureRandomCasGenerator.builder() //
-              .withStringArrayMode(stringArrayMode).withSize((n + 1) * sizeFactor) //
+              .withStringArrayMode(stringArrayMode) //
+              .withSize((n + 1) * sizeFactor) //
+              .withEmptyArrays(emptyArrays) //
               .build();
 
       CasConfiguration cfg = new CasConfiguration(randomizer);
@@ -84,6 +88,7 @@ public class MultiFeatureRandomCasDataSuite extends AbstractCollection<CasSource
     private int iterations = 10;
     private int sizeFactor = 10;
     private StringArrayMode stringArrayMode = ALLOW_NULL_AND_EMPTY_STRINGS;
+    private boolean emtpyArrays = true;
 
     private Builder() {
     }
@@ -100,6 +105,11 @@ public class MultiFeatureRandomCasDataSuite extends AbstractCollection<CasSource
 
     public Builder withIterations(int aIterations) {
       iterations = aIterations;
+      return this;
+    }
+
+    public Builder withEmptyArrays(boolean aFlag) {
+      emtpyArrays = aFlag;
       return this;
     }
 
