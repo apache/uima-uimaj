@@ -53,25 +53,20 @@
       <version>3.2.2</version>  <!-- latest as of May 2017 -->
     </dependency>
     
-<!--     <dependency>     is included from uimaj-core, not needed for this project
+    <!-- needed for UimaDecompiler class-->
+    <dependency>  <!-- Apache v2 license  2016 checked -->
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
       <version>0.5.32</version>
     </dependency>
- -->    
-    <!-- for reading / transforming / generating JCas cover classes -->
-<!--     <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm</artifactId>
-      <version>5.0.4</version>
-    </dependency>
- 
+    
+    <!-- Apache v2 license  2016 checked. Also transitive include from above, 
+         listed here so that binary assembly for distribution includes the jar -->
     <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-tree</artifactId>
-      <version>5.0.4</version>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.32</version>
     </dependency>
-    -->
   </dependencies>
 
   <build>
