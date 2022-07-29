@@ -166,6 +166,9 @@
                   <exclude>src/test/resources/META-INF/org.apache.uima.fit/typepriorities.txt</exclude>
                   <exclude>src/test/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
                   <exclude>src/test/resources/META-INF/services/org.apache.uima.fit.validation.ValidationCheck</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.FsIndexCollectionProvider</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.TypePrioritiesProvider</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.TypeSystemDescriptionProvider</exclude>
                 </excludes>
               </configuration>
             </execution>
