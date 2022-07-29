@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.cas.impl;
+package org.apache.uima.migratev3.jcas;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
