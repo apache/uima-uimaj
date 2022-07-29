@@ -20,7 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.loadTypeSystemDescriptionsFromSPIs;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.loadTypeSystemDscriptionsFromScannedLocations;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.loadTypeSystemDescriptionsFromScannedLocations;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class TypeSystemDescriptionFactoryTest {
   @Test
   public void testLoadingFromScannedLocations() throws Exception {
     List<TypeSystemDescription> tsds = new ArrayList<>();
-    loadTypeSystemDscriptionsFromScannedLocations(tsds);
+    loadTypeSystemDescriptionsFromScannedLocations(tsds);
     TypeSystemDescription tsd = CasCreationUtils.mergeTypeSystems(tsds);
 
     assertNotNull(tsd.getType(Token.class.getName()));

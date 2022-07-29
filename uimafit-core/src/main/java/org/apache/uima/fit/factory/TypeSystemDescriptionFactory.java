@@ -126,7 +126,7 @@ public final class TypeSystemDescriptionFactory {
       synchronized (CREATE_LOCK) {
         List<TypeSystemDescription> tsdList = new ArrayList<>();
 
-        loadTypeSystemDscriptionsFromScannedLocations(tsdList);
+        loadTypeSystemDescriptionsFromScannedLocations(tsdList);
         loadTypeSystemDescriptionsFromSPIs(tsdList);
 
         LOG.trace("Merging type systems and resolving imports...");
@@ -138,7 +138,7 @@ public final class TypeSystemDescriptionFactory {
     return (TypeSystemDescription) tsd.clone();
   }
 
-  static void loadTypeSystemDscriptionsFromScannedLocations(List<TypeSystemDescription> tsdList)
+  static void loadTypeSystemDescriptionsFromScannedLocations(List<TypeSystemDescription> tsdList)
           throws ResourceInitializationException {
     for (String location : scanTypeDescriptors()) {
       try {
