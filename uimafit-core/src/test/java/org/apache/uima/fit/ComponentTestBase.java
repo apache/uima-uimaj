@@ -47,9 +47,10 @@ public class ComponentTestBase {
     try {
       TYPE_SYSTEM_DESCRIPTION.set(TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-      TypePriorities tp = TypePrioritiesFactory
-              .createTypePriorities(new String[] { "org.apache.uima.fit.type.Sentence",
-                  "org.apache.uima.fit.type.AnalyzedText", "org.apache.uima.fit.type.Token" });
+      TypePriorities tp = TypePrioritiesFactory.createTypePriorities( //
+              "org.apache.uima.fit.type.Sentence", //
+              "org.apache.uima.fit.type.AnalyzedText", //
+              "org.apache.uima.fit.type.Token");
       TYPE_PRIORITIES.set(tp);
 
       JCas jCas = CasCreationUtils.createCas(TYPE_SYSTEM_DESCRIPTION.get(), tp, null).getJCas();

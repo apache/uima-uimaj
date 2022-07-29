@@ -26,8 +26,10 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineFrom
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.generateDelegateKey;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.sanitizeDelegateKey;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.apache.uima.resource.metadata.FsIndexDescription.KIND_SORTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -59,6 +61,8 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.factory.spi.FsIndexCollectionProviderForTesting;
+import org.apache.uima.fit.factory.spi.TypePrioritiesProviderForTesting;
 import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.Annotator2;
 import org.apache.uima.fit.factory.testAes.Annotator3;
@@ -115,7 +119,8 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
   @Test
   public void testCreateAnalysisEngineWithPrioritizedTypes() throws UIMAException {
-    String[] prioritizedTypeNames = new String[] { "org.apache.uima.fit.type.Token",
+    String[] prioritizedTypeNames = new String[] { //
+        "org.apache.uima.fit.type.Token", //
         "org.apache.uima.fit.type.Sentence" };
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(
             org.apache.uima.fit.component.NoOpAnnotator.class, typeSystemDescription,
@@ -474,7 +479,8 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
   @Test
   public void testResourceMetaDataOnParentIgnored() throws Exception {
-    AnalysisEngineDescription desc = createEngineDescription(AnnotatorWithMetaDataClassOnParent.class);
+    AnalysisEngineDescription desc = createEngineDescription(
+            AnnotatorWithMetaDataClassOnParent.class);
 
     org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
 
@@ -628,24 +634,40 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     AnalysisEngineDescription aed = createEngineDescription(NoOpAnnotator.class);
 
     TypeSystemDescription tsd = createTypeSystemDescription();
-    assertThat(tsd.getType(Token.class.getName())).as("Token type auto-detection").isNotNull();
-    assertThat(tsd.getType(Sentence.class.getName())).as("Sentence type auto-detection")
+    assertThat(tsd.getType(Token.class.getName())) //
+            .as("Token type auto-detection") //
             .isNotNull();
-    assertThat(tsd.getType(AnalyzedText.class.getName())).as("AnalyzedText type auto-detection")
+    assertThat(tsd.getType(Sentence.class.getName())) //
+            .as("Sentence type auto-detection") //
+            .isNotNull();
+    assertThat(tsd.getType(AnalyzedText.class.getName())) //
+            .as("AnalyzedText type auto-detection") //
             .isNotNull();
 
-    TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
-    assertThat(typePrioritiesLists.length).isEqualTo(1);
-    assertThat(typePrioritiesLists[0].getTypes()).as("Type priorities auto-detection")
-            .containsExactly(Sentence.class.getName(), AnalyzedText.class.getName(),
-                    Token.class.getName());
+    assertThat(aed.getAnalysisEngineMetaData().getTypePriorities().getPriorityLists()) //
+            .as("Type priorities auto-detection")//
+            .extracting(TypePriorityList::getTypes) //
+            .containsExactlyInAnyOrder( //
+                    new String[] { //
+                        TypePrioritiesProviderForTesting.TEST_TYPE_A },
+                    new String[] { //
+                        Sentence.class.getName(), //
+                        Token.class.getName() });
 
-    FsIndexDescription[] indexes = aed.getAnalysisEngineMetaData().getFsIndexCollection()
-            .getFsIndexes();
-    assertThat(indexes.length).isEqualTo(1);
-    assertThat(indexes[0]).extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName,
-            FsIndexDescription::getKind).containsExactly("Automatically Scanned Index",
-                    Token.class.getName(), FsIndexDescription.KIND_SORTED);
+    assertThat(aed.getAnalysisEngineMetaData().getFsIndexCollection().getFsIndexes()) //
+            .extracting( //
+                    FsIndexDescription::getLabel, //
+                    FsIndexDescription::getTypeName, //
+                    FsIndexDescription::getKind) //
+            .containsExactlyInAnyOrder( //
+                    tuple( //
+                            "Automatically Scanned Index", //
+                            Token.class.getName(), //
+                            KIND_SORTED),
+                    tuple( //
+                            FsIndexCollectionProviderForTesting.INDEX_LABEL, //
+                            FsIndexCollectionProviderForTesting.INDEX_TYPE, //
+                            KIND_SORTED));
   }
 
   @Test
