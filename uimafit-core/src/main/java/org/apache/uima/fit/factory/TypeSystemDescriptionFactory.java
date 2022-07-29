@@ -25,6 +25,7 @@ import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
 import org.apache.uima.fit.internal.ClassLoaderUtils;
@@ -36,12 +37,14 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
+import org.apache.uima.spi.TypeSystemDescriptionProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class TypeSystemDescriptionFactory {
+
   private static final Logger LOG = LoggerFactory.getLogger(TypeSystemDescriptionFactory.class);
 
   private static final Object SCAN_LOCK = new Object();
@@ -58,6 +61,7 @@ public final class TypeSystemDescriptionFactory {
   }
 
   private TypeSystemDescriptionFactory() {
+
     // This class is not meant to be instantiated
   }
 
@@ -69,6 +73,7 @@ public final class TypeSystemDescriptionFactory {
    * @return A TypeSystemDescription that includes the types from all of the specified files.
    */
   public static TypeSystemDescription createTypeSystemDescription(String... descriptorNames) {
+
     TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
     List<Import> imports = new ArrayList<>();
     for (String descriptorName : descriptorNames) {
@@ -90,6 +95,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static TypeSystemDescription createTypeSystemDescriptionFromPath(
           String... descriptorURIs) {
+
     TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
     List<Import> imports = new ArrayList<>();
     for (String descriptorURI : descriptorURIs) {
@@ -113,22 +119,15 @@ public final class TypeSystemDescriptionFactory {
    */
   public static TypeSystemDescription createTypeSystemDescription()
           throws ResourceInitializationException {
+
     ClassLoader cl = ClassLoaderUtils.findClassloader();
     TypeSystemDescription tsd = typeDescriptorByClassloader.get(cl);
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
         List<TypeSystemDescription> tsdList = new ArrayList<>();
-        for (String location : scanTypeDescriptors()) {
-          try {
-            XMLInputSource xmlInputType1 = new XMLInputSource(location);
-            tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
-            LOG.debug("Detected type system at [{}]", location);
-          } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-          } catch (InvalidXMLException e) {
-            LOG.warn("[{}] is not a type file. Ignoring.", location, e);
-          }
-        }
+
+        loadTypeSystemDescriptionsFromScannedLocations(tsdList);
+        loadTypeSystemDescriptionsFromSPIs(tsdList);
 
         LOG.trace("Merging type systems and resolving imports...");
         ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
@@ -137,6 +136,32 @@ public final class TypeSystemDescriptionFactory {
       }
     }
     return (TypeSystemDescription) tsd.clone();
+  }
+
+  static void loadTypeSystemDescriptionsFromScannedLocations(List<TypeSystemDescription> tsdList)
+          throws ResourceInitializationException {
+    for (String location : scanTypeDescriptors()) {
+      try {
+        XMLInputSource xmlInputType1 = new XMLInputSource(location);
+        tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
+        LOG.debug("Detected type system at [{}]", location);
+      } catch (IOException e) {
+        throw new ResourceInitializationException(e);
+      } catch (InvalidXMLException e) {
+        LOG.warn("[{}] is not a type file. Ignoring.", location, e);
+      }
+    }
+  }
+
+  static void loadTypeSystemDescriptionsFromSPIs(List<TypeSystemDescription> tsdList) {
+    ServiceLoader<TypeSystemDescriptionProvider> loader = ServiceLoader
+            .load(TypeSystemDescriptionProvider.class);
+    loader.forEach(provider -> {
+      for (TypeSystemDescription desc : provider.listTypeSystemDescriptions()) {
+        tsdList.add(desc);
+        LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
+      }
+    });
   }
 
   /**
@@ -149,6 +174,7 @@ public final class TypeSystemDescriptionFactory {
    *           if the locations could not be resolved.
    */
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
+
     synchronized (SCAN_LOCK) {
       ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
@@ -165,6 +191,7 @@ public final class TypeSystemDescriptionFactory {
    * all auto-import locations.
    */
   public static void forceTypeDescriptorsScan() {
+
     synchronized (SCAN_LOCK) {
       typeDescriptorLocationsByClassloader.clear();
       typeDescriptorByClassloader.clear();

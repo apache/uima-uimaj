@@ -25,6 +25,7 @@ import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
 import org.apache.uima.fit.internal.ClassLoaderUtils;
@@ -36,6 +37,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
+import org.apache.uima.spi.TypePrioritiesProvider;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
@@ -119,19 +121,9 @@ public final class TypePrioritiesFactory {
     if (aggTypePriorities == null) {
       synchronized (CREATE_LOCK) {
         List<TypePriorities> typePrioritiesList = new ArrayList<>();
-        for (String location : scanTypePrioritiesDescriptors()) {
-          try {
-            XMLInputSource xmlInput = new XMLInputSource(location);
-            TypePriorities typePriorities = getXMLParser().parseTypePriorities(xmlInput);
-            typePriorities.resolveImports();
-            typePrioritiesList.add(typePriorities);
-            LOG.debug("Detected type priorities at [{}]", location);
-          } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-          } catch (InvalidXMLException e) {
-            LOG.warn("[{}] is not a type priorities descriptor file. Ignoring.", location, e);
-          }
-        }
+
+        loadTypePrioritiesFromScannedLocations(typePrioritiesList);
+        loadTypePrioritiesFromSPIs(typePrioritiesList);
 
         ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesList, resMgr);
@@ -140,6 +132,33 @@ public final class TypePrioritiesFactory {
     }
 
     return (TypePriorities) aggTypePriorities.clone();
+  }
+
+  static void loadTypePrioritiesFromScannedLocations(List<TypePriorities> typePrioritiesList)
+          throws ResourceInitializationException {
+    for (String location : scanTypePrioritiesDescriptors()) {
+      try {
+        XMLInputSource xmlInput = new XMLInputSource(location);
+        TypePriorities typePriorities = getXMLParser().parseTypePriorities(xmlInput);
+        typePriorities.resolveImports();
+        typePrioritiesList.add(typePriorities);
+        LOG.debug("Detected type priorities at [{}]", location);
+      } catch (IOException e) {
+        throw new ResourceInitializationException(e);
+      } catch (InvalidXMLException e) {
+        LOG.warn("[{}] is not a type priorities descriptor file. Ignoring.", location, e);
+      }
+    }
+  }
+
+  static void loadTypePrioritiesFromSPIs(List<TypePriorities> typePrioritiesList) {
+    ServiceLoader<TypePrioritiesProvider> loader = ServiceLoader.load(TypePrioritiesProvider.class);
+    loader.forEach(provider -> {
+      for (TypePriorities desc : provider.listTypePriorities()) {
+        typePrioritiesList.add(desc);
+        LOG.debug("Loaded SPI-provided type priorities at [{}]", desc.getSourceUrlString());
+      }
+    });
   }
 
   /**

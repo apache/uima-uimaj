@@ -20,9 +20,16 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
+import static org.apache.uima.fit.factory.FsIndexFactory.loadFsIndexCollectionsFromScannedLocations;
+import static org.apache.uima.fit.factory.FsIndexFactory.loadFsIndexCollectionsfromSPIs;
+import static org.apache.uima.resource.metadata.FsIndexDescription.KIND_SORTED;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -33,6 +40,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexCollection;
 import org.apache.uima.fit.descriptor.FsIndexKey;
+import org.apache.uima.fit.factory.spi.FsIndexCollectionProviderForTesting;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
@@ -40,8 +48,6 @@ import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.junit.jupiter.api.Test;
 
-/**
- */
 public class FsIndexFactoryTest extends ComponentTestBase {
   @Test
   public void testCreateIndexCollection() throws Exception {
@@ -126,9 +132,47 @@ public class FsIndexFactoryTest extends ComponentTestBase {
   public void testAutoDetectIndexes() throws Exception {
     org.apache.uima.resource.metadata.FsIndexCollection fsIndexCollection = createFsIndexCollection();
 
-    FsIndexDescription index1 = fsIndexCollection.getFsIndexes()[0];
-    assertEquals("Automatically Scanned Index", index1.getLabel());
-    assertEquals(Token.class.getName(), index1.getTypeName());
-    assertEquals(FsIndexDescription.KIND_SORTED, index1.getKind());
+    assertThat(fsIndexCollection.getFsIndexes()).hasSize(2);
+
+    assertThat(fsIndexCollection.getFsIndexes()) //
+            .extracting( //
+                    FsIndexDescription::getLabel, //
+                    FsIndexDescription::getTypeName, //
+                    FsIndexDescription::getKind) //
+            .containsExactlyInAnyOrder( //
+                    tuple( //
+                            "Automatically Scanned Index", //
+                            Token.class.getName(), //
+                            KIND_SORTED),
+                    tuple( //
+                            FsIndexCollectionProviderForTesting.INDEX_LABEL, //
+                            FsIndexCollectionProviderForTesting.INDEX_TYPE, //
+                            KIND_SORTED));
+  }
+
+  @Test
+  public void testLoadingFromScannedLocations() throws Exception {
+    List<FsIndexDescription> indexes = new ArrayList<>();
+    loadFsIndexCollectionsFromScannedLocations(indexes);
+    org.apache.uima.resource.metadata.FsIndexCollection fsIndexCollection = FsIndexFactory
+            .createFsIndexCollection(indexes);
+
+    FsIndexDescription index = fsIndexCollection.getFsIndexes()[0];
+    assertEquals("Automatically Scanned Index", index.getLabel());
+    assertEquals(Token.class.getName(), index.getTypeName());
+    assertEquals(FsIndexDescription.KIND_SORTED, index.getKind());
+  }
+
+  @Test
+  public void testLoadingFromSPIs() throws Exception {
+    List<FsIndexDescription> indexes = new ArrayList<>();
+    loadFsIndexCollectionsfromSPIs(indexes);
+    org.apache.uima.resource.metadata.FsIndexCollection fsIndexCollection = FsIndexFactory
+            .createFsIndexCollection(indexes);
+
+    FsIndexDescription index = fsIndexCollection.getFsIndexes()[0];
+    assertEquals(FsIndexCollectionProviderForTesting.INDEX_LABEL, index.getLabel());
+    assertEquals(FsIndexCollectionProviderForTesting.INDEX_TYPE, index.getTypeName());
+    assertEquals(FsIndexDescription.KIND_SORTED, index.getKind());
   }
 }

@@ -19,16 +19,21 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.loadTypeSystemDescriptionsFromSPIs;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.loadTypeSystemDescriptionsFromScannedLocations;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.uima.fit.factory.spi.TypeSystemDescriptionProviderForTesting;
 import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
 
-/**
- */
 public class TypeSystemDescriptionFactoryTest {
   @Test
   public void testFromPath() throws Exception {
@@ -44,5 +49,26 @@ public class TypeSystemDescriptionFactoryTest {
     assertNotNull(tsd.getType(Token.class.getName()));
     assertNotNull(tsd.getType(Sentence.class.getName()));
     assertNotNull(tsd.getType(AnalyzedText.class.getName()));
+    assertNotNull(tsd.getType(TypeSystemDescriptionProviderForTesting.TEST_TYPE_A));
+  }
+
+  @Test
+  public void testLoadingFromScannedLocations() throws Exception {
+    List<TypeSystemDescription> tsds = new ArrayList<>();
+    loadTypeSystemDescriptionsFromScannedLocations(tsds);
+    TypeSystemDescription tsd = CasCreationUtils.mergeTypeSystems(tsds);
+
+    assertNotNull(tsd.getType(Token.class.getName()));
+    assertNotNull(tsd.getType(Sentence.class.getName()));
+    assertNotNull(tsd.getType(AnalyzedText.class.getName()));
+  }
+
+  @Test
+  public void testLoadingFromSPIs() throws Exception {
+    List<TypeSystemDescription> tsds = new ArrayList<>();
+    loadTypeSystemDescriptionsFromSPIs(tsds);
+    TypeSystemDescription tsd = CasCreationUtils.mergeTypeSystems(tsds);
+
+    assertNotNull(tsd.getType(TypeSystemDescriptionProviderForTesting.TEST_TYPE_A));
   }
 }

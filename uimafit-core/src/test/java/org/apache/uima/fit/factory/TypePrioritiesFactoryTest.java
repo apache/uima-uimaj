@@ -20,11 +20,17 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
+import static org.apache.uima.fit.factory.TypePrioritiesFactory.loadTypePrioritiesFromSPIs;
+import static org.apache.uima.fit.factory.TypePrioritiesFactory.loadTypePrioritiesFromScannedLocations;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.uima.cas.CAS;
+import org.apache.uima.fit.factory.spi.TypePrioritiesProviderForTesting;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -58,6 +64,7 @@ public class TypePrioritiesFactoryTest {
     assertThat(prio.getPriorityLists()[0].getTypes()).containsExactly(CAS.TYPE_NAME_ANNOTATION);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testCreateTypePrioritiesFromBadClasses() throws Exception {
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -69,9 +76,35 @@ public class TypePrioritiesFactoryTest {
     TypePriorities prio = createTypePriorities();
 
     TypePriorityList[] typePrioritiesLists = prio.getPriorityLists();
-    assertThat(typePrioritiesLists.length).isEqualTo(1);
+    assertThat(typePrioritiesLists.length).isEqualTo(2);
     assertThat(typePrioritiesLists[0].getTypes()) //
-            .as("Type priorities auto-detection")
+            .containsExactly( //
+                    Sentence.class.getName(), //
+                    Token.class.getName());
+    assertThat(typePrioritiesLists[1].getTypes()) //
+            .containsExactly( //
+                    TypePrioritiesProviderForTesting.TEST_TYPE_A);
+  }
+
+  @Test
+  public void testLoadingFromScannedLocations() throws Exception {
+    List<TypePriorities> allPrios = new ArrayList<>();
+    loadTypePrioritiesFromScannedLocations(allPrios);
+    TypePriorities prios = CasCreationUtils.mergeTypePriorities(allPrios, null);
+
+    assertThat(prios.getPriorityLists().length).isEqualTo(1);
+    assertThat(prios.getPriorityLists()[0].getTypes()) //
             .containsExactly(Sentence.class.getName(), Token.class.getName());
+  }
+
+  @Test
+  public void testLoadingFromSPIs() throws Exception {
+    List<TypePriorities> allPrios = new ArrayList<>();
+    loadTypePrioritiesFromSPIs(allPrios);
+    TypePriorities prios = CasCreationUtils.mergeTypePriorities(allPrios, null);
+
+    assertThat(prios.getPriorityLists().length).isEqualTo(1);
+    assertThat(prios.getPriorityLists()[0].getTypes()) //
+            .containsExactly(TypePrioritiesProviderForTesting.TEST_TYPE_A);
   }
 }
