@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -52,6 +53,7 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.internal.util.WeakIdentityMap;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.spi.JCasClassProvider;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
@@ -194,6 +196,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   private static final WeakIdentityMap<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = WeakIdentityMap
           .newHashMap(); // identity: key is classloader
   private static final WeakIdentityMap<ClassLoader, StackTraceElement[]> cl_to_type2JCasStacks;
+  private static final WeakIdentityMap<ClassLoader, Map<String, Class<? extends TOP>>> cl_to_spiJCas = WeakIdentityMap
+          .newHashMap();
 
   // private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas =
   // Collections.synchronizedMap(new IdentityHashMap<>()); // identity: key is classloader
@@ -921,6 +925,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     Class<? extends TOP> clazz = null;
     String className = ti.getJCasClassName();
 
+    Map<String, Class<? extends TOP>> spiJCasClasses = loadJCasClassesFromSPI(cl);
+    clazz = spiJCasClasses.get(className);
+    if (clazz != null) {
+      return clazz;
+    }
+
     try {
       clazz = (Class<? extends TOP>) Class.forName(className, true, cl);
     } catch (ClassNotFoundException e) {
@@ -931,6 +941,27 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
 
     return clazz;
+  }
+
+  static Map<String, Class<? extends TOP>> loadJCasClassesFromSPI(ClassLoader cl) {
+    synchronized (cl_to_spiJCas) {
+      Map<String, Class<? extends TOP>> spiJCas = cl_to_spiJCas.get(cl);
+      if (spiJCas != null) {
+        return spiJCas;
+      }
+
+      Map<String, Class<? extends TOP>> spiJCasClasses = new LinkedHashMap<>();
+      ServiceLoader<JCasClassProvider> loader = ServiceLoader.load(JCasClassProvider.class, cl);
+      loader.forEach(provider -> {
+        List<Class<? extends TOP>> list = provider.listJCasClasses();
+        if (list != null) {
+          list.forEach(item -> spiJCasClasses.put(item.getName(), item));
+        }
+      });
+      cl_to_spiJCas.put(cl, spiJCasClasses);
+
+      return spiJCasClasses;
+    }
   }
 
   // SYNCHRONIZED
