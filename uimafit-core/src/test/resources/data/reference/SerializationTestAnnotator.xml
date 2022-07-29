@@ -46,12 +46,20 @@
                         </featureDescription>
                     </features>
                 </typeDescription>
+                <typeDescription>
+                    <name>test.TypeA</name>
+                    <description/>
+                    <supertypeName>uima.tcas.Annotation</supertypeName>
+                </typeDescription>
             </types>
         </typeSystemDescription>
         <typePriorities>
             <priorityList>
                 <type>org.apache.uima.fit.type.Sentence</type>
                 <type>org.apache.uima.fit.type.Token</type>
+            </priorityList>
+            <priorityList>
+                <type>test.TypeA</type>
             </priorityList>
         </typePriorities>
         <fsIndexCollection>
@@ -70,6 +78,11 @@
                             <comparator>standard</comparator>
                         </fsIndexKey>
                     </keys>
+                </fsIndexDescription>
+                <fsIndexDescription>
+                    <label>SPI-defined Scanned Index</label>
+                    <typeName>test.TypeA</typeName>
+                    <kind>sorted</kind>
                 </fsIndexDescription>
             </fsIndexes>
         </fsIndexCollection>
