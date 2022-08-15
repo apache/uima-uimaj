@@ -2736,7 +2736,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
               "Missing UIMA type, JCas Class name: %s, index: %d, jcasRegisteredTypes size: %d%n",
               className, typeindex, jcasRegisteredTypes.size());
       dumpTypeSystem();
-      throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, className);
+      throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS_REGISTRY, className);
     } else {
       throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
     }
