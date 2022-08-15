@@ -1,0 +1,90 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+= Maven Build
+
+This section describes various functionalities provided by the UIMA Parent POM and how to use them in downstream projects.
+
+== Issues fixed report
+
+In order for your project to generate an **issues fixed** report from the ASF Jira, add 
+an empty file called `marker-file-identifying-parent-pom` to the root of your Maven project.
+This activates the `mavenJirareport` profile from the parent POM.
+
+Additionally, set the property `jiraVersion` in the `pom.xml` at your project's root to
+
+    <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}SUFFIX</jiraVersion>
+
+The properties are provided by the `build-helper-maven-plugin` in the UIMA Parent POM. You just need to add the `SUFFIX` for your project depending on how it is called in Jira, e.g. `SDK` for the Apache Java SDK or `uimaFIT` for uimaFIT.
+
+
+== Auto-staging of release candidates
+
+Once the release build is complete, the artifacts need to be uploaded to the ASF Subversion repository for voting. To avoid having to perform this step manually, the Maven build includes an auto-staging mechanism. To use this mechansim, place an empty file called `marker-file-enabling-auto-staging`. This file activates the profile `apache-release-rc-auto-staging`. 
+
+Additionally, you have to add an execution to your project's root Maven POM that copies the release artifacts to a local staging folder. At the start of the build, the auto-staging profile will check out the ASF Subversion repository RC staging spot to that local staging folder. Then your execution kicks in to copy the RC artifacts into the local folder. Finally, the auto-staging profile will add and commit the artifacts to Subversion.
+
+Below is an example of how to copy the release artifacts to the local staging spot. The variables `${staging-local-root}` and `${staging-folder}` are provided by the UIMA Parent POM.
+
+    <profiles>
+      <profile>
+        <id>apache-release</id>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <inherited>false</inherited>
+              <executions>
+                <execution>
+                  <phase>install</phase>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                  <configuration>
+                    <target>
+                      <mkdir dir="${staging-local-root}/${staging-folder}" />
+                      <copy todir="${staging-local-root}/${staging-folder}">
+                        <fileset dir="${project.build.directory}">
+                          <include name="uimafit-${project.version}-*.zip" />
+                          <include name="uimafit-${project.version}-*.zip.asc" />
+                          <include name="uimafit-${project.version}-*.zip.sha512" />
+                        </fileset>
+                      </copy>
+                    </target>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+    </profiles>
+
+Also, it is necessary to add credentials to the `settings.xml` for the server to which the release candidate artifacts are staged. Normally, the server is `dist.apache.org`, so you need to add an entry such as e.g. 
+
+    <server>
+      <id>dist.apache.org</id>
+      <username>USERNAME</username>
+      <password>ENCRYPTED_PASSWORD</password>
+    </server>
+
+To test the auto-staging mechanism, you can set up a local Subversion repository and then run a build that skips the Maven Deploy Plugin and which is configured to use your local Subversion repo for auto-staging:
+
+* Initialize a local svn repo: `svnadmin create /my/local/testrepo`
+* Do a test build: `mvn -Papache-release -DskipTests -Dmaven.deploy.skip -Dstaging-scm-root='scm:svn:file:///my/local/testrepo/' clean deploy`
+* Check if the commit made it in: `svn log file:///my/local/testrepo/`
