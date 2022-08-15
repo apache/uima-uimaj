@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
@@ -30,9 +30,11 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 // tests without initializing JCas
@@ -53,16 +55,33 @@ public class SelectFsNoJCasTest {
             null);
   }
 
+  @BeforeEach
+  public void setup() {
+    cas.reset();
+  }
+
   @Test
   public void testOpsNeedingAnnotation() {
     Type type = cas.getTypeSystem().getType("x.y.z.SentenceNoJCas");
     FeatureStructure s = cas.createAnnotation(type, 0, 4);
     cas.indexRepository.addFS(s);
 
-    boolean b = cas.<Annotation> select(type).covering(1, 2).map(f -> f.getBegin()).findFirst()
+    assertThat(cas.<Annotation> select(type).covering(1, 2).map(f -> f.getBegin()).findFirst()) //
             .isPresent();
-
-    assertTrue(b);
   }
 
+  @Test
+  public void thatHelperAnnotationsDoNotRemainInCas() {
+    try (AutoCloseableNoException a = cas.ll_enableV2IdRefs(true)) {
+      cas.setDocumentText("text");
+      assertThat(cas.walkReachablePlusFSsSorted(null, null, null, null))
+              .containsExactly(cas.getSofa(), cas.getDocumentAnnotation());
+
+      cas.select(Annotation.class).at(0, 1);
+
+      assertThat(cas.walkReachablePlusFSsSorted(null, null, null, null))
+              .as("The helper annotation created by select must not be discovarably")
+              .containsExactly(cas.getSofa(), cas.getDocumentAnnotation());
+    }
+  }
 }

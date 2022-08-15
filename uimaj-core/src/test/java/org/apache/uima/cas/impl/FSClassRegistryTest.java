@@ -19,10 +19,16 @@
 package org.apache.uima.cas.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
+
+import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.spi.SpiSentence;
+import org.apache.uima.spi.SpiToken;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.junit.Before;
@@ -82,6 +88,16 @@ public class FSClassRegistryTest {
 
       assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart, "Only initial classloaders");
     }
+  }
+
+  @Test
+  public void thatJCasClassesCanBeLoadedThroughSPI() throws Exception {
+    Map<String, Class<? extends TOP>> jcasClasses = FSClassRegistry
+            .loadJCasClassesFromSPI(getClass().getClassLoader());
+
+    assertThat(jcasClasses).containsOnly( //
+            entry(SpiToken.class.getName(), SpiToken.class), //
+            entry(SpiSentence.class.getName(), SpiSentence.class));
   }
 
   private void assertRegisteredClassLoaders(int aExpectedCount, String aDescription) {

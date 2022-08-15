@@ -3044,7 +3044,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     if (!isWrite) {
       // always have form 6 do just reachables, to mimic what v2 did
       AllFSs allFSs;
-      try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs(false)) {
+      try (AutoCloseableNoException a = cas1.ll_enableV2IdRefs(false)) {
         allFSs = new AllFSs(cas1, mark, isTypeMapping ? fs -> isTypeInTgt(fs) : null,
                 isTypeMapping ? typeMapper : null).getAllFSsAllViews_sofas_reachable();
         // AllFSs internally already causes _save_to_cas_data() to be called, so we have to add all
