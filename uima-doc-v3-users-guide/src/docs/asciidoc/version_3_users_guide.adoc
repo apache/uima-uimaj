@@ -34,6 +34,8 @@ include::uv3.select.adoc[leveloffset=+1]
 
 include::uv3.annotation_predicates.adoc[leveloffset=+1]
 
+include::uv3.spi.adoc[leveloffset=+1]
+
 include::uv3.custom_java_objects.adoc[leveloffset=+1]
 
 include::uv3.logging.adoc[leveloffset=+1]
