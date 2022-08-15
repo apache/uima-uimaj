@@ -131,6 +131,31 @@ public class SerDesCasIOTestUtils {
    * DESERIALIZE -> SERIALIZE scenarios using the reference data from the
    * serialize/compare-to-reference data.
    */
+  public static List<DesSerTestScenario> roundTripDesSerScenariosComparingFileContentsNormalizingNewlines(
+          Collection<CasDesSerCycleConfiguration> aDesSerCycles, String aCasFileName)
+          throws Exception {
+    Class<?> caller = getCallerClass();
+
+    List<DesSerTestScenario> confs = new ArrayList<>();
+
+    for (CasDesSerCycleConfiguration cycle : aDesSerCycles) {
+      try (Stream<DesSerTestScenario.Builder> builders = DesSerTestScenario.builderCases(caller,
+              cycle, ROUND_TRIP, aCasFileName)) {
+
+        builders.map(builder -> builder.withCycle(cycle::performCycle)
+                .withAssertion(DesSerTestScenario::assertFileContentsAreEqualNormalizingNewlines)
+                .build()) //
+                .forEach(confs::add);
+      }
+    }
+
+    return confs;
+  }
+
+  /**
+   * DESERIALIZE -> SERIALIZE scenarios using the reference data from the
+   * serialize/compare-to-reference data.
+   */
   public static List<DesSerTestScenario> roundTripDesSerScenariosComparingCasContents(
           Collection<CasDesSerCycleConfiguration> aDesSerCycles, String aCasFileName)
           throws Exception {

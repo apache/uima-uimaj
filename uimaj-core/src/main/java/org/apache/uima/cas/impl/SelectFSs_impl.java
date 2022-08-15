@@ -63,6 +63,7 @@ import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.util.AutoCloseableNoException;
 
 // @formatter:off
 /**
@@ -1020,7 +1021,9 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     if (end < begin) {
       throw new IllegalArgumentException("End value must be >= Begin value");
     }
-    return new Annotation(jcas, begin, end);
+    try (AutoCloseableNoException c = ((CASImpl) jcas.getCas()).ll_forceEnableV2IdRefs(false)) {
+      return new Annotation(jcas, begin, end);
+    }
   }
 
 //@formatter:off

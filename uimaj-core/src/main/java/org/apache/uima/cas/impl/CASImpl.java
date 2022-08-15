@@ -5240,8 +5240,10 @@ public class CASImpl extends AbstractCas_ImplBase
     List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper)
             .getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
     List<TOP> filtered = filterAboveMark(all, mark);
-    for (TOP fs : filtered) {
-      action_filtered.accept(fs);
+    if (action_filtered != null) {
+      for (TOP fs : filtered) {
+        action_filtered.accept(fs);
+      }
     }
     return all;
   }
@@ -6164,6 +6166,13 @@ public class CASImpl extends AbstractCas_ImplBase
     if (enable && !restoreState && svd.fsIdGenerator != 0) {
       throw new IllegalStateException("CAS must be empty when switching to V2 ID References mode.");
     }
+    AutoCloseableNoException r = () -> svd.isId2Fs = restoreState;
+    svd.isId2Fs = enable;
+    return r;
+  }
+
+  AutoCloseableNoException ll_forceEnableV2IdRefs(boolean enable) {
+    final boolean restoreState = svd.isId2Fs;
     AutoCloseableNoException r = () -> svd.isId2Fs = restoreState;
     svd.isId2Fs = enable;
     return r;

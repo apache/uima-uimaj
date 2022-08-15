@@ -145,9 +145,8 @@ public class FileUtil {
       boolean extAccepted = true;
       if (_dirPath != null) {
         String parentDir = file.getParent();
-        dirAccepted = parentDir != null
-                && parentDir.replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR)
-                        .startsWith(_dirPath);
+        dirAccepted = parentDir != null && parentDir
+                .replace(WINDOWS_SEPARATOR_CHAR, UNIX_SEPARATOR_CHAR).startsWith(_dirPath);
       }
       if (_fileExt != null) {
         extAccepted = file.getPath().toLowerCase().endsWith(_fileExt);
@@ -789,9 +788,8 @@ public class FileUtil {
       File file = new File(targetDir, jarEntry.getName());
 
       if (!normalizeToUnix(file.getCanonicalPath()).startsWith(prefix)) {
-        throw new IOException(
-                "Can only write within target folder [" + targetDir.getAbsolutePath()
-                        + "]. Please validate ZIP contents.");
+        throw new IOException("Can only write within target folder [" + targetDir.getAbsolutePath()
+                + "]. Please validate ZIP contents.");
       }
 
       File dir = file.getParentFile();
