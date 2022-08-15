@@ -645,7 +645,19 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   }
 
   public static JCasClassInfo createJCasClassInfo(TypeImpl ti, ClassLoader cl, Lookup lookup) {
-    Class<? extends TOP> clazz = maybeLoadJCas(ti, cl);
+    Lookup actualLookup = lookup;
+
+    // First we try the local classloader - this is necessary because it might be a PEAR situation
+    Class<? extends TOP> clazz = maybeLoadLocalJCas(ti, cl);
+
+    // If the local classloader does not have the JCas wrapper, we try the SPI
+    if (clazz == null) {
+      Map<String, Class<? extends TOP>> spiJCasClasses = loadJCasClassesFromSPI(cl);
+      clazz = spiJCasClasses.get(ti.getJCasClassName());
+      if (clazz != null) {
+        actualLookup = getLookup(clazz.getClassLoader());
+      }
+    }
 
     if (null == clazz || !TOP.class.isAssignableFrom(clazz)) {
       return null;
@@ -667,7 +679,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         return null;
       }
     }
-    return createJCasClassInfo(clazz, ti, jcasType, lookup);
+
+    return createJCasClassInfo(clazz, ti, jcasType, actualLookup);
   }
 
   // static AtomicLong time = IS_TIME_AUGMENT_FEATURES ? new AtomicLong(0) : null;
@@ -914,33 +927,22 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * 
    * Synchronization: done outside this class
    * 
-   * @param typeName
-   *          -
    * @param cl
    *          the class loader to use
    * @return the loaded / resolved class
    */
   // @formatter:on
-  private static Class<? extends TOP> maybeLoadJCas(TypeImpl ti, ClassLoader cl) {
-    Class<? extends TOP> clazz = null;
+  @SuppressWarnings("unchecked")
+  private static Class<? extends TOP> maybeLoadLocalJCas(TypeImpl ti, ClassLoader cl) {
     String className = ti.getJCasClassName();
-
-    Map<String, Class<? extends TOP>> spiJCasClasses = loadJCasClassesFromSPI(cl);
-    clazz = spiJCasClasses.get(className);
-    if (clazz != null) {
-      return clazz;
-    }
-
     try {
-      clazz = (Class<? extends TOP>) Class.forName(className, true, cl);
+      return (Class<? extends TOP>) Class.forName(className, true, cl);
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
-      return clazz;
+      return null;
     } catch (ExceptionInInitializerError e) {
       throw new RuntimeException("Exception while loading " + className, e);
     }
-
-    return clazz;
   }
 
   static Map<String, Class<? extends TOP>> loadJCasClassesFromSPI(ClassLoader cl) {

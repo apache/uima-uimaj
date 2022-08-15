@@ -22,14 +22,12 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import org.apache.uima.cas.test.Sentence;
-import org.apache.uima.cas.test.Token;
 import org.apache.uima.jcas.cas.TOP;
 
 public class JCasClassProviderForTesting implements JCasClassProvider {
 
   @Override
   public List<Class<? extends TOP>> listJCasClasses() {
-    return asList(Token.class, Sentence.class);
+    return asList(SpiToken.class, SpiSentence.class);
   }
 }
