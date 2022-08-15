@@ -260,7 +260,8 @@
                   <exclude>src/test/resources/pearTests/*.pear</exclude>
                   <exclude>src/test/resources/pearTests/encodingTests/*</exclude>
                   <exclude>src/test/resources/SequencerTest/*.txt</exclude>
-                  <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude> 
+                  <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.JCasClassProvider</exclude>
                   <!-- jcas classes generated -->
                   <exclude>src/test/java/aa/*.java</exclude>
                   <exclude>src/test/java/org/apache/uima/cas/test/*.java</exclude>
