@@ -19,10 +19,13 @@
 
 package org.apache.uima.jcas.test;
 
+import static org.apache.uima.util.CasCreationUtils.createCas;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.throwable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -70,7 +73,6 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -126,8 +128,9 @@ public class JCasTest {
       // initializing JCas type: aa.Root, feature: testMissingImport\n")) {
       // assertTrue(false);
       // }
-    } else
+    } else {
       assertTrue(false);
+    }
   }
 
   public void checkExpectedBadCASError(Exception e1, String err) {
@@ -139,8 +142,9 @@ public class JCasTest {
       if (!(e.getMessageKey().equals(err))) {
         assertTrue(false);
       }
-    } else
+    } else {
       assertTrue(false);
+    }
   }
 
   @AfterEach
@@ -998,22 +1002,22 @@ public class JCasTest {
   @Test
   public void testUndefinedType() throws Exception {
     // create jcas with no type system
-    JCas localJcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null)
-            .getJCas();
+    JCas localJcas = createCas(new TypeSystemDescription_impl(), null, null).getJCas();
     localJcas.setDocumentText("This is a test.");
-    try {
-      // this should throw an exception
-      localJcas.getCasType(Sentence.type);
-      fail();
-    } catch (CASRuntimeException e) {
-      assertEquals(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, e.getMessageKey());
-    }
+
+    assertThatExceptionOfType(CASRuntimeException.class) //
+            .isThrownBy(() -> localJcas.getCasType(Sentence.type)) //
+            .asInstanceOf(throwable(CASRuntimeException.class)) //
+            .extracting(CASRuntimeException::getMessageKey) //
+            .isEqualTo(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS_REGISTRY);
+
     // check that this does not leave JCAS in an inconsistent state
     // (a check for bug UIMA-738)
     Iterator<Annotation> iter = localJcas.getAnnotationIndex().iterator();
-    assertTrue(iter.hasNext());
-    Annotation annot = iter.next();
-    assertEquals("This is a test.", annot.getCoveredText());
+    assertThat(iter).hasNext();
+    assertThat(iter.next()) //
+            .extracting(Annotation::getCoveredText) //
+            .isEqualTo("This is a test.");
   }
 
   /*
