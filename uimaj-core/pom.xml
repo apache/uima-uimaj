@@ -17,7 +17,9 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,7 +31,7 @@
 
   <artifactId>uimaj-core</artifactId>
   <packaging>bundle</packaging>
-  
+
   <name>Apache UIMA Base: ${project.artifactId}</name>
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
@@ -276,6 +278,10 @@
               org.apache.uima,
               org.apache.uima.*
             </Export-Package>
+            <Require-Capability>
+              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",
+              osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.JCasClassProvider)";cardinality:=multiple
+            </Require-Capability>
           </instructions>
         </configuration>
       </plugin>
