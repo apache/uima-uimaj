@@ -51,8 +51,9 @@ public class CpePipelineFailureHandlingTest {
       // Ignore
     }
 
-    assertThat(processed.get()).as("CPE stop processing soon after reader threw an exception")
-            .isBetween(failAfter, failAfter + getRuntime().availableProcessors());
+    assertThat(processed.get()) //
+            .as("CPE stop processing soon after reader threw an exception") //
+            .isBetween(failAfter, failAfter + (4 * getRuntime().availableProcessors()));
   }
 
   public static class Reader extends JCasCollectionReader_ImplBase {

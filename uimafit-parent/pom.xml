@@ -52,7 +52,7 @@
     <mockito-version>4.4.0</mockito-version>
     <spring-version>5.3.20</spring-version>
     <slf4j-version>1.7.36</slf4j-version>
-    <uima-version>3.3.0</uima-version>
+    <uima-version>3.4.0-SNAPSHOT</uima-version>
     <xmlunit-version>2.9.0</xmlunit-version>
   </properties>
 

@@ -25,7 +25,9 @@ import static org.apache.uima.fit.internal.ReflectionUtil.getInheritableAnnotati
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
 import org.apache.uima.fit.descriptor.FsIndex;
@@ -41,13 +43,12 @@ import org.apache.uima.resource.metadata.impl.FsIndexCollection_impl;
 import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
 import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
 import org.apache.uima.resource.metadata.impl.Import_impl;
+import org.apache.uima.spi.FsIndexCollectionProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- */
 public final class FsIndexFactory {
   private static Logger LOG = LoggerFactory.getLogger(FsIndexFactory.class);
 
@@ -186,6 +187,21 @@ public final class FsIndexFactory {
   }
 
   /**
+   * Create a index collection from a set of descriptions.
+   *
+   * @param descriptions
+   *          the index descriptions
+   * @return the index collection
+   */
+  public static FsIndexCollection createFsIndexCollection(
+          Collection<? extends FsIndexDescription> descriptions) {
+    FsIndexCollection_impl fsIndexCollection = new FsIndexCollection_impl();
+    fsIndexCollection
+            .setFsIndexes(descriptions.toArray(new FsIndexDescription[descriptions.size()]));
+    return fsIndexCollection;
+  }
+
+  /**
    * @param featureName
    *          the feature to index
    * @return the index key description
@@ -267,19 +283,9 @@ public final class FsIndexFactory {
     if (aggFsIdxCol == null) {
       synchronized (CREATE_LOCK) {
         List<FsIndexDescription> fsIndexList = new ArrayList<>();
-        for (String location : scanIndexDescriptors()) {
-          try {
-            XMLInputSource xmlInput = new XMLInputSource(location);
-            FsIndexCollection fsIdxCol = getXMLParser().parseFsIndexCollection(xmlInput);
-            fsIdxCol.resolveImports();
-            fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
-            LOG.debug("Detected index at [{}]", location);
-          } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-          } catch (InvalidXMLException e) {
-            LOG.warn("[{}] is not a index descriptor file. Ignoring.", location, e);
-          }
-        }
+
+        loadFsIndexCollectionsFromScannedLocations(fsIndexList);
+        loadFsIndexCollectionsfromSPIs(fsIndexList);
 
         aggFsIdxCol = createFsIndexCollection(
                 fsIndexList.toArray(new FsIndexDescription[fsIndexList.size()]));
@@ -288,6 +294,34 @@ public final class FsIndexFactory {
     }
 
     return (FsIndexCollection) aggFsIdxCol.clone();
+  }
+
+  static void loadFsIndexCollectionsFromScannedLocations(List<FsIndexDescription> fsIndexList)
+          throws ResourceInitializationException {
+    for (String location : scanIndexDescriptors()) {
+      try {
+        XMLInputSource xmlInput = new XMLInputSource(location);
+        FsIndexCollection fsIdxCol = getXMLParser().parseFsIndexCollection(xmlInput);
+        fsIdxCol.resolveImports();
+        fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
+        LOG.debug("Detected index at [{}]", location);
+      } catch (IOException e) {
+        throw new ResourceInitializationException(e);
+      } catch (InvalidXMLException e) {
+        LOG.warn("[{}] is not a index descriptor file. Ignoring.", location, e);
+      }
+    }
+  }
+
+  static void loadFsIndexCollectionsfromSPIs(List<FsIndexDescription> fsIndexList) {
+    ServiceLoader<FsIndexCollectionProvider> loader = ServiceLoader
+            .load(FsIndexCollectionProvider.class);
+    loader.forEach(provider -> {
+      for (FsIndexCollection fsIdxCol : provider.listFsIndexCollections()) {
+        fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
+        LOG.debug("Loaded SPI-provided index collection at [{}]", fsIdxCol.getSourceUrlString());
+      }
+    });
   }
 
   /**
