@@ -34,7 +34,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15</version>
+    <version>16-SNAPSHOT</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -273,6 +273,11 @@
         <!-- Version can be removed after updating to the UIMA Parent POM 16 or higher  -->
         <version>0.15.7</version>
         <configuration>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.build.finalName}.jar</path>
+            </file>
+          </newVersion>
           <parameter>
             <ignoreMissingClassesByRegularExpressions>
               <ignoreMissingClassesByRegularExpression>com\.strobel\..*</ignoreMissingClassesByRegularExpression>
