@@ -33,12 +33,28 @@
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
+  
   <scm>
     <tag>HEAD</tag>
     <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
     <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
     <url>https://github.com/apache/uima-uimafit</url>
   </scm>
+
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>https://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
