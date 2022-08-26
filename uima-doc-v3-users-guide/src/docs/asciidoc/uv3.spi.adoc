@@ -15,8 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-[[_uv3.custom_java_objects]]
+[[_uv3.spi]]
 = Type discovery via SPI
+
+== JCas class discovery
 
 JCas types and associated type system descriptions can be made discoverable by UIMA using Java's
 SPI mechanism. 
@@ -50,3 +52,26 @@ public class MyJCasClassProvider implements JCasClassProvider {
 
 More elaborate implementations might e.g. use uimaFIT to auto-detect types and if there is a JCas
 class for any of these types, announce them.
+
+== Type system description discovery
+
+The core UIMA framework defines the `TypeSystemDescriptionProvider` interface to also enable
+type system discovery via SPI. However, note that currently only uimaFIT actually implements
+the type system discovery.
+
+Here is an example of how to implement a type system description provider for use with 
+uimaFIT:
+
+
+[source]
+----
+import org.apache.uima.util.TypeSystemUtil;
+
+public class MyTypeSystemDescriptionProvider implements TypeSystemDescriptionProvider {
+  @Override}
+  public List<TypeSystemDescription> listTypeSystemDescriptions() {
+    return TypeSystemUtil.loadTypeSystemDescriptionsFromClasspath(this, "TypeSystem1.xml",
+        "TypeSystem2.xml");
+  }
+}
+----
