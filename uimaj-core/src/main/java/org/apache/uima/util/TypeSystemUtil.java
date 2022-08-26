@@ -51,7 +51,7 @@ public class TypeSystemUtil {
    * <pre>
    * public class MyTypeSystemDescriptionProvider implements TypeSystemDescriptionProvider {
    *   {@code @Override}
-   *   public List<TypeSystemDescription> listTypeSystemDescriptions() {
+   *   {@code public List<TypeSystemDescription> listTypeSystemDescriptions()} {
    *     return TypeSystemUtil.loadTypeSystemDescriptionsFromClasspath(getClass(), "TypeSystem1.xml",
    *             "TypeSystem2.xml");
    *   }
