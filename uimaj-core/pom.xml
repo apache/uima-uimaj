@@ -279,8 +279,8 @@
               org.apache.uima.*
             </Export-Package>
             <Require-Capability>
-              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",
-              osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.JCasClassProvider)";cardinality:=multiple
+              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional,
+              osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.JCasClassProvider)";cardinality:=multiple;resolution:=optional
             </Require-Capability>
           </instructions>
         </configuration>
