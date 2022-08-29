@@ -1753,7 +1753,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   }
 
   private static final URL[] NO_URLS = new URL[0];
-  
+
   static Lookup getLookup(ClassLoader cl) {
     Lookup lookup = null;
     try {
@@ -1762,16 +1762,17 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       // CL. This is in particular an issue for classes loaded through the SPI mechanism.
       UIMAClassLoader ucl;
       if (!(cl instanceof UIMAClassLoader)) {
-        ucl = cl_to_uimaCl.get(cl);
-        if (ucl == null ) {
-          ucl = new UIMAClassLoader(NO_URLS, cl);
-          cl_to_uimaCl.put(cl, ucl);
+        synchronized (cl_to_uimaCl) {
+          ucl = cl_to_uimaCl.get(cl);
+          if (ucl == null) {
+            ucl = new UIMAClassLoader(NO_URLS, cl);
+            cl_to_uimaCl.put(cl, ucl);
+          }
         }
-      } 
-      else {
+      } else {
         ucl = (UIMAClassLoader) cl;
       }
-      
+
       Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, ucl);
       Method m = clazz.getMethod("getMethodHandlesLookup");
       lookup = (Lookup) m.invoke(null);
