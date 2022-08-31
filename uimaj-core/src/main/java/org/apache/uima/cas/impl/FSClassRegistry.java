@@ -34,6 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -197,6 +198,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           .newHashMap(); // identity: key is classloader
   private static final WeakIdentityMap<ClassLoader, StackTraceElement[]> cl_to_type2JCasStacks;
   private static final WeakIdentityMap<ClassLoader, Map<String, Class<? extends TOP>>> cl_to_spiJCas = WeakIdentityMap
+          .newHashMap();
+  private static final WeakIdentityMap<ClassLoader, UIMAClassLoader> cl_to_uimaCl = WeakIdentityMap
           .newHashMap();
 
   // private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas =
@@ -1749,10 +1752,28 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
+  private static final URL[] NO_URLS = new URL[0];
+
   static Lookup getLookup(ClassLoader cl) {
     Lookup lookup = null;
     try {
-      Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, cl);
+      // The UIMAClassLoader has special handling for the MHLC, so we must make sure that the CL
+      // we are using is actually a UIMAClassLoader, otherwise the MHCL will look up in the wrong
+      // CL. This is in particular an issue for classes loaded through the SPI mechanism.
+      UIMAClassLoader ucl;
+      if (!(cl instanceof UIMAClassLoader)) {
+        synchronized (cl_to_uimaCl) {
+          ucl = cl_to_uimaCl.get(cl);
+          if (ucl == null) {
+            ucl = new UIMAClassLoader(NO_URLS, cl);
+            cl_to_uimaCl.put(cl, ucl);
+          }
+        }
+      } else {
+        ucl = (UIMAClassLoader) cl;
+      }
+
+      Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, ucl);
       Method m = clazz.getMethod("getMethodHandlesLookup");
       lookup = (Lookup) m.invoke(null);
     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
