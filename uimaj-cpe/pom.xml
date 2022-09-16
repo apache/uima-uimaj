@@ -103,8 +103,8 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
 						<_dsannotations>*</_dsannotations>
 						<_metatypeannotations>*</_metatypeannotations>
+						<Fragment-Host>org.apache.uima.j-core</Fragment-Host>
 						<Import-Package>
-							!org.apache.uima.collection.impl.metadata.cpe,
 							!com.apple.eio,
 							org.slf4j.impl;resolution:=optional,
 							org.apache.logging.log4j.*;resolution:=optional,
