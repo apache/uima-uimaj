@@ -34,7 +34,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15</version>
+    <version>16-SNAPSHOT</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -238,10 +238,10 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- Can be removed after updating to the UIMA Parent POM 15 or higher  -->
+          <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.4</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -270,19 +270,28 @@
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.3</version>
+        <!-- Version can be removed after updating to the UIMA Parent POM 16 or higher  -->
+        <version>0.15.7</version>
         <configuration>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.build.finalName}.jar</path>
+            </file>
+          </newVersion>
           <parameter>
             <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>com\.strobel\..*</ignoreMissingClassesByRegularExpression>
               <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
         </configuration>
         <dependencies>
           <dependency>
+            <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
+            <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
-            <version>2.5.14</version>
+            <version>2.5.17</version>
           </dependency>
         </dependencies>
       </plugin>

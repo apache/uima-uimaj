@@ -121,10 +121,17 @@ public class CASRuntimeException extends UIMARuntimeException {
    * supertypes "{3}".
    */
   public static final String JCAS_MISMATCH_SUPERTYPE = "JCAS_MISMATCH_SUPERTYPE";
+
   /**
    * JCas type "{0}" used in Java code, but was not declared in the XML type descriptor.
    */
   public static final String JCAS_TYPE_NOT_IN_CAS = "JCAS_TYPE_NOT_IN_CAS";
+
+  /**
+   * JCas type "{0}" defined in CAS type system and used in Java code, but was not registered in
+   * JCasRegistry.
+   */
+  public static final String JCAS_TYPE_NOT_IN_CAS_REGISTRY = "JCAS_TYPE_NOT_IN_CAS_REGISTRY";
 
   /**
    * CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas class has range

@@ -34,6 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -52,6 +54,7 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.internal.util.WeakIdentityMap;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.spi.JCasClassProvider;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
@@ -194,6 +197,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   private static final WeakIdentityMap<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = WeakIdentityMap
           .newHashMap(); // identity: key is classloader
   private static final WeakIdentityMap<ClassLoader, StackTraceElement[]> cl_to_type2JCasStacks;
+  private static final WeakIdentityMap<ClassLoader, Map<String, Class<? extends TOP>>> cl_to_spiJCas = WeakIdentityMap
+          .newHashMap();
+  private static final WeakIdentityMap<ClassLoader, UIMAClassLoader> cl_to_uimaCl = WeakIdentityMap
+          .newHashMap();
 
   // private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas =
   // Collections.synchronizedMap(new IdentityHashMap<>()); // identity: key is classloader
@@ -641,7 +648,19 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   }
 
   public static JCasClassInfo createJCasClassInfo(TypeImpl ti, ClassLoader cl, Lookup lookup) {
-    Class<? extends TOP> clazz = maybeLoadJCas(ti, cl);
+    Lookup actualLookup = lookup;
+
+    // First we try the local classloader - this is necessary because it might be a PEAR situation
+    Class<? extends TOP> clazz = maybeLoadLocalJCas(ti, cl);
+
+    // If the local classloader does not have the JCas wrapper, we try the SPI
+    if (clazz == null) {
+      Map<String, Class<? extends TOP>> spiJCasClasses = loadJCasClassesFromSPI(cl);
+      clazz = spiJCasClasses.get(ti.getJCasClassName());
+      if (clazz != null) {
+        actualLookup = getLookup(clazz.getClassLoader());
+      }
+    }
 
     if (null == clazz || !TOP.class.isAssignableFrom(clazz)) {
       return null;
@@ -663,7 +682,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         return null;
       }
     }
-    return createJCasClassInfo(clazz, ti, jcasType, lookup);
+
+    return createJCasClassInfo(clazz, ti, jcasType, actualLookup);
   }
 
   // static AtomicLong time = IS_TIME_AUGMENT_FEATURES ? new AtomicLong(0) : null;
@@ -910,27 +930,43 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * 
    * Synchronization: done outside this class
    * 
-   * @param typeName
-   *          -
    * @param cl
    *          the class loader to use
    * @return the loaded / resolved class
    */
   // @formatter:on
-  private static Class<? extends TOP> maybeLoadJCas(TypeImpl ti, ClassLoader cl) {
-    Class<? extends TOP> clazz = null;
+  @SuppressWarnings("unchecked")
+  private static Class<? extends TOP> maybeLoadLocalJCas(TypeImpl ti, ClassLoader cl) {
     String className = ti.getJCasClassName();
-
     try {
-      clazz = (Class<? extends TOP>) Class.forName(className, true, cl);
+      return (Class<? extends TOP>) Class.forName(className, true, cl);
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
-      return clazz;
+      return null;
     } catch (ExceptionInInitializerError e) {
       throw new RuntimeException("Exception while loading " + className, e);
     }
+  }
 
-    return clazz;
+  static Map<String, Class<? extends TOP>> loadJCasClassesFromSPI(ClassLoader cl) {
+    synchronized (cl_to_spiJCas) {
+      Map<String, Class<? extends TOP>> spiJCas = cl_to_spiJCas.get(cl);
+      if (spiJCas != null) {
+        return spiJCas;
+      }
+
+      Map<String, Class<? extends TOP>> spiJCasClasses = new LinkedHashMap<>();
+      ServiceLoader<JCasClassProvider> loader = ServiceLoader.load(JCasClassProvider.class, cl);
+      loader.forEach(provider -> {
+        List<Class<? extends TOP>> list = provider.listJCasClasses();
+        if (list != null) {
+          list.forEach(item -> spiJCasClasses.put(item.getName(), item));
+        }
+      });
+      cl_to_spiJCas.put(cl, spiJCasClasses);
+
+      return spiJCasClasses;
+    }
   }
 
   // SYNCHRONIZED
@@ -1716,10 +1752,28 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
+  private static final URL[] NO_URLS = new URL[0];
+
   static Lookup getLookup(ClassLoader cl) {
     Lookup lookup = null;
     try {
-      Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, cl);
+      // The UIMAClassLoader has special handling for the MHLC, so we must make sure that the CL
+      // we are using is actually a UIMAClassLoader, otherwise the MHCL will look up in the wrong
+      // CL. This is in particular an issue for classes loaded through the SPI mechanism.
+      UIMAClassLoader ucl;
+      if (!(cl instanceof UIMAClassLoader)) {
+        synchronized (cl_to_uimaCl) {
+          ucl = cl_to_uimaCl.get(cl);
+          if (ucl == null) {
+            ucl = new UIMAClassLoader(NO_URLS, cl);
+            cl_to_uimaCl.put(cl, ucl);
+          }
+        }
+      } else {
+        ucl = (UIMAClassLoader) cl;
+      }
+
+      Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, ucl);
       Method m = clazz.getMethod("getMethodHandlesLookup");
       lookup = (Lookup) m.invoke(null);
     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException

@@ -19,6 +19,7 @@
 package org.apache.uima.util;
 
 import static java.util.Arrays.asList;
+import static org.apache.uima.cas.SerialFormat.COMPRESSED_FILTERED_TSI;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
@@ -32,14 +33,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -335,6 +340,41 @@ public class CasIOUtilsTest {
 
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
             .extracting(fs -> fs.getType().getName()).containsExactly(customDocAnnoTypeName);
+  }
+
+  @Test
+  public void thatBinaryForm6DoesOnlyIncludeReachableFSes() throws Exception {
+    CASImpl cas = (CASImpl) CasCreationUtils.createCas();
+    byte[] buf;
+    try (AutoCloseableNoException a = cas.ll_enableV2IdRefs(true)) {
+      Annotation ann = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
+      ann.addToIndexes();
+      ann.removeFromIndexes();
+
+      Set<FeatureStructure> allFSes = new LinkedHashSet<>();
+      cas.walkReachablePlusFSsSorted(allFSes::add, null, null, null);
+
+      assertThat(allFSes) //
+              .as("The annotation that was added and then removed before serialization should be found") //
+              .containsExactly(cas.getSofa(), ann);
+
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      CasIOUtils.save(cas, bos, COMPRESSED_FILTERED_TSI);
+      buf = bos.toByteArray();
+    }
+
+    cas.reset();
+
+    try (AutoCloseableNoException a = cas.ll_enableV2IdRefs(true)) {
+      CasIOUtils.load(new ByteArrayInputStream(buf), cas);
+
+      Set<FeatureStructure> allFSes = new LinkedHashSet<>();
+      cas.walkReachablePlusFSsSorted(allFSes::add, null, null, null);
+
+      assertThat(allFSes) //
+              .as("The annotation that was added and then removed before serialization should not be found") //
+              .containsExactly(cas.getSofa());
+    }
   }
 
   @AfterEach

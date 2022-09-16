@@ -189,17 +189,22 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
     // fallback on classloader
     String f = aRelativeUrl.getFile();
-    URL absURL;
+    URL absURL = null;
     if (mClassLoader != null) {
       absURL = mClassLoader.getResource(f);
-    } else {// if no ClassLoader specified (could be the bootstrap classloader), try the system
-      // classloader
-
-      // https://issues.apache.org/jira/browse/UIMA-5902
-      ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-      absURL = (tccl != null) ? tccl.getResource(f)
-              : ClassLoader.getSystemClassLoader().getResource(f);
+    } 
+    
+    // fallback on TCCL
+    if (absURL == null) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        absURL = tccl.getResource(f);
     }
+
+    // if no ClassLoader specified (could be the bootstrap classloader), try the system classloader
+    if (absURL == null && mClassLoader == null) {
+        absURL = ClassLoader.getSystemClassLoader().getResource(f);
+    }
+
     return absURL;
   }
 

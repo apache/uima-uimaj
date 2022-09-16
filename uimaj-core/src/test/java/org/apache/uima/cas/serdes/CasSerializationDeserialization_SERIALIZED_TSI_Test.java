@@ -65,7 +65,7 @@ public class CasSerializationDeserialization_SERIALIZED_TSI_Test {
   }
 
   private static List<DesSerTestScenario> roundTripDesSerScenarios() throws Exception {
-    return SerDesCasIOTestUtils.roundTripDesSerScenariosComparingFileContents(desSerCycles,
+    return SerDesCasIOTestUtils.roundTripDesSerScenariosComparingCasContents(desSerCycles,
             CAS_FILE_NAME);
   }
 
