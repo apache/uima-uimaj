@@ -21,6 +21,7 @@ package org.apache.uima;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -174,9 +175,9 @@ public interface UimaContext {
    * you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
@@ -198,9 +199,9 @@ public interface UimaContext {
    * path (decoding %20 sequences to spaces) whereas {@link URL#getPath()} does not.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
@@ -224,9 +225,9 @@ public interface UimaContext {
    * that contain spaces.
    * 
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
@@ -246,9 +247,9 @@ public interface UimaContext {
    * &lt;externalResourceDependencies&gt; section of the descriptor.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
@@ -288,9 +289,9 @@ public interface UimaContext {
    * you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
@@ -323,9 +324,9 @@ public interface UimaContext {
    * path (decoding %20 sequences to spaces) whereas {@link URL#getPath()} does not.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
@@ -360,9 +361,9 @@ public interface UimaContext {
    * that contain spaces.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
@@ -391,9 +392,9 @@ public interface UimaContext {
    * &lt;externalResourceDependencies&gt; section of the descriptor.
    * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
-   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
-   * deprecated and support may be dropped in future versions. ALL external resource dependencies
-   * should be declared in the descriptor.
+   * up directly in the {@link #getDataPathElements() data path} and the class path. However, this
+   * usage is deprecated and support may be dropped in future versions. ALL external resource
+   * dependencies should be declared in the descriptor.
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
@@ -451,8 +452,17 @@ public interface UimaContext {
    * the <code>getResoureXXX</code> methods instead.
    * 
    * @return the data path
+   * @deprecated Use {@link #getDataPathElements()} instead.
    */
+  @Deprecated
   String getDataPath();
+
+  /**
+   * Gets the data path elements used to resolve relative paths.
+   * 
+   * @return the data path elements
+   */
+  List<String> getDataPathElements();
 
   /**
    * Returns the Session object, which can be used to store data that pertains to a particular
