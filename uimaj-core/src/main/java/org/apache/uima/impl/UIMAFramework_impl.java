@@ -21,6 +21,7 @@ package org.apache.uima.impl;
 
 import java.beans.Introspector;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -185,8 +186,10 @@ public class UIMAFramework_impl extends UIMAFramework {
 
     // read performance tuning properties
     mDefaultPerformanceTuningProperties = new Properties();
-    mDefaultPerformanceTuningProperties
-            .load(UIMAFramework_impl.class.getResourceAsStream("performanceTuning.properties"));
+    try (InputStream is = UIMAFramework_impl.class
+            .getResourceAsStream("performanceTuning.properties")) {
+      mDefaultPerformanceTuningProperties.load(is);
+    }
 
     // create new HashMap for the LogWrappers
     mLoggers = new ConcurrentHashMap<>(200, 1.0f);
