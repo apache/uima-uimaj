@@ -113,7 +113,10 @@
             </Export-Package>
             <Require-Capability>
             	osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional,
-            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider)";cardinality:=multiple;resolution:=optional
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider)";cardinality:=multiple;resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypePrioritiesProvider)";cardinality:=multiple;resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.FsIndexCollectionProvider)";cardinality:=multiple;resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.fit.validation.ValidationCheck)";cardinality:=multiple;resolution:=optional
             </Require-Capability>
           </instructions>
         </configuration>
