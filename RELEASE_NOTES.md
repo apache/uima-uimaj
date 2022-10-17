@@ -74,12 +74,10 @@ This is a bug fix release.
 * ⚙️ [UIMA-6463] Use toolchains to ensure compatibility with Java 1.8
 * ⚙️ [UIMA-6469] Cleaning up file handling code
 
-## <a id="list.issues">Full list of JIRA Issues affecting this Release</a>
+For a full list of issues affecting this release, please see:
 
-Click [issuesFixed/jira-report.hmtl](issuesFixed/jira-report.html) for the list of issues affecting
-this release.
-
-Please use the mailing lists ( http://uima.apache.org/mail-lists.html ) for feedback.
+* https://github.com/apache/uima-uimaj/issues?q=milestone%3A3.3.1
+* https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.1SDK
 
 ## <a id="get.involved">How to Get Involved</a>
 
