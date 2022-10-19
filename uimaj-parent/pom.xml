@@ -148,7 +148,7 @@
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
-    <api_check_oldVersion>3.2.0</api_check_oldVersion>
+    <api_check_oldVersion>3.3.0</api_check_oldVersion>
   </properties>
 
   <dependencyManagement>
