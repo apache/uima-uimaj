@@ -27,7 +27,6 @@
 [Major Changes in this Release](#major.changes)  
 [How to Get Involved](#get.involved)  
 [How to Report Issues](#report.issues)  
-[List of JIRA Issues Fixed in this Release](#list.issues)  
 
 ## <a id="what.is.uima">What is UIMA?</a>
 
@@ -76,8 +75,8 @@ This is a bug fix release.
 
 For a full list of issues affecting this release, please see:
 
-* https://github.com/apache/uima-uimaj/issues?q=milestone%3A3.3.1
-* https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.1SDK
+* [GitHub issues](issuesFixed/github-report.html) [[online](https://github.com/apache/uima-uimaj/issues?q=milestone%3A3.3.1)]
+* [Jira issues (legacy)](issuesFixed/jira-report.html) [[online](https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.1SDK)]
 
 ## <a id="get.involved">How to Get Involved</a>
 
