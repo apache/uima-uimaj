@@ -44,7 +44,7 @@ to your project:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
-  <version>3.3.0</version>
+  <version>3.3.1</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ Apache uimaFIT is a separate dependency that you can add:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
-  <version>3.3.0</version>
+  <version>3.3.1</version>
 </dependency>
 ```
 
