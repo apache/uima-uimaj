@@ -54,7 +54,8 @@ public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback
 
   private final Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
-  private Validator validator = new Validator.Builder().build();
+  private Validator defaultValidator = new Validator.Builder().build();
+  private Validator validator = null;
 
   /**
    * Provides a CAS with an auto-detected type system.
@@ -103,12 +104,21 @@ public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
-    managedCases.forEach(this::assertValid);
-    managedCases.forEach(CAS::reset);
+    try {
+      managedCases.forEach(this::assertValid);
+      managedCases.forEach(CAS::reset);
+    } finally {
+      this.validator = null;
+    }
   }
 
   public ManagedCas skipValidation() {
     validator = null;
+    return this;
+  }
+
+  public ManagedCas withDefaultValidator(Validator aValidator) {
+    this.defaultValidator = aValidator;
     return this;
   }
 
@@ -117,13 +127,22 @@ public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback
     return this;
   }
 
-  private void assertValid(CAS aJCas) {
-    if (validator == null) {
+  private Validator getValidator() {
+    if (validator != null) {
+      return validator;
+    }
+
+    return defaultValidator;
+  }
+
+  private void assertValid(CAS aCas) {
+    Validator activeValidator = getValidator();
+    if (getValidator() == null) {
       return;
     }
 
     try {
-      ValidationSummary summary = validator.check(aJCas);
+      ValidationSummary summary = activeValidator.check(aCas);
 
       String messageBuffer = summary.getResults().stream()
               .filter(r -> r.getSeverity().isEquallyOrMoreSevereThan(ERROR))

@@ -55,7 +55,8 @@ public final class ManagedJCas
 
   private final Set<JCas> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
-  private Validator validator = new Validator.Builder().build();
+  private Validator defaultValidator = new Validator.Builder().build();
+  private Validator validator = null;
 
   /**
    * Provides a JCas with an auto-detected type system.
@@ -104,12 +105,21 @@ public final class ManagedJCas
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
-    managedCases.forEach(this::assertValid);
-    managedCases.forEach(JCas::reset);
+    try {
+      managedCases.forEach(this::assertValid);
+      managedCases.forEach(JCas::reset);
+    } finally {
+      this.validator = null;
+    }
   }
 
   public ManagedJCas skipValidation() {
     validator = null;
+    return this;
+  }
+
+  public ManagedJCas withDefaultValidator(Validator aValidator) {
+    this.defaultValidator = aValidator;
     return this;
   }
 
@@ -118,13 +128,22 @@ public final class ManagedJCas
     return this;
   }
 
+  private Validator getValidator() {
+    if (validator != null) {
+      return validator;
+    }
+
+    return defaultValidator;
+  }
+
   private void assertValid(JCas aJCas) {
-    if (validator == null) {
+    Validator activeValidator = getValidator();
+    if (getValidator() == null) {
       return;
     }
 
     try {
-      ValidationSummary summary = validator.check(aJCas);
+      ValidationSummary summary = activeValidator.check(aJCas);
 
       String messageBuffer = summary.getResults().stream()
               .filter(r -> r.getSeverity().isEquallyOrMoreSevereThan(ERROR))
