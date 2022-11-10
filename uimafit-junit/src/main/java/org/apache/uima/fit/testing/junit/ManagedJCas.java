@@ -18,17 +18,26 @@
  */
 package org.apache.uima.fit.testing.junit;
 
+import static java.lang.String.format;
 import static java.util.Collections.newSetFromMap;
 import static java.util.Collections.synchronizedSet;
+import static java.util.stream.Collectors.joining;
 import static org.apache.uima.fit.factory.JCasFactory.createJCas;
+import static org.apache.uima.fit.validation.ValidationResult.Severity.ERROR;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.apache.uima.UIMAException;
+import org.apache.uima.fit.validation.ValidationException;
+import org.apache.uima.fit.validation.ValidationSummary;
+import org.apache.uima.fit.validation.Validator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
@@ -41,11 +50,13 @@ import org.junit.jupiter.api.extension.TestWatcher;
  * handed out to any thread are reset (except any JCases which may meanwhile have been garbage
  * collected).
  */
-public final class ManagedJCas
-        implements TestWatcher, BeforeTestExecutionCallback, AfterAllCallback {
+public final class ManagedJCas implements TestWatcher, BeforeTestExecutionCallback,
+        AfterTestExecutionCallback, AfterAllCallback {
   private final ThreadLocal<JCas> casHolder;
 
-  private final static Set<JCas> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
+  private final Set<JCas> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
+
+  private Validator validator = new Validator.Builder().build();
 
   /**
    * Provides a JCas with an auto-detected type system.
@@ -57,7 +68,7 @@ public final class ManagedJCas
         managedCases.add(cas);
         return cas;
       } catch (UIMAException e) {
-        throw new RuntimeException(e);
+        return fail("Unable to initialize managed JCas", e);
       }
     });
   }
@@ -75,7 +86,7 @@ public final class ManagedJCas
         managedCases.add(cas);
         return cas;
       } catch (UIMAException e) {
-        throw new RuntimeException(e);
+        return fail("Unable to initialize managed JCas", e);
       }
     });
   }
@@ -89,11 +100,46 @@ public final class ManagedJCas
 
   @Override
   public void afterAll(ExtensionContext aContext) throws Exception {
-    casHolder.set(null);
+    casHolder.remove();
   }
 
   @Override
   public void beforeTestExecution(ExtensionContext aContext) throws Exception {
-    managedCases.forEach(cas -> cas.reset());
+    managedCases.forEach(JCas::reset);
+  }
+
+  @Override
+  public void afterTestExecution(ExtensionContext context) throws Exception {
+    managedCases.forEach(this::assertValid);
+  }
+
+  public ManagedJCas skipValidation() {
+    validator = null;
+    return this;
+  }
+
+  public ManagedJCas withValidator(Validator aValidator) {
+    this.validator = aValidator;
+    return this;
+  }
+
+  private void assertValid(JCas aJCas) {
+    if (validator == null) {
+      return;
+    }
+
+    try {
+      ValidationSummary summary = validator.check(aJCas);
+
+      String messageBuffer = summary.getResults().stream()
+              .filter(r -> r.getSeverity().isEquallyOrMoreSevereThan(ERROR))
+              .map(r -> format("[%s] %s", r.getSource(), r.getMessage())).collect(joining("\n"));
+
+      if (messageBuffer.length() > 0) {
+        Assertions.fail(messageBuffer);
+      }
+    } catch (ValidationException e) {
+      Assertions.fail("Unable to validate CAS", e);
+    }
   }
 }
