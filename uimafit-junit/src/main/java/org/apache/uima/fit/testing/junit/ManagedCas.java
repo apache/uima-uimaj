@@ -38,7 +38,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 
@@ -50,8 +49,7 @@ import org.junit.jupiter.api.extension.TestWatcher;
  * handed out to any thread are reset (except any CASes which may meanwhile have been garbage
  * collected).
  */
-public final class ManagedCas implements TestWatcher, BeforeTestExecutionCallback,
-        AfterTestExecutionCallback, AfterAllCallback {
+public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback, AfterAllCallback {
   private final ThreadLocal<CAS> casHolder;
 
   private final Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
@@ -104,13 +102,9 @@ public final class ManagedCas implements TestWatcher, BeforeTestExecutionCallbac
   }
 
   @Override
-  public void beforeTestExecution(ExtensionContext aContext) throws Exception {
-    managedCases.forEach(CAS::reset);
-  }
-
-  @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
     managedCases.forEach(this::assertValid);
+    managedCases.forEach(CAS::reset);
   }
 
   public ManagedCas skipValidation() {
