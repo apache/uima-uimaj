@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -47,6 +47,7 @@ public class Validator {
 
     for (ValidationCheck check : checks) {
       try {
+        summary.add(ValidationResult.trace(check, "Trying check..."));
         if (check instanceof CasValidationCheck) {
           summary.addAll(((CasValidationCheck) check).validate(aJCas.getCas()));
         } else if (check instanceof JCasValidationCheck) {
@@ -56,7 +57,7 @@ public class Validator {
                   "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
         }
       } catch (ValidationCheckSkippedException e) {
-        summary.add(ValidationResult.info(check, "Skipped: %s", e.getMessage()));
+        summary.add(ValidationResult.info(check, "Skipped check: %s", e.getMessage()));
       } catch (ValidationCheckException e) {
         summary.add(ValidationResult.error(check, "%s", e.getMessage()));
       }
@@ -70,6 +71,7 @@ public class Validator {
 
     for (ValidationCheck check : checks) {
       try {
+        summary.add(ValidationResult.trace(check, "Trying check..."));
         if (check instanceof CasValidationCheck) {
           summary.addAll(((CasValidationCheck) check).validate(cas));
         } else if (check instanceof JCasValidationCheck) {
@@ -83,7 +85,7 @@ public class Validator {
                   "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
         }
       } catch (ValidationCheckSkippedException e) {
-        summary.add(ValidationResult.info(check, "Skipped: %s", e.getMessage()));
+        summary.add(ValidationResult.info(check, "Skipped check: %s", e.getMessage()));
       } catch (ValidationCheckException e) {
         summary.add(ValidationResult.error(check, "%s", e.getMessage()));
       }
@@ -111,7 +113,7 @@ public class Validator {
      * (assuming that the resulting validator is not shared between threads).
      * <p>
      * <b>Note:</b> Includes/excludes do also apply do checks added via this method.
-     * 
+     *
      * @param check
      *          a check instance to use.
      */
@@ -140,7 +142,7 @@ public class Validator {
      * Skip any checks with the given names. Subtypes of the given classes are not skipped.
      * <p>
      * <b>Note:</b> Excludes are applied after includes.
-     * 
+     *
      * @param className
      *          names of check classes to be excluded.
      */
@@ -153,7 +155,7 @@ public class Validator {
      * Skip any checks with names matching the given regular expressions.
      * <p>
      * <b>Note:</b> Excludes are applied after includes.
-     * 
+     *
      * @param patterns
      *          regular expressions matching check class names to be excluded.
      */
@@ -167,7 +169,7 @@ public class Validator {
      * of the given types).
      * <p>
      * <b>Note:</b> Excludes are applied after includes.
-     * 
+     *
      * @param types
      *          check type names to be excluded.
      */
@@ -180,7 +182,7 @@ public class Validator {
      * Retain only checks with the given names. Subtypes of the given classes are not retained.
      * <p>
      * <b>Note:</b> Excludes are applied after includes.
-     * 
+     *
      * @param className
      *          names of check classes to be included.
      */
@@ -193,7 +195,7 @@ public class Validator {
      * Retain any checks with names matching the given regular expressions.
      * <p>
      * <b>Note:</b> Excludes are applied after includes.
-     * 
+     *
      * @param patterns
      *          regular expressions matching check class names to be included.
      */
@@ -207,7 +209,7 @@ public class Validator {
      * of the given types).
      * <p>
      * <b>Note:</b> Excludes are applied after includes.
-     * 
+     *
      * @param types
      *          check type names to be included.
      */
