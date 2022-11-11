@@ -113,16 +113,43 @@ public final class ManagedJCas
     }
   }
 
+  /**
+   * Skip validation for the current test run only.
+   * 
+   * @return the object for chaining.
+   */
   public ManagedJCas skipValidation() {
-    validator = null;
+    validator = new Validator.Builder().withoutAutoDetectedChecks().build();
     return this;
   }
 
+  /**
+   * Skip validation by default. If validation is enabled for a particular run using
+   * {@link #withValidator(Validator)} it is reset to a no-op validator again after the test is
+   * complete.
+   * 
+   * @return the object for chaining.
+   */
+  public ManagedJCas withoutDefaultValidator() {
+    this.defaultValidator = new Validator.Builder().withoutAutoDetectedChecks().build();
+    return this;
+  }
+
+  /**
+   * Set a default validator for the all test runs.
+   * 
+   * @return the object for chaining.
+   */
   public ManagedJCas withDefaultValidator(Validator aValidator) {
     this.defaultValidator = aValidator;
     return this;
   }
 
+  /**
+   * Set a validator for the current test run only.
+   * 
+   * @return the object for chaining.
+   */
   public ManagedJCas withValidator(Validator aValidator) {
     this.validator = aValidator;
     return this;
