@@ -35,6 +35,7 @@ import org.apache.uima.fit.validation.ValidationException;
 import org.apache.uima.fit.validation.ValidationSummary;
 import org.apache.uima.fit.validation.Validator;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -56,6 +57,16 @@ public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback
 
   private Validator defaultValidator = new Validator.Builder().build();
   private Validator validator = null;
+
+  static {
+    try {
+      // Try creating a CAS to initialize the internal UIMA types.
+      // Workaround for: https://github.com/apache/uima-uimaj/issues/234
+      CasCreationUtils.createCas();
+    } catch (Exception e) {
+      fail("Unable to initialize UIMA");
+    }
+  }
 
   /**
    * Provides a CAS with an auto-detected type system.
