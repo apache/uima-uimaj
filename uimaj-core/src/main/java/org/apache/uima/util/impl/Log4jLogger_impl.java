@@ -18,6 +18,7 @@
  */
 package org.apache.uima.util.impl;
 
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
 
 import org.apache.logging.log4j.LogManager;
@@ -241,7 +242,23 @@ public class Log4jLogger_impl extends Logger_common_impl {
   }
 
   private static org.apache.logging.log4j.Marker m(Marker m) {
-    return (m == null) ? null : ((org.apache.logging.slf4j.Log4jMarker) m).getLog4jMarker();
+    if (m == null) {
+      return null;
+    }
+
+    Field markerField = null;
+    try {
+      markerField = m.getClass().getDeclaredField("marker");
+      markerField.setAccessible(true);
+      return (org.apache.logging.log4j.Marker) markerField.get(m);
+    } catch (Exception e) {
+      // Well, best effort...
+      return null;
+    } finally {
+      if (markerField != null) {
+        markerField.setAccessible(false);
+      }
+    }
   }
 
   /*
