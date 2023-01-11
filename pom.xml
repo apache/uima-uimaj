@@ -189,6 +189,7 @@
   <modules>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
+    <module>uimaj-legacy-jira-report</module>
   </modules>
   
   <build>
@@ -335,6 +336,24 @@
 
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-changes-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-cli</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>github-report</goal>
+                </goals>
+                <configuration>
+                  <columnNames>Type,Id,Status,Summary</columnNames>
+                  <onlyCurrentVersion>true</onlyCurrentVersion>
+                  <githubAPIScheme>https</githubAPIScheme>
+                  <githubAPIPort>443</githubAPIPort>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
