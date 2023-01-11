@@ -1,0 +1,77 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.spi]]
+= Type discovery via SPI
+
+== JCas class discovery
+
+JCas types and associated type system descriptions can be made discoverable by UIMA using Java's
+SPI mechanism. 
+
+NOTE: The core UIMA Java SDK currently only this mechanism to discover JCas classes. SPI-based
+      auto-discovery of type system descriptions is supported by uimaFIT 3.4.0 and higher.
+
+SPI-based JCas class discovery is important in situation where multiple classloaders are used, e.g.
+in OSGi environments. This is because JCas classes must be globally unique in the entire system
+(with the exception of PEARs which can have their own JCas classes). So if JCas classes are to be
+provided through different class loaders (e.g. OSGI bundle classloaders), they must be announced via
+SPI, otherwise UIMA will not be able to reliably associated the JCas classes with their unique 
+classloader.
+
+To announce JCas classes via SPI, create a file `META-INF/services/org.apache.uima.spi.JCasClassProvider`
+and in the file, place implementations of the interface `org.apache.uima.spi.JCasClassProvider`, one 
+per line.
+
+Here is a trivial example implementation of the interface that announces two JCas classes.
+
+[source]
+----
+public class MyJCasClassProvider implements JCasClassProvider {
+
+  @Override
+  public List<Class<? extends TOP>> listJCasClasses() {
+    return asList(MyToken.class, MySentence.class);
+  }
+}
+----
+
+More elaborate implementations might e.g. use uimaFIT to auto-detect types and if there is a JCas
+class for any of these types, announce them.
+
+== Type system description discovery
+
+The core UIMA framework defines the `TypeSystemDescriptionProvider` interface to also enable
+type system discovery via SPI. However, note that currently only uimaFIT actually implements
+the type system discovery.
+
+Here is an example of how to implement a type system description provider for use with 
+uimaFIT:
+
+
+[source]
+----
+import org.apache.uima.util.TypeSystemUtil;
+
+public class MyTypeSystemDescriptionProvider implements TypeSystemDescriptionProvider {
+  @Override}
+  public List<TypeSystemDescription> listTypeSystemDescriptions() {
+    return TypeSystemUtil.loadTypeSystemDescriptionsFromClasspath(getClass(), "TypeSystem1.xml",
+        "TypeSystem2.xml");
+  }
+}
+----

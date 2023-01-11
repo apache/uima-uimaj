@@ -54,8 +54,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class UimaContext_implTest {
-  protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
-          + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+  protected final String[] TEST_DATAPATH = { //
+      JUnitExtension.getFile("AnnotatorContextTest").getPath(),
+      JUnitExtension.getFile("ResourceTest").getPath() };
 
   protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension
           .getFile("ResourceTest/spaces in dir name").getPath();
@@ -75,7 +76,7 @@ public class UimaContext_implTest {
     try {
       // configure ResourceManager to allow test components to locate their resources
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
-      rm.setDataPath(TEST_DATAPATH);
+      rm.setDataPathElements(TEST_DATAPATH);
       rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
 
       // create a UimaContext with Config Params and Resources
@@ -893,13 +894,9 @@ public class UimaContext_implTest {
   }
 
   @Test
-  public void testGetDataPath() throws Exception {
-    try {
-      Assert.assertEquals(TEST_DATAPATH, mContext.getDataPath());
-      Assert.assertEquals(TEST_DATAPATH, mContext2.getDataPath());
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+  public void testGetDataPathElements() throws Exception {
+    assertThat(mContext.getDataPathElements()).containsExactly(TEST_DATAPATH);
+    assertThat(mContext2.getDataPathElements()).containsExactly(TEST_DATAPATH);
   }
 
   @Test

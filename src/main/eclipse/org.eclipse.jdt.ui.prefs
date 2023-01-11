@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
 editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
 formatter_profile=_Apache UIMA Code Conventions
-formatter_settings_version=21
+formatter_settings_version=22
 sp_cleanup.add_all=false
 sp_cleanup.add_default_serial_version_id=true
 sp_cleanup.add_generated_serial_version_id=false

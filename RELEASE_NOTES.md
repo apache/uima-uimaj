@@ -19,15 +19,15 @@
 ***************************************************************
 -->
    
-# Apache UIMA (Unstructured Information Management Architecture) v3.3.0 Release Notes
+# Apache UIMA (Unstructured Information Management Architecture) v3.3.1 Release Notes
 
 ## Contents
 
 [What is UIMA?](#what.is.uima)  
 [Major Changes in this Release](#major.changes)  
+[List of JIRA Issues Fixed in this Release](#list.issues)  
 [How to Get Involved](#get.involved)  
 [How to Report Issues](#report.issues)  
-[List of JIRA Issues Fixed in this Release](#list.issues)  
 
 ## <a id="what.is.uima">What is UIMA?</a>
 
@@ -55,53 +55,29 @@ with some support for Perl, Python and TCL.
 
 ## <a id="major.changes">Notable changes in this release</a>
 
-* [UIMA-6418] Added support for component parameters of type "long" and "double" 
-* [UIMA-6358] Added platform-independent methods for setting the datapath in a resource manager
-* [UIMA-6374] Added an extensive CAS (de)serialization test suit
-* [UIMA-6431] Added support for using lambda functions as CAS processors
-* [UIMA-6412] Changed CPMEngine from using a thread group to using an executor service
-* [UIMA-6389] Fixed exceptions being swallowed when using Log4J2 through its SLF4J API
-* [UIMA-6386] Fixed wrong UIMA session being set on the ConfigurationManager in aggregates
-* [UIMA-6390] Fixed NPE when trying to access config names of fresh context
-* [UIMA-6378] Fixed build on Java 16
-* [UIMA-6393] Fixed circular imports in descriptors breaking the resource manager cache
-* [UIMA-6367] Fixed JCas cover annotation created in PEAR context being replaced by index operations
-* [UIMA-6388] Fixed CAS.select(null) returning all annotations instead of throwing an exception
-* [UIMA-6423] Fixed selecting a non-existing type returning all types instead of throwing an exception
-* [UIMA-6421] Fixed range check when injecting a String value into StringArray slot to throw an exception
-* [UIMA-6400] Fixed leaking ThreadLocal in UimaContextHolder
-* [UIMA-6398] Fixed memory leak in UIMA loggers and loggers using the wrong classloader for i18n messages
-* [UIMA-6413] Fixed memory leak in FSClassRegistry
-* [UIMA-6377] Fixed spurious multipleReferencesAllowed warning when serializing empty arrays
-* [UIMA-6372] Upgraded to JUnit 5
-* [UIMA-6373] Format UIMA Core Java SDK codebase
+This is a bug fix release.
 
-### API changes
+**Bugs fixed**
+* 🦟 Issue #255: File handle leak accessing performanceTuning.properties
+* 🦟 Issue #240: Helper annotation created by SelectFS should not survive
+* 🦟 Issue #238: Form 6 serializes non-reachable FSes but should not
+* 🦟 Issue #235: Misleading error message when JCas type is not registered
+* 🦟 [UIMA-6479] PearPackagingMavenPlugin has ancient JUnit dependency
+* 🦟 [UIMA-6473] CasToComparableText is broken
 
-#### SelectFS API with null or non-existing types
+**Improvements**
+* ⭐️ Issue #222: Support comparing test files irrespective of line endings
+* ⭐️ [UIMA-6480] Add tests with empty arrays to CAS de/ser-suite
 
-When providing `null` or as a type or an non-existing type to a `select` call, then an exception is
-is thrown. Previously, all annotations were returned instead. To explicitly select any type, use
-the new `anyType()` instead of calling `type(null)`.
+**Refactoring**
+* ⚙️ [UIMA-6454] Update dependencies
+* ⚙️ [UIMA-6463] Use toolchains to ensure compatibility with Java 1.8
+* ⚙️ [UIMA-6469] Cleaning up file handling code
 
-#### ResourceManager datapath methods
+For a full list of issues affecting this release, please see:
 
-The methods `getDataPath()` and `setDataPath(String)` which were accepting/returning paths using 
-platform-specific path separators have been deprepcated. Instead, use the new 
-`setDataPathElements(File/String...)` and `getDataPathElements()` methods.
-
-#### JUnit upgrade
-
-The JUnit module has been upgraded from JUnit 4 to JUnit 5 along with the rest of the test code
-switching to JUnit 5. If you use the unit test helpers from this module, you also have to upgrade
-your tests to JUnit 5.
-
-## <a id="list.issues">Full list of JIRA Issues affecting this Release</a>
-
-Click [issuesFixed/jira-report.hmtl](issuesFixed/jira-report.html) for the list of issues affecting
-this release.
-
-Please use the mailing lists ( http://uima.apache.org/mail-lists.html ) for feedback.
+* [GitHub issues](issuesFixed/github-report.html) [[online](https://github.com/apache/uima-uimaj/issues?q=milestone%3A3.3.1)]
+* [Jira issues (legacy)](issuesFixed/jira-report.html) [[online](https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.1SDK)]
 
 ## <a id="get.involved">How to Get Involved</a>
 
@@ -111,5 +87,5 @@ help, source code and feedback. If you are interested in contributing, please vi
 
 ## <a id="report.issues">How to Report Issues</a>
 
-The Apache UIMA project uses JIRA for issue tracking. Please report any issues you find at 
-[http://issues.apache.org/jira/browse/uima](http://issues.apache.org/jira/browse/uima).
+The Apache UIMA project uses GitHub for issue tracking. Please report any issues you find at 
+[https://github.com/apache/uima-uimaj/issues](https://github.com/apache/uima-uimaj/issues).

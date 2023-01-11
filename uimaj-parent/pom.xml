@@ -25,14 +25,16 @@
      project-wide parent pom.
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>15-SNAPSHOT</version>
+    <version>16-SNAPSHOT</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -41,6 +43,18 @@
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
+
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/apache/uima-uimaj/issues</url>
+  </issueManagement>
+
+  <scm>
+    <tag>uimaj-3.2.0</tag>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
+  </scm>
 
   <!-- The repositories and pluginRepositories section is duplicated from
        the parent pom one, and adds the Apache Snapshot Nexus repository
@@ -119,19 +133,9 @@
       <name>artifactory.openntf.org</name>
       <url>https://artifactory.openntf.org/openntf</url>
     </pluginRepository>
-
-    <pluginRepository>
-      <id>tycho-snapshots</id>
-      <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
   </pluginRepositories>
 
   <properties>
-    <!-- versions >= 2.7.1 seem to have a bug that they embed bundle JARs -->
-    <tycho-version>2.7.3-SNAPSHOT</tycho-version>
     <tycho-include-gpg-signatures>false</tycho-include-gpg-signatures>
   
     <!-- 
@@ -140,18 +144,19 @@
      properties already, they should be injected manually into the plugins. 
     -->
     <slf4j-version>1.7.36</slf4j-version>
-    <log4j-version>2.17.1</log4j-version>
+    <log4j-version>2.19.0</log4j-version>
     <jackson-version>2.13.1</jackson-version>
-    <junit-version>5.8.2</junit-version>
-    <assertj-version>3.22.0</assertj-version>
+    <junit-version>5.9.1</junit-version>
+    <assertj-version>3.23.1</assertj-version>
     <xmlunit-version>2.9.0</xmlunit-version>
+    <maven.version>3.2.5</maven.version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
-    <api_check_oldVersion>3.2.0</api_check_oldVersion>
+    <api_check_oldVersion>3.3.0</api_check_oldVersion>
   </properties>
 
   <dependencyManagement>
@@ -241,32 +246,60 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- Can be removed after updating to the UIMA Parent POM 15 or higher  -->
+          <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.4</version>
         </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>${maven.compiler.target}</version>
+            </jdk>
+          </toolchains>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.3</version>
+        <!-- Version can be removed after updating to the UIMA Parent POM 16 or higher  -->
+        <version>0.15.7</version>
         <configuration>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.build.finalName}.jar</path>
+            </file>
+          </newVersion>
           <parameter>
             <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>com\.strobel\..*</ignoreMissingClassesByRegularExpression>
               <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
         </configuration>
         <dependencies>
           <dependency>
+            <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
+            <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
-            <version>2.5.14</version>
+            <version>2.5.17</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -274,7 +307,7 @@
       <plugin>
         <groupId>org.openntf.maven</groupId>
         <artifactId>p2-layout-resolver</artifactId>
-        <version>1.3.0</version>
+        <version>1.5.0</version>
         <extensions>true</extensions>
       </plugin>
 
@@ -291,52 +324,9 @@
               <!-- default configuration -->
             <configuration>
               <excludes combine.children="append">
-                <exclude>**/.tycho-consumer-pom.xml</exclude>
                 <!-- Eclipse launch files - no need for a license -->
                 <exclude>**/run_configuration/*.launch</exclude>
               </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <!-- 
-            - We do not need the 'org.apache.maven.plugins:maven-scm-plugin:1.9.5:checkin' goal 
-            - here because the release plugin automatically commits twice during the 'prepare' phase
-            -->
-          <preparationGoals>
-            org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata
-            org.apache.maven.plugins:maven-scm-plugin:1.9.5:add
-          </preparationGoals>
-          <completionGoals>
-            org.eclipse.tycho:tycho-versions-plugin:${tycho-version}:update-eclipse-metadata
-            org.apache.maven.plugins:maven-scm-plugin:1.9.5:add
-          </completionGoals>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-scm-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-cli</id>
-            <goals>
-              <goal>add</goal>
-              <goal>checkin</goal>
-            </goals>
-            <configuration>
-              <includes>
-                uimaj-eclipse-*/META-INF/MANIFEST.MF, 
-                uimaj-eclipse-*/feature.xml, 
-                uimaj-eclipse-*/*.product,
-                uimaj-eclipse-*/category.xml
-              </includes>
-              <excludes>**/target/**</excludes>
-              <message>Changing the Eclipse files versions</message>
             </configuration>
           </execution>
         </executions>
@@ -448,37 +438,18 @@
     </profile>
     
     <profile>
-      <id>tycho-module</id>
-      <activation>
-        <file>
-          <exists>marker-file-identifying-tycho-module</exists>
-        </file>
-      </activation>
+      <id>spotbugs</id>
       <build>
-        <plugins>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>tycho-maven-plugin</artifactId>
-            <version>${tycho-version}</version>
-            <extensions>true</extensions>
-          </plugin>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>target-platform-configuration</artifactId>
-            <version>${tycho-version}</version>
-            <configuration>
-              <pomDependencies>consider</pomDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs-maven-plugin</artifactId>
+              <version>4.7.0.0</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>
-
-  <scm>
-    <tag>uimaj-3.2.0</tag>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/</url>
-  </scm>
 </project>

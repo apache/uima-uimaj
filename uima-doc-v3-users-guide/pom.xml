@@ -29,7 +29,7 @@
 
   <artifactId>uima-doc-v3-users-guide</artifactId>
   <packaging>pom</packaging>
-  <name>Apache UIMA SDK Documentation - Version 3 user's guide</name>
+  <name>Apache UIMA SDK Documentation - Version 3 User's Guide</name>
   <url>${uimaWebsiteUrl}</url>
 
   <properties>

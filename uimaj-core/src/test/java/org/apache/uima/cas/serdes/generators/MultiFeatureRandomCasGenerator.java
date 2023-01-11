@@ -104,6 +104,7 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   private final Random rnd;
   private final int size;
   private final StringArrayMode stringArrayMode;
+  private final boolean emptyArrays;
 
   // akof = all kinds of features
   private Type akof;
@@ -145,6 +146,7 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     rnd = builder.randomGenerator;
     size = builder.size;
     stringArrayMode = builder.stringArrayMode;
+    emptyArrays = builder.emptyArrays;
     aint = includeUid ? new AtomicInteger(0) : null;
   }
 
@@ -310,66 +312,113 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
   }
 
   private StringArrayFS randomStringA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyStringArray());
+    }
+
     StringArrayFS fs = maybeKeep(cas.createStringArrayFS(length));
     for (int i = 0; i < length; i++) {
       fs.set(i, randomString(r));
     }
+
     return fs;
   }
 
   private IntArrayFS randomIntA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyIntegerArray());
+    }
+
     IntArrayFS fs = maybeKeep(cas.createIntArrayFS(length));
     for (int i = 0; i < length; i++) {
       fs.set(i, r.nextInt(101) - 50);
     }
+
     return fs;
   }
 
   private ByteArrayFS randomByteA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+    ;
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyByteArray());
+    }
+
     ByteArrayFS fs = maybeKeep(cas.createByteArrayFS(length));
     for (int i = 0; i < length; i++) {
       int bvidx = r.nextInt(BYTE_VALUES.length);
       fs.set(i, BYTE_VALUES[bvidx]);
     }
+
     return fs;
   }
 
   private LongArrayFS randomLongA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+    ;
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyLongArray());
+    }
+
     LongArrayFS fs = maybeKeep(cas.createLongArrayFS(length));
     for (int i = 0; i < length; i++) {
       fs.set(i, LONG_VALUES[r.nextInt(LONG_VALUES.length)]);
     }
+
     return fs;
   }
 
   private ShortArrayFS randomShortA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+    ;
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyShortArray());
+    }
+
     ShortArrayFS fs = maybeKeep(cas.createShortArrayFS(length));
     for (int i = 0; i < length; i++) {
       fs.set(i, SHORT_VALUES[r.nextInt(SHORT_VALUES.length)]);
     }
+
     return fs;
   }
 
   private DoubleArrayFS randomDoubleA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+    ;
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyDoubleArray());
+    }
+
     DoubleArrayFS fs = maybeKeep(cas.createDoubleArrayFS(length));
     for (int i = 0; i < length; i++) {
       fs.set(i, DOUBLE_VALUES[r.nextInt(DOUBLE_VALUES.length)]);
     }
+
     return fs;
   }
 
   private FloatArrayFS randomFloatA(Random r) {
-    int length = r.nextInt(2) + 1;
+    int length = r.nextInt(3) + (emptyArrays ? 0 : 1);
+    ;
+
+    if (length == 0) {
+      return maybeKeep(cas.emptyFloatArray());
+    }
+
     FloatArrayFS fs = maybeKeep(cas.createFloatArrayFS(length));
     for (int i = 0; i < length; i++) {
       fs.set(i, FLOAT_VALUES[r.nextInt(FLOAT_VALUES.length)]);
     }
+
     return fs;
   }
 
@@ -401,6 +450,7 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
     private Random randomGenerator;
     private int size;
     private StringArrayMode stringArrayMode = ALLOW_NULL_AND_EMPTY_STRINGS;
+    private boolean emptyArrays;
 
     private Builder() {
     }
@@ -427,6 +477,11 @@ public class MultiFeatureRandomCasGenerator implements CasGenerator {
 
     public Builder withStringArrayMode(StringArrayMode aStringArrayMode) {
       stringArrayMode = aStringArrayMode;
+      return this;
+    }
+
+    public Builder withEmptyArrays(boolean aFlag) {
+      emptyArrays = aFlag;
       return this;
     }
 
