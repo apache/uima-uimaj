@@ -18,10 +18,10 @@
  */
 package org.apache.uima.util.impl;
 
-import java.lang.reflect.Field;
 import java.text.MessageFormat;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
@@ -42,7 +42,6 @@ import org.slf4j.Marker;
  */
 public class Log4jLogger_impl extends Logger_common_impl {
 
-  final static private Object[] zeroLengthArray = new Object[0];
   /**
    * <p>
    * Markers that are for marking levels not supported by log4j.
@@ -246,19 +245,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
       return null;
     }
 
-    Field markerField = null;
-    try {
-      markerField = m.getClass().getDeclaredField("marker");
-      markerField.setAccessible(true);
-      return (org.apache.logging.log4j.Marker) markerField.get(m);
-    } catch (Exception e) {
-      // Well, best effort...
-      return null;
-    } finally {
-      if (markerField != null) {
-        markerField.setAccessible(false);
-      }
-    }
+    return MarkerManager.getMarker(m.getName());
   }
 
   /*
@@ -412,5 +399,4 @@ public class Log4jLogger_impl extends Logger_common_impl {
   public boolean isWarnEnabled(Marker arg0) {
     return logger.isWarnEnabled(m(arg0));
   }
-
 }
