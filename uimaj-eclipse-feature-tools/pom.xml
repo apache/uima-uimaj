@@ -23,13 +23,62 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.3.2-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>uimaj-eclipse-feature-tools</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>org.apache.uima.tools</artifactId>
+  <packaging>eclipse-feature</packaging>
+
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>UIMA Eclipse Plugin Feature for base uima tooling</description>
   <url>${uimaWebsiteUrl}</url>
+
+  <properties>
+    <!-- https://issues.apache.org/jira/browse/UIMA-6462 -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>org.apache.uima.runtime</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-cas-editor</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-cas-editor-ide</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-configurator</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-debug</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-jcasgen</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-pear-packager</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-launcher</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>

@@ -2,7 +2,6 @@
 .project
 .settings
 target
-META-INF
 checkpoint_synchPoint.xml
 checkpoint_synchPoint.xml.prev
 checkpoint.dat
