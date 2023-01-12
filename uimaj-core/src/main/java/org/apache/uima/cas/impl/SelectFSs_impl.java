@@ -603,7 +603,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
           index = ((LowLevelIndex) index).getSubIndex(ti);
         }
       } else {
-        if (ti.isAnnotationType()) {
+        if (ti.isAnnotationType() && !isAltSource) {
           forceAnnotationIndex(); // when index is null, but ti is not null and is annotation
         }
       }
