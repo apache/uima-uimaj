@@ -428,14 +428,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // log end of event
       logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_end__FINE", resourceName);
+    } catch (AnalysisEngineProcessException e) {
+      throw e;
     } catch (Exception e) {
-      // log and rethrow exception
-      logger.log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException) {
-        throw (AnalysisEngineProcessException) e;
-      } else {
-        throw new AnalysisEngineProcessException(e);
-      }
+      throw new AnalysisEngineProcessException(e);
     }
   }
 
