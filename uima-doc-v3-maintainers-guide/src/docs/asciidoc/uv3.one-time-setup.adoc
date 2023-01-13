@@ -21,14 +21,17 @@
 
 Most Apache UIMA code is written in Java. To build it, you need a recent Java Development Kit (JDK) which can be obtained from the link:https://adoptium.net[Eclipse Adoptium] project - but there are also plenty of other JDK vendors offering free JDKs (or even ones with commercial support).
 
-The minimum Java version required for Apache UIMA is: **1.8**
+The minimum Java version required for building Apache UIMA is: **17**
+The minimum Java version required for using Apache UIMA as a library is: **1.8**
 
 It is recommended to install the latest long term support (LTS) Java version and use it for development. When performing a release, a minimum-version JDK should be used to ensure compatibility for downstream users.
 
 == Version control: Git and Subversion
 
-Apache UIMA projects use Subversion as well as Git. Thus, you should install a Subversion client as well as a Git client - best the latest available version.
-If you are using an IDE, you should also install a suitable Subversion and Git plugin for the IDE. Most IDEs come with Git plugins already pre-installed. If you are lucky, it might be enough for you. If you need to work with one of the older Subversion repositories of the project, having the Subversion plugin is handy as well.
+Apache UIMA projects use Git although some projects still reside in Subversion and releases are
+staged to the ASF Subversion repository. Thus, you should install a Subversion client as well as a
+Git client - best the latest available version.
+If you are using an IDE, you may also care to install a suitable Subversion in addition to the Git plugin for the IDE. Most IDEs come with Git plugins already pre-installed. If you are lucky, it might be enough for you. If you need to work with one of the older Subversion repositories of the project, having the Subversion plugin is handy as well.
 
 NOTE: Configure your SVN client to set the eol-style to native, for newly created files; see https://apache.org/dev/svn-eol-style.txt for instructions on how to do this.
 
@@ -36,7 +39,7 @@ NOTE: Configure your SVN client to set the eol-style to native, for newly create
 
 Eclipse is usually the IDE of choice for UIMA developers because UIMA provides several Eclipse plugins to facilitate editing UIMA XML descriptor files and the example projects are also currently provided as Eclipse projects.
 
-NOTE: You can also use another IDE like IntelliJ, Netbeans or even VSCode because the builds themselves is largely driven by Maven - **but for building the Eclipse update sites as part of the release process, also an Eclipse installation is required.**
+NOTE: You can also use another IDE like IntelliJ, Netbeans or even VSCode because the builds themselves are largely driven by Maven.
 
 == Build tool: Maven
 
