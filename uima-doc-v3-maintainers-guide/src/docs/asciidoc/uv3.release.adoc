@@ -26,9 +26,7 @@ Releases show up in the Maven central repository and/or as downloadable artifact
 
 == Release planning
 
-Release planning happens in the issue tracker:
-
-* link:https://issues.apache.org/jira/projects/UIMA/[Apache UIMA Issue Tracker]
+Release planning happens in the issue tracker of the particular project on GitHub.
 
 As part of the planning, new issues are created and typically one somebody assigns the issue to themselves, they also set target version to the next bugfix or feature release in line.
 
@@ -78,38 +76,6 @@ The Maven release plugin will complain if there are still any `SNAPSHOT` depende
 ====
 * {empty}
 +
-.**[deprecated]** Update Jira version in POM for fixed-issues report
-[%collapsible]
-====
-**Deprecated**
-
-Set the property to based on version variables to avoid having to update it every time.
-
-    <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}SUFFIX</jiraVersion>
-
-
-----
-
-Edit the POM of the top level thing being released, to add the property:
-
-----
-<jiraVersion>2.10.2SDK</jiraVersion>
-----
-
-replacing the `2.10.2SDK` with the actual Jira version name for the Jira release being done. This value is used during release processing to automatically generate a report of the list of Jira issues that are included in this release. Change `2.10.2SDK` to be the actual jira version name, which you can get from the Jira URL by going to https://issues.apache.org/jira/browse/UIMA and selecting **Releases** and then going to the particular version and copying its name.
-
-You can also generate this report manually (for instance, if you want to have a look at what it will produce) by going to top level project being released (e.g., `uima-uimaj`) and issuing the maven command:
-
-----
-mvn changes:jira-report -N
-----
-
-Each time this plugin is run, it creates an updated report in the top level of this project. This report doesn't need to be checked into source control. It will be regenerated and copied into the distribution archives (source and binary) during a release. The `RELEASE_NOTES.html` files have been updated to refer to this generated report.
-
-Running the mvn release... command will cause this report to be generated or updated, every time the command is run. So it is important that the POM is updated to include the internal Jira version number, so the right report is generated.
-====
-* {empty}
-+
 .Update API reference version in POM
 [%collapsible]
 ====
@@ -133,9 +99,11 @@ NOTE: There may be a generation process involved. E.g. in the UIMA Java SDK, the
 .Clean local m2 repository
 [%collapsible]
 ====
-Purge your local maven repository of artifacts being built by running in the top level directory you'll be building from:
+Purge your local maven repository of artifacts being built by running in the top level directory you will be building from:
 
+----
 mvn dependency:purge-local-repository
+----
 
 Note that this will immediately re-resolve the dependencies from the maven repositories you have configured.
 
@@ -167,9 +135,7 @@ The `-Papache-release` is used to have the build mimic the build actions that wo
 .Check the issues report in `issuesFixed` if it looks ok
 [%collapsible]
 ====
-The build includes a generated set of Jira issues fixed (closed or resolved) in this release. To make this accurate, go through the Jiras and ensure the ones you are including in the release are closed/resolved, and that the "Fixed in release xxx" is set for each Jira issue that is part of the release.
-
-There is a saved "filter" you can adjust for this that will display all fixed Jira issues with no Fixed in release xxx assigned. You can go through subsets of this (use the filter to pick the subset you want) and do "bulk Jira changes" to update multiples of these in parallel, if that makes sense.
+The build includes a generated set of issues fixedin this release. To make this accurate, go through the issues and ensure the ones you are including in the release are closed, and that the milestone is set for each issue that is part of the release.
 ====
 * {empty}
 +
@@ -218,76 +184,7 @@ If you have several artifacts to release, and you want subsequent artifacts to d
 
 If you forget something and close the staging repository too soon, just continue as if you hadn't. Subsequent release artifacts will go into another newly created staging spot on Nexus. The downside of this is that you'll have to tell the *voters* about multiple staging repos.
 ====
-* {empty}
-+
-.Check that files have been auto-staged (or stage manually)
-[%collapsible]
-====
-We have a link:https://dist.apache.org/repos/dist/dev/uima/[staging spot] for all the release candidate artifacts to be later fully released via the Apache mirror system.
 
-The UIMA Parent POM offsets an auto-staging mechanism for release candidate artifacts that you should use. If it is not usable for you, then you have to stage the artifacts manually.
-
-Be sure to copy artifacts from the build-from tag spot, which should have a path like: `...[top level project]/target/checkout/target`. Note this is **NOT** from `[top level project]/target`. Doing this will guarantee that you're posting the artifacts built from the tag (which could be different from the `release:prepare` build in /target if someone snuck in a svn commit at the right moment.)
-
-Copy any artifacts (together with their signings) to the staging spot. A suggested approach: Make a new dir in the build project, called svnUpload (or whatever), and copy the artifacts (from the `...[top level project]/target/checkout/target` directory!) (typically the bin/zip/tar and the source release and all the signature/checksums) into this dir. Then do the svn command:
-
-```
-$ cd the-svnUpload-directory 
-$ svn import -m "commit msg, e.g. uimaj-2.8.0 rc5" . https://dist.apache.org/repos/dist/dev/uima/uimaj/n.n.n-rc1/artifacts
-```
-
-Do not add files like POMs which have line-endings, if they have signatures; the files added should be "binary" style files. (The line endings (if you build on windows) will be changed upon upload to svn, which will result in bad signatures).
-====
-* {empty}
-+
-.**[deprecated]** Update the version in the `uimaj-eclipse-update-site`
-[%collapsible]
-====
-**Deprecated:** Use Tycho instead to build update sites along with every regular build.
-
-For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
-====
-* {empty}
-+
-.**[deprecated]** Set `dropPrevVersions` to `true` in the `uimaj-eclipse-update-site` POM
-[%collapsible]
-====
-**Deprecated:** Use Tycho instead to build update sites along with every regular build.
-
-For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
-====
-* {empty}
-+
-.**[deprecated]** Build the `uimaj-eclipse-update-site` module with {{-Papache-release}}
-[%collapsible]
-====
-**Deprecated:** Use Tycho instead to build update sites along with every regular build.
-
-For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
-
-The component being released, if it has Eclipse features, will have its own Eclipse update (sub) site, which should be built along with the normal build of the entire component, as part of that component's release.
-
-In building that component's update site, you may need to edit/update the affected component's feature project(s), and the category.xml file in the update-site, before building it. For releases, run the signEclipseUpdateSite.sh (on Windows - inside Cygwin) to sign the Jars. (Optional:) There's also a verifySignsEclipseUpdateSite.sh you can run to verify the signing was successful.
-
-If a new Eclipse update site is being added to the composite, edit in the composite project (.../build/uima-eclipse-composite-update-site) the buildCompositeRepository.xml file to add the new update site. If doing a release, run the signing script for the composite site too.
-
-The actual creation of the update site is done in several steps, following the conventions to link:https://uima.apache.org/saving-svn-resources.html[save SVN resources]. The Maven build for Eclipse update sites will end up with files in .../target/eclipse-update-site/[subsite] which should be copied to some accessible spot for Voting/ testing. (After the vot passes, the files in the target site can be svn switched to the release directory and committed.)
-
-Test the result: using the extended composite repository in various versions of Eclipse, and verify it installs OK.
-
-If you changed the composite site, bump up the version of .../build/uima-eclipse-composite-site/pom.xml and commit project changes to the trunk, and tag it. The component's individual update sites should be built and tagged as part of that project's release.
-====
-* {empty}
-+
-.Upload the update site to a subdirectory of the release staging spot and *commit* (*Caution:* the update site contains a `.svn` folder that needs to be removed!)  **(deprecated)**
-[%collapsible]
-====
-**Deprecated:** Use auto-staging instead.
-
-FIXME: Eclipse update site process needs updating...
-
-For a general background on how we build P2 sites, including Composite update sites, see link:https://uima.apache.org/eclipse-update-site.html[eclipse-update-site] page.
-====
 
 === Voting
 

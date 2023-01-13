@@ -45,7 +45,7 @@ Most Apache UIMA sub-projects are built using Apache Maven version 3 or higher. 
 You can download the latest Maven version from https://maven.apache.org/download.html or install it using your favourite package manager. Most Java IDEs already come with Maven support pre-installed. If your IDE does not offer Maven support out-of-the-box, you may want to install a suitable plugin.
 
 * Download the latest Apache Maven from .
-* Set up your `PATH`` to use this version.
+* Set up your `PATH` to use this version.
 * (Optional, but is needed for some JVM/platforms, to give the JVM enough room to build things). Set the environment variable `MAVEN_OPTS` to `-Xmx800m  -XX:MaxPermSize=256m`
 
 === Maven toolchains
