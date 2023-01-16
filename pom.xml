@@ -356,7 +356,11 @@
                 </goals>
                 <configuration>
                   <target>
-                    <copy todir="${basedir}/issuesFixed">
+                    <!-- 
+                      GitHub changes report is always generated, Jira only during release builds,
+                      so it could be missing - hence failonerror="false"
+                      -->
+                    <copy todir="${basedir}/issuesFixed" failonerror="false">
                       <fileset dir="uimaj-legacy-jira-report/target/issuesFixed"/>
                     </copy>
                   </target>
