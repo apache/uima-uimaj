@@ -59,9 +59,17 @@
                   <goal>jira-report</goal>
                 </goals>
                 <configuration>
-                  <columnNames>Type,Key,Status,Summary</columnNames>
-                  <outputDirectory>${project.basedir}/../issuesFixed</outputDirectory>
+                  <useJql>true</useJql>
                   <fixVersionIds>${jiraVersion}</fixVersionIds>
+                  <columnNames>Type,Key,Status,Summary</columnNames>
+                  <resolutionIds>Fixed</resolutionIds>
+                  <statusIds>Closed,Resolved</statusIds>
+                  <sortColumnNames>Type, Key</sortColumnNames>
+                  <!-- changed sortColumnNames for Jira 5
+                       was: <sortColumnNames>Status, Key, Type</sortColumnNames>
+                   -->
+                  <outputDirectory>target/issuesFixed</outputDirectory>
+                  <maxEntries>1000</maxEntries> <!-- hopefully, bigger than ever needed -->
                 </configuration>
               </execution>
             </executions>
