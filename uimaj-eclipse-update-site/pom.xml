@@ -92,6 +92,10 @@
                         <exclude name="META-INF/**/*" />
                       </fileset>
                     </checksum>
+                    <!--
+                      This will clash with the tycho-gpg-plugin which also generates ASC files
+                      for some of the artifacts
+                    -->
                     <apply executable="gpg" dir="target/repository" failonerror="true">
                       <arg value="--detach-sign" />
                       <arg value="--armor" />
