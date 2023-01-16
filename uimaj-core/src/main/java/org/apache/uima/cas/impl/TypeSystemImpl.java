@@ -2725,21 +2725,22 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * For a given JCasRegistry index, that doesn't have a corresponding UIMA type, throw an
    * appropriate exception
    * 
-   * @param i
-   *          - the index in the JCasRegistry
+   * @param typeIndex
+   *          the index in the JCasRegistry
    */
-  private void throwMissingUIMAtype(int typeindex) {
-    Class<? extends TOP> cls = JCasRegistry.getClassForIndex(typeindex);
-    if (cls != null) {
-      String className = cls.getName();
-      System.err.format(
-              "Missing UIMA type, JCas Class name: %s, index: %d, jcasRegisteredTypes size: %d%n",
-              className, typeindex, jcasRegisteredTypes.size());
-      dumpTypeSystem();
-      throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS_REGISTRY, className);
-    } else {
+  private void throwMissingUIMAtype(int typeIndex) {
+    Class<? extends TOP> cls = JCasRegistry.getClassForIndex(typeIndex);
+    if (cls == null) {
       throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
     }
+
+    String className = cls.getName();
+    UIMAFramework.getLogger().error(
+            "Missing UIMA type, JCas Class name: {}, index: {}, jcasRegisteredTypes size: {}",
+            className, typeIndex, jcasRegisteredTypes.size());
+    dumpTypeSystem();
+
+    throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, className);
   }
 
   // for debugging
@@ -2758,7 +2759,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         }
       }
     }
-    System.err.println(sb);
+    UIMAFramework.getLogger().error(sb::toString);
 
     /** debug dump all types **/
     sb.setLength(0);
@@ -2775,7 +2776,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         sb.append('\n');
       }
     }
-    System.err.println(sb);
+    UIMAFramework.getLogger().error(sb::toString);
   }
 
   // public FSClassRegistry getFSClassRegistry() {
@@ -2792,9 +2793,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *          the UIMA type
    */
   void setJCasRegisteredType(int typeIndexID, TypeImpl ti) {
-    // if (typeIndexID == 23) {
-    // System.out.format("debug typeIndexId = 23, typeImpl = %s%n", ti.getName());
-    // }
     synchronized (jcasRegisteredTypes) {
       TypeImpl existing = Misc.getWithExpand(jcasRegisteredTypes, typeIndexID);
       if (existing != null) {
