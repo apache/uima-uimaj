@@ -126,9 +126,11 @@ If you instead choose to build from your *working* source control checkout, insu
 Do a trial build of the release candidate:
 
     $ cd YOUR-BUILD-DIRECTORY 
-    $ mvn clean install -Papache-release
+    $ mvn clean install -Papache-release -Ddisable-rc-auto-staging
 
-The `-Papache-release` is used to have the build mimic the build actions that would be taken when the release plugin is running the release build.
+The `-Papache-release` is used to have the build mimic the build actions that would be taken when the release plugin is running the release build. The `-Ddisable-rc-auto-staging` ensures that you do not
+need Subversion and also that you do not (accidentally) stage the release candidate artifacts to the
+Apache staging area.
 ====
 * {empty}
 +

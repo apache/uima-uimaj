@@ -22,13 +22,13 @@ This section describes various functionalities provided by the UIMA Parent POM a
 == Issues fixed report
 
 In order for your project to generate an **issues fixed** report from the ASF Jira, add 
-an empty file called `marker-file-identifying-parent-pom` to the root of your Maven project.
-This activates the `mavenChangesReport` profile from the parent POM.
+an empty file called `marker-file-enabling-changes-report` to the root of your Maven project.
+This activates the `generate-changes-report` profile from the parent POM.
 
 You can also generate this report manually (for instance, if you want to have a look at what it will produce) by going to top level project being released (e.g., `uima-uimaj`) and issuing the maven command:
 
 ----
-mvn changes:jira-report -N
+mvn changes:github-report -N
 ----
 
 Each time this profile/plugin is run, it creates an updated report in the top level of this project. This report doesn't need to be checked into source control.
