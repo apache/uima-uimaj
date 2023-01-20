@@ -729,8 +729,13 @@ public class CASImpl extends AbstractCas_ImplBase
       id2fs.clear();
 
       // pear caches
-      id2tramp = null;
-      id2base = null;
+      if (id2tramp != null) {
+        id2tramp.clear();
+      }
+      if (id2base != null) {
+        id2base.clear();
+      }
+
       for (Iterator<Entry<ClassLoader, JCasHashMap>> it = cl2id2tramp.entrySet().iterator(); it
               .hasNext();) {
         Entry<ClassLoader, JCasHashMap> e = it.next();

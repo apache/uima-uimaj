@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +68,28 @@ public class FSCreatedInPearContextTest {
             .as("After switching back out of the the classloader context, we get the base FS")
             .usingElementComparator((a, b) -> a._id() == b._id() ? 0 : 1) //
             .containsExactly(token).allMatch(t -> t.getClass().getClassLoader() == rootCl);
+  }
+
+  @Test
+  public void thatResettingCasInPearContextWorks() throws Exception, IOException {
+    ClassLoader rootCl = getClass().getClassLoader();
+
+    IsolatingClassloader clForToken = new IsolatingClassloader("Token", rootCl)
+            .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
+
+    CASImpl casImpl = (CASImpl) createCas(loadTokensAndSentencesTS(), null, null, null);
+    casImpl.switchClassLoaderLockCasCL(new UIMAClassLoader(new URL[0], clForToken));
+    casImpl.setDocumentText("Test");
+
+    // The normal "reset" is blocked in PEAR mode, but e.g. the XmiCasDeserializerHandler calls
+    // resetNoQuestions()
+    casImpl.resetNoQuestions();
+
+    assertThatNoException().isThrownBy(() -> {
+      Type tokenType = casImpl.getTypeSystem().getType(Token.class.getName());
+      Annotation token = casImpl.createAnnotation(tokenType, 0, 1);
+      token.addToIndexes();
+    });
   }
 
   private TypeSystemDescription loadTokensAndSentencesTS() throws InvalidXMLException, IOException {
