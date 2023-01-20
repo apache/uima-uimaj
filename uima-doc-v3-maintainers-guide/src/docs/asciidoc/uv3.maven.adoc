@@ -22,14 +22,16 @@ This section describes various functionalities provided by the UIMA Parent POM a
 == Issues fixed report
 
 In order for your project to generate an **issues fixed** report from the ASF Jira, add 
-an empty file called `marker-file-identifying-parent-pom` to the root of your Maven project.
-This activates the `mavenJirareport` profile from the parent POM.
+an empty file called `marker-file-enabling-changes-report` to the root of your Maven project.
+This activates the `generate-changes-report` profile from the parent POM.
 
-Additionally, set the property `jiraVersion` in the `pom.xml` at your project's root to
+You can also generate this report manually (for instance, if you want to have a look at what it will produce) by going to top level project being released (e.g., `uima-uimaj`) and issuing the maven command:
 
-    <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}SUFFIX</jiraVersion>
+----
+mvn changes:github-report -N
+----
 
-The properties are provided by the `build-helper-maven-plugin` in the UIMA Parent POM. You just need to add the `SUFFIX` for your project depending on how it is called in Jira, e.g. `SDK` for the Apache Java SDK or `uimaFIT` for uimaFIT.
+Each time this profile/plugin is run, it creates an updated report in the top level of this project. This report doesn't need to be checked into source control.
 
 
 == Auto-staging of release candidates
@@ -42,7 +44,12 @@ Below is an example of how to copy the release artifacts to the local staging sp
 
     <profiles>
       <profile>
-        <id>apache-release</id>
+        <id>apache-release-rc-auto-staging-config</id>
+        <activation>
+          <property>
+            <name>!disable-rc-auto-staging</name>
+          </property>
+        </activation>
         <build>
           <plugins>
             <plugin>
