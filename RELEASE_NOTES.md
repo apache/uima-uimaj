@@ -25,6 +25,7 @@
 
 [What is UIMA?](#what.is.uima)  
 [Major Changes in this Release](#major.changes)  
+[List of JIRA Issues Fixed in this Release](#list.issues)  
 [How to Get Involved](#get.involved)  
 [How to Report Issues](#report.issues)  
 

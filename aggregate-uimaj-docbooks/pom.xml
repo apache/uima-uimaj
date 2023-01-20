@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.3.2-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -68,5 +68,6 @@
     <module>../uima-docbook-tutorials-and-users-guides</module>
     <!-- Converted to Asciidoc -->
     <module>../uima-doc-v3-users-guide</module>
+    <module>../uima-doc-v3-maintainers-guide</module>
   </modules>
 </project>

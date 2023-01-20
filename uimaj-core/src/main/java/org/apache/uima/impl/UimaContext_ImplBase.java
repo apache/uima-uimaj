@@ -534,12 +534,15 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getDataPath()
-   */
+  @Deprecated
   @Override
   public String getDataPath() {
     return getResourceManager().getDataPath();
+  }
+
+  @Override
+  public List<String> getDataPathElements() {
+    return getResourceManager().getDataPathElements();
   }
 
   protected String makeQualifiedName(String name) {

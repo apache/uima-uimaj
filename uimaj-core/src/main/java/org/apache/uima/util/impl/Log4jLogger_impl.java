@@ -21,6 +21,7 @@ package org.apache.uima.util.impl;
 import java.text.MessageFormat;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
@@ -41,7 +42,6 @@ import org.slf4j.Marker;
  */
 public class Log4jLogger_impl extends Logger_common_impl {
 
-  final static private Object[] zeroLengthArray = new Object[0];
   /**
    * <p>
    * Markers that are for marking levels not supported by log4j.
@@ -241,7 +241,11 @@ public class Log4jLogger_impl extends Logger_common_impl {
   }
 
   private static org.apache.logging.log4j.Marker m(Marker m) {
-    return (m == null) ? null : ((org.apache.logging.slf4j.Log4jMarker) m).getLog4jMarker();
+    if (m == null) {
+      return null;
+    }
+
+    return MarkerManager.getMarker(m.getName());
   }
 
   /*
@@ -395,5 +399,4 @@ public class Log4jLogger_impl extends Logger_common_impl {
   public boolean isWarnEnabled(Marker arg0) {
     return logger.isWarnEnabled(m(arg0));
   }
-
 }

@@ -19,10 +19,6 @@
 
 package org.apache.uima.jcas.test;
 
-import static org.apache.uima.util.CasCreationUtils.createCas;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.throwable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -71,7 +67,6 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -81,7 +76,6 @@ import org.junit.jupiter.api.Test;
 import aa.ConcreteType;
 import aa.Root;
 import x.y.z.EndOfSentence;
-import x.y.z.Sentence;
 import x.y.z.Token;
 
 /**
@@ -996,28 +990,6 @@ public class JCasTest {
     for (double v : doa) {
       Assertions.assertThat(expectedDoa[i++]).isEqualTo(v);
     }
-
-  }
-
-  @Test
-  public void testUndefinedType() throws Exception {
-    // create jcas with no type system
-    JCas localJcas = createCas(new TypeSystemDescription_impl(), null, null).getJCas();
-    localJcas.setDocumentText("This is a test.");
-
-    assertThatExceptionOfType(CASRuntimeException.class) //
-            .isThrownBy(() -> localJcas.getCasType(Sentence.type)) //
-            .asInstanceOf(throwable(CASRuntimeException.class)) //
-            .extracting(CASRuntimeException::getMessageKey) //
-            .isEqualTo(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS_REGISTRY);
-
-    // check that this does not leave JCAS in an inconsistent state
-    // (a check for bug UIMA-738)
-    Iterator<Annotation> iter = localJcas.getAnnotationIndex().iterator();
-    assertThat(iter).hasNext();
-    assertThat(iter.next()) //
-            .extracting(Annotation::getCoveredText) //
-            .isEqualTo("This is a test.");
   }
 
   /*

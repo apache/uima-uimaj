@@ -19,6 +19,8 @@
 
 package org.apache.uima.util;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,12 +32,71 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.spi.TypeSystemDescriptionProvider;
 
 public class TypeSystemUtil {
+
+  /**
+   * Loads type system descriptions and resolves their imports. For example when you place a
+   * {@link TypeSystemDescriptionProvider} implementation and place the type system descriptions it
+   * should provide in the same package, you can use this method to conveniently load them simply by
+   * name in the provider implementation.
+   * 
+   * <pre>
+   * public class MyTypeSystemDescriptionProvider implements TypeSystemDescriptionProvider {
+   *   {@code @Override}
+   *   {@code public List<TypeSystemDescription> listTypeSystemDescriptions()} {
+   *     return TypeSystemUtil.loadTypeSystemDescriptionsFromClasspath(getClass(), "TypeSystem1.xml",
+   *             "TypeSystem2.xml");
+   *   }
+   * }
+   * </pre>
+   * 
+   * 
+   * @param aContext
+   *          a context class. If the locations are not absolute, then they are looked up relative
+   *          to this context class as per {@link Class#getResource(String)}.
+   * @param typeSystemDescriptionLocations
+   *          type system description locations to load.
+   * @return list of the loaded and resolved descriptions.
+   */
+  public static List<TypeSystemDescription> loadTypeSystemDescriptionsFromClasspath(
+          Class<?> aContext, String... typeSystemDescriptionLocations) {
+
+    ResourceManager resMgr = new ResourceManager_impl(aContext.getClassLoader());
+    try {
+      List<TypeSystemDescription> typeSystemDescriptions = new ArrayList<>();
+
+      for (String typeSystem : typeSystemDescriptionLocations) {
+        URL resource = aContext.getResource(typeSystem);
+        if (resource == null) {
+          UIMAFramework.getLogger()
+                  .error("Unable to locate type system description as a resource [{}]", typeSystem);
+          continue;
+        }
+
+        try {
+          TypeSystemDescription tsd = UIMAFramework.getXMLParser()
+                  .parseTypeSystemDescription(new XMLInputSource(resource));
+          tsd.resolveImports(resMgr);
+          typeSystemDescriptions.add(tsd);
+        } catch (InvalidXMLException | IOException e) {
+          UIMAFramework.getLogger().error("Error loading type system description [{}] from [{}]",
+                  typeSystem, resource, e);
+        }
+      }
+
+      return typeSystemDescriptions;
+    } finally {
+      resMgr.destroy();
+    }
+  }
 
   /**
    * Convert a {@link TypeSystem} to an equivalent {@link TypeSystemDescription}.

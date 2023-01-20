@@ -25,293 +25,85 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.3.1</version>
-    <relativePath />
+    <version>3.4.0-SNAPSHOT</version>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>3.3.1</version>
-  <packaging>pom</packaging>
+  <packaging>eclipse-repository</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Java SDK Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
 
   <properties>
-    <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
-    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
-    <dropPrevVersions>true</dropPrevVersions>
+    <maven.install.skip>true</maven.install.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>org.apache.uima.runtime</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>org.apache.uima.tools</artifactId>
+      <version>3.4.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-new-plugins</id>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <!-- ===================================================================
-                                       the PLUGINS
-                NOTE: rename to add org.apache.uima. and hyphen change to underscore in destination
-                to follow Eclipse conventions. Name must be the same as the ID for the 
-                plugin or feature
-                ======================================================================= -->
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-cas-editor</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.caseditor_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-cas-editor-ide</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.caseditor.ide_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-configurator</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.desceditor_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-debug</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.debug_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-jcasgen</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.jcas.jcasgenp_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-pear-packager</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.pear_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-runtime</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-launcher</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.launcher_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${eusWork}/plugins</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-features</id>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <!-- ===================================================================
-                                         the FEATURES
-                      note: rename to add org.apache.uima. and
-                                   hyphen change to underscore in destination to follow
-                                   Eclipse conventions
-                            Name must be the same as the ID for the plugin or feature
-                ======================================================================= -->
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-eclipse-feature-runtime</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-eclipse-feature-tools</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.tools_${parsedVersion.osgiVersion}.jar  </destFileName>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${eusWork}/features</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <skipArchive>true</skipArchive>
+        </configuration>
       </plugin>
-
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-
-           <!-- ==================================================== -->
-           <!--                                                      -->
-           <!--       P O S T   JAR   S I G N I N G by Digicert      -->
-           <!--                                                      -->
-           <!--       is not here, it was                            -->
-           <!--       moved to uima-wide parent pom 10/2018          -->
-           <!-- ==================================================== -->
-
-          <execution>
-            <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
-            <phase>package</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
-
-                <condition property="eclipse.home"
-                  value="${uima-maven-build-eclipse-home}">
-                  <not>
-                    <equals arg1="${uima-maven-build-eclipse-home}"
-                      arg2="$${uima-maven-build-eclipse-home}" />
-                  </not>
-                </condition>
-
-                <property environment="envVar" />
-                <condition property="eclipse.home" value="${envVar.ECLIPSE_HOME}">
-                  <isset property="envVar.ECLIPSE_HOME" />
-                </condition>
-
-                <fail unless="eclipse.home"
-                  message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
-                <fail unless="uima-eclipse-jar-processor"
-                  message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
-                <!--  skip this when dropping previous versions -->
-                <if>
-                  <equals arg1="${dropPrevVersions}" arg2="false" />
-                  <then>
-                    <if>
-                      <equals arg1="${isApacheRelease}" arg2="true" />
-                      <then>
-
-                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from
-                          dist ...release...</echo>
-                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-                        <exec executable="svn" failonerror="true">
-                          <arg value="checkout" />
-                          <arg
-                            value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
-                          <arg value="${eclipseUpdateSubSite}" />
-                        </exec>
-
-                        <echo>Saving original content and artifacts for the site</echo>
-                        <copy todir="${project.build.directory}/saved" failonerror="true">
-                          <fileset dir="${eclipseUpdateSubSite}"
-                            includes="content.jar,artifacts.jar" />
-                        </copy>
-
-                      </then>
-                      <else>
-                        <echo>skipping checkout of current svn dist release (because not
-                          apache-release)</echo>
-	                        <!-- https://issues.apache.org/jira/browse/UIMA-3501 -->
-                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-                      </else>
-                    </if>
-                  </then>
-                </if>
-
-                <echo>Save conditioned Jars prior to signing, in case of redo</echo>
-                <echo>-------------------------------------------------------</echo>
-                <copy todir="${project.build.directory}/saved/features" failonerror="true">
-                  <fileset dir="${eusWork}/features" includes="*.jar" />
-                </copy>
-                <copy todir="${project.build.directory}/saved/plugins" failonerror="true">
-                  <fileset dir="${eusWork}/plugins" includes="*.jar" />
-                </copy>
-
-                <echo>Generate the p2 metadata and publish new artifacts</echo>
-                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}"
-                  failonerror="true">
-                  <arg
-                    line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
-                  <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
-                  <arg line="-artifactRepository file:///${eclipseUpdateSubSite}" />
-                  <arg line="-source ${eusWork}" />
-                  <arg line="-configs ANY.ANY.ANY" />
-                  <arg line="-publishArtifacts" />
-                  <arg line="-compress" />
-                  <arg line="-append" />
-                </java>
-                <echo>Augment p2 metadata with category information</echo>
-                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}"
-                  failonerror="true">
-                  <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher" />
-                  <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
-                  <arg line="-categoryDefinition file:///${basedir}/category.xml" />
-                  <arg line="-categoryQualifier apache-uima" />
-                  <arg line="-compress" />
-                </java>
-                <if>
-                  <equals arg2="true" arg1="${isApacheRelease}" />
-                  <then>
-                    <echo message="Generating checksums for new features and plugins" />
-                    <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM"
-                      forceoverwrite="yes">
-                      <fileset dir="${eusWork}">
-                        <include name="**/*.gz" />
-                        <include name="**/*.jar" />
-                      </fileset>
-                    </checksum>
-
-                    <echo message="Generating gpg signatures for new features and plugins" />
-                    <apply failonerror="true" dir="${eusWork}" executable="gpg">
-                      <arg value="--detach-sign" />
-                      <arg value="--armor" />
-                      <arg value="--batch" />
-                      <fileset dir="${eusWork}">
-                        <include name="**/*.jar" />
-                      </fileset>
-                    </apply>
-                    <echo message="Copying the checksums and signatures to the update subsite" />
-                    <copy todir="${eclipseUpdateSubSite}" failonerror="true">
-                      <fileset dir="${eusWork}">
-                        <include name="**/*.asc" />
-                        <include name="**/*.sha512" />
-                      </fileset>
-                    </copy>
-                    <echo
-                      message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
-                    <delete dir="${eclipseUpdateSubSite}">
-                      <include name="*.sha512" />
-                      <include name="*.asc" />
-                    </delete>
-                    <echo
-                      message="Generating checksums for updated artifacts.jar and content.jar" />
-                    <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM"
-                      forceoverwrite="yes">
-                      <fileset dir="${eclipseUpdateSubSite}">
-                        <include name="*.jar" />
-                      </fileset>
-                    </checksum>
-                    <echo message="Generating gpg signatures for artifacts.jar and content.jar" />
-                    <apply failonerror="true" dir="${eclipseUpdateSubSite}" executable="gpg">
-                      <arg value="--detach-sign" />
-                      <arg value="--armor" />
-                      <arg value="--batch" />
-                      <fileset dir="${eclipseUpdateSubSite}">
-                        <include name="*.jar" />
-                      </fileset>
-                    </apply>
-                  </then>
-                </if>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-update-site-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM" forceoverwrite="yes">
+                      <fileset dir="target/repository">
+                        <exclude name="META-INF/**/*" />
+                      </fileset>
+                    </checksum>
+                    <apply executable="gpg" dir="target/repository" failonerror="true">
+                      <arg value="--detach-sign" />
+                      <arg value="--armor" />
+                      <arg value="--batch" />
+                      <fileset dir="target/repository">
+                        <exclude name="META-INF/**/*" />
+                        <exclude name="**/*.sha*" />
+                      </fileset>
+                    </apply>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
