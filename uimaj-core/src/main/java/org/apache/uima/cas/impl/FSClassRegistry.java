@@ -620,6 +620,20 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       jcci = maybeCreateJCasClassInfo(ti, cl, type2jcci, lookup);
     }
 
+    // Due to initialization order, it could be that we created the JCCI before the static fields in
+    // the JCas class have been initialized. In particular, the jcasType typeIndexID might still
+    // have been uninitialized (0) when we crated the JCCI. To work fix that case, check if the
+    // typeIndexID has changed and if so update the JCCI
+    if (jcci != null && jcci.jcasType == 0) {
+      if (!Modifier.isAbstract(jcci.jcasClass.getModifiers())) { // skip next for abstract classes
+        int jcasType = Misc.getStaticIntFieldNoInherit(jcci.jcasClass, "typeIndexID");
+        if (jcasType != jcci.jcasType) {
+          jcci = new JCasClassInfo(jcci.jcasClass, jcci.generator, jcasType);
+          type2jcci.put(ti.getJCasClassName(), jcci);
+        }
+      }
+    }
+
     // do this setup for new type systems using previously loaded jcci, as well as
     // for new jccis
     if (jcci != null && jcci.jcasType >= 0) {
