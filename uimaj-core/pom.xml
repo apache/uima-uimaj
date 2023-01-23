@@ -37,6 +37,7 @@
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <maven.surefire.heap>650M</maven.surefire.heap>
+    <junit-version>5.9.1</junit-version>
   </properties>
   
 	<dependencies>
@@ -53,6 +54,18 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${junit-version}</version>
+      <scope>test</scope>
+    </dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
