@@ -44,7 +44,7 @@ to your project:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
-  <version>3.3.1</version>
+  <version>3.4.0</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ Apache uimaFIT is a separate dependency that you can add:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
-  <version>3.3.1</version>
+  <version>3.4.0</version>
 </dependency>
 ```
 
@@ -159,7 +159,7 @@ for (var anno : cas.<Annotation>select(entityType)) {
 
 #### Building
 
-To build Apache UIMA, you need at least a Java 8 JDK and a recent Maven 3 version.
+To build Apache UIMA, you need at least a Java 11 JDK and a recent Maven 3 version.
 
 After extracting the source distribution ZIP or cloning the repository, change into the created
 directory and run the following command:
@@ -168,12 +168,12 @@ directory and run the following command:
 mvn clean install
 ```
 
-For more details, please see http://uima.apache.org/building-uima.html   
+For more details, please see http://uima.apache.org/building-uima.html
 
 
 #### Running examples from the source/binary distribution
 
-You can download the source and binary distributions from the 
+You can download the source and binary distributions from the
 [Apache UIMA website](https://uima.apache.org/downloads.cgi).
 
 ##### Environment Variables

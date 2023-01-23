@@ -88,7 +88,6 @@
       - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
       - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
       - be enabled when really needed.
-    -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -100,6 +99,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    -->
 
     <repository>
       <id>${eclipseP2RepoId}</id>
@@ -154,7 +154,7 @@
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
-    <api_check_oldVersion>3.3.0</api_check_oldVersion>
+    <api_check_oldVersion>3.3.1</api_check_oldVersion>
   </properties>
 
   <dependencyManagement>

@@ -19,7 +19,7 @@
 ***************************************************************
 -->
    
-# Apache UIMA (Unstructured Information Management Architecture) v3.3.1 Release Notes
+# Apache UIMA (Unstructured Information Management Architecture) v3.4.0 Release Notes
 
 ## Contents
 
@@ -55,29 +55,45 @@ with some support for Perl, Python and TCL.
 
 ## <a id="major.changes">Notable changes in this release</a>
 
-This is a bug fix release.
+This is a feature fix release.
 
-**Bugs fixed**
-* 🦟 Issue #255: File handle leak accessing performanceTuning.properties
-* 🦟 Issue #240: Helper annotation created by SelectFS should not survive
-* 🦟 Issue #238: Form 6 serializes non-reachable FSes but should not
-* 🦟 Issue #235: Misleading error message when JCas type is not registered
-* 🦟 [UIMA-6479] PearPackagingMavenPlugin has ancient JUnit dependency
-* 🦟 [UIMA-6473] CasToComparableText is broken
+
+## What's Changed
 
 **Improvements**
-* ⭐️ Issue #222: Support comparing test files irrespective of line endings
-* ⭐️ [UIMA-6480] Add tests with empty arrays to CAS de/ser-suite
+* ⭐️ [UIMA-6474] Switch to getDataPathElements() in UIMA context by @reckart in https://github.com/apache/uima-uimaj/pull/216
+* ⭐️ Issue #226: Provide SPI interfaces to locate descriptors by @reckart in https://github.com/apache/uima-uimaj/pull/227, https://github.com/apache/uima-uimaj/pull/237, https://github.com/apache/uima-uimaj/pull/249
+* ⭐️ Issue #225: Improve deployment in OSGi environments by @reckart in https://github.com/apache/uima-uimaj/pull/232, https://github.com/apache/uima-uimaj/pull/244, https://github.com/apache/uima-uimaj/pull/250
+* ⭐️ Issue #245: Utility method for loading type systems in SPI providers by @reckart in https://github.com/apache/uima-uimaj/pull/246
+* ⭐️ Issue #247: RelativePathResolver should consider TCCL by @reckart in https://github.com/apache/uima-uimaj/pull/248
+* ⭐️ Issue #268: UIMA components log and then re-throw exceptions which usually leads to errors being logged twice by @reckart in https://github.com/apache/uima-uimaj/pull/279
 
-**Refactoring**
-* ⚙️ [UIMA-6454] Update dependencies
-* ⚙️ [UIMA-6463] Use toolchains to ensure compatibility with Java 1.8
-* ⚙️ [UIMA-6469] Cleaning up file handling code
+**Bugs fixed**
+* 🦟 Issue #252: Potential failure to look up FsGenerator3 in OSGI-like contexts by @reckart in https://github.com/apache/uima-uimaj/pull/253
+* 🦟 Issue #265: Unable to release without auto-staging by @reckart in https://github.com/apache/uima-uimaj/pull/282
+* 🦟 Issue #266: Unable to install UIMA 3.3.1 Eclipse Plugins in Eclipse 2022-09 by @reckart in https://github.com/apache/uima-uimaj/pull/274
+* 🦟 Issue #267: UIMA Log4jLogger_impl not compatible with log4j 2.18.0+ by @reckart in https://github.com/apache/uima-uimaj/pull/269, https://github.com/apache/uima-uimaj/pull/280
+* 🦟 Issue #272: select on FSArray seems broken by @reckart in https://github.com/apache/uima-uimaj/pull/277, https://github.com/apache/uima-uimaj/pull/278
+* 🦟 Issue #275: Improved error message made it even more misleading by @reckart in https://github.com/apache/uima-uimaj/pull/276
+* 🦟 Issue #285: NPE while deserializing an XMI in a PEAR context by @reckart in https://github.com/apache/uima-uimaj/pull/287
+
+**Refactorings**
+* ⚙️ [UIMA-6440] Stage release artifacts as part of the build by @reckart in https://github.com/apache/uima-uimaj/pull/199
+* ⚙️ [UIMA-6443] Fresh Eclipse update site for every release by @reckart in https://github.com/apache/uima-uimaj/pull/200
+* ⚙️ [UIMA-6462] Avoid deploy broken checksum files for p2content.xml and artifacts.xml in feature modules by @reckart in https://github.com/apache/uima-uimaj/pull/205
+* ⚙️ [UIMA-6463] Use toolchains to ensure compatibility with Java 1.8 by @reckart in https://github.com/apache/uima-uimaj/pull/206
+* ⚙️ [UIMA-6436] Move maintainer documentation from website into maintainer guide by @reckart in https://github.com/apache/uima-uimaj/pull/197, https://github.com/apache/uima-uimaj/pull/217
+* ⚙️ Issue #230: Remove version overrides in Maven plugin modules by @reckart in https://github.com/apache/uima-uimaj/pull/231
+* ⚙️ Issue #228: Move the UimaDecompiler class by @reckart in https://github.com/apache/uima-uimaj/pull/229
+* ⚙️ Issue #283: Update issue report generation by @reckart in https://github.com/apache/uima-uimaj/pull/284
+* 🩹 [UIMA-6459] Upgrade dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/204, https://github.com/apache/uima-uimaj/pull/207
+* 🩹 Issue #270: Update dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/271, https://github.com/apache/uima-uimaj/pull/273
+
 
 For a full list of issues affecting this release, please see:
 
-* [GitHub issues](issuesFixed/github-report.html) [[online](https://github.com/apache/uima-uimaj/issues?q=milestone%3A3.3.1)]
-* [Jira issues (legacy)](issuesFixed/jira-report.html) [[online](https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.1SDK)]
+* [GitHub issues](issuesFixed/github-report.html) [[online](https://github.com/apache/uima-uimaj/issues?q=milestone%3A3.4.0)]
+* [Jira issues (legacy)](issuesFixed/jira-report.html) [[online](https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.4.0SDK)]
 
 ## <a id="get.involved">How to Get Involved</a>
 
