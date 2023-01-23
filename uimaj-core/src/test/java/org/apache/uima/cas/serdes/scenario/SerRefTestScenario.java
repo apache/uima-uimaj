@@ -18,12 +18,17 @@
  */
 package org.apache.uima.cas.serdes.scenario;
 
+import static org.apache.uima.cas.serdes.CasToComparableText.toComparableString;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.createCasMaybeWithTypesystem;
+import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.des;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.writeTypeSystemDescription;
 import static org.apache.uima.cas.serdes.SerDesCasIOTestUtils.writeXmi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -32,6 +37,9 @@ import org.apache.commons.lang3.function.FailableSupplier;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.serdes.TestType;
 import org.apache.uima.cas.serdes.transitions.CasSourceTargetConfiguration;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.CasLoadMode;
+import org.apache.uima.util.InvalidXMLException;
 import org.assertj.core.internal.Failures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +51,7 @@ public class SerRefTestScenario implements Runnable {
   private final Path referenceCasFile;
   private final Path targetCasFile;
   private final FailableBiConsumer<CAS, Path, ?> serializer;
+  private final FailableBiConsumer<Path, Path, ?> assertion;
 
   private SerRefTestScenario(Builder builder) {
     this.title = builder.title;
@@ -50,16 +59,7 @@ public class SerRefTestScenario implements Runnable {
     this.referenceCasFile = builder.referenceCasFile;
     this.targetCasFile = builder.targetCasFile;
     this.serializer = builder.serializer;
-  }
-
-  public SerRefTestScenario(Path aReferenceBasePath, Path aTargetBasePath,
-          CasSourceTargetConfiguration aSourceTargetConfiguration, String aTargetFileName,
-          FailableBiConsumer<CAS, Path, ?> aSerializer) {
-    title = aSourceTargetConfiguration.getTitle();
-    sourceCasSupplier = aSourceTargetConfiguration::createSourceCas;
-    referenceCasFile = aReferenceBasePath.resolve(title).resolve(aTargetFileName);
-    targetCasFile = aTargetBasePath.resolve(title).resolve(aTargetFileName);
-    serializer = aSerializer;
+    this.assertion = builder.assertion;
   }
 
   public CAS createSourceCas() {
@@ -102,8 +102,14 @@ public class SerRefTestScenario implements Runnable {
     assumeThat(referenceCasFile.toFile()) //
             .as("Reference file must exists at %s", referenceCasFile) //
             .exists();
-    assertThat(contentOf(targetCasFile.toFile())) //
-            .isEqualToNormalizingNewlines(contentOf(referenceCasFile.toFile()));
+
+    try {
+      assertion.accept(targetCasFile, referenceCasFile);
+    } catch (RuntimeException | Error e) {
+      throw e;
+    } catch (Throwable e) {
+      fail("Unable to apply assertion", e);
+    }
   }
 
   private void serialize(CAS aSourceCas, Path aTargetCasFile) {
@@ -119,6 +125,21 @@ public class SerRefTestScenario implements Runnable {
 
   public static Path getDataBasePath(Class<?> aTestClass) {
     return Paths.get("src", "test", "resources", aTestClass.getSimpleName(), "ser-ref");
+  }
+
+  public static void assertFileContentsAreEqualNormalizingNewlines(Path aTargetCasFile,
+          Path aReferenceCasFile) {
+    assertThat(contentOf(aTargetCasFile.toFile())) //
+            .isEqualToNormalizingNewlines(contentOf(aReferenceCasFile.toFile()));
+  }
+
+  public static void assertCasContentsAreEqual(Path aTargetCasFile, Path aReferenceCasFile)
+          throws ResourceInitializationException, InvalidXMLException, IOException {
+    CAS targetCas = createCasMaybeWithTypesystem(aReferenceCasFile);
+    CAS referenceCas = createCasMaybeWithTypesystem(aReferenceCasFile);
+    des(targetCas, aTargetCasFile, CasLoadMode.DEFAULT);
+    des(referenceCas, aReferenceCasFile, CasLoadMode.DEFAULT);
+    assertThat(toComparableString(targetCas)).isEqualTo(toComparableString(referenceCas));
   }
 
   /**
@@ -153,8 +174,11 @@ public class SerRefTestScenario implements Runnable {
     private Path referenceCasFile;
     private Path targetCasFile;
     private FailableBiConsumer<CAS, Path, ?> serializer;
+    private FailableBiConsumer<Path, Path, ?> assertion;
 
     private Builder() {
+      // Compare the serialized CAS file against the reference
+      assertion = SerRefTestScenario::assertFileContentsAreEqualNormalizingNewlines;
     }
 
     public Builder withTitle(String title) {
@@ -179,6 +203,11 @@ public class SerRefTestScenario implements Runnable {
 
     public Builder withSerializer(FailableBiConsumer<CAS, Path, ?> serializer) {
       this.serializer = serializer;
+      return this;
+    }
+
+    public Builder withAssertion(FailableBiConsumer<Path, Path, ?> aAssertion) {
+      this.assertion = aAssertion;
       return this;
     }
 

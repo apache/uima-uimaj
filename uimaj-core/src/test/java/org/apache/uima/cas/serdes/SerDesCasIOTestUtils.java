@@ -86,7 +86,7 @@ public class SerDesCasIOTestUtils {
     return ProgrammaticallyCreatedCasDataSuite.builder().build().stream()
             .map(conf -> SerRefTestScenario.builder(caller, conf, SER_REF, aCasFileName)
                     .withSerializer((cas, path) -> ser(cas, path, aFormat)) //
-                    .build())
+                    .withAssertion(SerRefTestScenario::assertCasContentsAreEqual).build())
             .collect(toList());
   }
 
