@@ -34,7 +34,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>16-SNAPSHOT</version>
+    <version>16</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
