@@ -46,10 +46,8 @@ github:
         strict: true
         contexts:
           - continuous-integration/jenkins/pr-merge
-    main-v2:
-     required_status_checks:
-        strict: true
-        contexts:
-          - continuous-integration/jenkins/pr-merge
-          
-         
+#    main-v2:
+#     required_status_checks:
+#        strict: true
+#        contexts:
+#          - continuous-integration/jenkins/pr-merge
