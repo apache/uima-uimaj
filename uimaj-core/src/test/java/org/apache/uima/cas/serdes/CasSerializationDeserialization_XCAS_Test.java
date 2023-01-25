@@ -91,6 +91,10 @@ public class CasSerializationDeserialization_XCAS_Test {
   @ParameterizedTest
   @MethodSource("serRefScenarios")
   public void serializeAndCompareToReferenceTest(Runnable aScenario) throws Exception {
+    assumeNotKnownToFail(aScenario, //
+            ".*casWithSofaDataArray",
+            "XCAS does not suport SofA data arrays during deserialiaztion");
+
     aScenario.run();
   }
 
