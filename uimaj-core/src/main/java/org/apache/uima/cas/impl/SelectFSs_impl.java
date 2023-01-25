@@ -1062,7 +1062,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
         // always set
         int c = Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT;
 
-        if (boundsUse == BoundsUse.notBounded && !isNonOverlapping) {
+        if (!isAltSource && boundsUse == BoundsUse.notBounded && !isNonOverlapping) {
           c |= Spliterator.SIZED | Spliterator.SUBSIZED;
         }
 
