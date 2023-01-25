@@ -73,7 +73,7 @@ This is a feature fix release.
 * 🦟 Issue #265: Unable to release without auto-staging by @reckart in https://github.com/apache/uima-uimaj/pull/282
 * 🦟 Issue #266: Unable to install UIMA 3.3.1 Eclipse Plugins in Eclipse 2022-09 by @reckart in https://github.com/apache/uima-uimaj/pull/274
 * 🦟 Issue #267: UIMA Log4jLogger_impl not compatible with log4j 2.18.0+ by @reckart in https://github.com/apache/uima-uimaj/pull/269, https://github.com/apache/uima-uimaj/pull/280
-* 🦟 Issue #272: select on FSArray seems broken by @reckart in https://github.com/apache/uima-uimaj/pull/277, https://github.com/apache/uima-uimaj/pull/278
+* 🦟 Issue #272: select on FSArray seems broken by @reckart in https://github.com/apache/uima-uimaj/pull/277, https://github.com/apache/uima-uimaj/pull/278, https://github.com/apache/uima-uimaj/pull/291
 * 🦟 Issue #275: Improved error message made it even more misleading by @reckart in https://github.com/apache/uima-uimaj/pull/276
 * 🦟 Issue #285: NPE while deserializing an XMI in a PEAR context by @reckart in https://github.com/apache/uima-uimaj/pull/287
 
@@ -86,8 +86,9 @@ This is a feature fix release.
 * ⚙️ Issue #230: Remove version overrides in Maven plugin modules by @reckart in https://github.com/apache/uima-uimaj/pull/231
 * ⚙️ Issue #228: Move the UimaDecompiler class by @reckart in https://github.com/apache/uima-uimaj/pull/229
 * ⚙️ Issue #283: Update issue report generation by @reckart in https://github.com/apache/uima-uimaj/pull/284
+* ⚙️ Issue #292: Make CAS serialization tests more robust by @reckart in https://github.com/apache/uima-uimaj/pull/293
 * 🩹 [UIMA-6459] Upgrade dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/204, https://github.com/apache/uima-uimaj/pull/207
-* 🩹 Issue #270: Update dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/271, https://github.com/apache/uima-uimaj/pull/273
+* 🩹 Issue #270: Update dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/271, https://github.com/apache/uima-uimaj/pull/273, https://github.com/apache/uima-uimaj/pull/290
 
 
 For a full list of issues affecting this release, please see:
