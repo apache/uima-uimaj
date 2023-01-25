@@ -16,348 +16,106 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.    
 -->
-
-<!-- NOTE: This is no longer used as of 2.3.1 10/2010
-     Instead, source distributions are built using the 
-     standard source-release assembly mechanism of 
-     Apache common super pom -->
-
 <assembly>
-  <id>src</id>
+  <id>source-release</id>
   <formats>
-    <format>tar.gz</format>
-    <!--format>tar.bz2</format-->  <!-- to speed up builds -->
     <format>zip</format>
   </formats>
   
-  <includeBaseDirectory>true</includeBaseDirectory>
-
-  <!-- project copying for this project, paying attention to
-       fileMode settings - mostly readonly for owner/group/other, 
-       but executable for executables -->
-         
+  <!-- 
+    This adapted from
+    https://svn.apache.org/repos/asf/maven/resources/tags/apache-source-release-assembly-descriptor-1.0.6/src/main/resources/assemblies/source-shared.xml
+   -->
+    
   <fileSets>
-    <!-- Leave out .sh/.bat/.cmd files, include them in the next step as executable -->
+    <!-- main project directory structure -->
     <fileSet>
       <directory>.</directory>
-      <outputDirectory/>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <outputDirectory></outputDirectory>
+      <useDefaultExcludes>true</useDefaultExcludes>
       <excludes>
-        <exclude>src/**/*.sh</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <!-- Copy .sh files as executable -->
-    <fileSet>
-      <fileMode>755</fileMode>
-      <directory>.</directory>
-      <outputDirectory/>
-      <includes>
-        <include>src/**/*.sh</include>
-      </includes>
-    </fileSet>
-    
-    <!-- ===================================== -->
-    <!-- copy top level files to the top level -->    
-    <!-- ===================================== -->
-    <fileSet>
-      <directory>src/main/readme</directory>
-      <outputDirectory/>
-      <fileMode>644</fileMode>
-    </fileSet>
-    
-    <!-- Copy .sh files as executable -->
-    <fileSet>
-      <fileMode>755</fileMode>
-      <directory>src/main/readme_src</directory>
-      <includes>
-        <include>*.sh</include>
-      </includes>
-      <outputDirectory/>
-    </fileSet>
-    <!-- Copy everything else as non-executable -->
-    <fileSet>
-      <directory>src/main/readme_src</directory>
-      <excludes>
-        <exclude>*.sh</exclude>
-      </excludes>
-      <outputDirectory/>
-      <fileMode>644</fileMode>
-    </fileSet>
+        <!-- build output -->
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
+        
+        <!-- NOTE: Most of the following excludes should not be required 
+             if the standard release process is followed. This is because the 
+             release plugin checks out project sources into a location like
+             target/checkout, then runs the build from there. The result is
+             a source-release archive that comes from a pretty clean directory
+             structure.
+             
+             HOWEVER, if the release plugin is configured to run extra goals
+             or generate a project website, it's definitely possible that some
+             of these files will be present. So, it's safer to exclude them.
+        -->
+             
+        <!-- IDEs -->
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?maven-eclipse\.xml]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.project]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.classpath]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.factorypath]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.iws]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.idea(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?out(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.ipr]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.iml]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.settings(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.apt_generated(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.apt_generated_tests(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.externalToolBuilders(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.deployables(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.wtpmodules(/.*)?]</exclude>
+        
+        <!-- misc -->
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?cobertura\.ser]</exclude>
+        
+        <!-- release-plugin temp files -->
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?pom\.xml\.releaseBackup]</exclude>
+        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?release\.properties]</exclude>
+        
+        <!-- UIMA-specific -->
+        <!-- Files generated by CPE tests -->
+        <exclude>**/checkpoint_synchPoint.xml</exclude>
+        <exclude>**/checkpoint_synchPoint.xml.prev</exclude>
 
-    <!-- for every other source, use relative paths to locate
-         the project's root, and include the whole thing except for 
-         target/ 
-         .*  (.settings/, .project, .classpath)
-         
-         There must be one entry here for each entry in 
-         the <modules> section (recursively)
-         
-         Parent poms in the build/ section of svn are not included.
-         Aggregator poms used in this build are included. 
-    -->    
-    
+        <!-- 
+          File that seems to be temporarily placed into the CWD during the build but no idea where 
+          it comes from. 
+        -->
+        <exclude>**/jffi*.dylib</exclude>
+
+        <!-- Generated during the build -->
+        <exclude>**/jVinci/META-INF/**</exclude>
+        <exclude>**/uimaj-adapter-vinci/META-INF/**</exclude>
+        <exclude>**/uimaj-core/META-INF/**</exclude>
+        <exclude>**/uimaj-cpe/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-cas-editor/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-cas-editor-ide/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-configurator/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-debug/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-jcasgen/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-launcher/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-pear-packager/META-INF/**</exclude>
+        <exclude>**/uimaj-ep-runtime/META-INF/**</exclude>
+        <exclude>**/uimaj-tools/META-INF/**</exclude>
+        <exclude>**/uimaj-eclipse-feature-runtime/.tycho-consumer-pom.xml</exclude>
+        <exclude>**/uimaj-eclipse-feature-tools/.tycho-consumer-pom.xml</exclude>
+      </excludes>
+    </fileSet>
+    <!-- license, readme, etc. calculated at build time -->
+    <fileSet>
+      <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+      <outputDirectory></outputDirectory>
+    </fileSet>
     <fileSet>
       <directory>.</directory>
       <outputDirectory/>
       <includes>
-        <include>aggregate*/**</include>
-        <include>jVinci/**</include>
-        <include>PearPackagingMavenPlugin/**</include>
-        <include>uima-docbook-*/**</include>
-        <include>uimaj-adapter-*/**</include>
-        <include>uimaj-bootstrap/**</include>
-        <include>uimaj-component-test-util/**</include>
-        <include>uimaj-core/**</include>
-        <include>uimaj-cpe/**</include>
-        <include>uimaj-document-annotation/**</include>
-        <include>uimaj-eclipse-*/**</include>
-        <include>uimaj-ep-*/**</include>
-        <include>uimaj-examples/**</include>
-        <include>uimaj-parent</include>
-        <include>uimaj-test-util</include>
-        <include>uimaj-tools</include>
+        <!-- Feature modules are manifest-first so we check in the Eclipse metadata
+         -->
+        <include>**/uimaj-eclipse-feature-*/.project</include>
+        <include>**/uimaj-eclipse-update-site/.project</include>
       </includes>
-    </fileSet>
-    
-    <!-- aggregator poms -->
-    <!-- 
-    <fileSet>
-      <directory>../aggregate-uimaj</directory>
-      <outputDirectory>/aggregate-uimaj</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../aggregate-uimaj-eclipse-plugins</directory>
-      <outputDirectory>/aggregate-uimaj</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../aggregate-uimaj-docbooks</directory>
-      <outputDirectory>/aggregate-uimaj</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    -->
-    <!-- from aggregate-uimaj-docbooks -->
-    <!-- 
-    <fileSet>
-      <directory>../uima-docbook-overview-and-setup</directory>
-      <outputDirectory>/uima-docbook-overview-and-setup</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../uima-docbook-references</directory>
-      <outputDirectory>/uima-docbook-references</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../uima-docbook-tools</directory>
-      <outputDirectory>/uima-docbook-tools</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../uima-docbook-tutorials-and-users-guides</directory>
-      <outputDirectory>/uima-docbook-tutorials-and-users-guides</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    -->
-    <!-- from aggregate-uimaj-eclipse-plugins -->
-    <!-- 
-    <fileSet>
-      <directory>../uimaj-ep-cas-editor</directory>
-      <outputDirectory>/uimaj-ep-cas-editor</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>META-INF</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>      
-    <fileSet>
-      <directory>../uimaj-ep-configurator</directory>
-      <outputDirectory>/uimaj-ep-configurator</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>META-INF</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>      
-    <fileSet>
-      <directory>../uimaj-ep-debug</directory>
-      <outputDirectory>/uimaj-ep-debug</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>META-INF</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>       
-    <fileSet>
-      <directory>../uimaj-ep-jcasgen</directory>
-      <outputDirectory>/uimaj-ep-jcasgen</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>META-INF</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet> 
-    <fileSet>
-      <directory>../uimaj-ep-pear-packager</directory>
-      <outputDirectory>/uimaj-ep-pear-packager</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>META-INF</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>     
-    <fileSet>
-      <directory>../uimaj-ep-runtime</directory>
-      <outputDirectory>/uimaj-ep-runtime</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>META-INF</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>      
-    -->
-    <!-- from aggregate-uimaj -->
-    <!-- 
-    <fileSet>
-      <directory>../jVinci</directory>
-      <outputDirectory>/jVinci</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../uimaj-adapter-vinci</directory>
-      <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>  
-    <fileSet>
-      <directory>../uimaj-bootstrap</directory>
-      <outputDirectory>/uimaj-bootstrap</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>          
-    <fileSet>
-      <directory>../uimaj-component-test-util</directory>
-      <outputDirectory>/uimaj-component-test-util</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>  
-    <fileSet>
-      <directory>../uimaj-core</directory>
-      <outputDirectory>/uimaj-core</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>  
-    <fileSet>
-      <directory>../uimaj-cpe</directory>
-      <outputDirectory>/uimaj-cpe</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>      
-    <fileSet>
-      <directory>../uimaj-document-annotation</directory>
-      <outputDirectory>/uimaj-document-annotation</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>   
-    <fileSet>
-      <directory>../uimaj-examples</directory>
-      <outputDirectory>/uimaj-examples</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>      
-    <fileSet>
-      <directory>../uimaj-test-util</directory>
-      <outputDirectory>/uimaj-test-util</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>     
-    <fileSet>
-      <directory>../uimaj-tools</directory>
-      <outputDirectory>/uimaj-tools</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>../PearPackagingMavenPlugin</directory>
-      <outputDirectory>/PearPackagingMavenPlugin</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>.*/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet> 
-    -->         
-          
+    </fileSet>    
   </fileSets>
-  
 </assembly>
