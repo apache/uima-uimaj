@@ -72,7 +72,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>uima-cpe</finalName>
     <pluginManagement>
       <!-- remove this once test case cleans up after itself -->
       <plugins>

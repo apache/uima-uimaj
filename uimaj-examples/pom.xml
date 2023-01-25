@@ -90,7 +90,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>uima-examples</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
