@@ -68,8 +68,4 @@
       <version>0.5.32</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <finalName>uimaj-v3migration-jcas</finalName>
-  </build>
 </project>

@@ -43,8 +43,6 @@
 	</properties>
 
 	<build>
-		<finalName>jVinci</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>

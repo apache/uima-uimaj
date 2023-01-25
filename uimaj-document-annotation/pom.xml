@@ -57,7 +57,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <finalName>uima-document-annotation</finalName>
-  </build>
 </project>
