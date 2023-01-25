@@ -136,6 +136,8 @@
   </pluginRepositories>
 
   <properties>
+    <tycho-include-gpg-signatures>false</tycho-include-gpg-signatures>
+  
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
@@ -331,6 +333,14 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>apache-release</id>
+      
+      <properties>
+        <tycho-include-gpg-signatures>true</tycho-include-gpg-signatures>
+      </properties>
+    </profile>
+
     <profile>
       <id>jacoco</id>
       <build>
