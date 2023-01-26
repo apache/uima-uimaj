@@ -87,6 +87,8 @@ This is a feature fix release.
 * ⚙️ Issue #228: Move the UimaDecompiler class by @reckart in https://github.com/apache/uima-uimaj/pull/229
 * ⚙️ Issue #283: Update issue report generation by @reckart in https://github.com/apache/uima-uimaj/pull/284
 * ⚙️ Issue #292: Make CAS serialization tests more robust by @reckart in https://github.com/apache/uima-uimaj/pull/293
+* ⚙️ Issue #298 - SHA512 checksums contain wrong file name by @reckart in https://github.com/apache/uima-uimaj/pull/299
+* ⚙️ Issue #300: Differences between source ZIP and repository tag by @reckart in https://github.com/apache/uima-uimaj/pull/301
 * 🩹 [UIMA-6459] Upgrade dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/204, https://github.com/apache/uima-uimaj/pull/207
 * 🩹 Issue #270: Update dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/271, https://github.com/apache/uima-uimaj/pull/273, https://github.com/apache/uima-uimaj/pull/290
 
