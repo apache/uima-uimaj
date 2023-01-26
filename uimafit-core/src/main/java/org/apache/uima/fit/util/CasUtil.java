@@ -42,6 +42,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.Subiterator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
@@ -112,6 +113,19 @@ public final class CasUtil {
   }
 
   /**
+   * Get the CAS type for the given JCas wrapper class.
+   * 
+   * @param aTypeSystem
+   *          the CAS hosting the type system.
+   * @param type
+   *          the JCas wrapper class.
+   * @return the CAS type.
+   */
+  public static Type getType(TypeSystem aTypeSystem, Class<?> type) {
+    return getType(aTypeSystem, type.getName());
+  }
+
+  /**
    * Get the CAS type for the given name.
    * 
    * @param aCas
@@ -121,6 +135,19 @@ public final class CasUtil {
    * @return the CAS type.
    */
   public static Type getType(CAS aCas, String aTypename) {
+    return getType(aCas.getTypeSystem(), aTypename);
+  }
+
+  /**
+   * Get the CAS type for the given name.
+   * 
+   * @param aTypeSystem
+   *          the type system
+   * @param aTypename
+   *          the fully qualified type name.
+   * @return the CAS type.
+   */
+  public static Type getType(TypeSystem aTypeSystem, String aTypename) {
     String typeName = aTypename;
     if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
       typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
@@ -129,10 +156,10 @@ public final class CasUtil {
     } else if (AnnotationFS.class.getName().equals(aTypename)) {
       typeName = CAS.TYPE_NAME_ANNOTATION;
     }
-    final Type type = aCas.getTypeSystem().getType(typeName);
+    final Type type = aTypeSystem.getType(typeName);
     if (type == null) {
       StringBuilder sb = new StringBuilder();
-      Iterator<Type> i = aCas.getTypeSystem().getTypeIterator();
+      Iterator<Type> i = aTypeSystem.getTypeIterator();
       while (i.hasNext()) {
         sb.append(i.next().getName()).append('\n');
       }
