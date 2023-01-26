@@ -155,6 +155,8 @@
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
     <api_check_oldVersion>3.3.0</api_check_oldVersion>
+
+    <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
   </properties>
 
   <dependencyManagement>
@@ -331,6 +333,36 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- Overriding the execution from the Apache parent POM -->
+                <id>source-release-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptorRefs combine.self="override"/>
+                  <descriptors>
+                    <descriptor>${assemblySrcDescriptor}</descriptor>
+                  </descriptors>
+                  <tarLongFileMode>${assembly.tarLongFileMode}</tarLongFileMode>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
     <profile>
       <id>jacoco</id>
       <build>
