@@ -33,6 +33,11 @@
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
+
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/apache/uima-uimafit/issues</url>
+  </issueManagement>
   
   <scm>
     <tag>HEAD</tag>
