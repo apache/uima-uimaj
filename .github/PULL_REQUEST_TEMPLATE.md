@@ -1,5 +1,3 @@
-**JIRA Ticket:** https://issues.apache.org/jira/browse/UIMA-XXXX
-
 **What's in the PR**
 * ...
 
