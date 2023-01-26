@@ -65,7 +65,6 @@
 
 	</dependencies>
 	<build>
-		<finalName>uima-tools</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

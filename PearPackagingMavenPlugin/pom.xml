@@ -70,8 +70,4 @@
       <version>2.11.0</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <finalName>uima-pear-maven-plugin</finalName>
-  </build>
 </project>

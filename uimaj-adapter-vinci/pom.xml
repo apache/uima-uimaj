@@ -71,8 +71,6 @@
   </dependencies>
   
   <build>
-    <finalName>uima-adapter-vinci</finalName>
-    
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>

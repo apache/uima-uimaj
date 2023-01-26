@@ -177,7 +177,6 @@
   </dependencies>
 
   <build>
-    <finalName>uima-core</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
