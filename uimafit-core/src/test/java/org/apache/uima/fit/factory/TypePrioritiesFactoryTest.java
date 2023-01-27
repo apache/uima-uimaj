@@ -31,9 +31,11 @@ import java.util.List;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.factory.spi.TypePrioritiesProviderForTesting;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.util.CasCreationUtils;
@@ -88,8 +90,10 @@ public class TypePrioritiesFactoryTest {
 
   @Test
   public void testLoadingFromScannedLocations() throws Exception {
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+
     List<TypePriorities> allPrios = new ArrayList<>();
-    loadTypePrioritiesFromScannedLocations(allPrios);
+    loadTypePrioritiesFromScannedLocations(allPrios, resMgr);
     TypePriorities prios = CasCreationUtils.mergeTypePriorities(allPrios, null);
 
     assertThat(prios.getPriorityLists().length).isEqualTo(1);
