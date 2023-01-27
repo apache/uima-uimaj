@@ -24,7 +24,9 @@ import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
@@ -51,11 +53,16 @@ public final class TypePrioritiesFactory {
 
   private static final Object CREATE_LOCK = new Object();
 
+  private static final TypePriorities PLACEHOLDER = new TypePriorities_impl();
+
+  private static WeakHashMap<String, TypePriorities> typePriorities;
+
   private static WeakHashMap<ClassLoader, String[]> typePrioritesLocationsByClassloader;
 
   private static WeakHashMap<ClassLoader, TypePriorities> typePrioritiesByClassloader;
 
   static {
+    typePriorities = new WeakHashMap<>();
     typePrioritesLocationsByClassloader = new WeakHashMap<>();
     typePrioritiesByClassloader = new WeakHashMap<>();
   }
@@ -97,12 +104,12 @@ public final class TypePrioritiesFactory {
    * @return type priorities created from the ordered type names
    */
   public static TypePriorities createTypePriorities(String... prioritizedTypeNames) {
-    TypePriorities typePriorities = new TypePriorities_impl();
-    TypePriorityList typePriorityList = typePriorities.addPriorityList();
+    TypePriorities priorities = new TypePriorities_impl();
+    TypePriorityList typePriorityList = priorities.addPriorityList();
     for (String typeName : prioritizedTypeNames) {
       typePriorityList.addType(typeName);
     }
-    return typePriorities;
+    return priorities;
   }
 
   /**
@@ -120,12 +127,12 @@ public final class TypePrioritiesFactory {
     TypePriorities aggTypePriorities = typePrioritiesByClassloader.get(cl);
     if (aggTypePriorities == null) {
       synchronized (CREATE_LOCK) {
+        ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         List<TypePriorities> typePrioritiesList = new ArrayList<>();
 
-        loadTypePrioritiesFromScannedLocations(typePrioritiesList);
+        loadTypePrioritiesFromScannedLocations(typePrioritiesList, resMgr);
         loadTypePrioritiesFromSPIs(typePrioritiesList);
 
-        ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesList, resMgr);
         typePrioritiesByClassloader.put(cl, aggTypePriorities);
       }
@@ -134,14 +141,20 @@ public final class TypePrioritiesFactory {
     return (TypePriorities) aggTypePriorities.clone();
   }
 
-  static void loadTypePrioritiesFromScannedLocations(List<TypePriorities> typePrioritiesList)
-          throws ResourceInitializationException {
+  static void loadTypePrioritiesFromScannedLocations(List<TypePriorities> typePrioritiesList,
+          ResourceManager aResMgr) throws ResourceInitializationException {
     for (String location : scanTypePrioritiesDescriptors()) {
       try {
-        XMLInputSource xmlInput = new XMLInputSource(location);
-        TypePriorities typePriorities = getXMLParser().parseTypePriorities(xmlInput);
-        typePriorities.resolveImports();
-        typePrioritiesList.add(typePriorities);
+        TypePriorities priorities = typePriorities.get(location);
+
+        if (priorities == PLACEHOLDER) {
+          // If the description has not yet been loaded, load it
+          priorities = getXMLParser().parseTypePriorities(new XMLInputSource(location));
+          priorities.resolveImports(aResMgr);
+          typePriorities.put(location, priorities);
+        }
+
+        typePrioritiesList.add(priorities);
         LOG.debug("Detected type priorities at [{}]", location);
       } catch (IOException e) {
         throw new ResourceInitializationException(e);
@@ -176,9 +189,27 @@ public final class TypePrioritiesFactory {
       String[] typePrioritesLocations = typePrioritesLocationsByClassloader.get(cl);
       if (typePrioritesLocations == null) {
         typePrioritesLocations = scanDescriptors(MetaDataType.TYPE_PRIORITIES);
+        internTypePrioritiesLocations(typePrioritesLocations);
         typePrioritesLocationsByClassloader.put(cl, typePrioritesLocations);
       }
       return typePrioritesLocations;
+    }
+  }
+
+  private static void internTypePrioritiesLocations(String[] typeDescriptorLocations) {
+    // We "intern" the location strings because we will use them as keys in the WeakHashMap
+    // caching the parsed type priorities. As part of this process, we put a PLACEHOLDER into the
+    // map which is replaced when the type system is actually loaded
+    Map<String, String> locationStrings = new HashMap<>();
+    typePriorities.keySet().stream().forEach(loc -> locationStrings.put(loc, loc));
+    for (int i = 0; i < typeDescriptorLocations.length; i++) {
+      String existingLocString = locationStrings.get(typeDescriptorLocations[i]);
+      if (existingLocString == null) {
+        typePriorities.put(typeDescriptorLocations[i], PLACEHOLDER);
+        locationStrings.put(typeDescriptorLocations[i], typeDescriptorLocations[i]);
+      } else {
+        typeDescriptorLocations[i] = existingLocString;
+      }
     }
   }
 
@@ -190,6 +221,7 @@ public final class TypePrioritiesFactory {
     synchronized (SCAN_LOCK) {
       typePrioritesLocationsByClassloader.clear();
       typePrioritiesByClassloader.clear();
+      typePriorities.clear();
     }
   }
 }

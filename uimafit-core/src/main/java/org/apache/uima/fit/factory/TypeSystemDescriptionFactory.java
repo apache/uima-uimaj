@@ -24,7 +24,9 @@ import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
@@ -51,11 +53,16 @@ public final class TypeSystemDescriptionFactory {
 
   private static final Object CREATE_LOCK = new Object();
 
+  private static final TypeSystemDescription PLACEHOLDER = new TypeSystemDescription_impl();
+
+  private static WeakHashMap<String, TypeSystemDescription> typeDescriptors;
+
   private static WeakHashMap<ClassLoader, String[]> typeDescriptorLocationsByClassloader;
 
   private static WeakHashMap<ClassLoader, TypeSystemDescription> typeDescriptorByClassloader;
 
   static {
+    typeDescriptors = new WeakHashMap<>();
     typeDescriptorLocationsByClassloader = new WeakHashMap<>();
     typeDescriptorByClassloader = new WeakHashMap<>();
   }
@@ -124,13 +131,13 @@ public final class TypeSystemDescriptionFactory {
     TypeSystemDescription tsd = typeDescriptorByClassloader.get(cl);
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
+        ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         List<TypeSystemDescription> tsdList = new ArrayList<>();
 
-        loadTypeSystemDescriptionsFromScannedLocations(tsdList);
+        loadTypeSystemDescriptionsFromScannedLocations(tsdList, resMgr);
         loadTypeSystemDescriptionsFromSPIs(tsdList);
 
         LOG.trace("Merging type systems and resolving imports...");
-        ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         tsd = mergeTypeSystems(tsdList, resMgr);
         typeDescriptorByClassloader.put(cl, tsd);
       }
@@ -138,12 +145,20 @@ public final class TypeSystemDescriptionFactory {
     return (TypeSystemDescription) tsd.clone();
   }
 
-  static void loadTypeSystemDescriptionsFromScannedLocations(List<TypeSystemDescription> tsdList)
-          throws ResourceInitializationException {
+  static void loadTypeSystemDescriptionsFromScannedLocations(List<TypeSystemDescription> tsdList,
+          ResourceManager aResMgr) throws ResourceInitializationException {
     for (String location : scanTypeDescriptors()) {
       try {
-        XMLInputSource xmlInputType1 = new XMLInputSource(location);
-        tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
+        TypeSystemDescription description = typeDescriptors.get(location);
+
+        if (description == PLACEHOLDER) {
+          // If the description has not yet been loaded, load it
+          description = getXMLParser().parseTypeSystemDescription(new XMLInputSource(location));
+          description.resolveImports(aResMgr);
+          typeDescriptors.put(location, description);
+        }
+
+        tsdList.add(description);
         LOG.debug("Detected type system at [{}]", location);
       } catch (IOException e) {
         throw new ResourceInitializationException(e);
@@ -178,11 +193,33 @@ public final class TypeSystemDescriptionFactory {
     synchronized (SCAN_LOCK) {
       ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
+
       if (typeDescriptorLocations == null) {
         typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);
+
+        internTypeDescriptorLocations(typeDescriptorLocations);
+
         typeDescriptorLocationsByClassloader.put(cl, typeDescriptorLocations);
       }
+
       return typeDescriptorLocations;
+    }
+  }
+
+  private static void internTypeDescriptorLocations(String[] typeDescriptorLocations) {
+    // We "intern" the location strings because we will use them as keys in the WeakHashMap
+    // caching the parsed type systems. As part of this process, we put a PLACEHOLDER into the
+    // map which is replaced when the type system is actually loaded
+    Map<String, String> locationStrings = new HashMap<>();
+    typeDescriptors.keySet().stream().forEach(loc -> locationStrings.put(loc, loc));
+    for (int i = 0; i < typeDescriptorLocations.length; i++) {
+      String existingLocString = locationStrings.get(typeDescriptorLocations[i]);
+      if (existingLocString == null) {
+        typeDescriptors.put(typeDescriptorLocations[i], PLACEHOLDER);
+        locationStrings.put(typeDescriptorLocations[i], typeDescriptorLocations[i]);
+      } else {
+        typeDescriptorLocations[i] = existingLocString;
+      }
     }
   }
 
@@ -195,6 +232,7 @@ public final class TypeSystemDescriptionFactory {
     synchronized (SCAN_LOCK) {
       typeDescriptorLocationsByClassloader.clear();
       typeDescriptorByClassloader.clear();
+      typeDescriptors.clear();
     }
   }
 }

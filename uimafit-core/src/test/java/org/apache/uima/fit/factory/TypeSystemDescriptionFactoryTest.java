@@ -27,9 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.fit.factory.spi.TypeSystemDescriptionProviderForTesting;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
@@ -54,8 +56,10 @@ public class TypeSystemDescriptionFactoryTest {
 
   @Test
   public void testLoadingFromScannedLocations() throws Exception {
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+
     List<TypeSystemDescription> tsds = new ArrayList<>();
-    loadTypeSystemDescriptionsFromScannedLocations(tsds);
+    loadTypeSystemDescriptionsFromScannedLocations(tsds, resMgr);
     TypeSystemDescription tsd = CasCreationUtils.mergeTypeSystems(tsds);
 
     assertNotNull(tsd.getType(Token.class.getName()));

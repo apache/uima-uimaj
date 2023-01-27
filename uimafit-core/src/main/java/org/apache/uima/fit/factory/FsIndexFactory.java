@@ -26,7 +26,9 @@ import static org.apache.uima.fit.internal.ReflectionUtil.getInheritableAnnotati
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
@@ -34,7 +36,9 @@ import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
 import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
@@ -69,17 +73,22 @@ public final class FsIndexFactory {
 
   private static final Object CREATE_LOCK = new Object();
 
+  private static final FsIndexCollection PLACEHOLDER = new FsIndexCollection_impl();
+
+  private static WeakHashMap<String, FsIndexCollection> fsIndexCollections;
+
   private static WeakHashMap<ClassLoader, String[]> fsIndexLocationsByClassloader;
 
   private static WeakHashMap<ClassLoader, FsIndexCollection> fsIndexCollectionsByClassloader;
 
   static {
+    fsIndexCollections = new WeakHashMap<>();
     fsIndexLocationsByClassloader = new WeakHashMap<>();
     fsIndexCollectionsByClassloader = new WeakHashMap<>();
   }
 
   private FsIndexFactory() {
-    // Factory class
+    // This class is not meant to be instantiated
   }
 
   /**
@@ -282,9 +291,10 @@ public final class FsIndexFactory {
     FsIndexCollection aggFsIdxCol = fsIndexCollectionsByClassloader.get(cl);
     if (aggFsIdxCol == null) {
       synchronized (CREATE_LOCK) {
+        ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
         List<FsIndexDescription> fsIndexList = new ArrayList<>();
 
-        loadFsIndexCollectionsFromScannedLocations(fsIndexList);
+        loadFsIndexCollectionsFromScannedLocations(fsIndexList, resMgr);
         loadFsIndexCollectionsfromSPIs(fsIndexList);
 
         aggFsIdxCol = createFsIndexCollection(
@@ -296,13 +306,19 @@ public final class FsIndexFactory {
     return (FsIndexCollection) aggFsIdxCol.clone();
   }
 
-  static void loadFsIndexCollectionsFromScannedLocations(List<FsIndexDescription> fsIndexList)
-          throws ResourceInitializationException {
+  static void loadFsIndexCollectionsFromScannedLocations(List<FsIndexDescription> fsIndexList,
+          ResourceManager aResMgr) throws ResourceInitializationException {
     for (String location : scanIndexDescriptors()) {
       try {
-        XMLInputSource xmlInput = new XMLInputSource(location);
-        FsIndexCollection fsIdxCol = getXMLParser().parseFsIndexCollection(xmlInput);
-        fsIdxCol.resolveImports();
+        FsIndexCollection fsIdxCol = fsIndexCollections.get(location);
+
+        if (fsIdxCol == PLACEHOLDER) {
+          // If the description has not yet been loaded, load it
+          fsIdxCol = getXMLParser().parseFsIndexCollection(new XMLInputSource(location));
+          fsIdxCol.resolveImports(aResMgr);
+          fsIndexCollections.put(location, fsIdxCol);
+        }
+
         fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
         LOG.debug("Detected index at [{}]", location);
       } catch (IOException e) {
@@ -339,9 +355,27 @@ public final class FsIndexFactory {
       String[] indexLocations = fsIndexLocationsByClassloader.get(cl);
       if (indexLocations == null) {
         indexLocations = scanDescriptors(MetaDataType.FS_INDEX);
+        internFsIndexCollectionLocations(indexLocations);
         fsIndexLocationsByClassloader.put(cl, indexLocations);
       }
       return indexLocations;
+    }
+  }
+
+  private static void internFsIndexCollectionLocations(String[] indexDescriptorLocations) {
+    // We "intern" the location strings because we will use them as keys in the WeakHashMap
+    // caching the parsed index definitions. As part of this process, we put a PLACEHOLDER into the
+    // map which is replaced when the type system is actually loaded
+    Map<String, String> locationStrings = new HashMap<>();
+    fsIndexCollections.keySet().stream().forEach(loc -> locationStrings.put(loc, loc));
+    for (int i = 0; i < indexDescriptorLocations.length; i++) {
+      String existingLocString = locationStrings.get(indexDescriptorLocations[i]);
+      if (existingLocString == null) {
+        fsIndexCollections.put(indexDescriptorLocations[i], PLACEHOLDER);
+        locationStrings.put(indexDescriptorLocations[i], indexDescriptorLocations[i]);
+      } else {
+        indexDescriptorLocations[i] = existingLocString;
+      }
     }
   }
 
@@ -353,6 +387,7 @@ public final class FsIndexFactory {
     synchronized (SCAN_LOCK) {
       fsIndexLocationsByClassloader.clear();
       fsIndexCollectionsByClassloader.clear();
+      fsIndexCollections.clear();
     }
   }
 }

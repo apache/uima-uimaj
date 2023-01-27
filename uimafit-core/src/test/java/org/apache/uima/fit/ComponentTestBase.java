@@ -29,10 +29,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.BeforeEach;
 
-/**
- * 
- * 
- */
 public class ComponentTestBase {
 
   private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
