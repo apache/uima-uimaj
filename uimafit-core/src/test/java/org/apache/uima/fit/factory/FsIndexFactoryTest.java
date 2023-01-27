@@ -41,9 +41,11 @@ import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexCollection;
 import org.apache.uima.fit.descriptor.FsIndexKey;
 import org.apache.uima.fit.factory.spi.FsIndexCollectionProviderForTesting;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.junit.jupiter.api.Test;
@@ -152,8 +154,10 @@ public class FsIndexFactoryTest extends ComponentTestBase {
 
   @Test
   public void testLoadingFromScannedLocations() throws Exception {
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+
     List<FsIndexDescription> indexes = new ArrayList<>();
-    loadFsIndexCollectionsFromScannedLocations(indexes);
+    loadFsIndexCollectionsFromScannedLocations(indexes, resMgr);
     org.apache.uima.resource.metadata.FsIndexCollection fsIndexCollection = FsIndexFactory
             .createFsIndexCollection(indexes);
 

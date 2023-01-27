@@ -198,7 +198,7 @@ public final class TypePrioritiesFactory {
 
   private static void internTypePrioritiesLocations(String[] typeDescriptorLocations) {
     // We "intern" the location strings because we will use them as keys in the WeakHashMap
-    // caching the parsed type systems. As part of this process, we put a PLACEHOLDER into the
+    // caching the parsed type priorities. As part of this process, we put a PLACEHOLDER into the
     // map which is replaced when the type system is actually loaded
     Map<String, String> locationStrings = new HashMap<>();
     typePriorities.keySet().stream().forEach(loc -> locationStrings.put(loc, loc));
