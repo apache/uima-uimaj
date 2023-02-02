@@ -46,24 +46,10 @@
     <url>https://github.com/apache/uima-uimafit</url>
   </scm>
 
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <api_check_oldVersion>3.2.0</api_check_oldVersion>
+    <api_check_oldVersion>3.3.0</api_check_oldVersion>
 
     <assertj-version>3.22.0</assertj-version>
     <commons-io-version>2.11.0</commons-io-version>
