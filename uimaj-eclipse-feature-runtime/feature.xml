@@ -20,7 +20,7 @@
 <feature
       id="org.apache.uima.runtime"
       label="UIMA Runtime"
-      version="3.4.0.qualifier"
+      version="3.4.1.qualifier"
       provider-name="Apache Software Foundation">
 
    <description>

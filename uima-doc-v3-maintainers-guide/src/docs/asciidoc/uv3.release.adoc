@@ -107,7 +107,7 @@ mvn dependency:purge-local-repository
 
 Note that this will immediately re-resolve the dependencies from the maven repositories you have configured.
 
-For many multi-module projects, this will fail because it purges things that other modules need. So, the alternative is to just delete the .m2/.../uima/... directory on your build machine.
+For many multi-module projects, this will fail because it purges things that other modules need. So, the alternative is to just delete the `.m2/.../org/apache/uima/...`` directory on your build machine.
 ====
 * {empty}
 +
