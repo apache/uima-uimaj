@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-parent</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1-SNAPSHOT</version>
     <relativePath>../uimafit-parent</relativePath>
   </parent>
   <licenses>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>3.4.0</version>
+      <version>3.4.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
