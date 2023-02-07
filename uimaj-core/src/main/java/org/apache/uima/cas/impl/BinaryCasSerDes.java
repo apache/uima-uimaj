@@ -676,26 +676,31 @@ public class BinaryCasSerDes {
                               // CAS
       }
     } else {
-      if (heap == null)
+      if (heap == null) {
         heap = new Heap();
-      else
+      } else {
         heap.reset();
-      if (byteHeap == null)
+      }
+      if (byteHeap == null) {
         byteHeap = new ByteHeap();
-      else
+      } else {
         byteHeap.reset();
-      if (shortHeap == null)
+      }
+      if (shortHeap == null) {
         shortHeap = new ShortHeap();
-      else
+      } else {
         shortHeap.reset();
-      if (longHeap == null)
+      }
+      if (longHeap == null) {
         longHeap = new LongHeap();
-      else
+      } else {
         longHeap.reset();
-      if (stringHeap == null)
+      }
+      if (stringHeap == null) {
         stringHeap = new StringHeap();
-      else
+      } else {
         stringHeap.reset();
+      }
       clearDeltaOffsets();
     }
 
@@ -795,23 +800,27 @@ public class BinaryCasSerDes {
       // indexed FSs
       int fsindexsz = r.readInt();
       int[] fsindexes = new int[fsindexsz];
-      if (TRACE_DESER)
+      if (TRACE_DESER) {
         System.out.format("BinDes indexedFSs count: %,d%n", fsindexsz);
+      }
       for (int i = 0; i < fsindexsz; i++) {
         fsindexes[i] = r.readInt();
         if (TRACE_DESER) {
-          if (i % 5 == 0)
+          if (i % 5 == 0) {
             System.out.format("%n i: %5d ", i);
+          }
           System.out.format("%15d ", fsindexes[i]);
         }
       }
-      if (TRACE_DESER)
+      if (TRACE_DESER) {
         System.out.println("");
+      }
 
       // byte heap
       int heapsz = r.readInt();
-      if (TRACE_DESER)
+      if (TRACE_DESER) {
         System.out.format("BinDes ByteHeap size: %,d%n", heapsz);
+      }
 
       if (!delta) {
         byteHeap.heap = new byte[Math.max(16, heapsz)]; // must be > 0
@@ -827,8 +836,9 @@ public class BinaryCasSerDes {
 
       // short heap
       heapsz = r.readInt();
-      if (TRACE_DESER)
+      if (TRACE_DESER) {
         System.out.format("BinDes ShortHeap size: %,d%n", heapsz);
+      }
 
       if (!delta) {
         shortHeap.heap = new short[Math.max(16, heapsz)]; // must be > 0
@@ -850,8 +860,9 @@ public class BinaryCasSerDes {
 
       // long heap
       heapsz = r.readInt();
-      if (TRACE_DESER)
+      if (TRACE_DESER) {
         System.out.format("BinDes LongHeap size: %,d%n", heapsz);
+      }
 
       if (!delta) {
         longHeap.heap = new long[Math.max(16, heapsz)]; // must be > 0
@@ -1680,86 +1691,90 @@ public class BinaryCasSerDes {
       }
       if (type.isArray()) {
         final int len = heap.heap[heapIndex + arrayLengthFeatOffset];
-        final int bhi = heap.heap[heapIndex + arrayContentOffset];
-        final int hhi = heapIndex + arrayContentOffset;
 
         fs = baseCas.createArray(type, len);
         csds.addFS(fs, heapIndex);
-        switch (type.getComponentSlotKind()) {
 
-          case Slot_BooleanRef: {
-            boolean[] ba = ((BooleanArray) fs)._getTheArray();
-            for (int ai = 0; ai < len; ai++) {
-              ba[ai] = byteHeap.heap[bhi + ai] == (byte) 1;
-            }
-            break;
-          }
+        if (len > 0) {
+          final int bhi = heap.heap[heapIndex + arrayContentOffset];
+          final int hhi = heapIndex + arrayContentOffset;
 
-          case Slot_ByteRef:
-            System.arraycopy(byteHeap.heap, bhi, ((ByteArray) fs)._getTheArray(), 0, len);
-            break;
+          switch (type.getComponentSlotKind()) {
 
-          case Slot_ShortRef:
-            System.arraycopy(shortHeap.heap, bhi, ((ShortArray) fs)._getTheArray(), 0, len);
-            break;
-
-          case Slot_LongRef:
-            System.arraycopy(longHeap.heap, bhi, ((LongArray) fs)._getTheArray(), 0, len);
-            break;
-
-          case Slot_DoubleRef: {
-            double[] da = ((DoubleArray) fs)._getTheArray();
-            for (int ai = 0; ai < len; ai++) {
-              da[ai] = CASImpl.long2double(longHeap.heap[bhi + ai]);
-            }
-            break;
-          }
-
-          case Slot_Int:
-            System.arraycopy(heap.heap, hhi, ((IntegerArray) fs)._getTheArray(), 0, len);
-            break;
-
-          case Slot_Float: {
-            float[] fa = ((FloatArray) fs)._getTheArray();
-            for (int ai = 0; ai < len; ai++) {
-              fa[ai] = CASImpl.int2float(heap.heap[hhi + ai]);
-            }
-            break;
-          }
-
-          case Slot_StrRef: {
-            String[] sa = ((StringArray) fs)._getTheArray();
-            for (int ai = 0; ai < len; ai++) {
-              sa[ai] = stringHeap.getStringForCode(heap.heap[hhi + ai]);
-            }
-            break;
-          }
-
-          case Slot_HeapRef: {
-            TOP[] fsa = ((FSArray) fs)._getTheArray();
-            for (int ai = 0; ai < len; ai++) {
-              int a = heap.heap[hhi + ai];
-              if (a == 0) {
-                continue;
+            case Slot_BooleanRef: {
+              boolean[] ba = ((BooleanArray) fs)._getTheArray();
+              for (int ai = 0; ai < len; ai++) {
+                ba[ai] = byteHeap.heap[bhi + ai] == (byte) 1;
               }
-              TOP item = addr2fs.get(a);
-              if (item != null) {
-                fsa[ai] = item;
-              } else {
-                final int aiSaved = ai;
-                final int addrSaved = a;
-                fixups4forwardFsRefs.add(() -> {
-                  fsa[aiSaved] = addr2fs.get(addrSaved);
-                });
-              }
+              break;
             }
-            break;
-          }
 
-          default:
-            Misc.internalError();
+            case Slot_ByteRef:
+              System.arraycopy(byteHeap.heap, bhi, ((ByteArray) fs)._getTheArray(), 0, len);
+              break;
 
-        } // end of switch
+            case Slot_ShortRef:
+              System.arraycopy(shortHeap.heap, bhi, ((ShortArray) fs)._getTheArray(), 0, len);
+              break;
+
+            case Slot_LongRef:
+              System.arraycopy(longHeap.heap, bhi, ((LongArray) fs)._getTheArray(), 0, len);
+              break;
+
+            case Slot_DoubleRef: {
+              double[] da = ((DoubleArray) fs)._getTheArray();
+              for (int ai = 0; ai < len; ai++) {
+                da[ai] = CASImpl.long2double(longHeap.heap[bhi + ai]);
+              }
+              break;
+            }
+
+            case Slot_Int:
+              System.arraycopy(heap.heap, hhi, ((IntegerArray) fs)._getTheArray(), 0, len);
+              break;
+
+            case Slot_Float: {
+              float[] fa = ((FloatArray) fs)._getTheArray();
+              for (int ai = 0; ai < len; ai++) {
+                fa[ai] = CASImpl.int2float(heap.heap[hhi + ai]);
+              }
+              break;
+            }
+
+            case Slot_StrRef: {
+              String[] sa = ((StringArray) fs)._getTheArray();
+              for (int ai = 0; ai < len; ai++) {
+                sa[ai] = stringHeap.getStringForCode(heap.heap[hhi + ai]);
+              }
+              break;
+            }
+
+            case Slot_HeapRef: {
+              TOP[] fsa = ((FSArray) fs)._getTheArray();
+              for (int ai = 0; ai < len; ai++) {
+                int a = heap.heap[hhi + ai];
+                if (a == 0) {
+                  continue;
+                }
+                TOP item = addr2fs.get(a);
+                if (item != null) {
+                  fsa[ai] = item;
+                } else {
+                  final int aiSaved = ai;
+                  final int addrSaved = a;
+                  fixups4forwardFsRefs.add(() -> {
+                    fsa[aiSaved] = addr2fs.get(addrSaved);
+                  });
+                }
+              }
+              break;
+            }
+
+            default:
+              Misc.internalError();
+
+          } // end of switch
+        }
       } else { // end of arrays
                // start of normal non-array
         CASImpl view = null;
