@@ -1,49 +1,37 @@
-Apache uimaFIT (TM) v3.3.0
+Apache uimaFIT (TM) v3.4.0
 ==========================
 
 This is a feature and bugfix release. 
 
-## Notable changes in this release
+## What's Changed
 
-### New Features and improvements
+**Improvements**
+* ⭐️ Issue #195: Detect descriptors via SPI by @reckart in https://github.com/apache/uima-uimafit/pull/197, https://github.com/apache/uima-uimafit/pull/204
+* ⭐️ Issue #196: Provide OSGI metadata in JARs by @reckart in https://github.com/apache/uima-uimafit/pull/199, https://github.com/apache/uima-uimafit/pull/202, https://github.com/apache/uima-uimafit/pull/203
+* ⭐️ Issue #205: Managed CASes in tests should consider validators by @reckart in https://github.com/apache/uima-uimafit/pull/206
+* ⭐️ Issue #209: Ability to override validator for a test by @reckart in https://github.com/apache/uima-uimafit/pull/210
+* ⭐️ Issue #211: Conveniently skip validation by @reckart in https://github.com/apache/uima-uimafit/pull/212
+* ⭐️ Issue #215: Improve descriptor scanning performance when there are many classloaders by @reckart in https://github.com/apache/uima-uimafit/pull/216
+* ⭐️ Issue #220: Add getType signature accepting a type system by @reckart in https://github.com/apache/uima-uimafit/pull/221
 
-* [UIMA-6431] - Use lambda functions as CAS processors
-* [UIMA-6422] - `FSUtil.setFeature()` should offer signatures that accept a Feature
-* [UIMA-6392] - Better delegate key generation in aggregate engine
-* [UIMA-6424] - Upgrade uimaFIT to JUnit 5
-* [UIMA-6426] - Upgrade to UIMA Java SDK 3.3.0
-* [UIMA-6432] - Upgrade dependencies (uimaFIT 3.3.0)
+**Bugs fixed**
+* 🦟 Issue #207: Cannot override CAS content set in a BeforeEach method by @reckart in https://github.com/apache/uima-uimafit/pull/208
+* 🦟 Issue #213: Avoid broken typesystem when using ManagedCas by @reckart in https://github.com/apache/uima-uimafit/pull/214
 
-### Bugs fixed
+**Refactorings**
 
-* [UIMA-6384] - Parallelism argument in `CpePipeline` is ignored
-* [UIMA-6385] - Potential resource key clash in environments with multiple classloaders
-* [UIMA-6391] - `CpePipeline` should kill CPE if reader throws exception
-* [UIMA-6396] - uimaFIT maven plugin mixes up test and compile scopes
-* [UIMA-6417] - Problems setting numeric parameter values
-* [UIMA-6446] - Complexities around enhancing classes with their resource name
- 
-A full list of issues addressed in this release can be found on the Apache issue tracker:
+* ⚙️ Issue #198: Remove version overrides in Maven plugin modules by @reckart in https://github.com/apache/uima-uimafit/pull/200
+* 🩹 Issue #218: Update dependencies by @reckart in https://github.com/apache/uima-uimafit/pull/219, https://github.com/apache/uima-uimafit/pull/222, https://github.com/apache/uima-uimafit/pull/223
 
-  https://issues.apache.org/jira/issues/?jql=project%20%3D%20UIMA%20AND%20fixVersion%20%3D%203.3.0uimaFIT
+For a full list of issues affecting this release, please see:
 
-### API changes
+* [GitHub issues](issuesFixed/github-report.html) [[online](https://github.com/apache/uima-uimafit/issues?q=milestone%3A3.4.0)]
 
-#### Inheritance of `@ResourceMetaData`
-
-The `@ResourceMetaData` is no longer "inherited" by sub-classes of the annotated component class (cf.
-UIMA-6446).
-
-#### JUnit upgrade
-
-The JUnit module has been upgraded from JUnit 4 to JUnit 5 along with the rest of the test code
-switching to JUnit 5. If you use the unit test helpers from this module, you also have to upgrade
-your tests to JUnit 5.
 
 ### Supported Platforms
 
-uimaFIT 3.3.0 should be used in combination with 
+uimaFIT 3.4.0 should be used in combination with 
 
 * Java 1.8 or higher
-* UIMA Java SDK 3.3.0 or higher
-* Spring Framework 5.3.20 or higher
+* UIMA Java SDK 3.4.0 or higher
+* Spring Framework 5.3.25 or higher

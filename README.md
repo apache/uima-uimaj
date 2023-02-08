@@ -88,7 +88,7 @@ following:
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.0</version>
     </dependency>
 
 
