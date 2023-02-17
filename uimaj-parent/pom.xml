@@ -303,7 +303,7 @@
       <plugin>
         <groupId>org.openntf.maven</groupId>
         <artifactId>p2-layout-resolver</artifactId>
-        <version>1.5.0</version>
+        <version>1.7.0</version>
         <extensions>true</extensions>
       </plugin>
 
