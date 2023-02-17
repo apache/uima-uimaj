@@ -337,7 +337,7 @@ public class ImportResolverTest {
           Entry<File, TypeSystemDescription> otherTsd = allTypeSystemEntriesIterator.next();
           Import tsdImport = getResourceSpecifierFactory().createImport();
           // toURL is used intentionally here because we do not want the chars to get escaped
-          tsdImport.setLocation(otherTsd.getKey().toURI().toURL().toString());
+          tsdImport.setLocation(otherTsd.getKey().toURL().toString());
           imports.add(tsdImport);
           importedTypes.addAll(filesWithTransitiveTypes.get(otherTsd.getKey()));
           importedFiles.add(otherTsd.getKey());
@@ -405,10 +405,10 @@ public class ImportResolverTest {
     assertThat(ts.getTypes()).hasSize(2);
 
     Map<String, XMLizable> cache = resMgr.getImportCache();
-    assertThat(cache).containsOnlyKeys(circular2.toURI().toURL().toString());
+    assertThat(cache).containsOnlyKeys(circular2.toURL().toString());
 
     TypeSystemDescription cachedCircular2Tsd = (TypeSystemDescription) cache
-            .get(circular2.toURI().toURL().toString());
+            .get(circular2.toURL().toString());
     assertThat(ts.getTypes()).hasSize(2);
     assertThat(cachedCircular2Tsd.getTypes()).hasSize(1);
   }
@@ -424,13 +424,12 @@ public class ImportResolverTest {
     assertThat(ts.getTypes()).hasSize(3);
 
     Map<String, XMLizable> cache = resMgr.getImportCache();
-    assertThat(cache).containsOnlyKeys(circular2.toURI().toURL().toString(),
-            circular3.toURI().toURL().toString());
+    assertThat(cache).containsOnlyKeys(circular2.toURL().toString(), circular3.toURL().toString());
 
     TypeSystemDescription cachedCircular2Tsd = (TypeSystemDescription) cache
-            .get(circular2.toURI().toURL().toString());
+            .get(circular2.toURL().toString());
     TypeSystemDescription cachedCircular3Tsd = (TypeSystemDescription) cache
-            .get(circular3.toURI().toURL().toString());
+            .get(circular3.toURL().toString());
     assertThat(ts.getTypes()).hasSize(3);
     assertThat(cachedCircular2Tsd.getTypes()).hasSize(1);
     assertThat(cachedCircular3Tsd.getTypes()).hasSize(1);
@@ -486,7 +485,7 @@ public class ImportResolverTest {
   @Test
   public void thatImportFromProgrammaticallyCreatedTypeSystemDescriptionWorks() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
-    URL url = getFile("TypeSystemDescriptionImplTest").toURI().toURL();
+    URL url = getFile("TypeSystemDescriptionImplTest").toURL();
 
     // test import from programatically created TypeSystemDescription
     Import_impl[] imports = { new Import_impl() };
