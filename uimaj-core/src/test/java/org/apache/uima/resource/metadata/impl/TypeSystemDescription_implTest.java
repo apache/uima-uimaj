@@ -154,13 +154,13 @@ public class TypeSystemDescription_implTest {
 
     String typeSystemImportedByLocation = new File(
             "target/test-classes/TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml")
-                    .toURI().toURL().toString();
+                    .toURL().toString();
     String typeSystemImportedFromDataPath = new File(
             "target/test-classes/TypeSystemDescriptionImplTest/dataPathDir/TypeSystemImportedFromDataPath.xml")
-                    .toURI().toURL().toString();
+                    .toURL().toString();
     String typeSystemImportedByName = new File(
             "target/test-classes/org/apache/uima/resource/metadata/impl/TypeSystemImportedByName.xml")
-                    .toURI().toURL().toString();
+                    .toURL().toString();
 
     Map<String, XMLizable> cache = resMgr.getImportCache();
     assertThat(cache).containsOnlyKeys(typeSystemImportedByLocation, typeSystemImportedByName,
