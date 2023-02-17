@@ -158,9 +158,11 @@ public class TypeSystemDescription_implTest {
     String typeSystemImportedFromDataPath = new File(
             "target/test-classes/TypeSystemDescriptionImplTest/dataPathDir/TypeSystemImportedFromDataPath.xml")
                     .toURL().toString();
+    // FIXME: REC 2023-02-17 - At some point we should investigate why on this one we need to use
+    // toURI().toURL() and on the others just toURL()....
     String typeSystemImportedByName = new File(
             "target/test-classes/org/apache/uima/resource/metadata/impl/TypeSystemImportedByName.xml")
-                    .toURL().toString();
+                    .toURI().toURL().toString();
 
     Map<String, XMLizable> cache = resMgr.getImportCache();
     assertThat(cache).containsOnlyKeys(typeSystemImportedByLocation, typeSystemImportedByName,
