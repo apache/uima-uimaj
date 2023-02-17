@@ -28,12 +28,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.io.File;
-import java.net.URI;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -128,8 +127,7 @@ public class TypeSystemDescription_implTest {
     assertThat(ts.getTypes()) //
             .as("Types after resolving the descriptor.") //
             .extracting( //
-                    t -> Paths.get(URI.create(t.getSourceUrlString())).getFileName().toString(),
-                    TypeDescription::getName) //
+                    t -> FilenameUtils.getName(t.getSourceUrlString()), TypeDescription::getName) //
             .containsExactlyInAnyOrder( //
                     tuple("TestTypeSystem.xml", "NamedEntity"), //
                     tuple("TestTypeSystem.xml", "Person"), //
@@ -156,10 +154,12 @@ public class TypeSystemDescription_implTest {
 
     String typeSystemImportedByLocation = new File(
             "target/test-classes/TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml")
-                    .toURI().toURL().toString();
+                    .toURL().toString();
     String typeSystemImportedFromDataPath = new File(
             "target/test-classes/TypeSystemDescriptionImplTest/dataPathDir/TypeSystemImportedFromDataPath.xml")
-                    .toURI().toURL().toString();
+                    .toURL().toString();
+    // FIXME: REC 2023-02-17 - At some point we should investigate why on this one we need to use
+    // toURI().toURL() and on the others just toURL()....
     String typeSystemImportedByName = new File(
             "target/test-classes/org/apache/uima/resource/metadata/impl/TypeSystemImportedByName.xml")
                     .toURI().toURL().toString();
