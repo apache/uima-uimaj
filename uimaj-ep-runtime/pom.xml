@@ -164,6 +164,7 @@
                   org.apache.uima.resource.service.impl,
                   org.apache.uima.search,
                   org.apache.uima.search.impl,
+                  org.apache.uima.spi,
                   org.apache.uima.tools,
                   org.apache.uima.tools.annot_view,
                   org.apache.uima.tools.cpm,
