@@ -101,10 +101,10 @@ public class ImportResolverTest {
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(3);
     assertThat(ts.getImports()).hasSize(0);
 
-    String typeSystem2 = new File(descriptor.getParent(), "Transitive-with-3-nodes-2.xml").toURI()
-            .toURL().toString();
-    String typeSystem3 = new File(descriptor.getParent(), "Transitive-with-3-nodes-3.xml").toURI()
-            .toURL().toString();
+    String typeSystem2 = new File(descriptor.getParent(), "Transitive-with-3-nodes-2.xml").toURL()
+            .toString();
+    String typeSystem3 = new File(descriptor.getParent(), "Transitive-with-3-nodes-3.xml").toURL()
+            .toString();
 
     Map<String, XMLizable> cache = resMgr.getImportCache();
     assertThat(cache).containsOnlyKeys(typeSystem2, typeSystem3);
