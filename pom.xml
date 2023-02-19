@@ -188,7 +188,8 @@
   <modules>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
-    <module>uimaj-legacy-jira-report</module>
+    <!-- UIMA 3.4.1 has no issues from Jira -->
+    <!-- module>uimaj-legacy-jira-report</module -->
   </modules>
   
   <build>
@@ -302,6 +303,7 @@
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
                   <exclude>uimaj-v3migration-jcas/**</exclude>
+                  <exclude>uimaj-legacy-jira-report/**</exclude>
                 </excludes>
               </configuration>
             </execution>
