@@ -44,7 +44,7 @@ to your project:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
-  <version>3.4.0</version>
+  <version>3.4.1</version>
 </dependency>
 ```
 
