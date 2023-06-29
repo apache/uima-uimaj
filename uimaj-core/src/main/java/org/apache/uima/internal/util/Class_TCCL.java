@@ -19,7 +19,11 @@
 
 package org.apache.uima.internal.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceManager;
@@ -52,11 +56,49 @@ public class Class_TCCL {
 
   static public <T> Class<T> forName(String className, ResourceManager rm, boolean resolve)
           throws ClassNotFoundException {
+    List<ClassLoader> clsTried = new ArrayList<>();
+    List<ClassNotFoundException> suppressedExceptions = new ArrayList<>();
+    
+    // Try extension classloader
+    if (rm != null) {
+      ClassLoader excl = rm.getExtensionClassLoader();
+      
+      if (excl != null) {
+        try {
+          return (Class<T>) Class.forName(className, resolve, excl);
+        }
+        catch (ClassNotFoundException e) {
+          clsTried.add(excl);
+          suppressedExceptions.add(e);
+        }
+      }
+    }
+    
+    // Try TCCL
+    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+    if (tccl != null) {
+      try {
+        return (Class<T>) Class.forName(className, resolve, tccl);
+      }
+      catch (ClassNotFoundException e) {
+        clsTried.add(tccl);
+        suppressedExceptions.add(e);
+      }
+    }
+    
     try {
-      return (Class<T>) Class.forName(className, resolve, get_cl(rm));
-    } catch (ClassNotFoundException x) { //
       return (Class<T>) Class.forName(className, resolve, Class_TCCL.class.getClassLoader());
     }
+    catch (ClassNotFoundException e) {
+      clsTried.add(tccl);
+      suppressedExceptions.add(e);
+    }
+    
+    ClassNotFoundException e = new ClassNotFoundException(
+            "Class [" + className + "] not found in any of the accessible classloaders "
+                    + clsTried.stream().map(Objects::toString).collect(Collectors.joining(", ")));
+    suppressedExceptions.forEach(e::addSuppressed);
+    throw e;
   }
 
   static public <T> Class<T> forName(String className, Map<String, Object> additionalParams)
@@ -67,6 +109,10 @@ public class Class_TCCL {
     return forName(className, rm);
   }
 
+  /**
+   * @deprecated Method should not be used and will be removed in a future version.
+   */
+  @Deprecated
   static public ClassLoader get_cl(ResourceManager rm) {
 
     ClassLoader cl = (rm == null) ? null : rm.getExtensionClassLoader();
@@ -78,6 +124,10 @@ public class Class_TCCL {
     return cl;
   }
 
+  /**
+   * @deprecated Method should not be used and will be removed in a future version. 
+   */
+  @Deprecated
   static public ClassLoader get_parent_cl() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     return (cl == null) ? Class_TCCL.class.getClassLoader() : cl;
