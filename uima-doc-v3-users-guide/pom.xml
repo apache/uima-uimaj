@@ -32,12 +32,6 @@
   <name>Apache UIMA SDK Documentation - Version 3 User's Guide</name>
   <url>${uimaWebsiteUrl}</url>
 
-  <properties>
-    <asciidoctor.plugin.version>2.1.0</asciidoctor.plugin.version>
-    <asciidoctor.version>2.4.2</asciidoctor.version>
-    <asciidoctor.pdf.version>1.5.4</asciidoctor.pdf.version>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
