@@ -53,8 +53,10 @@
     <commons-io-version>2.11.0</commons-io-version>
     <commons-lang3-version>3.12.0</commons-lang3-version>
     <junit-version>5.8.2</junit-version>
+    <junit-platform-version>1.8.2</junit-platform-version>
     <groovy-version>3.0.10</groovy-version>
     <mockito-version>4.4.0</mockito-version>
+    <opentest4j-version>1.2.0</opentest4j-version>
     <spring-version>5.3.25</spring-version>
     <slf4j-version>1.7.36</slf4j-version>
     <uima-version>3.4.0</uima-version>
@@ -110,6 +112,16 @@
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
         <version>${junit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>${junit-platform-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>${opentest4j-version}</version>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>

@@ -26,6 +26,7 @@ import static org.apache.uima.fit.factory.CasFactory.createCas;
 import static org.apache.uima.fit.validation.ValidationResult.Severity.ERROR;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -41,6 +42,8 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 
 /**
  * Provides a {@link CAS} object which is automatically reset before the test. The idea of this
@@ -52,6 +55,8 @@ import org.junit.jupiter.api.extension.TestWatcher;
  */
 public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback, AfterAllCallback {
   private final ThreadLocal<CAS> casHolder;
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
@@ -117,9 +122,20 @@ public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback
   public void afterTestExecution(ExtensionContext context) throws Exception {
     try {
       managedCases.forEach(this::assertValid);
-      managedCases.forEach(CAS::reset);
     } finally {
-      this.validator = null;
+      reset();
+    }
+  }
+
+  private void reset() {
+    this.validator = null;
+
+    for (CAS cas : managedCases) {
+      try {
+        cas.reset();
+      } catch (Exception e) {
+        LOG.error(e, () -> "Unable to reset managed CAS");
+      }
     }
   }
 
@@ -165,7 +181,7 @@ public final class ManagedCas implements TestWatcher, AfterTestExecutionCallback
     return this;
   }
 
-  private Validator getValidator() {
+  Validator getValidator() {
     if (validator != null) {
       return validator;
     }
