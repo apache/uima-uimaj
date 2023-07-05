@@ -31,7 +31,6 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -96,6 +95,18 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   @Parameter(defaultValue = "true", required = true)
   private boolean failOnError;
 
+  /**
+   * Skip plugin execution.
+   */
+  @Parameter(property = "uima-generate.skip", defaultValue = "false", required = true)
+  private boolean skip;
+
+  /**
+   * Skip plugin execution only during incremental builds (e.g. triggered from m2e).
+   */
+  @Parameter(defaultValue = "false", required = true)
+  private boolean skipDuringIncrementalBuilds;
+
   enum TypeSystemSerialization {
     NONE, EMBEDDED
   }
@@ -116,6 +127,10 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException {
+    if (isSkipped()) {
+      return;
+    }
+
     // add the generated sources to the build
     if (!outputDirectory.exists()) {
       outputDirectory.mkdirs();
@@ -124,7 +139,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
 
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
-        new String[] { "class" });
+            new String[] { "class" });
 
     componentLoader = Util.getClassloader(project, getLog(), includeScope);
 
@@ -152,27 +167,27 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         ResourceCreationSpecifier desc = null;
         ProcessingResourceMetaData metadata = null;
         switch (Util.getType(componentLoader, clazz)) {
-        case ANALYSIS_ENGINE:
-          AnalysisEngineDescription aeDesc = createEngineDescription(clazz);
-          metadata = aeDesc.getAnalysisEngineMetaData();
-          desc = aeDesc;
-          break;
-        case COLLECTION_READER:
-          CollectionReaderDescription crDesc = createReaderDescription(clazz);
-          metadata = crDesc.getCollectionReaderMetaData();
-          desc = crDesc;
-        default:
-          // Do nothing
+          case ANALYSIS_ENGINE:
+            AnalysisEngineDescription aeDesc = createEngineDescription(clazz);
+            metadata = aeDesc.getAnalysisEngineMetaData();
+            desc = aeDesc;
+            break;
+          case COLLECTION_READER:
+            CollectionReaderDescription crDesc = createReaderDescription(clazz);
+            metadata = crDesc.getCollectionReaderMetaData();
+            desc = crDesc;
+          default:
+            // Do nothing
         }
 
         if (desc != null) {
           switch (addTypeSystemDescriptions) {
-          case EMBEDDED:
-            embedTypeSystems(metadata);
-            break;
-          case NONE: // fall-through
-          default:
-            // Do nothing
+            case EMBEDDED:
+              embedTypeSystems(metadata);
+              break;
+            case NONE: // fall-through
+            default:
+              // Do nothing
           }
 
           File out = new File(outputDirectory, clazzPath + ".xml");
@@ -196,8 +211,8 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       }
     }
 
-    getLog()
-        .info("Generated " + countGenerated + " descriptor" + (countGenerated != 1 ? "s." : "."));
+    getLog().info(
+            "Generated " + countGenerated + " descriptor" + (countGenerated != 1 ? "s." : "."));
 
     // Write META-INF/org.apache.uima.fit/components.txt unless skipped and unless there are no
     // components
@@ -208,16 +223,16 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         FileUtils.fileWrite(path.getPath(), encoding, componentsManifest.toString());
       } catch (IOException e) {
         handleError("Cannot write components manifest to [" + path + "]"
-            + ExceptionUtils.getRootCauseMessage(e), e);
+                + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
 
     if (addOutputDirectoryAsResourceDirectory && countGenerated > 0) {
       Path absoluteDescriptorOutputPath = outputDirectory.toPath().toAbsolutePath();
       Path absoluteBuildOutputDirectory = Paths.get(project.getBuild().getOutputDirectory())
-          .toAbsolutePath();
+              .toAbsolutePath();
       Path absoluteBuildTestOutputDirectory = Paths.get(project.getBuild().getTestOutputDirectory())
-          .toAbsolutePath();
+              .toAbsolutePath();
 
       // Add the output folder as a new resource folder if any descriptors were generated and
       // only
@@ -226,7 +241,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       // be the case if the mojo is executed in a late build phase where the resources plugin
       // doesn't run anymore.
       if (!absoluteBuildOutputDirectory.equals(absoluteDescriptorOutputPath)
-          && !absoluteBuildTestOutputDirectory.equals(absoluteDescriptorOutputPath)) {
+              && !absoluteBuildTestOutputDirectory.equals(absoluteDescriptorOutputPath)) {
         Resource resource = new Resource();
         resource.setDirectory(outputDirectory.getPath());
         resource.setFiltering(false);
@@ -234,6 +249,20 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         project.addResource(resource);
       }
     }
+  }
+
+  private boolean isSkipped() {
+    if (skipDuringIncrementalBuilds && buildContext.isIncremental()) {
+      getLog().info("Generation of UIMA component descriptors skipped in incremental build.");
+      return true;
+    }
+
+    if (skip) {
+      getLog().info("Generation of UIMA component descriptors skipped.");
+      return true;
+    }
+
+    return false;
   }
 
   private void handleError(String message, Exception e) throws MojoExecutionException {
@@ -245,7 +274,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   }
 
   private void embedTypeSystems(ProcessingResourceMetaData metadata)
-      throws ResourceInitializationException {
+          throws ResourceInitializationException {
     TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
     TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription();
     metadata.setTypeSystem(tsDesc);
@@ -255,14 +284,10 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
    * Save descriptor XML to file system.
    */
   private void toXML(ResourceSpecifier aDesc, String aFilename) throws SAXException, IOException {
-    OutputStream os = null;
-    try {
-      File out = new File(aFilename);
-      getLog().debug("Writing descriptor to: " + out);
-      os = new FileOutputStream(out);
+    File out = new File(aFilename);
+    getLog().debug("Writing descriptor to: " + out);
+    try (OutputStream os = new FileOutputStream(out);) {
       aDesc.toXML(os);
-    } finally {
-      IOUtils.closeQuietly(os);
     }
   }
 }
