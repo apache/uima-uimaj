@@ -26,6 +26,7 @@ import static org.apache.uima.fit.factory.JCasFactory.createJCas;
 import static org.apache.uima.fit.validation.ValidationResult.Severity.ERROR;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -41,6 +42,8 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 
 /**
  * Provides a {@link JCas} object which is automatically reset before the test. The idea of this
@@ -53,6 +56,8 @@ import org.junit.jupiter.api.extension.TestWatcher;
 public final class ManagedJCas
         implements TestWatcher, AfterTestExecutionCallback, AfterAllCallback {
   private final ThreadLocal<JCas> casHolder;
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Set<JCas> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
@@ -118,9 +123,20 @@ public final class ManagedJCas
   public void afterTestExecution(ExtensionContext context) throws Exception {
     try {
       managedCases.forEach(this::assertValid);
-      managedCases.forEach(JCas::reset);
     } finally {
-      this.validator = null;
+      reset();
+    }
+  }
+
+  private void reset() {
+    this.validator = null;
+
+    for (JCas cas : managedCases) {
+      try {
+        cas.reset();
+      } catch (Exception e) {
+        LOG.error(e, () -> "Unable to reset managed CAS");
+      }
     }
   }
 
@@ -166,7 +182,7 @@ public final class ManagedJCas
     return this;
   }
 
-  private Validator getValidator() {
+  Validator getValidator() {
     if (validator != null) {
       return validator;
     }
