@@ -140,19 +140,25 @@
      properties already, they should be injected manually into the plugins. 
     -->
     <slf4j-version>1.7.36</slf4j-version>
-    <log4j-version>2.19.0</log4j-version>
-    <jackson-version>2.13.1</jackson-version>
-    <junit-version>5.9.1</junit-version>
-    <assertj-version>3.23.1</assertj-version>
-    <xmlunit-version>2.9.0</xmlunit-version>
+    <log4j-version>2.20.0</log4j-version>
+    <commons-io-version>2.13.0</commons-io-version>
+    <commons-csv-version>1.10.0</commons-csv-version>
+    <jackson-version>2.15.2</jackson-version>
+    <junit-version>5.9.3</junit-version>
+    <assertj-version>3.24.2</assertj-version>
+    <xmlunit-version>2.9.1</xmlunit-version>
     <maven.version>3.2.5</maven.version>
+
+    <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
+    <asciidoctor.version>2.5.8</asciidoctor.version>
+    <asciidoctor.pdf.version>2.3.7</asciidoctor.pdf.version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
-    <api_check_oldVersion>3.3.1</api_check_oldVersion>
+    <api_check_oldVersion>3.4.1</api_check_oldVersion>
 
     <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
   </properties>
@@ -204,6 +210,16 @@
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-assertj3</artifactId>
         <version>${xmlunit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv-version}</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
