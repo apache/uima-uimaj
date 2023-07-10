@@ -1738,7 +1738,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public void close() {
-    stream().close();
+    // SelectFSs_impl holds no resources that would need to be cleaned up
   }
 
   @Override
