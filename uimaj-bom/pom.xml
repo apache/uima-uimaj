@@ -24,9 +24,9 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimaj-parent</artifactId>
-    <version>3.5.0-SNAPSHOT</version>
-    <relativePath>../uimaj-parent/pom.xml</relativePath>
+    <artifactId>parent-pom</artifactId>
+    <relativePath />
+    <version>17-SNAPSHOT</version>
   </parent>
 
   <artifactId>uimaj-bom</artifactId>
