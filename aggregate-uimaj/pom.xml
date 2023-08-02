@@ -34,6 +34,7 @@
   <url>${uimaWebsiteUrl}</url>
 
   <modules>
+    <module>../uimaj-bom</module>
     <module>../uimaj-core</module>
     <module>../uimaj-cpe</module>
     <module>../uimaj-examples</module>

@@ -288,6 +288,7 @@
                   <exclude>uima-docbook-*/**</exclude>
                   <exclude>uima-doc-*/**</exclude>
                   <exclude>uimaj-adapter-*/**</exclude>
+                  <exclude>uimaj-bom/**</exclude>
                   <exclude>uimaj-component-test-util/**</exclude>
                   <exclude>uimaj-core/**</exclude>
                   <exclude>uimaj-cpe/**</exclude>
