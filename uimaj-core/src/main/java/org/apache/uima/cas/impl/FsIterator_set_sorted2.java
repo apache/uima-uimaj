@@ -177,8 +177,12 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   public FsIterator_singletype<T> copy() {
     FsIterator_set_sorted2<T> r = new FsIterator_set_sorted2<>(ll_index, ofsa,
             comparatorMaybeNoTypeWithoutID);
-    r.pos = pos;
+    copyCommonSetup(r);
     return r;
+  }
+
+  protected void copyCommonSetup(FsIterator_set_sorted2<T> copy) {
+    copy.pos = pos;
   }
 
   // /* (non-Javadoc)
