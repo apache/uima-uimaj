@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>16</version>
+    <version>17-SNAPSHOT</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -86,6 +86,7 @@
       - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
       - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
       - be enabled when really needed.
+      -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -97,7 +98,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    -->
 
     <repository>
       <id>${eclipseP2RepoId}</id>
