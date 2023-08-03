@@ -186,6 +186,7 @@
   </dependencies>
 
   <modules>
+    <module>uimaj-bom</module>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
     <!-- UIMA 3.4.1 has no issues from Jira -->
