@@ -144,18 +144,20 @@
     <commons-io-version>2.13.0</commons-io-version>
     <commons-csv-version>1.10.0</commons-csv-version>
     <jackson-version>2.15.2</jackson-version>
-    <junit-version>5.9.3</junit-version>
+    <junit-version>5.10.0</junit-version>
+    <junit-vintage-version>4.13.2</junit-vintage-version>
     <mockito-version>4.11.0</mockito-version>
     <assertj-version>3.24.2</assertj-version>
     <xmlunit-version>2.9.1</xmlunit-version>
     <maven.version>3.2.5</maven.version>
 
     <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
-    <asciidoctor.version>2.5.8</asciidoctor.version>
-    <asciidoctor.pdf.version>2.3.7</asciidoctor.pdf.version>
+    <asciidoctor.version>2.5.10</asciidoctor.version>
+    <asciidoctor.pdf.version>2.3.9</asciidoctor.pdf.version>
 
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.release>17</maven.compiler.release>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
@@ -179,6 +181,11 @@
         <version>${junit-version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit-vintage-version}</version>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
@@ -237,6 +244,31 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-build-api</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -255,10 +287,20 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.4</version>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter-engine</artifactId>
+              <version>${junit-version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.vintage</groupId>
+              <artifactId>junit-vintage-engine</artifactId>
+              <version>${junit-version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -300,15 +342,6 @@
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
         </configuration>
-        <dependencies>
-          <dependency>
-            <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
-            <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
-            <version>2.5.17</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>

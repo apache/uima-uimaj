@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>compile</scope>  <!-- is normally test scope, so need to be explicit -->
     </dependency>
     <dependency>
@@ -51,12 +51,10 @@
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
-      <version>${xmlunit-version}</version>
     </dependency>
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-assertj3</artifactId>
-      <version>${xmlunit-version}</version>
     </dependency>
   </dependencies>
 </project>

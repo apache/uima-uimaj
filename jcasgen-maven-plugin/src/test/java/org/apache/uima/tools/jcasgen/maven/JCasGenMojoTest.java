@@ -18,6 +18,8 @@
  */
 package org.apache.uima.tools.jcasgen.maven;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +30,10 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
-import org.junit.Assert;
+import org.eclipse.aether.RepositorySystemSession;
 import org.junit.Test;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
@@ -83,8 +86,10 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     assertTrue(pomFile.exists());
 
     // create the MavenProject from the pom.xml file
+    RepositorySystemSession session = MavenRepositorySystemUtils.newSession();
     MavenExecutionRequest executionRequest = new DefaultMavenExecutionRequest();
     ProjectBuildingRequest buildingRequest = executionRequest.getProjectBuildingRequest();
+    buildingRequest.setRepositorySession(session);
     ProjectBuilder projectBuilder = this.lookup(ProjectBuilder.class);
     MavenProject project = projectBuilder.build(pomFile, buildingRequest).getProject();
     assertNotNull(project);
@@ -123,7 +128,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
       // no _type files in v3
       // File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
 
-      Assert.assertTrue(files.contains(wrapperFile));
+      assertThat(files).contains(wrapperFile);
       // no _type files in v3
       // Assert.assertTrue(files.contains(typeFile));
 
@@ -132,9 +137,9 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     }
 
     // check that no extra files were generated
-    Assert.assertTrue(files.isEmpty());
+    assertThat(files).isEmpty();
 
     // check that the generated sources are on the compile path
-    Assert.assertTrue(project.getCompileSourceRoots().contains(jCasGenDirectory.getAbsolutePath()));
+    assertThat(project.getCompileSourceRoots()).contains(jCasGenDirectory.getAbsolutePath());
   }
 }
