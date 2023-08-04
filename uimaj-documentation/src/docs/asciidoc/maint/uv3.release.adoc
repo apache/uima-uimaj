@@ -449,7 +449,7 @@ Update Jira version info to reflect the release status and date
 ====
 * {empty}
 +
-.Post release announcement to `announce@apache.org` (Cc: `dev@uima.apache.org`, `user@uima.apache.org` -- once release has arrived at https://repo1.maven.org/maven2/org/apache/uima/uimaj-core/ -- sign mail using same GPG key that was used to sign release)
+.Post release announcement to `announce@apache.org` (Cc: `dev@uima.apache.org`, `user@uima.apache.org` -- once release has arrived at link:https://repo1.maven.org/maven2/org/apache/uima/uimaj-core/[] -- sign mail using same GPG key that was used to sign release)
 [%collapsible]
 ====
 After release appears on maven central, post an appropriate announce letter.

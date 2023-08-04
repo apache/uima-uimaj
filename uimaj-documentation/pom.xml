@@ -179,6 +179,66 @@
               </attributes>
             </configuration>
           </execution>
+          <execution>
+            <id>maint-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDocumentName>maint.adoc</sourceDocumentName>
+              <backend>html5</backend>
+              <attributes>
+                <toc>left</toc>
+                <imagesDir>./maint</imagesDir>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>maint-pdf</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDocumentName>maint.adoc</sourceDocumentName>
+              <backend>pdf</backend>
+              <attributes>
+                <toc>preamble</toc>
+                <imagesDir>./maint</imagesDir>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>user-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDocumentName>user.adoc</sourceDocumentName>
+              <backend>html5</backend>
+              <attributes>
+                <toc>left</toc>
+                <imagesDir>./user</imagesDir>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>user-pdf</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDocumentName>user.adoc</sourceDocumentName>
+              <backend>pdf</backend>
+              <attributes>
+                <toc>preamble</toc>
+                <imagesDir>./user</imagesDir>
+              </attributes>
+            </configuration>
+          </execution>
         </executions>
         <dependencies>
           <dependency>
