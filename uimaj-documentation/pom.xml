@@ -40,6 +40,7 @@
         <version>${asciidoctor.plugin.version}</version>
         <configuration>
           <outputDirectory>${project.build.directory}/site/d</outputDirectory>
+          <attributesChain>webfonts!</attributesChain>
           <attributes>
             <experimental>true</experimental>
             <doctype>book</doctype>
@@ -50,7 +51,7 @@
             <project-version>${project.version}</project-version>
             <revnumber>${project.version}</revnumber>
             <product-website-url>https://uima.apache.org</product-website-url>
-            <icons>font</icons>
+            <icons>text</icons>
             <relativeBaseDir>true</relativeBaseDir>
             <xrefstyle>short</xrefstyle>
           </attributes>
