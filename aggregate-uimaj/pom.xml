@@ -43,8 +43,9 @@
     <module>../uimaj-component-test-util</module>
     <module>../jVinci</module>
     <module>../aggregate-uimaj-eclipse-plugins</module>
-    <module>../aggregate-uimaj-docbooks</module>
-    <!--module>distr-superPom</module-->
+    <module>../uimaj-documentation</module>
+    <module>../uima-doc-v3-users-guide</module>
+    <module>../uima-doc-v3-maintainers-guide</module>
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>

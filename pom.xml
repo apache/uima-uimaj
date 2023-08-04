@@ -286,7 +286,6 @@
                   <exclude>jVinci/**</exclude>
                   <exclude>PearPackagingMavenPlugin/**</exclude>
                   <exclude>jcasgen-maven-plugin/**</exclude>
-                  <exclude>uima-docbook-*/**</exclude>
                   <exclude>uima-doc-*/**</exclude>
                   <exclude>uimaj-adapter-*/**</exclude>
                   <exclude>uimaj-bom/**</exclude>

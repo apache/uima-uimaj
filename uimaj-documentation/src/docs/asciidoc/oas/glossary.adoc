@@ -1,0 +1,205 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+:sectnums!:
+
+[glossary]
+[[ugr.glossary]]
+= Glossary: Key Terms & Concepts
+
+[[ugr.glossary.aggregate]]
+Aggregate Analysis Engine::
+  An Analysis Engine made up of multiple subcomponents arranged in a flow.
+  The flow can be one of the two built-in flows, or a custom flow provided by the user.
+
+Analysis Engine::
+  A program that analyzes artifacts (e.g. documents) and infers information about them, and which implements the UIMA interface Specification.
+  It does not matter how the program is built, with what framework or whether or not it contains (sub)components.
+
+Annotation::
+  The association of a metadata, such as a label, with a region of text (or other type of artifact). 
+  For example, the label Person associated with a region of text John Doe constitutes an annotation. 
+  We say Person annotates the span of text from X to Y containing exactly John Doe. 
+  An annotation is represented as a special type in a UIMA type system.
+  It is the type used to record the labeling of regions of a Sofa.
+  Annotations are Feature Structures whose Type is Annotation or a subtype of that.
+
+Annotator::
+  A software component that implements the UIMA annotator interface. 
+  Annotators are implemented to produce and record annotations over regions of an artifact (e.g., text document, audio, and video).
+
+Application::
+  An application is the outer containing code that invokes the UIMA framework functions to instantiate an Analysis Engine or a Collection Processing Engine from a particular descriptor, and run it.
+
+Apache UIMA Java Framework::
+  A Java-based implementation of the UIMA architecture.
+  It provides a run-time environment in which developers can plug in and run their UIMA component implementations and with which they can build and deploy UIM applications.
+  The framework is the core part of the Apache UIMA SDK.
+
+Apache UIMA Software Development Kit (SDK)::
+  The SDK for which you are now reading the documentation.
+  The SDK includes the framework plus additional components such as tooling and examples.
+  Some of the tooling is Eclipse-based.
+
+CAS::
+  The UIMA Common Analysis Structure is the primary data structure which UIMA analysis components use to represent and share analysis results.  It contains:
++
+--
+* The artifact. This is the object being analyzed such as a text document or audio or video stream. The CAS projects one or more views of the artifact. Each view is referred to as a __Sofa__.
+* A type system description -- indicating the types, subtypes, and their features.
+* Analysis metadata -- __standoff__ annotations describing the artifact or a region of the artifact
+* An index repository to support efficient access to and iteration over the results of analysis.
+--
++
+UIMA's primary interface to this structure is provided by a class called the Common Analysis System. We use __CAS__ to refer to both the structure and system. Where the common analysis structure is used through a different interface, the particular implementation of the structure is indicated, For example, the JCas is a native Java object representation of the contents of the common analysis structure.
+A CAS can have multiple views; each view has a unique representation of the artifact, and has its own index repository, representing results of analysis for that representation of the artifact.
+
+CAS Consumer::
+  A component that receives each CAS in the collection, usually after it has been processed by an Analysis Engine.
+  It is responsible for taking the results from the CAS and using them for some purpose, perhaps storing selected results into a database, for instance.
+  The CAS Consumer may also perform collection-level analysis, saving these results in an application-specific, aggregate data structure.
+
+CAS Multiplier::
+  A component, implemented by a UIMA developer, that takes a CAS as input and produces 0 or more new CASes as output.
+  Common use cases for a CAS Multiplier include creating alternative versions of an input Sofa (see CAS Initializer), and breaking a large input CAS into smaller pieces, each of which is emitted as a separate output CAS.
+  There are other uses, however, such as aggregating input CASes into a single output CAS.
+
+CAS Processor::
+  A component of a Collection Processing Engine (CPE) that takes a CAS as input and returns a CAS as output.
+  There are two types of CAS Processors: Analysis Engines and CAS Consumers.
+
+CAS View::
+  A CAS Object which shares the base CAS and type system definition and index specifications, but has a unique index repository and aparticular Sofa.
+  Views are named, and applications and annotators can dynamically create additional views whenever they are needed.
+  Annotations are made with respect to one view.
+  Feature structures can have references to feature structures indexed in other views, as needed.
+
+CDE::
+  The Component Descriptor Editor.
+  This is the Eclipse tool that lets you conveniently edit the UIMA descriptors; see xref:tools.adoc#ugr.tools.cde[Component Descriptor Editor User's Guide].
+
+Collection Processing Engine (CPE)::
+  Performs Collection Processing through the combination of a Collection Reader, zero or more Analysis Engines, and zero or more CAS Consumers.
+  The Collection Processing Manager (CPM) manages the execution of the engine.
+
+Collection Processing Manager (CPM)::
+  The part of the framework that manages the execution of collection processing, routing CASs from the Collection Reader to zero or more Analysis Engines and then to the zero or more CAS Consumers.
+  The CPM provides feedback such as performance statistics and error reporting and supports other features such as parallelization and error handling.
+
+Collection Reader::
+  A component that reads documents from some source, for example a file system or database.
+  The collection reader initializes a CAS with this document.  
+  Each document is returned as a CAS that may then be processed by an Analysis Engines.
+  If the task of populating a CAS from the document is complex, you may use an arbitrarily complex chain of Analysis Engines and have the last one create and initialize a new Sofa.
+
+Feature Structure::
+  An instance of a Type.
+  Feature Structures are kept in the CAS, and may (optionally) be added to the defined indexes.
+  Feature Structures may contain references to other Feature Structures.
+  Feature Structures whose type is Annotation or a subtype of that, are referred to as annotations.
+
+Feature::
+  A data member or attribute of a type.
+  Each feature itself has an associated range type, the type of the value that it can hold.
+  In the database analogy where types are tables, features are columns.
+  In the world of structured data types, each feature is a field, or data member.
+
+Flow Controller::
+  A component which implements the interfaces needed to specify a custom flow within an xref:#ugr.glossary.aggregate[Aggregate Analysis Engine].
+
+Hybrid Analysis Engine::
+  An where more than one of its component s are deployed the same address space and one or more are deployed remotely (part tightly and part loosely-coupled).
+
+Index::
+  Data in the CAS can only be retrieved using Indexes.  
+  Indexes are analogous to the indexes that are specified on tables of a database.
+  Indexes belong to Index Repositories; there is one Repository for each view of the CAS.
+  Indexes are specified to retrieve instances of some CAS Type (including its subtypes), and can be optionally sorted in a user-definable way. 
+  For example, all types derived from the UIMA built-in type `uima.tcas.Annotation`` contain `begin` and `end` features, which mark the begin and end offsets in the text where this annotation occurs.
+  There is a built-in index of `Annotation`s that specifies that annotations are retrieved sequentially by sorting first on the value of the `begin` feature (ascending) and then by the value of the `end` feature (descending).
+  In this case, iterating over the annotations, one first obtains annotations that come sequentially first in the text, while favoring longer annotations, in the case where two annotations start at the same offset.
+  Users can define their own indexes as well.
+
+JCas::
+  A Java object interface to the contents of the CAS.  
+  This interface uses additional generated Java classes, where each type in the CAS is represented as a Java class with the same name, each feature is represented with a getter and setter method, and each instance of a type is represented as a Java object of the corresponding Java class.
+
+Loosely-Coupled Analysis Engine::
+  An xref:#ugr.glossary.aggregate[Aggregate Analysis Engine] where no two of its subcomponents run in the same address space but where each is remote with respect to the others that make up the aggregate.
+  Loosely coupled engines are ideal for using remote services that are not locally available, or for quickly assembling and testing functionality in cross-language, cross-platform distributed environments.
+  They also better enable distributed scaleable implementations where quick recoverability may have a greater impact on overall throughput than analysis speed.
+
+PEAR::
+  An archive file that packages up a UIMA component with its code, descriptor files and other resources required to install and run it in another
+environment.
+  You can generate PEAR files using utilities that come with the UIMA SDK.
+
+Primitive Analysis Engine::
+  An Analysis Engine that is composed of a single Annotator; one that has no subcomponent inside of it; contrast with xref:#ugr.glossary.aggregate[Aggregate Analysis Engine].
+
+[[ugr.glossary.structuredinformation]]
+Structured Information::
+  Items stored in structured resources such as search engine indices, databases or knowledge bases.
+  The canonical example of structured information is the database table.
+  Each element of information in the database is associated with a precisely defined schema where each table column heading indicates its precise semantics, defining exactly how the information should be interpreted by a computer program or end-user.
+
+Subject of Analysis (Sofa)::
+  A piece of data (e.g., text document, image, audio segment, or video segment), which is intended for analysis by UIMA analysis components.
+  It belongs to a CAS View which has the same name; there is a one-to-one correspondence between these.
+  There can be multiple Sofas contained within one CAS, each one representing a different view of the original artifact for example, an audio file could be the original artifact, and also be one Sofa, and another could be the output of a voice-recognition component, where the Sofa would be the corresponding text document. Sofas may be analyzed independently or simultaneously; they all co-exist within the CAS.  
+
+Tightly-Coupled Analysis Engine::
+  An xref:#ugr.glossary.aggregate[Aggregate Analysis Engine] where all of its component s run in the same address space.
+
+Type::
+  A specification of an object in the CAS used to store the results of analysis.
+  Types are defined using inheritance, so some types may be defined purely for the sake of defining other types, and are in this sense abstract types.
+  Types usually contain Features, which are attributes, or properties of the type.
+  A type is roughly equivalent to a class in an object oriented programming language, or a table in a database.
+  Instances of types in the CAS may be indexed for retrieval.
+
+Type System::
+  A collection of related types.
+  All components that can access the CAS, including Applications, Analysis Engines, Collection Readers, Flow Controllers, or CAS Consumers declare the type system that they use. Type systems are shared across Analysins Engines, allowing the outputs of one Analysis Engine to be read as input by another.
+  A type system is roughly analogous to a set of related classes in object oriented programming, or a set of related tables in a database.
+  The type system / type / feature terminology comes from computational linguistics.
+
+Unstructured Information::
+  The canonical example of unstructured information is the natural language text document. 
+  The intended meaning of a document's content is only implicit and its precise interpretation by a computer program requires some degree of analysis to explicate the document's semantics.
+  Other examples include audio, video and images. Contrast with xref:#ugr.glossary.structuredinformation[Structured Information].
+        
+
+UIMA::
+  UIMA is an acronym that stands for Unstructured Information Management Architecture; it is a software architecture which specifies component interfaces, design patterns and development roles for creating, describing, discovering, composing and deploying multi-modal analysis capabilities.
+  The UIMA specification is being developed by a technical committee at OASIS.
+
+UIMA Java Framework::
+  See Apache UIMA Java Framework.
+
+UIMA SDK::
+  See Apache UIMA SDK.
+
+XCAS::
+  An XML representation of the CAS. The XCAS can be used for saving and restoring CASs to and from streams.
+  The UIMA SDK provides XCAS serialization and de-serialization methods for CASes.
+  This is an older serialization format and new UIMA code should use the standard XMI format instead.
+
+XML Metadata Interchange (XMI)::
+  An OMG standard for representing object graphs in XML, which UIMA uses to serialize analysis results from the CAS to an XML representation.  The UIMA SDK provides XMI serialization and de-serialization methods for CASes
+
+:sectnums:

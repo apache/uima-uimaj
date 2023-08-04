@@ -15,33 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-= Apache UIMA™ - UIMA 3 User's Guide
+= Apache UIMA™ - UIMA Overview and SDK Setup
 :Author: Apache UIMA™ Development Community
-:toc-title: UIMA 3 User's Guide
+:toc-title: UIMA Overview and SDK Setup
 
-The document is a manual for users of Apache UIMA, specifically focusing on the new
-features introduced in version 3.
+include::oas/common_book_info.adoc[leveloffset=+1]
 
-include::common_book_info.adoc[leveloffset=+1]
+include::oas/project_overview.adoc[leveloffset=+1]
 
-include::uv3.overview.adoc[leveloffset=+1]
+include::oas/conceptual_overview.adoc[leveloffset=+1]
 
-include::uv3.backwards_compatibility.adoc[leveloffset=+1]
+include::oas/eclipse_setup.adoc[leveloffset=+1]
 
-include::uv3.new_extended_apis.adoc[leveloffset=+1]
+include::oas/faqs.adoc[leveloffset=+1]
 
-include::uv3.select.adoc[leveloffset=+1]
+include::oas/known_issues.adoc[leveloffset=+1]
 
-include::uv3.annotation_predicates.adoc[leveloffset=+1]
-
-include::uv3.spi.adoc[leveloffset=+1]
-
-include::uv3.custom_java_objects.adoc[leveloffset=+1]
-
-include::uv3.logging.adoc[leveloffset=+1]
-
-include::uv3.migration.adoc[leveloffset=+1]
-
-include::uv3.pears.adoc[leveloffset=+1]
-
-include::uv3.migration.aids.adoc[leveloffset=+1]
+include::oas/glossary.adoc[leveloffset=+1]

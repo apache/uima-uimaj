@@ -1,0 +1,682 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[ugr.tug.cm]]
+= CAS Multiplier Developer's Guide
+// <titleabbrev>CAS Multiplier</titleabbrev>
+
+The UIMA analysis components (Annotators and CAS Consumers) described previously in this manual all take a single CAS as input, optionally make modifications to it, and output that same CAS.
+This chapter describes an advanced feature that became available in the UIMA SDK v2.0: a new type of analysis component called a __CAS Multiplier__, which can create new CASes during processing.
+
+CAS Multipliers are often used to split a large artifact into manageable pieces.
+This is a common requirement of audio and video analysis applications, but can also occur in text analysis on very large documents.
+A CAS Multiplier would take as input a single CAS representing the large artifact (perhaps by a remote reference to the actual data -- see <<ugr.tug.aas.sofa_data_formats>>) and produce as output a series of new CASes each of which contains only a small portion of the original artifact.
+
+CAS Multipliers are not limited to dividing an artifact into smaller pieces, however.
+A CAS Multiplier can also be used to combine smaller segments together to form larger segments.
+In general, a CAS Multiplier is used to _change_ the segmentation of a series of CASes; that is, to change how a stream of data is divided among discrete CAS objects.
+
+[[ugr.tug.cm.developing_multiplier_code]]
+== Developing the CAS Multiplier Code
+
+[[ugr.tug.cm.cm_interface_overview]]
+=== CAS Multiplier Interface Overview
+
+CAS Multiplier implementations should extend from the `JCasMultiplier_ImplBase` or `CasMultiplier_ImplBase` classes, depending on which CAS interface they prefer to use.
+As with other types of analysis components, the CAS Multiplier ImplBase classes define optional ``initialize``, ``destroy``, and `reconfigure` methods.
+There are then three required methods: ``process``, ``hasNext``, and ``next``.
+The framework interacts with these methods as follows:
+
+. The framework calls the CAS Multiplier's `process` method, passing it an input CAS. The process method returns, but may hold on to a reference to the input CAS.
+. The framework then calls the CAS Multiplier's `hasNext` method. The CAS Multiplier should return `true` from this method if it intends to output one or more new CASes (for instance, segments of this CAS), and `false` if not.
+. If `hasNext` returned true, the framework will call the CAS Multiplier's `next` method. The CAS Multiplier creates a new CAS (we will see how in a moment), populates it, and returns it from the `next` method.
+. Steps 2 and 3 continue until `hasNext` returns false. If the framework detects a situation where it needs to cancel this CAS Multiplier, it will stop calling the `hasNext` and `next` methods, and when another top-level CAS comes along it will call the annotator's `process` method again. User's annotator code should interpret this as a signal to cleanup  processing related to the previous CAS and then start processing with the new CAS.
+
+From the time when `process` is called until the `hasNext` method returns false (or `process` is called again),  the CAS Multiplier "`owns`" the CAS that was passed to its `process` method.
+The CAS Multiplier can store a reference to this CAS in a local field and can read from it or write to it during this time.
+Once the ending condition occurs, the CAS Multiplier gives up ownership of the input CAS and should no longer retain a reference to it.
+
+[[ugr.tug.cm.how_to_get_empty_cas_instance]]
+=== How to Get an Empty CAS Instance
+// <titleabbrev>Getting an empty CAS Instance</titleabbrev>
+
+The CAS Multiplier's `next` method must return a CAS instance that represents a new representation of the input artifact.
+Since CAS instances are managed by the framework, the CAS Multiplier cannot actually create a new CAS; instead it should request an empty CAS by calling the method: 
+
+[source]
+----
+CAS getEmptyCAS()
+----
+
+or
+
+[source]
+----
+JCas getEmptyJCas()
+---- 
+
+which are defined on the `CasMultiplier_ImplBase` and `JCasMultiplier_ImplBase` classes, respectively.
+
+Note that if it is more convenient you can request an empty CAS during the `process` or `hasNext` methods, not just during the `next` method.
+
+By default, a CAS Multiplier is only allowed to hold one output CAS instance at a time.
+You must return the CAS from the `next` method before you can request a second CAS.
+If you try to call getEmptyCAS a second time you will get an Exception.
+You can change this default behavior by overriding the method `getCasInstancesRequired` to return the number of CAS instances that you need.
+Be aware that CAS instances consume a significant amount of memory, so setting this to a large value will cause your application to use a lot of RAM.
+So, for example, it is not a good practice to attempt to generate a large number of new CASes in the CAS Multiplier's `process` method.
+Instead, you should spread your processing out across the calls to the `hasNext` or `next` methods.
+
+[NOTE]
+====
+You can only call `getEmptyCAS()` or `getEmptyJCas()` from your CAS Multiplier's ``process``, ``hasNext``, or `next` methods.
+You cannot call it from other methods such as ``initialize``.
+This is because the Aggregate AE's Type System is not available until all of the components of the aggregate have finished their initialization. 
+====
+
+The Type System of the empty CAS will contain all of the type definitions for all  components of the outermost Aggregate Analysis Engine or Collection Processing Engine that contains your CAS Multiplier.
+Therefore downstream components that receive  these CASes can add new instances of any type that they define.
+
+[WARNING]
+====
+Be careful to keep the Feature Structures that belong to each CAS separate.
+You  cannot create references from a Feature Structure in one CAS to a Feature Structure in another CAS.
+You also cannot add a Feature Structure created in one CAS to the indexes of a different CAS.
+If you attempt to do this, the results are undefined. 
+====
+
+[[ugr.tug.cm.example_code]]
+=== Example Code
+
+This section walks through the source code of an example CAS Multiplier that breaks text documents into smaller pieces.
+The Java class for the example is `org.apache.uima.examples.casMultiplier.SimpleTextSegmenter` and the source code is included in the UIMA SDK under the `examples/src` directory.
+
+[[ugr.tug.cm.example_code.overall_structure]]
+==== Overall Structure
+
+[source]
+----
+public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
+  private String mDoc;
+  private int mPos;
+  private int mSegmentSize;
+  private String mDocUri;  
+  
+  public void initialize(UimaContext aContext) 
+          throws ResourceInitializationException
+  { ... }
+
+  public void process(JCas aJCas) throws AnalysisEngineProcessException
+  { ... }
+
+  public boolean hasNext() throws AnalysisEngineProcessException
+  { ... }
+
+  public AbstractCas next() throws AnalysisEngineProcessException
+  { ... }
+}
+----
+
+The `SimpleTextSegmenter` class extends `JCasMultiplier_ImplBase` and implements the optional `initialize` method as well as the required ``process``, ``hasNext``, and `next` methods.
+Each method is described below.
+
+[[ugr.tug.cm.example_code.initialize]]
+==== Initialize Method
+
+[source]
+----
+public void initialize(UimaContext aContext) throws
+                    ResourceInitializationException {
+  super.initialize(aContext);
+  mSegmentSize = ((Integer)aContext.getConfigParameterValue(
+                            "segmentSize")).intValue();
+}
+----
+
+Like an Annotator, a CAS Multiplier can override the initialize method and read configuration parameter values from the UimaContext.
+The SimpleTextSegmenter defines one parameter, "`Segment
+          Size`", which determines the approximate size (in characters) of each segment that it will produce.
+
+[[ugr.tug.cm.example_code.process]]
+==== Process Method
+
+[source]
+----
+public void process(JCas aJCas) 
+       throws AnalysisEngineProcessException {
+  mDoc = aJCas.getDocumentText();
+  mPos = 0;
+  // retreive the filename of the input file from the CAS so that it can 
+  // be added to each segment
+  FSIterator it = aJCas.
+          getAnnotationIndex(SourceDocumentInformation.type).iterator();
+  if (it.hasNext()) {
+    SourceDocumentInformation fileLoc = 
+          (SourceDocumentInformation)it.next();
+    mDocUri = fileLoc.getUri();
+  }
+  else {
+    mDocUri = null;
+  }
+ }
+----
+
+The process method receives a new JCas to be processed(segmented) by this CAS Multiplier.
+The SimpleTextSegmenter extracts some information from this JCas and stores it in fields (the document text is stored in the field mDoc and the source URI in the field mDocURI). Recall that the CAS Multiplier is considered to "`own`" the JCas from the time when process is called until the time when hasNext returns false.
+Therefore it is acceptable to retain references to objects from the JCas in a CAS Multiplier, whereas this should never be done in an Annotator.
+The CAS Multiplier could have chosen to store a reference to the JCas itself, but that was not necessary for this example.
+
+The CAS Multiplier also initializes the mPos variable to 0.
+This variable is a position into the document text and will be incremented as each new segment is produced.
+
+[[ugr.tug.cm.example_code.hasnext]]
+==== HasNext Method
+
+[source]
+----
+public boolean hasNext() throws AnalysisEngineProcessException {
+  return mPos < mDoc.length();
+}
+----
+
+The job of the hasNext method is to report whether there are any additional output CASes to produce.
+For this example, the CAS Multiplier will break the entire input document into segments, so we know there will always be a next segment until the very end of the document has been reached.
+
+[[ugr.tug.cm.example_code.next]]
+==== Next Method
+
+[source]
+----
+public AbstractCas next() throws AnalysisEngineProcessException {
+  int breakAt = mPos + mSegmentSize;
+  if (breakAt > mDoc.length())
+    breakAt = mDoc.length();
+          
+  // search for the next newline character. 
+  // Note: this example segmenter implementation
+  // assumes that the document contains many newlines. 
+  // In the worst case, if this segmenter
+  // is run on a document with no newlines, 
+  // it will produce only one segment containing the
+  // entire document text. 
+  // A better implementation might specify a maximum segment size as
+  // well as a minimum.
+          
+  while (breakAt < mDoc.length() && 
+         mDoc.charAt(breakAt - 1) != '\n')
+    breakAt++;
+
+  JCas jcas = getEmptyJCas();
+  try {
+    jcas.setDocumentText(mDoc.substring(mPos, breakAt));
+    // if original CAS had SourceDocumentInformation, 
+          also add SourceDocumentInformatio
+    // to each segment
+    if (mDocUri != null) {
+      SourceDocumentInformation sdi = 
+          new SourceDocumentInformation(jcas);
+      sdi.setUri(mDocUri);
+      sdi.setOffsetInSource(mPos);
+      sdi.setDocumentSize(breakAt - mPos);
+      sdi.addToIndexes();
+
+      if (breakAt == mDoc.length()) {
+        sdi.setLastSegment(true);
+      }
+    }
+
+    mPos = breakAt;
+    return jcas;
+  } catch (Exception e) {
+    jcas.release();
+    throw new AnalysisEngineProcessException(e);
+  }
+}
+----
+
+The `next` method actually produces the next segment and returns it.
+The framework guarantees that it will not call `next` unless `hasNext` has returned true since the last call to `process` or `next` .
+
+Note that in order to produce a segment, the CAS Multiplier must get an empty JCas to populate.
+This is done by the line:
+
+[source]
+----
+JCas jcas = getEmptyJCas();
+----
+
+This requests an empty JCas from the framework, which maintains a pool of JCas instances to draw from.
+
+Also, note the use of the `try...catch` block to ensure that a JCas is released back to the pool if an exception occurs.
+This is very important to allow a CAS Multiplier to recover from errors.
+
+[[ugr.tug.cm.creating_cm_descriptor]]
+== Creating the CAS Multiplier Descriptor
+// <titleabbrev>CAS Multiplier Descriptor</titleabbrev>
+
+There is not a separate type of descriptor for a CAS Multiplier.
+CAS Multiplier are considered a type of Analysis Engine, and so their descriptors use the same syntax as any other Analysis Engine Descriptor.
+
+The descriptor for the `SimpleTextSegmenter` is located in the `examples/descriptors/cas_multiplier/SimpleTextSegmenter.xml` directory of the UIMA SDK.
+
+The Analysis Engine Description, in its "`Operational Properties`" section, now contains a new "`outputsNewCASes`" property which takes a Boolean value.
+If the Analysis Engine is a CAS Multiplier, this property should be set to true.
+
+If you use the CDE, be sure to check the "`Outputs new CASes`" box in the Runtime Information section on the Overview page, as shown here: 
+
+.Screen shot of Component Descriptor Editor on Overview showing checking of "Outputs new CASes" box
+image::images/tutorials_and_users_guides/tug.cas_multiplier/image002.jpg[]
+
+If you edit the Analysis Engine Descriptor by hand, you need to add a `<outputsNewCASes>` element to your descriptor as shown here:
+
+[source]
+----
+<operationalProperties>
+  <modifiesCas>false</modifiesCas>
+  <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+  <outputsNewCASes>true</outputsNewCASes>
+</operationalProperties>
+----
+
+[NOTE]
+====
+The "`modifiedCas`" operational property refers to the input CAS, not the new output CASes produced.
+So our example SimpleTextSegmenter has modifiesCas set to false since it doesn't modify the input CAS. 
+====
+
+[[ugr.tug.cm.using_cm_in_aae]]
+== Using a CAS Multiplier in an Aggregate Analysis Engine
+// <titleabbrev>Using CAS Multipliers in Aggregates</titleabbrev>
+
+You can include a CAS Multiplier as a component in an Aggregate Analysis Engine.
+For example, this allows you to construct an Aggregate Analysis Engine that takes each input CAS, breaks it up into segments, and runs a series of Annotators on each segment.
+
+[[ugr.tug.cm.adding_cm_to_aggregate]]
+=== Adding the CAS Multiplier to the Aggregate
+// <titleabbrev>Aggregate: Adding the CAS Multiplier</titleabbrev>
+
+Since CAS Multiplier are considered a type of Analysis Engine, adding them to an aggregate works the same way as for other Analysis Engines.
+Using the CDE, you just click the "`Add...`" button in the Component Engines view and browse to the Analysis Engine Descriptor of your CAS Multiplier.
+If editing the aggregate descriptor directly, just `import` the Analysis Engine Descriptor of your CAS Multiplier as usual.
+
+An example descriptor for an Aggregate Analysis Engine containing a CAS Multiplier is provided in ``examples/descriptors/cas_multiplier/SegmenterAndTokenizerAE.xml``.
+This Aggregate runs the `SimpleTextSegmenter` example to break a large document into segments, and then runs each segment through the ``SimpleTokenAndSentenceAnnotator``.
+Try running it in the Document Analyzer tool with a large text file as input, to see that it outputs multiple output CASes, one for each segment produced by the ``SimpleTextSegmenter``.
+
+[[ugr.tug.cm.cm_and_fc]]
+=== CAS Multipliers and Flow Control
+
+CAS Multipliers are only supported in the context of Fixed Flow or custom Flow Control.
+If you use the built-in "`Fixed Flow`" for your Aggregate Analysis Engine, you can position the CAS Multiplier anywhere in that flow.
+Processing then works as follows: When a CAS is input to the Aggregate AE, that CAS is routed to the components in the order specified by the Fixed Flow, until that CAS reaches a CAS Multiplier.
+
+Upon reaching a CAS Multiplier, if that CAS Multiplier produces new output CASes, then each output CAS from that CAS Multiplier will continue through the flow, starting at the node immediately after the CAS Multiplier in the Fixed Flow.
+No further processing will be done on the original input CAS after it has reached a CAS Multiplier –it will _not_ continue in the flow.
+
+If the CAS Multiplier does _not_ produce any output CASes for a given input CAS, then that input CAS _will_ continue in the flow.
+This behavior is appropriate, for example, for a CAS Multiplier that may segment an input CAS into pieces but only does so if the input CAS is larger than a certain size.
+
+It is possible to put more than one CAS Multiplier in your flow.
+In this case, when a new CAS output from the first CAS Multiplier reaches the second CAS Multiplier and if the second CAS Multiplier produces output CASes, then no further processing will occur on the input CAS, and any new output CASes produced by the second CAS Multiplier will continue the flow starting at the node after the second CAS Multiplier.
+
+This default behavior can be customized.
+The `FixedFlowController` component that implement's UIMA's default flow defines a configuration parameter `ActionAfterCasMultiplier` that can take the following values:
+
+* `continue`– the CAS continues on to the next element in the flow
+* `stop`– the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.
+* `drop`– the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.
+* `dropIfNewCasProduced` (the default) – if the CAS multiplier produced a new CAS as a result of processing this CAS, then this CAS will be dropped. If not, then this CAS will continue.
+
+You can override this parameter in your Aggregate Analysis Engine the same way you would override a parameter in a delegate Analysis Engine.
+But to do so you must first explicitly identify that you are using the `FixedFlowController` implementation by importing its descriptor into your aggregate as follows:
+
+[source]
+----
+<flowController key="FixedFlowController">
+          <import name="org.apache.uima.flow.FixedFlowController"/>
+        </flowController>
+----
+
+The parameter could then be overriden as, for example:
+
+[source]
+----
+<configurationParameters>
+          <configurationParameter>
+            <name>ActionForIntermediateSegments</name>
+            <type>String</type>
+            <multiValued>false</multiValued>
+            <mandatory>false</mandatory>
+            <overrides>
+              <parameter>
+                FixedFlowController/ActionAfterCasMultiplier
+              </parameter>
+            </overrides>
+          </configurationParameter>   
+        </configurationParameters>
+  
+       <configurationParameterSettings>
+         <nameValuePair>
+           <name>ActionForIntermediateSegments</name>
+           <value>
+             <string>drop</string>
+           </value>
+         </nameValuePair>
+       </configurationParameterSettings>
+----
+
+This overriding can also be done using the Component Descriptor Editor tool.
+An example of an Analysis Engine that overrides this parameter can be found in ``examples/descriptors/cas_multiplier/Segment_Annotate_Merge_AE.xml``.
+For more information about how to specify a flow controller as part of your Aggregate Analysis Engine descriptor, see <<ugr.tug.fc.adding_fc_to_aggregate>>.
+
+If you would like to further customize the flow, you will need to implement a custom FlowController as described in <<ugr.tug.fc>>.
+For example, you could implement a flow where a CAS that is input to a CAS Multiplier will be processed further by _some_ downstream components, but not others.
+
+[[ugr.tug.cm.aggregate_cms]]
+=== Aggregate CAS Multipliers
+
+An important consideration when you put a CAS Multiplier inside an Aggregate Analysis Engine is whether you want the Aggregate to also function as a CAS Multiplier -- that is, whether you want the new output CASes produced within the Aggregate to be output from the Aggregate.
+This is controlled by the `<outputsNewCASes>` element in the Operational Properties of your Aggregate Analysis Engine descriptor.
+The syntax is the same as what was described in <<ugr.tug.cm.creating_cm_descriptor>> .
+
+If you set this property to ``true``, then any new output CASes produced by a CAS Multiplier inside this Aggregate will be output from the Aggregate.
+Thus the Aggregate will function as a CAS Multiplier and can be used in any of the ways in which a primitive CAS Multiplier can be used.
+
+If you set the <outputsNewCASes> property to `false` , then any new output CASes produced by a CAS Multiplier inside the Aggregate will be dropped (i.e.
+the CASes will be released back to the pool) once they have finished being processed.
+Such an Aggregate Analysis Engine functions just like a "`normal`" non-CAS-Multiplier Analysis Engine; the fact that CAS Multiplication is occurring inside it is hidden from users of that Analysis Engine.
+
+[NOTE]
+====
+If you want to output some new Output CASes and not others, you need to implement a custom Flow Controller that makes this decision -- see <<ugr.tug.fc.using_fc_with_cas_multipliers>>.
+====
+
+[[ugr.tug.cm.using_cm_in_cpe]]
+== Using a CAS Multiplier in a Collection Processing Engine
+// <titleabbrev>CAS Multipliers in CPE's</titleabbrev>
+
+It is currently a limitation that CAS Multiplier cannot be deployed directly in a Collection Processing Engine.
+The only way that you can use a CAS Multiplier in a CPE is to first wrap it in an Aggregate Analysis Engine whose ``outputsNewCASes ``property is set to ``false``, which in effect hides the existence of the CAS Multiplier from the CPE.
+
+Note that you can build an Aggregate Analysis Engine that consists of CAS Multipliers and Annotators, followed by CAS Consumers.
+This can simulate what a CPE would do, but without the deployment and error handling options that the CPE provides.
+
+[[ugr.tug.cm.calling_cm_from_app]]
+== Calling a CAS Multiplier from an Application
+// <titleabbrev>Applications: Calling CAS Multipliers</titleabbrev>
+
+
+[[ugr.tug.cm.retrieving_output_cases]]
+=== Retrieving Output CASes from the CAS Multiplier
+// <titleabbrev>Output CASes</titleabbrev>
+
+The `AnalysisEngine` interface has the following methods that allow you to interact with CAS Multiplier: 
+
+* `CasIterator processAndOutputNewCASes(CAS)`
+* `JCasIterator processAndOutputNewCASes(JCas)`
+
+From your application, you call `processAndOutputNewCASes` and pass it the input CAS.
+An iterator is returned that allows you to step through each of the new output CASes that are produced by the Analysis Engine.
+
+It is very important to realize that CASes are pooled objects and so your application must release each CAS (by calling the `CAS.release()` method) that it obtains from the CasIterator _before_ it calls the `CasIterator.next` method again.
+Otherwise, the CAS pool will be exhausted and a deadlock will occur.
+
+The example code in the class `org.apache.uima.examples.casMultiplier.
+        CasMultiplierExampleApplication` illusrates this.
+Here is the main processing loop:
+
+[source]
+----
+CasIterator casIterator = ae.processAndOutputNewCASes(initialCas);
+while (casIterator.hasNext()) {
+  CAS outCas = casIterator.next();
+
+  //dump the document text and annotations for this segment
+  System.out.println("********* NEW SEGMENT *********");
+  System.out.println(outCas.getDocumentText());
+  PrintAnnotations.printAnnotations(outCas, System.out); 
+
+  //release the CAS (important)
+  outCas.release();
+----
+
+Note that as defined by the CAS Multiplier contract in <<ugr.tug.cm.cm_interface_overview>>, the CAS Multiplier owns the input CAS (``initialCas`` in the example) until the last new output CAS has been produced.
+This means that the application should not try to make changes to `initialCas` until after the `CasIterator.hasNext` method has returned false, indicating that the segmenter has finished.
+
+Note that the processing time of the Analysis Engine is spread out over the calls to the `CasIterator's hasNext` and `next` methods.
+That is, the next output CAS may not actually be produced and annotated until the application asks for it.
+So the application should not expect calls to the `CasIterator` to necessarily complete quickly.
+
+Also, calls to the `CasIterator` may throw Exceptions indicating an error has occurred during processing.
+If an Exception is thrown, all processing of the input CAS will stop, and no more output CASes will be produced.
+There is currently no error recovery mechanism that will allow processing to continue after an exception.
+
+[[ugr.tug.cm.using_cm_with_other_aes]]
+=== Using a CAS Multiplier with other Analysis Engines
+// <titleabbrev>CAS Multipliers with other AEs</titleabbrev>
+
+In your application you can take the output CASes from a CAS Multiplier and pass them to the `process` method of other Analysis Engines.
+However there are some special considerations regarding the Type System of these CASes.
+
+By default, the output CASes of a CAS Multiplier will have a Type System that contains all of the types and features declared by any component in the outermost Aggregate Analysis Engine or Collection Processing Engine that contains the CAS Multiplier.
+If in your application you create a CAS Multiplier and another Analysis Engine, where these are not enclosed in an aggregate, then the output CASes from the CAS Multiplier will not support any types or features that are  declared in the latter Analysis Engine but not in the CAS Multiplier. 
+
+This can be remedied by forcing the CAS Multiplier and Analysis Engine to share a single `UimaContext` when they are created, as follows: 
+[source]
+----
+//create a "root" UIMA context for your whole application
+
+UimaContextAdmin rootContext =
+   UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+      UIMAFramework.newDefaultResourceManager(),
+      UIMAFramework.newConfigurationManager());
+
+XMLInputSource input = new XMLInputSource("MyCasMultiplier.xml");
+AnalysisEngineDescription desc = UIMAFramework.getXMLParser().
+        parseAnalysisEngineDescription(input);
+ 
+//create a UIMA Context for the new AE we are about to create
+
+//first argument is unique key among all AEs used in the application
+UimaContextAdmin childContext = rootContext.createChild(
+        "myCasMultiplier", Collections.EMPTY_MAP);
+
+//instantiate CAS Multiplier AE, passing the UIMA Context through the 
+//additional parameters map
+
+Map additionalParams = new HashMap();
+additionalParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
+
+AnalysisEngine casMultiplierAE = UIMAFramework.produceAnalysisEngine(
+        desc,additionalParams);
+
+//repeat for another AE      
+XMLInputSource input2 = new XMLInputSource("MyAE.xml");
+AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().
+        parseAnalysisEngineDescription(input2);
+ 
+UimaContextAdmin childContext2 = rootContext.createChild(
+        "myAE", Collections.EMPTY_MAP);
+
+Map additionalParams2 = new HashMap();
+additionalParams2.put(Resource.PARAM_UIMA_CONTEXT, childContext2);
+
+AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
+        desc2, additionalParams2);
+----
+
+[[ugr.tug.cm.using_cm_to_merge_cases]]
+== Using a CAS Multiplier to Merge CASes
+// <titleabbrev>Merging with CAS Multipliers</titleabbrev>
+
+A CAS Multiplier can also be used to combine smaller CASes together to form larger CASes.
+In this section we describe how this works and walk through an example.
+
+[[ugr.tug.cm.overview_of_how_to_merge_cases]]
+=== Overview of How to Merge CASes
+// <titleabbrev>CAS Merging Overview</titleabbrev>
+
+
+. When the framework first calls the CAS Multiplier's `process` method, the CAS Multiplier requests an empty CAS (which we'll call the "merged CAS") and copies relevant data from the input CAS into the merged CAS. The class `org.apache.uima.util.CasCopier` provides utilities for copying Feature Structures between CASes.
+. When the framework then calls the CAS Multiplier's `hasNext` method, the CAS Multiplier returns `false` to indicate that it has no output at this time.
+. When the framework calls `process` again with a new input CAS, the CAS Multiplier copies data from that input CAS into the merged CAS, combining it with the data that was previously copied.
+. Eventually, when the CAS Multiplier decides that it wants to output the merged CAS, it returns `true` from the `hasNext` method, and then when the framework subsequently calls the `next` method, the CAS Multiplier returns the merged CAS.
+
+
+[NOTE]
+====
+There is no explicit call to flush out any pending CASes from a CAS Multiplier when collection processing completes.
+It is up to the application to provide some mechanism to let a CAS Multiplier recognize the last CAS in a collection so that it can ensure that its final output CASes are complete.
+====
+
+[[ugr.tug.cm.example_cas_merger]]
+=== Example CAS Merger
+
+An example CAS Multiplier that merges CASes can be found is provided in the UIMA SDK.
+The Java class for this example is `org.apache.uima.examples.casMultiplier.SimpleTextMerger` and the source code is located under the `examples/src` directory.
+
+[[ugr.tug.cm.example_cas_merger.process]]
+==== Process Method
+
+Almost all of the code for this example is in the `process` method.
+The first part of the `process` method shows how to copy Feature Structures from the input CAS to the "merged CAS":
+
+[source]
+----
+public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    // procure a new CAS if we don't have one already
+    if (mMergedCas == null) {
+      mMergedCas = getEmptyJCas();
+    }
+
+    // append document text
+    String docText = aJCas.getDocumentText();
+    int prevDocLen = mDocBuf.length();
+    mDocBuf.append(docText);
+
+    // copy specified annotation types
+    // CasCopier takes two args: the CAS to copy from.
+    //                           the CAS to copy into.
+    CasCopier copier = new CasCopier(aJCas.getCas(), mMergedCas.getCas());
+    
+    // needed in case one annotation is in two indexes (could    
+    // happen if specified annotation types overlap)
+    Set copiedIndexedFs = new HashSet(); 
+    for (int i = 0; i < mAnnotationTypesToCopy.length; i++) {
+      Type type = mMergedCas.getTypeSystem()
+          .getType(mAnnotationTypesToCopy[i]);
+      FSIndex index = aJCas.getCas().getAnnotationIndex(type);
+      Iterator iter = index.iterator();
+      while (iter.hasNext()) {
+        FeatureStructure fs = (FeatureStructure) iter.next();
+        if (!copiedIndexedFs.contains(fs)) {
+          Annotation copyOfFs = (Annotation) copier.copyFs(fs);
+          // update begin and end
+          copyOfFs.setBegin(copyOfFs.getBegin() + prevDocLen);
+          copyOfFs.setEnd(copyOfFs.getEnd() + prevDocLen);
+          mMergedCas.addFsToIndexes(copyOfFs);
+          copiedIndexedFs.add(fs);
+        }
+      }
+    }
+----
+
+The `CasCopier` class is used to copy Feature Structures of certain types (specified by a configuration parameter) to the merged CAS.
+The `CasCopier` does deep copies, meaning that if the copied FeatureStructure references another FeatureStructure, the referenced FeatureStructure will also be copied.
+
+This example also merges the document text using a separate ``StringBuffer``.
+Note that we cannot append document text to the Sofa data of the merged CAS because Sofa data cannot be modified once it is set.
+
+The remainder of the `process` method determines whether it is time to output a new CAS.
+For this example, we are attempting to merge all CASes that are segments of one original artifact.
+This is done by checking the `SourceDocumentInformation` Feature Structure in the CAS to see if its `lastSegment` feature is set to ``true``.
+That feature (which is set by the example `SimpleTextSegmenter` discussed previously) marks the CAS as being the last segment of an artifact, so when the CAS Multiplier sees this segment it knows it is time to produce an output CAS.
+
+[source]
+----
+// get the SourceDocumentInformation FS, 
+// which indicates the sourceURI of the document
+// and whether the incoming CAS is the last segment
+FSIterator it = aJCas
+        .getAnnotationIndex(SourceDocumentInformation.type).iterator();
+if (!it.hasNext()) {
+  throw new RuntimeException("Missing SourceDocumentInformation");
+}
+SourceDocumentInformation sourceDocInfo = 
+      (SourceDocumentInformation) it.next();
+if (sourceDocInfo.getLastSegment()) {
+  // time to produce an output CAS
+  // set the document text
+  mMergedCas.setDocumentText(mDocBuf.toString());
+
+  // add source document info to destination CAS
+  SourceDocumentInformation destSDI = 
+      new SourceDocumentInformation(mMergedCas);
+  destSDI.setUri(sourceDocInfo.getUri());
+  destSDI.setOffsetInSource(0);
+  destSDI.setLastSegment(true);
+  destSDI.addToIndexes();
+
+  mDocBuf = new StringBuffer();
+  mReadyToOutput = true;
+}
+----
+
+When it is time to produce an output CAS, the CAS Multiplier makes final updates to the merged CAS (setting the document text and adding a `SourceDocumentInformation` FeatureStructure), and then sets the `mReadyToOutput` field to true.
+This field is then used in the `hasNext` and `next` methods.
+
+[[ugr.tug.cm.example_cas_merger.hasnext_and_next]]
+==== HasNext and Next Methods
+
+These methods are relatively simple:
+
+[source]
+----
+public boolean hasNext() throws AnalysisEngineProcessException {
+    return mReadyToOutput;
+  }
+
+  public AbstractCas next() throws AnalysisEngineProcessException {
+    if (!mReadyToOutput) {
+      throw new RuntimeException("No next CAS");
+    }
+    JCas casToReturn = mMergedCas;
+    mMergedCas = null;
+    mReadyToOutput = false;
+    return casToReturn;
+  }
+----
+
+When the merged CAS is ready to be output, `hasNext` will return true, and `next` will return the merged CAS, taking care to set the `mMergedCas` field to `null` so that the next call to `process` will start with a fresh CAS.
+
+[[ugr.tug.cm.using_the_simple_text_merger_in_an_aggregate_ae]]
+=== Using the SimpleTextMerger in an Aggregate Analysis Engine
+// <titleabbrev>SimpleTextMerger in an Aggregate</titleabbrev>
+
+An example descriptor for an Aggregate Analysis Engine that uses the `SimpleTextMerger` is provided in ``examples/descriptors/cas_multiplier/Segment_Annotate_Merge_AE.xml``.
+This Aggregate first runs the `SimpleTextSegmenter` example to break a large document into segments.
+It then runs each segment through the example tokenizer and name recognizer annotators.
+Finally it runs the `SimpleTextMerger` to reassemble the segments back into one CAS.
+The `Name` annotations are copied to the final merged CAS but the `Token` annotations are not.
+
+This example illustrates how you can break large artifacts into pieces for more efficient processing and then reassemble a single output CAS containing only the results most useful to the application.
+Intermediate results such as tokens, which may consume a lot of space, need not be retained over the entire input artifact.
+
+The intermediate segments are dropped and are never output from the Aggregate Analysis Engine.
+This is done by configuring the Fixed Flow Controller as described in <<ugr.tug.cm.cm_and_fc>>, above.
+
+Try running this Analysis Engine in the Document Analyzer tool with a large text file as input, to see that  it outputs just one CAS per input file, and that the final CAS contains only the `Name` annotations. 

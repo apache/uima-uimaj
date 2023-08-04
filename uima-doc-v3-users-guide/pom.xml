@@ -76,7 +76,6 @@
             <docinfo1>true</docinfo1>
             <project-version>${project.version}</project-version>
             <revnumber>${project.version}</revnumber>
-            <product-name>Apache UIMA Version 3 User's Guide</product-name>
             <product-website-url>https://uima.apache.org</product-website-url>
             <icons>font</icons>
           </attributes>

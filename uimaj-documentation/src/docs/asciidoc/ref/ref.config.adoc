@@ -1,0 +1,179 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[ugr.ref.config]]
+= UIMA Setup and Configuration
+// <titleabbrev>Setup and Configuration</titleabbrev>
+
+
+[[ugr.ref.config.properties]]
+== UIMA JVM Configuration Properties
+
+Some updates change UIMA's behavior between released versions.
+For example, sometimes an error check is enhanced, and this can cause something that previously incorrect but not checked, to now signal an error.
+Often, users will want these kinds of things to be ignored, at least for a while, to give them time to  analyze and correct the issues. 
+
+To enable users to gradually address these issues, there are some global JVM properties for UIMA that can restore earlier behaviors, in some cases.
+These are detailed in the table below.
+Additionally, there are other JVM properties that can be used in checking and optimizing some performance trade-offs, such as the automatic index protection.
+For the most part, you don't need to assign any values to these properties, just define them.
+For example to disable the enhanced check that insures you  don't add a subtype of AnnotationBase to the wrong View, you could disable this by adding the JVM argument ``-Duima.disable_enhanced_check_wrong_add_to_index``.
+This would remove the enhanced checking for this, added in version 2.7.0 (the previously existing partial checking is still there, though). 
+
+[[ugr.ref.config.protect_index]]
+== Configuring index protection
+
+A new feature in version 2.7.0 optionally can include checking for invalid feature updates  which could corrupt indexes.
+Because this checking can slightly slow down performance, there are  global JVM properties to control it.
+The suggested way to operation with these is as follows. 
+
+* At the beginning, run with automatic protection enabled (the default), but turn on explicit reporting (``-Duima.report_fs_update_corrupts_index``)
+* For all reported instances, examine your code to see if you can restructure to do the updates before adding the FS to the indexes. Where you cannot, surround the code doing  these updates with a try / finally or block form of ``protectIndexes()``,  which is described in <<ugr.ref.cas.updating_indexed_feature_structures>> (and also is similarly available with JCas). 
+* After no further reports, for maximum performance, leave in the protections  you may have installed in the above step, and then disable the reporting and runtime checking,  using the JVM argument ``-Duima.disable_auto_protect_indexes``, and removing (if present) ``-Duima.report_fs_update_corrupts_index``.
+
+One additional JVM property, ``-Duima.throw_exception_when_fs_update_corrupts_index``,  is intended to be used in automated build / testing configurations.
+It causes the framework to throw a UIMARuntimeException if an update outside of a `protectIndexes` block occurs  that could corrupt the indexes, rather than "recovering" this. 
+
+[[ugr.ref.config.property_table]]
+== Properties Table
+
+This table describes the various JVM defined properties; specify these on the Java command line using -Dxxxxxx, where the xxxxxx is one of the properties starting with `uima.` from the table below.
+
+[cols="1,1,1", frame="all"]
+|===
+
+|**Title**
+|**Property Name & Description**
+|**Since Version**
+
+|
+
+Use built-in Java Logger as default back-end
+|
+
+`uima.use_jul_as_default_uima_logger`
+
+See https://issues.apache.org/jira/browse/UIMA-5381[UIMA-5381].
+The standard UIMA logger uses an slf4j implementation, which, in turn hooks up to  a back end implementation based on what can be found in the class path (see slf4j documentation). If no backend implementation is found, the slf4j default is to use a NOP logger back end  which discards all logging.
+
+When this flag is specified, the behavior of the UIMA logger  is altered to use the built-in-to-Java logging implementation  as the back end for the UIMA logger. 
+|
+
+3.0.0
+
+|
+
+XML: enable doctype declarations
+|
+
+`uima.xml.enable.doctype_decl` (default is false)
+
+See https://issues.apache.org/jira/browse/UIMA-6064[UIMA-6064] Normally, this is turned off to avoid exposure to malicious XML; see https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing[
+             XML External Entity processing vulnerability]. 
+|
+
+2.10.4, 3.1.0
+
+|**Index protection properties**
+
+|
+
+Report Illegal Index-key Feature Updates
+|
+
+`uima.report_fs_update_corrupts_index` (default is not to report)
+
+See https://issues.apache.org/jira/browse/UIMA-4135[UIMA-4135].
+Updating Features which are used in Set and Sorted indexes as "keys" may corrupt the indexes, if the Feature Structure (FS) has been added to the indexes.
+To update these, you must first completely remove the FS from the indexes in all views, then do the updates, and then add it back.
+UIMA now checks for this (unless specifically disabled, see below), and if this property is set, will log WARN messages for each occurrence unless the user does explicit `protectIndexes` (see CAS JavaDocs for CAS / JCas `protectIndexes` methods), if this property is defined.
+
+To scan the logs for these reports, search for instances of lines having the string `While FS was in the index, the feature`
+
+Specifying this property overrides ``uima.disable_auto_protect_indexes``.
+
+Users would run with this property defined, and then for high performance,  would use the report to manually change their code to avoid the problem or  to wrap the updates with a `protectIndexes` kind of protection (see the reference manual, in the CAS or JCas chapters, for examples of user code doing this,  and then run with the protection turned off (see below). 
+|
+
+2.7.0
+
+|
+
+Throw exception on illegal Index-key Feature Updates
+|
+
+`uima.exception_when_fs_update_corrupts_index` (default is false)
+
+See https://issues.apache.org/jira/browse/UIMA-4150[UIMA-4150].
+Throws a UIMARuntimeException if an Indexed FS feature used as a key in one or more  indexes is updated, outside of an explicit `protectIndexes` block..  \ This is intended for use in automated build and test environments, to provide a strong signal if this kind of mistake gets into the build.
+If it is not set, then the other properties specify if corruption should be checked for,  recovered automatically, and / or reported
+
+Specifying this property also forces `uima.report_fs_update_corrupts_index` to true even if it was set to false.
+|
+
+2.7.0
+
+|
+
+Disable the index corruption checking
+|
+
+`uima.disable_auto_protect_indexes`
+
+See https://issues.apache.org/jira/browse/UIMA-4135[UIMA-4135].
+After you have fixed all reported issues identified with the above report, you may set this property to omit this check, which may slightly improve performance.
+
+Note that this property is ignored if the `-Dexception_when_fs_update_corrupts_index` or `-Dreport_fs_update_corrupts_index`
+|
+
+2.7.0
+
+|**Measurement / Tracing properties**
+
+|
+
+Trace Feature Structure Creation/Updating
+|
+
+`uima.trace_fs_creation_and_updating`
+
+This causes a trace file to be produced in the current working directory.
+The file has one line for each Feature Structure that is created, and include information on the cas/cas-view, and the features that are set for the Feature Structure.
+There is, additionally, one line for each Feature Structure update.
+Updates that occur next-to trace information for the same Feature Structure are combined. 
+
+This can generate a lot of output, and definitely slows down execution.
+|
+
+2.10.1
+
+|
+
+Measure index flattening optimization
+|
+
+`uima.measure.flatten_index`
+
+See https://issues.apache.org/jira/browse/UIMA-4357[UIMA-4357].
+This creates a short report to System.out when Java is shutdown.
+The report has some statistics about the automatic management of  flattened index creation and use.
+|
+
+2.8.0
+|===
+
+Some additional global flags intended for helping v3 migration are documented in the V3 user's guide.

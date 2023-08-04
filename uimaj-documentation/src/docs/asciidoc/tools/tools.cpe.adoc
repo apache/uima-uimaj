@@ -1,0 +1,136 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[ugr.tools.cpe]]
+= Collection Processing Engine Configurator User's Guide
+// <titleabbrev>CPE Configurator User's Guide</titleabbrev>
+
+A _Collection Processing Engine (CPE)_ processes collections of artifacts (documents) through the combination of the following components: a Collection Reader, Analysis Engines, and CAS Consumers. footnote:[Earlier versions of UIMA supported another component, the CAS
+    Initializer, but this component is now deprecated in UIMA Version 2.]
+
+The _Collection Processing Engine Configurator(CPE
+    Configurator)_ is a graphical tool that allows you to assemble and run CPEs.
+
+For an introduction to Collection Processing Engine concepts, including developing the components that make up a CPE, read xref:tug.adoc#ugr.tools.cpe[Collection Processing Engine Developer's Guide].
+This chapter is a user's guide for using the CPE Configurator tool, and does not describe UIMA's Collection Processing Architecture itself.
+
+[[ugr.tools.cpe.limitations]]
+== Limitations of the CPE Configurator
+
+The CPE Configurator only supports basic CPE configurations.
+
+It only supports "`Integrated`" deployments (although it will connect to remotes if particular CAS Processors are specified with remote service descriptors). It doesn't support configuration of the error handling.
+It doesn't support Sofa Mappings; it assumes all Single-View components are operating with the _InitialView Sofa.
+Multi-View components will not have their names mapped.
+It sets up a fixed-sized CAS Pool.
+
+To set these additional options, you must edit the xref:ref.adoc#ugr.ref.xml.cpe_descriptor[CPE Descriptor XML] file directly.
+You may then open the CPE Descriptor in the CPE Configurator and run it.
+The changes you applied to the CPE Descriptor __will__ be respected, although you will not be able to see them or edit them from the GUI. 
+
+[[ugr.tools.cpe.starting]]
+== Starting the CPE Configurator
+
+The CPE Configurator tool can be run using the `cpeGui` shell script, which is located in the `bin` directory of the UIMA SDK.
+If you've installed the example xref:oas.adoc#ugr.ovv.eclipse_setup.example_code[Eclipse project], you can also run it using the __UIMA CPE GUI__ run configuration provided in that project.
+
+[NOTE]
+====
+If you are planning to build a CPE using components other than the examples included in the UIMA SDK, you will first need to update your CLASSPATH environment variable to include the classes needed by these components.
+====
+
+When you first start the CPE Configurator, you will see the main window shown here: 
+
+
+image::images/tools/tools.cpe/image002.jpg[CPE Configurator main GUI window]
+
+
+[[ugr.tools.cpe.selecting_component_descriptors]]
+== Selecting Component Descriptors
+
+The CPE Configurator's main window is divided into three sections, one each for the Collection Reader, Analysis Engines, and CAS Consumers.footnote:[There is also a fourth pane, for the CAS Initializer, but it is hidden by default. To enable it click the
+        View  CAS Initializer Panel menu item.]
+
+In each section of the CPE Configurator, you can select the component(s) you want to use by browsing to (or typing the location of) their XML descriptors.
+You must select a Collection Reader, and at least one Analysis Engine or CAS Consumer.
+
+When you select a descriptor, the configuration parameters that are defined in that descriptor will then be displayed in the GUI; these can be modified to override the values present in the descriptor.
+
+For example, the screen shot below shows the CPE Configurator after the following components have been chosen: 
+[source]
+----
+examples/descriptors/collectionReader/FileSystemCollectionReader.xml
+examples/descriptors/analysis_engine/NamesAndPersonTitles_TAE.xml
+examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml
+----
+
+
+image::images/tools/tools.cpe/image004.jpg[CPE Configurator after components chosen]
+
+
+[[ugr.tools.cpe.running]]
+== Running a Collection Processing Engine
+
+After selecting each of the components and providing configuration settings, click the play (forward arrow) button at the bottom of the screen to begin processing.
+A progress bar should be displayed in the lower left corner.
+(Note that the progress bar will not begin to move until all components have completed their initialization, which may take several seconds.) Once processing has begun, the pause and stop buttons become enabled.
+
+If an error occurs, you will be informed by an error dialog.
+If processing completes successfully, you will be presented with a performance report.
+
+[[ugr.tools.cpe.file_menu]]
+== The File Menu
+
+The CPE Configurator's File Menu has the following options:
+
+* Open CPE Descriptor
+* Save CPE Descriptor
+* Save Options (submenu)
+* Refresh Descriptors from File System
+* Clear All
+* Exit 
+
+*Open CPE Descriptor* will allow you to select a CPE Descriptor file from disk, and will read in that CPE Descriptor and configure the GUI appropriately.
+
+*Save CPE Descriptor* will create a CPE Descriptor file that defines the CPE you have constructed.
+This CPE Descriptor will identify the components that constitute the CPE, as well as the configuration settings you have specified for each of these components.
+Later, you can use "`Open CPE Descriptor`" to restore the CPE Configurator to the state.
+Also, CPE Descriptors can be used to easily xref:tug.adoc#ugr.tug.application.running_a_cpe_from_a_descriptor[run a CPE from a Java program].
+
+CPE Descriptors also allow specifying operational parameters, such as error handling options that are not currently available for configuration through the CPE Configurator.
+For more information on manually creating a CPE Descriptor, see xref:ref.adoc#ugr.ref.xml.cpe_descriptor[Collection Processing Engine Descriptor Reference].
+
+The *Save Options* submenu has one item, __Use `<import>`__. 
+If this item is checked (the default), saved CPE descriptors will use the `<import>` syntax to refer to their component descriptors.
+If unchecked, the older `<include>` syntax will be used for new components that you add to your CPE using the GUI.
+(However, if you open a CPE descriptor that used `<import>`, these imports will not be replaced.)
+
+*Refresh Descriptors from File System* will reload all descriptors from disk.
+This is useful if you have made a change to the descriptor outside of the CPE Configurator, and want to refresh the display.
+
+*Clear All* will reset the CPE Configurator to its initial state, with no components selected.
+
+*Exit* will close the CPE Configurator.
+If you have unsaved changes, you will be prompted as to whether you would like to save them to a CPE Descriptor file.
+If you do not save them, they will be lost.
+
+When you restart the CPE Configurator, it will automatically reload the last CPE descriptor file that you were working with.
+
+[[ugr.tools.cpe.help_menu]]
+== The Help Menu
+
+The CPE Configurator's Help menu provides __About__ information and some very simple instructions on how to use the tool.
