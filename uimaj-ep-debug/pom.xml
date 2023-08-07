@@ -40,17 +40,6 @@ UIMA data structures to the Eclipse Debug displays</description>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-compilertools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
