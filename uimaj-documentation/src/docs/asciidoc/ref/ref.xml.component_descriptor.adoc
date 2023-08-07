@@ -1,0 +1,1772 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[ugr.ref.xml.component_descriptor]]
+= Component Descriptor Reference
+
+This chapter is the reference guide for the UIMA SDK's Component Descriptor XML schema.
+A _Component Descriptor_ (also sometimes called a _Resource Specifier_ in the code) is an XML file that either (a) completely describes a component, including all information needed to construct the component and interact with it, or (b) specifies how to connect to and interact with an existing component that has been published as a remote service. _Component_ (also called __Resource__) is a general term for modules produced by UIMA developers and used by UIMA applications.
+The types of Components are: Analysis Engines, Collection Readers, CAS Initializers
+footnote:[This component is deprecated and should not be use in new development.], CAS Consumers, and Collection Processing Engines.
+However, Collection Processing Engine Descriptors are significantly different in format and are covered in a xref:ref.adoc#ugr.ref.xml.cpe_descriptor[separate chapter].
+
+<<ugr.ref.xml.component_descriptor.notation>> describes the notation used in this chapter.
+
+<<ugr.ref.xml.component_descriptor.imports>> describes the UIMA SDK's _import_ syntax, used to allow XML descriptors to import information from other XML files, to allow sharing of information between several XML descriptors.
+
+<<ugr.ref.xml.component_descriptor.aes>> describes the XML format for __Analysis Engine Descriptors__.
+These are descriptors that completely describe Analysis Engines, including all information needed to construct and interact with them.
+
+<<ugr.ref.xml.component_descriptor.collection_processing_parts>> describes the XML format for __Collection Processing Component Descriptors__.
+This includes Collection Iterator, CAS Initializer, and CAS Consumer Descriptors.
+
+<<ugr.ref.xml.component_descriptor.service_client>> describes the XML format for __Service Client Descriptors__, which specify how to connect to and interact with resources deployed as remote services.
+
+<<ugr.ref.xml.component_descriptor.custom_resource_specifiers>> describes the XML format for __Custom Resource Specifiers__, which allow you to plug in your own Java class as a UIMA Resource.
+
+[[ugr.ref.xml.component_descriptor.notation]]
+== Notation
+
+This chapter uses an informal notation to specify the syntax of Component Descriptors.
+The formal syntax is defined by an XML schema definition, which is contained in the file ``resourceSpecifierSchema.xsd``,   located in the `uima-core.jar` file.
+
+The notation used in this chapter is:
+
+* An ellipsis (...) inside an element body indicates that the substructure of that element has been omitted (to be described in another section of this chapter). An example of this would be: 
++
+[source]
+----
+<analysisEngineMetaData>
+...
+</analysisEngineMetaData>
+----
++
+An ellipsis immediately after an element indicates that the element type may be may be repeated arbitrarily many times.
+For example: 
++
+[source]
+----
+<parameter>[String]</parameter>
+<parameter>[String]</parameter>
+...
+----
++
+indicates that there may be arbitrarily many parameter elements in this context.
+* Bracketed expressions (e.g. ``[String]``) indicate the type of value that may be used at that location.
+* A vertical bar, as in ``true|false``, indicates alternatives. This can be applied to literal values, bracketed type names, and elements.
+* Which elements are optional and which are required is specified in prose, not in the syntax definition. 
+
+
+[[ugr.ref.xml.component_descriptor.imports]]
+== Imports
+
+The UIMA SDK defines a particular syntax for XML descriptors to import information from other XML files.
+When one of the following appears in an XML descriptor: 
+[source]
+----
+<import location="[URL]" /> or
+<import name="[Name]" />
+----
+it indicates that information from a separate XML file is being imported.
+Note that imports are allowed only in certain places in the descriptor.
+In the remainder of this chapter, it will be indicated at which points imports are allowed.
+
+If an import specifies a `location` attribute, the value of that attribute specifies the URL at which the XML file to import will be found.
+This can be a relative URL, which will be resolved relative to the descriptor containing the `import` element, or an absolute URL.
+Relative URLs can be written without a protocol/scheme (e.g., "`file:`"), and without a host machine name.
+In this case the relative URL might look something like `org/apache/myproj/MyTypeSystem.xml.`
+
+An absolute URL is written with one of the following prefixes, followed by a path such as ``org/apache/myproj/MyTypeSystem.xml``: 
+
+* `file:/` ← has no network address
+* `\file:///` ← has an empty network address
+* `\file://some.network.address/`
+
+For more information about URLs, please read the javadoc information for the Java class "`URL`".
+
+If an import specifies a `name` attribute, the value of that attribute should take the form of a Java-style dotted name (e.g. ``org.apache.myproj.MyTypeSystem``). An .xml file with this name will be searched for in the classpath or datapath (described below). As in Java, the dots in the name will be converted to file path separators.
+So an import specifying the example name in this paragraph will result in a search for `org/apache/myproj/MyTypeSystem.xml` in the classpath or datapath.
+
+The datapath works similarly to the classpath but can be set programmatically through the resource manager API.
+Application developers can specify a datapath during initialization, using the following code: 
+
+[source]
+----
+ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+resMgr.setDataPath(yourPathString);
+AnalysisEngine ae = 
+  UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
+----
+
+The default datapath for the entire JVM can be set via the `uima.datapath` Java system property, but this feature should only be used for standalone applications that don't need to run in the same JVM as other code that may need a different datapath.
+
+The value of a name or location attribute may be parameterized with references to external override variables using the `${variable-name}` syntax. 
+
+[source]
+----
+<import location="Annotator${with}ExternalOverrides.xml" />
+----
+
+If a variable is undefined the value is left unmodified and a warning message identifies the missing variable.
+
+Previous versions of UIMA also supported XInclude.
+That support didn't work in many situations, and it is no longer supported.
+To include other files, please use <import>.
+
+[[ugr.ref.xml.component_descriptor.type_system]]
+== Type System Descriptors
+
+A Type System Descriptor is used to define the types and features that can be represented in the CAS.
+A Type System Descriptor can be imported into an Analysis Engine or Collection Processing Component Descriptor.
+
+The basic structure of a Type System Descriptor is as follows: 
+[source]
+----
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports> 
+
+  <types>
+    <typeDescription>
+      ...
+    </typeDescription>
+
+    ...
+
+  </types>
+
+</typeSystemDescription>
+----
+
+All of the subelements are optional.
+
+[[ugr.ref.xml.component_descriptor.type_system.imports]]
+=== Imports
+
+The `imports` section allows this descriptor to import types from other type system descriptors.
+The import syntax is described in <<ugr.ref.xml.component_descriptor.imports>>.
+A type system may import any number of other type systems and then define additional types which refer to imported types.
+Circular imports are allowed.
+
+[[ugr.ref.xml.component_descriptor.type_system.types]]
+=== Types
+
+The `types` element contains zero or more `typeDescription` elements.
+Each `typeDescription` has the form: 
+[source]
+----
+<typeDescription>
+  <name>[TypeName]</name>
+  <description>[String]</description>
+  <supertypeName>[TypeName]</supertypeName>
+  <features>
+    ...
+  </features>
+</typeDescription>
+----
+
+The name element contains the name of the type.
+A `[TypeName]` is a dot-separated list of names, where each name consists of a letter followed by any number of letters, digits, or underscores. `TypeNames` are case sensitive.
+Letter and digit are as defined by Java; therefore, any Unicode letter or digit may be used (subject to the character encoding defined by the descriptor file's XML header). The name following the final dot is considered to be the "`short name`" of the type; the preceding portion is the namespace (analogous to the package.class syntax used in Java). Namespaces beginning with uima are reserved and should not be used.
+Examples of valid type names are:
+
+* test.TokenAnnotation
+* org.myorg.TokenAnnotation
+* com.my_company.proj123.TokenAnnotation 
+
+These would all be considered distinct types since they have different namespaces.
+Best practice here is to follow the normal Java naming conventions of having namespaces be all lowercase, with the short type names having an initial capital, but this is not mandated, so `ABC.mYtyPE` is an allowed type name.
+While type names without namespaces (e.g. `TokenAnnotation` alone) are allowed, but discouraged because naming conflicts can then result when combining annotators that use different type systems.
+
+The `description` element contains a textual description of the type.
+The `supertypeName` element contains the name of the type from which it inherits (this can be set to the name of another user-defined type, or it may be set to any built-in type which may be subclassed, such as `uima.tcas.Annotation` for a new annotation type or `uima.cas.TOP` for a new type that is not an annotation). All three of these elements are required.
+
+[[ugr.ref.xml.component_descriptor.type_system.features]]
+=== Features
+
+The `features` element of a `typeDescription` is required only if the type we are specifying introduces new features.
+If the `features` element is present, it contains zero or more `featureDescription` elements, each of which has the form:
+
+[source]
+----
+<featureDescription>
+  <name>[Name]</name>
+  <description>[String]</description>
+  <rangeTypeName>[Name]</rangeTypeName>
+  <elementType>[Name]</elementType>
+  <multipleReferencesAllowed>true|false</multipleReferencesAllowed>
+</featureDescription>
+----
+
+A feature's name follows the same rules as a type short name –a letter followed by any number of letters, digits, or underscores.
+Feature names are case sensitive.
+
+The feature's `rangeTypeName` specifies the type of value that the feature can take.
+This may be the name of any type defined in your type system, or one of the predefined types.
+All of the predefined types have names that are prefixed with `uima.cas` or ``uima.tcas``, for example: 
+
+[source]
+----
+uima.cas.TOP 
+uima.cas.String
+uima.cas.Long 
+uima.cas.FSArray
+uima.cas.StringList
+uima.tcas.Annotation.
+----
+For a complete list of predefined types, see the CAS API documentation.
+
+The `elementType` of a feature is optional, and applies only when the `rangeTypeName` is `uima.cas.FSArray` or `uima.cas.FSList` The `elementType` specifies what type of value can be assigned as an element of the array or list.
+This must be the name of a non-primitive type.
+If omitted, it defaults to ``uima.cas.TOP``, meaning that any FeatureStructure can be assigned as an element the array or list.
+Note: depending on the CAS Interface that you use in your code, this constraint may or may not be enforced.
+Note: At run time, the elementType is available from a runtime Feature object  (using the `a_feature_object.getRange().getComponentType()` method)  only when specified for the `uima.cas.FSArray` ranges; it isn't available for `uima.cas.FSList` ranges. 
+
+The `multipleReferencesAllowed` feature is optional, and applies only when the `rangeTypeName` is an array or list type (it applies to arrays and lists of primitive as well as non-primitive types). Setting this to false (the default) indicates that this feature has exclusive ownership of the array or list, so changes to the array or list are localized.
+Setting this to true indicates that the array or list may be shared, so changes to it may affect other objects in the CAS.
+Note: there is currently no guarantee that the framework will enforce this restriction.
+However, this setting may affect how the CAS is serialized.
+
+[[ugr.ref.xml.component_descriptor.type_system.string_subtypes]]
+=== String Subtypes
+
+There is one other special type that you can declare -- a subset of the String type that specifies a restricted set of allowed values.
+This is useful for features that can have only certain String values, such as parts of speech.
+Here is an example of how to declare such a type:
+
+[source]
+----
+<typeDescription>
+  <name>PartOfSpeech</name>
+  <description>A part of speech.</description>
+  <supertypeName>uima.cas.String</supertypeName>
+  <allowedValues>
+    <value>
+      <string>NN</string>
+      <description>Noun, singular or mass.</description>
+    </value>
+    <value>
+      <string>NNS</string>
+      <description>Noun, plural.</description>
+    </value>
+    <value>
+      <string>VB</string>
+      <description>Verb, base form.</description>
+    </value>
+    ...
+  </allowedValues>
+</typeDescription>
+----
+
+[[ugr.ref.xml.component_descriptor.aes]]
+== Analysis Engine Descriptors
+
+Analysis Engine (AE) descriptors completely describe Analysis Engines.
+There are two basic types of Analysis Engines -- __Primitive__ and __Aggregate__.
+A _Primitive_ Analysis Engine is a container for a single __annotator__, where as an _Aggregate_ Analysis Engine is composed of a collection of other Analysis Engines.
+(For more information on this and other terminology, see the xref:oas.adoc#ugr.ovv.conceptual[Conceptual Overview].
+
+Both Primitive and Aggregate Analysis Engines have descriptors, and the two types of descriptors have some similarities and some differences. <<ugr.ref.xml.component_descriptor.aes.primitive>> discusses Primitive Analysis Engine descriptors. <<ugr.ref.xml.component_descriptor.aes.aggregate>> then  describes how Aggregate Analysis Engine descriptors are different.
+
+[[ugr.ref.xml.component_descriptor.aes.primitive]]
+=== Primitive Analysis Engine Descriptors
+
+[[ugr.ref.xml.component_descriptor.aes.primitive.basic]]
+==== Basic Structure
+
+[source]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<analysisEngineDescription 
+        xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+
+  <primitive>true</primitive>
+  <annotatorImplementationName> [String] </annotatorImplementationName>
+
+  <analysisEngineMetaData>
+    ...
+  </analysisEngineMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+
+</analysisEngineDescription>
+----
+
+The document begins with a standard XML header.
+The recommended root tag is ``<analysisEngineDescription>``, although `<taeDescription>` is also allowed for backwards compatibility.
+
+Within the root element we declare that we are using the XML namespace `http://uima.apache.org/resourceSpecifier.` It is required that this namespace be used; otherwise, the descriptor will not be able to be validated for errors.
+
+The first subelement, `<frameworkImplementation>,` currently must have the value ``org.apache.uima.java``, or ``org.apache.uima.cpp``.
+In future versions, there may be other framework implementations, or perhaps implementations produced by other vendors.
+
+The second subelement, `<primitive>,` contains the Boolean value ``true``, indicating that this XML document describes a _Primitive_ Analysis Engine.
+
+The next subelement,``
+          <annotatorImplementationName>`` is how the UIMA framework determines which annotator class to use.
+This should contain a fully-qualified Java class name for Java implementations, or the name of a .dll or .so file for C++ implementations.
+
+The `<analysisEngineMetaData>` object contains descriptive information about the analysis engine and what it does.
+It is described in <<ugr.ref.xml.component_descriptor.aes.metadata>>.
+
+The `<externalResourceDependencies>` and `<resourceManagerConfiguration>` elements declare the external resource files that the analysis engine relies upon.
+They are optional and are described in <<ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies>> and <<ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration>>.
+
+[[ugr.ref.xml.component_descriptor.aes.metadata]]
+==== Analysis Engine MetaData
+
+[source]
+----
+<analysisEngineMetaData>
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor>
+
+  <configurationParameters> ...  </configurationParameters>
+
+  <configurationParameterSettings>
+    ...
+  </configurationParameterSettings> 
+
+  <typeSystemDescription> ... </typeSystemDescription> 
+
+  <typePriorities> ... </typePriorities> 
+
+  <fsIndexCollection> ... </fsIndexCollection>
+
+  <capabilities> ... </capabilities>
+
+  <operationalProperties> ... </operationalProperties>
+
+</analysisEngineMetaData>
+----
+
+The `analysisEngineMetaData` element contains four simple string fields –``name``, ``description``, ``version``, and ``vendor``.
+Only the `name` field is required, but providing values for the other fields is recommended.
+The `name` field is just a descriptive name meant to be read by users; it does not need to be unique across all Analysis Engines.
+
+Configuration parameters are described in <<ugr.ref.xml.component_descriptor.aes.configuration_parameters>>.
+
+The other sub-elements –``typeSystemDescription``, ``typePriorities``, ``fsIndexes``, `capabilities` and `operationalProperties` are described in the following sections.
+The only one of these that is required is ``capabilities``; the others are optional.
+
+[[ugr.ref.xml.component_descriptor.aes.type_system]]
+==== Type System Definition
+
+[source]
+----
+<typeSystemDescription>
+
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports> 
+
+  <types>
+    <typeDescription>
+      ...
+    </typeDescription>
+
+    ...
+
+  </types>
+
+</typeSystemDescription>
+----
+
+A `typeSystemDescription` element defines a type system for an Analysis Engine.
+The syntax for the element is described in <<ugr.ref.xml.component_descriptor.type_system>>.
+
+The recommended usage is to `import` an external type system, using the import syntax described in <<ugr.ref.xml.component_descriptor.imports>> of this chapter.
+For example: 
+[source]
+----
+<typeSystemDescription>
+  <imports>
+    <import location="MySharedTypeSystem.xml">
+  </imports>
+</typeSystemDescription>
+----
+
+This allows several AEs to share a single type system definition.
+The file `MySharedTypeSystem.xml` would then contain the full type system information, including the ``name``, ``description``, ``vendor``, ``version``, and ``types``.
+
+[[ugr.ref.xml.component_descriptor.aes.type_priority]]
+==== Type Priority Definition
+
+[source]
+----
+<typePriorities>
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor>
+
+  <imports>
+    <import ...>
+    ...
+  </imports> 
+
+  <priorityLists>
+    <priorityList>
+      <type>[TypeName]</type>
+      <type>[TypeName]</type>
+        ...
+    </priorityList>
+
+    ...
+
+  </priorityLists>
+</typePriorities>
+----
+
+The `<typePriorities>` element contains zero or more `<priorityList>` elements; each `<priorityList>` contains zero or more types.
+Like a type system, a type priorities definition may also declare a name, description, version, and vendor, and may import other type priorities.
+See <<ugr.ref.xml.component_descriptor.imports>> for the import syntax.
+
+Type priority is used when iterating over feature structures in the CAS.
+For example, if the CAS contains a `Sentence` annotation and a `Paragraph` annotation with the same span of text (i.e.
+a one-sentence paragraph), which annotation should be returned first by an iterator? Probably the Paragraph, since it is conceptually "`bigger,`" but the framework does not know that and must be explicitly told that the Paragraph annotation has priority over the Sentence annotation, like this: 
+[source]
+----
+<typePriorities>
+  <priorityList>
+    <type>org.myorg.Paragraph</type>
+    <type>org.myorg.Sentence</type>
+  </priorityList>
+</typePriorities>
+----
+
+All of the `<priorityList>` elements defined in the descriptor (and in all component descriptors of an aggregate analysis engine descriptor) are merged to produce a single priority list.
+
+Subtypes of types specified here are also ordered, unless overridden by another user-specified type ordering.
+For example, if you specify type A comes before type B, then subtypes of A will come before subtypes of B, unless there is an overriding specification which declares some subtype of B comes before some subtype of A.
+
+If there are inconsistencies between the priority list (type A declared before type B in one priority list, and type B declared before type A in another), the framework will throw an exception.
+
+User defined indexes may declare if they wish to use the type priority or not; see the next section.
+
+[[ugr.ref.xml.component_descriptor.aes.index]]
+==== Index Definition
+
+[source]
+----
+<fsIndexCollection>
+
+  <name>[String]</name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports>
+
+  <fsIndexes> 
+
+    <fsIndexDescription>
+      ...
+    </fsIndexDescription>
+
+    <fsIndexDescription>
+      ...
+    </fsIndexDescription>
+
+  </fsIndexes>
+
+</fsIndexCollection>
+----
+
+The `fsIndexCollection` element declares __xref:ref.adoc#ugr.ref.cas.indexes_and_iterators[Feature Structure Indexes]__, each of which defined an index that holds feature structures of a given type.
+Information in the CAS is always accessed through an index.
+There is a built-in default annotation index declared which can be used to access instances of type `uima.tcas.Annotation` (or its subtypes), sorted based on their `begin` and `end` features, and the type priority ordering (if specified).  For all other types, there is a default, unsorted (bag) index.
+If there is a need for a specialized index it must be declared in this element of the descriptor.
+
+Like type systems and type priorities, an `fsIndexCollection` can declare a ``name``, ``description``, ``vendor``, and ``version``, and may import other ``fsIndexCollection``s.
+The import syntax is described in <<ugr.ref.xml.component_descriptor.imports>>.
+
+An `fsIndexCollection` may also define zero or more `fsIndexDescription` elements, each of which defines a single index.
+Each `fsIndexDescription` has the form: 
+
+[source]
+----
+<fsIndexDescription>
+
+  <label>[String]</label>
+  <typeName>[TypeName]</typeName>
+  <kind>sorted|bag|set</kind>
+
+  <keys>
+
+    <fsIndexKey>
+      <featureName>[Name]</featureName>
+      <comparator>standard|reverse</comparator>
+    </fsIndexKey>
+
+    <fsIndexKey>
+      <typePriority/>
+    </fsIndexKey>
+
+    ...
+
+  </keys>
+</fsIndexDescription>
+----
+
+The `label` element defines the name by which applications and annotators refer to this index.
+The `typeName` element contains the name of the type that will be contained in this index.
+This must match one of the type names defined in the ``<typeSystemDescription>``.
+
+There are three possible values for the `<kind>` of index.
+Sorted indexes enforce an ordering of feature structures, based on defined keys.
+Bag indexes do not enforce ordering, and have no defined keys.
+Set indexes do not enforce ordering, but use defined keys to specify equivalence classes;  addToIndexes will not add a Feature Structure to a set index if its keys  match those of an entry of the same type already in the index.
+If the ``<kind>``element is omitted, it will default to sorted, which is the most common type of index.
+
+Prior to version 2.7.0, the bag and sorted indexes stored duplicate entries for the same identical FS, if it was added to the indexes multiple times.
+As of version 2.7.0, this  is changed; a second or subsequent add to index operation has no effect.
+This has the consequence that a remove operation now guarantees that the particular FS is removed  (as opposed to only being able to say that one (of perhaps many duplicate entries) is removed). Since sending to remote annotators only adds entries to indexes at most once, this  behavior is consistent with that.
+
+Note that even after this change, there is still a distinct difference in meaning for bag and set indexes.
+The set index uses equal defined key values plus the type of the Feature Structure to determine equivalence classes for Feature Structures, and will not add a Feature Structure if it has equal key values and the same type to an entry already in there.
+
+It is possible, however, that users may be depending on having multiple instances of  the identical FeatureStructure in the indicies.
+Therefore, UIMA uses  a JVM defined property, "uima.allow_duplicate_add_to_indexes", which (if defined whend UIMA is loaded) will restore the previous behavior.
+
+[NOTE]
+====
+If duplicates are allowed, then the proper way to update an indexed Feature Structure is to 
+
+* remove **all** instances of the FS to be updated 
+* update the features
+* re-add the Feature Structure to the indexes (perhaps multiple times, depending on the details of your logic).
+====
+
+[NOTE]
+====
+There is usually no need to explicitly declare a Bag index in your descriptor.
+As of UIMA v2.1, if you do not declare any index for a type (or any of its  supertypes), a Bag index will be automatically created if an instance of that type is added to the indexes.
+====
+
+An Sorted or Set index may define zero or more __keys__.
+These keys determine the sort order of the feature structures within a sorted index, and partially determine equality for set indexes (the equality measure always includes testing that the types are the same).  Bag indexes do not use keys, and  equality is determined by Feature Structure identity (that is, two elements are considered equal if and only if they are exactly the same feature structure, located in the same place in the CAS). Keys are ordered by precedence -- the first key is evaluated first, and subsequent keys are evaluated only if necessary.
+
+Each key is represented by an `fsIndexKey` element.
+Most `fsIndexKeys` contains a `featureName` and a ``comparator``.
+The `featureName` must match the name of one of the features for the type specified in the `<typeName>` element for this index.
+The comparator defines how the features will be compared -- a value of `standard` means that features will be compared using the standard comparison for their data type (e.g.
+for numerical types, smaller values precede larger values, and for string types, Unicode string comparison is performed). A value of `reverse` means that features will be compared using the reverse of the standard comparison (e.g.
+for numerical types, larger values precede smaller values, etc.). For Set indexes, the comparator direction is ignored -- the keys are only used for the equality testing.
+
+Each key used in comparisons must refer to a feature whose range type is Boolean, Byte, Short, Integer, Long, Float, Double, or String. 
+
+There is a second type of a key, one which contains only the ``<typePriority/>``.
+When this key is used, it indicates that Feature Structures will be compared using the type priorities declared in the `<typePriorities>` section of the descriptor.
+
+[[ugr.ref.xml.component_descriptor.aes.capabilities]]
+==== Capabilities
+
+[source]
+----
+<capabilities>
+  <capability>
+
+    <inputs>
+      <type allAnnotatorFeatures="true|false"[TypeName]</type>
+      ...
+      <feature>[TypeName]:[Name]</feature>
+      ...
+    </inputs>
+
+    <outputs>
+      <type allAnnotatorFeatures="true|false"[TypeName]</type>
+      ...
+      <feature>[TypeName]:[Name]</feature>
+      ...
+    </output>
+
+    <inputSofas>
+      <sofaName>[name]</sofaName>
+      ...
+    </inputSofas>
+
+    <outputSofas>
+      <sofaName>[name]</sofaName>
+      ...
+    </outputSofas>
+
+    <languagesSupported>
+      <language>[ISO Language ID]</language>
+        ...
+    </languagesSupported>
+  </capability>
+
+  <capability>
+    ...
+  </capability>
+
+  ...
+
+</capabilities>
+----
+
+The capabilities definition is used by the UIMA Framework in several ways, including setting up the Results Specification for process calls, routing control for aggregates based on language, and as part of the Sofa mapping function.
+
+The `capabilities` element contains one or more `capability` elements.
+In Version 2 and onwards, only one capability set should be used (multiple sets will continue to work for a while, but they're not logically consistently supported). 
+
+Each `capability` contains ``inputs``, ``outputs``, ``languagesSupported, inputSofas, and outputSofas``.
+Inputs and outputs element are required (though they may be empty); ``<languagesSupported>, <inputSofas``>, and `<outputSofas>` are optional.
+
+Both inputs and outputs may contain a mixture of type and feature elements.
+
+`<type...>` elements contain the name of one of the types defined in the type system or one of the built in types.
+Declaring a type as an input means that this component expects instances of this type to be in the CAS when it receives it to process.
+Declaring a type as an output means that this component creates new instances of this type in the CAS.
+
+There is an optional attribute ``allAnnotatorFeatures``, which defaults to false if omitted.
+The Component Descriptor Editor tool defaults this to true when a new type is added to the list of inputs and/or outputs.
+When this attribute is true, it specifies that all of the type's features are also declared as input or output.
+Otherwise, the features that are required as inputs or populated as outputs must be explicitly specified in feature elements.
+
+`<feature...>` elements contain the "`fully-qualified`" feature name, which is the type name followed by a colon, followed by the feature name, e.g. ``org.myorg.TokenAnnotation:lemma``. `<feature...>` elements in the `<inputs>` section must also have a corresponding type declared as an input.
+In output sections, this is not required.
+If the type is not specified as an output, but a feature for that type is, this means that existing instances of the type have the values of the specified features updated.
+Any type mentioned in a `<feature>` element must be either specified as an input or an output or both.
+
+``language ``elements contain one of the ISO language identifiers, such as `en` for English, or `en-US` for the United States dialect of English.
+
+The list of language codes can be found here: http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt and the country codes here: http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+
+`<inputSofas>` and `<outputSofas>` declare sofa names used by this component.
+All Sofa names must be unique within a particular capability set.
+A Sofa name must be an input or an output, and cannot be both.
+It is an error to have a Sofa name declared as an input in one capability set, and also have it declared as an output in another capability set.
+
+A `<sofaName>` is written as a simple Java-style identifier, without any periods in the name, except that it may be written to end in "``$$.$$*``".
+If written in this manner, it specifies a set of Sofa names, all of which start with the base name (the part before the .*) followed by a period and then an arbitrary Java identifier (without periods). This form is used to specify in the descriptor that the component could generate an arbitrary number of Sofas, the exact names and numbers of which are unknown before the component is run.
+
+[[ugr.ref.xml.component_descriptor.aes.operational_properties]]
+==== OperationalProperties
+
+Components can specify specific operational properties that can be useful in deployment.
+The following are available:
+
+[source]
+----
+<operationalProperties>
+  <modifiesCas> true|false </modifiesCas>
+  <multipleDeploymentAllowed> true|false </multipleDeploymentAllowed>
+  <outputsNewCASes> true|false </outputsNewCASes>
+</operationalProperties>
+----
+
+``ModifiesCas``, if false, indicates that this component does not modify the CAS.
+If it is not specified, the default value is true except for CAS Consumer components.
+
+``multipleDeploymentAllowed``, if true, allows the component to be deployed multiple times to increase performance through scale-out techniques.
+If it is not specified, the default value is true, except for CAS Consumer and Collection Reader components.
+
+[NOTE]
+====
+If you wrap one or more CAS Consumers inside an aggregate as the only components, you must explicitly specify in the aggregate the `multipleDeploymentAllowed` property as false (assuming the CAS Consumer components take the default here); otherwise the framework will complain about inconsistent settings for these.
+====
+
+`xref:tug.adoc#ugr.tug.cm[outputsNewCASes]`, if true, allows the component to create new CASes during processing, for example to break a large artifact into smaller pieces.
+
+[[ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies]]
+==== External Resource Dependencies
+
+[source]
+----
+<externalResourceDependencies>
+  <externalResourceDependency>
+    <key>[String]</key>
+    <description>[String] </description>
+    <interfaceName>[String]</interfaceName>
+    <optional>true|false</optional>
+  </externalResourceDependency>
+
+  <externalResourceDependency>
+    ...
+  </externalResourceDependency>
+
+  ...
+
+</externalResourceDependencies>
+----
+
+A primitive annotator may declare zero or more `<externalResourceDependency>` elements.
+Each dependency has the following elements: 
+
+* `key`– the string by which the annotator code will attempt to access the resource. Must be unique within this annotator.
+* `description`– a textual description of the dependency.
+* `interfaceName`– the fully-qualified name of the Java interface through which the annotator will access the data. This is optional. If not specified, the annotator can only get an InputStream to the data.
+* `optional`– whether the resource is optional. If false, an exception will be thrown if no resource is assigned to satisfy this dependency. Defaults to false. 
+
+
+[[ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration]]
+==== Resource Manager Configuration
+
+[source]
+----
+<resourceManagerConfiguration>
+
+  <name>[String]</name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports>
+
+  <externalResources>
+
+    <externalResource>
+      <name>[String]</name>
+      <description>[String]</description>
+      <fileResourceSpecifier>
+        <fileUrl>[URL]</fileUrl>
+      </fileResourceSpecifier>
+      <implementationName>[String]</implementationName>
+    </externalResource>
+    ...
+  </externalResources>
+
+  <externalResourceBindings>
+    <externalResourceBinding>
+      <key>[String]</key>
+      <resourceName>[String]</resourceName>
+    </externalResourceBinding>
+    ...
+  </externalResourceBindings>
+
+</resourceManagerConfiguration>
+----
+
+This element declares external resources and binds them to annotators' external resource dependencies.
+
+The `resourceManagerConfiguration` element may optionally contain an ``import``, which allows resource definitions to be stored in a separate (shareable) file.
+See <<ugr.ref.xml.component_descriptor.imports>> for details.
+
+The `externalResources` element contains zero or more `externalResource` elements, each of which consists of: 
+
+* `name` -- the name of the resource. This name is referred to in the bindings (see below). Resource names need to be unique within any Aggregate Analysis Engine or Collection Processing Engine, so the Java-like `org.myorg.mycomponent.MyResource` syntax is recommended.
+* `description` -- English description of the resource.
+* Resource Specifier -- Declares the location of the resource. There are different possibilities for how this is done (see below).
+* `implementationName`--  The fully-qualified name of the Java class that will be instantiated from the resource data. This is optional; if not specified, the resource will be accessible as an input stream to the raw data. If specified, the Java class must implement the `interfaceName` that is specified in the External Resource Dependency to which it is bound. 
+
+One possibility for the resource specifier is a `<fileResourceSpecifier>`, as shown above.
+This simply declares a URL to the resource data.
+This support is built on the Java class URL and its method `URL.openStream()`; it supports the protocols `file`, `http` and `jar` (for referring to files in jars) by default, and you can plug in handlers for other protocols.
+The URL has to start with file: (or some other protocol). It is relative to either the classpath or the `data path`.
+The data path works like the classpath but can be set programmatically via ``ResourceManager.setDataPath()``.
+Setting the Java System property `uima.datapath` also works.
+
+`file:com/apache.d.txt` is a relative path; relative paths for resources are resolved using the classpath and/or the datapath.
+For the file protocol, URLs starting with `file:/` or `\file:///` are absolute.
+Note that `\file://org/apache/d.txt` is NOT an absolute path starting with `org`.
+The "`//`" indicates that what follows is a host name.
+Therefore if you try to use this URL it will complain that it can't connect to the host `org`.
+
+The URL value may contain references to external override variables using the `${variable-name}` syntax,  e.g. ``file:com/${dictUrl}.txt``.
+If a variable is undefined the value is left unmodified and a warning message identifies the missing variable. 
+
+Another option is a ``<fileLanguageResourceSpecifier>``, which is intended to support resources, such as dictionaries, that depend on the language of the document being processed.
+Instead of a single URL, a prefix and suffix are specified, like this: 
+
+[source]
+----
+<fileLanguageResourceSpecifier>
+  <fileUrlPrefix>file:FileLanguageResource_implTest_data_</fileUrlPrefix>
+  <fileUrlSuffix>.dat</fileUrlSuffix>
+</fileLanguageResourceSpecifier>
+----
+
+The URL of the actual resource is then formed by concatenating the prefix, the language of the document (as an ISO language code, e.g. `en` or `en-US`– see <<ugr.ref.xml.component_descriptor.aes.capabilities>> for more information), and the suffix.
+
+A third option is a ``customResourceSpecifier``, which allows you to plug in an arbitrary Java class.
+See <<ugr.ref.xml.component_descriptor.custom_resource_specifiers>> for more information.
+
+The `externalResourceBindings` element declares which resources are bound to which dependencies.
+Each `externalResourceBinding` consists of: 
+
+* `key`-- identifies the dependency. For a binding declared in a primitive analysis engine descriptor, this must match the value of the `key` element of one of the `externalResourceDependency` elements. Bindings may also be specified in aggregate analysis engine descriptors, in which case a compound key is used -- see <<ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings>> .
+* `resourceName` -- the name of the resource satisfying the dependency. This must match the value of the `name` element of one of the `externalResource` declarations. 
+
+A given resource dependency may only be bound to one external resource; one external resource may be bound to many dependencies -- to allow resource sharing.
+
+[[ugr.ref.xml.component_descriptor.aes.environment_variable_references]]
+==== Environment Variable References
+
+In several places throughout the descriptor, it is possible to reference environment variables.
+In Java, these are actually references to Java system properties.
+To reference system environment variables from a Java analysis engine you must pass the environment variables into the Java virtual machine by using the `-D` option on the `java` command line.
+
+The syntax for environment variable references is `<envVarRef>[VariableName]</envVarRef>` , where [VariableName] is any valid Java system property name.
+Environment variable references are valid in the following places: 
+
+* The value of a configuration parameter (String-valued parameters only)
+* The `<annotatorImplementationName>` element of a primitive AE descriptor
+* The `<name>` element within `<analysisEngineMetaData>`
+* Within a `<fileResourceSpecifier>` or `<fileLanguageResourceSpecifier>`
+
+For example, if the value of a configuration parameter were specified as: `<string><envVarRef>TEMP_DIR</envVarRef>/temp.dat</string>` , and the value of the `TEMP_DIR` Java System property were `c:/temp`, then the configuration parameter's value would evaluate to `c:/temp/temp.dat`.
+
+[NOTE]
+====
+The Component Descriptor Editor does not support  environment variable references.
+If you need to, however, you  can use the `source` tab view in the CDE to manually add this notation. 
+====
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate]]
+=== Aggregate Analysis Engine Descriptors
+
+Aggregate Analysis Engines do not contain an annotator, but instead contain one or more component (also called __delegate__) analysis engines.
+
+Aggregate Analysis Engine Descriptors maintain most of the same structure as Primitive Analysis Engine Descriptors.
+The differences are:
+
+* An Aggregate Analysis Engine Descriptor contains the element `<primitive>false</primitive>` rather than ``<primitive>true</primitive>``. 
+* An Aggregate Analysis Engine Descriptor must not include a `<annotatorImplementationName>` element.
+* In place of the ``<annotatorImplementationName>``, an Aggregate Analysis Engine Descriptor must have a `<delegateAnalysisEngineSpecifiers>` element. See <<ugr.ref.xml.component_descriptor.aes.aggregate.delegates>>.
+* An Aggregate Analysis Engine Descriptor may provide a `<flowController>` element immediately following the ``<delegateAnalysisEngineSpecifiers>``. <<ugr.ref.xml.component_descriptor.aes.aggregate.flow_controller>>.
+* Under the analysisEngineMetaData element, an Aggregate Analysis Engine Descriptor may specify an additional element -- ``<flowConstraints>``. See <<ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints>>. Typically only one of `<flowController>` and `<flowConstraints>` are specified. If both are specified, the `<flowController>` takes precedence, and the flow controller implementation can use the information in specified in the `<flowConstraints>` as part of its configuration input.
+* An aggregate Analysis Engine Descriptors must not contain a `<typeSystemDescription>` element. The Type System of the Aggregate Analysis Engine is derived by merging the Type System of the Analysis Engines that the aggregate contains.
+* Within aggregate Analysis Engine Descriptors, `<configurationParameter>` elements may define ``<overrides>``. See <<ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides>> .
+* External Resource Bindings can bind resources to dependencies declared by any delegate AE within the aggregate. See <<ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings>>.
+* An additional optional element, ``<sofaMappings>``, may be included. 
+
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.delegates]]
+==== Delegate Analysis Engine Specifiers
+
+[source]
+----
+<delegateAnalysisEngineSpecifiers>
+
+  <delegateAnalysisEngine key="[String]">
+    <analysisEngineDescription>...</analysisEngineDescription> |
+    <import .../> 
+  </delegateAnalysisEngine>
+
+  <delegateAnalysisEngine key="[String]">
+    ...
+  </delegateAnalysisEngine>
+
+  ...
+
+</delegateAnalysisEngineSpecifiers>
+----
+
+The `delegateAnalysisEngineSpecifiers` element contains one or more `delegateAnalysisEngine` elements.
+Each of these must have a unique key, and must contain either:
+
+* A complete `analysisEngineDescription` element describing the delegate analysis engine *OR*
+* An `import` element giving the name or location of the XML descriptor for the delegate analysis engine (see <<ugr.ref.xml.component_descriptor.imports>>).
+
+The latter is the much more common usage, and is the only form supported by the Component Descriptor Editor tool.
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.flow_controller]]
+==== FlowController
+
+[source]
+----
+<flowController key="[String]">
+    <flowControllerDescription>...</flowControllerDescription> |
+    <import .../>
+  </flowController>
+----
+
+The optional `flowController` element identifies the descriptor of the FlowController component that will be used to determine the order in which delegate Analysis Engine are called.
+
+The `key` attribute is optional, but recommended; it assigns the FlowController an identifier that can be used for configuration parameter overrides, Sofa mappings, or external resource bindings.
+The key must not be the same as any of the delegate analysis engine keys.
+
+As with the `delegateAnalysisEngine` element, the `flowController` element may contain either a complete `flowControllerDescription` or an ``import``, but the import is recommended.
+The Component Descriptor Editor tool only supports imports here.
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints]]
+==== FlowConstraints
+
+If a `<flowController>` is not specified, the order in which delegate Analysis Engines are called within the aggregate Analysis Engine is specified using the `<flowConstraints>` element, which must occur immediately following the `configurationParameterSettings` element.
+If a `<flowController>` is specified, then the `<flowConstraints>` are optional.
+They can be used to pass an ordering of delegate keys to the ``<flowController>``.
+
+There are two options for flow constraints -- `<fixedFlow>` or ``<capabilityLanguageFlow>``.
+Each is discussed in a separate section below.
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow]]
+===== Fixed Flow
+
+[source]
+----
+<flowConstraints>
+  <fixedFlow>
+    <node>[String]</node>
+    <node>[String]</node>
+    ...
+  </fixedFlow>
+</flowConstraints>
+----
+
+The `flowConstraints` element must be included immediately following the `configurationParameterSettings` element.
+
+Currently the `flowConstraints` element must contain a `fixedFlow` element.
+Eventually, other types of flow constraints may be possible.
+
+The `fixedFlow` element contains one or more `node` elements, each of which contains an identifier which must match the key of a delegate analysis engine specified in the `delegateAnalysisEngineSpecifiers` element.
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow]]
+===== Capability Language Flow
+
+[source]
+----
+<flowConstraints>
+  <capabilityLanguageFlow>
+    <node>[String]</node>
+    <node>[String]</node>
+    ...
+  </capabilityLanguageFlow>
+</flowConstraints>
+----
+
+If you use ``<capabilityLanguageFlow>``, the delegate Analysis Engines named by the `<node>` elements are called in the given order, except that a delegate Analysis Engine is skipped if any of the following are true (according to that Analysis Engine's declared output capabilities):
+
+* It cannot produce any of the aggregate Analysis Engine's output capabilities for the language of the current document.
+* All of the output capabilities have already been produced by an earlier Analysis Engine in the flow. 
+
+For example, if two annotators produce `org.myorg.TokenAnnotation` feature structures for the same language, these feature structures will only be produced by the first annotator in the list.
+
+[NOTE]
+====
+The flow analysis uses the specific types that are specified in the output capabilities, without any expansion for subtypes.
+So, if you expect a type TT and another type SubTT (which is a subtype of TT) in the output, you must include both of them in the output capabilities.
+====
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings]]
+==== External Resource Bindings
+
+Aggregate analysis engine descriptors can declare resource bindings that bind resources to dependencies declared in any of the delegate analysis engines (or their subcomponents, recursively) within that aggregate.
+This allows resource sharing.
+Any binding at this level overrides (supersedes) any binding specified by a contained component or their subcomponents, recursively.
+
+For example, consider an aggregate Analysis Engine Descriptor that contains delegate Analysis Engines with keys `annotator1` and `annotator2` (as declared in the `<delegateAnalysisEngine>` element – see <<ugr.ref.xml.component_descriptor.aes.aggregate.delegates>>), where `annotator1` declares a resource dependency with key `myResource` and `annotator2` declares a resource dependency with key `someResource` .
+
+Within that aggregate Analysis Engine Descriptor, the following `resourceManagerConfiguration` would bind both of those dependencies to a single external resource file.
+
+[source]
+----
+<resourceManagerConfiguration>
+
+  <externalResources>
+    <externalResource>
+      <name>ExampleResource</name>
+      <fileResourceSpecifier>
+        <fileUrl>file:MyResourceFile.dat</fileUrl>
+      </fileResourceSpecifier>
+    </externalResource>
+  </externalResources>  
+
+  <externalResourceBindings>
+    <externalResourceBinding>
+      <key>annotator1/myResource</key>
+      <resourceName>ExampleResource</resourceName>
+    </externalResourceBinding>
+    <externalResourceBinding>
+      <key>annotator2/someResource</key>
+      <resourceName>ExampleResource</resourceName>
+    </externalResourceBinding>
+  </externalResourceBindings>
+
+</resourceManagerConfiguration>
+----
+
+The syntax for the `externalResources` declaration is exactly the same as described previously.
+In the resource bindings note the use of the compound keys, e.g. ``annotator1/myResource``.
+This identifies the resource dependency key `myResource` within the annotator with key ``annotator1``.
+Compound resource dependencies can be multiple levels deep to handle nested aggregate analysis engines.
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.sofa_mappings]]
+==== Sofa Mappings
+
+Sofa mappings are specified between Sofa names declared in this aggregate descriptor as part of the `<capability>` section, and the Sofa names declared in the delegate components.
+For purposes of the mapping, all the declarations of Sofas in any of the capability sets contained within the ``<capabilities> ``element are considered together.
+
+[source]
+----
+<sofaMappings>
+  <sofaMapping>
+    <componentKey>[keyName]</componentKey>
+    <componentSofaName>[sofaName]</componentSofaName>
+    <aggregateSofaName>[sofaName]</aggregateSofaName>
+  </sofaMapping>
+  ...
+</sofaMappings>
+----
+
+The <componentSofaName> may be omitted in the case where the component is not aware of Multiple Views or Sofas.
+In this case, the UIMA framework will arrange for the specified <aggregateSofaName> to be the one visible to the delegate component.
+
+The <componentKey> is the key name for the component as specified in the list of delegate components for this aggregate.
+
+The sofaNames used must be declared as input or output sofas in some capability set.
+
+[[ugr.ref.xml.component_descriptor.aes.configuration_parameters]]
+=== Configuration Parameters
+
+Configuration parameters may be declared and set in both Primitive and  Aggregate descriptors.
+Parameters set in an aggregate may override parameters set in one or more of its delegates. 
+
+[[ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration]]
+==== Configuration Parameter Declaration
+
+Configuration Parameters are made available to annotator implementations and applications by the following interfaces: 
+
+* `AnnotatorContext`footnote:[Deprecated; use UimaContext instead.] (passed as an argument to the initialize() method of a version 1 annotator)
+* `ConfigurableResource` (every Analysis Engine implements this interface)
+* `UimaContext` (passed as an argument to the initialize() method of a version 2 annotator) (you can get this from any resource, including Analysis Engines, using the method ``getUimaContext``()).
+
+Use AnnotatorContext within version 1 annotators and UimaContext for version 2 annotators and outside of annotators (for instance, in CasConsumers, or the containing application) to access configuration parameters.
+
+Configuration parameters are set from the corresponding elements in the XML descriptor for the application.
+If you need to programmatically change parameter settings within an application, you can use methods in ConfigurableResource; if you do this, you need to call reconfigure() afterwards to have the UIMA framework notify all the contained analysis components that the parameter configuration has changed (the analysis engine's reinitialize() methods will be called). Note that in the current implementation, only integrated deployment components have configuration parameters passed to them; remote components obtain their parameters from their remote startup environment.
+This will likely change in the future.
+
+There are two ways to specify the `<configurationParameters>` section – as a list of configuration parameters or a list of groups.
+A list of parameters, which are not part of any group, looks like this: 
+
+[source]
+----
+<configurationParameters>
+  <configurationParameter>
+    <name>[String]</name> 
+    <externalOverrideName>[String]</externalOverrideName> 
+    <description>[String]</description> 
+    <type>String|Integer|Long|Float|Double|Boolean</type> 
+    <multiValued>true|false</multiValued> 
+    <mandatory>true|false</mandatory>
+    <overrides>
+      <parameter>[String]</parameter>
+      <parameter>[String]</parameter>
+        ...
+    </overrides>
+  </configurationParameter>
+  <configurationParameter>
+    ...
+  </configurationParameter>
+    ...
+</configurationParameters>
+----
+
+For each configuration parameter, the following are specified:
+
+* *name*– the name by which the annotator code refers to the parameter. All parameters declared in an analysis engine descriptor must have distinct names. (required). The name is composed of normal Java identifier characters.
+* *externalOverrideName*– the name of a property in an external settings file that if defined overrides any value set in this descriptor or in its parent. See <<ugr.ref.xml.component_descriptor.aes.external_configuration_parameter_overrides>> for a discussion of external configuration parameter overrides. (optional)
+* *description*– a natural language description of the intent of the parameter (optional)
+* *type*– the data type of the parameter's value – must be one of ``String``, ``Integer``, ``Long``, ``Float``, ``Double``, or `Boolean` (required).
+* *multiValued*–``true`` if the parameter can take multiple-values (an array), `false` if the parameter takes only a single value (optional, defaults to false).
+* *mandatory*–``true`` if a value must be provided for the parameter (optional, defaults to false).
+* *overrides*– this is used only in aggregate Analysis Engines, but is included here for completeness. See <<ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides>> for a discussion of configuration parameter overriding in aggregate Analysis Engines. (optional).
+
+A list of groups looks like this: 
+[source]
+----
+<configurationParameters defaultGroup="[String]"
+    searchStrategy="none|default_fallback|language_fallback" >
+
+  <commonParameters>
+    [zero or more parameters]
+  </commonParameters>
+
+  <configurationGroup names="name1 name2 name3 ...">
+    [zero or more parameters]
+  </configurationGroup>
+
+  <configurationGroup names="name4 name5 ...">
+    [zero or more parameters]
+  </configurationGroup>
+
+  ...
+
+</configurationParameters>
+----
+
+Both the`` <commonParameters>`` and `<configurationGroup>` elements contain zero or more `<configurationParameter>` elements, with the same syntax described above.
+
+The `<commonParameters>` element declares parameters that exist in all groups.
+Each `<configurationGroup>` element has a names attribute, which contains a list of group names separated by whitespace (space or tab characters). Names consist of any number of non-whitespace characters; however the Component Descriptor Editor tool restricts this to be normal Java identifiers, including the period (.) and the dash (-). One configuration group will be created for each name, and all of the groups will contain the same set of parameters.
+
+The `defaultGroup` attribute specifies the name of the group to be used in the case where an annotator does a lookup for a configuration parameter without specifying a group name.
+It may also be used as a fallback if the annotator specifies a group that does not exist – see below.
+
+The `searchStrategy` attribute determines the action to be taken when the context is queried for the value of a parameter belonging to a particular configuration group, if that group does not exist or does not contain a value for the requested parameter.
+There are currently three possible values: 
+
+* *none*– there is no fallback; return null if there is no value in the exact group specified by the user.
+* *default_fallback*– if there is no value found in the specified group, look in the default group (as defined by the `default` attribute)
+* *language_fallback*– this setting allows for a specific use of configuration parameter groups where the groups names correspond to ISO language and country codes (for an example, see below). The fallback sequence is: `<lang>_<country>_<region> → <lang>_<country> → <lang> → <default>.`
+
+
+[[ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration.example]]
+===== Example
+
+[source]
+----
+<configurationParameters defaultGroup="en"
+        searchStrategy="language_fallback">
+
+  <commonParameters>
+    <configurationParameter>
+      <name>DictionaryFile</name>
+      <description>Location of dictionary for this
+           language</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>false</mandatory>
+    </configurationParameter>
+  </commonParameters>
+
+  <configurationGroup names="en de en-US"/>
+
+  <configurationGroup names="zh">
+    <configurationParameter>
+      <name>DBC_Strategy</name>
+      <description>Strategy for dealing with double-byte
+          characters.</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>false</mandatory>
+    </configurationParameter>
+  </configurationGroup>
+
+</configurationParameters>
+----
+
+In this example, we are declaring a `DictionaryFile` parameter that can have a different value for each of the languages that our AE supports – English (general), German, U.S.
+English, and Chinese.
+For Chinese only, we also declare a `DBC_Strategy` parameter.
+
+We are using the `language_fallback` search strategy, so if an annotator requests the dictionary file for the `en-GB` (British English) group, we will fall back to the more general `en` group.
+
+Since we have defined `en` as the default group, this value will be returned if the context is queried for the `DictionaryFile` parameter without specifying any group name, or if a nonexistent group name is specified.
+
+[[ugr.ref.aes.configuration_parameter_settings]]
+==== Configuration Parameter Settings
+
+For configuration parameters that are not part of any group, the `<configurationParameterSettings>` element looks like this: 
+[source]
+----
+<configurationParameterSettings>
+  <nameValuePair>
+    <name>[String]</name> 
+    <value>
+      <string>[String]</string>  | 
+      <integer>[Integer]</integer> |
+      <float>[Float]</float> |
+      <boolean>true|false</boolean>  |
+      <array> ... </array>
+    </value>
+  </nameValuePair>
+
+  <nameValuePair>
+    ...
+  </nameValuePair>
+  ...
+</configurationParameterSettings>
+----
+
+There are zero or more `nameValuePair` elements.
+Each `nameValuePair` contains a name (which refers to one of the configuration parameters) and a value for that parameter.
+
+The `value` element contains an element that matches the type of the parameter.
+For single-valued parameters, this is either ``<string>``, `<integer>` , ``<float>``, or ``<boolean>``.
+For multi-valued parameters, this is an `<array>` element, which then contains zero or more instances of the appropriate type of primitive value, e.g.: 
+[source]
+----
+<array><string>One</string><string>Two</string></array>
+----
+
+For parameters declared in configuration groups the `<configurationParameterSettings>` element looks like this: 
+[source]
+----
+<configurationParameterSettings>
+
+  <settingsForGroup name="[String]">
+    [one or more <nameValuePair> elements]
+  </settingsForGroup>
+
+  <settingsForGroup name="[String]">
+    [one or more <nameValuePair> elements]
+  </settingsForGroup>
+
+...
+
+</configurationParameterSettings>
+----
+where each `<settingsForGroup>` element has a name that matches one of the configuration groups declared under the `<configurationParameters>` element and contains the parameter settings for that group.
+
+[[ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings.example]]
+===== Example
+
+Here are the settings that correspond to the parameter declarations in the previous example: 
+[source]
+----
+<configurationParameterSettings>
+
+  <settingsForGroup name="en">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesEnglishdictionary.dat></string></value>
+    </nameValuePair>
+  </settingsForGroup>     
+
+  <settingsForGroup name="en-US">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesEnglish_USdictionary.dat</string></value>
+    </nameValuePair>
+  </settingsForGroup>
+
+  <settingsForGroup name="de">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesDeutschdictionary.dat</string></value>
+    </nameValuePair>
+  </settingsForGroup>
+
+  <settingsForGroup name="zh">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesChinesedictionary.dat</string></value>
+    </nameValuePair>
+
+    <nameValuePair>
+      <name>DBC_Strategy</name>
+      <value><string>default</string></value>
+    </nameValuePair>
+
+  </settingsForGroup>
+
+</configurationParameterSettings>
+----
+
+[[ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides]]
+==== Configuration Parameter Overrides
+
+In an aggregate Analysis Engine Descriptor, each ``<configurationParameter> ``element should contain an `<overrides>` element, with the following syntax:
+
+[source]
+----
+<overrides>
+
+  <parameter>
+    [delegateAnalysisEngineKey]/[parameterName]
+  </parameter>
+
+  <parameter>
+    [delegateAnalysisEngineKey]/[parameterName]
+  </parameter>
+  ...
+
+</overrides>
+----
+
+Since aggregate Analysis Engines have no code associated with them, the only way in which their configuration parameters can affect their processing is by overriding the parameter values of one or more delegate analysis engines.
+The ``<overrides> ``element determines which parameters, in which delegate Analysis Engines, are overridden by this configuration parameter.
+
+For example, consider an aggregate Analysis Engine Descriptor that contains delegate Analysis Engines with keys `annotator1` and `annotator2` (as declared in the <delegateAnalysisEngine> element – see <<ugr.ref.xml.component_descriptor.aes.aggregate.delegates>>) and also declares a configuration parameter as follows: 
+[source]
+----
+<configurationParameter>
+  <name>AggregateParam</name>
+  <type>String</type>
+  <overrides>
+    <parameter>annotator1/param1</parameter>
+    <parameter>annotator2/param2</parameter>
+  </overrides>
+</configurationParameter>
+----
+
+The value of the `AggregateParam` parameter (whether assigned in the aggregate descriptor or at runtime by an application) will override the value of parameter `param1` in `annotator1` and also override the value of parameter `param2` in ``annotator2``.
+No other parameters will be affected.
+Note that `AggregateParam` may itself be overridden by a parameter in an outer aggregate that has this aggregate as one of its delegates. 
+
+Prior to release 2.4.1, if an aggregate Analysis Engine descriptor declared a configuration parameter with no explicit overrides, that parameter would override any parameters having the same name within any delegate analysis engine.
+Starting with release 2.4.1, support for this usage has been dropped.
+
+[[ugr.ref.xml.component_descriptor.aes.external_configuration_parameter_overrides]]
+==== External Configuration Parameter Overrides
+
+External parameter overrides are usually declared in primitive descriptors as a way to easily modify the parameters in some or all of an application's annotators.
+By using external settings files and shared parameter names the configuration information can be specified without regard for a particular descriptor hierachy. 
+
+Configuration parameter declarations in primitive and aggregate descriptors may include an `<externalOverrideName>` element,  which specifies the name of a property that may be defined in an external settings file.
+If this element is present, and if a entry can be found for its name in a settings files, then this value overrides the value otherwise specified for this parameter. 
+
+The value overrides any value set in this descriptor or set by an override in a parent aggregate.
+In primitive descriptors the value set by an external override is always applied.
+In aggregate descriptors the value set by an external override applies to the aggregate parameter, and is passed down to the overridden delegate parameters in the usual way, i.e.
+only if the delegate's parameter has not been set by an external override. 
+
+Im the absence of external overrides,             parameter evaluation can be viewed as proceeding from the primitive descriptor up through any aggregates containing overrides, taking the last setting found.
+With external overrides the search ends with the first external override found that has a value assigned by a settings file. 
+
+The same external name may be used for multiple parameters;  the effect of this is that one setting will override multiple parameters. 
+
+The settings for all descriptors in a pipeline are usually loaded from one or more files whose names are obtained from the Java system property __UimaExternalOverrides__.
+The value of the property must be a comma-separated list of resource names.
+If the name has a prefix of "file:" or no prefix, the filesystem is searched.
+If the name has a prefix of "path:" the rest must be a Java-style dotted name, similar to the name attribute for descriptor imports.
+The dots are replaced by file separators and a suffix of ".settings" is appended before searching the datapath and classpath.
+e.g. ``-DUimaExternalOverrides=/data/file1.settings,file:relative/file2.settings,path:org.apache.uima.resources.file3``. 
+
+Override settings may also be specified when creating an analysis engine by putting a `Settings` object in the additional parameters map for the `produceAnalysisEngine` method.
+In this case the Java system property _UimaExternalOverrides_ is ignored. 
+[source]
+----
+  // Construct an analysis engine that uses two settings files
+  Settings extSettings = 
+      UIMAFramework.getResourceSpecifierFactory().createSettings();
+  for (String fname : new String[] { "externalOverride.settings", 
+                                     "default.settings" }) {
+    FileInputStream fis = new FileInputStream(fname);
+    extSettings.load(fis);
+    fis.close();
+  }
+  Map<String,Object> aeParms = new HashMap<String,Object>();
+  aeParms.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
+  AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, aeParms);
+----
+
+These external settings consist of key - value pairs stored in a  file using the UTF-8 character encoding, and written in a style similar to that  of Java properties files. 
+
+* Leading whitespace is ignored. 
+* Comment lines start with '#' or '!'. 
+* The key and value are separated by whitespace, '=' or ':'. 
+* Keys must contain at least one character and only letters, digits, or the characters '. / - ~ _'. 
+* If a line ends with '\' it is extended with the following line (after removing any leading whitespace.) 
+* Whitespace is trimmed from both keys and values. 
+* Duplicate key values are ignored –once a value is assigned to a key it cannot be changed. 
+* Values may reference other settings using the syntax '${key}'. 
+* Array values are represented as a list of strings separated by commas or line breaks, and bracketed by the '[ ]' characters. The value must start with an '[' and is terminated by the first unescaped ']' which must be at the end of a line. The elements of an array (and hence the array size) may be indirectly specified using the '${key}' syntax but the brackets '[ ]' must be explicitly specified. 
+* In values the special characters '$ { } [ , ] \' are treated as regular characters if preceeded by the escape character '\'. 
+
+[source]
+----
+key1  :  value1
+ key2 =  value  2
+  key3   element2, element3, element4
+ # Next assignment is ignored as key3 has already been set
+key3  :   value ignored
+key4  =  [ array element1, ${key3}, element5
+           element6 ]
+key5     value with a reference ${key1} to key1
+key6  :  long value string \
+         continued from previous line (with leading whitespace stripped)
+key7  =  value without a reference \${not-a-key} 
+key8     \[ value that is not an array ]
+key9  :  [ array element1\, with embedded comma, element2 ]
+----
+
+Multiple settings files are allowed; they are loaded in order, such that early ones take precedence over later ones, following the first-assignment-wins rule.
+So, if you have lots of settings, you can put the defaults in one file, and then in a earlier file, override just the ones you need to. 
+
+An external override name may be specified for a parameter declared in a group, but if the parameter is in the common group or the group is declared with multiple names, the external name is shared amongst all, i.e.
+these parameters cannot be given group-specific values. 
+
+[[ugr.ref.xml.component_descriptor.aes.external_configuration_parameter_access]]
+==== Direct Access to External Configuration Parameters
+
+Annotators and flow controllers can directly access these shared configuration parameters from their UimaContext.
+Direct access means an access where the key to select the shared parameter is the  parameter name as specified in the external configuration settings file. 
+
+[source]
+----
+String value = aContext.getSharedSettingValue(paramName);
+String values[] = aContext.getSharedSettingArray(arrayParamName);
+String allNames[] = aContext.getSharedSettingNames();
+----
+
+Java code called by an annotator or flow controller in the same thread or a child thread can use the `UimaContextHolder` to get the annotator's UimaContext and hence access the shared configuration parameters. 
+
+[source]
+----
+UimaContext uimaContext = UimaContextHolder.getUimaContext();
+if (uimaContext != null) {
+  value = uimaContext.getSharedSettingValue(paramName);
+}
+----
+
+The UIMA framework puts the context in an InheritableThreadLocal variable.
+The value will be null if `getUimaContext` is not invoked by an annotator or flow controller on the same thread or a child thread. 
+
+Since UIMA 3.2.1, the context is stored in the InheritableThreadLocal as a weak reference.
+This ensures that any long-running threads spawned while the context is set do not  prevent garbage-collection of the context when the context is destroyed.
+If a child thread should really retain a strong reference to the context, it should obtain the context and store it in a field or in another ThreadLocal variable.
+For backwards compatibility, the old behavior of using a strong reference by default can be enabled by setting the system property `uima.context_holder_reference_type` to ``STRONG``. 
+
+[[ugr.ref.xml.component_descriptor.aes.other_uses_for_external_configuration_parameters]]
+==== Other Uses for External Configuration Parameters
+
+Explicit references to shared configuration parameters can be specified as part of the value of the name and location attributes of the `import` element and in the value of the fileUrl for a `fileResourceSpecifier`			(see <<ugr.ref.xml.component_descriptor.imports>> and <<ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration>>). 
+
+[[ugr.ref.xml.component_descriptor.flow_controller]]
+== Flow Controller Descriptors
+
+The basic structure of a Flow Controller Descriptor is as follows: 
+
+[source]
+----
+<?xml version="1.0" ?> 
+<flowControllerDescription 
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+
+  <implementationName>[ClassName]</implementationName> 
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+
+</flowControllerDescription>
+----
+
+The `frameworkImplementation` element must always be set to the value ``org.apache.uima.java``.
+
+The `implementationName` element must contain the fully-qualified class name of the Flow Controller implementation.
+This must name a class that implements the `FlowController` interface.
+
+The `processingResourceMetaData` element contains essentially the same information as a Primitive Analysis Engine Descriptor's `analysisEngineMetaData` element, described in <<ugr.ref.xml.component_descriptor.aes.metadata>>.
+
+The `externalResourceDependencies` and `resourceManagerConfiguration` elements are exactly the same as in Primitive Analysis Engine Descriptors (see <<ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies>> and <<ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration>>).
+
+[[ugr.ref.xml.component_descriptor.collection_processing_parts]]
+== Collection Processing Component Descriptors
+
+There are three types of Collection Processing Components –Collection Readers, CAS Initializers (deprecated as of UIMA Version 2), and CAS Consumers.
+Each type of component has a corresponding descriptor.
+The structure of these descriptors is very similar to that of primitive Analysis Engine Descriptors.
+
+[[ugr.ref.xml.component_descriptor.collection_processing_parts.collection_reader]]
+=== Collection Reader Descriptors
+
+The basic structure of a Collection Reader descriptor is as follows: 
+[source]
+----
+<?xml version="1.0" ?> 
+<collectionReaderDescription
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>[ClassName]</implementationName> 
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+   ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+
+   ...
+
+  </resourceManagerConfiguration>
+
+</collectionReaderDescription>
+----
+
+The `frameworkImplementation` element must always be set to the value ``org.apache.uima.java``.
+
+The `implementationName` element contains the fully-qualified class name of the Collection Reader implementation.
+This must name a class that implements the `CollectionReader` interface.
+
+The `processingResourceMetaData` element contains essentially the same information as a Primitive Analysis Engine Descriptor's' `analysisEngineMetaData` element: 
+[source]
+----
+<processingResourceMetaData>
+
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor>
+
+  <configurationParameters>
+     ...
+  </configurationParameters>
+
+  <configurationParameterSettings>
+    ...
+  </configurationParameterSettings> 
+
+  <typeSystemDescription>
+   ...
+  </typeSystemDescription> 
+
+  <typePriorities>
+   ...
+  </typePriorities> 
+
+  <fsIndexes>
+   ...
+  </fsIndexes>
+
+  <capabilities>
+   ...
+  </capabilities> 
+
+</processingResourceMetaData>
+----
+
+The contents of these elements are the same as that described in <<ugr.ref.xml.component_descriptor.aes.metadata>>, with the exception that the capabilities section should not declare any inputs (because the Collection Reader is always the first component to receive the CAS).
+
+The `externalResourceDependencies` and `resourceManagerConfiguration` elements are exactly the same as in the Primitive Analysis Engine Descriptors (see <<ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies>> and <<ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration>>).
+
+[[ugr.ref.xml.component_descriptor.collection_processing_parts.cas_initializer]]
+=== CAS Initializer Descriptors (deprecated)
+
+The basic structure of a CAS Initializer Descriptor is as follows: 
+[source]
+----
+<?xml version="1.0" encoding="UTF-8" ?> 
+<casInitializerDescription
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>[ClassName] </implementationName>
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+
+</casInitializerDescription>
+----
+
+The `frameworkImplementation` element must always be set to the value ``org.apache.uima.java``.
+
+The `implementationName` element contains the fully-qualified class name of the CAS Initializer implementation.
+This must name a class that implements the `CasInitializer` interface.
+
+The `processingResourceMetaData` element contains essentially the same information as a Primitive Analysis Engine Descriptor's' `analysisEngineMetaData` element, as described in <<ugr.ref.xml.component_descriptor.aes.metadata>>, with the exception of some changes to the capabilities section.
+A CAS Initializer's capabilities element looks like this: 
+[source]
+----
+<capabilities>
+  <capability>
+    <outputs>
+      <type allAnnotatorFeatures="true|false">[String]</type>
+      <type>[TypeName]</type>
+      ...
+      <feature>[TypeName]:[Name]</feature>
+      ...
+    </outputs>
+
+    <outputSofas>
+      <sofaName>[name]</sofaName>
+      ...
+    </outputSofas>
+
+    <mimeTypesSupported>
+      <mimeType>[MIME Type]</mimeType>
+      ...
+    </mimeTypesSupported>
+  </capability>
+
+  <capability>
+    ...
+  </capability>
+  ...
+</capabilities>
+----
+
+The differences between a CAS Initializer's capabilities declaration and an Analysis Engine's capabilities declaration are that the CAS Initializer does not declare any input CAS types and features or input Sofas (because it is always the first to operate on a CAS), it doesn't have a language specifier, and that the CAS Initializer may declare a set of MIME types that it supports for its input documents.
+Examples include: text/plain, text/html, and application/pdf.
+For a list of MIME types see http://www.iana.org/assignments/media-types/.
+This information is currently only for users' information, the framework does not use it for anything.
+This may change in future versions.
+
+The `externalResourceDependencies` and `resourceManagerConfiguration` elements are exactly the same as in the Primitive Analysis Engine Descriptors (see <<ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies>> and <<ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration>>).
+
+[[ugr.ref.xml.component_descriptor.collection_processing_parts.cas_consumer]]
+=== CAS Consumer Descriptors
+
+The basic structure of a CAS Consumer Descriptor is as follows: 
+[source]
+----
+<?xml version="1.0" encoding="UTF-8" ?> 
+<casConsumerDescription 
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+
+  <implementationName>[ClassName]</implementationName> 
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+</casConsumerDescription>
+----
+
+The `frameworkImplementation` element currently must  have the value ``org.apache.uima.java``, or ``org.apache.uima.cpp``.
+
+The next subelement,``
+          <annotatorImplementationName>`` is how the UIMA framework determines which annotator class to use.
+This should contain a fully-qualified Java class name for Java implementations, or the name of a .dll or .so file for C++ implementations.
+
+The `frameworkImplementation` element must always be set to the value ``org.apache.uima.java``.
+
+The `implementationName` element must contain the fully-qualified class name of the CAS Consumer implementation, or the name  of a .dll or .so file for C++ implementations.
+For Java, the named class must implement the `CasConsumer` interface.
+
+The `processingResourceMetaData` element contains essentially the same information as a Primitive Analysis Engine Descriptor's `analysisEngineMetaData` element, described in <<ugr.ref.xml.component_descriptor.aes.metadata>>, except that the CAS Consumer Descriptor's `capabilities` element should not declare outputs or outputSofas (since CAS Consumers do not modify the CAS).
+
+The `externalResourceDependencies` and `resourceManagerConfiguration` elements are exactly the same as in Primitive Analysis Engine Descriptors (see <<ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies>> and <<ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration>>).
+
+[[ugr.ref.xml.component_descriptor.service_client]]
+== Service Client Descriptors
+
+Service Client Descriptors specify only a location of a remote service.
+They are therefore much simpler in structure.
+In the UIMA SDK, a Service Client Descriptor that refers to a valid Analysis Engine or CAS Consumer service can be used in place of the actual Analysis Engine or CAS Consumer Descriptor.
+The UIMA SDK will handle the details of calling the remote service.
+(For details on _deploying_ an Analysis Engine or CAS Consumer as a service, see xref:tug.adoc#ugr.tug.application.remote_services[Working with Remote Services].
+
+The UIMA SDK is extensible to support different types of remote services.
+In future versions, there may be different variations of service client descriptors that cater to different types of services.
+For now, the only type of service client descriptor is the ``uriSpecifier``, which supports the Vinci protocol.
+
+[source]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+  <resourceType>AnalysisEngine | CasConsumer </resourceType>
+  <uri>[URI]</uri> 
+  <protocol>Vinci</protocol> 
+  <timeout>[Integer]</timeout>
+  <parameters>
+    <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
+    <parameter name="VNS_PORT" value="9000"/>
+    <parameter name="GetMetaDataTimeout" value="[Integer]"/>
+  </parameters> 
+</uriSpecifier>
+----
+
+The `resourceType` element is required for new descriptors, but is currently allowed to be omitted for backward compatibility.
+It specifies the type of component (Analysis Engine or CAS Consumer) that is implemented by the service endpoint described by this descriptor.
+
+The `uri` element contains the URI for the web service.
+(Note that in the case of Vinci, this will be the service name, which is looked up in the Vinci Naming Service.)
+
+The `protocol` element may be set to Vinci; other protocols may be added later.
+These specify the particular data transport format that will be used.
+
+The `timeout` element is optional.
+If present, it specifies the number of milliseconds to wait for a request to be processed before an exception is thrown.
+A value of zero or less will wait forever.
+If no timeout is specified, a default value (currently 60 seconds) will be used.
+
+The parameters element is optional.
+If present, it can specify values for each of the following: 
+
+* ``VNS_HOST``: host name for the Vinci naming service. 
+* ``VNS_PORT``: port number for the Vinci naming service. 
+* ``GetMetaDataTimeout``: timeout period (in milliseconds) for the GetMetaData call. If not specified, the default is 60 seconds. This may need to be set higher if there are a lot of clients competing for connections to the service. 
+
+If the `VNS_HOST` and `VNS_PORT` are not specified in the descriptor, the values used for these comes from parameters passed on the Java command line using the `-DVNS_HOST=<host>` and/or `-DVNS_PORT=<port>` system arguments.
+If not present, and a system argument is also not present, the values for these default to `localhost` for the `VNS_HOST` and `9000` for the ``VNS_PORT``.
+
+For details on how to deploy and call Analysis Engine and CAS Consumer services, see xref:tug.adoc#ugr.tug.application.remote_services[Working with Remote Services].
+
+[[ugr.ref.xml.component_descriptor.custom_resource_specifiers]]
+== Custom Resource Specifiers
+
+A Custom Resource Specifier allows you to plug in your own Java class as a UIMA Resource.
+For example you can support a new service protocol by plugging in a Java class that implements the UIMA `AnalysisEngine` interface and communicates with the remote service.
+
+A Custom Resource Specifier has the following format:
+
+[source]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<customResourceSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+  <resourceClassName>[Java Class Name]</resourceClassName>
+  <parameters>
+    <parameter name="[String]" value="[String]"/>
+    <parameter name="[String]" value="[String]"/>
+  </parameters> 
+</customResourceSpecifier>
+----
+
+The `resourceClassName` element must contain the fully-qualified name of a Java class that can be found in the classpath (including the UIMA extension classpath, if you have specified one using the `ResourceManager.setExtensionClassPath` method).  This class must implement the UIMA `Resource` interface.
+
+When an application calls the `UIMAFramework.produceResource` method and passes a ``CustomResourceSpecifier``, the UIMA framework will load the named class and call its `initialize(ResourceSpecifier,Map)` method, passing the `CustomResourceSpecifier`	as the first argument.
+Your class can override the `initialize` method and use the `CustomResourceSpecifier` API to get access to the `parameter` names and values  specified in the XML.
+
+If you are using a custom resource specifier to plug in a class that implements a new service protocol, your class must also implement the `AnalysisEngine` interface.
+Generally it should also extend ``AnalysisEngineImplBase``.
+The key methods that should be implemented are ``getMetaData``, ``processAndOutputNewCASes``, ``collectionProcessComplete``, and ``destroy``.

@@ -43,8 +43,6 @@
     <module>../uimaj-component-test-util</module>
     <module>../jVinci</module>
     <module>../aggregate-uimaj-eclipse-plugins</module>
-    <module>../aggregate-uimaj-docbooks</module>
-    <!--module>distr-superPom</module-->
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>
@@ -54,5 +52,6 @@
          cd to the project directory and do mvn install -->
     <!--module>../uimaj-internal-tools</module-->
     <module>../uimaj-bootstrap</module>
+    <module>../uimaj-documentation</module>
   </modules>
 </project>
