@@ -84,6 +84,7 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
             <Export-Package>
               org.apache.uima.ep_launcher
             </Export-Package>

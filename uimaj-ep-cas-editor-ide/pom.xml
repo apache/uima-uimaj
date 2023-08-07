@@ -196,6 +196,7 @@
                   org.apache.uima.caseditor.editor.styleview,
                   *
                 </Import-Package>
+                <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
               </instructions>
             </configuration>
           </execution>

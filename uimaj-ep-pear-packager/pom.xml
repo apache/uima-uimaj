@@ -120,6 +120,7 @@
             <Bundle-Activator>org.apache.uima.pear.PearPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.pear;singleton:=true</Bundle-SymbolicName>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>

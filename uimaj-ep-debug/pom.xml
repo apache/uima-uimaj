@@ -81,6 +81,7 @@ UIMA data structures to the Eclipse Debug displays</description>
               org.eclipse.ui.plugin
             </Import-Package>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>

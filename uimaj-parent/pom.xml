@@ -158,6 +158,7 @@
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.release>17</maven.compiler.release>
+    <execution.environment>JavaSE-17</execution.environment>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 

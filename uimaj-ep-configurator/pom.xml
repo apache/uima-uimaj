@@ -148,6 +148,7 @@
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Plugin-Class>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Plugin-Class>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>

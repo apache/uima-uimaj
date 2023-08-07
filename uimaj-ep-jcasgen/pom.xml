@@ -119,6 +119,7 @@
             <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>

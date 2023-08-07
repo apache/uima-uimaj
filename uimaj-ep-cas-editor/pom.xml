@@ -34,16 +34,6 @@
   <url>${uimaWebsiteUrl}</url>
 
   <dependencies>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- UIMA dependencies -->
     <!--
       don't depend on the runtime plugin, instead, depend on the parts
@@ -128,6 +118,17 @@
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -205,6 +206,7 @@
                   !org.osgi.framework,
                   *
                 </Import-Package>
+                <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
               </instructions>
             </configuration>
           </execution>
