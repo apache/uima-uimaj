@@ -160,8 +160,9 @@ public class ContextForPartDialog extends /* LimitedResourceSelectionDialog */
     super.handleEvent(event);
 
     if (event.widget == resourcesUI && event.type == SWT.Selection) {
-      if (null != pickedResource) {
-        IFile f = (IFile) getResult()[0];
+      Object[] result = getResult();
+      if (null != pickedResource && result != null && result.length > 0) {
+        IFile f = (IFile) result[0];
         contextPathGUI.setText(f.getLocation().toOSString());
       }
     }
@@ -187,8 +188,9 @@ public class ContextForPartDialog extends /* LimitedResourceSelectionDialog */
   public void enableOK() {
     super.enableOK();
     String path = contextPathGUI.getText();
-    if (null != path && !"".equals(path))
+    if (null != path && !"".equals(path)) {
       okButton.setEnabled(true);
+    }
   }
 
   /*
