@@ -31,8 +31,8 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <relativePath />
     <version>17-SNAPSHOT</version>
+    <relativePath />
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
@@ -63,8 +63,7 @@
        This allows maven to find the snapshots when looking for the parent of
        this pom -->
   <repositories>
-    <!-- modify central repository access:
-         Turn on checksum checking-->
+    <!-- modify central repository access: Turn on checksum checking-->
     <repository>
       <id>central</id>
       <name>Maven Repository Switchboard</name>
@@ -140,6 +139,8 @@
      properties already, they should be injected manually into the plugins. 
     -->
     <slf4j-version>1.7.36</slf4j-version>
+    <maven.version>3.2.5</maven.version>
+
     <log4j-version>2.20.0</log4j-version>
     <commons-io-version>2.13.0</commons-io-version>
     <commons-csv-version>1.10.0</commons-csv-version>
@@ -149,7 +150,6 @@
     <mockito-version>5.4.0</mockito-version>
     <assertj-version>3.24.2</assertj-version>
     <xmlunit-version>2.9.1</xmlunit-version>
-    <maven.version>3.2.5</maven.version>
 
     <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
     <asciidoctor.version>2.5.10</asciidoctor.version>
@@ -170,13 +170,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-bom</artifactId>
-        <version>${mockito-version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${junit-version}</version>
@@ -193,16 +186,12 @@
         <artifactId>assertj-core</artifactId>
         <version>${assertj-version}</version>
       </dependency>
-      <!-- set dependency versions for logger parts -->
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>${slf4j-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j-version}</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${mockito-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -214,6 +203,18 @@
         <artifactId>xmlunit-assertj3</artifactId>
         <version>${xmlunit-version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
@@ -480,21 +481,6 @@
                   </pluginExecutions>
                 </lifecycleMappingMetadata>
               </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>spotbugs</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>com.github.spotbugs</groupId>
-              <artifactId>spotbugs-maven-plugin</artifactId>
-              <version>4.7.0.0</version>
             </plugin>
           </plugins>
         </pluginManagement>
