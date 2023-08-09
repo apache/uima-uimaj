@@ -19,6 +19,8 @@
 
 package org.apache.uima.analysis_engine.impl.sequencer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -29,7 +31,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +81,7 @@ public class SequencerCapabilityLanguageTest {
       }
       // check fileoutput
       boolean compare = FileCompare.compare(outputReferenceFile, JUnitExtension.getFile(refFile));
-      Assert.assertTrue(compare);
+      assertThat(compare).isTrue();
       if (compare) {
         outputReferenceFile.delete();
       }

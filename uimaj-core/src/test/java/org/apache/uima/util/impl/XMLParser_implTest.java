@@ -41,7 +41,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,10 +84,10 @@ public class XMLParser_implTest {
               .parse(new XMLInputSource(withImports));
       AnalysisEngineDescription desc2 = (AnalysisEngineDescription) mXmlParser
               .parse(new XMLInputSource(manuallyExpanded));
-      Assert.assertNotNull(desc1);
-      Assert.assertNotNull(desc2);
-      Assert.assertEquals(desc1.getDelegateAnalysisEngineSpecifiers(),
-              desc2.getDelegateAnalysisEngineSpecifiers());
+      assertThat(desc1).isNotNull();
+      assertThat(desc2).isNotNull();
+      assertThat(desc2.getDelegateAnalysisEngineSpecifiers())
+              .isEqualTo(desc1.getDelegateAnalysisEngineSpecifiers());
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     } finally {
@@ -106,14 +105,13 @@ public class XMLParser_implTest {
       AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(envVarRefTest),
                       new XMLParser.ParsingOptions(true, true));
-      Assert.assertEquals("foo-bar", taeDesc.getMetaData().getName());
+      assertThat(taeDesc.getMetaData().getName()).isEqualTo("foo-bar");
 
       // parse with env var ref expansion disabled
       taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(false));
-      Assert.assertEquals(
-              "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
-              taeDesc.getMetaData().getName());
+      assertThat(taeDesc.getMetaData().getName()).isEqualTo(
+              "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>");
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

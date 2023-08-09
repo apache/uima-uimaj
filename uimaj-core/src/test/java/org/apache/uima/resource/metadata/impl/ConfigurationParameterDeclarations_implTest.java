@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -27,7 +29,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
@@ -45,7 +46,6 @@ public class ConfigurationParameterDeclarations_implTest {
     ConfigurationParameterDeclarations_impl obj = new ConfigurationParameterDeclarations_impl();
     obj.buildFromXMLElement(doc.getDocumentElement(), UIMAFramework.getXMLParser());
 
-    Assert.assertEquals(1, obj.getConfigurationGroups().length);
+    assertThat(obj.getConfigurationGroups()).hasSize(1);
   }
-
 }

@@ -19,6 +19,7 @@
 
 package org.apache.uima.internal.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.UIMAFramework;
@@ -29,7 +30,6 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,26 +67,26 @@ public class ResourcePoolTest {
   @Test
   public void testGetResource() throws Exception {
     try {
-      Assert.assertEquals(3, pool1.getFreeInstances().size());
+      assertThat(pool1.getFreeInstances()).hasSize(3);
 
       // get two resources
       Resource foo = pool1.getResource();
-      Assert.assertNotNull(foo);
-      Assert.assertEquals(2, pool1.getFreeInstances().size());
+      assertThat(foo).isNotNull();
+      assertThat(pool1.getFreeInstances()).hasSize(2);
 
       Resource bar = pool1.getResource();
-      Assert.assertNotNull(bar);
-      Assert.assertTrue(!foo.equals(bar));
-      Assert.assertEquals(1, pool1.getFreeInstances().size());
+      assertThat(bar).isNotNull();
+      assertThat(!foo.equals(bar)).isTrue();
+      assertThat(pool1.getFreeInstances()).hasSize(1);
 
       // get two more resources (should exhaust pool)
       Resource a = pool1.getResource();
-      Assert.assertNotNull(a);
-      Assert.assertEquals(0, pool1.getFreeInstances().size());
+      assertThat(a).isNotNull();
+      assertThat(pool1.getFreeInstances()).hasSize(0);
 
       Resource b = pool1.getResource();
-      Assert.assertNull(b);
-      Assert.assertEquals(0, pool1.getFreeInstances().size());
+      assertThat(b).isNull();
+      assertThat(pool1.getFreeInstances()).hasSize(0);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -103,24 +103,24 @@ public class ResourcePoolTest {
       // returning null
       long startTime = System.currentTimeMillis();
       Resource foo = pool1.getResource(1000);
-      Assert.assertNotNull(foo);
-      Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
+      assertThat(foo).isNotNull();
+      assertThat(System.currentTimeMillis() - startTime < 500).isTrue();
 
       startTime = System.currentTimeMillis();
       Resource bar = pool1.getResource(1000);
-      Assert.assertNotNull(bar);
-      Assert.assertTrue(!foo.equals(bar));
-      Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
+      assertThat(bar).isNotNull();
+      assertThat(!foo.equals(bar)).isTrue();
+      assertThat(System.currentTimeMillis() - startTime < 500).isTrue();
 
       startTime = System.currentTimeMillis();
       Resource a = pool1.getResource(1000);
-      Assert.assertNotNull(a);
-      Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
+      assertThat(a).isNotNull();
+      assertThat(System.currentTimeMillis() - startTime < 500).isTrue();
 
       startTime = System.currentTimeMillis();
       Resource b = pool1.getResource(1000);
-      Assert.assertNull(b);
-      Assert.assertTrue(System.currentTimeMillis() - startTime >= 1000);
+      assertThat(b).isNull();
+      assertThat(System.currentTimeMillis() - startTime >= 1000).isTrue();
 
       // Start a thread that will release "foo" in .2 second. Demonstrate that
       // getResource() will not acquire a resource but getResource(1000) will.
@@ -129,7 +129,7 @@ public class ResourcePoolTest {
       releaserThread.start();
 
       b = pool1.getResource();
-      Assert.assertNull(b);
+      assertThat(b).isNull();
       b = pool1.getResource(5000); // wait up to 5 seconds in case machine is sluggish :-(
       // observe occasional failures - it appears the test machine gets pre-empted for several
       // seconds
@@ -138,7 +138,7 @@ public class ResourcePoolTest {
       // the checking thread timed out.
       // Changing the time the main thread waits for the release from 1 sec to 5 secs to reduce
       // spurious failures.
-      Assert.assertNotNull(b);
+      assertThat(b).isNotNull();
       releaserThread.join();
       assertEquals(null, exceptionFromReleaserThread[0]);
     } catch (Exception e) {
@@ -150,33 +150,33 @@ public class ResourcePoolTest {
   public void testReleaseResource() throws Exception {
     try {
       // acquire all the resources
-      Assert.assertEquals(3, pool1.getFreeInstances().size());
+      assertThat(pool1.getFreeInstances()).hasSize(3);
       Resource foo = pool1.getResource();
       Resource bar = pool1.getResource();
       Resource blah = pool1.getResource();
-      Assert.assertEquals(0, pool1.getFreeInstances().size());
+      assertThat(pool1.getFreeInstances()).hasSize(0);
 
       // release one
       pool1.releaseResource(foo);
-      Assert.assertEquals(1, pool1.getFreeInstances().size());
+      assertThat(pool1.getFreeInstances()).hasSize(1);
 
       // try to release "foo" again - should not change the free instances count
       // this will log a warning - first we log that this is expected
       UIMAFramework.getLogger().log(Level.WARNING,
               "Unit test is expecting to log ResourcePool warning.");
       pool1.releaseResource(foo);
-      Assert.assertEquals(1, pool1.getFreeInstances().size());
+      assertThat(pool1.getFreeInstances()).hasSize(1);
 
       // show that we can then check out a new one
       Resource test = pool1.getResource();
-      Assert.assertNotNull(test);
-      Assert.assertEquals(0, pool1.getFreeInstances().size());
+      assertThat(test).isNotNull();
+      assertThat(pool1.getFreeInstances()).hasSize(0);
 
       // release the others
       pool1.releaseResource(test);
       pool1.releaseResource(bar);
       pool1.releaseResource(blah);
-      Assert.assertEquals(3, pool1.getFreeInstances().size());
+      assertThat(pool1.getFreeInstances()).hasSize(3);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -194,13 +194,13 @@ public class ResourcePoolTest {
       pool1.releaseResource(b);
 
       // now some stuff should be recorded in the pool
-      Assert.assertTrue(!pool1.getFreeInstances().isEmpty());
+      assertThat(!pool1.getFreeInstances().isEmpty()).isTrue();
 
       // destroy the pool
       pool1.destroy();
 
       // check that everything is gone
-      Assert.assertTrue(pool1.getFreeInstances().isEmpty());
+      assertThat(pool1.getFreeInstances().isEmpty()).isTrue();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -213,7 +213,7 @@ public class ResourcePoolTest {
       ResourceMetaData poolMetaData = pool1.getMetaData();
       // only UUID should be different
       descMetaData.setUUID(poolMetaData.getUUID());
-      Assert.assertEquals(descMetaData, poolMetaData);
+      assertThat(poolMetaData).isEqualTo(descMetaData);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

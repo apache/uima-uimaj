@@ -18,6 +18,8 @@
  */
 package org.apache.uima.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,6 @@ import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
-import org.junit.Assert;
 
 public class SomeCustomResource extends Resource_ImplBase {
 
@@ -41,7 +42,7 @@ public class SomeCustomResource extends Resource_ImplBase {
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
-    Assert.assertTrue(aSpecifier instanceof CustomResourceSpecifier);
+    assertThat(aSpecifier instanceof CustomResourceSpecifier).isTrue();
     Parameter[] params = ((CustomResourceSpecifier) aSpecifier).getParameters();
     for (int i = 0; i < params.length; i++) {
       paramMap.put(params[i].getName(), params[i].getValue());

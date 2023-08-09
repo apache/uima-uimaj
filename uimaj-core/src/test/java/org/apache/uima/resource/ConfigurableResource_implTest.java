@@ -40,7 +40,6 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class ConfigurableResource_implTest {
@@ -231,7 +230,7 @@ public class ConfigurableResource_implTest {
       String[] paramsInGrp = grpParamNames[i];
       for (int j = 0; j < paramsInGrp.length; j++) {
         Object val = testResource2.getConfigParameterValue(groupNames[i], paramsInGrp[j]);
-        Assert.assertEquals(val, grpValues[i][j]);
+        assertThat(grpValues[i][j]).isEqualTo(val);
       }
     }
   }
@@ -250,7 +249,7 @@ public class ConfigurableResource_implTest {
 
       // test default fallback
       String str3 = (String) test.getConfigParameterValue("StringParam");
-      Assert.assertEquals("en", str3);
+      assertThat(str3).isEqualTo("en");
 
       // The below was commented out because it has a dependency on the jedii_cpe_impl module
       // //XMLInputSource in = new

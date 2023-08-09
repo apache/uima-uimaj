@@ -19,6 +19,7 @@
 
 package org.apache.uima.internal.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -41,7 +42,6 @@ import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -78,13 +78,14 @@ public class AnalysisEnginePoolTest {
 
       AnalysisEngine tae = pool.getAnalysisEngine();
       AnalysisEngineMetaData md = tae.getAnalysisEngineMetaData();
-      Assert.assertNotNull(md);
-      Assert.assertEquals("Simple Test", md.getName());
+      assertThat(md).isNotNull();
+      assertThat(md.getName()).isEqualTo("Simple Test");
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     } finally {
-      if (pool != null)
+      if (pool != null) {
         pool.destroy();
+      }
     }
   }
 
@@ -182,7 +183,7 @@ public class AnalysisEnginePoolTest {
 
         // check pool metadata
         pool.getMetaData().setUUID(tae.getMetaData().getUUID());
-        Assert.assertEquals(tae.getMetaData(), pool.getMetaData());
+        assertThat(pool.getMetaData()).isEqualTo(tae.getMetaData());
       } finally {
         pool.releaseAnalysisEngine(tae);
       }

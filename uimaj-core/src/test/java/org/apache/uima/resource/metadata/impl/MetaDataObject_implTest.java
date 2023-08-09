@@ -39,7 +39,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -101,9 +100,9 @@ public class MetaDataObject_implTest {
   // HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
   // HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
   //
-  // Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
-  // Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
-  // Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
+  // assertThat(apple1Attrs).isEqualTo(TestFruitObject.getAttributeSet());
+  // assertThat(orangeAttrs).isEqualTo(TestFruitObject.getAttributeSet());
+  // assertThat(bagAttrs).isEqualTo(TestFruitBagObject.getAttributeSet());
   // } catch (RuntimeException e) {
   // JUnitExtension.handleException(e);
   // }
@@ -213,10 +212,10 @@ public class MetaDataObject_implTest {
     newFruitBag.buildFromXMLElement(fruitBagXmlDoc.getDocumentElement(), xmlp);
 
     // new objects should be equal to the originals
-    Assert.assertEquals(apple1, newApple1);
-    Assert.assertEquals(apple2, newApple2);
-    Assert.assertEquals(orange, newOrange);
-    Assert.assertTrue(fruitBag.equals(newFruitBag));
+    assertThat(newApple1).isEqualTo(apple1);
+    assertThat(newApple2).isEqualTo(apple2);
+    assertThat(newOrange).isEqualTo(orange);
+    assertThat(fruitBag.equals(newFruitBag)).isTrue();
 
     // test special cases
 
@@ -227,17 +226,17 @@ public class MetaDataObject_implTest {
     TestFruitBagObject bag = new TestFruitBagObject();
     bag.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
     TestFruitObject[] fruits = bag.getFruits();
-    Assert.assertEquals(2, fruits.length);
-    Assert.assertEquals("banana", fruits[0].getName());
-    Assert.assertEquals("raspberry", fruits[1].getName());
+    assertThat(fruits.length).isEqualTo(2);
+    assertThat(fruits[0].getName()).isEqualTo("banana");
+    assertThat(fruits[1].getName()).isEqualTo("raspberry");
 
     // property name omitted but can be inferred from type of value
     xmlStr = "<fruit><name>banana</name><string>yellow</string></fruit>";
     xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
     TestFruitObject banana = new TestFruitObject();
     banana.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
-    Assert.assertEquals("yellow", banana.getColor());
-    Assert.assertEquals("banana", banana.getName());
+    assertThat(banana.getColor()).isEqualTo("yellow");
+    assertThat(banana.getName()).isEqualTo("banana");
 
     // env var reference
     xmlStr = "<fruit><name>raspberry</name><string><envVarRef>test.raspberry.color</envVarRef></string></fruit>";
@@ -245,8 +244,8 @@ public class MetaDataObject_implTest {
     xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
     TestFruitObject raspberry = new TestFruitObject();
     raspberry.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
-    Assert.assertEquals("red", raspberry.getColor());
-    Assert.assertEquals("raspberry", raspberry.getName());
+    assertThat(raspberry.getColor()).isEqualTo("red");
+    assertThat(raspberry.getName()).isEqualTo("raspberry");
   }
 
   @Test

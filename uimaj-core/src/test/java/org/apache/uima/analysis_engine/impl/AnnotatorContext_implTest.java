@@ -19,16 +19,15 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
@@ -41,7 +40,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.TestResourceInterface;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -138,48 +136,35 @@ public class AnnotatorContext_implTest {
    */
   @Test
   public void testGetConfigParameterValueString() throws Exception {
-    try {
-      // this method should get parameter values from the default "en" group
-      String str = (String) mAC1.getConfigParameterValue("StringParam");
-      Assert.assertEquals("en", str);
+    // this method should get parameter values from the default "en" group
+    String str = (String) mAC1.getConfigParameterValue("StringParam");
+    assertThat(str).isEqualTo("en");
 
-      String[] strArr = (String[]) mAC1.getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(2, strArr.length);
-      Assert.assertEquals("e", strArr[0]);
-      Assert.assertEquals("n", strArr[1]);
+    String[] strArr = (String[]) mAC1.getConfigParameterValue("StringArrayParam");
+    assertThat(strArr).containsExactly("e", "n");
 
-      Integer intVal = (Integer) mAC1.getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(42, intVal.intValue());
+    Integer intVal = (Integer) mAC1.getConfigParameterValue("IntegerParam");
+    assertThat(intVal).isEqualTo(42);
 
-      Integer[] intArr = (Integer[]) mAC1.getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(3, intArr.length);
-      Assert.assertEquals(1, intArr[0].intValue());
-      Assert.assertEquals(2, intArr[1].intValue());
-      Assert.assertEquals(3, intArr[2].intValue());
+    Integer[] intArr = (Integer[]) mAC1.getConfigParameterValue("IntegerArrayParam");
+    assertThat(intArr).containsExactly(1, 2, 3);
 
-      Float floatVal = (Float) mAC1.getConfigParameterValue("FloatParam");
-      Assert.assertEquals(null, floatVal);
+    Float floatVal = (Float) mAC1.getConfigParameterValue("FloatParam");
+    assertThat(floatVal).isNull();
 
-      // test override
-      String str2 = (String) mAC2.getConfigParameterValue("StringParam");
-      Assert.assertEquals("override", str2);
-      // other values should not be affected
-      Integer intVal2 = (Integer) mAC1.getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(42, intVal2.intValue());
+    // test override
+    String str2 = (String) mAC2.getConfigParameterValue("StringParam");
+    assertThat(str2).isEqualTo("override");
+    // other values should not be affected
+    Integer intVal2 = (Integer) mAC1.getConfigParameterValue("IntegerParam");
+    assertThat(intVal2.intValue()).isEqualTo(42);
 
-      // test default fallback
-      String str3 = (String) mAC4.getConfigParameterValue("StringParam");
-      Assert.assertEquals("test", str3);
+    // test default fallback
+    String str3 = (String) mAC4.getConfigParameterValue("StringParam");
+    assertThat(str3).isEqualTo("test");
 
-      String[] strArr2 = (String[]) mAC4.getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(4, strArr2.length);
-      Assert.assertEquals("t", strArr2[0]);
-      Assert.assertEquals("e", strArr2[1]);
-      Assert.assertEquals("s", strArr2[2]);
-      Assert.assertEquals("t", strArr2[3]);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    String[] strArr2 = (String[]) mAC4.getConfigParameterValue("StringArrayParam");
+    assertThat(strArr2).containsExactly("t", "e", "s", "t");
   }
 
   /*
@@ -187,147 +172,97 @@ public class AnnotatorContext_implTest {
    */
   @Test
   public void testGetConfigParameterValueStringString() throws Exception {
-    try {
-      // en-US group
-      String str = (String) mAC1.getConfigParameterValue("en-US", "StringParam");
-      Assert.assertEquals("en", str); // language fallback
+    // en-US group
+    // language fallback
+    assertThat((String) mAC1.getConfigParameterValue("en-US", "StringParam")).isEqualTo("en");
 
-      String[] strArr = (String[]) mAC1.getConfigParameterValue("en-US", "StringArrayParam");
-      Assert.assertEquals(5, strArr.length);
-      Assert.assertEquals("e", strArr[0]);
-      Assert.assertEquals("n", strArr[1]);
-      Assert.assertEquals("-", strArr[2]);
-      Assert.assertEquals("U", strArr[3]);
-      Assert.assertEquals("S", strArr[4]);
+    assertThat((String[]) mAC1.getConfigParameterValue("en-US", "StringArrayParam"))
+            .containsExactly("e", "n", "-", "U", "S");
 
-      Integer intVal = (Integer) mAC1.getConfigParameterValue("en-US", "IntegerParam");
-      Assert.assertEquals(1776, intVal.intValue());
+    assertThat(((Integer) mAC1.getConfigParameterValue("en-US", "IntegerParam")).intValue())
+            .isEqualTo(1776);
 
-      Integer[] intArr = (Integer[]) mAC1.getConfigParameterValue("en-US", "IntegerArrayParam");
-      Assert.assertEquals(3, intArr.length); // language fallback
-      Assert.assertEquals(1, intArr[0].intValue());
-      Assert.assertEquals(2, intArr[1].intValue());
-      Assert.assertEquals(3, intArr[2].intValue());
+    // language fallback
+    assertThat((Integer[]) mAC1.getConfigParameterValue("en-US", "IntegerArrayParam"))
+            .containsExactly(1, 2, 3);
 
-      Float floatVal = (Float) mAC1.getConfigParameterValue("en-US", "FloatParam");
-      Assert.assertEquals(null, floatVal);
+    assertThat((Float) mAC1.getConfigParameterValue("en-US", "FloatParam")).isNull();
 
-      // de group
-      String str2 = (String) mAC1.getConfigParameterValue("de", "StringParam");
-      Assert.assertEquals("de", str2);
+    // de group
+    assertThat((String) mAC1.getConfigParameterValue("de", "StringParam")).isEqualTo("de");
 
-      String[] strArr2 = (String[]) mAC1.getConfigParameterValue("de", "StringArrayParam");
-      Assert.assertEquals(2, strArr2.length);
-      Assert.assertEquals("d", strArr2[0]);
-      Assert.assertEquals("e", strArr2[1]);
+    assertThat((String[]) mAC1.getConfigParameterValue("de", "StringArrayParam"))
+            .containsExactly("d", "e");
 
-      Integer intVal2 = (Integer) mAC1.getConfigParameterValue("de", "IntegerParam");
-      Assert.assertEquals(42, intVal2.intValue()); // default fallback
+    assertThat(((Integer) mAC1.getConfigParameterValue("de", "IntegerParam")).intValue())
+            .isEqualTo(42); // default fallback
 
-      Integer[] intArr2 = (Integer[]) mAC1.getConfigParameterValue("de", "IntegerArrayParam");
-      Assert.assertEquals(3, intArr2.length);
-      Assert.assertEquals(4, intArr2[0].intValue());
-      Assert.assertEquals(5, intArr2[1].intValue());
-      Assert.assertEquals(6, intArr2[2].intValue());
+    assertThat((Integer[]) mAC1.getConfigParameterValue("de", "IntegerArrayParam"))
+            .containsExactly(4, 5, 6);
 
-      Float floatVal2 = (Float) mAC1.getConfigParameterValue("de", "FloatParam");
-      Assert.assertEquals(null, floatVal2);
+    assertThat((Float) mAC1.getConfigParameterValue("de", "FloatParam")).isNull();
 
-      // zh group
-      String str3 = (String) mAC1.getConfigParameterValue("zh", "StringParam");
-      Assert.assertEquals("zh", str3);
+    // zh group
+    assertThat((String) mAC1.getConfigParameterValue("zh", "StringParam")).isEqualTo("zh");
 
-      String[] strArr3 = (String[]) mAC1.getConfigParameterValue("zh", "StringArrayParam");
-      Assert.assertEquals(2, strArr3.length);
-      Assert.assertEquals("z", strArr3[0]);
-      Assert.assertEquals("h", strArr3[1]);
+    assertThat((String[]) mAC1.getConfigParameterValue("zh", "StringArrayParam"))
+            .containsExactly("z", "h");
 
-      Integer intVal3 = (Integer) mAC1.getConfigParameterValue("zh", "IntegerParam");
-      Assert.assertEquals(42, intVal3.intValue()); // default fallback
+    assertThat(((Integer) mAC1.getConfigParameterValue("zh", "IntegerParam")).intValue())
+            .isEqualTo(42); // default fallback
 
-      Integer[] intArr3 = (Integer[]) mAC1.getConfigParameterValue("zh", "IntegerArrayParam");
-      Assert.assertEquals(3, intArr3.length); // default fallback
-      Assert.assertEquals(1, intArr3[0].intValue());
-      Assert.assertEquals(2, intArr3[1].intValue());
-      Assert.assertEquals(3, intArr3[2].intValue());
+    assertThat((Integer[]) mAC1.getConfigParameterValue("zh", "IntegerArrayParam"))
+            .containsExactly(1, 2, 3); // default fallback
 
-      Float floatVal3 = (Float) mAC1.getConfigParameterValue("zh", "FloatParam");
-      Assert.assertEquals(3.14, floatVal3, 0.0001);
+    assertThat((Float) mAC1.getConfigParameterValue("zh", "FloatParam")).isCloseTo(3.14f,
+            within(0.0001f));
 
-      // test override
-      String str4 = (String) mAC2.getConfigParameterValue("en", "StringParam");
-      Assert.assertEquals("override", str4);
-      // fallback too
-      String str5 = (String) mAC2.getConfigParameterValue("en-GB", "StringParam");
-      Assert.assertEquals("override", str5);
-      // other groups should not be affected
-      String str6 = (String) mAC2.getConfigParameterValue("de", "StringParam");
-      Assert.assertEquals("de", str6);
+    // test override
+    assertThat((String) mAC2.getConfigParameterValue("en", "StringParam")).isEqualTo("override");
+    // fallback too
+    assertThat((String) mAC2.getConfigParameterValue("en-GB", "StringParam")).isEqualTo("override");
+    // other groups should not be affected
+    assertThat((String) mAC2.getConfigParameterValue("de", "StringParam")).isEqualTo("de");
 
-      // test empty string array
-      String[] strArr4 = (String[]) mAC2.getConfigParameterValue("x-unspecified",
-              "StringArrayParam");
-      Assert.assertTrue(Arrays.equals(strArr4, new String[0]));
+    // test empty string array
+    assertThat((String[]) mAC2.getConfigParameterValue("x-unspecified", "StringArrayParam"))
+            .isEmpty();
 
-      // test nonexistent group
-      String str7 = (String) mAC1.getConfigParameterValue("es", "StringParam");
-      Assert.assertEquals("en", str7); // language_fallback for completely nonexistent language
-      String str8 = (String) mAC4.getConfigParameterValue("es", "StringParam");
-      Assert.assertEquals("test", str8); // default_fallback for nonexistent group
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    // test nonexistent group
+    // language_fallback for completely nonexistent language
+    assertThat((String) mAC1.getConfigParameterValue("es", "StringParam")).isEqualTo("en");
+    // default_fallback for nonexistent group
+    assertThat((String) mAC4.getConfigParameterValue("es", "StringParam")).isEqualTo("test");
   }
 
   @Test
   public void testGetConfigurationGroupNames() {
-    String[] names = mAC1.getConfigurationGroupNames();
-    Assert.assertEquals(5, names.length);
-    List<String> l = new ArrayList<>(Arrays.asList(names));
-    Assert.assertTrue(l.contains("en"));
-    Assert.assertTrue(l.contains("en-US"));
-    Assert.assertTrue(l.contains("de"));
-    Assert.assertTrue(l.contains("zh"));
-    Assert.assertTrue(l.contains("x-unspecified"));
+    assertThat(mAC1.getConfigurationGroupNames()).containsExactlyInAnyOrder("en", "en-US", "de",
+            "zh", "x-unspecified");
 
     // try on something that has no groups
-    names = mAC5.getConfigurationGroupNames();
-    Assert.assertEquals(0, names.length);
+    assertThat(mAC5.getConfigurationGroupNames()).isEmpty();
   }
 
   @Test
   public void testGetConfigParameterNames() {
-    String[] names = mAC5.getConfigParameterNames();
-    Assert.assertEquals(6, names.length);
-    Assert.assertEquals("StringParam", names[0]);
-    Assert.assertEquals("StringArrayParam", names[1]);
-    Assert.assertEquals("IntegerParam", names[2]);
-    Assert.assertEquals("IntegerArrayParam", names[3]);
-    Assert.assertEquals("FloatParam", names[4]);
-    Assert.assertEquals("FloatArrayParam", names[5]);
+    assertThat(mAC5.getConfigParameterNames()).containsExactly("StringParam", "StringArrayParam",
+            "IntegerParam", "IntegerArrayParam", "FloatParam", "FloatArrayParam");
 
     // try on something that has groups
-    names = mAC1.getConfigParameterNames();
-    Assert.assertEquals(0, names.length);
+    assertThat(mAC1.getConfigParameterNames()).isEmpty();
   }
 
   @Test
   public void testGetConfigParameterNamesString() {
-    String[] names = mAC1.getConfigParameterNames("en");
-    Assert.assertEquals(4, names.length);
-    List<String> l = new ArrayList<>(Arrays.asList(names));
-    Assert.assertTrue(l.contains("StringParam"));
-    Assert.assertTrue(l.contains("StringArrayParam"));
-    Assert.assertTrue(l.contains("IntegerParam"));
-    Assert.assertTrue(l.contains("IntegerArrayParam"));
+    assertThat(mAC1.getConfigParameterNames("en")).containsExactlyInAnyOrder("StringParam",
+            "StringArrayParam", "IntegerParam", "IntegerArrayParam");
 
     // try on nonexistent group
-    names = mAC1.getConfigParameterNames("foo");
-    Assert.assertEquals(0, names.length);
+    assertThat(mAC1.getConfigParameterNames("foo")).isEmpty();
 
     // try on something that has no groups
-    names = mAC4.getConfigParameterNames("en");
-    Assert.assertEquals(0, names.length);
+    assertThat(mAC4.getConfigParameterNames("en")).isEmpty();
   }
 
   @Test
@@ -335,13 +270,13 @@ public class AnnotatorContext_implTest {
     try {
       // custom object
       Object r = mAC3.getResourceObject("TestResourceObject");
-      Assert.assertNotNull(r);
-      Assert.assertTrue(r instanceof TestResourceInterface);
+      assertThat(r).isNotNull();
+      assertThat(r instanceof TestResourceInterface).isTrue();
 
       // standard data resource
       Object r2 = mAC3.getResourceObject("TestFileResource");
-      Assert.assertNotNull(r2);
-      Assert.assertTrue(r2 instanceof DataResource);
+      assertThat(r2).isNotNull();
+      assertThat(r2 instanceof DataResource).isTrue();
 
       // parameterized resources (should fail)
       AnnotatorContextException ex = null;
@@ -350,7 +285,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -358,11 +293,11 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       Object r3 = mAC3.getResourceObject("Unknown");
-      Assert.assertNull(r3);
+      assertThat(r3).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -372,12 +307,10 @@ public class AnnotatorContext_implTest {
   public void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
-      URL url = mAC3.getResourceURL("TestFileResource");
-      Assert.assertNotNull(url);
+      assertThat(mAC3.getResourceURL("TestFileResource")).isNotNull();
 
       // custom resource object (should return null)
-      URL url2 = mAC3.getResourceURL("TestResourceObject");
-      Assert.assertNull(url2);
+      assertThat(mAC3.getResourceURL("TestResourceObject")).isNull();
 
       // parameterized resources (should fail)
       AnnotatorContextException ex = null;
@@ -386,7 +319,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -394,23 +327,19 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
-      URL url3 = mAC3.getResourceURL("Unknown");
-      Assert.assertNull(url3);
+      assertThat(mAC3.getResourceURL("Unknown")).isNull();
 
       // passthrough to class loader
-      URL url5 = mAC3.getResourceURL("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(url5);
+      assertThat(mAC3.getResourceURL("org/apache/uima/analysis_engine/impl/testDataFile3.dat")).isNotNull();
 
       // passthrough to data path
-      URL url6 = mAC1.getResourceURL("testDataFile.dat");
-      Assert.assertNotNull(url6);
+      assertThat(mAC1.getResourceURL("testDataFile.dat")).isNotNull();
 
       // for directory
-      URL url7 = mAC3.getResourceURL("subdir");
-      Assert.assertNotNull(url7);
+      assertThat(mAC3.getResourceURL("subdir")).isNotNull();
 
       // spaces as part of extension classpath (spaces should be URL-encoded)
       URL url8 = mAC3.getResourceURL("OtherFileResource");
@@ -427,12 +356,10 @@ public class AnnotatorContext_implTest {
   public void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
-      URI uri = mAC3.getResourceURI("TestFileResource");
-      Assert.assertNotNull(uri);
+      assertThat(mAC3.getResourceURI("TestFileResource")).isNotNull();
 
       // custom resource object (should return null)
-      URI uri2 = mAC3.getResourceURI("TestResourceObject");
-      Assert.assertNull(uri2);
+      assertThat(mAC3.getResourceURI("TestResourceObject")).isNull();
 
       // parameterized resources (should fail)
       AnnotatorContextException ex = null;
@@ -441,7 +368,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -449,23 +376,19 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
-      URI uri3 = mAC3.getResourceURI("Unknown");
-      Assert.assertNull(uri3);
+      assertThat(mAC3.getResourceURI("Unknown")).isNull();
 
       // passthrough to class loader
-      URI uri5 = mAC3.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(uri5);
+      assertThat(mAC3.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat")).isNotNull();
 
       // passthrough to data path
-      URI uri6 = mAC1.getResourceURI("testDataFile.dat");
-      Assert.assertNotNull(uri6);
+      assertThat(mAC1.getResourceURI("testDataFile.dat")).isNotNull();
 
       // for directory
-      URI uri7 = mAC3.getResourceURI("subdir");
-      Assert.assertNotNull(uri7);
+      assertThat(mAC3.getResourceURI("subdir")).isNotNull();
 
       // spaces as part of extension classpath (spaces should be decoded)
       URI uri8 = mAC3.getResourceURI("OtherFileResource");
@@ -482,12 +405,10 @@ public class AnnotatorContext_implTest {
   public void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
-      String path = mAC3.getResourceFilePath("TestFileResource");
-      Assert.assertNotNull(path);
+      assertThat(mAC3.getResourceFilePath("TestFileResource")).isNotNull();
 
       // custom resource object (should return null)
-      String path2 = mAC3.getResourceFilePath("TestResourceObject");
-      Assert.assertNull(path2);
+      assertThat(mAC3.getResourceFilePath("TestResourceObject")).isNull();
 
       // parameterized resources (should fail)
       AnnotatorContextException ex = null;
@@ -496,7 +417,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -504,24 +425,21 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
-      String path3 = mAC3.getResourceFilePath("Unknown");
-      Assert.assertNull(path3);
+      assertThat(mAC3.getResourceFilePath("Unknown")).isNull();
 
       // passthrough to class loader
       String path5 = mAC3
               .getResourceFilePath("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(path5);
+      assertThat(path5).isNotNull();
 
       // passthrough to data path
-      String path6 = mAC1.getResourceFilePath("testDataFile.dat");
-      Assert.assertNotNull(path6);
+      assertThat(mAC1.getResourceFilePath("testDataFile.dat")).isNotNull();
 
       // for directory
-      String path7 = mAC3.getResourceFilePath("subdir");
-      Assert.assertNotNull(path7);
+      assertThat(mAC3.getResourceFilePath("subdir")).isNotNull();
 
       // spaces as part of extension classpath (spaces should be decoded)
       String path8 = mAC3.getResourceFilePath("OtherFileResource");
@@ -538,12 +456,10 @@ public class AnnotatorContext_implTest {
   public void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
-      InputStream strm = mAC3.getResourceAsStream("TestFileResource");
-      Assert.assertNotNull(strm);
+      assertThat(mAC3.getResourceAsStream("TestFileResource")).isNotNull();
 
       // custom resource object (should return null)
-      InputStream strm2 = mAC3.getResourceAsStream("TestResourceObject");
-      Assert.assertNull(strm2);
+      assertThat(mAC3.getResourceAsStream("TestResourceObject")).isNull();
 
       // parameterized resources (should fail)
       AnnotatorContextException ex = null;
@@ -552,7 +468,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -560,23 +476,23 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       InputStream strm3 = mAC3.getResourceAsStream("Unknown");
-      Assert.assertNull(strm3);
+      assertThat(strm3).isNull();
 
       // passthrough to class loader
       InputStream strm4 = mAC3
               .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(strm4);
+      assertThat(strm4).isNotNull();
       // for directory
       InputStream strm5 = mAC3.getResourceAsStream("subdir");
-      Assert.assertNotNull(strm5);
+      assertThat(strm5).isNotNull();
 
       // passthrough to data path
       InputStream strm6 = mAC1.getResourceAsStream("testDataFile.dat");
-      Assert.assertNotNull(strm6);
+      assertThat(strm6).isNotNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -587,21 +503,21 @@ public class AnnotatorContext_implTest {
     try {
       // standard data resource
       Object r = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(r);
-      Assert.assertTrue(r instanceof DataResource);
+      assertThat(r).isNotNull();
+      assertThat(r instanceof DataResource).isTrue();
       Object r2 = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(r2);
-      Assert.assertTrue(r2 instanceof DataResource);
-      Assert.assertFalse(r2.equals(r));
+      assertThat(r2).isNotNull();
+      assertThat(r2 instanceof DataResource).isTrue();
+      assertThat(r2.equals(r)).isFalse();
 
       // custom object
       Object r3 = mAC3.getResourceObject("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNotNull(r3);
-      Assert.assertTrue(r3 instanceof TestResourceInterface);
+      assertThat(r3).isNotNull();
+      assertThat(r3 instanceof TestResourceInterface).isTrue();
       Object r4 = mAC3.getResourceObject("TestLanguageResourceObject", new String[] { "de" });
-      Assert.assertNotNull(r4);
-      Assert.assertTrue(r4 instanceof TestResourceInterface);
-      Assert.assertFalse(r4.equals(r3));
+      assertThat(r4).isNotNull();
+      assertThat(r4 instanceof TestResourceInterface).isTrue();
+      assertThat(r4.equals(r3)).isFalse();
 
       // parameter values for which no resource exists (should fail)
       AnnotatorContextException ex = null;
@@ -610,7 +526,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -618,7 +534,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -627,7 +543,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -635,11 +551,11 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       Object r5 = mAC3.getResourceObject("Unknown", new String[] { "en" });
-      Assert.assertNull(r5);
+      assertThat(r5).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -651,17 +567,17 @@ public class AnnotatorContext_implTest {
       // standard data resource
       InputStream strm = mAC3.getResourceAsStream("TestFileLanguageResource",
               new String[] { "en" });
-      Assert.assertNotNull(strm);
+      assertThat(strm).isNotNull();
 
       InputStream strm2 = mAC3.getResourceAsStream("TestFileLanguageResource",
               new String[] { "de" });
-      Assert.assertNotNull(strm2);
-      Assert.assertFalse(strm2.equals(strm));
+      assertThat(strm2).isNotNull();
+      assertThat(strm2.equals(strm)).isFalse();
 
       // custom object (should return null)
       InputStream strm3 = mAC3.getResourceAsStream("TestLanguageResourceObject",
               new String[] { "en" });
-      Assert.assertNull(strm3);
+      assertThat(strm3).isNull();
 
       // parameter values for which no resource exists (should fail)
       AnnotatorContextException ex = null;
@@ -670,7 +586,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -678,7 +594,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -687,7 +603,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -695,11 +611,11 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       InputStream strm4 = mAC3.getResourceAsStream("Unknown", new String[] { "en" });
-      Assert.assertNull(strm4);
+      assertThat(strm4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -710,15 +626,15 @@ public class AnnotatorContext_implTest {
     try {
       // standard data resource
       URL url = mAC3.getResourceURL("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(url);
+      assertThat(url).isNotNull();
 
       URL url2 = mAC3.getResourceURL("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(url2);
-      Assert.assertFalse(url2.toString().equals(url.toString()));
+      assertThat(url2).isNotNull();
+      assertThat(url2.toString().equals(url.toString())).isFalse();
 
       // custom object (should return null)
       URL url3 = mAC3.getResourceURL("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNull(url3);
+      assertThat(url3).isNull();
 
       // parameter values for which no resource exists (should fail)
       AnnotatorContextException ex = null;
@@ -727,7 +643,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -735,7 +651,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -744,7 +660,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -752,11 +668,11 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       URL url4 = mAC3.getResourceURL("Unknown", new String[] { "en" });
-      Assert.assertNull(url4);
+      assertThat(url4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -767,15 +683,15 @@ public class AnnotatorContext_implTest {
     try {
       // standard data resource
       URI uri = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(uri);
+      assertThat(uri).isNotNull();
 
       URI uri2 = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(uri2);
-      Assert.assertFalse(uri2.equals(uri));
+      assertThat(uri2).isNotNull();
+      assertThat(uri2.equals(uri)).isFalse();
 
       // custom object (should return null)
       URI uri3 = mAC3.getResourceURI("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNull(uri3);
+      assertThat(uri3).isNull();
 
       // parameter values for which no resource exists (should fail)
       AnnotatorContextException ex = null;
@@ -784,7 +700,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -792,7 +708,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -801,7 +717,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -809,11 +725,11 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       URI uri4 = mAC3.getResourceURI("Unknown", new String[] { "en" });
-      Assert.assertNull(uri4);
+      assertThat(uri4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -824,15 +740,15 @@ public class AnnotatorContext_implTest {
     try {
       // standard data resource
       String path = mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(path);
+      assertThat(path).isNotNull();
 
       String path2 = mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(path2);
-      Assert.assertFalse(path2.equals(path));
+      assertThat(path2).isNotNull();
+      assertThat(path2.equals(path)).isFalse();
 
       // custom object (should return null)
       String path3 = mAC3.getResourceFilePath("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNull(path3);
+      assertThat(path3).isNull();
 
       // parameter values for which no resource exists (should fail)
       AnnotatorContextException ex = null;
@@ -841,7 +757,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -849,7 +765,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -858,7 +774,7 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -866,11 +782,11 @@ public class AnnotatorContext_implTest {
       } catch (AnnotatorContextException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       String path4 = mAC3.getResourceFilePath("Unknown", new String[] { "en" });
-      Assert.assertNull(path4);
+      assertThat(path4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -879,8 +795,8 @@ public class AnnotatorContext_implTest {
   @Test
   public void testGetDataPath() throws Exception {
     try {
-      Assert.assertEquals(TEST_DATAPATH, mAC1.getDataPath());
-      Assert.assertEquals(System.getProperty("user.dir"), mAC4.getDataPath());
+      assertThat(mAC1.getDataPath()).isEqualTo(TEST_DATAPATH);
+      assertThat(mAC4.getDataPath()).isEqualTo(System.getProperty("user.dir"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

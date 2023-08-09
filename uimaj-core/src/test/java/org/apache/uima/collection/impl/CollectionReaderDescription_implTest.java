@@ -20,6 +20,7 @@
 package org.apache.uima.collection.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -60,7 +61,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -196,7 +196,7 @@ public class CollectionReaderDescription_implTest {
               .getXMLParser().parse(new XMLInputSource(is, null));
 
       // compare
-      Assert.assertEquals(mTestDesc, newDesc);
+      assertThat(newDesc).isEqualTo(mTestDesc);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -213,7 +213,7 @@ public class CollectionReaderDescription_implTest {
       CollectionReaderDescription newDesc = (CollectionReaderDescription) SerializationUtils
               .deserialize(testDescBytes);
 
-      Assert.assertEquals(mTestDesc, newDesc);
+      assertThat(newDesc).isEqualTo(mTestDesc);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

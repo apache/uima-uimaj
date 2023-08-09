@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertTrue;
 
@@ -39,7 +40,6 @@ import org.apache.uima.resource.metadata.impl.ExternalResourceBinding_impl;
 import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -155,7 +155,7 @@ public class ResourceManager_implTest {
     try {
       String path = "c:\\this\\path\\is;for\\windows";
       mManager.setDataPath(path);
-      Assert.assertEquals(path, mManager.getDataPath());
+      assertThat(mManager.getDataPath()).isEqualTo(path);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -166,40 +166,38 @@ public class ResourceManager_implTest {
     try {
       // test retrieval
       DataResource r1 = (DataResource) mManager.getResource(TEST_CONTEXT_NAME + "myDataKey");
-      Assert.assertEquals(TEST_DATA_FILE.toURL(), r1.getUrl());
+      assertThat(r1.getUrl()).isEqualTo(TEST_DATA_FILE.toURL());
 
       TestResourceInterface r2 = (TestResourceInterface) mManager
               .getResource(TEST_CONTEXT_NAME + "myCustomObjectKey");
-      Assert.assertEquals(TEST_STRING, r2.readString());
+      assertThat(r2.readString()).isEqualTo(TEST_STRING);
 
       DataResource en_r = (DataResource) mManager
               .getResource(TEST_CONTEXT_NAME + "myLanguageResourceKey", new String[] { "en" });
-      Assert.assertTrue(
-              en_r.getUrl().toString().endsWith("FileLanguageResource_implTest_data_en.dat"));
+      assertThat(en_r.getUrl().toString()).endsWith("FileLanguageResource_implTest_data_en.dat");
 
       DataResource de_r = (DataResource) mManager
               .getResource(TEST_CONTEXT_NAME + "myLanguageResourceKey", new String[] { "de" });
-      Assert.assertTrue(
-              de_r.getUrl().toString().endsWith("FileLanguageResource_implTest_data_de.dat"));
+      assertThat(de_r.getUrl().toString()).endsWith("FileLanguageResource_implTest_data_de.dat");
 
       // this should get the exact same DataResource object as for the "en" param
       DataResource enus_r = (DataResource) mManager
               .getResource(TEST_CONTEXT_NAME + "myLanguageResourceKey", new String[] { "en-US" });
-      Assert.assertTrue(en_r == enus_r);
+      assertThat(en_r == enus_r).isTrue();
 
       TestResourceInterface en_obj = (TestResourceInterface) mManager.getResource(
               TEST_CONTEXT_NAME + "myLanguageResourceObjectKey", new String[] { "en" });
-      Assert.assertEquals("English", en_obj.readString());
+      assertThat(en_obj.readString()).isEqualTo("English");
 
       // test spaces in datapath
       DataResource r3 = (DataResource) mManager
               .getResource(TEST_CONTEXT_NAME + "myResourceWithSpaceInPathKey");
       URL expectedBaseUrl = new File(TEST_DATAPATH_WITH_SPACES).toURL();
       URL expectedUrl = new URL(expectedBaseUrl, TEST_FILE_IN_DATAPATH);
-      Assert.assertEquals(expectedUrl, r3.getUrl());
+      assertThat(r3.getUrl()).isEqualTo(expectedUrl);
       URI expectedBaseUri = new File(TEST_DATAPATH_WITH_SPACES).toURI();
       URI expectedUri = expectedBaseUri.resolve("Test.dat");
-      Assert.assertEquals(expectedUri, r3.getUri());
+      assertThat(r3.getUri()).isEqualTo(expectedUri);
 
       mManager.destroy();
       boolean caught = false;

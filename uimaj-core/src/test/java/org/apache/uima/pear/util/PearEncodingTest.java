@@ -19,10 +19,11 @@
 
 package org.apache.uima.pear.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,7 +42,7 @@ public class PearEncodingTest {
     // normalize encoding
     encoding = encoding.toUpperCase();
 
-    Assert.assertTrue(encoding.equals("UTF-8"));
+    assertThat(encoding.equals("UTF-8")).isTrue();
   }
 
   @Test
@@ -61,7 +62,7 @@ public class PearEncodingTest {
     // normalize encoding
     encoding = encoding.toUpperCase();
 
-    Assert.assertTrue(encoding.equals("UTF-8"));
+    assertThat(encoding.equals("UTF-8")).isTrue();
   }
 
   @Test
@@ -77,7 +78,7 @@ public class PearEncodingTest {
     // normalize encoding
     encoding = encoding.toUpperCase();
 
-    Assert.assertTrue(encoding.equals("UTF-16LE"));
+    assertThat(encoding.equals("UTF-16LE")).isTrue();
   }
 
   @Test
@@ -97,6 +98,6 @@ public class PearEncodingTest {
     // normalize encoding
     encoding = encoding.toUpperCase();
 
-    Assert.assertTrue(encoding.equals("UTF-16"));
+    assertThat(encoding.equals("UTF-16")).isTrue();
   }
 }
