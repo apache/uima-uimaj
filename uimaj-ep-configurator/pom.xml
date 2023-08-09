@@ -44,16 +44,6 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-compilertools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -72,16 +62,9 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-jcasgen</artifactId>
       <version>${project.parent.version}</version>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Eclipse dependencies -->
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.ui</artifactId>
-      <version>[3.108.1, 4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jface</artifactId>
@@ -100,6 +83,90 @@
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <version>[3.10.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jdt.launching</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jface.text</artifactId>
+      <version>[3.15.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
+      <version>[3.11.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench</artifactId>
+      <version>[3.112.100,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>[3.13.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>[3.15.100,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.ide</artifactId>
+      <version>[3.14.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.editors</artifactId>
+      <version>[3.11.300,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>[3.13.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.registry</artifactId>
+      <version>[3.8.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.text</artifactId>
+      <version>[3.8.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>[3.16.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.forms</artifactId>
+      <version>[3.7.400,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -110,44 +177,15 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Export-Package>
-              org.apache.uima.taeconfigurator,
-              org.apache.uima.taeconfigurator.editors,
-              org.apache.uima.taeconfigurator.editors.point,
-              org.apache.uima.taeconfigurator.editors.ui,
-              org.apache.uima.taeconfigurator.editors.ui.dialogs,
-              org.apache.uima.taeconfigurator.editors.xml,
-              org.apache.uima.taeconfigurator.files,
-              org.apache.uima.taeconfigurator.model,
-              org.apache.uima.taeconfigurator.wizards
-            </Export-Package>
-            <Bundle-Activator>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
-            <Require-Bundle>
-              org.eclipse.jface.text,
-              org.eclipse.text,
-              org.eclipse.ui.editors,
-              org.eclipse.ui.workbench.texteditor,
-              org.eclipse.ui.ide,
-              org.eclipse.ui,
-              org.eclipse.core.runtime
-            </Require-Bundle>
-            <Import-Package>
-              !org.eclipse.jface.text,  <!-- the ! means to exclude this -->
-              !org.eclipse.jface.text.source,
-              !org.eclipse.ui.texteditor,
-              !org.eclipse.ui,
-              !org.eclipse.ui.actions,
-              !org.eclipse.ui.dialogs,
-              !org.eclipse.ui.part,
-              !org.eclipse.core.runtime,
-              org.eclipse.jdt.ui,
-              *
-            </Import-Package>
-            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Bundle-Activator>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Bundle-Activator>
             <Plugin-Class>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Plugin-Class>
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
+            <Require-Bundle>
+              org.eclipse.ui.ide
+            </Require-Bundle>
           </instructions>
         </configuration>
       </plugin>

@@ -51,7 +51,6 @@
             <project-version>${project.version}</project-version>
             <revnumber>${project.version}</revnumber>
             <product-website-url>https://uima.apache.org</product-website-url>
-            <icons>text</icons>
             <relativeBaseDir>true</relativeBaseDir>
             <xrefstyle>short</xrefstyle>
           </attributes>
