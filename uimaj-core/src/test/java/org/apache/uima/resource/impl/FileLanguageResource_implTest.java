@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.util.Collections;
 
@@ -26,7 +28,6 @@ import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.FileLanguageResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,12 +59,12 @@ public class FileLanguageResource_implTest {
       DataResource deResource = mResource.getDataResource(new String[] { "de" });
       DataResource enusResource = mResource.getDataResource(new String[] { "en-US" });
 
-      Assert.assertNotNull(enResource);
-      Assert.assertNotNull(deResource);
-      Assert.assertNotNull(enusResource);
-      Assert.assertFalse(enResource.equals(deResource));
-      Assert.assertTrue(enResource.equals(enusResource));
-      Assert.assertEquals(enResource.hashCode(), enusResource.hashCode());
+      assertThat(enResource).isNotNull();
+      assertThat(deResource).isNotNull();
+      assertThat(enusResource).isNotNull();
+      assertThat(enResource.equals(deResource)).isFalse();
+      assertThat(enResource.equals(enusResource)).isTrue();
+      assertThat(enusResource.hashCode()).isEqualTo(enResource.hashCode());
 
       ResourceInitializationException ex = null;
       try {
@@ -71,7 +72,7 @@ public class FileLanguageResource_implTest {
       } catch (ResourceInitializationException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

@@ -19,6 +19,8 @@
 
 package org.apache.uima.pear.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -31,7 +33,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,8 +57,9 @@ public class PearInstallerTest {
     File tempFile = File.createTempFile("pear_installer_test_", "tmp");
     if (tempFile.delete()) {
       File tempDir = tempFile;
-      if (tempDir.mkdirs())
+      if (tempDir.mkdirs()) {
         this.tempInstallDir = tempDir;
+      }
     }
   }
 
@@ -75,30 +77,31 @@ public class PearInstallerTest {
   public void testPearInstall() throws Exception {
 
     // check temporary working directory
-    if (this.tempInstallDir == null)
+    if (this.tempInstallDir == null) {
       throw new FileNotFoundException("temp directory not found");
-    // check sample PEAR files
+      // check sample PEAR files
+    }
 
     // get pear file to install
     File pearFile = JUnitExtension.getFile("pearTests/DateTime.pear");
-    Assert.assertNotNull(pearFile);
+    assertThat(pearFile).isNotNull();
 
     // Install PEAR package
     PackageBrowser instPear = PackageInstaller.installPackage(this.tempInstallDir, pearFile, true);
 
     // check pear PackageBrowser object
-    Assert.assertNotNull(instPear);
+    assertThat(instPear).isNotNull();
 
     // check PEAR component ID
     String componentID = instPear.getInstallationDescriptor().getMainComponentId();
-    Assert.assertEquals("uima.example.DateTimeAnnotator", componentID);
+    assertThat(componentID).isEqualTo("uima.example.DateTimeAnnotator");
 
     // check PEAR datapath setting
     // pear file contains (uima.datapath = $main_root/my/test/data/path)
     File datapath = new File(this.tempInstallDir,
             "uima.example.DateTimeAnnotator/my/test/data/path");
     File pearDatapath = new File(instPear.getComponentDataPath());
-    Assert.assertEquals(datapath, pearDatapath);
+    assertThat(pearDatapath).isEqualTo(datapath);
 
     // Create resouce manager and set PEAR package classpath
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
@@ -107,7 +110,7 @@ public class PearInstallerTest {
     XMLInputSource in = new XMLInputSource(instPear.getComponentPearDescPath());
     ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
-    Assert.assertNotNull(ae);
+    assertThat(ae).isNotNull();
 
     // Create a CAS with a sample document text and process the CAS
     CAS cas = ae.newCAS();

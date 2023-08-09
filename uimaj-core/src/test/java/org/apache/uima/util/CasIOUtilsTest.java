@@ -21,6 +21,7 @@ package org.apache.uima.util;
 import static java.util.Arrays.asList;
 import static org.apache.uima.cas.SerialFormat.COMPRESSED_FILTERED_TSI;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,7 +51,6 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -216,16 +216,15 @@ public class CasIOUtilsTest {
     SerialFormat loadedFormat = CasIOUtils.load(casInputStream, null, casToUse,
             leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
     casInputStream.close();
-    Assert.assertEquals(format, loadedFormat);
+    assertThat(loadedFormat).isEqualTo(format);
     assertCorrectlyLoaded(casToUse, leniently);
   }
 
   private static void assertCorrectlyLoaded(CAS cas, boolean leniently) throws Exception {
     // Check if all the annotations are there (mind the file contains FSes that are NOT
     // annotations!)
-    Assert.assertEquals(
-            leniently ? SIMPLE_CAS_DEFAULT_INDEX_SIZE_LENIENT : SIMPLE_CAS_DEFAULT_INDEX_SIZE,
-            cas.getAnnotationIndex().size());
+    assertThat(cas.getAnnotationIndex()).hasSize(
+            leniently ? SIMPLE_CAS_DEFAULT_INDEX_SIZE_LENIENT : SIMPLE_CAS_DEFAULT_INDEX_SIZE);
 
     // Count ALL FSes now, including the ones that are not annotations!
     List<String> expectedTypes = new ArrayList<>(asList("org.apache.uima.testTypeSystem.Entity",
@@ -253,10 +252,10 @@ public class CasIOUtilsTest {
     }
     Collections.sort(fsTypes);
 
-    Assert.assertEquals(
-            leniently ? SIMPLE_CAS_ALL_INDEXED_SIZE_LENIENT : SIMPLE_CAS_ALL_INDEXED_SIZE, fsCount);
+    assertThat(fsCount).isEqualTo(
+            leniently ? SIMPLE_CAS_ALL_INDEXED_SIZE_LENIENT : SIMPLE_CAS_ALL_INDEXED_SIZE);
 
-    Assert.assertEquals(expectedTypes, fsTypes);
+    assertThat(fsTypes).isEqualTo(expectedTypes);
   }
 
   @Test
@@ -273,13 +272,13 @@ public class CasIOUtilsTest {
     try {
       CasIOUtils.load(casInputStream, cas);
     } catch (Exception e) {
-      Assert.assertTrue(e instanceof CASRuntimeException);
-      Assert.assertTrue(((CASRuntimeException) e).getMessageKey()
-              .equals("UNRECOGNIZED_SERIALIZED_CAS_FORMAT"));
+      assertThat(e instanceof CASRuntimeException).isTrue();
+      assertThat(((CASRuntimeException) e).getMessageKey()
+              .equals("UNRECOGNIZED_SERIALIZED_CAS_FORMAT")).isTrue();
       casInputStream.close();
       return;
     }
-    Assert.fail("An exception should have been thrown for wrong input.");
+    fail("An exception should have been thrown for wrong input.");
   }
 
   @Test
@@ -288,10 +287,10 @@ public class CasIOUtilsTest {
     try {
       CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.UNKNOWN);
     } catch (Exception e) {
-      // Assert.assertTrue(e instanceof IllegalArgumentException);
+      // assertThat(e instanceof IllegalArgumentException).isTrue();
       return;
     }
-    Assert.fail("An exception should have been thrown for wrong format.");
+    fail("An exception should have been thrown for wrong format.");
   }
 
   @Test

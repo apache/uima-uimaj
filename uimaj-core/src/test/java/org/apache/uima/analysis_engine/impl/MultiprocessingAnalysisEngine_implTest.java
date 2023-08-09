@@ -19,6 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -53,7 +54,6 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -106,7 +106,7 @@ public class MultiprocessingAnalysisEngine_implTest {
       // initialize MultiprocesingTextAnalysisEngine
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
       boolean result = mtae.initialize(mSimpleDesc, null);
-      Assert.assertTrue(result);
+      assertThat(result).isTrue();
 
       // initialize again - should fail
       Exception ex = null;
@@ -115,7 +115,7 @@ public class MultiprocessingAnalysisEngine_implTest {
       } catch (UIMA_IllegalStateException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // initialize a new TAE with parameters
       Map<String, Object> map = new HashMap<>();
@@ -123,10 +123,10 @@ public class MultiprocessingAnalysisEngine_implTest {
       map.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, 60000);
       MultiprocessingAnalysisEngine_impl mtae2 = new MultiprocessingAnalysisEngine_impl();
       result = mtae2.initialize(mSimpleDesc, map);
-      Assert.assertTrue(result);
+      assertThat(result).isTrue();
       // check parameter values
-      Assert.assertEquals(5, mtae2.getPool().getSize());
-      Assert.assertEquals(60000, mtae2.getTimeout());
+      assertThat(mtae2.getPool().getSize()).isEqualTo(5);
+      assertThat(mtae2.getTimeout()).isEqualTo(60000);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -137,11 +137,11 @@ public class MultiprocessingAnalysisEngine_implTest {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
       boolean result = mtae.initialize(mSimpleDesc, null);
-      Assert.assertTrue(result);
+      assertThat(result).isTrue();
 
       AnalysisEngineMetaData md = mtae.getAnalysisEngineMetaData();
-      Assert.assertNotNull(md);
-      Assert.assertEquals("Simple Test", md.getName());
+      assertThat(md).isNotNull();
+      assertThat(md.getName()).isEqualTo("Simple Test");
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -152,7 +152,7 @@ public class MultiprocessingAnalysisEngine_implTest {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
       boolean result = mtae.initialize(mSimpleDesc, null);
-      Assert.assertTrue(result);
+      assertThat(result).isTrue();
 
       CAS cas1 = mtae.newCAS();
       // should have the type foo.Bar
@@ -160,22 +160,22 @@ public class MultiprocessingAnalysisEngine_implTest {
 
       // should be able to get as many as we want and they should all be different
       CAS cas2 = mtae.newCAS();
-      Assert.assertNotNull(cas2);
-      Assert.assertTrue(cas1 != cas2);
+      assertThat(cas2).isNotNull();
+      assertThat(cas1 != cas2).isTrue();
       CAS cas3 = mtae.newCAS();
-      Assert.assertNotNull(cas3);
-      Assert.assertTrue(cas1 != cas3);
-      Assert.assertTrue(cas2 != cas3);
+      assertThat(cas3).isNotNull();
+      assertThat(cas1 != cas3).isTrue();
+      assertThat(cas2 != cas3).isTrue();
       CAS cas4 = mtae.newCAS();
-      Assert.assertNotNull(cas4);
-      Assert.assertTrue(cas1 != cas4);
-      Assert.assertTrue(cas2 != cas4);
-      Assert.assertTrue(cas3 != cas4);
+      assertThat(cas4).isNotNull();
+      assertThat(cas1 != cas4).isTrue();
+      assertThat(cas2 != cas4).isTrue();
+      assertThat(cas3 != cas4).isTrue();
 
       // try aggregate
       MultiprocessingAnalysisEngine_impl mtae2 = new MultiprocessingAnalysisEngine_impl();
       result = mtae2.initialize(mAggDesc, null);
-      Assert.assertTrue(result);
+      assertThat(result).isTrue();
 
       CAS cas5 = mtae2.newCAS();
       // should have the type foo.Bar
@@ -488,8 +488,9 @@ public class MultiprocessingAnalysisEngine_implTest {
           tcas.setDocumentText("new test");
           mAE.process(tcas);
           // System.out.println("Debug finished processing a cas");
-          if (doSleeps)
+          if (doSleeps) {
             Thread.sleep(0, r.nextInt(1000)); // 0 to 1 microseconds
+          }
           tcas.reset();
 
           // process(CAS,ResultSpecification)
@@ -497,11 +498,13 @@ public class MultiprocessingAnalysisEngine_implTest {
           resultSpec.addResultType("NamedEntity", true);
 
           tcas.setDocumentText("testing...");
-          if (doSleeps)
+          if (doSleeps) {
             Thread.sleep(0, r.nextInt(1000)); // 0 to 1 microseconds
+          }
           mAE.process(tcas, resultSpec);
-          if (doSleeps)
+          if (doSleeps) {
             Thread.sleep(0, r.nextInt(1000)); // 0 to 1 microseconds
+          }
           tcas.reset();
           // }
         } catch (Throwable t) {

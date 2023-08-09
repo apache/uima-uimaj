@@ -19,13 +19,14 @@
 
 package org.apache.uima.resource.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -61,9 +62,9 @@ public class ResourceService_implTest {
   public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = service.getMetaData();
-      Assert.assertNotNull(md);
-      Assert.assertEquals("Test Annotator", md.getName());
-      Assert.assertNotNull(md.getUUID());
+      assertThat(md).isNotNull();
+      assertThat(md.getName()).isEqualTo("Test Annotator");
+      assertThat(md.getUUID()).isNotNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

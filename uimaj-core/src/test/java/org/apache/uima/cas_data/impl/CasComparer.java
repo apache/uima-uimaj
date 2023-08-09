@@ -19,11 +19,13 @@
 
 package org.apache.uima.cas_data.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +65,6 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.junit.Assert;
 
 /**
  * A CAS equality checker for JUnit. SKIPS SOFA FS Comparisons - to make it useful for CasCopier to
@@ -108,7 +109,7 @@ public class CasComparer {
       c2Sofas++;
       sofaIter.moveToNext();
     }
-    Assert.assertTrue(c1Sofas == c2Sofas);
+    assertThat(c1Sofas == c2Sofas).isTrue();
   }
 
   public static void assertEqualViews(CAS c1, CAS c2) {
@@ -128,7 +129,7 @@ public class CasComparer {
     List<TOP> list1 = populate(c1.getIndexRepository().getIndexedFSs(), alreadyCompared);
     List<TOP> list2 = populate(c2.getIndexRepository().getIndexedFSs(), alreadyCompared);
 
-    Assert.assertEquals(list1.size(), list2.size());
+    assertThat(list1).hasSameSizeAs(list2);
 
     isSortUse = true; // while sorting; i.e., for next two calls. Affects how visited is used
     list1.sort(fsComparator);
@@ -136,12 +137,8 @@ public class CasComparer {
 
     isSortUse = false; // makes the compare1 throw exception if not equal
     int i = 0;
-    try {
-      for (; i < list1.size(); i++) {
-        compare1(list1.get(i), list2.get(i), alreadyCompared);
-      }
-    } catch (ConcurrentModificationException e) {
-      Assert.fail();
+    for (; i < list1.size(); i++) {
+      compare1(list1.get(i), list2.get(i), alreadyCompared);
     }
   }
 
@@ -188,10 +185,12 @@ public class CasComparer {
       if (fs1 == null && fs2 == null) {
         return 0;
       }
-      if (fs1 == null)
+      if (fs1 == null) {
         return chkEqual(-1, "fs1 was null and fs2 was not");
-      if (fs2 == null)
+      }
+      if (fs2 == null) {
         return chkEqual(1, "fs2 was null and fs1 was not");
+      }
     }
 
     boolean wasPresent1 = !visited.add(fs1);
@@ -327,31 +326,39 @@ public class CasComparer {
         }
         // check arrays
       } else if (isArray(rangeTypeName)) {
-        if (0 != (r = compareArrayFSs(fs1, feat1, fs2, feat2, visited)))
+        if (0 != (r = compareArrayFSs(fs1, feat1, fs2, feat2, visited))) {
           return r;
+        }
 
         // check primitive types
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
-        if (0 != (r = compLong(fs1.getIntValue(feat1), fs2.getIntValue(feat2))))
+        if (0 != (r = compLong(fs1.getIntValue(feat1), fs2.getIntValue(feat2)))) {
           return r;
+        }
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
-        if (0 != (r = compDouble(fs1.getFloatValue(feat1), fs2.getFloatValue(feat2))))
+        if (0 != (r = compDouble(fs1.getFloatValue(feat1), fs2.getFloatValue(feat2)))) {
           return r;
+        }
       } else if (CAS.TYPE_NAME_BYTE.equals(rangeTypeName)) {
-        if (0 != (r = compLong(fs1.getByteValue(feat1), fs2.getByteValue(feat2))))
+        if (0 != (r = compLong(fs1.getByteValue(feat1), fs2.getByteValue(feat2)))) {
           return r;
+        }
       } else if (CAS.TYPE_NAME_SHORT.equals(rangeTypeName)) {
-        if (0 != (r = compLong(fs1.getShortValue(feat1), fs2.getShortValue(feat2))))
+        if (0 != (r = compLong(fs1.getShortValue(feat1), fs2.getShortValue(feat2)))) {
           return r;
+        }
       } else if (CAS.TYPE_NAME_LONG.equals(rangeTypeName)) {
-        if (0 != (r = compLong(fs1.getLongValue(feat1), fs2.getLongValue(feat2))))
+        if (0 != (r = compLong(fs1.getLongValue(feat1), fs2.getLongValue(feat2)))) {
           return r;
+        }
       } else if (CAS.TYPE_NAME_DOUBLE.equals(rangeTypeName)) {
-        if (0 != (r = compDouble(fs1.getDoubleValue(feat1), fs2.getDoubleValue(feat2))))
+        if (0 != (r = compDouble(fs1.getDoubleValue(feat1), fs2.getDoubleValue(feat2)))) {
           return r;
+        }
       } else if (CAS.TYPE_NAME_BOOLEAN.equals(rangeTypeName)) {
-        if (0 != (r = compBoolean(fs1.getBooleanValue(feat1), fs2.getBooleanValue(feat2))))
+        if (0 != (r = compBoolean(fs1.getBooleanValue(feat1), fs2.getBooleanValue(feat2)))) {
           return r;
+        }
 
         // check single feature ref
       } else {
@@ -366,8 +373,9 @@ public class CasComparer {
       for (int j = 0; j < fsCompares.size(); j++) {
         int i = fsCompares.get(j);
         if (0 != (r = compare1(fs1.getFeatureValue(feats1[i]), fs2.getFeatureValue(feats2[i]),
-                visited)))
+                visited))) {
           return r;
+        }
       }
     }
     return 0;
@@ -390,7 +398,7 @@ public class CasComparer {
       return 0;
     }
     if (!isSortUse) { // no message for use in sort
-      Assert.fail(String.format(format, o));
+      fail(String.format(format, o));
     }
     return v;
   }
@@ -436,12 +444,15 @@ public class CasComparer {
     CommonArrayFS arrayFS1 = (CommonArrayFS) arrayFS1fs.getFeatureValue(feat1);
     CommonArrayFS arrayFS2 = (CommonArrayFS) arrayFS2fs.getFeatureValue(feat2);
 
-    if (null == arrayFS1 && null == arrayFS2)
+    if (null == arrayFS1 && null == arrayFS2) {
       return 0; // are equal
-    if (null == arrayFS1)
+    }
+    if (null == arrayFS1) {
       return chkEqual(-1, "Array FS1 is null, but Array FS2 is not");
-    if (null == arrayFS2)
+    }
+    if (null == arrayFS2) {
       return chkEqual(-1, "Array FS2 is null, but Array FS1 is not");
+    }
 
     int r, len;
     if (0 != (r = Integer.compare(len = arrayFS1.size(), arrayFS2.size()))) {
@@ -450,61 +461,72 @@ public class CasComparer {
     }
     // are same size
     r = validateSameType(arrayFS1, arrayFS2);
-    if (0 != r)
+    if (0 != r) {
       return r;
+    }
 
     switch (getArrayType(arrayFS1)) {
       case FS:
         for (int j = 0; j < len; j++) {
           if (0 != (r = compare1((TOP) ((FSArray) arrayFS1).get(j),
-                  (TOP) ((FSArray) arrayFS2).get(j), visited)))
+                  (TOP) ((FSArray) arrayFS2).get(j), visited))) {
             return r;
+          }
         }
         break;
       case BOOLEAN:
         for (int j = 0; j < len; j++) {
           if (0 != (r = compBoolean(((BooleanArrayFS) arrayFS1).get(j),
-                  ((BooleanArrayFS) arrayFS2).get(j))))
+                  ((BooleanArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case BYTE:
         for (int j = 0; j < len; j++) {
-          if (0 != (r = compLong(((ByteArrayFS) arrayFS1).get(j), ((ByteArrayFS) arrayFS2).get(j))))
+          if (0 != (r = compLong(((ByteArrayFS) arrayFS1).get(j),
+                  ((ByteArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case SHORT:
         for (int j = 0; j < len; j++) {
           if (0 != (r = compLong(((ShortArrayFS) arrayFS1).get(j),
-                  ((ShortArrayFS) arrayFS2).get(j))))
+                  ((ShortArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case INT:
         for (int j = 0; j < len; j++) {
-          if (0 != (r = compLong(((IntArrayFS) arrayFS1).get(j), ((IntArrayFS) arrayFS2).get(j))))
+          if (0 != (r = compLong(((IntArrayFS) arrayFS1).get(j), ((IntArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case LONG:
         for (int j = 0; j < len; j++) {
-          if (0 != (r = compLong(((LongArrayFS) arrayFS1).get(j), ((LongArrayFS) arrayFS2).get(j))))
+          if (0 != (r = compLong(((LongArrayFS) arrayFS1).get(j),
+                  ((LongArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case FLOAT:
         for (int j = 0; j < len; j++) {
           if (0 != (r = compDouble(((FloatArrayFS) arrayFS1).get(j),
-                  ((FloatArrayFS) arrayFS2).get(j))))
+                  ((FloatArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case DOUBLE:
         for (int j = 0; j < len; j++) {
           if (0 != (r = compDouble(((DoubleArrayFS) arrayFS1).get(j),
-                  ((DoubleArrayFS) arrayFS2).get(j))))
+                  ((DoubleArrayFS) arrayFS2).get(j)))) {
             return r;
+          }
         }
         break;
       case STRING:
@@ -521,24 +543,33 @@ public class CasComparer {
   }
 
   private ARRAY_TYPE getArrayType(CommonArrayFS c) {
-    if (c instanceof ArrayFS)
+    if (c instanceof ArrayFS) {
       return ARRAY_TYPE.FS;
-    if (c instanceof StringArrayFS)
+    }
+    if (c instanceof StringArrayFS) {
       return ARRAY_TYPE.STRING;
-    if (c instanceof BooleanArrayFS)
+    }
+    if (c instanceof BooleanArrayFS) {
       return ARRAY_TYPE.BOOLEAN;
-    if (c instanceof ByteArrayFS)
+    }
+    if (c instanceof ByteArrayFS) {
       return ARRAY_TYPE.BYTE;
-    if (c instanceof ShortArrayFS)
+    }
+    if (c instanceof ShortArrayFS) {
       return ARRAY_TYPE.SHORT;
-    if (c instanceof IntArrayFS)
+    }
+    if (c instanceof IntArrayFS) {
       return ARRAY_TYPE.INT;
-    if (c instanceof LongArrayFS)
+    }
+    if (c instanceof LongArrayFS) {
       return ARRAY_TYPE.LONG;
-    if (c instanceof FloatArrayFS)
+    }
+    if (c instanceof FloatArrayFS) {
       return ARRAY_TYPE.FLOAT;
-    if (c instanceof DoubleArrayFS)
+    }
+    if (c instanceof DoubleArrayFS) {
       return ARRAY_TYPE.DOUBLE;
+    }
     return null;
   }
 

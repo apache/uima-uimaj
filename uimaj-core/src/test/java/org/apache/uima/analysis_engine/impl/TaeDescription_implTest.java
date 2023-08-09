@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -65,7 +66,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -253,8 +253,8 @@ public class TaeDescription_implTest {
       AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(is, null));
 
-      Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
-      Assert.assertEquals(aggregateDesc, newAggregateDesc);
+      assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
+      assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -266,12 +266,12 @@ public class TaeDescription_implTest {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
       AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
               .deserialize(primitiveDescBytes);
-      Assert.assertEquals(primitiveDesc, primitiveDesc2);
+      assertThat(primitiveDesc2).isEqualTo(primitiveDesc);
 
       byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
       AnalysisEngineDescription_impl aggregateDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
               .deserialize(aggregateDescBytes);
-      Assert.assertEquals(aggregateDesc, aggregateDesc2);
+      assertThat(aggregateDesc2).isEqualTo(aggregateDesc);
 
       // make sure XMLization still works
       StringWriter writer = new StringWriter();
@@ -280,7 +280,7 @@ public class TaeDescription_implTest {
       writer = new StringWriter();
       primitiveDesc2.toXML(writer);
       String primitiveDesc2xml = writer.getBuffer().toString();
-      Assert.assertEquals(primitiveDesc, primitiveDesc2);
+      assertThat(primitiveDesc2).isEqualTo(primitiveDesc);
 
       writer = new StringWriter();
       aggregateDesc.toXML(writer);
@@ -288,7 +288,7 @@ public class TaeDescription_implTest {
       writer = new StringWriter();
       aggregateDesc2.toXML(writer);
       String aggregateDesc2xml = writer.getBuffer().toString();
-      Assert.assertEquals(aggregateDesc, aggregateDesc2);
+      assertThat(aggregateDesc2).isEqualTo(aggregateDesc);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

@@ -19,7 +19,8 @@
 
 package org.apache.uima.util;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,34 +33,34 @@ public class LevelTest {
     Level level = Level.OFF;
 
     // check if level is on
-    Assert.assertFalse(level.isOn());
+    assertThat(level.isOn()).isFalse();
     // check if level is equal to "OFF"
-    Assert.assertTrue(level.equals(Level.OFF));
+    assertThat(level.equals(Level.OFF)).isTrue();
     // check if level is not equal to "FINE"
-    Assert.assertFalse(level.equals(Level.FINE));
+    assertThat(level.equals(Level.FINE)).isFalse();
     // check if level text is "OFF"
-    Assert.assertEquals(level.toString(), "OFF");
+    assertThat("OFF").isEqualTo(level.toString());
     // check if level value is Integer.MAX_VALUE
-    Assert.assertEquals(level.toInteger(), Integer.MAX_VALUE);
+    assertThat(Integer.MAX_VALUE).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isFalse();
     // check if level is greater or equal to FINE
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isFalse();
     // check if level is greater or equal to CONFIG
-    Assert.assertFalse(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isFalse();
     // check if level is greater or equal to INFO
-    Assert.assertFalse(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isFalse();
     // check if level is greater or equal to WARNING
-    Assert.assertFalse(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isFalse();
     // check if level is greater or equal to SEVERE
-    Assert.assertFalse(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isFalse();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -68,34 +69,34 @@ public class LevelTest {
     Level level = Level.ALL;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "ALL"
-    Assert.assertTrue(level.equals(Level.ALL));
+    assertThat(level.equals(Level.ALL)).isTrue();
     // check if level is not equal to "CONFIG"
-    Assert.assertFalse(level.equals(Level.CONFIG));
+    assertThat(level.equals(Level.CONFIG)).isFalse();
     // check if level text is "ALL"
-    Assert.assertEquals(level.toString(), "ALL");
+    assertThat("ALL").isEqualTo(level.toString());
     // check if level value is Integer.MIN_VALUE
-    Assert.assertEquals(level.toInteger(), Integer.MIN_VALUE);
+    assertThat(Integer.MIN_VALUE).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertTrue(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isTrue();
     // check if level is greater or equal to FINEST
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isTrue();
     // check if level is greater or equal to FINER
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isTrue();
     // check if level is greater or equal to FINE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isTrue();
     // check if level is greater or equal to CONFIG
-    Assert.assertTrue(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isTrue();
     // check if level is greater or equal to INFO
-    Assert.assertTrue(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isTrue();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
   }
 
   @Test
@@ -103,34 +104,34 @@ public class LevelTest {
     Level level = Level.FINEST;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "FINEST"
-    Assert.assertTrue(level.equals(Level.FINEST));
+    assertThat(level.equals(Level.FINEST)).isTrue();
     // check if level is not equal to "WARNING"
-    Assert.assertFalse(level.equals(Level.WARNING));
+    assertThat(level.equals(Level.WARNING)).isFalse();
     // check if level text is "FINEST"
-    Assert.assertEquals(level.toString(), "FINEST");
+    assertThat("FINEST").isEqualTo(level.toString());
     // check if level value is 10000
-    Assert.assertEquals(level.toInteger(), 10000);
+    assertThat(10000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isTrue();
     // check if level is greater or equal to FINER
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isTrue();
     // check if level is greater or equal to FINE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isTrue();
     // check if level is greater or equal to CONFIG
-    Assert.assertTrue(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isTrue();
     // check if level is greater or equal to INFO
-    Assert.assertTrue(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isTrue();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -139,34 +140,34 @@ public class LevelTest {
     Level level = Level.FINER;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "FINER"
-    Assert.assertTrue(level.equals(Level.FINER));
+    assertThat(level.equals(Level.FINER)).isTrue();
     // check if level is not equal to "WARNING"
-    Assert.assertFalse(level.equals(Level.WARNING));
+    assertThat(level.equals(Level.WARNING)).isFalse();
     // check if level text is "FINER"
-    Assert.assertEquals(level.toString(), "FINER");
+    assertThat("FINER").isEqualTo(level.toString());
     // check if level value is 20000
-    Assert.assertEquals(level.toInteger(), 20000);
+    assertThat(20000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isTrue();
     // check if level is greater or equal to FINE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isTrue();
     // check if level is greater or equal to CONFIG
-    Assert.assertTrue(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isTrue();
     // check if level is greater or equal to INFO
-    Assert.assertTrue(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isTrue();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -175,34 +176,34 @@ public class LevelTest {
     Level level = Level.FINE;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "FINE"
-    Assert.assertTrue(level.equals(Level.FINE));
+    assertThat(level.equals(Level.FINE)).isTrue();
     // check if level is not equal to "WARNING"
-    Assert.assertFalse(level.equals(Level.WARNING));
+    assertThat(level.equals(Level.WARNING)).isFalse();
     // check if level text is "FINE"
-    Assert.assertEquals(level.toString(), "FINE");
+    assertThat("FINE").isEqualTo(level.toString());
     // check if level value is 30000
-    Assert.assertEquals(level.toInteger(), 30000);
+    assertThat(30000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isFalse();
     // check if level is greater or equal to FINE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isTrue();
     // check if level is greater or equal to CONFIG
-    Assert.assertTrue(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isTrue();
     // check if level is greater or equal to INFO
-    Assert.assertTrue(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isTrue();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -211,34 +212,34 @@ public class LevelTest {
     Level level = Level.CONFIG;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "CONFIG"
-    Assert.assertTrue(level.equals(Level.CONFIG));
+    assertThat(level.equals(Level.CONFIG)).isTrue();
     // check if level is not equal to "WARNING"
-    Assert.assertFalse(level.equals(Level.WARNING));
+    assertThat(level.equals(Level.WARNING)).isFalse();
     // check if level text is "CONFIG"
-    Assert.assertEquals(level.toString(), "CONFIG");
+    assertThat("CONFIG").isEqualTo(level.toString());
     // check if level value is 40000
-    Assert.assertEquals(level.toInteger(), 40000);
+    assertThat(40000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isFalse();
     // check if level is greater or equal to FINE
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isFalse();
     // check if level is greater or equal to CONFIG
-    Assert.assertTrue(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isTrue();
     // check if level is greater or equal to INFO
-    Assert.assertTrue(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isTrue();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -247,34 +248,34 @@ public class LevelTest {
     Level level = Level.INFO;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "INFO"
-    Assert.assertTrue(level.equals(Level.INFO));
+    assertThat(level.equals(Level.INFO)).isTrue();
     // check if level is not equal to "WARNING"
-    Assert.assertFalse(level.equals(Level.WARNING));
+    assertThat(level.equals(Level.WARNING)).isFalse();
     // check if level text is "INFO"
-    Assert.assertEquals(level.toString(), "INFO");
+    assertThat("INFO").isEqualTo(level.toString());
     // check if level value is 50000
-    Assert.assertEquals(level.toInteger(), 50000);
+    assertThat(50000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isFalse();
     // check if level is greater or equal to FINE
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isFalse();
     // check if level is greater or equal to CONFIG
-    Assert.assertFalse(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isFalse();
     // check if level is greater or equal to INFO
-    Assert.assertTrue(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isTrue();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
   }
 
   @Test
@@ -282,34 +283,34 @@ public class LevelTest {
     Level level = Level.WARNING;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "WARNING"
-    Assert.assertTrue(level.equals(Level.WARNING));
+    assertThat(level.equals(Level.WARNING)).isTrue();
     // check if level is not equal to "OFF"
-    Assert.assertFalse(level.equals(Level.OFF));
+    assertThat(level.equals(Level.OFF)).isFalse();
     // check if level text is "WARNING"
-    Assert.assertEquals(level.toString(), "WARNING");
+    assertThat("WARNING").isEqualTo(level.toString());
     // check if level value is 60000
-    Assert.assertEquals(level.toInteger(), 60000);
+    assertThat(60000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isFalse();
     // check if level is greater or equal to FINE
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isFalse();
     // check if level is greater or equal to CONFIG
-    Assert.assertFalse(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isFalse();
     // check if level is greater or equal to INFO
-    Assert.assertFalse(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isFalse();
     // check if level is greater or equal to WARNING
-    Assert.assertTrue(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isTrue();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -318,34 +319,34 @@ public class LevelTest {
     Level level = Level.SEVERE;
 
     // check if level is on
-    Assert.assertTrue(level.isOn());
+    assertThat(level.isOn()).isTrue();
     // check if level is equal to "SEVERE"
-    Assert.assertTrue(level.equals(Level.SEVERE));
+    assertThat(level.equals(Level.SEVERE)).isTrue();
     // check if level is not equal to "OFF"
-    Assert.assertFalse(level.equals(Level.OFF));
+    assertThat(level.equals(Level.OFF)).isFalse();
     // check if level text is "SEVERE"
-    Assert.assertEquals(level.toString(), "SEVERE");
+    assertThat("SEVERE").isEqualTo(level.toString());
     // check if level value is 70000
-    Assert.assertEquals(level.toInteger(), 70000);
+    assertThat(70000).isEqualTo(level.toInteger());
 
     // check if level is greater or equal to ALL
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
     // check if level is greater or equal to FINEST
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINEST));
+    assertThat(level.isGreaterOrEqual(Level.FINEST)).isFalse();
     // check if level is greater or equal to FINER
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINER));
+    assertThat(level.isGreaterOrEqual(Level.FINER)).isFalse();
     // check if level is greater or equal to FINE
-    Assert.assertFalse(level.isGreaterOrEqual(Level.FINE));
+    assertThat(level.isGreaterOrEqual(Level.FINE)).isFalse();
     // check if level is greater or equal to CONFIG
-    Assert.assertFalse(level.isGreaterOrEqual(Level.CONFIG));
+    assertThat(level.isGreaterOrEqual(Level.CONFIG)).isFalse();
     // check if level is greater or equal to INFO
-    Assert.assertFalse(level.isGreaterOrEqual(Level.INFO));
+    assertThat(level.isGreaterOrEqual(Level.INFO)).isFalse();
     // check if level is greater or equal to WARNING
-    Assert.assertFalse(level.isGreaterOrEqual(Level.WARNING));
+    assertThat(level.isGreaterOrEqual(Level.WARNING)).isFalse();
     // check if level is greater or equal to SEVERE
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
     // check if level is greater or equal to OFF
-    Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
+    assertThat(level.isGreaterOrEqual(Level.OFF)).isTrue();
 
   }
 
@@ -355,11 +356,11 @@ public class LevelTest {
     Integer myInt = 70000;
 
     // check if level is equal to "SEVERE"
-    Assert.assertTrue(level.equals(Level.SEVERE));
+    assertThat(level.equals(Level.SEVERE)).isTrue();
     // check with another class than Level
-    Assert.assertFalse(level.equals(myInt));
+    assertThat(level.equals(myInt)).isFalse();
     // check with null value
-    Assert.assertFalse(level.equals(null));
+    assertThat(level.equals(null)).isFalse();
   }
 
   @Test
@@ -367,13 +368,13 @@ public class LevelTest {
     Level level = Level.INFO;
 
     // check if level "ALL" is greater or equal to "INFO"
-    Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
+    assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();
 
     // check if level "SEVERE" is greater or equal to "INFO"
-    Assert.assertTrue(level.isGreaterOrEqual(Level.SEVERE));
+    assertThat(level.isGreaterOrEqual(Level.SEVERE)).isTrue();
 
     // check with null value
-    Assert.assertFalse(level.isGreaterOrEqual(null));
+    assertThat(level.isGreaterOrEqual(null)).isFalse();
   }
 
 }
