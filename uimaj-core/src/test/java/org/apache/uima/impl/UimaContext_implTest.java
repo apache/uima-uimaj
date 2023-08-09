@@ -20,6 +20,7 @@
 package org.apache.uima.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -28,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.uima.UIMAFramework;
@@ -48,7 +48,6 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -135,26 +134,26 @@ public class UimaContext_implTest {
   public void testGetConfigParameterValueString() throws Exception {
     try {
       String str = (String) mContext.getConfigParameterValue("StringParam");
-      Assert.assertEquals("myString", str);
+      assertThat(str).isEqualTo("myString");
       String[] strArr = (String[]) mContext.getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "one", "two" }), Arrays.asList(strArr));
+      assertThat(Arrays.asList(strArr)).isEqualTo(Arrays.asList(new String[] { "one", "two" }));
       Integer integer = (Integer) mContext.getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(Integer.valueOf(42), integer);
+      assertThat(integer).isEqualTo(Integer.valueOf(42));
       Integer[] intArr = (Integer[]) mContext.getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(Arrays.asList(new Integer[] { 1, 2, 3 }), Arrays.asList(intArr));
+      assertThat(Arrays.asList(intArr)).isEqualTo(Arrays.asList(new Integer[] { 1, 2, 3 }));
       Float flt = (Float) mContext.getConfigParameterValue("FloatParam");
-      Assert.assertEquals(Float.valueOf(3.14F), flt);
+      assertThat(flt).isEqualTo(Float.valueOf(3.14F));
 
       // default fallback
       String str2 = (String) mContext2.getConfigParameterValue("StringParam");
-      Assert.assertEquals("en", str2);
+      assertThat(str2).isEqualTo("en");
 
       // get groupless param
       String str3 = (String) mContext3.getConfigParameterValue("GrouplessParam1");
-      Assert.assertEquals("foo", str3);
+      assertThat(str3).isEqualTo("foo");
       // default fallback in presence of groupless params (of different names)
       String str4 = (String) mContext3.getConfigParameterValue("StringParam");
-      Assert.assertEquals("en", str4);
+      assertThat(str4).isEqualTo("en");
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -168,70 +167,53 @@ public class UimaContext_implTest {
     try {
       // en-US group
       String str = (String) mContext2.getConfigParameterValue("en-US", "StringParam");
-      Assert.assertEquals("en", str); // language fallback
+      assertThat(str).isEqualTo("en"); // language fallback
 
       String[] strArr = (String[]) mContext2.getConfigParameterValue("en-US", "StringArrayParam");
-      Assert.assertEquals(5, strArr.length);
-      Assert.assertEquals("e", strArr[0]);
-      Assert.assertEquals("n", strArr[1]);
-      Assert.assertEquals("-", strArr[2]);
-      Assert.assertEquals("U", strArr[3]);
-      Assert.assertEquals("S", strArr[4]);
+      assertThat(strArr).containsExactly("e", "n", "-", "U", "S");
 
       Integer intVal = (Integer) mContext2.getConfigParameterValue("en-US", "IntegerParam");
-      Assert.assertEquals(1776, intVal.intValue());
+      assertThat(intVal.intValue()).isEqualTo(1776);
 
+      // language fallback
       Integer[] intArr = (Integer[]) mContext2.getConfigParameterValue("en-US",
               "IntegerArrayParam");
-      Assert.assertEquals(3, intArr.length); // language fallback
-      Assert.assertEquals(1, intArr[0].intValue());
-      Assert.assertEquals(2, intArr[1].intValue());
-      Assert.assertEquals(3, intArr[2].intValue());
+      assertThat(intArr).containsExactly(1, 2, 3);
 
       Float floatVal = (Float) mContext2.getConfigParameterValue("en-US", "FloatParam");
-      Assert.assertEquals(null, floatVal);
+      assertThat(floatVal).isEqualTo(null);
 
       // de group
       String str2 = (String) mContext2.getConfigParameterValue("de", "StringParam");
-      Assert.assertEquals("de", str2);
+      assertThat(str2).isEqualTo("de");
 
       String[] strArr2 = (String[]) mContext2.getConfigParameterValue("de", "StringArrayParam");
-      Assert.assertEquals(2, strArr2.length);
-      Assert.assertEquals("d", strArr2[0]);
-      Assert.assertEquals("e", strArr2[1]);
+      assertThat(strArr2).containsExactly("d", "e");
 
       Integer intVal2 = (Integer) mContext2.getConfigParameterValue("de", "IntegerParam");
-      Assert.assertEquals(42, intVal2.intValue()); // default fallback
+      assertThat(intVal2.intValue()).isEqualTo(42); // default fallback
 
       Integer[] intArr2 = (Integer[]) mContext2.getConfigParameterValue("de", "IntegerArrayParam");
-      Assert.assertEquals(3, intArr2.length);
-      Assert.assertEquals(4, intArr2[0].intValue());
-      Assert.assertEquals(5, intArr2[1].intValue());
-      Assert.assertEquals(6, intArr2[2].intValue());
+      assertThat(intArr2).containsExactly(4, 5, 6);
 
       Float floatVal2 = (Float) mContext2.getConfigParameterValue("de", "FloatParam");
-      Assert.assertEquals(null, floatVal2);
+      assertThat(floatVal2).isEqualTo(null);
 
       // zh group
       String str3 = (String) mContext2.getConfigParameterValue("zh", "StringParam");
-      Assert.assertEquals("zh", str3);
+      assertThat(str3).isEqualTo("zh");
 
       String[] strArr3 = (String[]) mContext2.getConfigParameterValue("zh", "StringArrayParam");
-      Assert.assertEquals(2, strArr3.length);
-      Assert.assertEquals("z", strArr3[0]);
-      Assert.assertEquals("h", strArr3[1]);
+      assertThat(strArr3).containsExactly("z", "h");
 
       Integer intVal3 = (Integer) mContext2.getConfigParameterValue("zh", "IntegerParam");
-      Assert.assertEquals(42, intVal3.intValue()); // default fallback
+      assertThat(intVal3.intValue()).isEqualTo(42); // default fallback
 
       Integer[] intArr3 = (Integer[]) mContext2.getConfigParameterValue("zh", "IntegerArrayParam");
-      Assert.assertEquals(3, intArr3.length); // default fallback
-      Assert.assertEquals(1, intArr3[0].intValue());
-      Assert.assertEquals(2, intArr3[1].intValue());
-      Assert.assertEquals(3, intArr3[2].intValue());
+      assertThat(intArr3).containsExactly(1, 2, 3); // default fallback
 
       Float floatVal3 = (Float) mContext2.getConfigParameterValue("zh", "FloatParam");
-      Assert.assertEquals(3.14, floatVal3, 0.0001);
+      assertThat(floatVal3).isCloseTo(3.14f, within(0.0001f));
 
       // testing duplicate groups
       assertEquals("common-a", mContext4.getConfigParameterValue("a", "CommonParam"));
@@ -250,28 +232,15 @@ public class UimaContext_implTest {
 
   @Test
   public void testGetConfigurationGroupNames() {
-    String[] names = mContext2.getConfigurationGroupNames();
-    Assert.assertEquals(5, names.length);
-    ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
-    Assert.assertTrue(l.contains("en"));
-    Assert.assertTrue(l.contains("en-US"));
-    Assert.assertTrue(l.contains("de"));
-    Assert.assertTrue(l.contains("zh"));
-    Assert.assertTrue(l.contains("x-unspecified"));
+    assertThat(mContext2.getConfigurationGroupNames()).containsExactlyInAnyOrder("en", "en-US",
+            "de", "zh", "x-unspecified");
 
     // try on something with both groups and groupless parameters
-    names = mContext3.getConfigurationGroupNames();
-    Assert.assertEquals(5, names.length);
-    l = new ArrayList<>(Arrays.asList(names));
-    Assert.assertTrue(l.contains("en"));
-    Assert.assertTrue(l.contains("en-US"));
-    Assert.assertTrue(l.contains("de"));
-    Assert.assertTrue(l.contains("zh"));
-    Assert.assertTrue(l.contains("x-unspecified"));
+    assertThat(mContext3.getConfigurationGroupNames()).containsExactlyInAnyOrder("en", "en-US",
+            "de", "zh", "x-unspecified");
 
     // try on something that has no groups
-    names = mContext.getConfigurationGroupNames();
-    Assert.assertEquals(0, names.length);
+    assertThat(mContext.getConfigurationGroupNames()).isEmpty();
   }
 
   @Test
@@ -284,24 +253,16 @@ public class UimaContext_implTest {
 
   @Test
   public void testGetConfigParameterNames() {
-    String[] names = mContext.getConfigParameterNames();
-    Assert.assertEquals(6, names.length);
-    Assert.assertEquals("StringParam", names[0]);
-    Assert.assertEquals("StringArrayParam", names[1]);
-    Assert.assertEquals("IntegerParam", names[2]);
-    Assert.assertEquals("IntegerArrayParam", names[3]);
-    Assert.assertEquals("FloatParam", names[4]);
-    Assert.assertEquals("FloatArrayParam", names[5]);
+    assertThat(mContext.getConfigParameterNames()).containsExactly("StringParam",
+            "StringArrayParam", "IntegerParam", "IntegerArrayParam", "FloatParam",
+            "FloatArrayParam");
 
     // try on something that has groups
-    names = mContext2.getConfigParameterNames();
-    Assert.assertEquals(0, names.length);
+    assertThat(mContext2.getConfigParameterNames()).isEmpty();
 
     // try on something with both groups and groupless parameters
-    names = mContext3.getConfigParameterNames();
-    Assert.assertEquals(2, names.length);
-    Assert.assertEquals("GrouplessParam1", names[0]);
-    Assert.assertEquals("GrouplessParam2", names[1]);
+    assertThat(mContext3.getConfigParameterNames()).containsExactly("GrouplessParam1",
+            "GrouplessParam2");
   }
 
   @Test
@@ -315,30 +276,18 @@ public class UimaContext_implTest {
 
   @Test
   public void testGetConfigParameterNamesString() {
-    String[] names = mContext2.getConfigParameterNames("en");
-    Assert.assertEquals(4, names.length);
-    ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
-    Assert.assertTrue(l.contains("StringParam"));
-    Assert.assertTrue(l.contains("StringArrayParam"));
-    Assert.assertTrue(l.contains("IntegerParam"));
-    Assert.assertTrue(l.contains("IntegerArrayParam"));
+    assertThat(mContext2.getConfigParameterNames("en")).containsExactlyInAnyOrder("StringParam",
+            "StringArrayParam", "IntegerParam", "IntegerArrayParam");
 
     // try on nonexistent group
-    names = mContext2.getConfigParameterNames("foo");
-    Assert.assertEquals(0, names.length);
+    assertThat(mContext2.getConfigParameterNames("foo")).isEmpty();
 
     // try on something that has no groups
-    names = mContext.getConfigParameterNames("en");
-    Assert.assertEquals(0, names.length);
+    assertThat(mContext.getConfigParameterNames("en")).isEmpty();
 
     // try on something with both groups and groupless params
-    names = mContext3.getConfigParameterNames("en");
-    Assert.assertEquals(4, names.length);
-    l = new ArrayList<>(Arrays.asList(names));
-    Assert.assertTrue(l.contains("StringParam"));
-    Assert.assertTrue(l.contains("StringArrayParam"));
-    Assert.assertTrue(l.contains("IntegerParam"));
-    Assert.assertTrue(l.contains("IntegerArrayParam"));
+    assertThat(mContext3.getConfigParameterNames("en")).containsExactlyInAnyOrder("StringParam",
+            "StringArrayParam", "IntegerParam", "IntegerArrayParam");
 
   }
 
@@ -347,13 +296,13 @@ public class UimaContext_implTest {
     try {
       // custom object
       Object r = mContext.getResourceObject("TestResourceObject");
-      Assert.assertNotNull(r);
-      Assert.assertTrue(r instanceof TestResourceInterface);
+      assertThat(r).isNotNull();
+      assertThat(r instanceof TestResourceInterface).isTrue();
 
       // standard data resource
       Object r2 = mContext.getResourceObject("TestFileResource");
-      Assert.assertNotNull(r2);
-      Assert.assertTrue(r2 instanceof DataResource);
+      assertThat(r2).isNotNull();
+      assertThat(r2 instanceof DataResource).isTrue();
 
       // parameterized resources (should fail)
       ResourceAccessException ex = null;
@@ -362,7 +311,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -370,11 +319,11 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       Object r3 = mContext.getResourceObject("Unknown");
-      Assert.assertNull(r3);
+      assertThat(r3).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -385,11 +334,11 @@ public class UimaContext_implTest {
     try {
       // standard data resource (should succeed)
       URL url = mContext.getResourceURL("TestFileResource");
-      Assert.assertNotNull(url);
+      assertThat(url).isNotNull();
 
       // custom resource object (should return null)
       URL url2 = mContext.getResourceURL("TestResourceObject");
-      Assert.assertNull(url2);
+      assertThat(url2).isNull();
 
       // parameterized resources (should fail)
       ResourceAccessException ex = null;
@@ -398,7 +347,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -406,23 +355,23 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       URL url3 = mContext.getResourceURL("Unknown");
-      Assert.assertNull(url3);
+      assertThat(url3).isNull();
 
       // passthrough to class loader
       URL url5 = mContext.getResourceURL("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(url5);
+      assertThat(url5).isNotNull();
 
       // passthrough to data path
       URL url6 = mContext.getResourceURL("testDataFile.dat");
-      Assert.assertNotNull(url6);
+      assertThat(url6).isNotNull();
 
       // for directory
       URL url7 = mContext.getResourceURL("subdir");
-      Assert.assertNotNull(url7);
+      assertThat(url7).isNotNull();
 
       // spaces as part of extension classpath (spaces should be URL-encoded)
       URL url8 = mContext.getResourceURL("OtherFileResource");
@@ -440,11 +389,11 @@ public class UimaContext_implTest {
     try {
       // standard data resource (should succeed)
       URI uri = mContext.getResourceURI("TestFileResource");
-      Assert.assertNotNull(uri);
+      assertThat(uri).isNotNull();
 
       // custom resource object (should return null)
       URI uri2 = mContext.getResourceURI("TestResourceObject");
-      Assert.assertNull(uri2);
+      assertThat(uri2).isNull();
 
       // parameterized resources (should fail)
       ResourceAccessException ex = null;
@@ -453,7 +402,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -461,23 +410,23 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       URI uri3 = mContext.getResourceURI("Unknown");
-      Assert.assertNull(uri3);
+      assertThat(uri3).isNull();
 
       // passthrough to class loader
       URI uri5 = mContext.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(uri5);
+      assertThat(uri5).isNotNull();
 
       // passthrough to data path
       URI uri6 = mContext.getResourceURI("testDataFile.dat");
-      Assert.assertNotNull(uri6);
+      assertThat(uri6).isNotNull();
 
       // for directory
       URI uri7 = mContext.getResourceURI("subdir");
-      Assert.assertNotNull(uri7);
+      assertThat(uri7).isNotNull();
 
       // spaces as part of extension classpath (spaces should be decoded, unlike with URL)
       URI uri8 = mContext.getResourceURI("OtherFileResource");
@@ -494,11 +443,11 @@ public class UimaContext_implTest {
     try {
       // standard data resource (should succeed)
       String path = mContext.getResourceFilePath("TestFileResource");
-      Assert.assertNotNull(path);
+      assertThat(path).isNotNull();
 
       // custom resource object (should return null)
       String path2 = mContext.getResourceFilePath("TestResourceObject");
-      Assert.assertNull(path2);
+      assertThat(path2).isNull();
 
       // parameterized resources (should fail)
       ResourceAccessException ex = null;
@@ -507,7 +456,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -515,24 +464,24 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       String path3 = mContext.getResourceFilePath("Unknown");
-      Assert.assertNull(path3);
+      assertThat(path3).isNull();
 
       // passthrough to class loader
       String path5 = mContext
               .getResourceFilePath("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(path5);
+      assertThat(path5).isNotNull();
 
       // passthrough to data path
       String path6 = mContext.getResourceFilePath("testDataFile.dat");
-      Assert.assertNotNull(path6);
+      assertThat(path6).isNotNull();
 
       // for directory
       String path7 = mContext.getResourceFilePath("subdir");
-      Assert.assertNotNull(path7);
+      assertThat(path7).isNotNull();
 
       // spaces as part of extension classpath (spaces should be decoded, unlike with URL)
       String path8 = mContext.getResourceFilePath("OtherFileResource");
@@ -549,11 +498,11 @@ public class UimaContext_implTest {
     try {
       // standard data resource (should succeed)
       InputStream strm = mContext.getResourceAsStream("TestFileResource");
-      Assert.assertNotNull(strm);
+      assertThat(strm).isNotNull();
 
       // custom resource object (should return null)
       InputStream strm2 = mContext.getResourceAsStream("TestResourceObject");
-      Assert.assertNull(strm2);
+      assertThat(strm2).isNull();
 
       // parameterized resources (should fail)
       ResourceAccessException ex = null;
@@ -562,7 +511,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -570,24 +519,24 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       InputStream strm3 = mContext.getResourceAsStream("Unknown");
-      Assert.assertNull(strm3);
+      assertThat(strm3).isNull();
 
       // passthrough to class loader
       InputStream strm4 = mContext
               .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
-      Assert.assertNotNull(strm4);
+      assertThat(strm4).isNotNull();
 
       // passthrough to data path
       InputStream strm5 = mContext.getResourceAsStream("testDataFile.dat");
-      Assert.assertNotNull(strm5);
+      assertThat(strm5).isNotNull();
 
       // for directory
       InputStream strm6 = mContext.getResourceAsStream("subdir");
-      Assert.assertNotNull(strm6);
+      assertThat(strm6).isNotNull();
 
       // spaces as part of extension classpath
       InputStream strm7 = mContext.getResourceAsStream("OtherFileResource");
@@ -602,21 +551,21 @@ public class UimaContext_implTest {
     try {
       // standard data resource
       Object r = mContext.getResourceObject("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(r);
-      Assert.assertTrue(r instanceof DataResource);
+      assertThat(r).isNotNull();
+      assertThat(r instanceof DataResource).isTrue();
       Object r2 = mContext.getResourceObject("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(r2);
-      Assert.assertTrue(r2 instanceof DataResource);
-      Assert.assertFalse(r2.equals(r));
+      assertThat(r2).isNotNull();
+      assertThat(r2 instanceof DataResource).isTrue();
+      assertThat(r).isNotEqualTo(r2);
 
       // custom object
       Object r3 = mContext.getResourceObject("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNotNull(r3);
-      Assert.assertTrue(r3 instanceof TestResourceInterface);
+      assertThat(r3).isNotNull();
+      assertThat(r3 instanceof TestResourceInterface).isTrue();
       Object r4 = mContext.getResourceObject("TestLanguageResourceObject", new String[] { "de" });
-      Assert.assertNotNull(r4);
-      Assert.assertTrue(r4 instanceof TestResourceInterface);
-      Assert.assertFalse(r4.equals(r3));
+      assertThat(r4).isNotNull();
+      assertThat(r4 instanceof TestResourceInterface).isTrue();
+      assertThat(r3).isNotEqualTo(r4);
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
@@ -625,7 +574,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -633,7 +582,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -642,7 +591,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -650,11 +599,11 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       Object r5 = mContext.getResourceObject("Unknown", new String[] { "en" });
-      Assert.assertNull(r5);
+      assertThat(r5).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -666,17 +615,17 @@ public class UimaContext_implTest {
       // standard data resource
       InputStream strm = mContext.getResourceAsStream("TestFileLanguageResource",
               new String[] { "en" });
-      Assert.assertNotNull(strm);
+      assertThat(strm).isNotNull();
 
       InputStream strm2 = mContext.getResourceAsStream("TestFileLanguageResource",
               new String[] { "de" });
-      Assert.assertNotNull(strm2);
-      Assert.assertFalse(strm2.equals(strm));
+      assertThat(strm2).isNotNull();
+      assertThat(strm).isNotEqualTo(strm2);
 
       // custom object (should return null)
       InputStream strm3 = mContext.getResourceAsStream("TestLanguageResourceObject",
               new String[] { "en" });
-      Assert.assertNull(strm3);
+      assertThat(strm3).isNull();
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
@@ -685,7 +634,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -693,7 +642,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -702,7 +651,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -710,11 +659,11 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       InputStream strm4 = mContext.getResourceAsStream("Unknown", new String[] { "en" });
-      Assert.assertNull(strm4);
+      assertThat(strm4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -725,15 +674,15 @@ public class UimaContext_implTest {
     try {
       // standard data resource
       URL url = mContext.getResourceURL("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(url);
+      assertThat(url).isNotNull();
 
       URL url2 = mContext.getResourceURL("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(url2);
-      Assert.assertFalse(url2.toString().equals(url.toString()));
+      assertThat(url2).isNotNull();
+      assertThat(url.toString()).isNotEqualTo(url2.toString());
 
       // custom object (should return null)
       URL url3 = mContext.getResourceURL("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNull(url3);
+      assertThat(url3).isNull();
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
@@ -742,7 +691,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -750,7 +699,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -759,7 +708,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -767,11 +716,11 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       URL url4 = mContext.getResourceURL("Unknown", new String[] { "en" });
-      Assert.assertNull(url4);
+      assertThat(url4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -782,15 +731,15 @@ public class UimaContext_implTest {
     try {
       // standard data resource
       URI uri = mContext.getResourceURI("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(uri);
+      assertThat(uri).isNotNull();
 
       URI uri2 = mContext.getResourceURI("TestFileLanguageResource", new String[] { "de" });
-      Assert.assertNotNull(uri2);
-      Assert.assertFalse(uri2.equals(uri));
+      assertThat(uri2).isNotNull();
+      assertThat(uri).isNotEqualTo(uri2);
 
       // custom object (should return null)
       URI uri3 = mContext.getResourceURI("TestLanguageResourceObject", new String[] { "en" });
-      Assert.assertNull(uri3);
+      assertThat(uri3).isNull();
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
@@ -799,7 +748,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -807,7 +756,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -816,7 +765,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -824,11 +773,11 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       URI uri4 = mContext.getResourceURI("Unknown", new String[] { "en" });
-      Assert.assertNull(uri4);
+      assertThat(uri4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -839,17 +788,17 @@ public class UimaContext_implTest {
     try {
       // standard data resource
       String path = mContext.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
-      Assert.assertNotNull(path);
+      assertThat(path).isNotNull();
 
       String path2 = mContext.getResourceFilePath("TestFileLanguageResource",
               new String[] { "de" });
-      Assert.assertNotNull(path2);
-      Assert.assertFalse(path2.equals(path));
+      assertThat(path2).isNotNull();
+      assertThat(path).isNotEqualTo(path2);
 
       // custom object (should return null)
       String path3 = mContext.getResourceFilePath("TestLanguageResourceObject",
               new String[] { "en" });
-      Assert.assertNull(path3);
+      assertThat(path3).isNull();
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
@@ -858,7 +807,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -866,7 +815,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // non-parameterized resources (should fail)
       ex = null;
@@ -875,7 +824,7 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       ex = null;
       try {
@@ -883,11 +832,11 @@ public class UimaContext_implTest {
       } catch (ResourceAccessException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
 
       // nonexistent resource (should return null)
       String path4 = mContext.getResourceFilePath("Unknown", new String[] { "en" });
-      Assert.assertNull(path4);
+      assertThat(path4).isNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

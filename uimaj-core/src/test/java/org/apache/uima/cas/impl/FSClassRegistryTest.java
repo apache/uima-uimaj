@@ -31,11 +31,11 @@ import org.apache.uima.spi.SpiSentence;
 import org.apache.uima.spi.SpiToken;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FSClassRegistryTest {
-  @Before
+  @BeforeEach
   public void setup() {
     System.setProperty(FSClassRegistry.RECORD_JCAS_CLASSLOADERS, "true");
 

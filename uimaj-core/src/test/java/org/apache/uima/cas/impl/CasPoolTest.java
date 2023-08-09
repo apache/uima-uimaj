@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -44,7 +45,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -183,9 +183,9 @@ public class CasPoolTest {
 
       TypeSystem ts = c1.getTypeSystem();
 
-      Assert.assertTrue(ts == c2.getTypeSystem());
-      Assert.assertTrue(ts == c1v2.getTypeSystem());
-      Assert.assertTrue(ts == c2v2.getTypeSystem());
+      assertThat(ts == c2.getTypeSystem()).isTrue();
+      assertThat(ts == c1v2.getTypeSystem()).isTrue();
+      assertThat(ts == c2v2.getTypeSystem()).isTrue();
 
       casManager.releaseCas(c1v2);
       casManager.releaseCas(c2);

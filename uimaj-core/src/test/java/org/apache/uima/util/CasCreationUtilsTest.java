@@ -19,6 +19,7 @@
 
 package org.apache.uima.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -57,7 +58,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypePriorityList_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class CasCreationUtilsTest {
@@ -91,14 +91,14 @@ public class CasCreationUtilsTest {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem1.xml")));
 
-      Assert.assertEquals(1, ts1desc.getType("Type1").getFeatures().length);
-      Assert.assertEquals(1, ts1desc.getType("Type2").getFeatures().length);
-      Assert.assertEquals(1, ts1desc.getType("Type3").getFeatures().length);
+      assertThat(ts1desc.getType("Type1").getFeatures()).hasSize(1);
+      assertThat(ts1desc.getType("Type2").getFeatures()).hasSize(1);
+      assertThat(ts1desc.getType("Type3").getFeatures()).hasSize(1);
 
       TypeSystemDescription ts2desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem2.xml")));
-      Assert.assertEquals(1, ts2desc.getType("Type1").getFeatures().length);
-      Assert.assertEquals(1, ts2desc.getType("Type2").getFeatures().length);
+      assertThat(ts2desc.getType("Type1").getFeatures()).hasSize(1);
+      assertThat(ts2desc.getType("Type2").getFeatures()).hasSize(1);
 
       ArrayList<TypeSystemDescription> tsList = new ArrayList<>();
       tsList.add(ts1desc);
@@ -107,9 +107,9 @@ public class CasCreationUtilsTest {
       TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList,
               UIMAFramework.newDefaultResourceManager(), typesWithMergedFeatures);
 
-      Assert.assertEquals(2, merged.getType("Type1").getFeatures().length);
-      Assert.assertEquals(2, merged.getType("Type2").getFeatures().length);
-      Assert.assertEquals(1, merged.getType("Type3").getFeatures().length);
+      assertThat(merged.getType("Type1").getFeatures()).hasSize(2);
+      assertThat(merged.getType("Type2").getFeatures()).hasSize(2);
+      assertThat(merged.getType("Type3").getFeatures()).hasSize(1);
 
       assertEquals(2, typesWithMergedFeatures.size());
       assertTrue(typesWithMergedFeatures.containsKey("Type1"));
@@ -287,47 +287,47 @@ public class CasCreationUtilsTest {
               UIMAFramework.newDefaultResourceManager(), mergedTypes);
 
       // test results of merge
-      Assert.assertEquals(8, typeSys.getTypes().length);
+      assertThat(typeSys.getTypes()).hasSize(8);
 
       TypeDescription type0 = typeSys.getType("NamedEntity");
-      Assert.assertNotNull(type0);
-      Assert.assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
-      Assert.assertEquals(1, type0.getFeatures().length);
+      assertThat(type0).isNotNull();
+      assertThat(type0.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type0.getFeatures()).hasSize(1);
 
       TypeDescription type1 = typeSys.getType("Person");
-      Assert.assertNotNull(type1);
-      Assert.assertEquals("NamedEntity", type1.getSupertypeName());
-      Assert.assertEquals(1, type1.getFeatures().length);
+      assertThat(type1).isNotNull();
+      assertThat(type1.getSupertypeName()).isEqualTo("NamedEntity");
+      assertThat(type1.getFeatures()).hasSize(1);
 
       TypeDescription type2 = typeSys.getType("Place");
-      Assert.assertNotNull(type2);
-      Assert.assertEquals("NamedEntity", type2.getSupertypeName());
-      Assert.assertEquals(3, type2.getFeatures().length);
+      assertThat(type2).isNotNull();
+      assertThat(type2.getSupertypeName()).isEqualTo("NamedEntity");
+      assertThat(type2.getFeatures()).hasSize(3);
 
       TypeDescription type3 = typeSys.getType("Org");
-      Assert.assertNotNull(type3);
-      Assert.assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
-      Assert.assertEquals(0, type3.getFeatures().length);
+      assertThat(type3).isNotNull();
+      assertThat(type3.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type3.getFeatures()).isEmpty();
 
       TypeDescription type4 = typeSys.getType("DocumentStructure");
-      Assert.assertNotNull(type4);
-      Assert.assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
-      Assert.assertEquals(0, type4.getFeatures().length);
+      assertThat(type4).isNotNull();
+      assertThat(type4.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type4.getFeatures()).isEmpty();
 
       TypeDescription type5 = typeSys.getType("Paragraph");
-      Assert.assertNotNull(type5);
-      Assert.assertEquals("DocumentStructure", type5.getSupertypeName());
-      Assert.assertEquals(0, type5.getFeatures().length);
+      assertThat(type5).isNotNull();
+      assertThat(type5.getSupertypeName()).isEqualTo("DocumentStructure");
+      assertThat(type5.getFeatures()).isEmpty();
 
       TypeDescription type6 = typeSys.getType("Sentence");
-      Assert.assertNotNull(type6);
-      Assert.assertEquals("DocumentStructure", type6.getSupertypeName());
-      Assert.assertEquals(0, type6.getFeatures().length);
+      assertThat(type6).isNotNull();
+      assertThat(type6.getSupertypeName()).isEqualTo("DocumentStructure");
+      assertThat(type6.getFeatures()).isEmpty();
 
       TypeDescription type7 = typeSys.getType("test.flowController.Test");
-      Assert.assertNotNull(type7);
-      Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
-      Assert.assertEquals(1, type7.getFeatures().length);
+      assertThat(type7).isNotNull();
+      assertThat(type7.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type7.getFeatures()).hasSize(1);
 
       // Place has merged features, Person has different supertype
       assertEquals(2, mergedTypes.size());
@@ -352,16 +352,16 @@ public class CasCreationUtilsTest {
       TypePriorities pri = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(desc);
 
       // test results of merge
-      Assert.assertNotNull(pri);
+      assertThat(pri).isNotNull();
       TypePriorityList[] priLists = pri.getPriorityLists();
-      Assert.assertEquals(3, priLists.length);
+      assertThat(priLists).hasSize(3);
       String[] list0 = priLists[0].getTypes();
       String[] list1 = priLists[1].getTypes();
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
-      Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+      assertThat((list0.length == 2 && list1.length == 2 && list2.length == 3)
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
-              || (list0.length == 3 && list1.length == 2 && list2.length == 2));
+              || (list0.length == 3 && list1.length == 2 && list2.length == 2)).isTrue();
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -380,18 +380,18 @@ public class CasCreationUtilsTest {
 
       // test results of merge
       FsIndexDescription[] indexes = indexColl.getFsIndexes();
-      Assert.assertEquals(3, indexes.length);
+      assertThat(indexes).hasSize(3);
       // order of indexes is not defined
       String label0 = indexes[0].getLabel();
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
-      Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
-              || label2.equals("DocStructIndex"));
-      Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
-              || label2.equals("PlaceIndex"));
-      Assert.assertTrue(
+      assertThat(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+              || label2.equals("DocStructIndex")).isTrue();
+      assertThat(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
+              || label2.equals("PlaceIndex")).isTrue();
+      assertThat(
               label0.equals("FlowControllerTestIndex") || label1.equals("FlowControllerTestIndex")
-                      || label2.equals("FlowControllerTestIndex"));
+                      || label2.equals("FlowControllerTestIndex")).isTrue();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -587,47 +587,47 @@ public class CasCreationUtilsTest {
 
       // test results of merge
       // Type System
-      Assert.assertEquals(8, typeSys.getTypes().length);
+      assertThat(typeSys.getTypes()).hasSize(8);
 
       TypeDescription type0 = typeSys.getType("NamedEntity");
-      Assert.assertNotNull(type0);
-      Assert.assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
-      Assert.assertEquals(1, type0.getFeatures().length);
+      assertThat(type0).isNotNull();
+      assertThat(type0.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type0.getFeatures()).hasSize(1);
 
       TypeDescription type1 = typeSys.getType("Person");
-      Assert.assertNotNull(type1);
-      Assert.assertEquals("NamedEntity", type1.getSupertypeName());
-      Assert.assertEquals(1, type1.getFeatures().length);
+      assertThat(type1).isNotNull();
+      assertThat(type1.getSupertypeName()).isEqualTo("NamedEntity");
+      assertThat(type1.getFeatures()).hasSize(1);
 
       TypeDescription type2 = typeSys.getType("Place");
-      Assert.assertNotNull(type2);
-      Assert.assertEquals("NamedEntity", type2.getSupertypeName());
-      Assert.assertEquals(3, type2.getFeatures().length);
+      assertThat(type2).isNotNull();
+      assertThat(type2.getSupertypeName()).isEqualTo("NamedEntity");
+      assertThat(type2.getFeatures()).hasSize(3);
 
       TypeDescription type3 = typeSys.getType("Org");
-      Assert.assertNotNull(type3);
-      Assert.assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
-      Assert.assertEquals(0, type3.getFeatures().length);
+      assertThat(type3).isNotNull();
+      assertThat(type3.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type3.getFeatures()).isEmpty();
 
       TypeDescription type4 = typeSys.getType("DocumentStructure");
-      Assert.assertNotNull(type4);
-      Assert.assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
-      Assert.assertEquals(0, type4.getFeatures().length);
+      assertThat(type4).isNotNull();
+      assertThat(type4.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type4.getFeatures()).isEmpty();
 
       TypeDescription type5 = typeSys.getType("Paragraph");
-      Assert.assertNotNull(type5);
-      Assert.assertEquals("DocumentStructure", type5.getSupertypeName());
-      Assert.assertEquals(0, type5.getFeatures().length);
+      assertThat(type5).isNotNull();
+      assertThat(type5.getSupertypeName()).isEqualTo("DocumentStructure");
+      assertThat(type5.getFeatures()).isEmpty();
 
       TypeDescription type6 = typeSys.getType("Sentence");
-      Assert.assertNotNull(type6);
-      Assert.assertEquals("DocumentStructure", type6.getSupertypeName());
-      Assert.assertEquals(0, type6.getFeatures().length);
+      assertThat(type6).isNotNull();
+      assertThat(type6.getSupertypeName()).isEqualTo("DocumentStructure");
+      assertThat(type6.getFeatures()).isEmpty();
 
       TypeDescription type7 = typeSys.getType("test.flowController.Test");
-      Assert.assertNotNull(type7);
-      Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
-      Assert.assertEquals(1, type7.getFeatures().length);
+      assertThat(type7).isNotNull();
+      assertThat(type7.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type7.getFeatures()).hasSize(1);
 
       // Place has merged features, Person has different supertype
       assertEquals(2, mergedTypes.size());
@@ -635,31 +635,31 @@ public class CasCreationUtilsTest {
       assertTrue(mergedTypes.containsKey("Person"));
 
       // Type Priorities
-      Assert.assertNotNull(pri);
+      assertThat(pri).isNotNull();
       TypePriorityList[] priLists = pri.getPriorityLists();
-      Assert.assertEquals(3, priLists.length);
+      assertThat(priLists).hasSize(3);
       String[] list0 = priLists[0].getTypes();
       String[] list1 = priLists[1].getTypes();
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
-      Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+      assertThat((list0.length == 2 && list1.length == 2 && list2.length == 3)
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
-              || (list0.length == 3 && list1.length == 2 && list2.length == 2));
+              || (list0.length == 3 && list1.length == 2 && list2.length == 2)).isTrue();
 
       // Indexes
       FsIndexDescription[] indexes = indexColl.getFsIndexes();
-      Assert.assertEquals(3, indexes.length);
+      assertThat(indexes).hasSize(3);
       // order of indexes is not defined
       String label0 = indexes[0].getLabel();
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
-      Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
-              || label2.equals("DocStructIndex"));
-      Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
-              || label2.equals("PlaceIndex"));
-      Assert.assertTrue(
+      assertThat(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+              || label2.equals("DocStructIndex")).isTrue();
+      assertThat(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
+              || label2.equals("PlaceIndex")).isTrue();
+      assertThat(
               label0.equals("FlowControllerTestIndex") || label1.equals("FlowControllerTestIndex")
-                      || label2.equals("FlowControllerTestIndex"));
+                      || label2.equals("FlowControllerTestIndex")).isTrue();
 
       // Now test case where aggregate contains a remote, and we want to do the
       // merge of the non-remote delegates and report the failure. (This example

@@ -19,13 +19,14 @@
 
 package org.apache.uima.cas.test;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -49,7 +50,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -191,11 +191,10 @@ public class TypeOrderTest {
   public void testMain() throws Exception {
 
     File refFile = JUnitExtension.getFile("CASTests/CasTypeOrderTestRef.txt");
-    Assert.assertNotNull(refFile);
+    assertThat(refFile).isNotNull();
     File outputFile = new File(JUnitExtension.getFile("CASTests"), "CasTypeOderTest_testouput.txt");
     OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(outputFile, false),
-            StandardCharsets.UTF_8);
-    Assert.assertNotNull(fileWriter);
+            UTF_8);
 
     for (int i = 0; i < 10; i++) {
       this.cas.getIndexRepository()
@@ -235,7 +234,7 @@ public class TypeOrderTest {
     fileWriter.close();
     // System.out.println(refFile.getAbsolutePath());
     // System.out.println(outputFile.getAbsolutePath());
-    Assert.assertTrue("Comparing ref " + refFile.getAbsolutePath() + " and output "
-            + outputFile.getAbsolutePath(), FileCompare.compare(refFile, outputFile));
+    assertThat(FileCompare.compare(refFile, outputFile)).as("Comparing ref "
+            + refFile.getAbsolutePath() + " and output " + outputFile.getAbsolutePath()).isTrue();
   }
 }

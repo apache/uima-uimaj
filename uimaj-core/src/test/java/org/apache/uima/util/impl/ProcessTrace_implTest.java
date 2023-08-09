@@ -19,11 +19,12 @@
 
 package org.apache.uima.util.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class ProcessTrace_implTest {
@@ -34,76 +35,76 @@ public class ProcessTrace_implTest {
   public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
-    Assert.assertTrue(pt.getEvents().isEmpty());
+    assertThat(pt.getEvents().isEmpty()).isTrue();
     // start two events
     pt.startEvent("c1", "t1", "testing");
     pt.startEvent("c1", "t2", "testing");
     // should be nothing on event list until both are closed
-    Assert.assertTrue(pt.getEvents().isEmpty());
+    assertThat(pt.getEvents().isEmpty()).isTrue();
     pt.endEvent("c1", "t2", "success");
-    Assert.assertTrue(pt.getEvents().isEmpty());
+    assertThat(pt.getEvents().isEmpty()).isTrue();
     pt.endEvent("c1", "t1", "success");
-    Assert.assertEquals(1, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(1);
 
     // start two more events
     pt.startEvent("c2", "t1", "testing");
     pt.startEvent("c2", "t2", "testing");
     // close one and start another
     pt.endEvent("c2", "t2", "testing");
-    Assert.assertEquals(1, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(1);
     pt.startEvent("c2", "t3", "testing");
     pt.endEvent("c2", "t3", "testing");
-    Assert.assertEquals(1, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(1);
     // start another event and then end the original event
     pt.startEvent("c2", "t4", "testing");
     pt.endEvent("c2", "t1", "success");
-    Assert.assertEquals(2, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(2);
 
     // verify contents of the ProcessTrace
     List<ProcessTraceEvent> evts = pt.getEvents();
     ProcessTraceEvent evt0 = evts.get(0);
-    Assert.assertEquals("c1", evt0.getComponentName());
-    Assert.assertEquals("t1", evt0.getType());
-    Assert.assertEquals("testing", evt0.getDescription());
-    Assert.assertEquals("success", evt0.getResultMessage());
+    assertThat(evt0.getComponentName()).isEqualTo("c1");
+    assertThat(evt0.getType()).isEqualTo("t1");
+    assertThat(evt0.getDescription()).isEqualTo("testing");
+    assertThat(evt0.getResultMessage()).isEqualTo("success");
     List<ProcessTraceEvent> subEvts = evt0.getSubEvents();
     ProcessTraceEvent subEvt0 = subEvts.get(0);
-    Assert.assertEquals("c1", subEvt0.getComponentName());
-    Assert.assertEquals("t2", subEvt0.getType());
-    Assert.assertEquals("testing", subEvt0.getDescription());
-    Assert.assertEquals("success", subEvt0.getResultMessage());
-    Assert.assertTrue(subEvt0.getSubEvents().isEmpty());
+    assertThat(subEvt0.getComponentName()).isEqualTo("c1");
+    assertThat(subEvt0.getType()).isEqualTo("t2");
+    assertThat(subEvt0.getDescription()).isEqualTo("testing");
+    assertThat(subEvt0.getResultMessage()).isEqualTo("success");
+    assertThat(subEvt0.getSubEvents().isEmpty()).isTrue();
 
     ProcessTraceEvent evt1 = evts.get(1);
-    Assert.assertEquals("c2", evt1.getComponentName());
-    Assert.assertEquals("t1", evt1.getType());
-    Assert.assertEquals("testing", evt1.getDescription());
-    Assert.assertEquals("success", evt1.getResultMessage());
-    Assert.assertEquals(3, evt1.getSubEvents().size());
+    assertThat(evt1.getComponentName()).isEqualTo("c2");
+    assertThat(evt1.getType()).isEqualTo("t1");
+    assertThat(evt1.getDescription()).isEqualTo("testing");
+    assertThat(evt1.getResultMessage()).isEqualTo("success");
+    assertThat(evt1.getSubEvents()).hasSize(3);
   }
 
   @Test
   public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
-    Assert.assertTrue(pt.getEvents().isEmpty());
+    assertThat(pt.getEvents().isEmpty()).isTrue();
     // add event
     pt.addEvent("c1", "t1", "testing", 0, "success");
     // should be one thing on list
-    Assert.assertEquals(1, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(1);
     // start an event
     pt.startEvent("c2", "t1", "testing");
     // add event
     pt.addEvent("c2", "t2", "testing", 0, "success");
     // should still be one thing on list
-    Assert.assertEquals(1, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(1);
     // end event that we started
     pt.endEvent("c2", "t1", "success");
     // should be 2 events on list
-    Assert.assertEquals(2, pt.getEvents().size());
+    assertThat(pt.getEvents()).hasSize(2);
     // 2nd event should have a sub-event
     ProcessTraceEvent evt = pt.getEvents().get(1);
-    Assert.assertEquals(1, evt.getSubEvents().size());
+    assertThat(evt.getSubEvents()).hasSize(1);
   }
 
   /*
@@ -127,27 +128,27 @@ public class ProcessTrace_implTest {
 
     // get top-level events for component c1
     List<ProcessTraceEvent> c1evts = pt.getEventsByComponentName("c1", false);
-    Assert.assertEquals(1, c1evts.size());
+    assertThat(c1evts).hasSize(1);
     ProcessTraceEvent evt = c1evts.get(0);
-    Assert.assertEquals(evt.getType(), "t1");
+    assertThat("t1").isEqualTo(evt.getType());
 
     // get all events for component c1
     c1evts = pt.getEventsByComponentName("c1", true);
-    Assert.assertEquals(2, c1evts.size());
+    assertThat(c1evts).hasSize(2);
     evt = c1evts.get(1);
-    Assert.assertEquals(evt.getType(), "t2");
+    assertThat("t2").isEqualTo(evt.getType());
 
     // get top-level events for component c2
     List<ProcessTraceEvent> c2evts = pt.getEventsByComponentName("c2", false);
-    Assert.assertEquals(1, c2evts.size());
+    assertThat(c2evts).hasSize(1);
     evt = c2evts.get(0);
-    Assert.assertEquals(evt.getType(), "t1");
+    assertThat("t1").isEqualTo(evt.getType());
 
     // get all events for component c2
     c2evts = pt.getEventsByComponentName("c2", true);
-    Assert.assertEquals(4, c2evts.size());
+    assertThat(c2evts).hasSize(4);
     evt = c2evts.get(3);
-    Assert.assertEquals(evt.getType(), "t4");
+    assertThat("t4").isEqualTo(evt.getType());
   }
 
   /*
@@ -171,17 +172,17 @@ public class ProcessTrace_implTest {
 
     // get top-level events of type t1
     List<ProcessTraceEvent> t1evts = pt.getEventsByType("t1", false);
-    Assert.assertEquals(2, t1evts.size());
+    assertThat(t1evts).hasSize(2);
     ProcessTraceEvent evt = t1evts.get(0);
-    Assert.assertEquals(evt.getComponentName(), "c1");
+    assertThat("c1").isEqualTo(evt.getComponentName());
     evt = t1evts.get(1);
-    Assert.assertEquals(evt.getComponentName(), "c2");
+    assertThat("c2").isEqualTo(evt.getComponentName());
 
     // get all events for type t1
     t1evts = pt.getEventsByType("t1", true);
-    Assert.assertEquals(3, t1evts.size());
+    assertThat(t1evts).hasSize(3);
     evt = t1evts.get(2);
-    Assert.assertEquals(evt.getComponentName(), "c3");
+    assertThat("c3").isEqualTo(evt.getComponentName());
   }
 
   /*
@@ -204,11 +205,11 @@ public class ProcessTrace_implTest {
     pt.endEvent("c2", "t1", "success");
 
     ProcessTraceEvent evt = pt.getEvent("c2", "t2");
-    Assert.assertEquals("c2", evt.getComponentName());
-    Assert.assertEquals("t2", evt.getType());
+    assertThat(evt.getComponentName()).isEqualTo("c2");
+    assertThat(evt.getType()).isEqualTo("t2");
 
     evt = pt.getEvent("c3", "t2");
-    Assert.assertNull(evt);
+    assertThat(evt).isNull();
   }
 
   @Test
@@ -230,8 +231,8 @@ public class ProcessTrace_implTest {
     ProcessTraceEvent c1evt = pt1.getEvents().get(0);
     ProcessTraceEvent c2evt = pt1.getEvents().get(1);
     ProcessTraceEvent c2subEvt = c2evt.getSubEvents().get(0);
-    Assert.assertEquals(1250, c1evt.getDuration());
-    Assert.assertEquals(1000, c2subEvt.getDuration());
+    assertThat(c1evt.getDuration()).isEqualTo(1250);
+    assertThat(c2subEvt.getDuration()).isEqualTo(1000);
   }
 
 }

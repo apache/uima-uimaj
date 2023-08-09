@@ -18,11 +18,12 @@
  */
 package org.apache.uima.util.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.apache.uima.util.Level;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -57,10 +58,10 @@ public class JSR47Logger_implTest {
       classLogger.setLevel(null); // causes it to inherit from above
 
       // check base configuration
-      Assert.assertNotNull(uimaLogger);
-      Assert.assertNotNull(classLogger);
-      Assert.assertTrue(uimaLogger.isLoggable(Level.INFO));
-      Assert.assertTrue(classLogger.isLoggable(Level.INFO));
+      assertThat(uimaLogger).isNotNull();
+      assertThat(classLogger).isNotNull();
+      assertThat(uimaLogger.isLoggable(Level.INFO)).isTrue();
+      assertThat(classLogger.isLoggable(Level.INFO)).isTrue();
     } finally {
       java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
 
@@ -85,83 +86,83 @@ public class JSR47Logger_implTest {
       classLogger.setLevel(null); // causes it to inherit from above
 
       // check message logging for root logger based on default log level
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL),
-              uimaLogger.isLoggable(Level.ALL));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST),
-              uimaLogger.isLoggable(Level.FINEST));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER),
-              uimaLogger.isLoggable(Level.FINER));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE),
-              uimaLogger.isLoggable(Level.FINE));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG),
-              uimaLogger.isLoggable(Level.CONFIG));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO),
-              uimaLogger.isLoggable(Level.INFO));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING),
-              uimaLogger.isLoggable(Level.WARNING));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE),
-              uimaLogger.isLoggable(Level.SEVERE));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF),
-              uimaLogger.isLoggable(Level.OFF));
+      assertThat(uimaLogger.isLoggable(Level.ALL))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.ALL));
+      assertThat(uimaLogger.isLoggable(Level.FINEST))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINEST));
+      assertThat(uimaLogger.isLoggable(Level.FINER))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINER));
+      assertThat(uimaLogger.isLoggable(Level.FINE))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINE));
+      assertThat(uimaLogger.isLoggable(Level.CONFIG))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.CONFIG));
+      assertThat(uimaLogger.isLoggable(Level.INFO))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.INFO));
+      assertThat(uimaLogger.isLoggable(Level.WARNING))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.WARNING));
+      assertThat(uimaLogger.isLoggable(Level.SEVERE))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.SEVERE));
+      assertThat(uimaLogger.isLoggable(Level.OFF))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.OFF));
 
       // check message logging for class logger based on default log level
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL),
-              classLogger.isLoggable(Level.ALL));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST),
-              classLogger.isLoggable(Level.FINEST));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER),
-              classLogger.isLoggable(Level.FINER));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE),
-              classLogger.isLoggable(Level.FINE));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG),
-              classLogger.isLoggable(Level.CONFIG));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO),
-              classLogger.isLoggable(Level.INFO));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING),
-              classLogger.isLoggable(Level.WARNING));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE),
-              classLogger.isLoggable(Level.SEVERE));
-      Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF),
-              classLogger.isLoggable(Level.OFF));
+      assertThat(classLogger.isLoggable(Level.ALL))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.ALL));
+      assertThat(classLogger.isLoggable(Level.FINEST))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINEST));
+      assertThat(classLogger.isLoggable(Level.FINER))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINER));
+      assertThat(classLogger.isLoggable(Level.FINE))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINE));
+      assertThat(classLogger.isLoggable(Level.CONFIG))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.CONFIG));
+      assertThat(classLogger.isLoggable(Level.INFO))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.INFO));
+      assertThat(classLogger.isLoggable(Level.WARNING))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.WARNING));
+      assertThat(classLogger.isLoggable(Level.SEVERE))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.SEVERE));
+      assertThat(classLogger.isLoggable(Level.OFF))
+              .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.OFF));
 
       // reset class logger level to OFF
       // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.OFF);
       classLogger.setLevel(Level.OFF);
-      Assert.assertFalse(classLogger.isLoggable(Level.ALL));
-      Assert.assertFalse(classLogger.isLoggable(Level.FINEST));
-      Assert.assertFalse(classLogger.isLoggable(Level.FINER));
-      Assert.assertFalse(classLogger.isLoggable(Level.FINE));
-      Assert.assertFalse(classLogger.isLoggable(Level.CONFIG));
-      Assert.assertFalse(classLogger.isLoggable(Level.INFO));
-      Assert.assertFalse(classLogger.isLoggable(Level.WARNING));
-      Assert.assertFalse(classLogger.isLoggable(Level.SEVERE));
-      Assert.assertFalse(classLogger.isLoggable(Level.OFF));
+      assertThat(classLogger.isLoggable(Level.ALL)).isFalse();
+      assertThat(classLogger.isLoggable(Level.FINEST)).isFalse();
+      assertThat(classLogger.isLoggable(Level.FINER)).isFalse();
+      assertThat(classLogger.isLoggable(Level.FINE)).isFalse();
+      assertThat(classLogger.isLoggable(Level.CONFIG)).isFalse();
+      assertThat(classLogger.isLoggable(Level.INFO)).isFalse();
+      assertThat(classLogger.isLoggable(Level.WARNING)).isFalse();
+      assertThat(classLogger.isLoggable(Level.SEVERE)).isFalse();
+      assertThat(classLogger.isLoggable(Level.OFF)).isFalse();
 
       // reset class logger level to ALL
       // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.ALL);
       classLogger.setLevel(Level.ALL);
-      Assert.assertTrue(classLogger.isLoggable(Level.ALL));
-      Assert.assertTrue(classLogger.isLoggable(Level.FINEST));
-      Assert.assertTrue(classLogger.isLoggable(Level.FINER));
-      Assert.assertTrue(classLogger.isLoggable(Level.FINE));
-      Assert.assertTrue(classLogger.isLoggable(Level.CONFIG));
-      Assert.assertTrue(classLogger.isLoggable(Level.INFO));
-      Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
-      Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
-      Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+      assertThat(classLogger.isLoggable(Level.ALL)).isTrue();
+      assertThat(classLogger.isLoggable(Level.FINEST)).isTrue();
+      assertThat(classLogger.isLoggable(Level.FINER)).isTrue();
+      assertThat(classLogger.isLoggable(Level.FINE)).isTrue();
+      assertThat(classLogger.isLoggable(Level.CONFIG)).isTrue();
+      assertThat(classLogger.isLoggable(Level.INFO)).isTrue();
+      assertThat(classLogger.isLoggable(Level.WARNING)).isTrue();
+      assertThat(classLogger.isLoggable(Level.SEVERE)).isTrue();
+      assertThat(classLogger.isLoggable(Level.OFF)).isTrue();
 
       // reset class logger level to WARNING
       // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.WARNING);
       classLogger.setLevel(Level.WARNING);
-      Assert.assertFalse(classLogger.isLoggable(Level.ALL));
-      Assert.assertFalse(classLogger.isLoggable(Level.FINEST));
-      Assert.assertFalse(classLogger.isLoggable(Level.FINER));
-      Assert.assertFalse(classLogger.isLoggable(Level.FINE));
-      Assert.assertFalse(classLogger.isLoggable(Level.CONFIG));
-      Assert.assertFalse(classLogger.isLoggable(Level.INFO));
-      Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
-      Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
-      Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+      assertThat(classLogger.isLoggable(Level.ALL)).isFalse();
+      assertThat(classLogger.isLoggable(Level.FINEST)).isFalse();
+      assertThat(classLogger.isLoggable(Level.FINER)).isFalse();
+      assertThat(classLogger.isLoggable(Level.FINE)).isFalse();
+      assertThat(classLogger.isLoggable(Level.CONFIG)).isFalse();
+      assertThat(classLogger.isLoggable(Level.INFO)).isFalse();
+      assertThat(classLogger.isLoggable(Level.WARNING)).isTrue();
+      assertThat(classLogger.isLoggable(Level.SEVERE)).isTrue();
+      assertThat(classLogger.isLoggable(Level.OFF)).isTrue();
 
     } finally {
       // reset log level to default log level
