@@ -146,7 +146,7 @@
     <jackson-version>2.15.2</jackson-version>
     <junit-version>5.10.0</junit-version>
     <junit-vintage-version>4.13.2</junit-vintage-version>
-    <mockito-version>4.11.0</mockito-version>
+    <mockito-version>5.4.0</mockito-version>
     <assertj-version>3.24.2</assertj-version>
     <xmlunit-version>2.9.1</xmlunit-version>
     <maven.version>3.2.5</maven.version>
@@ -273,17 +273,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <dependencies>
-    <!-- Used to enable findbug rule suppression annotations -->
-    <!-- This is the Apache v2 license version -->
-    <dependency>
-      <groupId>com.github.stephenc.findbugs</groupId>
-      <artifactId>findbugs-annotations</artifactId>
-      <version>1.3.9-1</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
   <build>
     <pluginManagement>
       <plugins>
@@ -307,6 +296,38 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>org.openntf.maven</groupId>
+        <artifactId>p2-layout-resolver</artifactId>
+        <version>1.7.0</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <environments>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
@@ -343,13 +364,6 @@
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.openntf.maven</groupId>
-        <artifactId>p2-layout-resolver</artifactId>
-        <version>1.7.0</version>
-        <extensions>true</extensions>
       </plugin>
 
       <plugin>

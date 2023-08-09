@@ -209,7 +209,9 @@
                      dependencies, at the proper version, to be
                      included in this, and also sets up the bundle
                      classpath to include them -->
-                <Embed-Dependency>*;scope=compile</Embed-Dependency>
+                <Embed-Dependency>
+                  *;scope=compile
+                </Embed-Dependency>
     
                 <!-- These just get made into the corresponding manifest entries -->
                 <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>

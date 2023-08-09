@@ -45,26 +45,7 @@
       <version>${project.parent.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-tools</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.uima</groupId>
-          <artifactId>uimaj-cpe</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- Eclipse dependencies -->
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jdt.ui</artifactId>
-      <version>[3.12.0,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.core.filesystem</artifactId>
@@ -97,17 +78,71 @@
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.equinox.app</artifactId>
-      <version>[1.2.0,2.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <version>[3.10.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jdt.launching</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>[3.13.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench</artifactId>
+      <version>[3.112.100,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>[3.15.100,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.registry</artifactId>
+      <version>[3.8.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.text</artifactId>
+      <version>[3.8.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.preferences</artifactId>
+      <version>[3.7.200,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.15.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>[3.16.0,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -163,38 +198,8 @@
               <instructions>
                 <Bundle-SymbolicName>org.apache.uima.caseditor;singleton:=true</Bundle-SymbolicName>
                 <Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
-                <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
+                <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-                <Export-Package>
-                  org.apache.uima.caseditor.*
-                </Export-Package>
-                <Require-Bundle>
-                  org.eclipse.jface.text,
-                  org.eclipse.text,
-                  org.eclipse.ui.editors,
-                  org.eclipse.ui.workbench.texteditor,
-                  org.eclipse.ui,
-                  org.eclipse.ui.workbench,
-                  org.eclipse.core.runtime,
-                  org.eclipse.core.resources,
-                  org.eclipse.jdt.core,
-                  org.junit4;resolution:=optional
-                </Require-Bundle>
-                <Import-Package>
-                  !org.eclipse.jface.text,
-                  !org.eclipse.jface.text.link,
-                  !org.eclipse.jface.text.source,
-                  !org.eclipse.jface.text.templates,
-                  !org.eclipse.ui.texteditor,
-                  !org.eclipse.ui,
-                  !org.eclipse.ui.actions,
-                  !org.eclipse.ui.dialogs,
-                  !org.eclipse.ui.model,
-                  !org.eclipse.ui.part,
-                  !org.eclipse.core.runtime,
-                  !org.osgi.framework,
-                  *
-                </Import-Package>
                 <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
               </instructions>
             </configuration>

@@ -37,14 +37,33 @@ UIMA data structures to the Eclipse Debug displays</description>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-core</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jdt.debug.ui</artifactId>
       <version>[3.8.0, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>[3.13.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench</artifactId>
+      <version>[3.112.100, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>[3.15.100, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.15.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -56,19 +75,8 @@ UIMA data structures to the Eclipse Debug displays</description>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>
-              org.apache.uima.ep_debug
-            </Export-Package>
-            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>
-              org.eclipse.core.runtime
-            </Require-Bundle>
-            <Import-Package>
-              !org.eclipse.core.runtime,
-              *,
-              org.eclipse.ui.plugin
-            </Import-Package>
+            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
           </instructions>
