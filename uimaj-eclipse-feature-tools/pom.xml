@@ -34,11 +34,6 @@
   <description>UIMA Eclipse Plugin Feature for base uima tooling</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <properties>
-    <!-- https://issues.apache.org/jira/browse/UIMA-6462 -->
-    <maven.deploy.skip>true</maven.deploy.skip>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.uima</groupId>
@@ -81,4 +76,42 @@
       <version>3.5.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
+  
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- https://issues.apache.org/jira/browse/UIMA-6462 -->
+                <id>artifacts-checksum-fix</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <echo message="Generating checksums for p2content.xml" />
+                    <property name="p2content-path" location="${project.build.directory}/${project.artifactId}-${project.version}-p2metadata.xml" />
+                    <copy file="${project.build.directory}/p2content.xml" tofile="${p2content-path}" overwrite="true" verbose="true"/>
+                    <checksum format="MD5SUM" forceoverwrite="yes" algorithm="SHA-512" fileext=".sha512" file="${p2content-path}" />
+                    <copy file="${p2content-path}.sha512" tofile="${project.build.directory}/p2content.xml.sha512" overwrite="true" verbose="true"/>
+    
+                    <echo message="Generating checksums for p2artifacts.xml" />
+                    <property name="p2artifacts-path" location="${project.build.directory}/${project.artifactId}-${project.version}-p2artifacts.xml" />
+                    <copy file="${project.build.directory}/p2artifacts.xml" tofile="${p2artifacts-path}" overwrite="true" verbose="true"/>
+                    <checksum format="MD5SUM" forceoverwrite="yes" algorithm="SHA-512" fileext=".sha512" file="${p2artifacts-path}" />
+                    <copy file="${p2artifacts-path}.sha512" tofile="${project.build.directory}/p2artifacts.xml.sha512" overwrite="true" verbose="true"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
