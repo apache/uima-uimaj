@@ -74,12 +74,12 @@
     <junit-version>5.10.0</junit-version>
     <junit-platform-version>1.10.0</junit-platform-version>
     <assertj-version>3.24.2</assertj-version>
-    <mockito-version>4.4.0</mockito-version>
-    <opentest4j-version>1.2.0</opentest4j-version>
-    <xmlunit-version>2.9.0</xmlunit-version>
+    <mockito-version>5.4.0</mockito-version>
+    <opentest4j-version>1.3.0</opentest4j-version>
+    <xmlunit-version>2.9.1</xmlunit-version>
     
-    <commons-io-version>2.11.0</commons-io-version>
-    <commons-lang3-version>3.12.0</commons-lang3-version>
+    <commons-io-version>2.13.0</commons-io-version>
+    <commons-lang3-version>3.13.0</commons-lang3-version>
     <groovy-version>3.0.18</groovy-version>
 
     <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
@@ -148,8 +148,10 @@
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
+        <artifactId>mockito-bom</artifactId>
         <version>${mockito-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
