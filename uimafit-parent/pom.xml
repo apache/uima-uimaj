@@ -321,14 +321,6 @@
           </dependency>
         </dependencies>
       </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <!-- 
-          Normally this only gets executed during releases, but we want licenses to be checked on
-          every build to make sure the licenses are included in the PRs.
-         -->
-      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
