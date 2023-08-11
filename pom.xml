@@ -88,9 +88,6 @@
               <doctitle>Apache uimaFIT ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache uimaFIT ${project.version} User-Level API Documentation</windowtitle>
               <notimestamp>true</notimestamp>
-              <links>
-                <link>https://uima.apache.org/d/uimaj-${uima-version}/apidocs/</link>
-              </links>
               <groups>
                 <group>
                   <title>uimaFIT</title>
@@ -140,7 +137,7 @@
     <module>uimafit-examples</module>
     <module>uimafit-spring</module>
     <module>uimafit-maven-plugin</module>
-    <module>uimafit-doc</module>
+    <module>uimafit-documentation</module>
     <module>uimafit-cpe</module>
     <module>uimafit-benchmark</module>
     <module>uimafit-parent</module>

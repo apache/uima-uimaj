@@ -25,11 +25,14 @@
     <version>3.5.0-SNAPSHOT</version>
     <relativePath>../uimafit-parent</relativePath>
   </parent>
+
   <artifactId>uimafit-maven-plugin</artifactId>
-  <name>Apache UIMA uimaFIT - Maven Plugin</name>
   <packaging>maven-plugin</packaging>
+
+  <name>Apache UIMA uimaFIT - Maven Plugin</name>
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
+
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -37,10 +40,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -58,7 +57,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.javassist</groupId>
@@ -70,25 +69,21 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
-      <version>3.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>3.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -97,14 +92,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>2.0.4</version>
-    </dependency>
-    <dependency>
       <groupId>org.sonatype.plexus</groupId>
       <artifactId>plexus-build-api</artifactId>
-      <version>0.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
     </dependency>
 
     <!-- Dependencies for accessing JavaDoc -->
@@ -162,13 +155,16 @@
         </dependencies>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <!-- Exclude generated help mojo -->
-          <sourceFileExcludes>
-            <sourceFileExclude>**/org/apache/uima/fit/maven/HelpMojo.java</sourceFileExclude>
-          </sourceFileExcludes>
+          <!-- avoiding javadoc warnings caused by Mojo annotations -->
+          <tagletArtifacts>
+            <tagletArtifact>
+              <groupId>org.apache.maven.plugin-tools</groupId>
+              <artifactId>maven-plugin-tools-javadoc</artifactId>
+              <version>3.5.2</version>
+            </tagletArtifact>
+          </tagletArtifacts>
         </configuration>
       </plugin>
     </plugins>

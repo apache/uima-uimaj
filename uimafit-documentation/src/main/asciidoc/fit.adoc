@@ -15,36 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-= Apache uimaFIT™
+= Apache UIMA uimaFIT™
 :Author: Apache UIMA™ Development Community
-:toc-title: User Guide
+:toc-title: uimaFIT User's Guide
 
 The document is a manual for users of uimaFIT, a friendly API to the Apache UIMA framework.
 
-include::common_book_info.adoc[leveloffset=+1]
+include::fit/common_book_info.adoc[leveloffset=+1]
 
-include::tools.uimafit.introduction.adoc[leveloffset=+1]
+include::fit/tools.uimafit.introduction.adoc[leveloffset=+1]
 
-include::tools.uimafit.gettingstarted.adoc[leveloffset=+1]
+include::fit/tools.uimafit.gettingstarted.adoc[leveloffset=+1]
 
-include::tools.uimafit.pipelines.adoc[leveloffset=+1]
+include::fit/tools.uimafit.pipelines.adoc[leveloffset=+1]
 
-include::tools.uimafit.testing.adoc[leveloffset=+1]
+include::fit/tools.uimafit.testing.adoc[leveloffset=+1]
 
-include::tools.uimafit.validation.adoc[leveloffset=+1]
+include::fit/tools.uimafit.validation.adoc[leveloffset=+1]
 
-include::tools.uimafit.experiments.adoc[leveloffset=+1]
+include::fit/tools.uimafit.experiments.adoc[leveloffset=+1]
 
-include::tools.uimafit.casutil.adoc[leveloffset=+1]
+include::fit/tools.uimafit.casutil.adoc[leveloffset=+1]
 
-include::tools.uimafit.configurationparameters.adoc[leveloffset=+1]
+include::fit/tools.uimafit.configurationparameters.adoc[leveloffset=+1]
 
-include::tools.uimafit.externalresources.adoc[leveloffset=+1]
+include::fit/tools.uimafit.externalresources.adoc[leveloffset=+1]
 
-include::tools.uimafit.typesystem.adoc[leveloffset=+1]
+include::fit/tools.uimafit.typesystem.adoc[leveloffset=+1]
 
-include::tools.uimafit.packaging.adoc[leveloffset=+1]
+include::fit/tools.uimafit.packaging.adoc[leveloffset=+1]
 
-include::tools.uimafit.maven.adoc[leveloffset=+1]
+include::fit/tools.uimafit.maven.adoc[leveloffset=+1]
 
-include::tools.uimafit.migration.adoc[leveloffset=+1]
+include::fit/tools.uimafit.migration.adoc[leveloffset=+1]
