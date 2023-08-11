@@ -178,11 +178,6 @@ under the License.
         <include>org.bitbucket.mstrobel:procyon-core</include>
         <include>com.github.javaparser:javaparser-core</include>
         <include>org.slf4j:slf4j-api</include>
-        <!--  log4j not default included
-        <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
-        <include>org.apache.logging.log4j:log4j-core</include>
-        <include>org.apache.logging.log4j:log4j-api</include>
-         -->
         <!-- hook to built-in Java backend for slf4j included -->
         <include>org.slf4j:slf4j-jdk14</include>
       </includes>
