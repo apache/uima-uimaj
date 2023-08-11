@@ -82,9 +82,14 @@
     <commons-lang3-version>3.12.0</commons-lang3-version>
     <groovy-version>3.0.18</groovy-version>
 
+    <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
+    <asciidoctor.version>2.5.10</asciidoctor.version>
+    <asciidoctor.pdf.version>2.3.9</asciidoctor.pdf.version>
+    
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.release>17</maven.compiler.release>
+    <execution.environment>JavaSE-17</execution.environment>
     
     <api_check_oldVersion>3.4.0</api_check_oldVersion>
   </properties>

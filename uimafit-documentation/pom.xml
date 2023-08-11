@@ -25,24 +25,45 @@
     <version>3.5.0-SNAPSHOT</version>
     <relativePath>../uimafit-parent</relativePath>
   </parent>
-  <artifactId>uimafit-doc</artifactId>
+
+  <artifactId>uimafit-documentation</artifactId>
   <name>Apache UIMA uimaFIT - Documentation</name>
   <packaging>pom</packaging>
+
   <properties>
-    <asciidoctor.plugin.version>1.6.0</asciidoctor.plugin.version>
-    <asciidoctor.version>1.6.2</asciidoctor.version>
-    <asciidoctor.pdf.version>1.5.3</asciidoctor.pdf.version>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <version>${asciidoctor.plugin.version}</version>
+        <configuration>
+          <sourceDocumentName>fit.adoc</sourceDocumentName>
+          <outputDirectory>${project.build.directory}/site/d</outputDirectory>
+          <attributesChain>webfonts!</attributesChain>
+          <attributes>
+            <experimental>true</experimental>
+            <doctype>book</doctype>
+            <toclevels>8</toclevels>
+            <sectanchors>true</sectanchors>
+            <sectnums>true</sectnums>
+            <docinfo1>true</docinfo1>
+            <project-version>${project.version}</project-version>
+            <revnumber>${project.version}</revnumber>
+            <product-website-url>https://uima.apache.org</product-website-url>
+            <relativeBaseDir>true</relativeBaseDir>
+            <xrefstyle>short</xrefstyle>
+          </attributes>
+          <requires>
+            <require>asciidoctor-pdf</require>
+          </requires>
+        </configuration>
         <executions>
           <execution>
-            <id>user-guide-html</id>
+            <id>fit-html</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>process-asciidoc</goal>
@@ -55,7 +76,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>user-guide-pdf</id>
+            <id>fit-pdf</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>process-asciidoc</goal>
@@ -68,24 +89,6 @@
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <sourceDocumentName>tools.uimafit.book.adoc</sourceDocumentName>
-          <outputDirectory>${project.build.directory}/site/d</outputDirectory>
-          <attributes>
-            <doctype>book</doctype>
-            <toclevels>8</toclevels>
-            <sectanchors>true</sectanchors>
-            <docinfo1>true</docinfo1>
-            <project-version>${project.version}</project-version>
-            <revnumber>${project.version}</revnumber>
-            <product-name>Apache UIMA uimaFIT</product-name>
-            <product-website-url>https://uima.apache.org/uimafit.html</product-website-url>
-            <icons>font</icons>
-          </attributes>
-          <requires>
-            <require>asciidoctor-pdf</require>
-          </requires>
-        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.asciidoctor</groupId>
