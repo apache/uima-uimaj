@@ -390,6 +390,7 @@
             <inherited>false</inherited>
             <executions>
               <execution>
+                <id>release-rc-auto-staging</id>
                 <phase>install</phase>
                 <goals>
                   <goal>run</goal>
