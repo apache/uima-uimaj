@@ -23,11 +23,13 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>16</version>
+    <version>17-SNAPSHOT</version>
   </parent>
+
   <artifactId>uimafit-parent</artifactId>
   <version>3.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
@@ -44,23 +46,47 @@
     <url>https://github.com/apache/uima-uimafit</url>
   </scm>
 
-  <properties>
-    <api_check_oldVersion>3.3.0</api_check_oldVersion>
+  <repositories>
+    <!--
+      - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
+      - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
+      - be enabled when really needed.
+      -->
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>https://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <assertj-version>3.22.0</assertj-version>
-    <commons-io-version>2.11.0</commons-io-version>
-    <commons-lang3-version>3.12.0</commons-lang3-version>
+  <properties>
+    <spring-version>5.3.25</spring-version>
+    <uima-version>3.5.0-SNAPSHOT</uima-version>
+    <slf4j-version>1.7.36</slf4j-version>
+    <maven.version>3.2.5</maven.version>
+
     <junit-version>5.10.0</junit-version>
     <junit-platform-version>1.10.0</junit-platform-version>
-    <groovy-version>3.0.10</groovy-version>
+    <assertj-version>3.24.2</assertj-version>
     <mockito-version>4.4.0</mockito-version>
     <opentest4j-version>1.2.0</opentest4j-version>
-    <spring-version>5.3.25</spring-version>
-    <slf4j-version>1.7.36</slf4j-version>
-    <uima-version>3.4.0</uima-version>
     <xmlunit-version>2.9.0</xmlunit-version>
+    
+    <commons-io-version>2.11.0</commons-io-version>
+    <commons-lang3-version>3.12.0</commons-lang3-version>
+    <groovy-version>3.0.18</groovy-version>
+
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.release>17</maven.compiler.release>
+    
+    <api_check_oldVersion>3.4.0</api_check_oldVersion>
   </properties>
 
   <dependencies>
@@ -89,34 +115,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
         <version>${junit-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-migrationsupport</artifactId>
-        <version>${junit-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junit-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junit-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.platform</groupId>
-        <artifactId>junit-platform-commons</artifactId>
-        <version>${junit-platform-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opentest4j</groupId>
@@ -165,18 +168,10 @@
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
-        <artifactId>uimaj-core</artifactId>
+        <artifactId>uimaj-bom</artifactId>
         <version>${uima-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.uima</groupId>
-        <artifactId>uimaj-cpe</artifactId>
-        <version>${uima-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.uima</groupId>
-        <artifactId>uimaj-tools</artifactId>
-        <version>${uima-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -197,6 +192,36 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-build-api</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.20</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -228,26 +253,6 @@
             </jdk>
           </toolchains>
         </configuration>
-      </plugin>
-      <plugin>
-        <!-- See: https://issues.apache.org/jira/browse/UIMA-6351 -->
-        <groupId>com.github.siom79.japicmp</groupId>
-        <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.15.7</version>
-        <configuration>
-          <newVersion>
-            <file>
-              <path>${project.build.directory}/${project.build.finalName}.jar</path>
-            </file>
-          </newVersion>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
-            <version>${groovy-version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -321,14 +326,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>3.0.1</version>
-        </plugin>
-        <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.13</version>
           <executions>
             <execution>
               <id>default-cli</id>
@@ -351,43 +350,6 @@
                   <!-- Logging configuration files -->
                   <exclude>**/simplelogger.properties</exclude>
                 </excludes>
-              </configuration>
-            </execution>
-          </executions>
-          <dependencies>
-            <!-- https://issues.apache.org/jira/browse/RAT-158 -->
-            <dependency>
-              <groupId>org.apache.maven.doxia</groupId>
-              <artifactId>doxia-core</artifactId>
-              <version>1.11.1</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
-          <configuration>
-            <source>${maven.compiler.source}</source>
-            <target>${maven.compiler.target}</target>
-            <!--encoding>UTF-8</encoding this inherited from apache pom 7 -->
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.3.2</version>
-          <executions>
-            <execution>
-              <id>attach-javadocs</id>
-              <configuration>
-                <source>${maven.compiler.source}</source>
-              </configuration>
-            </execution>
-            <execution>
-              <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
-              <configuration>
-                <source>${maven.compiler.source}</source>
               </configuration>
             </execution>
           </executions>
@@ -426,21 +388,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <profiles>
-    <profile>
-      <id>spotbugs</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>com.github.spotbugs</groupId>
-              <artifactId>spotbugs-maven-plugin</artifactId>
-              <version>4.7.0.0</version>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
 </project>
