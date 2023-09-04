@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
     <relativePath>uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -186,6 +186,7 @@
   </dependencies>
 
   <modules>
+    <module>uimaj-bom</module>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
     <!-- UIMA 3.4.1 has no issues from Jira -->
@@ -285,12 +286,12 @@
                   <exclude>jVinci/**</exclude>
                   <exclude>PearPackagingMavenPlugin/**</exclude>
                   <exclude>jcasgen-maven-plugin/**</exclude>
-                  <exclude>uima-docbook-*/**</exclude>
-                  <exclude>uima-doc-*/**</exclude>
                   <exclude>uimaj-adapter-*/**</exclude>
+                  <exclude>uimaj-bom/**</exclude>
                   <exclude>uimaj-component-test-util/**</exclude>
                   <exclude>uimaj-core/**</exclude>
                   <exclude>uimaj-cpe/**</exclude>
+                  <exclude>uimaj-documentation/**</exclude>
                   <exclude>uimaj-document-annotation/**</exclude>
                   <exclude>uimaj-eclipse-*/**</exclude>
                   <exclude>uimaj-maven-p2-site/**</exclude>

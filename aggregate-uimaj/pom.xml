@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -43,8 +43,6 @@
     <module>../uimaj-component-test-util</module>
     <module>../jVinci</module>
     <module>../aggregate-uimaj-eclipse-plugins</module>
-    <module>../aggregate-uimaj-docbooks</module>
-    <!--module>distr-superPom</module-->
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>
@@ -54,5 +52,6 @@
          cd to the project directory and do mvn install -->
     <!--module>../uimaj-internal-tools</module-->
     <module>../uimaj-bootstrap</module>
+    <module>../uimaj-documentation</module>
   </modules>
 </project>

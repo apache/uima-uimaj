@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -40,7 +41,6 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -128,9 +128,9 @@ public class ResultSpecification_implTest {
       // sort array before check
       Arrays.sort(result);
       Arrays.sort(mTypesAndFeatures);
-      Assert.assertEquals(mTypesAndFeatures.length, result.length);
+      assertThat(result.length).isEqualTo(mTypesAndFeatures.length);
       for (int i = 0; i < result.length; i++) {
-        Assert.assertEquals(mTypesAndFeatures[i], result[i]);
+        assertThat(result[i]).isEqualTo(mTypesAndFeatures[i]);
       }
 
       // test defaulting - if no language, should be x-unspecified
@@ -179,9 +179,9 @@ public class ResultSpecification_implTest {
       // sort array before check
       Arrays.sort(result);
       Arrays.sort(mTypesAndFeatures);
-      Assert.assertEquals(mTypesAndFeatures.length, result.length);
+      assertThat(result.length).isEqualTo(mTypesAndFeatures.length);
       for (int i = 0; i < result.length; i++) {
-        Assert.assertEquals(mTypesAndFeatures[i], result[i]);
+        assertThat(result[i]).isEqualTo(mTypesAndFeatures[i]);
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -199,14 +199,14 @@ public class ResultSpecification_implTest {
       // sort array before check
       Arrays.sort(resultEn);
       Arrays.sort(mTypesAndFeatures);
-      Assert.assertEquals(mTypesAndFeatures.length, resultEn.length);
+      assertThat(resultEn.length).isEqualTo(mTypesAndFeatures.length);
       for (int i = 0; i < resultEn.length; i++) {
-        Assert.assertEquals(mTypesAndFeatures[i], resultEn[i]);
+        assertThat(resultEn[i]).isEqualTo(mTypesAndFeatures[i]);
       }
 
       // check for language ja
       TypeOrFeature[] resultJa = rs.getResultTypesAndFeatures("ja");
-      Assert.assertEquals(0, resultJa.length);
+      assertThat(resultJa.length).isEqualTo(0);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -224,9 +224,9 @@ public class ResultSpecification_implTest {
       TypeOrFeature[] result = rs.getResultTypesAndFeatures();
       Arrays.sort(result);
       Arrays.sort(mTypesAndFeatures);
-      Assert.assertEquals(mTypesAndFeatures.length, result.length);
+      assertThat(result.length).isEqualTo(mTypesAndFeatures.length);
       for (int i = 0; i < result.length; i++) {
-        Assert.assertEquals(mTypesAndFeatures[i], result[i]);
+        assertThat(result[i]).isEqualTo(mTypesAndFeatures[i]);
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -247,9 +247,9 @@ public class ResultSpecification_implTest {
       TypeOrFeature[] resultEn = rs.getResultTypesAndFeatures("en");
       Arrays.sort(resultEn);
 
-      Assert.assertEquals(expectedEnResult.length, resultEn.length);
+      assertThat(resultEn.length).isEqualTo(expectedEnResult.length);
       for (int i = 0; i < resultEn.length; i++) {
-        Assert.assertEquals(expectedEnResult[i], resultEn[i]);
+        assertThat(resultEn[i]).isEqualTo(expectedEnResult[i]);
       }
 
       // check for language de
@@ -258,9 +258,9 @@ public class ResultSpecification_implTest {
       TypeOrFeature[] resultDe = rs.getResultTypesAndFeatures("de");
       Arrays.sort(resultDe);
 
-      Assert.assertEquals(expectedDeResult.length, resultDe.length);
+      assertThat(resultDe.length).isEqualTo(expectedDeResult.length);
       for (int i = 0; i < resultDe.length; i++) {
-        Assert.assertEquals(expectedDeResult[i], resultDe[i]);
+        assertThat(resultDe[i]).isEqualTo(expectedDeResult[i]);
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -276,15 +276,15 @@ public class ResultSpecification_implTest {
 
       // check
       TypeOrFeature[] result = rs.getResultTypesAndFeatures();
-      Assert.assertEquals(2, result.length);
+      assertThat(result.length).isEqualTo(2);
       int ftIndex = result[0].getName().equals("FakeType") ? 0 : 1;
       int atIndex = ftIndex == 0 ? 1 : 0;
-      Assert.assertEquals("FakeType", result[ftIndex].getName());
-      Assert.assertEquals(true, result[ftIndex].isType());
-      Assert.assertEquals(false, result[ftIndex].isAllAnnotatorFeatures());
-      Assert.assertEquals("AnotherType", result[atIndex].getName());
-      Assert.assertEquals(true, result[atIndex].isType());
-      Assert.assertEquals(true, result[atIndex].isAllAnnotatorFeatures());
+      assertThat(result[ftIndex].getName()).isEqualTo("FakeType");
+      assertThat(result[ftIndex].isType()).isEqualTo(true);
+      assertThat(result[ftIndex].isAllAnnotatorFeatures()).isEqualTo(false);
+      assertThat(result[atIndex].getName()).isEqualTo("AnotherType");
+      assertThat(result[atIndex].isType()).isEqualTo(true);
+      assertThat(result[atIndex].isAllAnnotatorFeatures()).isEqualTo(true);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -301,28 +301,28 @@ public class ResultSpecification_implTest {
       // check for language en
       TypeOrFeature[] resultEn = rs.getResultTypesAndFeatures("en");
       Arrays.sort(resultEn);
-      Assert.assertEquals(2, resultEn.length);
+      assertThat(resultEn.length).isEqualTo(2);
       int ftIndex = resultEn[0].getName().equals("FakeType") ? 0 : 1;
       int atIndex = ftIndex == 0 ? 1 : 0;
-      Assert.assertEquals("AnotherType", resultEn[atIndex].getName());
-      Assert.assertEquals(true, resultEn[atIndex].isType());
-      Assert.assertEquals(true, resultEn[atIndex].isAllAnnotatorFeatures());
-      Assert.assertEquals("FakeType", resultEn[ftIndex].getName());
-      Assert.assertEquals(true, resultEn[ftIndex].isType());
-      Assert.assertEquals(false, resultEn[ftIndex].isAllAnnotatorFeatures());
+      assertThat(resultEn[atIndex].getName()).isEqualTo("AnotherType");
+      assertThat(resultEn[atIndex].isType()).isEqualTo(true);
+      assertThat(resultEn[atIndex].isAllAnnotatorFeatures()).isEqualTo(true);
+      assertThat(resultEn[ftIndex].getName()).isEqualTo("FakeType");
+      assertThat(resultEn[ftIndex].isType()).isEqualTo(true);
+      assertThat(resultEn[ftIndex].isAllAnnotatorFeatures()).isEqualTo(false);
 
       // check for language ja
       TypeOrFeature[] resultJa = rs.getResultTypesAndFeatures("ja");
       Arrays.sort(resultJa);
-      Assert.assertEquals(2, resultJa.length);
+      assertThat(resultJa.length).isEqualTo(2);
       atIndex = resultJa[0].getName().equals("AnotherType") ? 0 : 1;
       int ndtIndex = atIndex == 0 ? 1 : 0;
-      Assert.assertEquals("AnotherType", resultJa[atIndex].getName());
-      Assert.assertEquals(true, resultJa[atIndex].isType());
-      Assert.assertEquals(true, resultJa[atIndex].isAllAnnotatorFeatures());
-      Assert.assertEquals("NewDefinedType", resultJa[ndtIndex].getName());
-      Assert.assertEquals(true, resultJa[ndtIndex].isType());
-      Assert.assertEquals(true, resultJa[ndtIndex].isAllAnnotatorFeatures());
+      assertThat(resultJa[atIndex].getName()).isEqualTo("AnotherType");
+      assertThat(resultJa[atIndex].isType()).isEqualTo(true);
+      assertThat(resultJa[atIndex].isAllAnnotatorFeatures()).isEqualTo(true);
+      assertThat(resultJa[ndtIndex].getName()).isEqualTo("NewDefinedType");
+      assertThat(resultJa[ndtIndex].isType()).isEqualTo(true);
+      assertThat(resultJa[ndtIndex].isAllAnnotatorFeatures()).isEqualTo(true);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -338,13 +338,13 @@ public class ResultSpecification_implTest {
       // check
       TypeOrFeature[] result = rs.getResultTypesAndFeatures();
       Arrays.sort(result);
-      Assert.assertEquals(2, result.length);
+      assertThat(result.length).isEqualTo(2);
       int atafIndex = result[0].getName().equals("AnotherType:AnotherFeature") ? 0 : 1;
       int ftffIndex = atafIndex == 0 ? 1 : 0;
-      Assert.assertEquals("AnotherType:AnotherFeature", result[atafIndex].getName());
-      Assert.assertEquals(false, result[atafIndex].isType());
-      Assert.assertEquals("FakeType:FakeFeature", result[ftffIndex].getName());
-      Assert.assertEquals(false, result[ftffIndex].isType());
+      assertThat(result[atafIndex].getName()).isEqualTo("AnotherType:AnotherFeature");
+      assertThat(result[atafIndex].isType()).isEqualTo(false);
+      assertThat(result[ftffIndex].getName()).isEqualTo("FakeType:FakeFeature");
+      assertThat(result[ftffIndex].isType()).isEqualTo(false);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -359,15 +359,15 @@ public class ResultSpecification_implTest {
 
       // check for language en
       TypeOrFeature[] resultEn = rs.getResultTypesAndFeatures("en");
-      Assert.assertEquals(1, resultEn.length);
-      Assert.assertEquals("AnotherType:AnotherFeature", resultEn[0].getName());
-      Assert.assertEquals(false, resultEn[0].isType());
+      assertThat(resultEn.length).isEqualTo(1);
+      assertThat(resultEn[0].getName()).isEqualTo("AnotherType:AnotherFeature");
+      assertThat(resultEn[0].isType()).isEqualTo(false);
 
       // check for language ja
       TypeOrFeature[] resultJa = rs.getResultTypesAndFeatures("ja");
-      Assert.assertEquals(1, resultJa.length);
-      Assert.assertEquals("FakeType:FakeFeature", resultJa[0].getName());
-      Assert.assertEquals(false, resultJa[0].isType());
+      assertThat(resultJa.length).isEqualTo(1);
+      assertThat(resultJa[0].getName()).isEqualTo("FakeType:FakeFeature");
+      assertThat(resultJa[0].isType()).isEqualTo(false);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -379,11 +379,11 @@ public class ResultSpecification_implTest {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
 
-      Assert.assertTrue(rs.containsType("FakeType"));
-      Assert.assertFalse(rs.containsType("NotThere"));
-      Assert.assertTrue(rs.containsType("AnotherType"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature"));
-      Assert.assertFalse(rs.containsType("AnotherType:AnotherFeature"));
+      assertThat(rs.containsType("FakeType")).isTrue();
+      assertThat(rs.containsType("NotThere")).isFalse();
+      assertThat(rs.containsType("AnotherType")).isTrue();
+      assertThat(rs.containsType("FakeType:FakeFeature")).isFalse();
+      assertThat(rs.containsType("AnotherType:AnotherFeature")).isFalse();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -395,13 +395,13 @@ public class ResultSpecification_implTest {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
 
-      Assert.assertTrue(rs.containsType("FakeType", "en"));
-      Assert.assertFalse(rs.containsType("FakeType", "ja"));
-      Assert.assertFalse(rs.containsType("NotThere", "en"));
-      Assert.assertTrue(rs.containsType("AnotherType", "en-US"));
-      Assert.assertTrue(rs.containsType("AnotherType", "x-unspecified"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature", "de"));
-      Assert.assertFalse(rs.containsType("AnotherType:AnotherFeature", "de"));
+      assertThat(rs.containsType("FakeType", "en")).isTrue();
+      assertThat(rs.containsType("FakeType", "ja")).isFalse();
+      assertThat(rs.containsType("NotThere", "en")).isFalse();
+      assertThat(rs.containsType("AnotherType", "en-US")).isTrue();
+      assertThat(rs.containsType("AnotherType", "x-unspecified")).isTrue();
+      assertThat(rs.containsType("FakeType:FakeFeature", "de")).isFalse();
+      assertThat(rs.containsType("AnotherType:AnotherFeature", "de")).isFalse();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -413,12 +413,12 @@ public class ResultSpecification_implTest {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
 
-      Assert.assertTrue(rs.containsFeature("FakeType:FakeFeature"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl"));
-      Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
+      assertThat(rs.containsFeature("FakeType:FakeFeature")).isTrue();
+      assertThat(rs.containsType("FakeType:FakeFeature2")).isFalse();
+      assertThat(rs.containsFeature("AnotherType:AnotherFeature")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:YetAnotherFeature")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:asdfghjkl")).isTrue();
+      assertThat(rs.containsType("NotThere:FakeFeature")).isFalse();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -430,16 +430,16 @@ public class ResultSpecification_implTest {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
 
-      Assert.assertTrue(rs.containsFeature("FakeType:FakeFeature", "ja"));
-      Assert.assertTrue(rs.containsFeature("FakeType:FakeFeature", "en"));
-      Assert.assertFalse(rs.containsFeature("FakeType:FakeFeature", "de"));
-      Assert.assertFalse(rs.containsFeature("FakeType:FakeFeature2", "ja"));
-      Assert.assertFalse(rs.containsFeature("FakeType:FakeFeature2", "x-unspecified"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature", "en"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature", "de"));
-      Assert.assertFalse(rs.containsFeature("AnotherType1:YetAnotherFeature", "de"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl", "ja"));
-      Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature", "ja"));
+      assertThat(rs.containsFeature("FakeType:FakeFeature", "ja")).isTrue();
+      assertThat(rs.containsFeature("FakeType:FakeFeature", "en")).isTrue();
+      assertThat(rs.containsFeature("FakeType:FakeFeature", "de")).isFalse();
+      assertThat(rs.containsFeature("FakeType:FakeFeature2", "ja")).isFalse();
+      assertThat(rs.containsFeature("FakeType:FakeFeature2", "x-unspecified")).isFalse();
+      assertThat(rs.containsFeature("AnotherType:AnotherFeature", "en")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:YetAnotherFeature", "de")).isTrue();
+      assertThat(rs.containsFeature("AnotherType1:YetAnotherFeature", "de")).isFalse();
+      assertThat(rs.containsFeature("AnotherType:asdfghjkl", "ja")).isTrue();
+      assertThat(rs.containsFeature("NotThere:FakeFeature", "ja")).isFalse();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -459,9 +459,9 @@ public class ResultSpecification_implTest {
       TypeOrFeature[] result = rs.getResultTypesAndFeatures();
       Arrays.sort(result);
       Arrays.sort(expectedResult);
-      Assert.assertEquals(expectedResult.length, result.length);
+      assertThat(result.length).isEqualTo(expectedResult.length);
       for (int i = 0; i < result.length; i++) {
-        Assert.assertEquals(expectedResult[i], result[i]);
+        assertThat(result[i]).isEqualTo(expectedResult[i]);
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -488,18 +488,19 @@ public class ResultSpecification_implTest {
       rs.compile(tsMgr);
 
       // check
-      Assert.assertTrue(rs.containsType("FakeType"));
-      Assert.assertFalse(rs.containsType("NotThere"));
-      Assert.assertTrue(rs.containsType("AnotherType"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature"));
-      Assert.assertFalse(rs.containsType("AnotherType:AnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("FakeType:FakeFeature"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there,
-                                                                      // if the type says allFeats
-      Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
+      assertThat(rs.containsType("FakeType")).isTrue();
+      assertThat(rs.containsType("NotThere")).isFalse();
+      assertThat(rs.containsType("AnotherType")).isTrue();
+      assertThat(rs.containsType("FakeType:FakeFeature")).isFalse();
+      assertThat(rs.containsType("AnotherType:AnotherFeature")).isFalse();
+      assertThat(rs.containsFeature("FakeType:FakeFeature")).isTrue();
+      assertThat(rs.containsType("FakeType:FakeFeature2")).isFalse();
+      assertThat(rs.containsFeature("AnotherType:AnotherFeature")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:YetAnotherFeature")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:asdfghjkl")).isTrue(); // unknown features are
+                                                                        // there,
+      // if the type says allFeats
+      assertThat(rs.containsType("NotThere:FakeFeature")).isFalse();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -526,24 +527,25 @@ public class ResultSpecification_implTest {
       rs.compile(tsMgr);
 
       // check
-      Assert.assertFalse(rs.containsType("FakeType"));
-      Assert.assertTrue(rs.containsType("FakeType", "en"));
-      Assert.assertTrue(rs.containsType("FakeType", "en-us"));
-      Assert.assertTrue(rs.containsType("FakeType", "EN_US"));
-      Assert.assertFalse(rs.containsType("NotThere"));
-      Assert.assertTrue(rs.containsType("AnotherType"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature"));
-      Assert.assertFalse(rs.containsType("AnotherType:AnotherFeature"));
-      Assert.assertFalse(rs.containsFeature("FakeType:FakeFeature"));
-      Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there
-                                                                      // if type says allfeats
-      Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
-      Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature"));
-      Assert.assertFalse(rs.containsType("SubType"));
-      Assert.assertTrue(rs.containsType("SubType", "en"));
+      assertThat(rs.containsType("FakeType")).isFalse();
+      assertThat(rs.containsType("FakeType", "en")).isTrue();
+      assertThat(rs.containsType("FakeType", "en-us")).isTrue();
+      assertThat(rs.containsType("FakeType", "EN_US")).isTrue();
+      assertThat(rs.containsType("NotThere")).isFalse();
+      assertThat(rs.containsType("AnotherType")).isTrue();
+      assertThat(rs.containsType("FakeType:FakeFeature")).isFalse();
+      assertThat(rs.containsType("AnotherType:AnotherFeature")).isFalse();
+      assertThat(rs.containsFeature("FakeType:FakeFeature")).isFalse();
+      assertThat(rs.containsType("FakeType:FakeFeature2")).isFalse();
+      assertThat(rs.containsFeature("AnotherType:AnotherFeature")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:YetAnotherFeature")).isTrue();
+      assertThat(rs.containsFeature("AnotherType:asdfghjkl")).isTrue(); // unknown features are
+                                                                        // there
+      // if type says allfeats
+      assertThat(rs.containsType("NotThere:FakeFeature")).isFalse();
+      assertThat(rs.containsFeature("NotThere:FakeFeature")).isFalse();
+      assertThat(rs.containsType("SubType")).isFalse();
+      assertThat(rs.containsType("SubType", "en")).isTrue();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -569,7 +571,7 @@ public class ResultSpecification_implTest {
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();
       Arrays.sort(tofs);
       newRS.setResultTypesAndFeatures(tofs);
-      Assert.assertEquals(rs, newRS);
+      assertThat(newRS).isEqualTo(rs);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -588,10 +590,10 @@ public class ResultSpecification_implTest {
       Arrays.sort(rsToFs);
       Arrays.sort(rsNewToFs);
 
-      Assert.assertEquals(rsToFs.length, rsNewToFs.length);
+      assertThat(rsNewToFs.length).isEqualTo(rsToFs.length);
 
       for (int i = 0; i < rsToFs.length; i++) {
-        Assert.assertEquals(rsToFs[i], rsNewToFs[i]);
+        assertThat(rsNewToFs[i]).isEqualTo(rsToFs[i]);
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);

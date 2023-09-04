@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,32 +42,9 @@
     <!-- UIMA dependencies -->
     <dependency>
       <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-core</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-compilertools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.uima</groupId>
-          <artifactId>uimaj-cpe</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- Eclipse dependencies -->
@@ -77,20 +54,30 @@
       <version>[3.12.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <version>[3.10.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>[3.13.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>[3.15.100, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>codegen</artifactId>
       <!--version>2.9.1</version -->
       <version>2.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>common</artifactId>
-      <version>2.1.0</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -101,24 +88,14 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>
-              org.apache.uima.jcas.jcasgenp
-            </Export-Package>
+            <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
+            <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>
             <Bundle-Activator>org.apache.uima.jcas.jcasgenp.JgPlugin</Bundle-Activator>
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
             <Require-Bundle>
               org.eclipse.core.runtime
             </Require-Bundle>
-            <!-- the bottom two imports are needed by Eclipse to get things to compile, but
-              not needed by maven -->
-            <Import-Package>
-              !org.eclipse.core.runtime,
-              org.osgi.framework,
-              org.eclipse.jdt.core.jdom,
-              *
-            </Import-Package>
-            <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
-            <Eclipse-AutoStart>true</Eclipse-AutoStart>
-            <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>
           </instructions>
         </configuration>
       </plugin>

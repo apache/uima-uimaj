@@ -44,20 +44,13 @@
 		<tycho-version>0.15.0</tycho-version>
 		<main.project.version>@project.version@</main.project.version>
 		<main.localRepositoryUrl>@localRepositoryUrl@</main.localRepositoryUrl>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 	<build>
     <!-- https://issues.apache.org/jira/browse/UIMA-5368 -->
     <pluginManagement>
       <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
-          <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
-          </configuration>
-        </plugin>
-        
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>

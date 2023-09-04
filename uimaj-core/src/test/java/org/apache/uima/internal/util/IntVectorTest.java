@@ -19,6 +19,7 @@
 
 package org.apache.uima.internal.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -32,7 +33,6 @@ import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class IntVectorTest {
@@ -88,9 +88,9 @@ public class IntVectorTest {
 
       TypeSystem ts = c1.getTypeSystem();
 
-      Assert.assertTrue(ts == c2.getTypeSystem());
-      Assert.assertTrue(ts == c1v2.getTypeSystem());
-      Assert.assertTrue(ts == c2v2.getTypeSystem());
+      assertThat(ts == c2.getTypeSystem()).isTrue();
+      assertThat(ts == c1v2.getTypeSystem()).isTrue();
+      assertThat(ts == c2v2.getTypeSystem()).isTrue();
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

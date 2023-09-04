@@ -31,13 +31,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
+    <version>17-SNAPSHOT</version>
     <relativePath />
-    <version>16</version>
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.4.2-SNAPSHOT</version>
+  <version>3.5.0-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -63,8 +63,7 @@
        This allows maven to find the snapshots when looking for the parent of
        this pom -->
   <repositories>
-    <!-- modify central repository access:
-         Turn on checksum checking-->
+    <!-- modify central repository access: Turn on checksum checking-->
     <repository>
       <id>central</id>
       <name>Maven Repository Switchboard</name>
@@ -86,6 +85,7 @@
       - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
       - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
       - be enabled when really needed.
+      -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -97,7 +97,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    -->
 
     <repository>
       <id>${eclipseP2RepoId}</id>
@@ -140,22 +139,26 @@
      properties already, they should be injected manually into the plugins. 
     -->
     <slf4j-version>1.7.36</slf4j-version>
+    <maven.version>3.2.5</maven.version>
+
     <log4j-version>2.20.0</log4j-version>
     <commons-io-version>2.13.0</commons-io-version>
     <commons-csv-version>1.10.0</commons-csv-version>
     <jackson-version>2.15.2</jackson-version>
-    <junit-version>5.9.3</junit-version>
-    <mockito-version>4.11.0</mockito-version>
+    <junit-version>5.10.0</junit-version>
+    <junit-vintage-version>4.13.2</junit-vintage-version>
+    <mockito-version>5.4.0</mockito-version>
     <assertj-version>3.24.2</assertj-version>
     <xmlunit-version>2.9.1</xmlunit-version>
-    <maven.version>3.2.5</maven.version>
 
     <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
-    <asciidoctor.version>2.5.8</asciidoctor.version>
-    <asciidoctor.pdf.version>2.3.7</asciidoctor.pdf.version>
+    <asciidoctor.version>2.5.10</asciidoctor.version>
+    <asciidoctor.pdf.version>2.3.9</asciidoctor.pdf.version>
 
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.release>17</maven.compiler.release>
+    <execution.environment>JavaSE-17</execution.environment>
 
     <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
 
@@ -167,13 +170,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-bom</artifactId>
-        <version>${mockito-version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${junit-version}</version>
@@ -181,20 +177,23 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit-vintage-version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
+        <artifactId>assertj-bom</artifactId>
         <version>${assertj-version}</version>
-      </dependency>
-      <!-- set dependency versions for logger parts -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>${slf4j-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j-version}</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${mockito-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -206,6 +205,18 @@
         <artifactId>xmlunit-assertj3</artifactId>
         <version>${xmlunit-version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
@@ -237,33 +248,89 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-build-api</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <dependencies>
-    <!-- Used to enable findbug rule suppression annotations -->
-    <!-- This is the Apache v2 license version -->
-    <dependency>
-      <groupId>com.github.stephenc.findbugs</groupId>
-      <artifactId>findbugs-annotations</artifactId>
-      <version>1.3.9-1</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
 
   <build>
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.4</version>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter-engine</artifactId>
+              <version>${junit-version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.vintage</groupId>
+              <artifactId>junit-vintage-engine</artifactId>
+              <version>${junit-version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>org.openntf.maven</groupId>
+        <artifactId>p2-layout-resolver</artifactId>
+        <version>1.7.0</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <environments>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
@@ -300,22 +367,6 @@
             </ignoreMissingClassesByRegularExpressions>
           </parameter>
         </configuration>
-        <dependencies>
-          <dependency>
-            <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
-            <!-- Can be removed after updating to the UIMA Parent POM 16 or higher  -->
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
-            <version>2.5.17</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.openntf.maven</groupId>
-        <artifactId>p2-layout-resolver</artifactId>
-        <version>1.7.0</version>
-        <extensions>true</extensions>
       </plugin>
 
       <plugin>
@@ -432,21 +483,6 @@
                   </pluginExecutions>
                 </lifecycleMappingMetadata>
               </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>spotbugs</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>com.github.spotbugs</groupId>
-              <artifactId>spotbugs-maven-plugin</artifactId>
-              <version>4.7.0.0</version>
             </plugin>
           </plugins>
         </pluginManagement>

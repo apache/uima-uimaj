@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas_data.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -55,7 +56,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -86,9 +86,8 @@ public class XCasToCasDataSaxHandlerTest {
         FeatureStructure fs = fsIter.next();
         if ("Crawl_colon_URL".equals(fs.getType())) {
           // System.out.println("[" + fs.getFeatureValue("value") + "]");
-          Assert.assertEquals(
-                  "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
-                  fs.getFeatureValue("value").toString());
+          assertThat(fs.getFeatureValue("value").toString()).isEqualTo(
+                  "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5");
           foundCrawlUrl = true;
         }
       }
@@ -145,7 +144,7 @@ public class XCasToCasDataSaxHandlerTest {
     XCASSerializer xcasSer = new XCASSerializer(aCAS.getTypeSystem());
     xcasSer.serialize(aCAS, handler);
 
-    Assert.assertNotNull(casData);
+    assertThat(casData).isNotNull();
     assertValidCasData(casData, aCAS.getTypeSystem());
     // System.out.println(casData);
 
@@ -198,19 +197,20 @@ public class XCasToCasDataSaxHandlerTest {
       String typeName = fs.getType();
 
       // don't do tests on the "fake" document text FS
-      if (XCASSerializer.DEFAULT_DOC_TYPE_NAME.equals(typeName))
+      if (XCASSerializer.DEFAULT_DOC_TYPE_NAME.equals(typeName)) {
         continue;
+      }
 
       Type type = typeSystem.getType(typeName);
-      Assert.assertNotNull(type);
+      assertThat(type).isNotNull();
       if (typeSystem.subsumes(annotType, type)) {
         // annotation type - check for presence of begin/end
         FeatureValue beginVal = fs.getFeatureValue("begin");
-        Assert.assertTrue(beginVal instanceof PrimitiveValue);
-        Assert.assertTrue(((PrimitiveValue) beginVal).toInt() >= 0);
+        assertThat(beginVal instanceof PrimitiveValue).isTrue();
+        assertThat(((PrimitiveValue) beginVal).toInt() >= 0).isTrue();
         FeatureValue endVal = fs.getFeatureValue("end");
-        Assert.assertTrue(endVal instanceof PrimitiveValue);
-        Assert.assertTrue(((PrimitiveValue) endVal).toInt() >= 0);
+        assertThat(endVal instanceof PrimitiveValue).isTrue();
+        assertThat(((PrimitiveValue) endVal).toInt() >= 0).isTrue();
       }
     }
   }
@@ -227,8 +227,9 @@ public class XCasToCasDataSaxHandlerTest {
     String javaVendor = System.getProperty("java.vendor");
     if (javaVendor.startsWith("Sun")) {
       String javaVersion = System.getProperty("java.version");
-      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4"))
+      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4")) {
         return false;
+      }
     }
     return true;
   }

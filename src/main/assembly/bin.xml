@@ -246,36 +246,16 @@ under the License.
       <directoryMode>755</directoryMode>
     </fileSet>
 
-    <!-- docbooks -->
+    <!-- Documentation -->
     <fileSet>
-      <directory>uima-docbook-overview-and-setup/target/site/</directory>
+      <directory>uimaj-documentation/target/site/</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>
-    </fileSet>
-    <fileSet>
-      <directory>uima-docbook-references/target/site</directory>
-      <outputDirectory>docs</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
-    </fileSet>
-    <fileSet>
-      <directory>uima-docbook-tools/target/site</directory>
-      <outputDirectory>docs</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
-    </fileSet>
-    <fileSet>
-      <directory>uima-docbook-tutorials-and-users-guides/target/site</directory>
-      <outputDirectory>docs</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
-    </fileSet>
-    <fileSet>
-      <directory>uima-doc-v3-users-guide/target/site</directory>
-      <outputDirectory>docs</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
+      <excludes>
+        <exclude>**/maint.*</exclude>
+        <exclude>**/maint/**</exclude>
+      </excludes>
     </fileSet>
 
     <!-- examples -->

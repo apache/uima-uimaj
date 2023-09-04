@@ -1,0 +1,1380 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[ugr.tug.application]]
+= Application Developer's Guide
+
+This chapter describes how to develop an application using the Unstructured Information Management Architecture (UIMA). The term _application_ describes a program that provides end-user functionality.
+A UIMA application incorporates one or more UIMA components such as Analysis Engines, Collection Processing Engines, a Search Engine, and/or a Document Store and adds application-specific logic and user interfaces.
+
+[[ugr.tug.appication.uimaframework_class]]
+== The UIMAFramework Class
+
+An application developer's starting point for accessing UIMA framework functionality is the `org.apache.uima.UIMAFramework` class.
+The following is a short introduction to some important methods on this class.
+Several of these methods are used in examples in the rest of this chapter.
+For more details, see the Javadocs (in the docs/api directory of the UIMA SDK). 
+
+* UIMAFramework.getXMLParser(): Returns an instance of the UIMA XML Parser class, which then can be used to parse the various types of UIMA component descriptors. Examples of this can be found in the remainder of this chapter.
+* UIMAFramework.produceXXX(ResourceSpecifier): There are various produce methods that are used to create different types of UIMA components from their descriptors. The argument type, ResourceSpecifier, is the base interface that subsumes all types of component descriptors in UIMA. You can get a ResourceSpecifier from the XMLParser. Examples of produce methods are: 
++
+** produceAnalysisEngine
+** produceCasConsumer
+** produceCasInitializer
+** produceCollectionProcessingEngine
+** produceCollectionReader
+
+There are other variations of each of these methods that take additional, optional arguments.
+See the Javadocs for details. 
+* UIMAFramework.getLogger(<optional-logger-name>): Gets a reference to the UIMA Logger, to which you can write log messages. If no logger name is passed, the name of the returned logger instance is "`org.apache.uima`".
+* UIMAFramework.getVersionString(): Gets the number of the UIMA version you are using.
+* UIMAFramework.newDefaultResourceManager(): Gets an instance of the UIMA ResourceManager. The key method on ResourceManager is setDataPath, which allows you to specify the location where UIMA components will go to look for their external resources. Once you've obtained and initialized a ResourceManager, you can pass it to any of the produceXXX methods. 
+
+
+[[ugr.tug.application.using_aes]]
+== Using Analysis Engines
+
+This section describes how to add analysis capability to your application by using Analysis Engines developed using the UIMA SDK.
+An _Analysis Engine (AE)_ is a component that analyzes artifacts (e.g.
+documents) and infers information about them.
+
+An Analysis Engine consists of two parts - Java classes (typically packaged as one or more JAR files) and _AE descriptors_ (one or more XML files). You must put the Java classes in your application's class path, but thereafter you will not need to directly interact with them.
+The UIMA framework insulates you from this by providing a standard AnalysisEngine interfaces.
+
+The term _Text Analysis Engine (TAE)_ is sometimes used to describe an Analysis Engine that analyzes a text document.
+In the UIMA SDK v1.x, there was a TextAnalysisEngine interface that was commonly used.
+However, as of the UIMA SDK v2.0, this interface has been deprecated and all applications should switch to using the standard AnalysisEngine interface.
+
+The AE descriptor XML files contain the configuration settings for the Analysis Engine as well as a description of the AE's input and output requirements.
+You may need to edit these files in order to configure the AE appropriately for your application - the supplier of the AE may have provided documentation (or comments in the XML descriptor itself) about how to do this.
+
+[[ugr.tug.application.instantiating_an_ae]]
+=== Instantiating an Analysis Engine
+
+The following code shows how to instantiate an AE from its XML descriptor: 
+[source]
+----
+  //get Resource Specifier from XML file
+XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
+ResourceSpecifier specifier = 
+    UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+
+  //create AE here
+AnalysisEngine ae = 
+    UIMAFramework.produceAnalysisEngine(specifier);
+----
+
+The first two lines parse the XML descriptor (for AEs with multiple descriptor files, one of them is the "`main`" descriptor - the AE documentation should indicate which it is). The result of the parse is a `ResourceSpecifier` object.
+The third line of code invokes a static factory method ``UIMAFramework.produceAnalysisEngine``, which takes the specifier and instantiates an `AnalysisEngine` object.
+
+There is one caveat to using this approach - the Analysis Engine instance that you create will not support multiple threads running through it concurrently.
+If you need to support this, see <<ugr.tug.applications.multi_threaded>>.
+
+[[ugr.tug.application.analyzing_text_documents]]
+=== Analyzing Text Documents
+
+There are two ways to use the AE interface to analyze documents.
+You can either use the __xref:ref.adoc#ugr.ref.jcas[JCas]__ interface or you can directly use the __xref:ref.adoc#ugr.ref.cas[CAS]__ interface.
+Besides text documents, xref:tug.adoc#ugr.tug.aas[other kinds of artifacts] can also be analyzed.
+
+The basic structure of your application will look similar in both cases:
+
+.Using the JCas 
+[source]
+----
+  //create a JCas, given an Analysis Engine (ae)
+JCas jcas = ae.newJCas();
+  
+  //analyze a document
+jcas.setDocumentText(doc1text);
+ae.process(jcas);
+doSomethingWithResults(jcas);
+jcas.reset();
+  
+  //analyze another document
+jcas.setDocumentText(doc2text);
+ae.process(jcas);
+doSomethingWithResults(jcas);
+jcas.reset();
+...
+  //done
+ae.destroy();
+----
+
+.Using the CAS 
+[source]
+----
+//create a CAS
+CAS aCasView = ae.newCAS();
+
+//analyze a document
+aCasView.setDocumentText(doc1text);
+ae.process(aCasView);
+doSomethingWithResults(aCasView);
+aCasView.reset();
+
+//analyze another document
+aCasView.setDocumentText(doc2text);
+ae.process(aCasView);
+doSomethingWithResults(aCasView);
+aCasView.reset();
+...
+//done
+ae.destroy();
+----
+
+First, you create the CAS or JCas that you will use.
+Then, you repeat the following four steps for each document:
+
+. Put the document text into the CAS or JCas.
+. Call the AE's process method, passing the CAS or JCas as an argument
+. Do something with the results that the AE has added to the CAS or JCas
+. Call the CAS's or JCas's reset() method to prepare for another analysis 
+
+
+[[ugr.tug.applications.analyzing_non_text_artifacts]]
+=== Analyzing Non-Text Artifacts
+
+Analyzing non-text artifacts is similar to analyzing text documents.
+The main difference is that instead of using the `setDocumentText` method, you need to use the Sofa APIs to xref:tug.adoc#ugr.tug.aas[set the artifact] into the CAS.
+
+[[ugr.tug.applications.accessing_analysis_results]]
+=== Accessing Analysis Results
+
+Annotators (and applications) access the results of analysis via the CAS, using the CAS or JCas interfaces.
+These results are accessed using the CAS Indexes.
+There is one built-in index for instances of the built-in type `uima.tcas.Annotation` that can be used to retrieve instances of `Annotation` or any subtype of Annotation.
+You can also define additional indexes over other types. 
+
+Indexes provide a method to obtain an iterators over their contents; the iterator returns the matching elements one at time from the CAS.
+
+[[ugr.tug.applications.accessing_results_using_jcas]]
+==== Accessing Analysis Results using the JCas
+
+See:
+
+* xref:#ugr.tug.aae.reading_results_previous_annotators[xrefstyle=full];
+* xref:ref.adoc#ugr.ref.jcas[JCas Reference];
+* The Javadocs for `org.apache.uima.jcas.JCas`. 
+
+
+[[ugr.tug.application.accessing_results_using_cas]]
+==== Accessing Analysis Results using the CAS
+
+See:
+
+* xref:ref.adoc#ugr.ref.cas[CAS Reference]
+* The source code for `org.apache.uima.examples.PrintAnnotations`, which is in `examples\src.`
+* The Javadocs for the `org.apache.uima.cas` and `org.apache.uima.cas.text` packages. 
+
+
+[[ugr.tug.applications.multi_threaded]]
+=== Multi-threaded Applications
+
+You may be running on a multi-core system, and want to run multiple CASes at once through your pipeline.
+To support this, UIMA provides multiple approaches.
+The most flexible and recommended way to do this is to use the features of UIMA-AS, which not only allows scale-up (multiple threads in one CPU), but also supports scale-out (exploiting a cluster of machines).
+
+This section describes the simplest way to use an AE in a multi-threaded environment.
+First, note that most Analysis Engines are written with the assumption that only one thread will be accessing  it at any one time; that is, Analysis Engines are not written to be thread safe.
+The writers of these  assume that multiple instances of the Annotator Engine class will be instantiated as needed to support multiple  threads. 
+
+If your application has multiple threads that might invoke an Analysis Engine, to insure that  only one thread at a time uses a CAS and runs in the pipeline,  you can use the Java synchronized keyword to ensure that only one thread is using an AE at any given time.
+For example: 
+
+[source]
+----
+public class MyApplication {
+  private AnalysisEngine mAnalysisEngine;
+  private CAS mCAS;
+
+  public MyApplication() {
+    //get Resource Specifier from XML file
+    XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
+    ResourceSpecifier specifier = 
+        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+ 
+    //create Analysis Engine here
+    mAnalysisEngine = UIMAFramework.produceAnalysisEngine(specifier);
+    mCAS = mAnalysisEngine.newCAS();
+  }
+
+  // Assume some other part of your multi-threaded application could
+  // call analyzeDocument on different threads, asynchronously
+
+  public synchronized void analyzeDocument(String aDoc) {
+    //analyze a document
+    mCAS.setDocumentText(aDoc);
+    mAnalysisEngine.process();  
+    doSomethingWithResults(mCAS);
+    mCAS.reset();
+  }
+  ...
+}
+----
+
+Without the synchronized keyword, this application would not be thread-safe.
+If multiple threads called the analyzeDocument method simultaneously, they would both use the same CAS and clobber each others' results.
+The synchronized keyword ensures that no more than one thread is executing this method at any given time.
+For more information on thread synchronization in Java, see link:http://docs.oracle.com/javase/tutorial/essential/concurrency/[].
+
+The synchronized keyword ensures thread-safety, but does not allow you to process more than one document at a time.
+If you need to process multiple documents simultaneously (for example, to make use of a multiprocessor machine), you'll need to use more than one CAS instance.
+
+Because CAS instances use memory and can take some time to construct, you don't want to create a new CAS instance for each request.
+Instead, you should use a feature of the UIMA SDK called the __CAS Pool__, implemented by the type `CasPool`.
+
+A CAS Pool contains some number of CAS instances (you specify how many when you create the pool). When a thread wants to use a CAS, it _checks out_ an instance from the pool.
+When the thread is done using the CAS, it must _release_ the CAS instance back into the pool.
+If all instances are checked out, additional threads will block and wait for an instance to become available.
+Here is some example code: 
+
+[source]
+----
+public class MyApplication {
+  private CasPool mCasPool;
+  
+  private AnalysisEngine mAnalysisEngine;
+  
+  public MyApplication()
+  {
+    //get Resource Specifier from XML file
+    XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
+    ResourceSpecifier specifier = 
+      UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+ 
+    //Create multithreadable AE that will 
+    //Accept 3 simultaneous requests
+    //The 3rd parameter specifies a timeout.
+    //When the number of simultaneous requests exceeds 3,
+    // additional requests will wait for other requests to finish. 
+    // This parameter determines the maximum number of milliseconds 
+    // that a new request should wait before throwing an
+    // - a value of 0 will cause them to wait forever.
+    mAnalysisEngine = UIMAFramework.produceAnalysisEngine(specifier,3,0);
+
+    //create CAS pool with 3 CAS instances
+    mCasPool = new CasPool(3, mAnalysisEngine);
+  }
+
+  // Notice this is no longer "synchronized"
+  public void analyzeDocument(String aDoc) {
+    //check out a CAS instance (argument 0 means no timeout)
+    CAS cas = mCasPool.getCas(0);  
+    try {
+      //analyze a document 
+      cas.setDocumentText(aDoc);   
+      mAnalysisEngine.process(cas);  
+      doSomethingWithResults(cas);
+    } finally {
+      //MAKE SURE we release the CAS instance
+      mCasPool.releaseCas(cas);  
+    }
+  }
+  ...
+}
+----
+
+There is not much more code required here than in the previous example.
+First, there is one additional parameter to the AnalysisEngine producer, specifying the number of annotator instances to create.
+footnote:[Both the UIMA Collection Processing Manager framework and the remote deployment services framework have implementations which use CAS pools in this manner, and thereby relieve the annotator developer of the necessity to make their annotators thread-safe.].
+Then, instead of creating a single CAS in the constructor, we now create a CasPool containing 3 instances.
+In the analyze method, we check out a CAS, use it, and then release it.
+
+[NOTE]
+====
+Frequently, the two numbers (number of CASes, and the number of AEs) will be the same.
+It would not make sense to have the number of CASes less than the number of AEs -- the extra AE instances would always block waiting for a CAS from the pool.
+It could make sense to have additional CASes, though -- if you had other multi-threaded processes that were using the CASes, other than the AEs. 
+====
+
+The getCAS() method returns a CAS which is not specialized to any particular subject of analysis.
+To process things other than this, please refer to xref:#ugr.tug.aas[].
+
+Note the use of the `try`...`finally` block.
+This is very important, as it ensures that the CAS we have checked out will be released back into the pool, even if the analysis code throws an exception.
+You should always use `try`...`finally` when using the CAS pool; if you do not, you risk exhausting the pool and causing deadlock.
+
+The parameter 0 passed to the `CasPool.getCas()` method is a timeout value.
+If this is set to a positive integer, it is the maximum number of milliseconds that the thread will wait for an instance to become available in the pool.
+If this time elapses, the getCas method will return null, and the application can do something intelligent, like ask the user to try again later.
+A value of 0 will cause the thread to wait for an available CAS, potentially forever.
+
+All of this can better be done using UIMA-AS.
+Besides taking care of setting up the CAS pools, etc., UIMA-AS allows a pipe line having several delegates to be scaled-up optimally for each delegate;  one delegate might have 5 instances, while another might have 3.
+It also does a different kind of initialization, in that it creates a thread pool itself, and insures that each annotator instance gets its `process()` method called using the same thread that was used for that annotator  instance's initialization call; some annotators could be written assuming that this is the case.
+
+[[ugr.tug.application.using_multiple_aes]]
+=== Using Multiple Analysis Engines and Creating Shared CASes
+
+In most cases, the easiest way to use multiple Analysis Engines from within an application is to combine them into an xref:tug.adoc#ugr.tug.aae.building_aggregates[aggregate AE].
+Be sure that you understand this method before deciding to use the more advanced feature described in this section.
+
+If you decide that your application does need to instantiate multiple AEs and have those AEs share a single CAS, then you will no longer be able to use the various methods on the `AnalysisEngine` class that create CASes (or JCases) to create your CAS.
+This is because these methods create a CAS with a data model specific to a single AE and which therefore cannot be shared by other AEs.
+Instead, you create a CAS as follows:
+
+Suppose you have two analysis engines, and one CAS Consumer, and you want to create one type system from the merge of all of their type specifications.
+Then you can do the following:
+
+[source]
+----
+AnalysisEngineDescription aeDesc1 =
+  UIMAFramework.getXMLParser().parseAnalysisEngineDescription(...);
+  
+  AnalysisEngineDescription aeDesc2 =
+  UIMAFramework.getXMLParser().parseAnalysisEngineDescription(...);
+
+  CasConsumerDescription ccDesc =
+  UIMAFramework.getXMLParser().parseCasConsumerDescription(...);
+
+  List list = new ArrayList();
+
+  list.add(aeDesc1);
+  list.add(aeDesc2);
+  list.add(ccDesc);
+
+  CAS cas = CasCreationUtils.createCas(list);
+
+  // (optional, if using the JCas interface) 
+  JCas jcas = cas.getJCas();
+----
+
+The CasCreationUtils class takes care of the work of merging the AEs' type systems and producing a CAS for the combined type system.
+If the type systems are not compatible, an exception will be thrown.
+
+[[ugr.tug.application.saving_cases_to_file_systems]]
+=== Saving CASes to file systems or general Streams
+
+The UIMA framework provides multiple APIs to save and restore the contents of a CAS to streams.
+Two common uses of this are to save CASes to the file system, and to send CASes to other processes, running on remote systems.
+
+The CASes can be serialized in multiple formats: 
+
+* Binary formats: 
++
+** plain binary: This is used to communicate with remote services, and also for interfacing with annotators written in C/C++ or related languages via the JNI Java interface, from Java
+** Compressed binary: There are two forms of xref:ref.adoc#ugr.ref.compress.overview[compressed binary]. The recommend one is form 6, which also allows type filtering
+* XML formats: There are two forms of this format. The preferred one is the xref:ref.adoc#ugr.ref.xmi[UIMA CAS XMI]. An older format is also available, called XCAS.
+* JSON formats: There is a link:https://github.com/apache/uima-uimaj-io-jsoncas#readme[UIMA CAS JSON] (de)serializer for the CAS available as a separate library. The UIMA CAS JSON format is also supported by the Python library link:https://github.com/dkpro/dkpro-cassis#readme[DKPro Cassis]. There is also an xref:ref.adoc#ugr.ref.json.overview[older JSON serializer] included in the UIMA Java SDK, but it only supports serialization.
+* Java Object serialization: There are APIs to convert a CAS to a Java object that can be serialized and deserialized using standard Java object read and write Object methods. There is also a way to include the CAS's type system and  index definition.
+
+Each of these serializations has different capabilities, summarized in the table below. 
+
+.Serialization Capabilities
+[cols="1,1,1,1,1,1,1,1", frame="all", options="header"]
+|===
+| 
+| XCAS
+| XMI
+| JSON
+| Binary
+| Cmpr 4
+| Cmrp 6
+| JavaObj
+
+|Output
+|Output Stream
+|Output Stream
+|Output Stream, File, Writer
+|Output Stream
+|Output Stream, Data Output Stream, File
+|Output Stream, Data Output Stream, File
+|-
+
+|Lists/Arrays inline formating?
+|-
+|Yes
+|Yes
+|-
+|-
+|-
+|-
+
+|Formated?
+|-
+|Yes
+|Yes
+|-
+|-
+|-
+|-
+
+|Type Filtering?
+|-
+|Yes
+|Yes
+|-
+|-
+|Yes
+|-
+
+|Delta Cas?
+|-
+|Yes
+|-
+|Yes
+|Yes
+|Yes
+|-
+
+|OOTS?
+|Yes
+|Yes
+|-
+|-
+|-
+|-
+|-
+
+|Only send indexed + reachable FSs?
+|Yes
+|Yes
+|Yes
+|send all
+|send all
+|Yes
+|send all
+
+|Name Space / Schemas?
+|-
+|Yes
+|-
+|-
+|-
+|-
+|-
+
+|lenient available?
+|Yes
+|Yes
+|-
+|-
+|-
+|Yes
+|-
+
+|optionally include embedded Type System and Indexes definition?
+|-
+|-
+|Just type system
+|Yes
+|Yes
+|Yes
+|Yes
+|===
+
+In the above table, Cmpr 4 and Cmpr 6 refer to Compressed forms of the serialization, and JavaObj refers to Java Object serialization.
+
+For the XMI and the old JSON format, lists and arrays can sometimes be formatted "inline". In this representation, the elements are formatted directly as the value of a particular feature.
+This is only done if the arrays and lists are not multiply-referenced.
+
+Type Filtering support enables only a subset of the types and/or features to be serialized.
+An additional type system object is used to specify the types to be included in the serialization.
+This can be useful, for instance, when sending a CAS to a remote service, where the remote service only uses a small number of the types and features, to reduce the size of the serialized CAS.
+
+Delta Cas support makes use of a "mark" set in the CAS, and only serializes changes in the CAS, both new and modified Feature Structures, that were added or changed after the mark was set.
+This is useful for remote services, supporting the use-case where a large CAS is sent to the service, which sets the mark in the received CAS, and then adds a small amount of information;  the Delta CAS then serializes only that small amount as the "reply" sent back to the sender.
+
+OOTS means "Out of Type System" support, intended to support the use-case where a CAS is being sent to a remote application.
+This supports deserializing an incoming CAS where some of the types and/or features may not be present in the receiving CAS's type system.
+A "lenient"  option on the deserialization permits the deserialization to proceed, with the out-of-type-system information preserved so that when the CAS is subsequently reserialized (in the use-case, to be  returned back to the sender), the out-of-type-system information is re-merged back into the output stream. 
+
+The Binary, Java Object, and Compressed Form 4 serializations send all the Feature Structures in the CAS, in the order they were created in the CAS.
+The other methods only  send Feature Structures that are reachable, either by  their being in some CAS index, or being referenced  as a feature of another Feature Structure which is reachable.
+
+The NameSpace/Schema support allows specifying a set of schemas, each one corresponding to a particular namespace, used in XMI serialization.
+
+Lenient allows the receiving Type System to be missing types and/or features that being deserialized.
+Normally this causes an exception, but with the lenient flag turned on, these extra types and/or features are  skipped over and ignored, with no error indicated.
+
+Some formats optionally allow embedded type system and indexes definition to be saved;  loaders for these can use that information to replace the CAS's type system and indexes definition, or (for compressed form 6) use the type system part to decode the serialized data.
+This is described in detail in the Javadocs for CasIOUtils.
+JSON serialization has several alternatives for optionally including portions of the type system, described in the reference document chapter on JSON.
+
+To save an XMI representation of a CAS, use the `save` method in `CasIOUtils` or the `serialize` method of the class ``org.apache.uima.util.XmlCasSerializer``.
+To save an XCAS representation of a CAS, use the `save` method in `CasIOUtils` class or use the `org.apache.uima.cas.impl.XCASSerializer` instead; see the Javadocs for details.
+
+All the external serialized forms (except JSON and the inline CAS approximate serialization)  can be read back in using the `CasIOUtils load` methods.
+The `CasIOUtils load` methods also have API forms that support  loading type system and index definition information at the same time (from addition input sources); there is also a form for loading compressed form 6 where you can pass the type system to use for decoding, when it is different from that of the receiving CAS.
+The XCAS and XMI external forms can also be read back in using the `deserialize` method of the class ``org.apache.uima.util.XmlCasDeserializer``.
+All of these methods deserialize into a pre-existing CAS, which you must create ahead of time.
+See the Javadocs for details.
+
+The `Serialization` class has various static methods for serializing and deserializing Java Object forms and  compressed forms, with finer control over available options.
+See the Javadocs for that class for details.
+
+Several of the APIs use or return instances of ``SerialFormat``, which is an enum specifying the various forms of serialization.
+
+Serialization often makes use of temporary extra data structures, anchored from the CAS being serialized.
+These are read/write, and because of this, most serializations are synchronized to prevent multiple serializations of the same CAS from happening in parallel.
+
+[[ugr.tug.application.using_cpes]]
+== Using Collection Processing Engines
+
+A __xref:tug.adoc#ugr.tug.cpe[Collection Processing Engine (CPE)]__ processes collections of artifacts (documents) through the combination of the following components: a Collection Reader, an optional CAS Initializer, Analysis Engines, and CAS Consumers.
+
+Like Analysis Engines, CPEs consist of a set of Java classes and a set of descriptors.
+You need to make sure the Java classes are in your classpath, but otherwise you only deal with descriptors.
+
+[[ugr.tug.application.running_a_cpe_from_a_descriptor]]
+=== Running a Collection Processing Engine from a Descriptor
+
+xref:#ugr.tug.cpe.running_cpe_from_application[xrefstyle=full] describes how to use the APIs to read a CPE descriptor and run it from an application.
+
+[[ugr.tug.application.configuring_a_cpe_descriptor_programmatically]]
+=== Configuring a Collection Processing Engine Descriptor Programmatically
+// <titleabbrev>Configuring a CPE Descriptor Programmatically</titleabbrev>
+
+For the finest level of control over the CPE descriptor settings, the CPE offers programmatic access to the descriptor via an API.
+With this API, a developer can create a complete descriptor and then save the result to a file.
+This also can be used to read in a descriptor (using `XMLParser.parseCpeDescription`` as shown in the previous section), modify it, and write it back out again.
+The CPE Descriptor API allows a developer to redefine default behavior related to error handling for each component, turn-on check-pointing, change performance characteristics of the CPE, and plug-in a custom timer.
+
+Below is some example code that illustrates how this works.
+See the Javadocs for package org.apache.uima.collection.metadata for more details.
+
+[source]
+----
+//Creates descriptor with default settings
+CpeDescription cpe = CpeDescriptorFactory.produceDescriptor();
+
+//Add CollectionReader 
+cpe.addCollectionReader([descriptor]);
+
+//Add CasInitializer (deprecated)
+cpe.addCasInitializer(<cas initializer descriptor>);
+
+// Provide the number of CASes the CPE will use
+cpe.setCasPoolSize(2);
+
+//  Define and add Analysis Engine 
+CpeIntegratedCasProcessor personTitleProcessor = 
+   CpeDescriptorFactory.produceCasProcessor (Person);
+
+// Provide descriptor for the Analysis Engine
+personTitleProcessor.setDescriptor([descriptor]);
+
+//Continue, despite errors and skip bad Cas
+personTitleProcessor.setActionOnMaxError(continue);
+
+  //Increase amount of time in ms the CPE waits for response
+//from this Analysis Engine
+personTitleProcessor.setTimeout(100000);
+
+//Add Analysis Engine to the descriptor
+cpe.addCasProcessor(personTitleProcessor);
+                                
+//  Define and add CAS Consumer
+CpeIntegratedCasProcessor consumerProcessor = 
+CpeDescriptorFactory.produceCasProcessor(Printer);
+consumerProcessor.setDescriptor([descriptor]);
+
+//Define batch size
+consumerProcessor.setBatchSize(100);
+
+//Terminate CPE on max errors
+consumerProcessor.setActionOnMaxError(terminate);
+
+//Add CAS Consumer to the descriptor
+cpe.addCasProcessor(consumerProcessor);
+
+//  Add Checkpoint file and define checkpoint frequency (ms)
+cpe.setCheckpoint([path]/checkpoint.dat, 3000);
+
+//  Plug in custom timer class used for timing events
+cpe.setTimer(org.apache.uima.internal.util.JavaTimer);
+
+//  Define number of documents to process
+cpe.setNumToProcess(1000);
+
+//  Dump the descriptor to the System.out
+((CpeDescriptionImpl)cpe).toXML(System.out);
+----
+
+The CPE descriptor for the above configuration looks like this: 
+
+[source]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<cpeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <collectionReader>
+    <collectionIterator>
+      <descriptor>
+        <include href="[descriptor]"/>
+      </descriptor>
+      <configurationParameterSettings>...
+      </configurationParameterSettings>
+    </collectionIterator>
+
+    <casInitializer>
+      <descriptor>
+        <include href="[descriptor]"/>
+      </descriptor>
+      <configurationParameterSettings>...
+      </configurationParameterSettings>
+    </casInitializer>
+  </collectionReader>
+
+  <casProcessors casPoolSize="2" processingUnitThreadCount="1">
+    <casProcessor deployment="integrated" name="Person">
+      <descriptor>
+        <include href="[descriptor]"/>
+      </descriptor>
+      <deploymentParameters/>
+      <errorHandling>
+        <errorRateThreshold action="terminate" value="100/1000"/>
+        <maxConsecutiveRestarts action="terminate" value="30"/>
+        <timeout max="100000"/>
+      </errorHandling>
+      <checkpoint batch="100" time="1000ms"/>
+    </casProcessor>
+
+    <casProcessor deployment="integrated" name="Printer">
+      <descriptor>
+        <include href="[descriptor]"/>
+      </descriptor>
+      <deploymentParameters/>
+      <errorHandling>
+        <errorRateThreshold action="terminate"
+          value="100/1000"/>
+        <maxConsecutiveRestarts action="terminate"
+          value="30"/>
+        <timeout max="100000" default="-1"/>
+      </errorHandling>
+      <checkpoint batch="100" time="1000ms"/>
+    </casProcessor>
+  </casProcessors>
+
+  <cpeConfig>
+    <numToProcess>1000</numToProcess>
+    <deployAs>immediate</deployAs>
+    <checkpoint file="[path]/checkpoint.dat" time="3000ms"/>
+    <timerImpl>
+      org.apache.uima.reference_impl.util.JavaTimer
+    </timerImpl>
+  </cpeConfig>
+</cpeDescription>
+----
+
+[[ugr.tug.application.setting_configuration_parameters]]
+== Setting Configuration Parameters
+
+xref:tug.adoc#ugr.tug.aae.configuration_parameters[Configuration parameters] can be set using APIs as well as configured using the XML descriptor metadata specification.
+
+There are two different places you can set the parameters via the APIs.
+
+* After reading the XML descriptor for a component, but before you produce the component itself, and
+* After the component has been produced. 
+
+Setting the parameters before you produce the component is done using the ConfigurationParameterSettings object.
+You get an instance of this for a particular component by accessing that component description's metadata.
+For instance, if you produced a component description by using `UIMAFramework.getXMLParser().parse...` method, you can use that component description's `getMetaData()` method to get the metadata, and then the metadata's `getConfigurationParameterSettings()` method to get the `ConfigurationParameterSettings` object.
+Using that object, you can set individual parameters using the setParameterValue method.
+Here's an example, for a CAS Consumer component: 
+
+[source]
+----
+// Create a description object by reading the XML for the descriptor
+
+CasConsumerDescription casConsumerDesc =  
+   UIMAFramework.getXMLParser().parseCasConsumerDescription(new
+     XMLInputSource("descriptors/cas_consumer/InlineXmlCasConsumer.xml"));
+
+// get the settings from the metadata
+ConfigurationParameterSettings consumerParamSettings =
+    casConsumerDesc.getMetaData().getConfigurationParameterSettings();
+
+// Set a parameter value
+consumerParamSettings.setParameterValue(
+  InlineXmlCasConsumer.PARAM_OUTPUTDIR,
+  outputDir.getAbsolutePath());
+----
+
+Then you might produce this component using: 
+[source]
+----
+CasConsumer component =
+  UIMAFramework.produceCasConsumer(casConsumerDesc);
+----
+
+A side effect of producing a component is calling the component's "`initialize`" method, allowing it to read its configuration parameters.
+If you want to change parameters after this, use 
+[source]
+----
+component.setConfigParameterValue(
+    <parameter-name>,
+    <parameter-value>);
+----
+
+and then signal the component to re-read its configuration by calling the component's reconfigure method: 
+
+[source]
+----
+component.reconfigure();
+----
+
+Although these examples are for a CAS Consumer component, the parameter APIs also work for other kinds of components.
+
+[[ugr.tug.application.integrating_text_analysis_and_search]]
+== Integrating Text Analysis and Search
+
+A combination of AEs with a search engine capable of indexing both words and annotations over spans of text enables what UIMA refers to as __semantic search__.
+
+Semantic search is a search where the semantic intent of the query is specified using one or more entity or relation specifiers.
+For example, one could specify that they are looking for a person (named) "`Bush.`" Such a query would then not return results about the kind of bushes that grow in your garden.
+
+[[ugr.tug.application.building_an_index]]
+=== Building an Index
+
+To build a semantic search index using the UIMA SDK, you run a Collection Processing Engine that includes your AE along with a CAS Consumer which takes the tokens and annotatitions, together with sentence boundaries, and feeds them to a semantic searcher's index term input.
+Your AE must include an annotator that produces Tokens and Sentence annotations, along with any "`semantic`" annotations, because the Indexer requires this.
+
+[[ugr.tug.application.search.configuring_indexer]]
+==== Configuring the Semantic Search CAS Indexer
+
+Since there are several ways you might want to build a search index from the information in the CAS produced by your AE, you need to supply the Semantic Search CAS Consumer -- Indexer with configuration information in the form of an _Index Build Specification_ file.
+Apache UIMA includes code for parsing Index Build Specification files (see the Javadocs for details).
+An example of an Indexing specification tailored to the AE from the tutorial in the xref:tug.adoc#ugr.tug.aae[] is located in `examples/descriptors/tutorial/search/MeetingIndexBuildSpec.xml`. 
+It looks like this: 
+
+[source]
+----
+<indexBuildSpecification>
+  <indexBuildItem>
+    <name>org.apache.uima.examples.tokenizer.Token</name>
+    <indexRule>
+      <style name="Term"/>
+    </indexRule>    
+  </indexBuildItem>
+  <indexBuildItem>
+    <name>org.apache.uima.examples.tokenizer.Sentence</name>
+    <indexRule>
+      <style name="Breaking"/>
+    </indexRule>    
+  </indexBuildItem>
+  <indexBuildItem>
+    <name>org.apache.uima.tutorial.Meeting</name>
+    <indexRule>
+      <style name="Annotation"/>
+    </indexRule>    
+  </indexBuildItem>
+  <indexBuildItem>
+    <name>org.apache.uima.tutorial.RoomNumber</name>
+    <indexRule>
+      <style name="Annotation">
+        <attributeMappings>
+          <mapping>
+            <feature>building</feature>
+            <indexName>building</indexName>
+          </mapping>
+        </attributeMappings>
+      </style>
+    </indexRule>    
+  </indexBuildItem>
+  <indexBuildItem>
+    <name>org.apache.uima.tutorial.DateAnnot</name>
+    <indexRule>
+      <style name="Annotation"/>
+    </indexRule>    
+  </indexBuildItem>
+  <indexBuildItem>
+    <name>org.apache.uima.tutorial.TimeAnnot</name>
+    <indexRule>
+      <style name="Annotation"/>
+    </indexRule>    
+  </indexBuildItem>
+</indexBuildSpecification>
+----
+
+The index build specification is a series of index build items, each of which identifies a xref:ref.adoc#ugr.ref.cas[CAS annotation type] (a subtype of `uima.tcas.Annotation` and a style.
+
+The first item in this example specifies that the annotation type `org.apache.uima.examples.tokenizer.Token` should be indexed with the "`Term`" style.
+This means that each span of text annotated by a Token will be considered a single token for standard text search purposes.
+
+The second item in this example specifies that the annotation type `org.apache.uima.examples.tokenizer.Sentence` should be indexed with the "`Breaking`" style.
+This means that each span of text annotated by a Sentence will be considered a single sentence, which can affect that search engine's algorithm for matching queries. 
+
+The remaining items all use the "`Annotation`" style.
+This indicates that each annotation of the specified types will be stored in the index as a searchable span, with a name equal to the annotation name (without the namespace).
+
+Also, features of annotations can be indexed using the `<attributeMappings>` subelement.
+In the example index build specification, we declare that the `building` feature of the type `org.apache.uima.tutorial.RoomNumber` should be indexed.
+The `<indexName>` element can be used to map the feature name to a different name in the index, but in this example we have opted to use the same name, ``building``. 
+
+At the end of the batch or collection, the Semantic Search CAS Indexer builds the index.
+This index can be queried with simple tokens or with XML tags.
+
+Examples: 
+
+* A query on the word "`UIMA`" will retrieve all documents that have the occurrence of the word. But a query of the type `<Meeting>UIMA</Meeting>` will retrieve only those documents that contain a Meeting annotation (produced by our MeetingDetector TAE, for example), where that Meeting annotation contains the word "`UIMA`".
+* A query for `<RoomNumber building="Yorktown"/>` will return documents that have a RoomNumber annotation whose `building` feature contains the term "`Yorktown`". 
+
+For more information on the Index Build Specification format, see the xref:ref.adoc#ugr.ref.javadocs[UIMA Javadocs] for class `org.apache.uima.search.IndexBuildSpecification`.
+
+[[ugr.tug.application.search.cpe_with_semantic_search_cas_consumer]]
+==== Building and Running a CPE including the Semantic Search CAS Indexer
+// <titleabbrev>Using Semantic Search CAS Indexer</titleabbrev>
+
+The following steps illustrate how to build and run a CPE that uses the UIMA Meeting Detector TAE and the Simple Token and Sentence Annotator, discussed in <<ugr.tug.aae>> along with a CAS Consumer called the Semantic Search CAS Indexer, to build an index that allows you to query for documents based not only on textual content but also on whether they contain mentions of Meetings detected by the TAE.
+
+Run the CPE Configurator tool by executing the `cpeGui` shell script in the `bin` directory of the UIMA SDK.
+(For instructions on using this tool, see the xref:tools.adoc#ugr.tools.cpe[Collection Processing Engine Configurator User’s Guide].)
+
+In the CPE Configurator tool, select the following components by browsing to their descriptors:
+
+* Collection Reader: `%UIMA_HOME%/examples/descriptors/collectionReader/ FileSystemCollectionReader.xml`
+* Analysis Engine: include both of these; one produces tokens/sentences, required by the indexer in all cases and the other produces the meeting annotations of interest. 
++
+** `%UIMA_HOME%/examples/descriptors/analysis_engine/SimpleTokenAndSentenceAnnotator.xml`
+** `%UIMA_HOME%/examples/descriptors/tutorial/ex6/UIMAMeetingDetectorTAE.xml`
+* Two CAS Consumers: 
++
+** `%UIMA_HOME%/examples/descriptors/cas_consumer/SemanticSearchCasIndexer.xml`
+** `%UIMA_HOME%/examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml`
+
+Set up parameters:
+
+* Set the File System Collection Reader's "`Input Directory`" parameter to point to the `%UIMA_HOME%/examples/data` directory.
+* Set the Semantic Search CAS Indexer's "`Indexing Specification Descriptor`" parameter to point to `%UIMA_HOME%/examples/descriptors/tutorial/search/ MeetingIndexBuildSpec.xml`
+* Set the Semantic Search CAS Indexer's "`Index Dir`" parameter to whatever directory into which you want the indexer to write its index files. 
++
+
+[WARNING]
+====
+The Indexer _erases_ old versions of the files it creates in this directory. 
+====
+* Set the XMI Writer CAS Consumer's "`Output Directory`" parameter to whatever directory into which you want to store the XMI files containing the results of your analysis for each document. 
+
+Click on the Run Button.
+Once the run completes, a statistics dialog should appear, in which you can see how much time was spent in each of the components involved in the run.
+
+[[ugr.tug.application.remote_services]]
+== Working with Remote Services
+
+[NOTE]
+====
+This chapter describes older methods of working with Remote Services.
+These approaches do not support some of the newer CAS features, such as multiple views and CAS Multipliers.
+These methods have been supplanted by UIMA-AS, which has full support for the new CAS features.
+====
+
+The UIMA SDK allows you to easily take any Analysis Engine or CAS Consumer and deploy it as a service.
+That Analysis Engine or CAS Consumer can then be called from a remote machine using various network protocols.
+
+The UIMA SDK provides support for the following communications protocols: 
+
+* Vinci, a lightweight protocol, included as a part of Apache UIMA.
+
+The UIMA framework can make use of these services in two different ways: 
+
+. An Analysis Engine can create a proxy to a remote service; this proxy acts like a local component, but connects to the remote. The proxy has limited error handling and retry capabilities. The Vinci protocol is supported.
+. A Collection Processing Engine can specify non-Integrated mode (see <<ugr.tug.cpe.deploying_a_cpe>>).
+The CPE provides more extensive error recovery capabilities.
+This mode only supports the Vinci communications protocol. 
+
+
+[[ugr.tug.application.how_to_deploy_a_vinci_service]]
+=== Deploying a UIMA Component as a Vinci Service
+// <titleabbrev>Deploying as a Vinci Service</titleabbrev>
+
+There are no software prerequisites for deploying a Vinci service.
+The necessary libraries are part of the UIMA SDK.
+However, before you can use Vinci services you need to deploy the Vinci Naming Service (VNS), as described in section <<ugr.tug.application.vns>>.
+
+To deploy a service, you have to insure any components you want to include can be found on the class path.
+One way to do this is to set the environment variable UIMA_CLASSPATH to the set of class paths you need for any included components.
+Then run the `startVinciService` shell script, which is located in the `bin` directory, and pass it the path to a Vinci deployment descriptor, for example: ``C:UIMA>bin/startVinciService ../examples/deploy/vinci/Deploy_PersonTitleAnnotator.xml``.
+If you are running Eclipse, and have the `uimaj-examples` project in your workspace, you can use the Eclipse Menu → Run → Run... and then pick "`UIMA Start Vinci Service`".
+
+This example deployment descriptor looks like: 
+[source]
+----
+<deployment name="Vinci Person Title Annotator Service">
+
+  <service name="uima.annotator.PersonTitleAnnotator" provider="vinci">
+
+    <parameter name="resourceSpecifierPath" 
+      value="C:/Program Files/apache/uima/examples/descriptors/
+          analysis_engine/PersonTitleAnnotator.xml"/>
+
+    <parameter name="numInstances" value="1"/>
+
+    <parameter name="serverSocketTimeout" value="120000"/>
+
+  </service>
+
+</deployment>
+----
+
+To modify this deployment descriptor to deploy your own Analysis Engine or CAS Consumer, just replace the areas indicated in bold italics (deployment name, service name, and resource specifier path) with values appropriate for your component.
+
+The `numInstances` parameter specifies how many instances of your Analysis Engine or CAS Consumer will be created.
+This allows your service to support multiple clients concurrently.
+When a new request comes in, if all of the instances are busy, the new request will wait until an instance becomes available.
+
+The `serverSocketTimeout` parameter specifies the number of milliseconds (default = 5 minutes) that the service will wait between requests to process something.
+After this amount of time, the server will presume the client may have gone away - and it "`cleans up`", releasing any resources it is holding.
+The next call to process on the service will result in a cycle which will cause the client to re-establish its connection with the service (some additional overhead).
+
+There are two additional parameters that you can add to your deployment descriptor: 
+
+* ``<parameter name="threadPoolMinSize" value="[Integer]"/>``: Specifies the number of threads that the Vinci service creates on startup in order to serve clients' requests.
+* ``<parameter name="threadPoolMaxSize" value="[Integer]"/>``: Specifies the maximum number of threads that the Vinci service will create. When the number of concurrent requests exceeds the ``threadPoolMinSize``, additional threads will be created to serve requests, until the `threadPoolMaxSize` is reached.
+
+The `startVinciService` script takes two additional optional parameters.
+The first one overrides the value of the VNS_HOST environment variable, allowing you to specify the name server to use.
+The second parameter if specified needs to be a unique (on this server) non-negative number, specifying the instance of this service.
+When used, this number allows multiple instances of the same named service to be started on one server; they will all register with the Vinci name service and be made available to client requests.
+
+Once you have deployed your component as a web service, you may call it from a remote machine.
+See <<ugr.tug.application.how_to_call_a_uima_service>> for instructions.
+
+[[ugr.tug.application.how_to_call_a_uima_service]]
+=== Calling a UIMA Service
+
+Once an Analysis Engine or CAS Consumer has been deployed as a service, it can be used from any UIMA application, in the exact same way that a local Analysis Engine or CAS Consumer is used.
+For example, you can call an Analysis Engine service from the Document Analyzer or use the CPE Configurator to build a CPE that includes Analysis Engine and CAS Consumer services.
+
+To do this, you use a _service client descriptor_ in place of the usual Analysis Engine or CAS Consumer Descriptor.
+A service client descriptor is a simple XML file that indicates the location of the remote service and a few parameters.
+Example service client descriptors are provided in the UIMA SDK under the directories ``examples/descriptors/vinciService``.
+The  contents of these descriptors are explained below.
+
+[[ugr.tug.application.vinci_service_client_descriptor]]
+==== Vinci Service Client Descriptor
+
+To call a Vinci service, a similar descriptor is used: 
+[source]
+----
+<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+   <resourceType>AnalysisEngine</resourceType>
+   <uri>uima.annot.PersonTitleAnnotator</uri>
+   <protocol>Vinci</protocol>
+   <timeout>60000</timeout> 
+   <parameters>
+     <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
+     <parameter name="VNS_PORT" value="9000"/>
+   </parameters>
+</uriSpecifier>
+----
+
+Note that Vinci uses a centralized naming server, so the host where the service is deployed does not need to be specified.
+Only a name (``uima.annot.PersonTitleAnnotator``) is given, which must match the name specified in the deployment descriptor used to deploy the service.
+
+The host and/or port where your Vinci Naming Service (VNS) server is running can be specified by the optional <parameter> elements.
+If not specified, the value is taken from the specification given your Java command line (if present) using ``-DVNS_HOST=<host> ``and `-DVNS_PORT=<port>` system arguments.
+If not specified on the Java command line, defaults are used: localhost for the ``VNS_HOST``, and `9000` for the ``VNS_PORT``.
+See the next section for details on setting up a VNS server.
+
+[[ugr.tug.application.restrictions_on_remotely_deployed_services]]
+=== Restrictions on remotely deployed services
+
+Remotely deployed services are started on remote machines, using UIMA component descriptors on those remote machines.
+These descriptors supply any configuration and resource parameters for the service (configuration parameters are not transmitted from the calling instance to the remote one). Likewise, the remote descriptors supply the type system specification for the remote annotators that will be run (the type system of the calling instance is not transmitted to the remote one).
+
+The remote service wrapper, when it receives a CAS from the caller, instantiates it for the remote service, making instances of all types which the remote service specifies.
+Other instances in the incoming CAS for types which the remote service has no type specification for are kept aside, and when the remote service returns the CAS back to the caller, these type instances are re-merged back into the CAS being transmitted back to the caller.
+Because of this design, a remote service which doesn't declare a type system won't receive any type instances.
+
+[NOTE]
+====
+This behavior may change in future releases, to one where configuration parameters and / or type systems are transmitted to remote services. 
+====
+
+[[ugr.tug.application.vns]]
+=== The Vinci Naming Services (VNS)
+
+Vinci consists of components for building network-accessible services, clients for accessing those services, and an infrastructure for locating and managing services.
+The primary infrastructure component is the Vinci directory, known as VNS (for Vinci Naming Service).
+
+On startup, Vinci services locate the VNS and provide it with information that is used by VNS during service discovery.
+Vinci service provides the name of the host machine on which it runs, and the name of the service.
+The VNS internally creates a binding for the service name and returns the port number on which the Vinci service will wait for client requests.
+This VNS stores its bindings in a filesystem in a file called vns.services.
+
+In Vinci, services are identified by their service name.
+If there is more than one physical service with the same service name, then Vinci assumes they are equivalent and will route queries to them randomly, provided that they are all running on different hosts.
+You should therefore use a unique service name if you don't want to conflict with other services listed in whatever VNS you have configured jVinci to use.
+
+[[ugr.tug.application.vns.starting]]
+==== Starting VNS
+
+To run the VNS use the `startVNS` script found in the `bin` directory of the UIMA installation,  or launch it from Eclipse.
+If you've installed the `uimaj-examples` project, it will supply a pre-configured launch script you can access in Eclipse by selecting Menu → Run → Run... and picking "`UIMA Start VNS`".
+
+[NOTE]
+====
+VNS runs on port 9000 by default so please make sure this port is available.
+If you see the following exception: 
+[source]
+----
+java.net.BindException: Address already in use:
+
+JVM_Bind
+----
+
+it indicates that another process is running on port 9000.
+In this case, add the parameter `-p <port>` to the `startVNS` command, using `<port>` to specify an alternative port to use. 
+====
+
+When started, the VNS produces output similar to the following: 
+[source]
+----
+[10/6/04 3:44 PM | main] WARNING: Config file doesn't exist, 
+            creating a new empty config file!
+[10/6/04 3:44 PM | main] Loading config file : .vns.services
+[10/6/04 3:44 PM | main] Loading workspaces file : .vns.workspaces
+[10/6/04 3:44 PM | main] ====================================
+(WARNING) Unexpected exception:
+java.io.FileNotFoundException: .vns.workspaces (The system cannot find
+the file specified)
+  at java.io.FileInputStream.open(Native Method)
+  at java.io.FileInputStream.<init>(Unknown Source)
+  at java.io.FileInputStream.<init>(Unknown Source)
+  at java.io.FileReader.<init>(Unknown Source)
+  at org.apache.vinci.transport.vns.service.VNS.loadWorkspaces(VNS.java:339
+  at org.apache.vinci.transport.vns.service.VNS.startServing(VNS.java:237)
+  at org.apache.vinci.transport.vns.service.VNS.main(VNS.java:179)
+[10/6/04 3:44 PM | main] WARNING: failed to load workspace.
+[10/6/04 3:44 PM | main] VNS Workspace : null
+[10/6/04 3:44 PM | main] Loading counter file : .vns.counter
+[10/6/04 3:44 PM | main] Could not load the counter file : .vns.counter
+[10/6/04 3:44 PM | main] Starting backup thread,
+            using files .vns.services.bak
+and .vns.services
+[10/6/04 3:44 PM | main] Serving on port : 9000
+[10/6/04 3:44 PM | Thread-0] Backup thread started
+[10/6/04 3:44 PM | Thread-0] Saving to config file : .vns.services.bak
+>>>>>>>>>>>>> VNS is up and running! <<<<<<<<<<<<<<<<<
+>>>>>>>>>>>>> Type 'quit' and hit ENTER to terminate VNS <<<<<<<<<<<<<
+[10/6/04 3:44 PM | Thread-0] Config save required 10 millis.
+[10/6/04 3:44 PM | Thread-0] Saving to config file : .vns.services
+[10/6/04 3:44 PM | Thread-0] Config save required 10 millis.
+[10/6/04 3:44 PM | Thread-0] Saving counter file : .vns.counter
+----
+
+[NOTE]
+====
+Disregard the _java.io.FileNotFoundException: .\vns.workspaces (The system cannot find the file specified)._ 
+It is just a complaint, not a serious problem.
+VNS Workspace is a feature of the VNS that is not critical.
+The important information to note is `[10/6/04 3:44 PM | main] Serving on port : 9000` which states the actual port where VNS will listen for incoming requests.
+All Vinci services and all clients connecting to services must provide the VNS port on the command line IF the port is not a default.
+Again the default port is 9000.
+Please see <<ugr.tug.application.launching_vinci_services>> below for details about the command line and parameters.
+====
+
+[[ugr.tug.application.vns_files]]
+==== VNS Files
+
+The VNS maintains two external files: 
+
+* `vns.services`
+* `vns.counter`
+
+These files are generated by the VNS in the same directory where the VNS is launched from.
+Since these files may contain old information it is best to remove them before starting the VNS.
+This step ensures that the VNS has always the newest information and will not attempt to connect to a service that has been shutdown.
+
+[[ugr.tug.application.launching_vinci_services]]
+==== Launching Vinci Services
+
+When launching Vinci service, you must indicate which VNS the service will connect to.
+A Vinci service is typically started using the script ``startVinciService``, found in the `bin` directory of the UIMA installation.
+(If you're using Eclipse and have the `uimaj-examples` project in the workspace, you will also find an Eclipse launcher named "`UIMA Start Vinci Service`" you can use.)   For the script, the environmental variable VNS_HOST should be set to the name or IP address of the machine hosting the Vinci Naming Service.
+The default is localhost, the machine the service is deployed on.
+This name can also be passed as the second argument to the startVinciService script.
+The default port for VNS is 9000 but can be overriden with the VNS_PORT environmental variable.
+
+If you write your own startup script, to define Vinci's default VNS you must provide the following JVM parameters: 
+
+[source]
+----
+java -DVNS_HOST=localhost -DVNS_PORT=9000 ...
+----
+
+The above setting is for the VNS running on the same machine as the service.
+Of course one can deploy the VNS on a different machine and the JVM parameter will need to be changed to this: 
+
+[source]
+----
+java -DVNS_HOST=<host> -DVNS_PORT=9000 ...
+----
+
+where "`<host>`" is a machine name or its IP where the VNS is running.
+
+[NOTE]
+====
+VNS runs on port 9000 by default.
+If you see the following exception: 
+[source]
+----
+(WARNING) Unexpected exception:
+org.apache.vinci.transport.ServiceDownException: 
+          VNS inaccessible: java.net.Connect
+Exception: Connection refused: connect
+----
+then, perhaps the VNS is not running OR the VNS is running but it is using a different port.
+To correct the latter, set the environmental variable VNS_PORT to the correct port before starting the service.
+====
+
+To get the right port check the VNS output for something similar to the following: 
+[source]
+----
+[10/6/04 3:44 PM | main] Serving on port : 9000
+----
+
+It is printed by the VNS on startup.
+
+[[ugr.tug.configuring_timeout_settings]]
+=== Configuring Timeout Settings
+
+UIMA has several timeout specifications, summarized here.
+The timeouts associated with remote  services are discussed below.
+In addition there are timeouts that can be specified for: 
+
+* *Acquiring an empty CAS from a CAS Pool:* See <<ugr.tug.applications.multi_threaded>>.
+* *Reassembling chunks of a large document* See xref:ref.adoc#ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters[Operational Parameters].
+
+If your application uses remote UIMA services it is important to consider how to set the _timeout_ values appropriately.
+This is particularly important if your service can take a long time to process each request.
+
+There are two types of timeout settings in UIMA, the _client timeout_ and the __server socket timeout__.
+The client timeout is usually the most important, it specifies how long that client is willing to wait for the service to process each CAS.
+The client timeout can be specified for Vinci.
+The server socket timeout (Vinci only) specifies how long the service holds the connection open between calls from the client.
+After this amount of time, the server will presume the client may have gone away - and it "`cleans up`", releasing any resources it is holding.
+The next call to process on the service will cause the client to re-establish its connection with the service (some additional overhead).
+
+[[ugr.tug.setting_client_timeout]]
+==== Setting the Client Timeout
+
+The way to set the client timeout is different depending on what deployment mode you use in your CPE (if any).
+
+If you are using the default "`integrated`" deployment mode in your CPE, or if you are not using a CPE at all, then the client timeout is specified in your Service Client Descriptor (see <<ugr.tug.application.how_to_call_a_uima_service>>). For example:
+
+[source]
+----
+<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+   <resourceType>AnalysisEngine</resourceType>
+   <uri>uima.annot.PersonTitleAnnotator</uri>
+   <protocol>Vinci</protocol>
+   <timeout>60000</timeout> 
+   <parameters>
+     <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
+     <parameter name="VNS_PORT" value="9000"/>
+   </parameters>
+</uriSpecifier>
+----
+
+The client timeout in this example is ``60000``.
+This value specifies the number of milliseconds that the client will wait for the service to respond to each request.
+In this example, the client will wait for one minute.
+
+If the service does not respond within this amount of time, processing of the current CAS will abort.
+If you called the `AnalysisEngine.process` method directly from your application, an Exception will be thrown.
+If you are running a CPE, what happens next is dependent on the error handling settings in your CPE descriptor (see xref:ref.adoc#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling[CAS Processor Error Handling]). 
+The default action is for the CPE to terminate, but you can override this. 
+
+If you are using the "`managed`" or "`non-managed`" deployment mode in your CPE, then the client timeout is specified in your CPE desciptor's `errorHandling` element.
+For example:
+
+[source]
+----
+<errorHandling>
+  <maxConsecutiveRestarts .../>
+  <errorRateThreshold .../>
+  <timeout max="60000"/>
+</errorHandling>
+----
+
+As in the previous example, the client timeout is set to ``60000``, and this specifies the number of milliseconds that the client will wait for the service to respond to each request.
+
+If the service does not respond within the specified amount of time, the action is determined by the settings for `maxConsecutiveRestarts` and ``errorRateThreshold``.
+These settings support such things as restarting the process (for "`managed`" deployment mode), dropping and reestablishing the connection (for "`non-managed`" deployment mode), and removing the offending service from the pipeline.
+See xref:ref.adoc#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling[CAS Processor Error Handling]) for details. 
+
+Note that the client timeout does not apply to the `GetMetaData` request that is made when the client first connects to the service.
+This call is typically very fast and does not need a large timeout (the default is 60 seconds).  However, if many clients are competing for a small number of services, it may be necessary to increase this value.
+See xref:ref.adoc#ugr.ref.xml.component_descriptor.service_client[Service Client Descriptors].
+
+
+[[ugr.tug.setting_server_socket_timeout]]
+==== Setting the Server Socket Timeout
+
+The Server Socket Timeout applies only to Vinci services, and is specified in the Vinci deployment descriptor as discussed in section <<ugr.tug.application.how_to_deploy_a_vinci_service>>.
+For example: 
+[source]
+----
+<deployment name="Vinci Person Title Annotator Service">
+
+  <service name="uima.annotator.PersonTitleAnnotator" provider="vinci">
+
+    <parameter name="resourceSpecifierPath" 
+      value="C:/Program Files/apache/uima/examples/descriptors/
+          analysis_engine/PersonTitleAnnotator.xml"/>
+
+    <parameter name="numInstances" value="1"/>
+
+    <parameter name="serverSocketTimeout" value="120000"/>
+
+  </service>
+
+</deployment>
+----
+
+The server socket timeout here is set to `120000` milliseconds, or two minutes.
+This parameter specifies how long the service will wait between requests to process something.
+After this amount of time, the server will presume the client may have gone away - and it "`cleans up`", releasing any resources it is holding.
+The next call to process on the service will cause the client to re-establish its connection with the service (some additional overhead). The service may print a "`Read Timed Out`" message to the console when the server socket timeout elapses.
+
+In most cases, it is not a problem if the server socket timeout elapses.
+The client will simply reconnect.
+However, if you notice "`Read Timed Out`" messages on your server console, followed by other connection problems, it is possible that the client is having trouble reconnecting for some reason.
+In this situation it may help increase the stability of your application if you increase the server socket timeout so that it does not elapse during actual processing.
+
+[[ugr.tug.application.increasing_performance_using_parallelism]]
+== Increasing performance using parallelism
+
+There are several ways to exploit parallelism to increase performance in the UIMA Framework.
+These range from running with additional threads within one Java virtual machine on one host (which might be a multi-processor or hyper-threaded host) to deploying analysis engines on a set of remote machines.
+
+The Collection Processing facility in UIMA provides the ability to scale the pipe-line of analysis engines.
+This scale-out runs multiple threads within the Java virtual machine running the CPM, one for each pipe in the pipe-line.
+To activate it, in the `<casProcessors>` descriptor element, set the attribute ``processingUnitThreadCount``, which specifies the number of replicated processing pipelines, to a value greater than 1, and insure that the size of the CAS pool is equal to or greater than this number (the attribute of `<casProcessors>` to set is ``casPoolSize``). For more details on these settings, see xref:ref.adoc#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors[CAS Processors].
+
+For deployments that incorporate remote analysis engines in the Collection Manager pipe-line, running on multiple remote hosts, scale-out is supported which uses the Vinci naming service.
+If multiple instances of a service with the same name, but running on different hosts, are registered with the Vinci Name Server, it will assign these instances to incoming requests.
+
+There are two modes supported: a "`random`" assignment, and a "`exclusive`" one.
+The "`random`" mode distributes load using an algorithm that selects a service instance at random.
+The UIMA framework supports this only for the case where all of the instances are running on unique hosts; the framework does not support starting 2 or more instances on the same host.
+
+The exclusive mode dedicates a particular remote instance to each Collection Manager pip-line instance.
+This mode is enabled by adding a configuration parameter in the <casProcessor> section of the CPE descriptor:
+
+[source]
+----
+<deploymentParameters>
+  <parameter name="service-access" value="exclusive" />
+</deploymentParameters>
+----
+
+If this is not specified, the "`random`" mode is used.
+
+In addition, remote UIMA engine services can be started with a parameter that specifies the number of instances the service should support (see the `<parameter name="numInstances">` XML element in remote deployment descriptor <<ugr.tug.application.remote_services>> Specifying more than one causes the service wrapper for the analysis engine to use multi-threading (within the single Java Virtual Machine – which can take advantage of multi-processor and hyper-threaded architectures).
+
+[NOTE]
+====
+When using Vinci in "`exclusive`" mode (see service access under xref:ref.adoc#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters[Individual Deployment Parameters]), only one thread is used.
+To achieve multi-processing on a server in this case, use multiple instances of the service, instead of multiple threads (see <<ugr.tug.application.how_to_deploy_a_vinci_service>>.
+====
+
+[[ugr.tug.application.jmx]]
+== Monitoring AE Performance using JMX
+
+UIMA supports remote monitoring of Analysis Engine performance via the Java Management Extensions (JMX) API.
+When you run a UIMA with a JVM that supports JMX, the UIMA framework will automatically detect the presence of JMX and will register _MBeans_ that provide access to the performance statistics.
+
+Note: I local monitoring does not work out-of-the-box, you can configure your application for remote monitoring (even when on the same host) by specifying a unique port number, e.g.
+
+[source]
+----
+-Dcom.sun.management.jmxremote.port=1098
+-Dcom.sun.management.jmxremote.authenticate=false
+-Dcom.sun.management.jmxremote.ssl=false
+----
+
+Now, you can use any JMX client to view the statistics.
+Simply open a command prompt, make sure the JDK `bin` directory is in your path, and execute the `jconsole` command.
+This should bring up a window allowing you to select one of the local JMX-enabled applications currently running, or to enter a remote (or local) host and port, e.g. `localhost:1098``.
+The next screen will show a summary of information about the Java process that you connected to.
+Click on the "`MBeans`" tab, then expand "`org.apache.uima`" in the tree at the left.
+You should see a view like this: 
+
+image::images/tutorials_and_users_guides/tug.application/image006.jpg[Screenshot of JMX console monitoring UIMA components]
+
+Each of the nodes under "``org.apache.uima``" in the tree represents one of the UIMA Analysis Engines in the application that you connected to.
+You can select one of the analysis engines to view its performance statistics in the view at the right.
+
+Probably the most useful statistic is "`CASes Per Second`", which is the number of CASes that this AE has processed divided by the amount of time spent in the AE's process method, in seconds.
+Note that this is the total elapsed time, not CPU time.
+Even so, it can be useful to compare the "`CASes Per Second`" numbers of all of your Analysis Engines to discover where the bottlenecks occur in your application.
+
+The `AnalysisTime`, `BatchProcessCompleteTime`, and `CollectionProcessCompleteTime` properties show the total elapsed time, in milliseconds, that has been spent in the AnalysisEngine's `process()`, `batchProcessComplete()`, and `collectionProcessComplete()` methods, respectively.
+(Note that for CAS Multipliers, time spent in the `hasNext()` and `next()` methods is also counted towards the AnalysisTime.)
+
+Note that once your UIMA application terminates, you can no longer view the statistics through the JMX console.
+If you want to use JMX to view processes that have completed, you will need to write your application so that the JVM remains running after processing completes, waiting for some user signal before terminating.
+
+It is possible to override the default JMX MBean names UIMA uses, for example to better organize the UIMA MBeans with respect to MBeans exposed by other parts of your application.
+This is done using the `AnalysisEngine.PARAM_MBEAN_NAME_PREFIX` additional parameter  when creating your AnalysisEngine: 
+
+[source]
+----
+  //set up Map with custom JMX MBean name prefix
+  Map paramMap = new HashMap();
+  paramMap.put(AnalysisEngine.PARAM_MBEAN_NAME_PREFIX,
+               "org.myorg:category=MyApp");
+        
+  // create Analysis Engine
+  AnalysisEngine ae = 
+      UIMAFramework.produceAnalysisEngine(specifier, paramMap);
+----
+
+Similary, you can use the `AnalysisEngine.PARAM_MBEAN_SERVER` parameter to specify a particular instance of a JMX MBean Server with which UIMA should register the MBeans.
+If no specified then the default is to register with the platform MBeanServer.
+
+[[_tug.application.pto]]
+== Performance Tuning Options
+
+There are a small number of performance tuning options available to influence the runtime behavior of UIMA applications.
+Performance tuning options need to be set programmatically when an analysis engine is created.
+You simply create a Java Properties object with the relevant options and pass it to the UIMA framework on the call to create an analysis engine.
+Below is an example. 
+[source]
+----
+
+	  	  XMLParser parser = UIMAFramework.getXMLParser();
+	      ResourceSpecifier spec = parser.parseResourceSpecifier(
+	            new XMLInputSource(descriptorFile));
+	      // Create a new properties object to hold the settings.
+	      Properties performanceTuningSettings = new Properties();
+	      // Set the initial CAS heap size.
+	      performanceTuningSettings.setProperty(
+	            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
+	            "1000000");
+	      // Create a wrapper properties object that can
+	      // be passed to the framework.
+	      Properties additionalParams = new Properties();
+	      // Set the performance tuning properties as value to
+	      // the appropriate parameter.
+	      additionalParams.put(
+	            Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, 
+	            performanceTuningSettings);
+	      // Create the analysis engine with the parameters.
+	      // The second, unused argument here is a custom 
+	      // resource manager.
+	      this.ae = UIMAFramework.produceAnalysisEngine(
+	          spec, null, additionalParams);
+----
+
+The following options are supported: 
+
+* ``UIMAFramework.PROCESS_TRACE_ENABLED``: enable the process trace mechanism (true/false).  When enabled, UIMA tracks the time spent in individual components of an aggregate  AE or CPE. For more information, see the API documentation of ``org.apache.uima.util.ProcessTrace``. 
+* ``UIMAFramework.SOCKET_KEEPALIVE_ENABLED``: enable socket KeepAlive (true/false).  This setting is currently only supported by Vinci clients. Defaults to ``true``. 

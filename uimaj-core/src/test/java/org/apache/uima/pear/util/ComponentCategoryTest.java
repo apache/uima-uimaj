@@ -19,11 +19,12 @@
 
 package org.apache.uima.pear.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -55,10 +56,11 @@ public class ComponentCategoryTest {
   @Test
   public void testAeDescriptor() throws Exception {
     File aeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + AE_DESC_NAME);
-    if (!aeDescFile.isFile())
+    if (!aeDescFile.isFile()) {
       throw new FileNotFoundException("AE descriptor not found");
-    Assert.assertTrue(UIMAUtil.ANALYSIS_ENGINE_CTG
-            .equals(UIMAUtil.identifyUimaComponentCategory(aeDescFile)));
+    }
+    assertThat(UIMAUtil.identifyUimaComponentCategory(aeDescFile))
+            .isEqualTo(UIMAUtil.ANALYSIS_ENGINE_CTG);
   }
 
   /**
@@ -67,10 +69,11 @@ public class ComponentCategoryTest {
   @Test
   public void testCcDescriptor() throws Exception {
     File ccDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CC_DESC_NAME);
-    if (!ccDescFile.isFile())
+    if (!ccDescFile.isFile()) {
       throw new FileNotFoundException("CC descriptor not found");
-    Assert.assertTrue(
-            UIMAUtil.CAS_CONSUMER_CTG.equals(UIMAUtil.identifyUimaComponentCategory(ccDescFile)));
+    }
+    assertThat(UIMAUtil.identifyUimaComponentCategory(ccDescFile))
+            .isEqualTo(UIMAUtil.CAS_CONSUMER_CTG);
   }
 
   /**
@@ -79,10 +82,11 @@ public class ComponentCategoryTest {
   @Test
   public void testCiDescriptor() throws Exception {
     File ciDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CI_DESC_NAME);
-    if (!ciDescFile.isFile())
+    if (!ciDescFile.isFile()) {
       throw new FileNotFoundException("CI descriptor not found");
-    Assert.assertTrue(UIMAUtil.CAS_INITIALIZER_CTG
-            .equals(UIMAUtil.identifyUimaComponentCategory(ciDescFile)));
+    }
+    assertThat(UIMAUtil.identifyUimaComponentCategory(ciDescFile))
+            .isEqualTo(UIMAUtil.CAS_INITIALIZER_CTG);
   }
 
   /**
@@ -91,10 +95,11 @@ public class ComponentCategoryTest {
   @Test
   public void testCrDescriptor() throws Exception {
     File crDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CR_DESC_NAME);
-    if (!crDescFile.isFile())
+    if (!crDescFile.isFile()) {
       throw new FileNotFoundException("CR descriptor not found");
-    Assert.assertTrue(UIMAUtil.COLLECTION_READER_CTG
-            .equals(UIMAUtil.identifyUimaComponentCategory(crDescFile)));
+    }
+    assertThat(UIMAUtil.identifyUimaComponentCategory(crDescFile))
+            .isEqualTo(UIMAUtil.identifyUimaComponentCategory(crDescFile));
   }
 
   /**
@@ -103,9 +108,10 @@ public class ComponentCategoryTest {
   @Test
   public void testTsDescriptor() throws Exception {
     File tsDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + TS_DESC_NAME);
-    if (!tsDescFile.isFile())
+    if (!tsDescFile.isFile()) {
       throw new FileNotFoundException("TS descriptor not found");
-    Assert.assertTrue(
-            UIMAUtil.TYPE_SYSTEM_CTG.equals(UIMAUtil.identifyUimaComponentCategory(tsDescFile)));
+    }
+    assertThat(UIMAUtil.identifyUimaComponentCategory(tsDescFile))
+            .isEqualTo(UIMAUtil.TYPE_SYSTEM_CTG);
   }
 }

@@ -16,38 +16,41 @@
 	specific language governing permissions and limitations
 	under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
-  
-  <!-- This artifact name follows the conventions described http://books.sonatype.com/mvnref-book/reference/writing-plugins-sect-custom-plugin.html
-       where patterns like xxx-maven-plugin and maven-xxx-plugin can be invoked just using xxx if the right settings are in place -->
+
+  <!-- This artifact name follows the conventions described
+  http://books.sonatype.com/mvnref-book/reference/writing-plugins-sect-custom-plugin.html
+       where patterns like xxx-maven-plugin and maven-xxx-plugin can be invoked just
+  using xxx if the right settings are in place -->
   <artifactId>jcasgen-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
 
   <name>Apache UIMA Maven: ${project.artifactId}</name>
-  <description>A Maven Plugin for using JCasGen to generate Java classes from XML type system descriptions</description>
+  <description>A Maven Plugin for using JCasGen to generate Java classes from
+    XML type system descriptions</description>
 
   <prerequisites>
-    <maven>3.0</maven>
+    <maven>${maven.version}</maven>
   </prerequisites>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${maven.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>${maven.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -84,23 +87,26 @@
     <dependency>
       <groupId>org.sonatype.plexus</groupId>
       <artifactId>plexus-build-api</artifactId>
-      <version>0.0.7</version>
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -120,7 +126,7 @@
               <tagletArtifact>
                 <groupId>org.apache.maven.plugin-tools</groupId>
                 <artifactId>maven-plugin-tools-javadoc</artifactId>
-                <version>2.9</version>
+                <version>3.5.2</version>
               </tagletArtifact>
             </tagletArtifacts>
           </configuration>
@@ -145,7 +151,8 @@
             <goal>package</goal>
             <goal>integration-test</goal>
           </goals>
-          <!-- change this next line by toggling the "!" character to include / exclude the long-running m2e test
+          <!-- change this next line by toggling the "!" character to include /
+          exclude the long-running m2e test
                It is normally excluded -->
           <invokerTest>classpath,multimodule,simple,!m2e</invokerTest>
         </configuration>

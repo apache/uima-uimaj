@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,28 +42,6 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-compilertools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.bitbucket.mstrobel</groupId>
-          <artifactId>procyon-core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-tools</artifactId>
-      <version>${project.parent.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.uima</groupId>
-          <artifactId>uimaj-cpe</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -75,32 +53,8 @@
     <!-- Eclipse dependencies -->
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jdt.ui</artifactId>
-      <version>[3.12.0,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.ui.views</artifactId>
-      <version>[3.9.0,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
-      <version>[3.10.0,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jface</artifactId>
       <version>[3.13.0, 4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jface.text</artifactId>
-      <version>[3.11.0,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -109,12 +63,53 @@
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
-    
-    <!-- Test dependencies -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <version>[3.10.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>[3.13.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench</artifactId>
+      <version>[3.112.100, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>[3.15.100, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>[3.13.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.registry</artifactId>
+      <version>[3.8.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.preferences</artifactId>
+      <version>[3.7.200, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.ide</artifactId>
+      <version>[3.14.200, 4.0.0)</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -161,41 +156,8 @@
               <instructions>
                 <Bundle-SymbolicName>org.apache.uima.caseditor.ide;singleton:=true</Bundle-SymbolicName>
                 <Bundle-Activator>org.apache.uima.caseditor.ide.CasEditorIdePlugin</Bundle-Activator>
-                <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-                <Export-Package>
-                  org.apache.uima.caseditor.ide.*
-                </Export-Package>
-                <Require-Bundle>
-                  org.eclipse.jface.text,
-                  org.eclipse.text,
-                  org.eclipse.ui.editors,
-                  org.eclipse.ui.workbench.texteditor,
-                  org.eclipse.ui.ide,
-                  org.eclipse.ui,
-                  org.eclipse.ui.workbench,
-                  org.eclipse.core.runtime,
-                  org.eclipse.core.resources,
-                  org.junit4;resolution:=optional
-                </Require-Bundle>
-                <Import-Package>
-                  !org.eclipse.jface.text,
-                  !org.eclipse.jface.text.link,
-                  !org.eclipse.jface.text.source,
-                  !org.eclipse.jface.text.templates,
-                  !org.eclipse.ui.texteditor,
-                  !org.eclipse.ui,
-                  !org.eclipse.ui.actions,
-                  !org.eclipse.ui.dialogs,
-                  !org.eclipse.ui.model,
-                  !org.eclipse.ui.part,
-                  !org.eclipse.core.runtime,
-                  !org.osgi.framework,
-                  org.apache.uima.caseditor.editor.editview,
-                  org.apache.uima.caseditor.editor.fsview,
-                  org.apache.uima.caseditor.editor.styleview,
-                  *
-                </Import-Package>
+                <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
               </instructions>
             </configuration>
           </execution>

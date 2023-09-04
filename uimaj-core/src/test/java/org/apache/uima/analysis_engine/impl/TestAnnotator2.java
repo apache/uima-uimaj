@@ -19,6 +19,11 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +38,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.UimaContext_ImplBase;
@@ -43,7 +47,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UimaContextHolderTest;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 
 /**
  * Annotator class used for testing.
@@ -81,110 +84,81 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     // testExternalOverride2.settings
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
-      // Test getting a (0-length) array of strings
       String expected = "Context Holder Test";
-      String[] actuals = null;
-      try {
-        actuals = UimaContextHolder.getContext().getSharedSettingArray("test.externalFloatArray");
-      } catch (ResourceConfigurationException e) {
-        Assert.fail(e.getMessage());
-      }
-      Assert.assertEquals(0, actuals.length);
+
+      // Test getting a (0-length) array of strings
+      assertThatNoException().isThrownBy(() -> assertThat(
+              UimaContextHolder.getContext().getSharedSettingArray("test.externalFloatArray"))
+                      .isEmpty());
 
       // Test assigning an array to a string and vice-versa
       // prefix-suffix Prefix-${suffix}
       // suffix = should be ignored
-      String actual = null;
-      try {
-        actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
-      } catch (ResourceConfigurationException e) {
-        Assert.fail(e.getMessage());
-      }
-      Assert.assertEquals(expected, actual);
+      assertThatNoException().isThrownBy(() -> assertThat(
+              UimaContextHolder.getContext().getSharedSettingValue("context-holder"))
+                      .isEqualTo(expected));
 
       // Test assigning an array to a string and vice-versa
-      try {
-        actual = UimaContextHolder.getContext().getSharedSettingValue("test.externalFloatArray");
-        Assert.fail("\"bad\" should create an error");
-      } catch (ResourceConfigurationException e) {
-        System.err.println("Expected exception: " + e.toString());
-      }
-      try {
-        actuals = UimaContextHolder.getContext().getSharedSettingArray("prefix-suffix");
-        Assert.fail("\"bad\" should create an error");
-      } catch (ResourceConfigurationException e) {
-        System.err.println("Expected exception: " + e.toString());
-      }
+      assertThatExceptionOfType(ResourceConfigurationException.class)
+              .isThrownBy(() -> UimaContextHolder.getContext()
+                      .getSharedSettingValue("test.externalFloatArray"));
+
+      assertThatExceptionOfType(ResourceConfigurationException.class).isThrownBy(
+              () -> UimaContextHolder.getContext().getSharedSettingArray("prefix-suffix"));
 
       // Test a stand-alone settings object
       Settings testSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
       String lines = "foo = ${bar} \n" + "bar : [ok \n OK] \n" + "bad = ${missing} \n"
               + "loop1 = one ${loop2} \n" + "loop2 = two ${loop3} \n" + "loop3 = three ${loop1} \n";
-      InputStream is;
-      try {
-        is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
-        testSettings.load(is);
-        is.close();
-        String val = testSettings.lookUp("foo");
-        Assert.assertEquals("[ok,OK]", val);
-        try {
-          val = testSettings.lookUp("bad");
-          Assert.fail("\"bad\" should create an error");
-        } catch (ResourceConfigurationException e) {
-          System.err.println("Expected exception: " + e.toString());
+
+      assertThatNoException().isThrownBy(() -> {
+        try (InputStream is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8))) {
+          testSettings.load(is);
+          String val = testSettings.lookUp("foo");
+          assertThat(val).isEqualTo("[ok,OK]");
+
+          assertThatExceptionOfType(ResourceConfigurationException.class)
+                  .as("\"bad\" should create an error")
+                  .isThrownBy(() -> testSettings.lookUp("bad"));
+
+          assertThatExceptionOfType(ResourceConfigurationException.class)
+                  .as("\"loop2\" should create an error")
+                  .isThrownBy(() -> testSettings.lookUp("loop2"));
         }
-        try {
-          val = testSettings.lookUp("loop2");
-          Assert.fail("\"loop2\" should create an error");
-        } catch (ResourceConfigurationException e) {
-          System.err.println("Expected exception: " + e.toString());
-        }
-      } catch (Exception e) {
-        Assert.fail(e.toString());
-      }
+      });
 
       // Test POFO access via UimaContextHolder
       long threadId = Thread.currentThread().getId();
       UimaContextHolderTest testPojoAccess = new UimaContextHolderTest();
-      try {
-        actual = testPojoAccess.testSettings();
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(threadId, testPojoAccess.threadId);
-      } catch (ResourceConfigurationException e) {
-        Assert.fail();
-      }
+      assertThatNoException()
+              .isThrownBy(() -> assertThat(testPojoAccess.testSettings()).isEqualTo(expected));
+      assertThat(testPojoAccess.threadId).isEqualTo(threadId);
+
       // Try from a child thread - should work
       testPojoAccess.result = null;
       Thread thrd = new Thread(testPojoAccess);
       thrd.start();
       synchronized (thrd) {
-        try {
-          thrd.wait();
-          Assert.assertEquals(expected, testPojoAccess.result);
-          Assert.assertNotSame(threadId, testPojoAccess.threadId);
-        } catch (InterruptedException e) {
-          Assert.fail();
-        }
+        assertThatNoException().isThrownBy(() -> thrd.wait());
+        assertThat(testPojoAccess.result).isEqualTo(expected);
+        assertThat(testPojoAccess.threadId).isNotSameAs(threadId);
       }
+
       // Try from a process - should fail
       String[] args = { System.getProperty("java.home") + "/bin/java", "-cp",
           System.getProperty("java.class.path"), UimaContextHolderTest.class.getName() };
       ProcessBuilder pb = new ProcessBuilder(args);
       try {
         Process proc = pb.start();
-        int rc = proc.waitFor();
-        Assert.assertEquals(0, rc);
+        assertThat(proc.waitFor()).isZero();
       } catch (IOException | InterruptedException e) {
-        Assert.fail();
+        fail();
       }
 
       // Test getting a string value
-      try {
-        actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
-      } catch (ResourceConfigurationException e) {
-        Assert.fail(e.getMessage());
-      }
-      Assert.assertEquals(expected, actual);
+      assertThatNoException().isThrownBy(() -> assertThat(
+              UimaContextHolder.getContext().getSharedSettingValue("context-holder"))
+                      .isEqualTo(expected));
 
       // Create a nested engine with a different settings
       String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
@@ -204,17 +178,14 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
         UIMAFramework.produceAnalysisEngine(desc, additionalParams);
       } catch (Exception e) {
-        Assert.fail();
+        fail();
       }
 
-      try {
-        actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
-      } catch (ResourceConfigurationException e) {
-        Assert.fail(e.getMessage());
-      }
-      Assert.assertEquals(expected, actual);
-
+      assertThatNoException().isThrownBy(() -> assertThat(
+              UimaContextHolder.getContext().getSharedSettingValue("context-holder"))
+                      .isEqualTo(expected));
     }
+
     // Used to check initialization order by testManyDelegates
     allContexts = allContexts + contextName.substring(1);
   }
@@ -224,9 +195,6 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     typeSystemInitCalled = true;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
-   */
   @Override
   public void process(CAS aCAS) {
     // set static fields to contain document text, result spec,

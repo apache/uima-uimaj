@@ -19,10 +19,11 @@
 
 package org.apache.uima.cas_data.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -49,7 +50,7 @@ public class CasDataToXCasTest {
       TestContentHandler testContentHandler = new TestContentHandler("Test");
       generator.setContentHandler(testContentHandler);
       generator.generateXCas(casData);
-      Assert.assertTrue(testContentHandler.foundTestElement);
+      assertThat(testContentHandler.foundTestElement).isTrue();
 
       // also try colon and dash conversions
       casData = new CasDataImpl();
@@ -64,7 +65,7 @@ public class CasDataToXCasTest {
       testContentHandler = new TestContentHandler("Test:Foo-Bar:What-a-mess");
       generator.setContentHandler(testContentHandler);
       generator.generateXCas(casData);
-      Assert.assertTrue(testContentHandler.foundTestElement);
+      assertThat(testContentHandler.foundTestElement).isTrue();
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -98,7 +99,7 @@ public class CasDataToXCasTest {
 
       if (this.testElementName.equals(arg1)) {
         foundTestElement = true;
-        Assert.assertEquals("myValue", arg3.getValue("myFeature"));
+        assertThat(arg3.getValue("myFeature")).isEqualTo("myValue");
       }
     }
 
@@ -121,7 +122,7 @@ public class CasDataToXCasTest {
     @Override
     public void endElement(String arg0, String arg1, String arg2) throws SAXException {
       if (this.testElementName.equals(arg1)) {
-        Assert.assertEquals("this should show up in XML content", buf.toString());
+        assertThat(buf.toString()).isEqualTo("this should show up in XML content");
       }
     }
   }

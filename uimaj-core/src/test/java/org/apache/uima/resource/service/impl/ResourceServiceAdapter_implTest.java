@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Map;
 
 import org.apache.uima.resource.ResourceSpecifier;
@@ -27,7 +29,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,8 +69,8 @@ public class ResourceServiceAdapter_implTest {
 
       mServiceStub.getMetaDataReturnValue = md;
       ResourceMetaData result = mAdapter.getMetaData();
-      Assert.assertEquals("callGetMetaData", mServiceStub.lastMethodName);
-      Assert.assertEquals(md, result);
+      assertThat(mServiceStub.lastMethodName).isEqualTo("callGetMetaData");
+      assertThat(result).isEqualTo(md);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

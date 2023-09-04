@@ -32,7 +32,6 @@ import org.apache.uima.resource.impl.Parameter_impl;
 import org.apache.uima.resource.impl.PearSpecifier_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -118,13 +117,13 @@ public class PearAnalysisEngineWrapperTest {
 
     boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
 
-    Assert.assertTrue("Pear was not initialized", initialized);
+    assertThat(initialized).as("Pear was not initialized").isTrue();
 
     String stringParamValue = (String) this.pearAnalysisEngineWrapper
             .getConfigParameterValue(PearAnalysisEngineWrapperTest.PARAMETER_NAME);
 
-    Assert.assertEquals("The value of StringParam has changed",
-            PearAnalysisEngineWrapperTest.PARAMETER_VALUE, stringParamValue);
+    assertThat(stringParamValue).as("The value of StringParam has changed")
+            .isEqualTo(PearAnalysisEngineWrapperTest.PARAMETER_VALUE);
   }
 
   private PearSpecifier createPearSpecifierWithoutParameters() {
@@ -150,7 +149,7 @@ public class PearAnalysisEngineWrapperTest {
 
   private PackageBrowser installPearPackage() {
     File pearFile = JUnitExtension.getFile("pearTests/analysisEngineWithParameters.pear");
-    Assert.assertNotNull("analysisEngine.pear file not found", pearFile);
+    assertThat(pearFile).as("analysisEngine.pear file not found").isNotNull();
 
     return PackageInstaller.installPackage(this.tempInstallDirectory, pearFile, false);
   }

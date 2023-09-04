@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -29,7 +31,6 @@ import java.util.Collections;
 
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -54,8 +55,8 @@ public class DataResource_implTest {
       dr.initialize(spec, Collections.EMPTY_MAP);
 
       // test
-      Assert.assertEquals(new URL(fileUrl), dr.getUrl());
-      Assert.assertEquals(new File(localCacheFile), dr.getLocalCache());
+      assertThat(dr.getUrl()).isEqualTo(new URL(fileUrl));
+      assertThat(dr.getLocalCache()).isEqualTo(new File(localCacheFile));
 
       // test failure for nonexistent data
       ResourceInitializationException ex = null;
@@ -67,7 +68,7 @@ public class DataResource_implTest {
       } catch (ResourceInitializationException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertThat(ex).isNotNull();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -97,7 +98,7 @@ public class DataResource_implTest {
       String result = bufRdr.readLine();
       inStr.close();
 
-      Assert.assertEquals(testString, result);
+      assertThat(result).isEqualTo(testString);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
