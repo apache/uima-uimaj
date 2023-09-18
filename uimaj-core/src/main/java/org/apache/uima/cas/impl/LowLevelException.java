@@ -112,7 +112,7 @@ public class LowLevelException extends UIMARuntimeException {
   /** @return The same as getMessage(), but prefixed with <code>"LowLevelException: "</code>. */
   @Override
   public String toString() {
-    return "LowLevelException: " + this.getMessage();
+    return "LowLevelException: " + getMessage();
   }
 
   /**

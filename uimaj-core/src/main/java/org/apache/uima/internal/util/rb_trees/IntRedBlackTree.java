@@ -49,7 +49,7 @@ public class IntRedBlackTree {
   }
 
   public final int size() {
-    return this.size;
+    return size;
   }
 
   // ////////////////////////////////////////////////////////////////
@@ -57,16 +57,16 @@ public class IntRedBlackTree {
   // ////////////////////////////////////////////////////////////////
 
   public final void clear() {
-    this.root = null;
-    this.size = 0;
+    root = null;
+    size = 0;
   }
 
   public final boolean containsKey(int key) {
-    return (IntRBTNode.find(this.root, key) == null) ? false : true;
+    return (IntRBTNode.find(root, key) == null) ? false : true;
   }
 
   public final boolean containsValue(int o) {
-    IntRBTIterator it = this.iterator();
+    IntRBTIterator it = iterator();
     while (it.hasNext()) {
       if (o == it.next()) {
         return true;
@@ -87,7 +87,7 @@ public class IntRedBlackTree {
    */
   public final boolean put(int key, int el) {
     if (put(new IntRBTNode(key, el))) {
-      this.size++;
+      size++;
       return true;
     }
     return false;
@@ -101,11 +101,11 @@ public class IntRedBlackTree {
    * @return -
    */
   public final int remove(int key) throws java.util.NoSuchElementException {
-    IntRBTNode node = IntRBTNode.find(this.root, key);
+    IntRBTNode node = IntRBTNode.find(root, key);
     int ret;
     if (node != null) {
       ret = node.element;
-      this.size--;
+      size--;
       IntRBTNode.delete(this, node);
     } else {
       throw new java.util.NoSuchElementException();
@@ -114,10 +114,10 @@ public class IntRedBlackTree {
   }
 
   public final int get(int key) throws java.util.NoSuchElementException {
-    if (this.root == null) {
+    if (root == null) {
       throw new java.util.NoSuchElementException();
     }
-    IntRBTNode node = IntRBTNode.find(this.root, key);
+    IntRBTNode node = IntRBTNode.find(root, key);
     if (node == null) {
       throw new java.util.NoSuchElementException();
     }
@@ -125,13 +125,13 @@ public class IntRedBlackTree {
   }
 
   public final boolean isEmpty() {
-    return (this.root == null);
+    return (root == null);
   }
 
   public final int[] keySet() {
-    int[] set = new int[this.size];
-    if (this.root != null) {
-      this.root.keys(0, set);
+    int[] set = new int[size];
+    if (root != null) {
+      root.keys(0, set);
     }
     return set;
   }
@@ -142,14 +142,14 @@ public class IntRedBlackTree {
   }
 
   public final int getFirst() {
-    return this.getFirstNode().element;
+    return getFirstNode().element;
   }
 
   private final IntRBTNode getFirstNode() {
-    if (this.root == null) {
+    if (root == null) {
       return null;
     }
-    IntRBTNode x = this.root;
+    IntRBTNode x = root;
     while (x.left != null) {
       x = x.left;
     }
@@ -165,19 +165,19 @@ public class IntRedBlackTree {
     IntRBTNode current;
 
     IntRBTIterator(IntRedBlackTree tree) {
-      this.current = tree.getFirstNode();
+      current = tree.getFirstNode();
     }
 
     public boolean hasNext() {
-      return (this.current != null);
+      return (current != null);
     }
 
     public int next() {
-      if (this.current == null) {
+      if (current == null) {
         throw new java.util.NoSuchElementException();
       }
-      int ret = this.current.element;
-      this.current = this.current.successor();
+      int ret = current.element;
+      current = current.successor();
       return ret;
     }
 
@@ -188,10 +188,10 @@ public class IntRedBlackTree {
 
   /** Debugging aid. */
   public void printKeys() {
-    if (this.root != null) {
-      this.root.printKeys(0);
+    if (root != null) {
+      root.printKeys(0);
     }
-    System.out.println("Size: " + this.size);
+    System.out.println("Size: " + size);
   }
 
   /**
@@ -209,10 +209,10 @@ public class IntRedBlackTree {
    * @return The resulting array representation.
    */
   public int[] toArray(int offset) {
-    if (this.root == null) {
+    if (root == null) {
       return Constants.EMPTY_INT_ARRAY;
     }
-    return this.root.toArray(offset);
+    return root.toArray(offset);
   }
 
   public IntRedBlackTree copy() {

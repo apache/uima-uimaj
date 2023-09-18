@@ -453,8 +453,8 @@ public class CpmCasConsumer_ErrorTest {
         while (iter.hasNext()) {
           // if there is an error ... call the cpm to kill and check for a null CAS
           if (iter.next() instanceof java.lang.Error) {
-            this.cpe.kill();
-            this.errorThrown = true;
+            cpe.kill();
+            errorThrown = true;
             assertEquals("The cas is not null, as expected.", null, aCas);
           }
         }
@@ -462,7 +462,7 @@ public class CpmCasConsumer_ErrorTest {
     }
 
     public boolean hasError() {
-      return this.errorThrown;
+      return errorThrown;
     }
   }
 }

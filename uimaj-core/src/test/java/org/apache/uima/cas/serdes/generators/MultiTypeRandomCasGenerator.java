@@ -45,12 +45,12 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
   private final int typeCount;
 
   private MultiTypeRandomCasGenerator(Builder builder) {
-    this.seed = builder.seed;
-    this.rnd = builder.randomizer != null ? builder.randomizer : new Random(seed);
-    this.size = builder.size;
-    this.minimumWidth = builder.minimumWidth;
-    this.writeLog = builder.writeLog;
-    this.typeCount = builder.typeCount;
+    seed = builder.seed;
+    rnd = builder.randomizer != null ? builder.randomizer : new Random(seed);
+    size = builder.size;
+    minimumWidth = builder.minimumWidth;
+    writeLog = builder.writeLog;
+    typeCount = builder.typeCount;
   }
 
   public OptionalLong getSeed() {
@@ -151,7 +151,7 @@ public class MultiTypeRandomCasGenerator implements CasGenerator {
       if (randomizer != null) {
         throw new IllegalStateException("Can either set a random seed or a randomizer");
       }
-      this.seed = aSeed;
+      seed = aSeed;
       return this;
     }
 

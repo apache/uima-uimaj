@@ -54,27 +54,27 @@ public class PearAnalysisEngineWrapperTest {
   @BeforeEach
   public void setUp() throws Exception {
 
-    this.pearAnalysisEngineWrapper = new PearAnalysisEngineWrapper();
+    pearAnalysisEngineWrapper = new PearAnalysisEngineWrapper();
 
-    this.tempInstallDirectory = this.createInstallationDirectory();
+    tempInstallDirectory = createInstallationDirectory();
 
-    this.installedPearPackage = this.installPearPackage();
+    installedPearPackage = installPearPackage();
   }
 
   @AfterEach
   public void tearDown() throws Exception {
-    this.removeInstallationDirectory();
+    removeInstallationDirectory();
   }
 
   @Test
   public void testInitializeWithOverride() throws Exception {
 
     PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
-    pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier.setPearPath(installedPearPackage.getRootDirectory().toString());
     pearSpecifier
             .setPearParameters(new NameValuePair_impl(PARAMETER_NAME, PARAMETER_VALUE_OVERRIDE));
 
-    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
+    boolean initialized = pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
 
     assertThat(initialized).isTrue().as("Pear was initialized");
     assertThat(pearAnalysisEngineWrapper.getConfigParameterValue(PARAMETER_NAME))
@@ -85,10 +85,10 @@ public class PearAnalysisEngineWrapperTest {
   public void testInitializeWithOverrideLegacy() throws Exception {
 
     PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
-    pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier.setPearPath(installedPearPackage.getRootDirectory().toString());
     pearSpecifier.setParameters(new Parameter_impl(PARAMETER_NAME, PARAMETER_VALUE_OVERRIDE));
 
-    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
+    boolean initialized = pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
 
     assertThat(initialized).isTrue().as("Pear was initialized");
     assertThat(pearAnalysisEngineWrapper.getConfigParameterValue(PARAMETER_NAME))
@@ -99,11 +99,11 @@ public class PearAnalysisEngineWrapperTest {
   public void testInitializeWithOverrideModernTakingPrecedenceOverLegacy() throws Exception {
 
     PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
-    pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier.setPearPath(installedPearPackage.getRootDirectory().toString());
     pearSpecifier.setParameters(new Parameter_impl(PARAMETER_NAME, "legacy"));
     pearSpecifier.setPearParameters(new NameValuePair_impl(PARAMETER_NAME, "modern"));
 
-    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
+    boolean initialized = pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
 
     assertThat(initialized).isTrue().as("Pear was initialized");
     assertThat(pearAnalysisEngineWrapper.getConfigParameterValue(PARAMETER_NAME))
@@ -113,13 +113,13 @@ public class PearAnalysisEngineWrapperTest {
   @Test
   public void testInitializeWithoutOverride() throws Exception {
 
-    PearSpecifier pearSpecifier = this.createPearSpecifierWithoutParameters();
+    PearSpecifier pearSpecifier = createPearSpecifierWithoutParameters();
 
-    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
+    boolean initialized = pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
 
     assertThat(initialized).as("Pear was not initialized").isTrue();
 
-    String stringParamValue = (String) this.pearAnalysisEngineWrapper
+    String stringParamValue = (String) pearAnalysisEngineWrapper
             .getConfigParameterValue(PearAnalysisEngineWrapperTest.PARAMETER_NAME);
 
     assertThat(stringParamValue).as("The value of StringParam has changed")
@@ -129,7 +129,7 @@ public class PearAnalysisEngineWrapperTest {
   private PearSpecifier createPearSpecifierWithoutParameters() {
 
     PearSpecifier_impl pearSpecifier_impl = new PearSpecifier_impl();
-    pearSpecifier_impl.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier_impl.setPearPath(installedPearPackage.getRootDirectory().toString());
     return pearSpecifier_impl;
   }
 
@@ -151,12 +151,12 @@ public class PearAnalysisEngineWrapperTest {
     File pearFile = JUnitExtension.getFile("pearTests/analysisEngineWithParameters.pear");
     assertThat(pearFile).as("analysisEngine.pear file not found").isNotNull();
 
-    return PackageInstaller.installPackage(this.tempInstallDirectory, pearFile, false);
+    return PackageInstaller.installPackage(tempInstallDirectory, pearFile, false);
   }
 
   private void removeInstallationDirectory() throws IOException {
-    if (this.tempInstallDirectory != null) {
-      FileUtil.deleteDirectory(this.tempInstallDirectory);
+    if (tempInstallDirectory != null) {
+      FileUtil.deleteDirectory(tempInstallDirectory);
     }
   }
 }

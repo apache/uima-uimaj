@@ -110,12 +110,12 @@ abstract class CommonAuxHeap {
         initMemory(newSize);
       }
     }
-    this.heapPos = FIRST_CELL_REF;
+    heapPos = FIRST_CELL_REF;
   }
 
   int reserve(int numCells) {
-    int cellRef = this.heapPos;
-    this.heapPos += numCells;
+    int cellRef = heapPos;
+    heapPos += numCells;
     growHeapIfNeeded();
     return cellRef;
   }
@@ -193,7 +193,7 @@ abstract class CommonAuxHeap {
   }
 
   int getSize() {
-    return this.heapPos;
+    return heapPos;
   }
 
   abstract int getCapacity();

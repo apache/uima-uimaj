@@ -49,25 +49,25 @@ public class StringArrayTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-    this.ts = this.cas.getTypeSystem();
+    cas = CASInitializer.initCas(new CASTestSetup(), null);
+    ts = cas.getTypeSystem();
   }
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
   }
 
   @Test
   public void testSet() {
-    StringArrayFS array = this.cas.createStringArrayFS(0);
+    StringArrayFS array = cas.createStringArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class) //
             .isThrownBy(() -> array.get(0));
 
-    StringArrayFS array2 = this.cas.createStringArrayFS(3);
+    StringArrayFS array2 = cas.createStringArrayFS(3);
     array2.set(0, "1");
     array2.set(1, "2");
     array2.set(2, "3");
@@ -99,7 +99,7 @@ public class StringArrayTest {
 
     assertThatExceptionOfType(CASRuntimeException.class) //
             .as("We can't create arrays smaller than 0")
-            .isThrownBy(() -> this.cas.createStringArrayFS(-1)) //
+            .isThrownBy(() -> cas.createStringArrayFS(-1)) //
             .extracting(CASRuntimeException::getMessageKey) //
             .isEqualTo(CASRuntimeException.ILLEGAL_ARRAY_SIZE);
   }
@@ -107,7 +107,7 @@ public class StringArrayTest {
   @Test
   public void testToArray() {
     // From CAS array to Java array.
-    StringArrayFS array = this.cas.createStringArrayFS(3);
+    StringArrayFS array = cas.createStringArrayFS(3);
     String[] fsArray = array.toArray();
     for (int i = 0; i < 3; i++) {
       assertTrue(fsArray[i] == null);
@@ -122,7 +122,7 @@ public class StringArrayTest {
     assertTrue(fsArray[2].equals("3"));
 
     // From Java array to CAS array.
-    array = this.cas.createStringArrayFS(3);
+    array = cas.createStringArrayFS(3);
     assertTrue(array.get(0) == null);
     assertTrue(array.get(1) == null);
     assertTrue(array.get(2) == null);
@@ -139,12 +139,12 @@ public class StringArrayTest {
   @Test
   public void testStringArrayValue() {
     String lemmaListName = TOKEN_TYPE + FEATURE_SEPARATOR + LEMMA_LIST_FEAT;
-    final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
+    final Feature lemmaList = ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
     String[] javaArray = { "1", "2", "3" };
-    StringArrayFS casArray = this.cas.createStringArrayFS(3);
+    StringArrayFS casArray = cas.createStringArrayFS(3);
     casArray.copyFromArray(javaArray, 0, 0, 3);
-    FeatureStructure token = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
+    FeatureStructure token = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
     assertTrue(token.getFeatureValue(lemmaList) == null);
     token.setFeatureValue(lemmaList, casArray);
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
@@ -156,17 +156,17 @@ public class StringArrayTest {
   @Test
   public void testStringArrayNullValue() throws Exception {
     String lemmaListName = TOKEN_TYPE + FEATURE_SEPARATOR + LEMMA_LIST_FEAT;
-    final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
+    final Feature lemmaList = ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
-    StringArrayFS casArray = this.cas.createStringArrayFS(3);
+    StringArrayFS casArray = cas.createStringArrayFS(3);
     ((CASImpl) (casArray.getCAS())).setId2FSsMaybeUnconditionally(casArray);
     casArray.set(0, "1");
     casArray.set(1, null);
     casArray.set(2, "3");
-    FeatureStructure token = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
+    FeatureStructure token = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
     assertTrue(token.getFeatureValue(lemmaList) == null);
     token.setFeatureValue(lemmaList, casArray);
-    this.cas.addFsToIndexes(token);
+    cas.addFsToIndexes(token);
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
     LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();

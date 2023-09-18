@@ -472,7 +472,7 @@ public class SequencedQueue extends BoundedWorkQueue {
         if (!timedOutDocs.containsKey(meta.getDocId())) {
           addDocToTimedOutDocs(10000, meta.getDocId());
         }
-        if (meta.getDocId().equalsIgnoreCase(nextChunkMetadata.getDocId()) && chunkState == true) {
+        if (meta.getDocId().equalsIgnoreCase(nextChunkMetadata.getDocId()) && chunkState) {
           chunkState = false;
           nextChunkMetadata = new ChunkMetadata("", 0, false);
         }

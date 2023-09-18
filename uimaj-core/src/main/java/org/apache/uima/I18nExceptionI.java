@@ -81,7 +81,7 @@ public interface I18nExceptionI {
    * @return true if this exception or any of its root causes has a particular UIMA message key.
    */
   default boolean hasMessageKey(String messageKey) {
-    if (messageKey.equals(this.getMessageKey())) {
+    if (messageKey.equals(getMessageKey())) {
       return true;
     }
     Throwable cause = getCause();

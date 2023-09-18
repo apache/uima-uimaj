@@ -26,12 +26,12 @@ public class RsFeat {
   RsLangs languages = null;
 
   RsFeat(String shortName, String[] languages) {
-    this.shortFeatName = shortName;
+    shortFeatName = shortName;
     this.languages = RsLangs.createOrNull(languages);
   }
 
   RsFeat(String shortName, RsLangs languages) {
-    this.shortFeatName = shortName;
+    shortFeatName = shortName;
     if (null != languages) {
       languages.setShared();
     }

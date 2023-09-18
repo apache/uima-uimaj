@@ -114,7 +114,7 @@ public class ConcurrentBinarySerializationTest {
     // All futures must complete without returning an exception
     assertTrue(results.stream().allMatch(r -> {
       try {
-        return r.get() == true;
+        return r.get();
       } catch (Exception e) {
         return false;
       }

@@ -186,7 +186,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
 
     // cast object
     TypeOrFeature_impl tof = (TypeOrFeature_impl) obj;
-    return this.getName().compareTo(tof.getName());
+    return getName().compareTo(tof.getName());
   }
 
   /**
@@ -213,10 +213,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (getClass() != obj.getClass())) {
       return false;
     }
     TypeOrFeature_impl other = (TypeOrFeature_impl) obj;

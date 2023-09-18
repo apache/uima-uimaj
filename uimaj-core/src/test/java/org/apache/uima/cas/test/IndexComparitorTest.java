@@ -195,8 +195,8 @@ public class IndexComparitorTest {
 
     @Override
     public void initIndexes(FSIndexRepositoryMgr parmIrm, TypeSystem parmTs) {
-      IndexComparitorTest.this.ts = parmTs;
-      IndexComparitorTest.this.irm = parmIrm;
+      ts = parmTs;
+      irm = parmIrm;
       parmIrm.createIndex(newComparator(type1), "SortedType1", FSIndex.SORTED_INDEX);
       parmIrm.createIndex(newComparator(type1), "SetType1", FSIndex.SET_INDEX);
       parmIrm.createIndex(newComparator(type1), "BagType1", FSIndex.BAG_INDEX);
@@ -252,7 +252,7 @@ public class IndexComparitorTest {
   @BeforeEach
   public void setUp() throws Exception {
     try {
-      this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
+      cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
       assertNotNull(cas);
       ir = cas.getIndexRepository();
       sortedType1 = ir.getIndex("SortedType1");
@@ -332,8 +332,8 @@ public class IndexComparitorTest {
   @AfterEach
   public void tearDown() {
     fss = null;
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
     topType = null;
     integerType = null;
     type1 = null;

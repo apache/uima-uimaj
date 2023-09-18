@@ -49,7 +49,7 @@ package org.apache.uima.util;
 //@formatter:on
 public enum CasLoadMode {
 
- // @formatter:off
+  // @formatter:off
   /**
    * Default operation:
    *
@@ -87,7 +87,7 @@ public enum CasLoadMode {
    *   load will not indicate an error if the incoming data has types and/or features not in the 
    *   receiving CAS, but will instead silently ignore these.
    */
-//@formatter:on
+  //@formatter:on
   LENIENT,
 
   //@formatter:off
@@ -104,6 +104,6 @@ public enum CasLoadMode {
    * 
    * Error if no TSI information available
    */
-//@formatter:on
+  //@formatter:on
   REINIT;
 }

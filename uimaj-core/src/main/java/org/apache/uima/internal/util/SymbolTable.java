@@ -53,8 +53,8 @@ public class SymbolTable {
    *          larger code points.
    */
   public SymbolTable(int start) {
-    this.symbol2intMap = new HashMap<>();
-    this.int2symbolMap = new ArrayList<>();
+    symbol2intMap = new HashMap<>();
+    int2symbolMap = new ArrayList<>();
     this.start = start;
   }
 
@@ -74,12 +74,12 @@ public class SymbolTable {
     // Start numbering at 0.
     this(0);
     for (int i = 0; i < names.length; i++) {
-      this.set(names[i]);
+      set(names[i]);
     }
   }
 
   public boolean contains(String symbol) {
-    return (this.getStart() <= this.get(symbol));
+    return (getStart() <= get(symbol));
   }
 
   /**
@@ -88,7 +88,7 @@ public class SymbolTable {
    * @return The start of the table.
    */
   public int getStart() {
-    return this.start;
+    return start;
   }
 
   /**
@@ -98,10 +98,10 @@ public class SymbolTable {
    */
   public SymbolTable copy() {
     // not efficient, but no internal callers Feb 2914 scan
-    SymbolTable copy = new SymbolTable(this.start);
-    int max = this.int2symbolMap.size();
+    SymbolTable copy = new SymbolTable(start);
+    int max = int2symbolMap.size();
     for (int i = 0; i < max; i++) {
-      copy.set(this.int2symbolMap.get(i));
+      copy.set(int2symbolMap.get(i));
     }
     return copy;
   }
@@ -109,13 +109,13 @@ public class SymbolTable {
   // Utility function to convert from relative addressing (external)
   // to absolute addressing (internal).
   private final int rel2abs(int i) {
-    return (i - this.start);
+    return (i - start);
   }
 
   // Utility function to convert from absolute addressing (internal)
   // to relative addressing (external).
   private final int abs2rel(int i) {
-    return (i + this.start);
+    return (i + start);
   }
 
   /**
@@ -127,17 +127,17 @@ public class SymbolTable {
    * @return the symbol's number.
    */
   public int set(String symbol) {
-    if (this.symbol2intMap.containsKey(symbol)) {
-      return this.symbol2intMap.get(symbol);
+    if (symbol2intMap.containsKey(symbol)) {
+      return symbol2intMap.get(symbol);
     }
     int rel;
     int abs;
     synchronized (this) { // synchronize write access to internal data
       // structures
-      abs = this.symbol2intMap.size();
+      abs = symbol2intMap.size();
       rel = abs2rel(abs);
       // System.out.println("Adding symbol " + symbol + " at pos: " + i);
-      this.symbol2intMap.put(symbol, rel);
+      symbol2intMap.put(symbol, rel);
       int2symbolMap.add(symbol);
     }
     return rel;
@@ -165,7 +165,7 @@ public class SymbolTable {
    */
   public String getSymbol(int i) {
     int abs = rel2abs(i);
-    if (abs < 0 || abs >= this.int2symbolMap.size()) {
+    if (abs < 0 || abs >= int2symbolMap.size()) {
       // System.out.println("Out of bounds error in SymbolTable object");
       return null;
     }
@@ -178,7 +178,7 @@ public class SymbolTable {
    * @return The number of symbols in the table.
    */
   public int size() {
-    return this.int2symbolMap.size();
+    return int2symbolMap.size();
   }
 
   /**

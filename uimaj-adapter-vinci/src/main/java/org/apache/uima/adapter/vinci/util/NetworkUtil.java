@@ -24,7 +24,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -44,19 +43,19 @@ public class NetworkUtil {
    */
   public static InetAddress getLocalHostAddress() throws UnknownHostException {
     // try the straightforward call first
-    InetAddress localhost = InetAddress.getLocalHost();
+    var localhost = InetAddress.getLocalHost();
     if (!localhost.isLoopbackAddress()) {
       return localhost;
     }
 
     // the above often fails on Linux. Try enumerating all NetworkInterfaces.
     try {
-      Enumeration networkInterfaces = NetworkInterface.getNetworkInterfaces();
+      var networkInterfaces = NetworkInterface.getNetworkInterfaces();
       while (networkInterfaces.hasMoreElements()) {
-        NetworkInterface networkInterface = (NetworkInterface) networkInterfaces.nextElement();
-        Enumeration addresses = networkInterface.getInetAddresses();
+        var networkInterface = (NetworkInterface) networkInterfaces.nextElement();
+        var addresses = networkInterface.getInetAddresses();
         while (addresses.hasMoreElements()) {
-          InetAddress address = (InetAddress) addresses.nextElement();
+          var address = (InetAddress) addresses.nextElement();
           if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
             return address;
           }

@@ -276,19 +276,19 @@ public class ProcessingUnit implements Runnable {
    * Null out fields of this object. Call this only when this object is no longer needed.
    */
   public void cleanup() {
-    this.casPool = null;
-    this.cpm = null;
-    this.workQueue = null;
-    this.outputQueue = null;
-    this.mConverter = null;
-    this.processingUnitProcessTrace = null;
-    this.processContainers.clear();
-    this.processContainers = null;
-    this.casList = null;
-    this.conversionCas = null;
-    this.artifact = null;
-    this.statusCbL = null;
-    this.conversionCasArray = null;
+    casPool = null;
+    cpm = null;
+    workQueue = null;
+    outputQueue = null;
+    mConverter = null;
+    processingUnitProcessTrace = null;
+    processContainers.clear();
+    processContainers = null;
+    casList = null;
+    conversionCas = null;
+    artifact = null;
+    statusCbL = null;
+    conversionCasArray = null;
   }
 
   /**
@@ -647,12 +647,12 @@ public class ProcessingUnit implements Runnable {
         }
         threadState = 2003; // Killing
 
-        this.cpm.killIt();
+        cpm.killIt();
       } catch (Exception e) {
         maybeLogSevereException(e);
         threadState = 2003; // Killing
 
-        this.cpm.killIt();
+        cpm.killIt();
       } finally {
         if (releaseCAS) {
           clearCasCache();
@@ -854,7 +854,7 @@ public class ProcessingUnit implements Runnable {
           if (processor instanceof CasDataProcessor) {
             maybeLogFinest("UIMA_CPM_cas_data_processor__FINEST", container, processor);
             pTrTemp.startEvent(container.getName(), "Process", "");
-            if (isCasObject == true) {
+            if (isCasObject) {
               CasData[] casDataObjects = new CasData[aCasObjectList.length];
               for (int casIndex = 0; casIndex < aCasObjectList.length; casIndex++) {
                 casDataObjects[casIndex] = mConverter
@@ -920,7 +920,7 @@ public class ProcessingUnit implements Runnable {
                 }
                 break;
               }
-              if (isCasObject == false) {
+              if (!isCasObject) {
                 // The following may be true if the CollectionReader is CasData based and this is
                 // the first CasObject based annotator in the chain.
                 if (casCache == null || casCache[casIndex] == null) {
@@ -1306,8 +1306,8 @@ public class ProcessingUnit implements Runnable {
         maybeLogFinest("UIMA_CPM_done_notify_listeners__FINEST");
       }
       // enqueue CASes. If the CPM is in shutdown mode due to hard kill dont allow enqueue of CASes
-      if (outputQueue != null && (cpm.isRunning() == true
-              || (cpm.isRunning() == false && cpm.isHardKilled() == false))) {
+      if (outputQueue != null && (cpm.isRunning()
+              || (!cpm.isRunning() && !cpm.isHardKilled()))) {
         maybeLogFinestWorkQueue("UIMA_CPM_add_cas_to_queue__FINEST", outputQueue);
         WorkUnit workUnit = new WorkUnit(aCasObjectList);
         if (casCache != null && casCache[0] != null) {
@@ -1690,7 +1690,7 @@ public class ProcessingUnit implements Runnable {
       // Based on type of listener do appropriate conversions of Cas if necessary
       if (statCL instanceof CasDataStatusCallbackListener) {
         // The Cas is of type CAS, need to convert it to CasData
-        if (isCasObject == true) {
+        if (isCasObject) {
           // Convert CAS to CasData object
           casObjectCopy = mConverter.casContainerToCasData((CAS) casObjectCopy);
         }
@@ -1700,7 +1700,7 @@ public class ProcessingUnit implements Runnable {
       } else if (statCL instanceof StatusCallbackListener) {
         boolean casFromPool = false;
         // The cas is of type CasData, need to convert it to CAS
-        if (isCasObject == false) {
+        if (!isCasObject) {
           conversionCas = null;
           if (casCache != null && casCache[0] != null) {
             conversionCas = casCache[0];
@@ -1805,7 +1805,7 @@ public class ProcessingUnit implements Runnable {
         } finally {
           pTrTemp.endEvent(container.getName(), "End of Batch", "");
           if (processingUnitProcessTrace != null) {
-            this.processingUnitProcessTrace.aggregate(pTrTemp);
+            processingUnitProcessTrace.aggregate(pTrTemp);
           }
         }
       }
@@ -2077,7 +2077,7 @@ public class ProcessingUnit implements Runnable {
             return false; // Dont pass the CAS to the CasConsumer. CAS has been dropped
           }
         } finally {
-          if (retry == false) {
+          if (!retry) {
             maybeLogFinest("UIMA_CPM_end_of_batch__FINEST", container, processor);
             if (isProcessorReady(container.getStatus())) {
               t1 = System.currentTimeMillis();
@@ -2328,7 +2328,7 @@ public class ProcessingUnit implements Runnable {
         }
         break;
       }
-      if (isCasObject == false) {
+      if (!isCasObject) {
         convertCasDataToCasObject(casIndex, container.getName(), aCasObjectList);
       } else {
         casList[casIndex] = (CAS) aCasObjectList[casIndex];
@@ -2417,7 +2417,7 @@ public class ProcessingUnit implements Runnable {
     maybeLogFinest("UIMA_CPM_cas_data_processor__FINEST", container, processor);
     pTrTemp.startEvent(container.getName(), "Process", "");
     // Check if the CasObject to CasData conversion is necessary
-    if (isCasObject == true) {
+    if (isCasObject) {
       CasData[] casDataObjects = new CasData[aCasObjectList.length];
       for (int casIndex = 0; casIndex < aCasObjectList.length; casIndex++) {
         casDataObjects[casIndex] = mConverter.casContainerToCasData((CAS) aCasObjectList[casIndex]);

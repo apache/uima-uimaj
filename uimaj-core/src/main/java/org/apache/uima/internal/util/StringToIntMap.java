@@ -39,7 +39,7 @@ public class StringToIntMap {
    * @see java.lang.Object#Object()
    */
   public StringToIntMap() {
-    this.map = new HashMap<>();
+    map = new HashMap<>();
   }
 
   /**
@@ -51,7 +51,7 @@ public class StringToIntMap {
    * @return <code>true</code> if a value is defined for this string; <code>false</code> else.
    */
   public boolean containsKey(String key) {
-    return this.map.containsKey(key);
+    return map.containsKey(key);
   }
 
   /**
@@ -64,7 +64,7 @@ public class StringToIntMap {
    *         <code>key</code> is actually defined in the map.
    */
   public int get(String key) {
-    Integer i = this.map.get(key);
+    Integer i = map.get(key);
     if (i == null) {
       return DEFAULT_VALUE;
     }
@@ -81,7 +81,7 @@ public class StringToIntMap {
    * @return The previous value of <code>key</code>, if it was set. <code>0</code> else.
    */
   public int put(String key, int value) {
-    Integer i = this.map.get(key);
+    Integer i = map.get(key);
     int rc;
     if (i == null) {
       rc = 0;
@@ -89,7 +89,7 @@ public class StringToIntMap {
       rc = i;
     }
     i = value;
-    this.map.put(key, i);
+    map.put(key, i);
     return rc;
   }
 

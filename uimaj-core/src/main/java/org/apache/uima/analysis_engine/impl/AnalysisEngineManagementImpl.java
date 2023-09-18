@@ -97,11 +97,11 @@ public class AnalysisEngineManagementImpl
 
   @Override
   public String getState() {
-    return this.status.toString();
+    return status.toString();
   }
 
   public void setState(State state) {
-    this.status = state;
+    status = state;
   }
 
   public void reportAnalysisTime(long time) {

@@ -34,7 +34,7 @@ public class IntSet implements PositiveIntSet {
 
   /** Creates a new instance of this set. */
   public IntSet() {
-    this.iVec = new IntVector();
+    iVec = new IntVector();
   }
 
   /**
@@ -43,7 +43,7 @@ public class IntSet implements PositiveIntSet {
    *          allocate enough space to hold at least this before expanding
    */
   public IntSet(int capacity) {
-    this.iVec = new IntVector(capacity);
+    iVec = new IntVector(capacity);
     if (IS_TRACE_MODE_SWITCH) {
       System.out.println("TRACE_MODE new IntSet with capacity: " + capacity);
     }
@@ -59,8 +59,8 @@ public class IntSet implements PositiveIntSet {
    */
   @Override
   public boolean add(int element) {
-    if (!this.iVec.contains(element)) {
-      this.iVec.add(element);
+    if (!iVec.contains(element)) {
+      iVec.add(element);
       return true;
     }
     return false;
@@ -76,18 +76,18 @@ public class IntSet implements PositiveIntSet {
    */
   @Override
   public boolean contains(int element) {
-    return this.iVec.contains(element);
+    return iVec.contains(element);
   }
 
   @Override
   public int find(int element) {
-    return this.iVec.indexOf(element);
+    return iVec.indexOf(element);
   }
 
   /** @return the size of this set. */
   @Override
   public int size() {
-    return this.iVec.size();
+    return iVec.size();
   }
 
   /** @return the <code>n</code>-th element in this set. */
@@ -100,7 +100,7 @@ public class IntSet implements PositiveIntSet {
    */
   @Override
   public int get(int n) {
-    return this.iVec.get(n);
+    return iVec.get(n);
   }
 
   /**
@@ -110,7 +110,7 @@ public class IntSet implements PositiveIntSet {
    *          -
    */
   public void removeElementAt(int n) {
-    this.iVec.remove(n);
+    iVec.remove(n);
   }
 
   /**
@@ -139,7 +139,7 @@ public class IntSet implements PositiveIntSet {
       // maybe a speedup - is order size(), vs order size*size
       int sum1 = 0;
       int sum2 = 0;
-      final IntVector v1 = this.iVec;
+      final IntVector v1 = iVec;
       final IntVector v2 = s.iVec;
       for (int i = 0; i < size; i++) {
         sum1 += v1.get(i);
@@ -159,18 +159,18 @@ public class IntSet implements PositiveIntSet {
 
   @Override
   public int hashCode() {
-    if (this.iVec == null) {
+    if (iVec == null) {
       return 0;
     }
     int sum = 0;
-    for (int i = 0; i < this.size(); i++) {
-      sum += this.iVec.get(i);
+    for (int i = 0; i < size(); i++) {
+      sum += iVec.get(i);
     }
     return sum;
   }
 
   public int indexOf(int element) {
-    return this.iVec.indexOf(element);
+    return iVec.indexOf(element);
   }
 
   @Override

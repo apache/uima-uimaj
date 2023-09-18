@@ -294,10 +294,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // * the typeArray needs to be big enough to hold all the types
     // * that will be loaded.
 
-    this.casImpl = cas;
+    casImpl = cas;
 
-    this.ll_IndexRepository = casImpl.ll_getIndexRepository();
-    this.jfsIndexRepository = new JFSIndexRepositoryImpl(this, cas.getIndexRepository());
+    ll_IndexRepository = casImpl.ll_getIndexRepository();
+    jfsIndexRepository = new JFSIndexRepositoryImpl(this, cas.getIndexRepository());
   }
 
   public TOP createFS(Type type) {
@@ -907,7 +907,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   @Override
   @Deprecated
   public StringArray getStringArray0L() {
-    return this.getCas().emptyStringArray();
+    return getCas().emptyStringArray();
   }
 
   /*
@@ -920,7 +920,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   @Override
   @Deprecated
   public IntegerArray getIntegerArray0L() {
-    return this.getCas().emptyIntegerArray();
+    return getCas().emptyIntegerArray();
   }
 
   /*
@@ -933,7 +933,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   @Override
   @Deprecated
   public FloatArray getFloatArray0L() {
-    return this.getCas().emptyFloatArray();
+    return getCas().emptyFloatArray();
   }
 
   /*
@@ -946,7 +946,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   @Override
   @Deprecated
   public FSArray getFSArray0L() {
-    return this.getCas().emptyFSArray();
+    return getCas().emptyFSArray();
   }
 
   /*

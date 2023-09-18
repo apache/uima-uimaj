@@ -103,10 +103,10 @@ public class CasConverter {
 
     // Generate XCAS events and pipe them to XCASDeserializer
     CasDataToXCas generator = new CasDataToXCas();
-    generator.setDocumentTextTypeName(this.getDocumentTextTypeName());
-    generator.setDocumentTextFeatureName(this.getDocumentTextFeatureName());
+    generator.setDocumentTextTypeName(getDocumentTextTypeName());
+    generator.setDocumentTextFeatureName(getDocumentTextFeatureName());
     XCASDeserializer xcasDeser = new XCASDeserializer(aContainer.getTypeSystem());
-    xcasDeser.setDocumentTypeName(this.getDocumentTextTypeName());
+    xcasDeser.setDocumentTypeName(getDocumentTextTypeName());
     // xcasDeser.setDocumentTextFeautre(this.getDocumentTextFeatureName()); NOT NEEDED
 
     // to be lenient, install OutOfTypeSystemData object to collect data that doesn't
@@ -136,8 +136,8 @@ public class CasConverter {
     CasData result = new CasDataImpl();
     XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(result);
     XCASSerializer xcasSer = new XCASSerializer(aContainer.getTypeSystem());
-    xcasSer.setDocumentTypeName(this.getDocumentTextTypeName());
-    xcasSer.setDocumentTextFeature(this.getDocumentTextFeatureName());
+    xcasSer.setDocumentTypeName(getDocumentTextTypeName());
+    xcasSer.setDocumentTextFeature(getDocumentTextFeatureName());
     try {
       xcasSer.serialize(aContainer, handler);
     } catch (IOException e) {

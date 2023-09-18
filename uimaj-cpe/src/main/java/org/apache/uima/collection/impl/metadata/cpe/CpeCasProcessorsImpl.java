@@ -468,7 +468,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    if (isDropCasOnException() == true) {
+    if (isDropCasOnException()) {
       attrs.addAttribute("", "dropCasOnException", "dropCasOnException", "CDATA",
               String.valueOf(isDropCasOnException()));
     }

@@ -756,7 +756,7 @@ public class CpmCollectionReader_ErrorTest {
     public void aborted() {
       super.aborted();
       // System.out.println("abort was called.");
-      this.cpe.stop();
+      cpe.stop();
     }
 
     /**
@@ -775,8 +775,8 @@ public class CpmCollectionReader_ErrorTest {
           // if there is an error ... call the cpm to kill and check for a
           // null CAS
           if (iter.next() instanceof java.lang.Error) {
-            this.cpe.kill();
-            this.errorThrown = true;
+            cpe.kill();
+            errorThrown = true;
             assertEquals("The cas is not null, as expected.", null, aCas);
           }
         }
@@ -784,7 +784,7 @@ public class CpmCollectionReader_ErrorTest {
     }
 
     public boolean hasError() {
-      return this.errorThrown;
+      return errorThrown;
     }
   }
 }

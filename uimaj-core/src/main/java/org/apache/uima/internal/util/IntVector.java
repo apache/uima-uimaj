@@ -69,10 +69,10 @@ public class IntVector implements Serializable {
     if (array == null) {
       array = Constants.EMPTY_INT_ARRAY;
     }
-    this.pos = array.length;
+    pos = array.length;
     this.array = array;
-    this.growth_factor = default_growth_factor;
-    this.multiplication_limit = default_multiplication_limit;
+    growth_factor = default_growth_factor;
+    multiplication_limit = default_multiplication_limit;
   }
 
   /**
@@ -115,12 +115,12 @@ public class IntVector implements Serializable {
     if (capacity <= 0) {
       capacity = default_size;
     }
-    this.array = new int[capacity];
+    array = new int[capacity];
   }
 
   public void setSize(int size) {
     if (size > 0) {
-      this.ensure_size(size);
+      ensure_size(size);
     }
   }
 
@@ -150,9 +150,9 @@ public class IntVector implements Serializable {
    */
   public void add(int[] elements, int startpos, int endpos) {
     final int len = endpos - startpos;
-    final int posNow = this.pos;
-    ensure_size(this.pos + len); // changes pos
-    System.arraycopy(elements, startpos, this.array, posNow, len);
+    final int posNow = pos;
+    ensure_size(pos + len); // changes pos
+    System.arraycopy(elements, startpos, array, posNow, len);
     // this.pos += len; done by ensure_size
   }
 
@@ -164,17 +164,17 @@ public class IntVector implements Serializable {
    *          -
    */
   public void add(int element) {
-    final int i = this.pos;
-    ++this.pos;
-    ensure_size(this.pos);
-    this.array[i] = element;
+    final int i = pos;
+    ++pos;
+    ensure_size(pos);
+    array[i] = element;
   }
 
   public void multiAdd(int element, int count) {
-    final int i = this.pos;
-    this.pos += count;
-    ensure_size(this.pos);
-    Arrays.fill(this.array, i, this.pos, element);
+    final int i = pos;
+    pos += count;
+    ensure_size(pos);
+    Arrays.fill(array, i, pos, element);
   }
 
   /**
@@ -188,32 +188,32 @@ public class IntVector implements Serializable {
    *          -
    */
   public void add(int index, int element) {
-    if (index >= this.pos) {
+    if (index >= pos) {
       ensure_size(index + 1);
     } else {
-      if (this.array.length <= this.pos) {
-        ensure_size(this.pos + 1);
+      if (array.length <= pos) {
+        ensure_size(pos + 1);
       } else {
-        ++this.pos;
+        ++pos;
       }
-      System.arraycopy(this.array, index, this.array, index + 1, this.pos - (index + 1));
+      System.arraycopy(array, index, array, index + 1, pos - (index + 1));
     }
-    this.array[index] = element;
+    array[index] = element;
   }
 
   public void multiAdd(int index, int element, int count) {
     final int endPos = index + count;
-    if (index >= this.pos) {
+    if (index >= pos) {
       ensure_size(endPos);
     } else {
-      if (this.array.length < this.pos + count) { // "<" because cocunt
-        ensure_size(this.pos + count);
+      if (array.length < pos + count) { // "<" because cocunt
+        ensure_size(pos + count);
       } else {
-        this.pos += count;
+        pos += count;
       }
-      System.arraycopy(this.array, index, this.array, endPos, this.pos - endPos);
+      System.arraycopy(array, index, array, endPos, pos - endPos);
     }
-    Arrays.fill(this.array, index, endPos, element);
+    Arrays.fill(array, index, endPos, element);
   }
 
   /**
@@ -225,10 +225,10 @@ public class IntVector implements Serializable {
    *          -
    */
   public void set(int index, int element) {
-    if (index >= this.pos) {
+    if (index >= pos) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    this.array[index] = element;
+    array[index] = element;
   }
 
   /**
@@ -242,7 +242,7 @@ public class IntVector implements Serializable {
    */
   public void put(int index, int element) {
     ensure_size(index + 1);
-    this.array[index] = element;
+    array[index] = element;
   }
 
   /**
@@ -256,10 +256,10 @@ public class IntVector implements Serializable {
    */
   public int get(int index) {
     // Will throw an ArrayIndexOutOfBoundsException if out of bounds.
-    if (index >= this.pos) {
+    if (index >= pos) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    return this.array[index];
+    return array[index];
   }
 
   /**
@@ -272,16 +272,16 @@ public class IntVector implements Serializable {
    *              If <code>index</code> is not a valid index.
    */
   public int remove(int index) {
-    if (index >= this.pos) {
+    if (index >= pos) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    --this.pos;
-    int retval = this.array[index];
+    --pos;
+    int retval = array[index];
     // special case - remove from end
     if (index == pos) {
       return retval;
     }
-    System.arraycopy(this.array, index + 1, this.array, index, this.pos - index);
+    System.arraycopy(array, index + 1, array, index, pos - index);
     // for (int i = index; i < this.pos; i++) {
     // this.array[i] = this.array[i + 1];
     // }
@@ -292,7 +292,7 @@ public class IntVector implements Serializable {
    * Remove all elements and set size to 0. Will not change current capacity.
    */
   public void removeAllElements() {
-    this.pos = 0;
+    pos = 0;
   }
 
   public void removeAllElementsAdjustSizeDown() {
@@ -319,10 +319,7 @@ public class IntVector implements Serializable {
     if (this == o) {
       return true;
     }
-    if (o == null) {
-      return false;
-    }
-    if (!getClass().equals(o.getClass())) {
+    if ((o == null) || !getClass().equals(o.getClass())) {
       return false;
     }
     IntVector v = (IntVector) o;
@@ -330,7 +327,7 @@ public class IntVector implements Serializable {
       return false;
     }
     for (int i = 0; i < size(); i++) {
-      if (this.array[i] != v.get(i)) {
+      if (array[i] != v.get(i)) {
         return false;
       }
     }
@@ -342,7 +339,7 @@ public class IntVector implements Serializable {
    * @return The number of elements in the vector.
    */
   public int size() {
-    return this.pos;
+    return pos;
   }
 
   /**
@@ -384,7 +381,7 @@ public class IntVector implements Serializable {
    *          The fill value.
    */
   public void fill(int value) {
-    java.util.Arrays.fill(this.array, value);
+    java.util.Arrays.fill(array, value);
   }
 
   /**
@@ -393,7 +390,7 @@ public class IntVector implements Serializable {
    */
   public int[] toArray() {
     trimToSize();
-    return this.array;
+    return array;
   }
 
   /**
@@ -438,9 +435,9 @@ public class IntVector implements Serializable {
    * @return a copy of the underlying array.
    */
   public int[] toArrayCopy() {
-    final int max = this.size();
+    final int max = size();
     int[] copy = new int[max];
-    System.arraycopy(this.array, 0, copy, 0, max);
+    System.arraycopy(array, 0, copy, 0, max);
     return copy;
   }
 
@@ -450,7 +447,7 @@ public class IntVector implements Serializable {
    * @return -
    */
   public int[] getArray() {
-    return this.array;
+    return array;
   }
 
   /**
@@ -461,9 +458,9 @@ public class IntVector implements Serializable {
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOf(int element) {
-    final int size = this.pos;
+    final int size = pos;
     for (int i = 0; i < size; i++) {
-      if (element == this.array[i]) {
+      if (element == array[i]) {
         return i;
       }
     }
@@ -471,9 +468,9 @@ public class IntVector implements Serializable {
   }
 
   public int lastIndexOf(int element) {
-    final int size = this.pos;
+    final int size = pos;
     for (int i = size - 1; i >= 0; i--) {
-      if (element == this.array[i]) {
+      if (element == array[i]) {
         return i;
       }
     }
@@ -496,19 +493,19 @@ public class IntVector implements Serializable {
    */
   public int indexOfOptimizeAscending(int element) {
     // return indexOf(element);
-    final int midValue = this.array[this.pos >>> 1];
+    final int midValue = array[pos >>> 1];
     if (element > midValue) {
-      for (int i = this.pos - 1; i >= 0; i--) {
-        if (element == this.array[i]) {
+      for (int i = pos - 1; i >= 0; i--) {
+        if (element == array[i]) {
           return i;
         }
       }
       return -1;
     }
 
-    final int size = this.pos;
+    final int size = pos;
     for (int i = 0; i < size; i++) {
-      if (element == this.array[i]) {
+      if (element == array[i]) {
         return i;
       }
     }
@@ -520,23 +517,23 @@ public class IntVector implements Serializable {
    * this if you know that your vector will not grow anymore.
    */
   public void trimToSize() {
-    if (this.pos == this.array.length) {
+    if (pos == array.length) {
       return;
     }
-    int[] new_array = new int[this.pos];
-    System.arraycopy(this.array, 0, new_array, 0, this.pos);
-    this.array = new_array;
+    int[] new_array = new int[pos];
+    System.arraycopy(array, 0, new_array, 0, pos);
+    array = new_array;
     return;
   }
 
   public IntVector copy() {
-    IntVector copy = new IntVector(this.array.length, this.growth_factor,
-            this.multiplication_limit);
-    copy.pos = this.pos;
+    IntVector copy = new IntVector(array.length, growth_factor,
+            multiplication_limit);
+    copy.pos = pos;
     // for (int i = 0; i < this.pos; i++) {
     // copy.array[i] = this.array[i];
     // }
-    System.arraycopy(this.array, 0, copy.array, 0, this.pos);
+    System.arraycopy(array, 0, copy.array, 0, pos);
     return copy;
   }
 
@@ -545,48 +542,48 @@ public class IntVector implements Serializable {
    */
   public int[] toIntArray() {
     final int[] r = new int[size()];
-    System.arraycopy(this.array, 0, r, 0, this.pos);
+    System.arraycopy(array, 0, r, 0, pos);
     return r;
   }
 
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
-    System.arraycopy(src, srcPos, this.array, destPos, length);
+    System.arraycopy(src, srcPos, array, destPos, length);
   }
 
   public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
-    System.arraycopy(this.array, srcPos, dest, destPos, length);
+    System.arraycopy(array, srcPos, dest, destPos, length);
   }
 
   @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('[');
-    for (int i = 0; i < this.pos; i++) {
+    for (int i = 0; i < pos; i++) {
       if (i > 0) {
         buf.append(", ");
       }
-      buf.append(this.array[i]);
+      buf.append(array[i]);
     }
     buf.append(']');
     return buf.toString();
   }
 
   public void ensure_size(int req) {
-    this.array = IntArrayUtils.ensure_size(this.array, req, this.growth_factor,
-            this.multiplication_limit);
-    if (this.pos < req) {
-      this.pos = req;
+    array = IntArrayUtils.ensure_size(array, req, growth_factor,
+            multiplication_limit);
+    if (pos < req) {
+      pos = req;
     }
   }
 
   @Override
   public int hashCode() {
-    if (this.array == null) {
+    if (array == null) {
       return 0;
     }
     int sum = 0;
-    for (int i = 0; i < this.size(); i++) {
-      sum += this.get(i);
+    for (int i = 0; i < size(); i++) {
+      sum += get(i);
     }
     return sum;
   }
@@ -658,7 +655,7 @@ public class IntVector implements Serializable {
   }
 
   public void sort() {
-    Arrays.sort(this.array, 0, size());
+    Arrays.sort(array, 0, size());
   }
 
   // testing

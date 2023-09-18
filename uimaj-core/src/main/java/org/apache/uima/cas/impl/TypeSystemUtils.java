@@ -44,7 +44,7 @@ public abstract class TypeSystemUtils {
     }
 
     boolean hasError() {
-      return (this.error != null);
+      return (error != null);
     }
 
     /**
@@ -53,7 +53,7 @@ public abstract class TypeSystemUtils {
      * @return ParsingError
      */
     ParsingError getError() {
-      return this.error;
+      return error;
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class TypeSystemUtils {
      * @return String
      */
     String getName() {
-      return this.name;
+      return name;
     }
 
     /**
@@ -111,15 +111,15 @@ public abstract class TypeSystemUtils {
     }
 
     boolean isQualified() {
-      return (this.nameSpace != null);
+      return (nameSpace != null);
     }
 
     String getName() {
-      return this.name;
+      return name;
     }
 
     NameSpaceParse getNameSpace() {
-      return this.nameSpace;
+      return nameSpace;
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class TypeSystemUtils {
      * @return String
      */
     public String getName() {
-      return this.name;
+      return name;
     }
 
     /**
@@ -165,7 +165,7 @@ public abstract class TypeSystemUtils {
      * @return Type
      */
     public TypeParse getType() {
-      return this.type;
+      return type;
     }
 
     /**
@@ -202,7 +202,7 @@ public abstract class TypeSystemUtils {
      * @return int
      */
     public int getErrorCode() {
-      return this.errorCode;
+      return errorCode;
     }
 
     /**
@@ -211,7 +211,7 @@ public abstract class TypeSystemUtils {
      * @return int
      */
     public int getErrorPosition() {
-      return this.errorPosition;
+      return errorPosition;
     }
 
     /**
@@ -295,11 +295,8 @@ public abstract class TypeSystemUtils {
       }
       // If there is a next token, it must be a separator.
       if (tok.hasMoreTokens()) {
-        if (!tok.nextToken().equals(NAMESPACE_SEPARATOR_AS_STRING)) {
-          return false;
-        }
         // A sequence can not end in a separator.
-        if (!tok.hasMoreTokens()) {
+        if (!tok.nextToken().equals(NAMESPACE_SEPARATOR_AS_STRING) || !tok.hasMoreTokens()) {
           return false;
         }
       }

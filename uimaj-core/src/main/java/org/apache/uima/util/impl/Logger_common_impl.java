@@ -118,8 +118,8 @@ public abstract class Logger_common_impl implements Logger {
   private boolean isAnnotatorLogger;
 
   protected Logger_common_impl(Class<?> component) {
-    this.limit_common = Integer.MAX_VALUE;
-    this.isLimited = false;
+    limit_common = Integer.MAX_VALUE;
+    isLimited = false;
   }
 
   /**
@@ -131,10 +131,10 @@ public abstract class Logger_common_impl implements Logger {
    *          the limit
    */
   protected Logger_common_impl(Logger_common_impl lci, int limit) {
-    this.limit_common = limit;
-    this.isLimited = true;
-    this.isAnnotatorLogger = true;
-    this.mResourceManager = lci.mResourceManager;
+    limit_common = limit;
+    isLimited = true;
+    isAnnotatorLogger = true;
+    mResourceManager = lci.mResourceManager;
   }
 
   /*********************************************

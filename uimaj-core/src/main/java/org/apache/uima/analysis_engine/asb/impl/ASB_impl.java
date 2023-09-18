@@ -742,7 +742,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       this.casIterator = casIterator;
       this.originalCas = originalCas;
       this.originalCasFlow = originalCasFlow;
-      this.casMultiplierAeKey = lastAeKey;
+      casMultiplierAeKey = lastAeKey;
       this.incompleteParallelStep = incompleteParallelStep;
     }
 

@@ -159,18 +159,18 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
   protected FsIndex_singletype(CASImpl cas, Type type, int indexType,
           FSIndexComparator comparatorForIndexSpecs) {
     this.indexType = indexType;
-    this.casImpl = cas;
+    casImpl = cas;
     this.type = (TypeImpl) type;
-    this.typeCode = ((TypeImpl) type).getCode();
+    typeCode = ((TypeImpl) type).getCode();
     FSIndexComparatorImpl compForIndexSpecs = (FSIndexComparatorImpl) comparatorForIndexSpecs;
     this.comparatorForIndexSpecs = Misc.shareExisting(compForIndexSpecs, comparatorCache);
     // this.comparatorForIndexSpecs = compForIndexSpecs/*.copy()*/;
 
     // Initialize the comparator info.
     final int nKeys = this.comparatorForIndexSpecs.getNumberOfKeys();
-    this.keys = new Object[nKeys];
-    this.keyTypeCodes = new int[nKeys];
-    this.isReverse = new boolean[nKeys];
+    keys = new Object[nKeys];
+    keyTypeCodes = new int[nKeys];
+    isReverse = new boolean[nKeys];
 
     if (!this.comparatorForIndexSpecs.isValid()) {
       isAnnotIdx = false;
@@ -198,7 +198,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
               .getKeyComparator(i) == FSIndexComparator.REVERSE_STANDARD_COMPARE;
     }
 
-    FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
+    FSIndexRepositoryImpl ir = casImpl.indexRepository;
 
     if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
       comparatorWithID = ir.getAnnotationFsComparator(FSComparators.WITH_ID,
@@ -297,16 +297,16 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
 
   @Override
   public FSIndexComparator getComparatorForIndexSpecs() {
-    return this.comparatorForIndexSpecs;
+    return comparatorForIndexSpecs;
   }
 
   public FSIndexComparatorImpl getComparatorImplForIndexSpecs() {
-    return this.comparatorForIndexSpecs;
+    return comparatorForIndexSpecs;
   }
 
   @Override
   public int getIndexingStrategy() {
-    return this.indexType;
+    return indexType;
   }
 
   /**
@@ -430,9 +430,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
+    if ((obj == null) || (getClass() != obj.getClass()))
       return false;
     FsIndex_singletype<?> other = (FsIndex_singletype<?>) obj;
     if (comparatorForIndexSpecs == null) {
@@ -449,15 +447,15 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
    */
   @Override
   public Type getType() {
-    return this.type;
+    return type;
   }
 
   public TypeImpl getTypeImpl() {
-    return this.type;
+    return type;
   }
 
   int getTypeCode() {
-    return this.typeCode;
+    return typeCode;
   }
 
   // /** true if there is a type order key, and no type priorities are defined
@@ -485,7 +483,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
 
   @Override
   public CASImpl getCasImpl() {
-    return this.casImpl;
+    return casImpl;
   }
 
   @Override
@@ -527,13 +525,13 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
     CopyOnWriteIndexPart<T> n = getCopyOnWriteIndexPart();
     if (n != null) {
       if (CASImpl.traceCow) {
-        this.casImpl.traceCowReinit("reuse", this);
+        casImpl.traceCowReinit("reuse", this);
       }
       return n;
     }
 
     if (CASImpl.traceCow) {
-      this.casImpl.traceCowReinit("getNew", this);
+      casImpl.traceCowReinit("getNew", this);
     }
 
     // null means index updated since iterator was created, need to make new cow
@@ -589,13 +587,13 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
 
   protected final void assertFsTypeMatchesIndexType(FeatureStructure fs, String operation) {
     TypeImpl fsType = ((TOP) fs)._getTypeImpl();
-    if (fsType != this.type) {
+    if (fsType != type) {
       String message = String.format(
               "%s operation using a feature structure of type [%s](%d) from type system [%s] on index using "
                       + "different type system [%s] is not supported.",
               operation, fsType.getName(), fsType.getCode(),
               format("<%,d>", identityHashCode(fsType.getTypeSystem())),
-              format("<%,d>", identityHashCode(this.type.getTypeSystem())));
+              format("<%,d>", identityHashCode(type.getTypeSystem())));
 
       if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
         throw new IllegalArgumentException(message);

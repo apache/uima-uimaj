@@ -35,7 +35,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,6 +57,7 @@ import org.apache.uima.cas.serdes.scenario.SerDesTestScenario;
 import org.apache.uima.cas.serdes.scenario.SerRefTestScenario;
 import org.apache.uima.cas.serdes.transitions.CasDesSerCycleConfiguration;
 import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
+import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -277,15 +277,10 @@ public class SerDesCasIOTestUtils {
   }
 
   private static CASMgrSerializer readCasManager(InputStream tsiInputStream) throws IOException {
-    try {
-      if (null == tsiInputStream) {
-        return null;
-      }
-      ObjectInputStream is = new ObjectInputStream(tsiInputStream);
-      return (CASMgrSerializer) is.readObject();
-    } catch (ClassNotFoundException e) {
-      throw new IOException(e);
+    if (null == tsiInputStream) {
+      return null;
     }
+    return SerializationUtils.deserializeCASMgrSerializer(tsiInputStream);
   }
 
   public static void writeXmi(CAS aCas, Path aTarget) {

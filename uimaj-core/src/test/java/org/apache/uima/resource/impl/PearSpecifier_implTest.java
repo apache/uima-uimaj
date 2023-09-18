@@ -18,7 +18,7 @@
  */
 package org.apache.uima.resource.impl;
 
-import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -27,80 +27,74 @@ import java.io.StringWriter;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.PearSpecifier;
-import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
 /**
  * PearSpecifier creation and Xmlization test
  */
-public class PearSpecifier_implTest {
+class PearSpecifier_implTest {
 
-  /*
-   * pearSpecifier creation test
-   */
   @Test
-  public void testProducePearResource() throws Exception {
-    PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
-    specifier.setPearPath("/home/user/uimaApp/installedPears/testpear");
-    specifier.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
-            new Parameter_impl("legacyParam2", "legacyVal2"));
-    specifier.setPearParameters(new NameValuePair_impl("param1", "stringVal1"),
-            new NameValuePair_impl("param2", true));
+  void thatSerializationWorks() throws Exception {
 
-    // compare created specifier with available test specifier
-    XMLInputSource in = new XMLInputSource(
-            JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
-    PearSpecifier pearSpec = UIMAFramework.getXMLParser().parsePearSpecifier(in);
+    var original = makePearSpecifier();
 
-    assertThat(specifier.getPearPath()).isEqualTo(pearSpec.getPearPath());
+    var copy = UIMAFramework.getXMLParser().parsePearSpecifier(
+            new XMLInputSource(getClass().getResource("/XmlParserTest/TestPearSpecifier.xml")));
 
-    assertThat(specifier.getParameters()).usingElementComparatorOnFields("name", "value")
-            .containsExactly(pearSpec.getParameters());
+    assertThat(original.getPearPath()).isEqualTo(copy.getPearPath());
 
-    assertThat(specifier.getPearParameters()).usingElementComparatorOnFields("name", "value")
-            .containsExactly(pearSpec.getPearParameters());
+    assertThat(original.getParameters()) //
+            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "value")
+            .containsExactly(copy.getParameters());
 
-    // compare created specifier with a manually create pear specifier
-    PearSpecifier manPearSpec = new PearSpecifier_impl();
-    manPearSpec.setPearPath("/home/user/uimaApp/installedPears/testpear");
-    manPearSpec.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
-            new Parameter_impl("legacyParam2", "legacyVal2"));
-    manPearSpec.setPearParameters(new NameValuePair_impl("param1", "stringVal1"),
-            new NameValuePair_impl("param2", true));
-
-    assertThat(specifier.getParameters()).usingElementComparatorOnFields("name", "value")
-            .containsExactly(manPearSpec.getParameters());
-
-    assertThat(specifier.getPearParameters()).usingElementComparatorOnFields("name", "value")
-            .containsExactly(manPearSpec.getPearParameters());
+    assertThat(original.getPearParameters()) //
+            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "value")
+            .containsExactly(copy.getPearParameters());
   }
 
-  /*
-   * pearSpecifier xmlization test
-   */
   @Test
-  public void testXmlization() throws Exception {
-    try {
-      PearSpecifier pearSpec = new PearSpecifier_impl();
-      pearSpec.setPearPath("/home/user/uimaApp/installedPears/testpear");
-      pearSpec.setParameters(new Parameter_impl("param1", "val1"),
-              new Parameter_impl("param2", "val2"));
-      pearSpec.setPearParameters(new NameValuePair[] { new NameValuePair_impl("param1", "val1"),
-          new NameValuePair_impl("param2", "val2") });
+  void thatComparisonAgainstManuallyCreatedSpecifierWorks() throws Exception {
+    var spec1 = makePearSpecifier();
+    var spec2 = makePearSpecifier();
 
-      StringWriter sw = new StringWriter();
-      pearSpec.toXML(sw);
-      PearSpecifier pearSpec2 = (PearSpecifier) UIMAFramework.getXMLParser()
-              .parse(new XMLInputSource(
-                      new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)),
-                      null));
-      assertEquals(pearSpec, pearSpec2);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
+    assertThat(spec2.getParameters())
+            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "value")
+            .containsExactly(spec1.getParameters());
+
+    assertThat(spec2.getPearParameters())
+            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "value")
+            .containsExactly(spec1.getPearParameters());
+  }
+
+  @Test
+  void testXmlization() throws Exception {
+    var spec = new PearSpecifier_impl();
+    spec.setPearPath("/home/user/uimaApp/installedPears/testpear");
+    spec.setPearParameters( //
+            new NameValuePair_impl("param1", "val1"), //
+            new NameValuePair_impl("param2", "val2"));
+
+    var sw = new StringWriter();
+    spec.toXML(sw);
+
+    try (var is = new ByteArrayInputStream(sw.toString().getBytes(UTF_8))) {
+      var copy = (PearSpecifier) UIMAFramework.getXMLParser().parse(new XMLInputSource(is));
+      assertEquals(spec, copy);
     }
   }
 
+  PearSpecifier makePearSpecifier() {
+    var spec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
+    spec.setPearPath("/home/user/uimaApp/installedPears/testpear");
+    spec.setParameters( //
+            new Parameter_impl("legacyParam1", "legacyVal1"), //
+            new Parameter_impl("legacyParam2", "legacyVal2"));
+    spec.setPearParameters( //
+            new NameValuePair_impl("param1", "stringVal1"), //
+            new NameValuePair_impl("param2", true));
+    return spec;
+  }
 }

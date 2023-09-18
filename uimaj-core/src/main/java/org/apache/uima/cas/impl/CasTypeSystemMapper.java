@@ -92,7 +92,7 @@ public class CasTypeSystemMapper {
   final private boolean typeSystemsSame;
 
   public boolean isEqual() {
-    return this.typeSystemsSame;
+    return typeSystemsSame;
   }
 
   public CasTypeSystemMapper(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
@@ -121,7 +121,7 @@ public class CasTypeSystemMapper {
       fSrc2Tgt = null;
       fTgt2Src = null;
     }
-    this.typeSystemsSame = tss;
+    typeSystemsSame = tss;
   }
 
   /**

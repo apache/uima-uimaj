@@ -294,7 +294,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
               : new HashMap<>(aAdditionalParams);
       // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
       clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
-      this.ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);
+      ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);
     } catch (IOException ex) {
       throw new ResourceInitializationException(ex);
     } catch (InvalidXMLException ex) {
@@ -306,7 +306,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
     UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
             "initialize", LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_init_successful__CONFIG",
-            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+            new Object[] { ae.getAnalysisEngineMetaData().getName() });
 
     return true;
   }
@@ -326,7 +326,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public ResourceMetaData getMetaData() {
-    return this.ae.getMetaData();
+    return ae.getMetaData();
   }
 
   /*
@@ -336,7 +336,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
-    this.ae.batchProcessComplete();
+    ae.batchProcessComplete();
   }
 
   /*
@@ -346,7 +346,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    this.ae.collectionProcessComplete();
+    ae.collectionProcessComplete();
   }
 
   /*
@@ -364,15 +364,15 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
               "processAndOutputNewCASes", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_begin__FINE",
-              new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+              new Object[] { ae.getAnalysisEngineMetaData().getName() });
     }
 
-    CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
+    CasIterator result = ae.processAndOutputNewCASes(aCAS);
     if (logger.isLoggable(Level.FINE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
               "processAndOutputNewCASes", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_end__FINE",
-              new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+              new Object[] { ae.getAnalysisEngineMetaData().getName() });
     }
     return result;
   }
@@ -385,9 +385,9 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
     UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
             "destroy", LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_destroyed__CONFIG",
-            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+            new Object[] { ae.getAnalysisEngineMetaData().getName() });
 
-    this.ae.destroy();
+    ae.destroy();
   }
 
   /*
@@ -576,7 +576,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public void setResultSpecification(ResultSpecification resultSpec) {
-    this.ae.setResultSpecification(resultSpec);
+    ae.setResultSpecification(resultSpec);
   }
 
   /*
@@ -589,7 +589,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   @Override
   public void batchProcessComplete(ProcessTrace trace)
           throws ResourceProcessException, IOException {
-    this.ae.batchProcessComplete(trace);
+    ae.batchProcessComplete(trace);
   }
 
   /*
@@ -601,7 +601,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   @Override
   public void collectionProcessComplete(ProcessTrace trace)
           throws ResourceProcessException, IOException {
-    this.ae.collectionProcessComplete(trace);
+    ae.collectionProcessComplete(trace);
   }
 
   /*
@@ -611,7 +611,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public ResultSpecification createResultSpecification() {
-    return this.ae.createResultSpecification();
+    return ae.createResultSpecification();
   }
 
   /*
@@ -622,7 +622,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public ResultSpecification createResultSpecification(TypeSystem typeSystem) {
-    return this.ae.createResultSpecification(typeSystem);
+    return ae.createResultSpecification(typeSystem);
   }
 
   /*
@@ -633,7 +633,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
-    return this.ae.getProcessingResourceMetaData();
+    return ae.getProcessingResourceMetaData();
   }
 
   /*
@@ -643,7 +643,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public synchronized CAS newCAS() throws ResourceInitializationException {
-    return this.ae.newCAS();
+    return ae.newCAS();
   }
 
   /*
@@ -655,7 +655,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    */
   @Override
   public void typeSystemInit(TypeSystem typeSystem) throws ResourceInitializationException {
-    this.ae.typeSystemInit(typeSystem);
+    ae.typeSystemInit(typeSystem);
   }
 
   /**
@@ -677,8 +677,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((this.classPath == null) ? 0 : this.classPath.hashCode());
-      result = prime * result + ((this.dataPath == null) ? 0 : this.dataPath.hashCode());
+      result = prime * result + ((classPath == null) ? 0 : classPath.hashCode());
+      result = prime * result + ((dataPath == null) ? 0 : dataPath.hashCode());
       return result;
     }
 
@@ -686,20 +686,18 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     public boolean equals(Object obj) {
       if (this == obj)
         return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
+      if ((obj == null) || (getClass() != obj.getClass()))
         return false;
       final StringPair other = (StringPair) obj;
-      if (this.classPath == null) {
+      if (classPath == null) {
         if (other.classPath != null)
           return false;
-      } else if (!this.classPath.equals(other.classPath))
+      } else if (!classPath.equals(other.classPath))
         return false;
-      if (this.dataPath == null) {
+      if (dataPath == null) {
         if (other.dataPath != null)
           return false;
-      } else if (!this.dataPath.equals(other.dataPath))
+      } else if (!dataPath.equals(other.dataPath))
         return false;
       return true;
     }

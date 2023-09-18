@@ -437,8 +437,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
         NameValuePair nvp = UIMAFramework.getResourceSpecifierFactory().createNameValuePair();
         nvp.setName(param.getName());
         // look up value in context
-        String qualifiedName = this.makeQualifiedName(aContextName, param.getName(), aGroupName);
-        nvp.setValue(this.lookup(qualifiedName));
+        String qualifiedName = makeQualifiedName(aContextName, param.getName(), aGroupName);
+        nvp.setValue(lookup(qualifiedName));
         result.add(nvp);
       }
     }

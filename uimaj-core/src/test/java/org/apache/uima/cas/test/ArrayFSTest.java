@@ -44,8 +44,8 @@ public class ArrayFSTest {
   @BeforeEach
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-      this.ts = this.cas.getTypeSystem();
+      cas = CASInitializer.initCas(new CASTestSetup(), null);
+      ts = cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);
     }
@@ -53,8 +53,8 @@ public class ArrayFSTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
   }
 
   @Test
@@ -62,14 +62,14 @@ public class ArrayFSTest {
     // Check that we can't create arrays of size smaller than 0.
     boolean exceptionCaught = false;
     try {
-      ArrayFS array = this.cas.createArrayFS(-1);
+      ArrayFS array = cas.createArrayFS(-1);
       assertTrue(array != null);
     } catch (CASRuntimeException e) {
       exceptionCaught = true;
       assertTrue(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE));
     }
     assertTrue(exceptionCaught);
-    ArrayFS array = this.cas.createArrayFS(0);
+    ArrayFS array = cas.createArrayFS(0);
     assertTrue(array.size() == 0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -80,10 +80,10 @@ public class ArrayFSTest {
       exceptionCaught = true;
     }
     assertTrue(exceptionCaught);
-    FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
-    FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
-    FeatureStructure fs3 = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
-    array = this.cas.createArrayFS(3);
+    FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
+    FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
+    FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
+    array = cas.createArrayFS(3);
     try {
       array.set(0, fs1);
       array.set(1, fs2);
@@ -132,10 +132,10 @@ public class ArrayFSTest {
   @Test
   public void testToArray() {
     // From CAS array to Java array.
-    FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
-    FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
-    FeatureStructure fs3 = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
-    ArrayFS array = this.cas.createArrayFS(3);
+    FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
+    FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
+    FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
+    ArrayFS array = cas.createArrayFS(3);
     FeatureStructure[] fsArray = array.toArray();
     for (int i = 0; i < 3; i++) {
       assertTrue(fsArray[i] == null);
@@ -150,7 +150,7 @@ public class ArrayFSTest {
     assertTrue(fsArray[2].equals(fs3));
 
     // From Java array to CAS array.
-    array = this.cas.createArrayFS(3);
+    array = cas.createArrayFS(3);
     assertTrue(array.get(0) == null);
     assertTrue(array.get(1) == null);
     assertTrue(array.get(2) == null);
@@ -166,10 +166,10 @@ public class ArrayFSTest {
 
   @Test
   public void testCopyToArray() {
-    FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
-    FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
-    FeatureStructure fs3 = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
-    ArrayFS array = this.cas.createArrayFS(4);
+    FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
+    FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
+    FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
+    ArrayFS array = cas.createArrayFS(4);
     array.set(0, fs1);
     array.set(1, fs2);
     array.set(2, fs3);
@@ -198,17 +198,17 @@ public class ArrayFSTest {
 
   @Test
   public void testArraysOfArrays() {
-    Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);
-    IntArrayFS intArray = this.cas.createIntArrayFS(3);
+    Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    AnnotationFS annot = cas.createAnnotation(annotationType, 0, 5);
+    IntArrayFS intArray = cas.createIntArrayFS(3);
     intArray.set(0, 1);
     intArray.set(1, 2);
     intArray.set(2, -10);
-    ArrayFS subArray1 = this.cas.createArrayFS(1);
-    ArrayFS subArray2 = this.cas.createArrayFS(2);
+    ArrayFS subArray1 = cas.createArrayFS(1);
+    ArrayFS subArray2 = cas.createArrayFS(2);
     subArray1.set(0, subArray2);
     subArray2.set(1, annot);
-    ArrayFS superArray = this.cas.createArrayFS(3);
+    ArrayFS superArray = cas.createArrayFS(3);
     superArray.set(0, subArray1);
     superArray.set(1, subArray2);
     superArray.set(2, intArray);

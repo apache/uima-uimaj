@@ -627,7 +627,7 @@ public interface CAS extends AbstractCas {
    * @return the JCasImpl view for this CAS view
    */
   default JCasImpl getJCasImpl() {
-    return ((CASImpl) this.getLowLevelCAS()).getJCasImpl();
+    return ((CASImpl) getLowLevelCAS()).getJCasImpl();
   }
 
   /**
@@ -1263,7 +1263,7 @@ public interface CAS extends AbstractCas {
    * @return a lazily created shared (for this CAS) empty list
    */
   default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
-    return ((CASImpl) this.getLowLevelCAS())
+    return ((CASImpl) getLowLevelCAS())
             .emptyListFromTypeCode(((TypeImpl) getCasType(clazz)).getCode());
   }
 
@@ -1393,7 +1393,7 @@ public interface CAS extends AbstractCas {
    * @return the corresponding Type, for this CAS
    */
   default <T extends TOP> Type getCasType(Class<T> clazz) {
-    return this.getJCasImpl().getCasType(clazz);
+    return getJCasImpl().getCasType(clazz);
   }
 
   /**
@@ -1427,7 +1427,7 @@ public interface CAS extends AbstractCas {
    *         corresponding to the JCas clazz, in no particular order.
    */
   default <T extends TOP> FSIterator<T> getAllIndexedFS(Type type) {
-    return this.getIndexRepository().getAllIndexedFS(type);
+    return getIndexRepository().getAllIndexedFS(type);
   }
 
   /**
@@ -1442,7 +1442,7 @@ public interface CAS extends AbstractCas {
    *         of the specified type (including subtypes)
    */
   default <T extends TOP> Collection<T> getIndexedFSs(Type type) {
-    return this.getIndexRepository().getIndexedFSs(type);
+    return getIndexRepository().getIndexedFSs(type);
   }
 
   /**
@@ -1453,7 +1453,7 @@ public interface CAS extends AbstractCas {
    *         of the specified type (including subtypes)
    */
   default Collection<TOP> getIndexedFSs() {
-    return this.getIndexRepository().getIndexedFSs();
+    return getIndexRepository().getIndexedFSs();
   }
 
   /**
@@ -1468,6 +1468,6 @@ public interface CAS extends AbstractCas {
    *         of the specified type (including subtypes)
    */
   default <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
-    return this.getIndexRepository().getIndexedFSs(clazz);
+    return getIndexRepository().getIndexedFSs(clazz);
   }
 }

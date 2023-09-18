@@ -51,10 +51,8 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 
 /**
- * A wrapper containing Cas Processor configuration. An instance of this class is associated with
- * each Cas Processor.
- * 
- * 
+ * A wrapper containing CAS Processor configuration. An instance of this class is associated with
+ * each CAS Processor.
  */
 public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfiguration {
   private String actionOnMaxError;
@@ -91,7 +89,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
   private JavaApplication javaApp;
 
-  private List deploymentParameters = null;
+  private List<NameValuePair> deploymentParameters = null;
 
   private int waitTimeBetweenRestarts = 0;
 
@@ -102,10 +100,10 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   private ResourceManager resourceManager;
 
   /**
-   * Initializes instance and copies configuation from cpe descriptor.
+   * Initializes instance and copies configuration from CPE descriptor.
    * 
    * @param aCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   *          - configuration object containing CAS Processor configuration
    * @param aResourceManager
    *          - needed to resolve import by name
    * @throws ResourceConfigurationException
@@ -113,7 +111,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    */
   public CasProcessorConfigurationJAXBImpl(CpeCasProcessor aCasProcessorConfig,
           ResourceManager aResourceManager) throws ResourceConfigurationException {
-    this.resourceManager = aResourceManager;
+    resourceManager = aResourceManager;
 
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
@@ -159,7 +157,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns how long to wait between resending CAS after failure
+   * Returns how long to wait between re-sending CAS after failure
    */
   @Override
   public int getMaxTimeToWaitBetweenRetries() {
@@ -187,18 +185,18 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Copies runtime information
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          - configuration object containing CAS Processor configuration
    */
   private void addRunInSeparateProcess(CpeCasProcessor aCasProcessorConfig) {
     runInSeparateProcess = aCasProcessorConfig.getRunInSeparateProcess() != null;
   }
 
   /**
-   * Determines if this Cas Processor should run in java jvm.
+   * Determines if this CAS Processor should run in java JVM.
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          - configuration object containing CAS Processor configuration
    */
   private void addIsJavaProcess(CpeCasProcessor aCasProcessorConfig) {
     isJavaProcess = false;
@@ -213,8 +211,8 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Copies Error handling settings
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          configuration object containing CAS Processor configuration
    */
   private void addErrorHandling(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -287,11 +285,11 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Copies deployment parameters associated with this Cas Processor These parameters are used to
-   * construct appropriate command line for launching the Cas Processor in external process
+   * Copies deployment parameters associated with this CAS Processor These parameters are used to
+   * construct appropriate command line for launching the CAS Processor in external process
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          - configuration object containing CAS Processor configuration
    */
   private void addDeploymentParameters(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -325,7 +323,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
                   CPEFactory.CPM_HOME, parameters[i].getParameterValue());
           nvp.setValue(value);
           if (deploymentParameters == null) {
-            deploymentParameters = new ArrayList();
+            deploymentParameters = new ArrayList<NameValuePair>();
           }
           deploymentParameters.add(nvp);
 
@@ -339,16 +337,16 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
             && rsp.getExecutable() != null) {
       // List args = rsp.getExecutable().getArg();
       if (deploymentParameters == null) {
-        deploymentParameters = new ArrayList();
+        deploymentParameters = new ArrayList<NameValuePair>();
       }
     }
   }
 
   /**
-   * Copies deployment type associated with this Cas Processor
+   * Copies deployment type associated with this CAS Processor
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          - - configuration object containing CAS Processor configuration
    * @throws ResourceConfigurationException
    *           -
    */
@@ -379,8 +377,8 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Copies filter expression used during processing.
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          - configuration object containing CAS Processor configuration
    */
   private void addFiltering(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -396,10 +394,10 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Copies batch size associated with this Cas Processor
+   * Copies batch size associated with this CAS Processor
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object containing Cas Processor configuration
+   * @param aCasProcessorConfig
+   *          configuration object containing CAS Processor configuration
    */
   private void addBatchSize(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -438,13 +436,10 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Copies path of the Cas Processor descriptor.
+   * Copies path of the CAS Processor descriptor.
    * 
-   * @param aJaxbCasProcessorConfig
-   *          - configuration object holding path to the descriptor
-   * 
-   * @throws ResourceConfigurationException
-   *           -
+   * @param aCasProcessorConfig
+   *          configuration object holding path to the descriptor
    */
   private void addDescriptor(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -580,7 +575,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns the max amount of time the CPE will wait for Cas Processor reponse.
+   * Returns the max amount of time the CPE will wait for CAS Processor response.
    * 
    * @return - value for timeout
    */
@@ -590,17 +585,17 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns a list of deployment parameters ssociated with this Cas Processor
+   * Returns a list of deployment parameters associated with this CAS Processor
    * 
-   * @return - deployment paramaters as List
+   * @return - deployment parameters as List
    */
   @Override
-  public List getDeploymentParameters() {
+  public List<NameValuePair> getDeploymentParameters() {
     return deploymentParameters;
   }
 
   /**
-   * Returns deployment type associated with this Cas Processor
+   * Returns deployment type associated with this CAS Processor
    * <ul>
    * <li>integrated</li>
    * <li>local</li>
@@ -615,9 +610,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns unparsed filter expression
-   * 
-   * @return - fliter String
+   * @return unparsed filter expression
    */
   @Override
   public String getFilterString() {
@@ -626,7 +619,6 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
   /**
    * Returns parsed filter expressions as List.
-   * 
    */
   @Override
   public LinkedList getFilter() throws ResourceConfigurationException {
@@ -653,8 +645,8 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns an array of types that should not be sent to Cas Processor. The drop types are defined
-   * in the cpe descriptor.
+   * Returns an array of types that should not be sent to CAS Processor. The drop types are defined
+   * in the CPE descriptor.
    */
   @Override
   public String[] getKeysToDrop() throws ResourceConfigurationException {
@@ -731,9 +723,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns true if this Cas Processor will run in its own process
+   * Returns true if this CAS Processor will run in its own process
    * 
-   * @return - true if running in seperate process
+   * @return - true if running in separate process
    */
   @Override
   public boolean runInSeparateProcess() {
@@ -741,7 +733,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns true it the Cas Processor is written in java and will be run with java jvm.
+   * Returns true it the CAS Processor is written in java and will be run with Java JVM.
    * 
    */
   @Override
@@ -750,9 +742,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns executable section of the Cas Processor configuration. It contains the name of
-   * executable program to be used when launching a seperate process with Cas Processor running as
-   * vinci service.
+   * Returns executable section of the CAS Processor configuration. It contains the name of
+   * executable program to be used when launching a separate process with CAS Processor running as
+   * Vinci service.
    * 
    * @return - Execute object
    */

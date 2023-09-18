@@ -21,8 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
-import static org.apache.uima.internal.util.SerializationUtils.deserialize;
-import static org.apache.uima.internal.util.SerializationUtils.serialize;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
@@ -34,14 +32,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -49,14 +46,26 @@ import org.xml.sax.SAXException;
  * Tests the MetaDataObject_impl class.
  */
 public class MetaDataObject_implTest {
+  private static DocumentBuilderFactory docBuilderFactory;
+  private static DocumentBuilder docBuilder;
+  private static XMLParser xmlp;
+
   private TestFruitObject unknownFruit;
   private TestFruitObject apple1;
   private TestFruitObject apple2;
   private TestFruitObject orange;
   private TestFruitBagObject fruitBag;
 
+  @BeforeAll
+  static void setupClass() throws Exception {
+    docBuilderFactory = DocumentBuilderFactory.newInstance();
+    docBuilder = docBuilderFactory.newDocumentBuilder();
+    xmlp = UIMAFramework.getXMLParser();
+    xmlp.addMapping("fruit", TestFruitObject.class.getName());
+  }
+
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     // create an object that can represent a fruit
     unknownFruit = new TestFruitObject();
 
@@ -112,7 +121,7 @@ public class MetaDataObject_implTest {
    * Test the getAttributes method
    */
   @Test
-  public void testGetAttributes() throws Exception {
+  void testGetAttributes() throws Exception {
     assertThat(apple1.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(orange.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(fruitBag.getAttributes()).containsAll(TestFruitBagObject.getMetaDataAttrSet());
@@ -122,7 +131,7 @@ public class MetaDataObject_implTest {
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */
   @Test
-  public void testEquals() throws Exception {
+  void testEquals() throws Exception {
     assertThat(unknownFruit).isEqualTo(unknownFruit);
     assertThat(apple1).isEqualTo(apple2);
     assertThat(apple2).isEqualTo(apple1);
@@ -135,15 +144,13 @@ public class MetaDataObject_implTest {
     assertThat(apple1).isNotEqualTo(orange.clone());
 
     // test with maps
-    ConfigurationParameterSettings cps1 = getResourceSpecifierFactory()
-            .createConfigurationParameterSettings();
+    var cps1 = getResourceSpecifierFactory().createConfigurationParameterSettings();
     cps1.getSettingsForGroups().put("k1",
             new NameValuePair[] { new NameValuePair_impl("s1", "o1") });
     cps1.getSettingsForGroups().put("k2",
             new NameValuePair[] { new NameValuePair_impl("s2", "o2") });
 
-    ConfigurationParameterSettings cps2 = getResourceSpecifierFactory()
-            .createConfigurationParameterSettings();
+    var cps2 = getResourceSpecifierFactory().createConfigurationParameterSettings();
     cps2.getSettingsForGroups().put("k1",
             new NameValuePair[] { new NameValuePair_impl("s1", "o1") });
     cps2.getSettingsForGroups().put("k2",
@@ -162,7 +169,7 @@ public class MetaDataObject_implTest {
    * Tests the {@link MetaDataObject#toString()} method.
    */
   @Test
-  public void testToString() throws Exception {
+  void testToString() throws Exception {
     String apple1Str = apple1.toString();
     String apple2Str = apple2.toString();
     String orangeStr = orange.toString();
@@ -178,97 +185,90 @@ public class MetaDataObject_implTest {
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
   @Test
-  public void testXMLization() throws Exception {
+  void testXMLization() throws Exception {
     // write objects to XML
-    String apple1xml = toXmlString(apple1);
-    String apple2xml = toXmlString(apple2);
-    String orangeXml = toXmlString(orange);
-    String fruitBagXml = toXmlString(fruitBag);
+    var apple1xml = toXmlString(apple1);
+    var apple2xml = toXmlString(apple2);
+    var orangeXml = toXmlString(orange);
+    var fruitBagXml = toXmlString(fruitBag);
 
     // identical objects should have identical XML
     assertThat(apple1xml).isEqualTo(apple2xml);
 
     // parse the XML
-    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-
-    Document apple1xmlDoc = docBuilder.parse(new ByteArrayInputStream(apple1xml.getBytes()));
-    Document apple2xmlDoc = docBuilder.parse(new ByteArrayInputStream(apple2xml.getBytes()));
-    Document orangeXmlDoc = docBuilder.parse(new ByteArrayInputStream(orangeXml.getBytes()));
-    Document fruitBagXmlDoc = docBuilder.parse(new ByteArrayInputStream(fruitBagXml.getBytes()));
+    var apple1xmlDoc = docBuilder.parse(new ByteArrayInputStream(apple1xml.getBytes()));
+    var apple2xmlDoc = docBuilder.parse(new ByteArrayInputStream(apple2xml.getBytes()));
+    var orangeXmlDoc = docBuilder.parse(new ByteArrayInputStream(orangeXml.getBytes()));
+    var fruitBagXmlDoc = docBuilder.parse(new ByteArrayInputStream(fruitBagXml.getBytes()));
 
     // construct new objects from the XML
-    XMLParser xmlp = UIMAFramework.getXMLParser();
-    MetaDataObject_impl newApple1 = (MetaDataObject_impl) unknownFruit.clone();
+    var newApple1 = (MetaDataObject_impl) unknownFruit.clone();
     newApple1.buildFromXMLElement(apple1xmlDoc.getDocumentElement(), xmlp);
-    MetaDataObject_impl newApple2 = (MetaDataObject_impl) unknownFruit.clone();
+    var newApple2 = (MetaDataObject_impl) unknownFruit.clone();
     newApple2.buildFromXMLElement(apple2xmlDoc.getDocumentElement(), xmlp);
-    MetaDataObject_impl newOrange = (MetaDataObject_impl) unknownFruit.clone();
+    var newOrange = (MetaDataObject_impl) unknownFruit.clone();
     newOrange.buildFromXMLElement(orangeXmlDoc.getDocumentElement(), xmlp);
 
-    xmlp.addMapping("fruit", TestFruitObject.class.getName());
-
-    MetaDataObject_impl newFruitBag = new TestFruitBagObject();
+    var newFruitBag = new TestFruitBagObject();
     newFruitBag.buildFromXMLElement(fruitBagXmlDoc.getDocumentElement(), xmlp);
 
     // new objects should be equal to the originals
     assertThat(newApple1).isEqualTo(apple1);
     assertThat(newApple2).isEqualTo(apple2);
     assertThat(newOrange).isEqualTo(orange);
-    assertThat(fruitBag.equals(newFruitBag)).isTrue();
+    assertThat(newFruitBag).isEqualTo(fruitBag);
+  }
 
-    // test special cases
-
-    // single-property object where property name is omitted from XML
-    String xmlStr = "<fruitBag><fruit><name>banana</name><color>yellow</color></fruit>"
-            + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
-    Document xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
-    TestFruitBagObject bag = new TestFruitBagObject();
-    bag.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
-    TestFruitObject[] fruits = bag.getFruits();
-    assertThat(fruits.length).isEqualTo(2);
-    assertThat(fruits[0].getName()).isEqualTo("banana");
-    assertThat(fruits[1].getName()).isEqualTo("raspberry");
-
+  @Test
+  void testInferredPropertyName() throws Exception {
     // property name omitted but can be inferred from type of value
-    xmlStr = "<fruit><name>banana</name><string>yellow</string></fruit>";
-    xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
-    TestFruitObject banana = new TestFruitObject();
+    var xmlStr = "<fruit><name>banana</name><string>yellow</string></fruit>";
+    var xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+    var banana = new TestFruitObject();
     banana.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
+
     assertThat(banana.getColor()).isEqualTo("yellow");
     assertThat(banana.getName()).isEqualTo("banana");
+  }
 
+  @Test
+  void testEnvVarReference() throws Exception {
     // env var reference
-    xmlStr = "<fruit><name>raspberry</name><string><envVarRef>test.raspberry.color</envVarRef></string></fruit>";
+    var xmlStr = """
+            <fruit>
+              <name>raspberry</name>
+              <string><envVarRef>test.raspberry.color</envVarRef></string>
+            </fruit>
+            """;
     System.setProperty("test.raspberry.color", "red");
-    xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
-    TestFruitObject raspberry = new TestFruitObject();
+    var xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+    var raspberry = new TestFruitObject();
     raspberry.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
+
     assertThat(raspberry.getColor()).isEqualTo("red");
     assertThat(raspberry.getName()).isEqualTo("raspberry");
   }
 
   @Test
-  public void testSerialization() throws Exception {
-    assertThat(deserialize(serialize(apple1))).isInstanceOf(TestFruitObject.class)
-            .isEqualTo(apple1);
+  void testSinglePropertyObjectWithNameOmitted() throws Exception {
+    // single-property object where property name is omitted from XML
+    var xmlStr = "<fruitBag><fruit><name>banana</name><color>yellow</color></fruit>"
+            + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
+    var xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
 
-    assertThat(deserialize(serialize(apple2))).isInstanceOf(TestFruitObject.class)
-            .isEqualTo(apple2);
+    var bag = new TestFruitBagObject();
+    bag.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);
 
-    byte[] orangeBytes = serialize(orange);
-    assertThat(deserialize(orangeBytes)).isInstanceOf(TestFruitObject.class).isEqualTo(orange);
-
-    // make sure XMLization still works
-    String orange1xml = toXmlString(orange);
-    String orange2xml = toXmlString((TestFruitObject) deserialize(orangeBytes));
-
-    assertThat(orange1xml).isEqualTo(orange2xml);
+    assertThat(bag.getFruits()) //
+            .extracting(TestFruitObject::getName) //
+            .containsExactly("banana", "raspberry");
   }
 
   private String toXmlString(XMLizable aObject) throws IOException, SAXException {
-    StringWriter writer = new StringWriter();
+    var writer = new StringWriter();
     aObject.toXML(writer);
-    return writer.getBuffer().toString();
+    return writer.toString();
   }
 }

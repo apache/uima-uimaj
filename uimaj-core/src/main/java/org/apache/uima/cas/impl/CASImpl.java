@@ -1209,7 +1209,7 @@ public class CASImpl extends AbstractCas_ImplBase
       // FSClassRegistry instances
     }
 
-    this.svd = new SharedViewData(this, initialHeapSize, ts);
+    svd = new SharedViewData(this, initialHeapSize, ts);
     // this.svd.baseCAS = this;
 
     // this.svd.heap = new Heap(initialHeapSize);
@@ -1218,13 +1218,13 @@ public class CASImpl extends AbstractCas_ImplBase
       commitTypeSystem();
     }
 
-    this.svd.sofa2indexMap = new ArrayList<>();
-    this.svd.sofaNbr2ViewMap = new ArrayList<>();
-    this.svd.sofaNameSet = new HashSet<>();
-    this.svd.initialSofaCreated = false;
-    this.svd.viewCount = 0;
+    svd.sofa2indexMap = new ArrayList<>();
+    svd.sofaNbr2ViewMap = new ArrayList<>();
+    svd.sofaNameSet = new HashSet<>();
+    svd.initialSofaCreated = false;
+    svd.viewCount = 0;
 
-    this.svd.clearTrackingMarks();
+    svd.clearTrackingMarks();
   }
 
   public CASImpl() {
@@ -1238,35 +1238,35 @@ public class CASImpl extends AbstractCas_ImplBase
     checkInternalCodes(ser);
     // assert(ts != null);
     // assert(getTypeSystem() != null);
-    this.indexRepository = ser.getIndexRepository(this);
+    indexRepository = ser.getIndexRepository(this);
   }
 
   // Use this when creating a CAS view
   CASImpl(CASImpl cas, SofaFS aSofa) {
 
     // these next fields are final and must be set in the constructor
-    this.svd = cas.svd;
+    svd = cas.svd;
 
-    this.mySofaRef = (Sofa) aSofa;
+    mySofaRef = (Sofa) aSofa;
 
     // get the indexRepository for this Sofa
-    this.indexRepository = (this.mySofaRef == null)
+    indexRepository = (mySofaRef == null)
             ? (FSIndexRepositoryImpl) cas.getSofaIndexRepository(1)
             : (FSIndexRepositoryImpl) cas.getSofaIndexRepository(aSofa);
-    if (null == this.indexRepository) {
+    if (null == indexRepository) {
       // create the indexRepository for this CAS
       // use the baseIR to create a lightweight IR copy
       FSIndexRepositoryImpl baseIndexRepo = (FSIndexRepositoryImpl) cas.getBaseIndexRepository();
-      this.indexRepository = new FSIndexRepositoryImpl(this, baseIndexRepo);
+      indexRepository = new FSIndexRepositoryImpl(this, baseIndexRepo);
       // the index creation depends on "indexRepository" already being set
       baseIndexRepo.name2indexMap.keySet().stream()
-              .forEach(key -> this.indexRepository.createIndex(baseIndexRepo, key));
-      this.indexRepository.commit();
+              .forEach(key -> indexRepository.createIndex(baseIndexRepo, key));
+      indexRepository.commit();
       // save new sofa index
-      if (this.mySofaRef == null) {
-        cas.setSofaIndexRepository(1, this.indexRepository);
+      if (mySofaRef == null) {
+        cas.setSofaIndexRepository(1, indexRepository);
       } else {
-        cas.setSofaIndexRepository(aSofa, this.indexRepository);
+        cas.setSofaIndexRepository(aSofa, indexRepository);
       }
     }
   }
@@ -1276,29 +1276,29 @@ public class CASImpl extends AbstractCas_ImplBase
 
     if (aSofa != null) {
       // save address of SofaFS
-      this.mySofaRef = (Sofa) aSofa;
+      mySofaRef = (Sofa) aSofa;
     } else {
       // this is the InitialView
-      this.mySofaRef = null;
+      mySofaRef = null;
     }
 
     // toss the JCas, if it exists
-    this.jcas = null;
+    jcas = null;
 
     // create the indexRepository for this Sofa
     final FSIndexRepositoryImpl baseIndexRepo = (FSIndexRepositoryImpl) ((CASImpl) cas)
             .getBaseIndexRepository();
-    this.indexRepository = new FSIndexRepositoryImpl(this, baseIndexRepo);
+    indexRepository = new FSIndexRepositoryImpl(this, baseIndexRepo);
     // the index creation depends on "indexRepository" already being set
     baseIndexRepo.name2indexMap.keySet().stream()
-            .forEach(key -> this.indexRepository.createIndex(baseIndexRepo, key));
+            .forEach(key -> indexRepository.createIndex(baseIndexRepo, key));
 
-    this.indexRepository.commit();
+    indexRepository.commit();
     // save new sofa index
-    if (this.mySofaRef == null) {
-      ((CASImpl) cas).setSofaIndexRepository(1, this.indexRepository);
+    if (mySofaRef == null) {
+      ((CASImpl) cas).setSofaIndexRepository(1, indexRepository);
     } else {
-      ((CASImpl) cas).setSofaIndexRepository(aSofa, this.indexRepository);
+      ((CASImpl) cas).setSofaIndexRepository(aSofa, indexRepository);
     }
   }
 
@@ -1402,7 +1402,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public void enableReset(boolean flag) {
-    this.svd.flushEnabled = flag;
+    svd.flushEnabled = flag;
   }
 
   @Override
@@ -1412,9 +1412,9 @@ public class CASImpl extends AbstractCas_ImplBase
 
   public final TypeSystemImpl getTypeSystemImpl() {
     if (tsi_local == null) {
-      tsi_local = this.svd.tsi;
+      tsi_local = svd.tsi;
     }
-    return this.tsi_local;
+    return tsi_local;
   }
 
   /**
@@ -1423,14 +1423,14 @@ public class CASImpl extends AbstractCas_ImplBase
    * @param ts
    */
   void installTypeSystemInAllViews(TypeSystemImpl ts) {
-    this.svd.tsi = ts;
-    final List<CASImpl> sn2v = this.svd.sofaNbr2ViewMap;
+    svd.tsi = ts;
+    final List<CASImpl> sn2v = svd.sofaNbr2ViewMap;
     if (sn2v.size() > 0) {
       for (CASImpl view : sn2v.subList(1, sn2v.size())) {
         view.tsi_local = ts;
       }
     }
-    this.getBaseCAS().tsi_local = ts;
+    getBaseCAS().tsi_local = ts;
   }
 
   @Override
@@ -1620,15 +1620,11 @@ public class CASImpl extends AbstractCas_ImplBase
   // return true if only one sofa and it is the default text sofa
   public boolean isBackwardCompatibleCas() {
     // check that there is exactly one sofa
-    if (this.svd.viewCount != 1) {
+    if ((svd.viewCount != 1) || !svd.initialSofaCreated) {
       return false;
     }
 
-    if (!this.svd.initialSofaCreated) {
-      return false;
-    }
-
-    Sofa sofa = this.getInitialView().getSofa();
+    Sofa sofa = getInitialView().getSofa();
 
     // check for mime type exactly equal to "text"
     String sofaMime = sofa.getMimeType();
@@ -1650,7 +1646,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   int getViewCount() {
-    return this.svd.viewCount;
+    return svd.viewCount;
   }
 
   FSIndexRepository getSofaIndexRepository(SofaFS aSofa) {
@@ -1658,10 +1654,10 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   FSIndexRepositoryImpl getSofaIndexRepository(int aSofaRef) {
-    if (aSofaRef >= this.svd.sofa2indexMap.size()) {
+    if (aSofaRef >= svd.sofa2indexMap.size()) {
       return null;
     }
-    return this.svd.sofa2indexMap.get(aSofaRef);
+    return svd.sofa2indexMap.get(aSofaRef);
   }
 
   void setSofaIndexRepository(SofaFS aSofa, FSIndexRepositoryImpl indxRepos) {
@@ -1669,7 +1665,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   void setSofaIndexRepository(int aSofaRef, FSIndexRepositoryImpl indxRepos) {
-    Misc.setWithExpand(this.svd.sofa2indexMap, aSofaRef, indxRepos);
+    Misc.setWithExpand(svd.sofa2indexMap, aSofaRef, indxRepos);
   }
 
   @Override
@@ -1684,36 +1680,36 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   Sofa createSofa(String sofaName, String mimeType) {
-    return createSofa(++this.svd.viewCount, sofaName, mimeType);
+    return createSofa(++svd.viewCount, sofaName, mimeType);
   }
 
   Sofa createSofa(int sofaNum, String sofaName, String mimeType) {
-    if (this.svd.sofaNameSet.contains(sofaName)) {
+    if (svd.sofaNameSet.contains(sofaName)) {
       throw new CASRuntimeException(CASRuntimeException.SOFANAME_ALREADY_EXISTS, sofaName);
     }
-    final boolean viewAlreadyExists = sofaNum == this.svd.viewCount;
+    final boolean viewAlreadyExists = sofaNum == svd.viewCount;
     if (!viewAlreadyExists) {
       if (sofaNum == 1) { // skip the test for sofaNum == 1 - this can be set "later"
-        if (this.svd.viewCount == 0) {
-          this.svd.viewCount = 1;
+        if (svd.viewCount == 0) {
+          svd.viewCount = 1;
         } // else it is == or higher, so don't reset it down
       } else { // sofa is not initial sofa - is guaranteed to be set when view created
         // if (sofaNum != this.svd.viewCount + 1) {
         // System.out.println("debug");
         // }
-        assert (sofaNum == this.svd.viewCount + 1);
-        this.svd.viewCount = sofaNum;
+        assert (sofaNum == svd.viewCount + 1);
+        svd.viewCount = sofaNum;
       }
     }
 
-    Sofa sofa = new Sofa(getTypeSystemImpl().sofaType, this.getBaseCAS(), // view for a sofa is the
+    Sofa sofa = new Sofa(getTypeSystemImpl().sofaType, getBaseCAS(), // view for a sofa is the
                                                                           // base cas to correspond
                                                                           // to where it gets
                                                                           // indexed
             sofaNum, sofaName, mimeType);
 
-    this.getBaseIndexRepository().addFS(sofa);
-    this.svd.sofaNameSet.add(sofaName);
+    getBaseIndexRepository().addFS(sofa);
+    svd.sofaNameSet.add(sofaName);
     if (!viewAlreadyExists) {
       getView(sofa); // create the view that goes with this Sofa
     }
@@ -1721,23 +1717,23 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   boolean hasView(String name) {
-    return this.svd.sofaNameSet.contains(name);
+    return svd.sofaNameSet.contains(name);
   }
 
   Sofa createInitialSofa(String mimeType) {
     Sofa sofa = createSofa(1, CAS.NAME_DEFAULT_SOFA, mimeType);
 
     registerInitialSofa();
-    this.mySofaRef = sofa;
+    mySofaRef = sofa;
     return sofa;
   }
 
   void registerInitialSofa() {
-    this.svd.initialSofaCreated = true;
+    svd.initialSofaCreated = true;
   }
 
   boolean isInitialSofaCreated() {
-    return this.svd.initialSofaCreated;
+    return svd.initialSofaCreated;
   }
 
   /**
@@ -1751,7 +1747,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   private SofaFS getSofa(String sofaName) {
-    FSIterator<Sofa> iterator = this.svd.baseCAS.getSofaIterator();
+    FSIterator<Sofa> iterator = svd.baseCAS.getSofaIterator();
     while (iterator.hasNext()) {
       SofaFS sofa = iterator.next();
       if (sofaName.equals(sofa.getSofaID())) {
@@ -1783,23 +1779,23 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   public CASImpl getBaseCAS() {
-    return this.svd.baseCAS;
+    return svd.baseCAS;
   }
 
   @Override
   public <T extends SofaFS> FSIterator<T> getSofaIterator() {
-    FSIndex<T> sofaIndex = this.svd.baseCAS.indexRepository.<T> getIndex(CAS.SOFA_INDEX_NAME);
+    FSIndex<T> sofaIndex = svd.baseCAS.indexRepository.<T> getIndex(CAS.SOFA_INDEX_NAME);
     return sofaIndex.iterator();
   }
 
   // For internal use only
   public Sofa getSofaRef() {
-    if (this.mySofaRef == null) {
+    if (mySofaRef == null) {
       // create the SofaFS for _InitialView ...
       // ... and reset mySofaRef to point to it
-      this.mySofaRef = this.createInitialSofa(null);
+      mySofaRef = createInitialSofa(null);
     }
-    return this.mySofaRef;
+    return mySofaRef;
   }
 
   // For internal use only
@@ -1932,18 +1928,18 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   private void createIndexRepository() {
-    if (!this.getTypeSystemMgr().isCommitted()) {
+    if (!getTypeSystemMgr().isCommitted()) {
       throw new CASAdminException(CASAdminException.MUST_COMMIT_TYPE_SYSTEM);
     }
-    if (this.indexRepository == null) {
-      this.indexRepository = new FSIndexRepositoryImpl(this);
+    if (indexRepository == null) {
+      indexRepository = new FSIndexRepositoryImpl(this);
     }
   }
 
   @Override
   public FSIndexRepositoryMgr getIndexRepositoryMgr() {
     // assert(this.cas.getIndexRepository() != null);
-    return this.indexRepository;
+    return indexRepository;
   }
 
   @Deprecated
@@ -1971,13 +1967,13 @@ public class CASImpl extends AbstractCas_ImplBase
     if (isCasLocked()) {
       throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
     }
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       resetNoQuestions();
       return;
     }
     // called from a CAS view.
     // clear CAS ...
-    this.svd.baseCAS.resetNoQuestions();
+    svd.baseCAS.resetNoQuestions();
   }
 
   public void resetNoQuestions() {
@@ -1995,33 +1991,33 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public FSIndexRepository getIndexRepository() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // BaseCas has no indexes for users
       return null;
     }
-    if (this.indexRepository.isCommitted()) {
-      return this.indexRepository;
+    if (indexRepository.isCommitted()) {
+      return indexRepository;
     }
     return null;
   }
 
   FSIndexRepository getBaseIndexRepository() {
-    if (this.svd.baseCAS.indexRepository.isCommitted()) {
-      return this.svd.baseCAS.indexRepository;
+    if (svd.baseCAS.indexRepository.isCommitted()) {
+      return svd.baseCAS.indexRepository;
     }
     return null;
   }
 
   FSIndexRepositoryImpl getBaseIndexRepositoryImpl() {
-    return this.svd.baseCAS.indexRepository;
+    return svd.baseCAS.indexRepository;
   }
 
   void addSofaFsToIndex(SofaFS sofa) {
-    this.svd.baseCAS.getBaseIndexRepository().addFS(sofa);
+    svd.baseCAS.getBaseIndexRepository().addFS(sofa);
   }
 
   void registerView(Sofa aSofa) {
-    this.mySofaRef = aSofa;
+    mySofaRef = aSofa;
   }
 
   /**
@@ -2038,7 +2034,7 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   @Override
   public CAS getCAS() {
-    if (this.indexRepository.isCommitted()) {
+    if (indexRepository.isCommitted()) {
       return this;
     }
     throw new CASAdminException(CASAdminException.MUST_COMMIT_INDEX_REPOSITORY);
@@ -2071,7 +2067,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
     // log the FS
 
-    final Map<TOP, FsChange> changes = this.svd.modifiedPreexistingFSs;
+    final Map<TOP, FsChange> changes = svd.modifiedPreexistingFSs;
 
     // create or use last FsChange element
 
@@ -2095,7 +2091,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
     // log the FS
 
-    final Map<TOP, FsChange> changes = this.svd.modifiedPreexistingFSs;
+    final Map<TOP, FsChange> changes = svd.modifiedPreexistingFSs;
 
     // create or use last FsChange element
 
@@ -2187,7 +2183,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   public final boolean isLoggingNeeded(FeatureStructureImplC fs) {
-    return this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id);
+    return svd.trackingMark != null && !svd.trackingMark.isNew(fs._id);
   }
 
   /**
@@ -2243,7 +2239,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   final public boolean isLogging() {
-    return this.svd.trackingMark != null;
+    return svd.trackingMark != null;
   }
 
   // /**
@@ -2538,17 +2534,17 @@ public class CASImpl extends AbstractCas_ImplBase
       throw new CASException(CASException.MUST_COMMIT_TYPE_SYSTEM);
     }
 
-    FSIndexComparator comp = this.indexRepository.createComparator();
+    FSIndexComparator comp = indexRepository.createComparator();
     comp.setType(ts.sofaType);
     comp.addKey(ts.sofaNum, FSIndexComparator.STANDARD_COMPARE);
-    this.indexRepository.createIndex(comp, CAS.SOFA_INDEX_NAME, FSIndex.BAG_INDEX);
+    indexRepository.createIndex(comp, CAS.SOFA_INDEX_NAME, FSIndex.BAG_INDEX);
 
-    comp = this.indexRepository.createComparator();
+    comp = indexRepository.createComparator();
     comp.setType(ts.annotType);
     comp.addKey(ts.startFeat, FSIndexComparator.STANDARD_COMPARE);
     comp.addKey(ts.endFeat, FSIndexComparator.REVERSE_STANDARD_COMPARE);
-    comp.addKey(this.indexRepository.getDefaultTypeOrder(), FSIndexComparator.STANDARD_COMPARE);
-    this.indexRepository.createIndex(comp, CAS.STD_ANNOTATION_INDEX);
+    comp.addKey(indexRepository.getDefaultTypeOrder(), FSIndexComparator.STANDARD_COMPARE);
+    indexRepository.createIndex(comp, CAS.STD_ANNOTATION_INDEX);
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -2569,18 +2565,18 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public JCas getJCas() {
-    if (this.jcas == null) {
-      this.jcas = JCasImpl.getJCas(this);
+    if (jcas == null) {
+      jcas = JCasImpl.getJCas(this);
     }
-    return this.jcas;
+    return jcas;
   }
 
   @Override
   public JCasImpl getJCasImpl() {
-    if (this.jcas == null) {
-      this.jcas = JCasImpl.getJCas(this);
+    if (jcas == null) {
+      jcas = JCasImpl.getJCas(this);
     }
-    return this.jcas;
+    return jcas;
   }
 
   // /**
@@ -2596,7 +2592,7 @@ public class CASImpl extends AbstractCas_ImplBase
   @Override
   public JCas getJCas(SofaFS aSofa) throws CASException {
     // Create base JCas, if needed
-    this.svd.baseCAS.getJCas();
+    svd.baseCAS.getJCas();
 
     return getView(aSofa).getJCas();
     /*
@@ -2696,7 +2692,7 @@ public class CASImpl extends AbstractCas_ImplBase
       // which is now creating the associated view
 
       // create a new CAS view
-      aView = new CASImpl(this.svd.baseCAS, sofa);
+      aView = new CASImpl(svd.baseCAS, sofa);
       svd.setViewForSofaNbr(sofaNbr, aView);
       verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, sofa);
       return aView;
@@ -2731,7 +2727,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * input, which would make this logic fail.
    */
   private void verifySofaNameUniqueIfDeserializedViewAdded(int sofaNbr, SofaFS aSofa) {
-    final int curViewCount = this.svd.viewCount;
+    final int curViewCount = svd.viewCount;
     if (curViewCount < sofaNbr) {
       // Only true for deserialized sofas with new views being either created,
       // or
@@ -2739,14 +2735,14 @@ public class CASImpl extends AbstractCas_ImplBase
       // views.
       // Assume sofa numbers are incrementing by 1
       assert (sofaNbr == curViewCount + 1);
-      this.svd.viewCount = sofaNbr;
+      svd.viewCount = sofaNbr;
       String id = aSofa.getSofaID();
       // final Feature idFeat =
       // getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
       // String id =
       // ll_getStringValue(((FeatureStructureImpl)aSofa).getAddress(),
       // ((FeatureImpl) idFeat).getCode());
-      Misc.assertUie(this.svd.sofaNameSet.contains(id));
+      Misc.assertUie(svd.sofaNameSet.contains(id));
       // this.svd.sofaNameSet.add(id);
     }
   }
@@ -2768,7 +2764,7 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   @Override
   public LowLevelIndexRepository ll_getIndexRepository() {
-    return this.indexRepository;
+    return indexRepository;
   }
 
   /**
@@ -4002,7 +3998,7 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   @Override
   public ClassLoader getJCasClassLoader() {
-    return this.svd.jcasClassLoader;
+    return svd.jcasClassLoader;
   }
 
   /*
@@ -4012,11 +4008,11 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   @Override
   public void setJCasClassLoader(ClassLoader classLoader) {
-    this.svd.jcasClassLoader = classLoader;
+    svd.jcasClassLoader = classLoader;
   }
 
   public void switchClassLoader(ClassLoader newClassLoader, boolean wasLocked) {
-    this.svd.switchClassLoader(newClassLoader, wasLocked);
+    svd.switchClassLoader(newClassLoader, wasLocked);
   }
 
   // Internal use only, public for cross package use
@@ -4049,8 +4045,8 @@ public class CASImpl extends AbstractCas_ImplBase
   // }
 
   public void restoreClassLoaderUnlockCas() {
-    boolean empty_switchControl = this.svd.switchControl.isEmpty();
-    SwitchControl switchControlInstance = empty_switchControl ? null : this.svd.switchControl.pop();
+    boolean empty_switchControl = svd.switchControl.isEmpty();
+    SwitchControl switchControlInstance = empty_switchControl ? null : svd.switchControl.pop();
     if (empty_switchControl || !switchControlInstance.wasLocked) {
       // unlock CAS functions
       enableReset(true);
@@ -4511,10 +4507,10 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   // @formatter:on
   public void updateDocumentAnnotation() {
-    if (!mySofaIsValid() || this == this.svd.baseCAS) {
+    if (!mySofaIsValid() || this == svd.baseCAS) {
       return;
     }
-    String newDoc = this.mySofaRef.getLocalStringData();
+    String newDoc = mySofaRef.getLocalStringData();
     if (null != newDoc) {
       Annotation docAnnot = getDocumentAnnotationNoCreate();
       if (docAnnot != null) {
@@ -4556,7 +4552,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   public <T extends AnnotationFS> T getDocumentAnnotationNoCreate() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no document
       return null;
     }
@@ -4592,7 +4588,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public String getDocumentLanguage() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no document
       return null;
     }
@@ -4601,12 +4597,12 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public String getDocumentText() {
-    return this.getSofaDataString();
+    return getSofaDataString();
   }
 
   @Override
   public String getSofaDataString() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no document
       return null;
     }
@@ -4615,7 +4611,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public FeatureStructure getSofaDataArray() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no Sofa
       return null;
     }
@@ -4624,7 +4620,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public String getSofaDataURI() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no Sofa
       return null;
     }
@@ -4633,7 +4629,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public InputStream getSofaDataStream() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no Sofa nothin
       return null;
     }
@@ -4644,7 +4640,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public String getSofaMimeType() {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       // base CAS has no Sofa
       return null;
     }
@@ -4671,7 +4667,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   private boolean mySofaIsValid() {
-    return this.mySofaRef != null;
+    return mySofaRef != null;
   }
 
   void setDocTextFromDeserializtion(String text) {
@@ -4683,7 +4679,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   @Override
   public void setDocumentLanguage(String languageCode) {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD,
               "setDocumentLanguage(String)");
     }
@@ -4691,13 +4687,13 @@ public class CASImpl extends AbstractCas_ImplBase
     FeatureImpl languageFeature = getTypeSystemImpl().langFeat;
     languageCode = Language.normalize(languageCode);
     boolean wasRemoved = this.checkForInvalidFeatureSetting(docAnnot, languageFeature.getCode(),
-            this.getAddbackSingle());
+            getAddbackSingle());
     docAnnot.setStringValue(getTypeSystemImpl().langFeat, languageCode);
     addbackSingleIfWasRemoved(wasRemoved, docAnnot);
   }
 
   private void setSofaThingsMime(Consumer<Sofa> c, String msg) {
-    if (this == this.svd.baseCAS) {
+    if (this == svd.baseCAS) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, msg);
     }
     Sofa sofa = getSofaRef();
@@ -4728,11 +4724,11 @@ public class CASImpl extends AbstractCas_ImplBase
   @Override
   public void setCurrentComponentInfo(ComponentInfo info) {
     // always store component info in base CAS
-    this.svd.componentInfo = info;
+    svd.componentInfo = info;
   }
 
   ComponentInfo getCurrentComponentInfo() {
-    return this.svd.componentInfo;
+    return svd.componentInfo;
   }
 
   /**
@@ -4749,7 +4745,7 @@ public class CASImpl extends AbstractCas_ImplBase
     // throw e;
     // }
     // }
-    this.indexRepository.addFS(fs);
+    indexRepository.addFS(fs);
   }
 
   /**
@@ -4757,7 +4753,7 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   @Override
   public void removeFsFromIndexes(FeatureStructure fs) {
-    this.indexRepository.removeFS(fs);
+    indexRepository.removeFS(fs);
   }
 
   /**
@@ -4806,12 +4802,12 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   public int getNumberOfViews() {
     CASImpl initialView = getInitialView(); // creates one if not existing, w/o sofa
-    int nbrSofas = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
+    int nbrSofas = svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
     return initialView.mySofaIsValid() ? nbrSofas : 1 + nbrSofas;
   }
 
   public int getNumberOfSofas() {
-    return this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
+    return svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
   }
 
   /*
@@ -4914,7 +4910,7 @@ public class CASImpl extends AbstractCas_ImplBase
    *          action to perform on the views.
    */
   public void forAllViews(Consumer<CASImpl> processViews) {
-    final int numViews = this.getNumberOfViews();
+    final int numViews = getNumberOfViews();
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
       CASImpl view = (viewNbr == 1) ? getInitialView() : (CASImpl) getView(viewNbr);
       processViews.accept(view);
@@ -4940,7 +4936,7 @@ public class CASImpl extends AbstractCas_ImplBase
    *          the code to execute
    */
   void forAllIndexRepos(Consumer<FSIndexRepositoryImpl> processIr) {
-    final int numViews = this.getViewCount();
+    final int numViews = getViewCount();
     for (int viewNum = 1; viewNum <= numViews; viewNum++) {
       processIr.accept(this.getSofaIndexRepository(viewNum));
     }
@@ -5080,21 +5076,21 @@ public class CASImpl extends AbstractCas_ImplBase
     if (isCasLocked()) {
       throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
     }
-    this.svd.trackingMark = new MarkerImpl(this.getLastUsedFsId() + 1, this);
-    if (this.svd.modifiedPreexistingFSs == null) {
-      this.svd.modifiedPreexistingFSs = new IdentityHashMap<>();
+    svd.trackingMark = new MarkerImpl(getLastUsedFsId() + 1, this);
+    if (svd.modifiedPreexistingFSs == null) {
+      svd.modifiedPreexistingFSs = new IdentityHashMap<>();
     }
-    if (this.svd.modifiedPreexistingFSs.size() > 0) {
+    if (svd.modifiedPreexistingFSs.size() > 0) {
       errorMultipleMarkers();
     }
 
-    if (this.svd.trackingMarkList == null) {
-      this.svd.trackingMarkList = new ArrayList<>();
+    if (svd.trackingMarkList == null) {
+      svd.trackingMarkList = new ArrayList<>();
     } else {
       errorMultipleMarkers();
     }
-    this.svd.trackingMarkList.add(this.svd.trackingMark);
-    return this.svd.trackingMark;
+    svd.trackingMarkList.add(svd.trackingMark);
+    return svd.trackingMark;
   }
 
   private void errorMultipleMarkers() {
@@ -5103,7 +5099,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
   // made public https://issues.apache.org/jira/browse/UIMA-2478
   public MarkerImpl getCurrentMark() {
-    return this.svd.trackingMark;
+    return svd.trackingMark;
   }
 
   /**
@@ -5111,14 +5107,14 @@ public class CASImpl extends AbstractCas_ImplBase
    * @return an array of FsChange items, one per modified Fs, sorted in order of fs._id
    */
   FsChange[] getModifiedFSList() {
-    final Map<TOP, FsChange> mods = this.svd.modifiedPreexistingFSs;
+    final Map<TOP, FsChange> mods = svd.modifiedPreexistingFSs;
     FsChange[] r = mods.values().toArray(new FsChange[mods.size()]);
     Arrays.sort(r, 0, mods.size(), (c1, c2) -> Integer.compare(c1.fs._id, c2.fs._id));
     return r;
   }
 
   boolean isInModifiedPreexisting(TOP fs) {
-    return this.svd.modifiedPreexistingFSs.containsKey(fs);
+    return svd.modifiedPreexistingFSs.containsKey(fs);
   }
 
   @Override
@@ -5205,7 +5201,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   public <T extends TOP> T getFsFromId(int id) {
-    return (T) this.svd.id2fs.get(id);
+    return (T) svd.id2fs.get(id);
   }
 
   // /**
@@ -5287,7 +5283,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   public boolean isInCAS(FeatureStructure fs) {
-    return ((TOP) fs)._casView.getBaseCAS() == this.getBaseCAS();
+    return ((TOP) fs)._casView.getBaseCAS() == getBaseCAS();
   }
 
   // /**
@@ -5579,7 +5575,7 @@ public class CASImpl extends AbstractCas_ImplBase
   }
 
   CommonSerDesSequential newCsds() {
-    return svd.csds = new CommonSerDesSequential(this.getBaseCAS());
+    return svd.csds = new CommonSerDesSequential(getBaseCAS());
   }
 
   /**
@@ -5914,9 +5910,9 @@ public class CASImpl extends AbstractCas_ImplBase
 
     MeasureSwitchType(TypeImpl oldType, TypeImpl newType) {
       this.oldType = oldType;
-      this.oldJCasClassName = oldType.getJavaClass().getName();
+      oldJCasClassName = oldType.getJavaClass().getName();
       this.newType = newType;
-      this.newJCasClassName = newType.getJavaClass().getName();
+      newJCasClassName = newType.getJavaClass().getName();
     }
 
     @Override
@@ -5935,10 +5931,7 @@ public class CASImpl extends AbstractCas_ImplBase
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (!(obj instanceof MeasureSwitchType)) {
+      if ((obj == null) || !(obj instanceof MeasureSwitchType)) {
         return false;
       }
       MeasureSwitchType other = (MeasureSwitchType) obj;
@@ -6049,7 +6042,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * @return the initial heap size specified or defaulted
    */
   public int getInitialHeapSize() {
-    return this.svd.initialHeapSize;
+    return svd.initialHeapSize;
   }
 
   // backwards compatibility - reinit calls

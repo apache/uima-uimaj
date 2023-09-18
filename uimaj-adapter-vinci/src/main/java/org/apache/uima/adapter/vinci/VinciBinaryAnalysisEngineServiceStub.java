@@ -53,14 +53,10 @@ import org.apache.vinci.transport.document.AFrame;
  */
 public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServiceStub {
 
-  /** The Constant debug. */
   private static final boolean debug = false;
 
-  /** The m vinci client. */
-  private VinciClient mVinciClient;
-
-  /** The m owner. */
-  private AnalysisEngineServiceAdapter mOwner;
+  private final VinciClient mVinciClient;
+  private final AnalysisEngineServiceAdapter mOwner;
 
   /**
    * Timeout to use for process and collectionProcessComplete calls.
@@ -109,6 +105,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
     // open Vinci connection
     try {
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
+
       // Override vinci default VNS settings
       String vnsHost = null;
       String vnsPort = null;
@@ -121,13 +118,15 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       }
       if (vnsHost == null) {
         vnsHost = System.getProperty("VNS_HOST");
-        if (vnsHost == null)
+        if (vnsHost == null) {
           vnsHost = Constants.DEFAULT_VNS_HOST;
+        }
       }
       if (vnsPort == null) {
         vnsPort = System.getProperty("VNS_PORT");
-        if (vnsPort == null)
+        if (vnsPort == null) {
           vnsPort = "9000";
+        }
       }
       vctx.setVNSHost(vnsHost);
       vctx.setVNSPort(Integer.parseInt(vnsPort));
@@ -264,8 +263,8 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
       // deserialize CAS from response frame
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
-      CASSerializer responseSerializer = (CASSerializer) SerializationUtils
-              .deserialize(responseCasBytes);
+      CASSerializer responseSerializer = SerializationUtils
+              .deserializeCASSerializer(responseCasBytes);
       ((CASImpl) cas).getBinaryCasSerDes().reinit(responseSerializer);
 
       // also read annotation time and enter into AnalysisEngineManagementMBean

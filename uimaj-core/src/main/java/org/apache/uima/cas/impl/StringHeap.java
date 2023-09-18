@@ -41,8 +41,8 @@ final class StringHeap {
   // Initialize internal datastructures. This used to be a lot more complicated when we had the
   // character heap option.
   private void initMemory() {
-    this.stringList = new ArrayList<>();
-    this.stringList.add(null);
+    stringList = new ArrayList<>();
+    stringList.add(null);
   }
 
   /**
@@ -67,7 +67,7 @@ final class StringHeap {
       stringLength = shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET];
       String s = charHeapInString.substring(stringOffset, stringOffset + stringLength);
       String reuse = reuseStrings.putIfAbsent(s, s);
-      this.stringList.add(reuse != null ? reuse : s);
+      stringList.add(reuse != null ? reuse : s);
     }
   }
 
@@ -83,13 +83,13 @@ final class StringHeap {
   StringHeapDeserializationHelper serialize(int startPos) {
     StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
     // Ref heap is 3 times the size of the string list.
-    shdh.refHeap = new int[(this.stringList.size() - startPos + 1)
+    shdh.refHeap = new int[(stringList.size() - startPos + 1)
             * StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE];
     shdh.refHeapPos = shdh.refHeap.length;
     // Compute required size of character heap.
     int charHeapSize = 0;
-    for (int i = startPos; i < this.stringList.size(); i++) {
-      String s = this.stringList.get(i);
+    for (int i = startPos; i < stringList.size(); i++) {
+      String s = stringList.get(i);
       if (s != null) {
         charHeapSize += s.length();
       }
@@ -100,8 +100,8 @@ final class StringHeap {
     int charCount = 0;
     // Now write out the actual data
     int r = 1;
-    for (int i = startPos; i < this.stringList.size(); i++) {
-      String s = this.stringList.get(i);
+    for (int i = startPos; i < stringList.size(); i++) {
+      String s = stringList.get(i);
       int refHeapOffset = r * StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE;
       shdh.refHeap[refHeapOffset
               + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = charCount;
@@ -125,12 +125,12 @@ final class StringHeap {
     if (stringCode == LowLevelCAS.NULL_FS_REF) {
       return null;
     }
-    return this.stringList.get(stringCode);
+    return stringList.get(stringCode);
   }
 
   // Who uses this?
   int copyCharsToBuffer(int stringCode, char[] buffer, int start) {
-    final String str = this.stringList.get(stringCode);
+    final String str = stringList.get(stringCode);
     final int len = str.length();
     final int requestedMax = start + len;
     // Check that the buffer is long enough to copy the whole string. If it isn't long enough, we
@@ -153,8 +153,8 @@ final class StringHeap {
     if (s == null) {
       return LowLevelCAS.NULL_FS_REF;
     }
-    final int addr = this.stringList.size();
-    this.stringList.add(s);
+    final int addr = stringList.size();
+    stringList.add(s);
     return addr;
   }
 
@@ -166,11 +166,11 @@ final class StringHeap {
   // Who uses this?
   int addCharBuffer(char[] buffer, int start, int length) {
     String s = new String(buffer, start, length);
-    return this.addString(s);
+    return addString(s);
   }
 
   int getCharArrayLength(int stringCode) {
-    return this.stringList.get(stringCode).length();
+    return stringList.get(stringCode).length();
   }
 
   int getLeastStringCode() {
@@ -178,11 +178,11 @@ final class StringHeap {
   }
 
   int getLargestStringCode() {
-    return this.stringList.size() - 1;
+    return stringList.size() - 1;
   }
 
   int getSize() {
-    return this.stringList.size();
+    return stringList.size();
   }
 
   public String[] toArray() {

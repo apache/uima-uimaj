@@ -559,7 +559,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     cas = ((CASImpl) ((aCas instanceof JCas) ? ((JCas) aCas).getCas() : aCas)).getBaseCAS();
     bcsd = cas.getBinaryCasSerDes();
 
-    this.srcTs = cas.getTypeSystemImpl();
+    srcTs = cas.getTypeSystemImpl();
     this.mark = mark;
 
     if (null != mark && !mark.isValid()) {
@@ -567,7 +567,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
 
     this.doMeasurements = doMeasurements;
-    this.sm = doMeasurements ? new SerializationMeasures() : null;
+    sm = doMeasurements ? new SerializationMeasures() : null;
 
     isDelta = isSerializingDelta = (mark != null);
     typeMapper = srcTs.getTypeSystemMapper(tgtTs);
@@ -618,37 +618,37 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    */
   BinaryCasSerDes6(BinaryCasSerDes6 f6, TypeSystemImpl tgtTs)
           throws ResourceInitializationException {
-    this.cas = f6.cas;
-    this.bcsd = f6.bcsd;
-    this.stringHeapObj = f6.stringHeapObj;
-    this.nextFsId = f6.nextFsId;
+    cas = f6.cas;
+    bcsd = f6.bcsd;
+    stringHeapObj = f6.stringHeapObj;
+    nextFsId = f6.nextFsId;
 
-    this.srcTs = f6.srcTs;
+    srcTs = f6.srcTs;
     this.tgtTs = tgtTs; // passed in argument !
-    this.compressLevel = f6.compressLevel;
-    this.compressStrategy = f6.compressStrategy;
+    compressLevel = f6.compressLevel;
+    compressStrategy = f6.compressStrategy;
 
-    this.mark = f6.mark;
+    mark = f6.mark;
     if (null != mark && !mark.isValid()) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
     }
 
-    this.isDelta = this.isSerializingDelta = (mark != null);
-    this.fsStartIndexes = f6.fsStartIndexes;
-    this.reuseInfoProvided = f6.reuseInfoProvided;
-    this.doMeasurements = f6.doMeasurements;
-    this.sm = f6.sm;
+    isDelta = isSerializingDelta = (mark != null);
+    fsStartIndexes = f6.fsStartIndexes;
+    reuseInfoProvided = f6.reuseInfoProvided;
+    doMeasurements = f6.doMeasurements;
+    sm = f6.sm;
 
-    this.isTsIncluded = f6.isTsIncluded;
-    this.isTsiIncluded = f6.isTsiIncluded;
+    isTsIncluded = f6.isTsIncluded;
+    isTsiIncluded = f6.isTsiIncluded;
 
-    this.typeMapper = srcTs.getTypeSystemMapper(tgtTs);
-    this.isTypeMapping = (null != typeMapper);
-    this.prevHeapInstanceWithIntValues = f6.prevHeapInstanceWithIntValues;
-    this.prevFsWithLongValues = f6.prevFsWithLongValues;
-    this.foundFSs = f6.foundFSs;
-    this.foundFSsBelowMark = f6.foundFSsBelowMark;
-    this.fssToSerialize = f6.fssToSerialize;
+    typeMapper = srcTs.getTypeSystemMapper(tgtTs);
+    isTypeMapping = (null != typeMapper);
+    prevHeapInstanceWithIntValues = f6.prevHeapInstanceWithIntValues;
+    prevFsWithLongValues = f6.prevFsWithLongValues;
+    foundFSs = f6.foundFSs;
+    foundFSsBelowMark = f6.foundFSsBelowMark;
+    fssToSerialize = f6.fssToSerialize;
 
   }
 
@@ -937,7 +937,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   private void serializeArray(TOP fs) throws IOException {
     final TypeImpl_array arrayType = (TypeImpl_array) fs._getTypeImpl();
-    CommonArrayFS a = (CommonArrayFS) fs;
+    CommonArrayFS<?> a = (CommonArrayFS<?>) fs;
     final SlotKind arrayElementKind = arrayType.getComponentSlotKind();
 
     final int length = serializeArrayLength(a);
@@ -965,7 +965,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         // prev = getTgtSeqFromSrcFS(prevFsArray.get(0));
         // } // else use the preset 0 value
 
-        for (TOP element : ((FSArray) fs)._getTheArray()) {
+        for (TOP element : ((FSArray<?>) fs)._getTheArray()) {
           final int v = getTgtSeqFromSrcFS(element);
           writeDiff(io, v, prev);
           if (isUpdatePrevOK && isFirstElement) {
@@ -1049,7 +1049,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * Caller iterates over target slots, but the feat arg is for the corresponding src feature
    * @param fs the FS whose slot "feat" is to be serialize
    * @param feat the corresponding source feature slot to serialize
-   * @throws IOException
    */
   // @formatter:on
   private void serializeByKind(TOP fs, FeatureImpl feat) throws IOException {
@@ -1096,7 +1095,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     } // end of switch
   }
 
-  private int serializeArrayLength(CommonArrayFS array) throws IOException {
+  private int serializeArrayLength(CommonArrayFS<?> array) throws IOException {
     final int length = array.size();
     writeVnumber(arrayLength_i, length);
     return length;
@@ -1114,8 +1113,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   /**
    * Called for non-arrays
    * 
-   * @param fs
-   *          used to get the type
+   * @param ti
+   *          the type
    * @param featOffset
    *          offset to the slot
    * @param newValue
@@ -1133,9 +1132,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   /**
    * version called for arrays, captures the 0th value
-   * 
-   * @param ti
-   * @param newValue
    */
   private void updatePrevArray0IntValue(TypeImpl ti, int newValue) {
     final int[] featCache = initPrevIntValue(ti);
@@ -1237,9 +1233,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         long startTime = System.currentTimeMillis();
         int zipBufSize = Math.max(1024, baos.size() / 100);
         deflater.reset();
-        DeflaterOutputStream cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize);
-        baos.writeTo(cds);
-        cds.close();
+        try (var cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize)) {
+          baos.writeTo(cds);
+        }
         idxAndLen.add(i);
         if (doMeasurements) {
           idxAndLen.add((int) (sm.statDetails[i].afterZip = deflater.getBytesWritten()));
@@ -1590,13 +1586,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       for (FsChange changedFs : modifiedFSs) {
         final TOP fs = changedFs.fs;
         final TypeImpl srcType = fs._getTypeImpl();
-        if (isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType)) {
-          continue; // skip this fs - it's not in target type system
-        }
-
         // probably don't need this test, because change logging is done when a mark is set,
         // only for items below the line
-        if (!foundFSsBelowMark.contains(fs._id)) {
+        if ((isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType)) || !foundFSsBelowMark.contains(fs._id)) {
           // System.out.format(" skipping heap addr %,d%n", currentFsId);
           continue;
         }
@@ -1687,9 +1679,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      *       - Because of this, 
      *          -- v2 deserialization can't read v3 serializations 
      *          -- v3 deserialization can   read v2 serializatoins, though.
-     *         
-     * @param fsChange
-     * @throws IOException
      */
     // @formatter:on
     private void writeModsForOneFs(FsChange fsChange) throws IOException {
@@ -1728,20 +1717,17 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
               writeDiff(int_i, vs, vPrevModShort);
               vPrevModShort = vs;
               break;
-
             case Slot_LongRef: {
               final long v = ((LongArray) fs).get(index);
               writeLong(v, vPrevModLong);
               vPrevModLong = v;
               break;
             }
-
             case Slot_DoubleRef: {
               final long v = Double.doubleToRawLongBits(((DoubleArray) fs).get(index));
               writeDouble(v);
               break;
             }
-
             case Slot_Int:
               vPrevModInt = writeDiff(int_i, ((IntegerArray) fs).get(index), vPrevModInt);
               break;
@@ -1862,12 +1848,12 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * 
    * @param istream
    *          input stream
-   * @param allowPreexistingFS
+   * @param aAllowPreexistingFS
    *          what to do if item already exists below the mark
    * @throws IOException
    *           passthru
    */
-  public void deserialize(InputStream istream, AllowPreexistingFS allowPreexistingFS)
+  public void deserialize(InputStream istream, AllowPreexistingFS aAllowPreexistingFS)
           throws IOException {
     Header h = readHeader(istream);
 
@@ -1880,19 +1866,19 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       throw new UnsupportedOperationException("Delta CAS required for this call");
     }
 
-    bcsd.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, allowPreexistingFS, null);
+    bcsd.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, aAllowPreexistingFS, null);
   }
 
-  public void deserializeAfterVersion(DataInputStream istream, boolean isDelta,
-          AllowPreexistingFS allowPreexistingFS) throws IOException {
+  public void deserializeAfterVersion(DataInputStream istream, boolean aIsDelta,
+          AllowPreexistingFS aAllowPreexistingFS) throws IOException {
 
-    this.allowPreexistingFS = allowPreexistingFS;
-    if (allowPreexistingFS == AllowPreexistingFS.ignore) {
+    allowPreexistingFS = aAllowPreexistingFS;
+    if (aAllowPreexistingFS == AllowPreexistingFS.ignore) {
       throw new UnsupportedOperationException("AllowPreexistingFS.ignore not an allowed setting");
     }
 
     deserIn = istream;
-    this.isDelta = isReadingDelta = isDelta;
+    isDelta = isReadingDelta = aIsDelta;
     setupReadStreams();
 
     /************************************************
@@ -1964,9 +1950,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     // @formatter:n
     
     // currentFsId only used in error message
-    for (int currentFsId = nextFsId, nbrFSs = 0, nextFsAddr = 1; this.bcsd.isBeforeV3
+    for (int currentFsId = nextFsId, nbrFSs = 0, nextFsAddr = 1; bcsd.isBeforeV3
             ? nextFsAddr < totalMappedHeapSize
-            : nbrFSs < nbrNewFSsInTarget; nbrFSs++, nextFsAddr += this.bcsd.isBeforeV3
+            : nbrFSs < nbrNewFSsInTarget; nbrFSs++, nextFsAddr += bcsd.isBeforeV3
                     ? tgtType.getFsSpaceReq(lastArrayLength)
                     : 0) {
 
@@ -2149,13 +2135,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
 
   /**
-   * 
-   * @param storeIt
    * @param srcType
    *          may be null if there's no source type for target when deserializing
    * @param tgtType
    *          the type being deserialized
-   * @throws IOException
    */
   private void readArray(boolean storeIt, TypeImpl srcType, TypeImpl tgtType) throws IOException {
     final int length = readArrayLength();
@@ -2267,7 +2250,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   // @formatter:off
   /**
-   * @param The feature structure to set feature value in, but may be null if it was deferred,
+   * @param fs The feature structure to set feature value in, but may be null if it was deferred,
    *          - happens for Sofas and subtypes of AnnotationBase
    *            because those have "final" values
    *        For Sofa: these are the sofaid (String) and sofanum (int)
@@ -2311,7 +2294,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
 
         if (srcTs.annotBaseSofaFeat != srcFeat || sofaRef == null) {
-          https: // issues.apache.org/jira/browse/UIMA-5588
+          // https://issues.apache.org/jira/browse/UIMA-5588
           maybeStoreOrDefer(storeIt, fs, (lfs) -> {
 
             // outer defer done if fs is null; it is a one-feature-structure defer for sofa or
@@ -2439,8 +2422,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   /**
    * process index information to re-index things
-   * 
-   * @throws IOException
    */
   private void readIndexedFeatureStructures() throws IOException {
     final int nbrViews = readVnumber(control_dis);
@@ -2667,11 +2648,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
 
   /**
-   * 
    * @param storeIt
    *          true to store value, false to skip it
    * @return the string
-   * @throws IOException
    */
   private String readString(boolean storeIt) throws IOException {
     final int length = decodeIntSign(readVnumber(strLength_dis));
@@ -2891,7 +2870,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      *          the modified feature structure
      * @param srcType
      *          the type of the modified feature structure
-     * @throws IOException
      */
     private void readModifiedMainHeap(int numberOfMods, TOP fs, TypeImpl srcType)
             throws IOException {
@@ -3100,15 +3078,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   /**
    * processes one view's worth of feature structures
-   * 
-   * @param fsIndexes
-   * @param fsNdxStart
-   * @param isDoingEnqueue
-   * @param isWrite
-   * @return
-   * @throws IOException
    */
-
   private void processFSsForView(final boolean isEnqueue, Stream<TOP> fss) {
     // prev id and entries written as a captured value in context
 
@@ -3155,13 +3125,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
   }
 
-  // @formatter:off
   /**
-   * Add Fs to toBeProcessed and set foundxxx bit
-   *   - skip this if doesn't exist in target type system
-   * @param fs
+   * Add Fs to toBeProcessed and set foundxxx bit - skip this if doesn't exist in target type system
    */
-  // @formatter:on
   private void enqueueFS(TOP fs) {
     if (null == fs || !isTypeInTgt(fs)) {
       return;
@@ -3618,7 +3584,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    *   fs == null -> 0
    *   type not in target -> 0
    *   map src fs._id to tgt seq
-   * @param fs
    * @return 0 or the mapped src id
    */
   // @formatter:on
@@ -3637,7 +3602,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
 
   TypeSystemImpl getTgtTs() {
-    return this.tgtTs;
+    return tgtTs;
   }
 
   // number of views: cas.getNumberOfViews()

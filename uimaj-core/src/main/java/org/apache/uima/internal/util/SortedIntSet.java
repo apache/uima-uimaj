@@ -33,13 +33,13 @@ public class SortedIntSet {
 
   /** Default constructor. */
   public SortedIntSet() {
-    this.vector = new IntVector();
+    vector = new IntVector();
   }
 
   public SortedIntSet(int[] array) {
     this();
     for (int i = 0; i < array.length; i++) {
-      this.add(array[i]);
+      add(array[i]);
     }
   }
 
@@ -53,8 +53,8 @@ public class SortedIntSet {
    *         IntArrayUtils.binarySearch()}.
    */
   public int find(int ele) {
-    int[] array = this.vector.getArray();
-    return IntArrayUtils.binarySearch(array, ele, 0, this.vector.size());
+    int[] array = vector.getArray();
+    return IntArrayUtils.binarySearch(array, ele, 0, vector.size());
   }
 
   /**
@@ -63,7 +63,7 @@ public class SortedIntSet {
    * @return <code>true</code> iff <code>ele</code> is contained in the set.
    */
   public boolean contains(int ele) {
-    return this.find(ele) >= 0;
+    return find(ele) >= 0;
   }
 
   /**
@@ -74,11 +74,11 @@ public class SortedIntSet {
    * @return <code>true</code> iff <code>ele</code> was not already contained in the set.
    */
   public boolean add(int ele) {
-    final int pos = this.find(ele);
+    final int pos = find(ele);
     if (pos >= 0) {
       return false;
     }
-    this.vector.add(-(pos + 1), ele);
+    vector.add(-(pos + 1), ele);
     return true;
   }
 
@@ -90,11 +90,11 @@ public class SortedIntSet {
    * @return <code>true</code> iff <code>ele</code> was actually contained in the set.
    */
   public boolean remove(int ele) {
-    final int pos = this.find(ele);
+    final int pos = find(ele);
     if (pos < 0) {
       return false;
     }
-    this.vector.remove(pos);
+    vector.remove(pos);
     return true;
   }
 
@@ -104,7 +104,7 @@ public class SortedIntSet {
    * @return Current number of elements in set.
    */
   public int size() {
-    return this.vector.size();
+    return vector.size();
   }
 
   /**
@@ -115,22 +115,22 @@ public class SortedIntSet {
    * @return The element at this position.
    */
   public int get(int pos) {
-    return this.vector.get(pos);
+    return vector.get(pos);
   }
 
   public void union(SortedIntSet set) {
     final int max = set.size();
     for (int i = 0; i < max; i++) {
-      this.add(set.get(i));
+      add(set.get(i));
     }
   }
 
   public void removeAll() {
-    this.vector.removeAllElements();
+    vector.removeAllElements();
   }
 
   public int[] toArray() {
-    return this.vector.toArrayCopy();
+    return vector.toArrayCopy();
   }
 
   public int[] getArray() {

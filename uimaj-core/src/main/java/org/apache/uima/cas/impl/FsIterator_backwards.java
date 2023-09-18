@@ -33,7 +33,7 @@ class FsIterator_backwards<T extends FeatureStructure> implements LowLevelIterat
   final private LowLevelIterator<T> it; // not just for single-type iterators
 
   FsIterator_backwards(FSIterator<T> iterator) {
-    this.it = (LowLevelIterator<T>) iterator;
+    it = (LowLevelIterator<T>) iterator;
     it.moveToLast(); // will act like move to first
   }
 

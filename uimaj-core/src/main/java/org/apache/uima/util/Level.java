@@ -121,7 +121,7 @@ public class Level {
       // cast Object to Level
       Level r = (Level) o;
       // return true if both levels are the same
-      return (this.level == r.level);
+      return (level == r.level);
     } else // if o is no instance of Level return false
     {
       return false;
@@ -133,7 +133,7 @@ public class Level {
    */
   @Override
   public int hashCode() {
-    return this.level;
+    return level;
   }
 
   /**

@@ -74,7 +74,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
 
   @Override
   public NonEmptyFSList<T> createNonEmptyNode() {
-    return new NonEmptyFSList<>(this._casView.getJCasImpl());
+    return new NonEmptyFSList<>(_casView.getJCasImpl());
   }
 
   @Override
@@ -204,7 +204,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
 
   @Override
   public EmptyFSList emptyList() {
-    return this._casView.emptyFSList();
+    return _casView.emptyFSList();
   }
 
   public boolean contains(T v) {

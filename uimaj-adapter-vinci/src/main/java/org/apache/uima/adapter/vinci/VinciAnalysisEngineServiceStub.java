@@ -19,6 +19,9 @@
 
 package org.apache.uima.adapter.vinci;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,11 +57,8 @@ import org.apache.vinci.transport.document.AFrame;
  */
 public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub {
 
-  /** The m vinci client. */
-  private VinciClient mVinciClient;
-
-  /** The m owner. */
-  private Resource mOwner;
+  private final VinciClient mVinciClient;
+  private final Resource mOwner;
 
   /**
    * Timeout to use for process and collectionProcessComplete calls.
@@ -77,8 +77,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * Value to return from callGetSupportedXCasVersions method for older services that don't actually
    * implement this method.
    */
-  private static final List SUPPORT_XCAS_V1 = Collections
-          .unmodifiableList(Arrays.asList(new String[] { "1" }));
+  private static final List<String> SUPPORT_XCAS_V1 = unmodifiableList(asList("1"));
 
   /**
    * Instantiates a new vinci analysis engine service stub.
@@ -401,7 +400,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @throws ResourceServiceException
    *           the resource service exception
    */
-  public List callGetSupportedXCasVersions() throws ResourceServiceException {
+  public List<String> callGetSupportedXCasVersions() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();

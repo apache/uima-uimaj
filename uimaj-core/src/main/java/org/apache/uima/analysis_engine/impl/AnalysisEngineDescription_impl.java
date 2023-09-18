@@ -494,14 +494,14 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *           -
    */
   protected void validateSofaMappings() throws ResourceInitializationException {
-    if (this.isPrimitive()) {
+    if (isPrimitive()) {
       return;
     }
-    String aggName = this.getAnalysisEngineMetaData().getName();
+    String aggName = getAnalysisEngineMetaData().getName();
     // build an actual Map (key: componentKey@/@componentSofa) from the sofa mappings
     // along the way check that all component keys and component sofa names exist
     Map<String, String> sofamap = new TreeMap<>();
-    SofaMapping[] sofaMappings = this.getSofaMappings();
+    SofaMapping[] sofaMappings = getSofaMappings();
     if (sofaMappings != null) {
       for (int s = 0; s < sofaMappings.length; s++) {
         String componentKey = sofaMappings[s].getComponentKey();
@@ -627,7 +627,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (!containsRemote) {
       // check that all aggregate outputs and inputs were mapped correclty to
       // component inputs/outputs
-      Capability[] caps = this.getAnalysisEngineMetaData().getCapabilities();
+      Capability[] caps = getAnalysisEngineMetaData().getCapabilities();
       for (int i = 0; i < caps.length; i++) {
         String[] sofas = caps[i].getOutputSofas();
         for (int j = 0; j < sofas.length; j++) {
@@ -669,7 +669,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   }
 
   protected boolean capabilitiesContainSofa(String aSofaName, boolean aOutput) {
-    Capability[] caps = this.getAnalysisEngineMetaData().getCapabilities();
+    Capability[] caps = getAnalysisEngineMetaData().getCapabilities();
     for (int i = 0; i < caps.length; i++) {
       String[] sofas = aOutput ? caps[i].getOutputSofas() : caps[i].getInputSofas();
       for (int j = 0; j < sofas.length; j++) {
@@ -870,7 +870,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           // users who create
           // new import objects
           if (aeImport instanceof Import_impl) {
-            ((Import_impl) aeImport).setSourceUrlIfNull(this.getSourceUrl());
+            ((Import_impl) aeImport).setSourceUrlIfNull(getSourceUrl());
           }
           // locate import target
           URL url = aeImport.findAbsoluteUrl(aResourceManager);

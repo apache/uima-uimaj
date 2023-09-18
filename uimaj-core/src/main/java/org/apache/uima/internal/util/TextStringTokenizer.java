@@ -115,9 +115,9 @@ public class TextStringTokenizer {
    */
   public TextStringTokenizer(String string) {
     // assert(string != null);
-    this.text = string;
-    this.pos = 0;
-    this.end = string.length() - 1;
+    text = string;
+    pos = 0;
+    end = string.length() - 1;
     setToNext();
   }
 
@@ -128,7 +128,7 @@ public class TextStringTokenizer {
    *          The whitespace flag.
    */
   public void setShowWhitespace(boolean b) {
-    this.showWhitespace = b;
+    showWhitespace = b;
   }
 
   /**
@@ -138,7 +138,7 @@ public class TextStringTokenizer {
    *          The flag.
    */
   public void setShowSeparators(boolean b) {
-    this.showSeparators = b;
+    showSeparators = b;
   }
 
   /**
@@ -151,7 +151,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       makeSortedList("");
     } else {
-      this.eosDels = makeSortedList(chars);
+      eosDels = makeSortedList(chars);
     }
   }
 
@@ -165,7 +165,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       return;
     }
-    this.eosDels = addToSortedList(chars, this.eosDels);
+    eosDels = addToSortedList(chars, eosDels);
   }
 
   /**
@@ -178,7 +178,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       chars = "";
     }
-    this.separators = makeSortedList(chars);
+    separators = makeSortedList(chars);
   }
 
   /**
@@ -191,7 +191,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       return;
     }
-    this.separators = addToSortedList(chars, this.separators);
+    separators = addToSortedList(chars, separators);
   }
 
   /**
@@ -204,7 +204,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       chars = "";
     }
-    this.whitespace = makeSortedList(chars);
+    whitespace = makeSortedList(chars);
   }
 
   /**
@@ -217,7 +217,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       return;
     }
-    this.whitespace = addToSortedList(chars, this.whitespace);
+    whitespace = addToSortedList(chars, whitespace);
   }
 
   /**
@@ -230,7 +230,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       chars = "";
     }
-    this.wordChars = makeSortedList(chars);
+    wordChars = makeSortedList(chars);
   }
 
   /**
@@ -243,7 +243,7 @@ public class TextStringTokenizer {
     if (chars == null) {
       return;
     }
-    this.wordChars = addToSortedList(chars, this.wordChars);
+    wordChars = addToSortedList(chars, wordChars);
   }
 
   /**
@@ -252,8 +252,8 @@ public class TextStringTokenizer {
    * @return The token type, or <code>-1</code> if there is no next token.
    */
   public int getTokenType() {
-    if (this.nextComputed) {
-      return this.nextTokenType;
+    if (nextComputed) {
+      return nextTokenType;
     }
     return -1;
   }
@@ -264,14 +264,14 @@ public class TextStringTokenizer {
    * @return <code>true</code> iff there is a next token.
    */
   public boolean isValid() {
-    return this.nextComputed;
+    return nextComputed;
   }
 
   /**
    * Reset the tokenizer at any time.
    */
   public void setToFirst() {
-    this.pos = 0;
+    pos = 0;
     setToNext();
   }
 
@@ -281,10 +281,10 @@ public class TextStringTokenizer {
    * @return The next token.
    */
   public String getToken() {
-    if (!this.nextComputed) {
+    if (!nextComputed) {
       return null;
     }
-    return this.text.substring(this.nextTokenStart, this.nextTokenEnd);
+    return text.substring(nextTokenStart, nextTokenEnd);
   }
 
   /**
@@ -293,10 +293,10 @@ public class TextStringTokenizer {
    * @return The start of the token.
    */
   public int getTokenStart() {
-    if (!this.nextComputed) {
+    if (!nextComputed) {
       return -1;
     }
-    return this.nextTokenStart;
+    return nextTokenStart;
   }
 
   /**
@@ -305,59 +305,59 @@ public class TextStringTokenizer {
    * @return The token end.
    */
   public int getTokenEnd() {
-    if (!this.nextComputed) {
+    if (!nextComputed) {
       return -1;
     }
-    return this.nextTokenEnd;
+    return nextTokenEnd;
   }
 
   /**
    * Compute the next token.
    */
   public void setToNext() {
-    if (this.pos > this.end) {
-      this.nextComputed = false;
+    if (pos > end) {
+      nextComputed = false;
       return;
     }
-    this.nextTokenStart = this.pos;
-    int charType = getCharType(this.text.charAt(this.pos));
+    nextTokenStart = pos;
+    int charType = getCharType(text.charAt(pos));
     switch (charType) {
       case EOS: {
-        ++this.pos;
-        this.nextTokenType = EOS;
+        ++pos;
+        nextTokenType = EOS;
         break;
       }
       case SEP: {
-        ++this.pos;
-        if (!this.showSeparators) {
+        ++pos;
+        if (!showSeparators) {
           setToNext();
           return;
         }
-        this.nextTokenType = SEP;
+        nextTokenType = SEP;
         break;
       }
       case WSP: {
-        ++this.pos;
-        while (this.pos <= this.end && getCharType(this.text.charAt(this.pos)) == WSP) {
-          ++this.pos;
+        ++pos;
+        while (pos <= end && getCharType(text.charAt(pos)) == WSP) {
+          ++pos;
         }
-        if (!this.showWhitespace) {
+        if (!showWhitespace) {
           setToNext();
           return;
         }
-        this.nextTokenType = WSP;
+        nextTokenType = WSP;
         break;
       }
       case WCH: {
-        ++this.pos;
-        this.nextTokenType = WCH;
-        if (this.pos <= this.end) {
-          charType = getCharType(this.text.charAt(this.pos));
+        ++pos;
+        nextTokenType = WCH;
+        if (pos <= end) {
+          charType = getCharType(text.charAt(pos));
         } else {
           break;
         }
-        while (this.pos < this.end && (charType == WCH || charType == EOS)) {
-          ++this.pos;
+        while (pos < end && (charType == WCH || charType == EOS)) {
+          ++pos;
           // If the type of the _current_ character is EOS, check what
           // the type of the _next_ character is. If this is the last
           // char in the buffer, we treat it as an EOS char. If the
@@ -368,19 +368,19 @@ public class TextStringTokenizer {
           // the other hand, the current character is a WCH, keep on
           // looping.
           if (charType == EOS) { // Current char is EOS
-            if (this.pos >= this.end) { // If current char is last
+            if (pos >= end) { // If current char is last
               // char...
-              --this.pos; // ...reset position...
+              --pos; // ...reset position...
               break; // ...and break.
             }
-            charType = getCharType(this.text.charAt(this.pos));
+            charType = getCharType(text.charAt(pos));
             // Get type of next char
             if (charType != WCH) { // If next char is not WCH...
-              --this.pos; // ...reset position...
+              --pos; // ...reset position...
               break; // ...and break out of loop.
             }
           }
-          charType = getCharType(this.text.charAt(this.pos));
+          charType = getCharType(text.charAt(pos));
           // Get type of next char and keep on going.
         }
         break;
@@ -389,8 +389,8 @@ public class TextStringTokenizer {
         return;
       }
     }
-    this.nextTokenEnd = this.pos;
-    this.nextComputed = true;
+    nextTokenEnd = pos;
+    nextComputed = true;
     return;
   }
 
@@ -405,16 +405,16 @@ public class TextStringTokenizer {
     // First, check user-defined lists in the order end-of-sentence
     // delimiter, separator character, whitespace and finally regular
     // character that can be part of a word.
-    if (Arrays.binarySearch(this.eosDels, c) >= 0) {
+    if (Arrays.binarySearch(eosDels, c) >= 0) {
       return EOS;
     }
-    if (Arrays.binarySearch(this.separators, c) >= 0) {
+    if (Arrays.binarySearch(separators, c) >= 0) {
       return SEP;
     }
-    if (Arrays.binarySearch(this.whitespace, c) >= 0) {
+    if (Arrays.binarySearch(whitespace, c) >= 0) {
       return WSP;
     }
-    if (Arrays.binarySearch(this.wordChars, c) >= 0) {
+    if (Arrays.binarySearch(wordChars, c) >= 0) {
       return WCH;
     }
 

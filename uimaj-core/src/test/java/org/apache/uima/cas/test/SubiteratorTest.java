@@ -64,7 +64,7 @@ public class SubiteratorTest {
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
-      this.ae = UIMAFramework.produceAnalysisEngine(spec);
+      ae = UIMAFramework.produceAnalysisEngine(spec);
     } catch (IOException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -80,9 +80,9 @@ public class SubiteratorTest {
 
   @AfterEach
   public void tearDown() {
-    if (this.ae != null) {
-      this.ae.destroy();
-      this.ae = null;
+    if (ae != null) {
+      ae.destroy();
+      ae = null;
     }
   }
 
@@ -98,14 +98,14 @@ public class SubiteratorTest {
     }
     JCas jcas = null;
     try {
-      jcas = this.ae.newJCas();
+      jcas = ae.newJCas();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
     }
     jcas.setDocumentText(text);
     try {
-      this.ae.process(jcas);
+      ae.process(jcas);
 
       iterateAndcheck(jcas);
 

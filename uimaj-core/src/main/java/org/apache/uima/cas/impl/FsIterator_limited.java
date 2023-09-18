@@ -41,7 +41,7 @@ class FsIterator_limited<T extends FeatureStructure> implements LowLevelIterator
   FsIterator_limited(FSIterator<T> iterator, int limit) {
     this.iterator = (LowLevelIterator<T>) iterator;
     this.limit = limit;
-    this.limitReached = limit <= count;
+    limitReached = limit <= count;
   }
 
   private void maybeMakeInvalid() {
@@ -84,7 +84,7 @@ class FsIterator_limited<T extends FeatureStructure> implements LowLevelIterator
   public void moveToFirstNoReinit() {
     iterator.moveToFirstNoReinit();
     count = 0;
-    this.limitReached = limit <= count;
+    limitReached = limit <= count;
   }
 
   @Override
@@ -105,7 +105,7 @@ class FsIterator_limited<T extends FeatureStructure> implements LowLevelIterator
         count++;
       }
     }
-    this.limitReached = limit <= count;
+    limitReached = limit <= count;
   }
 
   @Override

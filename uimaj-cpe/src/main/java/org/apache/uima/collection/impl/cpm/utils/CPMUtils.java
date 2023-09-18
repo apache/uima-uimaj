@@ -377,7 +377,7 @@ public class CPMUtils {
     String appRoot = "annotators";
 
     File rootDir = new File(rootPath, appRoot);
-    if (rootDir.isDirectory() == false) {
+    if (!rootDir.isDirectory()) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_EXP_not_directory__WARNING",
               new Object[] { Thread.currentThread().getName(), appRoot }));

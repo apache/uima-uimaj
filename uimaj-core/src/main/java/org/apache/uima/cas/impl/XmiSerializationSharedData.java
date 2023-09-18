@@ -201,7 +201,7 @@ public class XmiSerializationSharedData {
    *          information about the out-of-typesystem XMI element
    */
   public void addOutOfTypeSystemElement(OotsElementData elemData) {
-    this.ootsFs.add(elemData);
+    ootsFs.add(elemData);
     // check if we need to update max ID
     int xmiId = Integer.parseInt(elemData.xmiId);
     if (xmiId > maxXmiId) {
@@ -218,7 +218,7 @@ public class XmiSerializationSharedData {
    *         objects
    */
   public List<OotsElementData> getOutOfTypeSystemElements() {
-    return Collections.unmodifiableList(this.ootsFs);
+    return Collections.unmodifiableList(ootsFs);
   }
 
   /**
@@ -231,7 +231,7 @@ public class XmiSerializationSharedData {
    *          given Sofa
    */
   public void addOutOfTypeSystemViewMember(String sofaXmiId, String memberXmiId) {
-    List<String> membersList = this.ootsViewMembers.computeIfAbsent(sofaXmiId,
+    List<String> membersList = ootsViewMembers.computeIfAbsent(sofaXmiId,
             k -> new ArrayList<>());
     membersList.add(memberXmiId);
   }
@@ -245,7 +245,7 @@ public class XmiSerializationSharedData {
    * @return List of xmi:id's of members of the view for the given Sofa.
    */
   public List<String> getOutOfTypeSystemViewMembers(String sofaXmiId) {
-    List<String> members = this.ootsViewMembers.get(sofaXmiId);
+    List<String> members = ootsViewMembers.get(sofaXmiId);
     return members == null ? null : Collections.unmodifiableList(members);
   }
 
@@ -261,10 +261,10 @@ public class XmiSerializationSharedData {
    *          value of the feature, as a string
    */
   public void addOutOfTypeSystemAttribute(TOP fs, String featName, String featVal) {
-    OotsElementData oed = this.ootsFeatures.get(fs);
+    OotsElementData oed = ootsFeatures.get(fs);
     if (oed == null) {
       oed = new OotsElementData(null, null, -1, -1);
-      this.ootsFeatures.put(fs, oed);
+      ootsFeatures.put(fs, oed);
     }
     oed.attributes.add(new XmlAttribute(featName, featVal));
   }
@@ -281,10 +281,10 @@ public class XmiSerializationSharedData {
    *          values of the feature, as a List of strings
    */
   public void addOutOfTypeSystemChildElements(TOP fs, String featName, ArrayList<String> featVals) {
-    OotsElementData oed = this.ootsFeatures.get(fs);
+    OotsElementData oed = ootsFeatures.get(fs);
     if (oed == null) {
       oed = new OotsElementData(null, null, -1, -1);
-      this.ootsFeatures.put(fs, oed);
+      ootsFeatures.put(fs, oed);
     }
     addOutOfTypeSystemFeature(oed, featName, featVals);
   }
@@ -307,7 +307,7 @@ public class XmiSerializationSharedData {
    *         child elements)
    */
   public OotsElementData getOutOfTypeSystemFeatures(TOP fs) {
-    return this.ootsFeatures.get(fs);
+    return ootsFeatures.get(fs);
   }
 
   /**
@@ -331,7 +331,7 @@ public class XmiSerializationSharedData {
    *         reference to an out-of-typesystem FS.
    */
   public List<XmiArrayElement> getOutOfTypeSystemArrayElements(FSArray fsarray) {
-    return this.ootsArrayElements.get(fsarray);
+    return ootsArrayElements.get(fsarray);
   }
 
   public boolean hasOutOfTypeSystemArrayElements() {
@@ -349,7 +349,7 @@ public class XmiSerializationSharedData {
    *          xmi:id of the out-of-typesystem element that is the value at the given index
    */
   public void addOutOfTypeSystemArrayElement(FSArray fsarray, int index, int xmiId) {
-    List<XmiArrayElement> list = this.ootsArrayElements.computeIfAbsent(fsarray,
+    List<XmiArrayElement> list = ootsArrayElements.computeIfAbsent(fsarray,
             k -> new ArrayList<>());
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
   }
@@ -364,7 +364,7 @@ public class XmiSerializationSharedData {
    *          - the encompassing Feature Structure
    */
   public void addNonsharedRefToFSMapping(TOP nonsharedFS, TOP fs) {
-    this.nonsharedfeatureIdToFSId.put(nonsharedFS, fs);
+    nonsharedfeatureIdToFSId.put(nonsharedFS, fs);
   }
 
   /**
@@ -372,7 +372,7 @@ public class XmiSerializationSharedData {
    * @return the non-shared featureId to FS Id key set
    */
   public TOP[] getNonsharedMulitValuedFSs() {
-    return getSortedKeys(this.nonsharedfeatureIdToFSId);
+    return getSortedKeys(nonsharedfeatureIdToFSId);
   }
 
   private TOP[] getSortedKeys(Map<TOP, ?> map) {

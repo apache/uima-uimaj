@@ -18,10 +18,15 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.uima.Constants.JAVA_FRAMEWORK_NAME;
 import static org.apache.uima.UIMAFramework.newConfigurationManager;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.analysis_engine.impl.metadata.MetaDataObjectAssert.assertFieldAsEqualButNotSameValue;
 import static org.apache.uima.resource.ResourceInitializationException.UNDEFINED_KEY_IN_FLOW;
+import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_FLOAT;
+import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_INTEGER;
+import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.as;
@@ -31,21 +36,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.uima.Constants;
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
-import org.apache.uima.analysis_engine.metadata.FixedFlow;
-import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_impl;
 import org.apache.uima.cas.CAS;
@@ -53,8 +53,6 @@ import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
-import org.apache.uima.internal.util.SerializationUtils;
-import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileResourceSpecifier;
@@ -67,7 +65,6 @@ import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
@@ -75,10 +72,6 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.OperationalProperties;
-import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
-import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.resource.metadata.TypePriorities;
-import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.AllowedValue_impl;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
@@ -92,7 +85,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
@@ -100,6 +92,8 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -107,12 +101,7 @@ import org.xml.sax.SAXException;
  */
 public class AnalysisEngineDescription_implTest {
 
-  // Text encoding to use for the various byte/character conversions happening in this test case.
-  // Public because also used by other test cases.
-  public static final String encoding = "utf-8";
-
-  private static final File TEST_DATA_FILE = JUnitExtension
-          .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private XMLParser xmlParser;
   private AnalysisEngineDescription primitiveDesc;
@@ -123,62 +112,54 @@ public class AnalysisEngineDescription_implTest {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
 
-    TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
-    TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
-    type1.addFeature("TestFeature", "For Testing Only", CAS.TYPE_NAME_STRING);
-    TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-            "uima.cas.String");
-    enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
+    var typeSystem = new TypeSystemDescription_impl();
+
+    var fakeType = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
+    var fakeTypeFeature = fakeType.addFeature("TestFeature", "For Testing Only",
+            CAS.TYPE_NAME_STRING);
+
+    var enumType = typeSystem.addType("EnumType", "Test Enumerated Type", "uima.cas.String");
+    enumType.setAllowedValues(new AllowedValue[] { //
+        new AllowedValue_impl("One", "First Value"), //
         new AllowedValue_impl("Two", "Second Value") });
 
-    TypePriorities typePriorities = new TypePriorities_impl();
-    TypePriorityList priorityList = typePriorities.addPriorityList();
-    priorityList.addType("Fake");
-    priorityList.addType("EnumType");
+    var typePriorities = new TypePriorities_impl();
+    var priorityList = typePriorities.addPriorityList();
+    priorityList.addType(fakeType.getName());
+    priorityList.addType(enumType.getName());
 
-    FsIndexDescription index = new FsIndexDescription_impl();
-    index.setLabel("testIndex");
-    index.setTypeName("Fake");
-    FsIndexKeyDescription key1 = new FsIndexKeyDescription_impl();
-    key1.setFeatureName("TestFeature");
-    key1.setComparator(1);
-    FsIndexKeyDescription key2 = new FsIndexKeyDescription_impl();
-    key2.setFeatureName("Start");
-    key2.setComparator(0);
-    FsIndexKeyDescription key3 = new FsIndexKeyDescription_impl();
-    key3.setTypePriority(true);
-    index.setKeys(new FsIndexKeyDescription[] { key1, key2, key3 });
+    var index1 = new FsIndexDescription_impl();
+    index1.setLabel("testIndex");
+    index1.setTypeName("Fake");
+    var index1_key1 = new FsIndexKeyDescription_impl();
+    index1_key1.setFeatureName(fakeTypeFeature.getName());
+    index1_key1.setComparator(1);
+    var index1_key2 = new FsIndexKeyDescription_impl();
+    index1_key2.setFeatureName("Start");
+    index1_key2.setComparator(0);
+    var index1_key3 = new FsIndexKeyDescription_impl();
+    index1_key3.setTypePriority(true);
+    index1.setKeys(new FsIndexKeyDescription[] { index1_key1, index1_key2, index1_key3 });
 
-    FsIndexDescription index2 = new FsIndexDescription_impl();
+    var index2 = new FsIndexDescription_impl();
     index2.setLabel("testIndex2");
     index2.setTypeName("Fake");
     index2.setKind(FsIndexDescription.KIND_SET);
-    FsIndexKeyDescription key1a = new FsIndexKeyDescription_impl();
-    key1a.setFeatureName("TestFeature");
-    key1a.setComparator(1);
-    index2.setKeys(new FsIndexKeyDescription[] { key1a });
+    var index2_key1 = new FsIndexKeyDescription_impl();
+    index2_key1.setFeatureName("TestFeature");
+    index2_key1.setComparator(1);
+    index2.setKeys(new FsIndexKeyDescription[] { index2_key1 });
 
     // create primitive AE description
     primitiveDesc = new AnalysisEngineDescription_impl();
-    primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    primitiveDesc.setFrameworkImplementation(JAVA_FRAMEWORK_NAME);
     primitiveDesc.setPrimitive(true);
-    primitiveDesc
-            .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
-    AnalysisEngineMetaData md = primitiveDesc.getAnalysisEngineMetaData();
-    md.setName("Test TAE");
-    md.setDescription("Does not do anything useful.");
-    md.setVersion("1.0");
-    md.setTypeSystem(typeSystem);
-    md.setTypePriorities(typePriorities);
-    md.setFsIndexes(new FsIndexDescription[] { index, index2 });
-    Capability cap1 = new Capability_impl();
+    primitiveDesc.setAnnotatorImplementationName(TestAnnotator.class.getName());
+
+    var cap1 = new Capability_impl();
     cap1.setDescription("First fake capability");
-    cap1.addOutputType("Fake", false);
+    cap1.addOutputType(fakeType.getName(), false);
     cap1.addOutputFeature("Fake:TestFeature");
-    Capability cap2 = new Capability_impl();
-    cap2.setDescription("Second fake capability");
-    cap2.addInputType("Fake", true);
-    cap2.addOutputType("Fake", true);
     // SimplePrecondition precond1 = new SimplePrecondition_impl();
     // precond1.setFeatureDescription(feature1);
     // precond1.setComparisonValue(new String[]{"en,de"});
@@ -186,46 +167,67 @@ public class AnalysisEngineDescription_implTest {
     // cap1.setPreconditions(new Precondition[]{precond1});
     cap1.setLanguagesSupported(new String[] { "en", "de" });
     cap1.setMimeTypesSupported(new String[] { "text/plain" });
-    md.setCapabilities(new Capability[] { cap1, cap2 });
-    ConfigurationParameter cfgParam1 = new ConfigurationParameter_impl();
+
+    var cap2 = new Capability_impl();
+    cap2.setDescription("Second fake capability");
+    cap2.addInputType(fakeType.getName(), true);
+    cap2.addOutputType(fakeType.getName(), true);
+
+    var cfgParam1 = new ConfigurationParameter_impl();
     cfgParam1.setName("param1");
     cfgParam1.setDescription("Test Parameter 1");
-    cfgParam1.setType("String");
-    ConfigurationParameter cfgParam2 = new ConfigurationParameter_impl();
+    cfgParam1.setType(TYPE_STRING);
+
+    var cfgParam2 = new ConfigurationParameter_impl();
     cfgParam2.setName("param2");
     cfgParam2.setDescription("Test Parameter 2");
-    cfgParam2.setType("Integer");
-    ConfigurationGroup cfgGrp1 = new ConfigurationGroup_impl();
+    cfgParam2.setType(TYPE_INTEGER);
+
+    var cfgGrp1 = new ConfigurationGroup_impl();
     cfgGrp1.setNames(new String[] { "cfgGrp1" });
     cfgGrp1.setConfigurationParameters(new ConfigurationParameter[] { cfgParam1, cfgParam2 });
-    ConfigurationParameter cfgParam3 = new ConfigurationParameter_impl();
+
+    var cfgParam3 = new ConfigurationParameter_impl();
     cfgParam3.setName("param3");
     cfgParam3.setDescription("Test Parameter 3");
-    cfgParam3.setType("Float");
-    ConfigurationGroup cfgGrp2 = new ConfigurationGroup_impl();
+    cfgParam3.setType(TYPE_FLOAT);
+
+    var cfgGrp2 = new ConfigurationGroup_impl();
     cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
     cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
+
+    var md = primitiveDesc.getAnalysisEngineMetaData();
+    md.setName("Test TAE");
+    md.setDescription("Does not do anything useful.");
+    md.setVersion("1.0");
+    md.setTypeSystem(typeSystem);
+    md.setTypePriorities(typePriorities);
+    md.setFsIndexes(new FsIndexDescription[] { index1, index2 });
+    md.setCapabilities(new Capability[] { cap1, cap2 });
     md.getConfigurationParameterDeclarations()
             .setConfigurationGroups(new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
 
-    NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
-    NameValuePair nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
-    NameValuePair nvp3a = new NameValuePair_impl("param3", Float.valueOf("2.718281828459045"));
-    NameValuePair nvp3b = new NameValuePair_impl("param3", Float.valueOf("3.1415927"));
-    ConfigurationParameterSettings settings = md.getConfigurationParameterSettings();
+    var nvp1 = new NameValuePair_impl("param1", "test");
+    var nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
+    var nvp3a = new NameValuePair_impl("param3", Float.valueOf("2.718281828459045"));
+    var nvp3b = new NameValuePair_impl("param3", Float.valueOf("3.1415927"));
+
+    var settings = md.getConfigurationParameterSettings();
     settings.getSettingsForGroups().put("cfgGrp1", new NameValuePair[] { nvp1, nvp2 });
     settings.getSettingsForGroups().put("cfgGrp2a", new NameValuePair[] { nvp3a });
     settings.getSettingsForGroups().put("cfgGrp2b", new NameValuePair[] { nvp3b });
 
     // create aggregate AE description
     aggregateDesc = new AnalysisEngineDescription_impl();
-    aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    aggregateDesc.setFrameworkImplementation(JAVA_FRAMEWORK_NAME);
     aggregateDesc.setPrimitive(false);
+
     Map<String, MetaDataObject> delegateTaeMap = aggregateDesc
             .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateTaeMap.put("Test", primitiveDesc);
-    AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
-    primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+
+    var primDesc2 = new AnalysisEngineDescription_impl();
+    primDesc2.setFrameworkImplementation(JAVA_FRAMEWORK_NAME);
     primDesc2.setPrimitive(true);
     primDesc2.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
     primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
@@ -233,46 +235,46 @@ public class AnalysisEngineDescription_implTest {
             .setCapabilities(new Capability[] { new Capability_impl() });
     delegateTaeMap.put("Empty", primDesc2);
     FileResourceSpecifier fileResSpec = new FileResourceSpecifier_impl();
-    fileResSpec.setFileUrl(TEST_DATA_FILE.toURL().toString());
-    FlowControllerDeclaration fcDecl = new FlowControllerDeclaration_impl();
+    fileResSpec.setFileUrl(getClass()
+            .getResource("/ResourceTest/ResourceManager_implTest_tempDataFile.dat").toString());
+
+    var fcDecl = new FlowControllerDeclaration_impl();
     fcDecl.setKey("TestFlowController");
-    FlowControllerDescription fcDesc = new FlowControllerDescription_impl();
+    var fcDesc = new FlowControllerDescription_impl();
     fcDesc.getMetaData().setName("MyTestFlowController");
     fcDesc.setImplementationName("org.apache.uima.analysis_engine.impl.FlowControllerForErrorTest");
     fcDecl.setSpecifier(fcDesc);
     aggregateDesc.setFlowControllerDeclaration(fcDecl);
 
-    ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
-            .createExternalResourceDependency();
+    var dep = UIMAFramework.getResourceSpecifierFactory().createExternalResourceDependency();
     dep.setKey("ResourceKey");
     dep.setDescription("Test");
     aggregateDesc.setExternalResourceDependencies(new ExternalResourceDependency[] { dep });
-    ResourceManagerConfiguration resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
+    var resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
             .createResourceManagerConfiguration();
-    ExternalResourceDescription extRes = UIMAFramework.getResourceSpecifierFactory()
-            .createExternalResourceDescription();
+    var extRes = UIMAFramework.getResourceSpecifierFactory().createExternalResourceDescription();
     extRes.setResourceSpecifier(fileResSpec);
     extRes.setName("Resource1");
     extRes.setDescription("Test");
     resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
 
-    ExternalResourceBinding binding = UIMAFramework.getResourceSpecifierFactory()
-            .createExternalResourceBinding();
+    var binding = UIMAFramework.getResourceSpecifierFactory().createExternalResourceBinding();
     binding.setKey("ResourceKey");
     binding.setResourceName("Resource1");
     resMgrCfg.setExternalResourceBindings(new ExternalResourceBinding[] { binding });
     aggregateDesc.setResourceManagerConfiguration(resMgrCfg);
 
-    md = aggregateDesc.getAnalysisEngineMetaData();
-    md.setName("Test Aggregate TAE");
-    md.setDescription("Does not do anything useful.");
-    md.setVersion("1.0");
-    // md.setTypeSystem(typeSystem);
-    // md.setFsIndexes(new FsIndexDescription[]{index});
-    md.setCapabilities(primitiveDesc.getAnalysisEngineMetaData().getCapabilities());
-    FixedFlow fixedFlow = new FixedFlow_impl();
+    var fixedFlow = new FixedFlow_impl();
     fixedFlow.setFixedFlow(new String[] { "Test", "Empty" });
-    md.setFlowConstraints(fixedFlow);
+
+    var md2 = aggregateDesc.getAnalysisEngineMetaData();
+    md2.setName("Test Aggregate TAE");
+    md2.setDescription("Does not do anything useful.");
+    md2.setVersion("1.0");
+    // md2.setTypeSystem(typeSystem);
+    // md2.setFsIndexes(new FsIndexDescription[]{index});
+    md2.setCapabilities(primitiveDesc.getAnalysisEngineMetaData().getCapabilities());
+    md2.setFlowConstraints(fixedFlow);
   }
 
   @AfterEach
@@ -286,19 +288,21 @@ public class AnalysisEngineDescription_implTest {
 
   @Test
   public void testMulticoreInitialize() throws Exception {
-    ResourceManager resourceManager = newDefaultResourceManager();
-    ConfigurationManager configManager = newConfigurationManager();
-    Logger logger = UIMAFramework.getLogger(this.getClass());
+    var resourceManager = newDefaultResourceManager();
+    var configManager = newConfigurationManager();
+    var logger = UIMAFramework.getLogger(this.getClass());
 
-    UimaContext uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
-    final Map<String, Object> p = new HashMap<>();
+    var uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
+
+    final var p = new HashMap<String, Object>();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER, newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
+
     int numberOfThreads = Math.min(50, Misc.numberOfCores * 5);
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
-    System.out.format("test multicore initialize with %d threads%n", numberOfThreads);
+    LOG.info("test multicore initialize with {} threads", numberOfThreads);
 
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
       @Override
@@ -314,6 +318,7 @@ public class AnalysisEngineDescription_implTest {
         }
       }
     };
+
     MultiThreadUtils.tstMultiThread("MultiCoreInitialize", numberOfThreads, 100, run2isb,
             MultiThreadUtils.emptyReset);
     assertThat(aes[0]).isNotEqualTo(aes[1]);
@@ -342,17 +347,16 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void thatComplexDescriptorCanBeXMLized() throws Exception {
     // test a complex descriptor
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
+    var desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
             getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml")));
-    OperationalProperties opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
+    var opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
 
     assertThat(opProps).isNotNull();
     assertThat(opProps.getModifiesCas()).isTrue();
     assertThat(opProps.isMultipleDeploymentAllowed()).isTrue();
 
-    try (InputStream is = new ByteArrayInputStream(toXmlString(desc).getBytes(encoding))) {
-      AnalysisEngineDescription newDesc = xmlParser
-              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+    try (var is = new ByteArrayInputStream(toXmlString(desc).getBytes(UTF_8))) {
+      var newDesc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(is, null));
       assertThat(newDesc).isEqualTo(desc);
     }
   }
@@ -360,11 +364,10 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void thatDescriptorWithCasConsumerCanBeXMLized() throws Exception {
     // test a descriptor that includes a CasConsumer
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
+    var desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
-    try (InputStream is = new ByteArrayInputStream(toXmlString(desc).getBytes(encoding))) {
-      AnalysisEngineDescription newDesc = xmlParser
-              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+    try (var is = new ByteArrayInputStream(toXmlString(desc).getBytes(UTF_8))) {
+      var newDesc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(is));
       assertThat(newDesc).isEqualTo(desc);
     }
   }
@@ -375,9 +378,8 @@ public class AnalysisEngineDescription_implTest {
     String primitiveDescXml = toXmlString(primitiveDesc);
 
     // parse objects from XML
-    try (InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding))) {
-      AnalysisEngineDescription newPrimitiveDesc = xmlParser
-              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+    try (var is = new ByteArrayInputStream(primitiveDescXml.getBytes(UTF_8))) {
+      var newPrimitiveDesc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(is));
       assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
     }
   }
@@ -385,16 +387,15 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void thatAggregateDescriptorCanBeXMLized() throws Exception {
     String aggregateDescXml = toXmlString(aggregateDesc);
-    try (InputStream is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding))) {
-      AnalysisEngineDescription newAggregateDesc = xmlParser
-              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
+    try (var is = new ByteArrayInputStream(aggregateDescXml.getBytes(UTF_8))) {
+      var newAggregateDesc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(is));
       assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
     }
   }
 
   @Test
   public void testDefaultingOperationalParameters() throws Exception {
-    XMLInputSource in = new XMLInputSource(JUnitExtension
+    var in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/TestPrimitiveOperationalParmsDefaults.xml"));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
     OperationalProperties opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
@@ -402,22 +403,6 @@ public class AnalysisEngineDescription_implTest {
     assertThat(opProps).isNotNull();
     assertThat(opProps.getModifiesCas()).isTrue();
     assertThat(opProps.isMultipleDeploymentAllowed()).isFalse();
-  }
-
-  @Test
-  public void thatPrimitiveDescriptionCanBeSerialized() throws Exception {
-    byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
-    AnalysisEngineDescription newPrimitiveDesc = (AnalysisEngineDescription) SerializationUtils
-            .deserialize(primitiveDescBytes);
-    assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
-  }
-
-  @Test
-  public void thatAggregateDescriptionCanBeSerialized() throws Exception {
-    byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
-    AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) SerializationUtils
-            .deserialize(aggregateDescBytes);
-    assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
   }
 
   @Test
@@ -670,6 +655,6 @@ public class AnalysisEngineDescription_implTest {
   private String toXmlString(XMLizable aObject) throws IOException, SAXException {
     StringWriter writer = new StringWriter();
     aObject.toXML(writer);
-    return writer.getBuffer().toString();
+    return writer.toString();
   }
 }

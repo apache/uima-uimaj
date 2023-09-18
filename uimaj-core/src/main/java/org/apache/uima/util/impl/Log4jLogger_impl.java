@@ -168,9 +168,9 @@ public class Log4jLogger_impl extends Logger_common_impl {
 
   private Log4jLogger_impl(Log4jLogger_impl l, int limit) {
     super(l, limit);
-    this.logger = l.logger;
-    this.coreLogger = l.coreLogger;
-    this.mf = l.mf;
+    logger = l.logger;
+    coreLogger = l.coreLogger;
+    mf = l.mf;
   }
 
   /**
@@ -195,7 +195,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
 
   @Override
   public Log4jLogger_impl getLimitedLogger(int aLimit) {
-    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
+    if (aLimit == Integer.MAX_VALUE || aLimit == limit_common) {
       return this;
     }
     return new Log4jLogger_impl(this, aLimit);

@@ -63,8 +63,8 @@ public abstract class Common_hash_support {
   }
 
   public Common_hash_support(int initialSizeBeforeExpanding, float factor) {
-    this.loadFactor = factor;
-    this.initialCapacity = tableSpace(initialSizeBeforeExpanding, factor);
+    loadFactor = factor;
+    initialCapacity = tableSpace(initialSizeBeforeExpanding, factor);
     if (TUNE) {
       tune_instance = this;
       histogram = new int[200];
@@ -75,13 +75,13 @@ public abstract class Common_hash_support {
 
   public Common_hash_support(Common_hash_support orig) {
     this(orig.initialCapacity);
-    this.sizeWhichTriggersExpansion = orig.sizeWhichTriggersExpansion;
-    this.size = orig.size;
-    this.removed = orig.removed;
-    this.secondTimeShrinkable = orig.secondTimeShrinkable;
+    sizeWhichTriggersExpansion = orig.sizeWhichTriggersExpansion;
+    size = orig.size;
+    removed = orig.removed;
+    secondTimeShrinkable = orig.secondTimeShrinkable;
 
     // copy doesn't do tuning measurements
-    this.histogram = null;
+    histogram = null;
   }
 
   public void clear() {
@@ -331,10 +331,7 @@ public abstract class Common_hash_support {
       pos = 0;
     }
     while (true) {
-      if (pos >= max) {
-        return pos;
-      }
-      if (is_valid_key(pos)) {
+      if ((pos >= max) || is_valid_key(pos)) {
         return pos;
       }
       pos++;
@@ -356,10 +353,7 @@ public abstract class Common_hash_support {
     }
 
     while (true) {
-      if (pos < 0) {
-        return pos;
-      }
-      if (is_valid_key(pos)) {
+      if ((pos < 0) || is_valid_key(pos)) {
         return pos;
       }
       pos--;
@@ -489,7 +483,7 @@ public abstract class Common_hash_support {
     protected final int firstPosition;
 
     protected CommonKeyIterator() {
-      this.curPosition = moveToNextFilled(0);
+      curPosition = moveToNextFilled(0);
       firstPosition = curPosition;
     }
 

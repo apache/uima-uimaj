@@ -57,7 +57,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
 
   @Override
   public NonEmptyFloatList createNonEmptyNode() {
-    return new NonEmptyFloatList(this._casView.getJCasImpl());
+    return new NonEmptyFloatList(_casView.getJCasImpl());
   }
 
   /**
@@ -83,7 +83,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
 
   @Override
   public EmptyFloatList emptyList() {
-    return this._casView.emptyFloatList();
+    return _casView.emptyFloatList();
   }
 
   /**

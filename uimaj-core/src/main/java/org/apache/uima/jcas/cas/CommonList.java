@@ -276,11 +276,7 @@ public interface CommonList extends FeatureStructure {
 
     CommonList curNode = this;
     while (curNode != null) {
-      if (curNode instanceof EmptyList) {
-        break; // would be the end element.
-      }
-
-      if (!visited.add(curNode)) {
+      if ((curNode instanceof EmptyList) || !visited.add(curNode)) {
         break; // hit loop
       }
 

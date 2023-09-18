@@ -244,7 +244,7 @@ public class I18nx_impl {
    * @return true if this exception or any of its root causes has a particular UIMA message key.
    */
   public boolean hasMessageKey(String messageKey) {
-    if (messageKey.equals(this.getMessageKey())) {
+    if (messageKey.equals(getMessageKey())) {
       return true;
     }
     Throwable cause = getCause();

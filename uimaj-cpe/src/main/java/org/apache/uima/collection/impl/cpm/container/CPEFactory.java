@@ -91,11 +91,11 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * Component responsible for generating objects representing cpe descriptor configuration. Provides
  * various ways to instantiate object model representing cpe configuration. In the simplest form it
- * ingests an xml file (cpe descriptor), parses it and creates an object for every element in the
- * xml file.
+ * ingests an XML file (CPE descriptor), parses it and creates an object for every element in the
+ * XML file.
  * <p>
  * Using objects representing configuration, this component creates CollectionReader CasInitializer,
- * Analysis Engines, and Cas Consumers.
+ * Analysis Engines, and CAS Consumers.
  * <p>
  * In addition to creating object, this component provides read/write access to the object model
  * allowing for dynamic or programmatic modifications. It facilitates plugging in existing
@@ -293,8 +293,8 @@ public class CPEFactory {
   }
 
   /**
-   * Returns Collection Reader instantiated from configuration in the cpe descriptor. It also
-   * creates and intializes the Cas Initializer if one is defined and associates it with the
+   * Returns Collection Reader instantiated from configuration in the CPE descriptor. It also
+   * creates and initializes the CAS Initializer if one is defined and associates it with the
    * CollectionReader.
    *
    * @return CollectionReader instance
@@ -346,14 +346,15 @@ public class CPEFactory {
 
       // compute sofa mapping for the CollectionReader
       CpeSofaMappings sofanamemappings = cit.getSofaNameMappings();
-      HashMap sofamap = new HashMap();
+      var sofamap = new HashMap<String, String>();
       if (sofanamemappings != null) {
         CpeSofaMapping[] sofaNameMappingArray = sofanamemappings.getSofaNameMappings();
         for (int i = 0; sofaNameMappingArray != null && i < sofaNameMappingArray.length; i++) {
           CpeSofaMapping aSofaMap = sofaNameMappingArray[i];
           // if no component sofa name, then set it to default
-          if (aSofaMap.getComponentSofaName() == null)
+          if (aSofaMap.getComponentSofaName() == null) {
             aSofaMap.setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
+          }
           sofamap.put(aSofaMap.getComponentSofaName(), aSofaMap.getCpeSofaName());
         }
       }
@@ -414,8 +415,9 @@ public class CPEFactory {
           for (int i = 0; sofaNameMappingArray != null && i < sofaNameMappingArray.length; i++) {
             CpeSofaMapping aSofaMap = sofaNameMappingArray[i];
             // if no component sofa name, then set it to default
-            if (aSofaMap.getComponentSofaName() == null)
+            if (aSofaMap.getComponentSofaName() == null) {
               aSofaMap.setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
+            }
             sofamap.put(aSofaMap.getComponentSofaName(), aSofaMap.getCpeSofaName());
           }
         }
@@ -1075,8 +1077,9 @@ public class CPEFactory {
           for (int i = 0; sofaNameMappingArray != null && i < sofaNameMappingArray.length; i++) {
             CpeSofaMapping aSofaMap = sofaNameMappingArray[i];
             // if no component sofa name, then set it to default
-            if (aSofaMap.getComponentSofaName() == null)
+            if (aSofaMap.getComponentSofaName() == null) {
               aSofaMap.setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
+            }
             sofamap.put(aSofaMap.getComponentSofaName(), aSofaMap.getCpeSofaName());
           }
         }
@@ -1198,7 +1201,7 @@ public class CPEFactory {
     int threadCount;
 
     try {
-      threadCount = this.getCpeDescriptor().getCpeCasProcessors().getConcurrentPUCount();
+      threadCount = getCpeDescriptor().getCpeCasProcessors().getConcurrentPUCount();
     } catch (Exception e) {
 
       throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,

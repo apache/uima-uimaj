@@ -138,9 +138,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
     if (cv1.equals(cv2))
       return true;
     if (cv1 instanceof Object[]) {
-      if (!(cv2 instanceof Object[]))
-        return false;
-      if (!Arrays.equals((Object[]) cv1, (Object[]) cv2))
+      if (!(cv2 instanceof Object[]) || !Arrays.equals((Object[]) cv1, (Object[]) cv2))
         return false;
     }
     return true;

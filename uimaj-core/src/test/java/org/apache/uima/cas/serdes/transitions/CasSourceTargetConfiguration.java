@@ -29,10 +29,10 @@ public class CasSourceTargetConfiguration {
   private final FailableSupplier<CAS, ?> targetCasSupplier;
 
   private CasSourceTargetConfiguration(Builder builder) {
-    this.title = builder.title;
-    this.debugInfo = builder.debugInfo;
-    this.sourceCasSupplier = builder.sourceCasSupplier;
-    this.targetCasSupplier = builder.targetCasSupplier;
+    title = builder.title;
+    debugInfo = builder.debugInfo;
+    sourceCasSupplier = builder.sourceCasSupplier;
+    targetCasSupplier = builder.targetCasSupplier;
   }
 
   public CAS createSourceCas() {

@@ -182,7 +182,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    */
   @Override
   public int size() {
-    return this.indexedFSs.length;
+    return indexedFSs.length;
   }
 
   /**

@@ -65,7 +65,7 @@ public class PearRuntimeTest {
     if (tempFile.delete()) {
       File tempDir = tempFile;
       if (tempDir.mkdirs())
-        this.tempInstallDir = tempDir;
+        tempInstallDir = tempDir;
     }
   }
 
@@ -74,8 +74,8 @@ public class PearRuntimeTest {
    */
   @AfterEach
   public void tearDown() throws Exception {
-    if (this.tempInstallDir != null) {
-      FileUtil.deleteDirectory(this.tempInstallDir);
+    if (tempInstallDir != null) {
+      FileUtil.deleteDirectory(tempInstallDir);
     }
   }
 
@@ -108,7 +108,7 @@ public class PearRuntimeTest {
   @Test
   public void testPearRuntime() throws Exception {
 
-    CAS cas = this.runPearRuntimeTestcase(
+    CAS cas = runPearRuntimeTestcase(
             new String[] { "pearTests/DateTime.pear", "pearTests/RoomNumber.pear" });
 
     // check if 3 annotations are available in the CAS index
@@ -125,7 +125,7 @@ public class PearRuntimeTest {
   @Test
   public void testPearRuntimeDocAnnot() throws Exception {
 
-    CAS cas = this.runPearRuntimeTestcase(
+    CAS cas = runPearRuntimeTestcase(
             new String[] { "pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear" });
 
     // check if 3 annotations are available in the CAS index
@@ -142,7 +142,7 @@ public class PearRuntimeTest {
 
   private Import installPear(String pear) throws IOException {
     // check temporary working directory
-    if (this.tempInstallDir == null)
+    if (tempInstallDir == null)
       throw new FileNotFoundException("temp directory not found");
     // check sample PEAR files
 
@@ -151,7 +151,7 @@ public class PearRuntimeTest {
     assertNotNull(pearFile);
 
     // Install PEAR packages
-    PackageBrowser instPear = PackageInstaller.installPackage(this.tempInstallDir, pearFile, true);
+    PackageBrowser instPear = PackageInstaller.installPackage(tempInstallDir, pearFile, true);
 
     // check pear PackageBrowser object
     assertNotNull(instPear);

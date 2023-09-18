@@ -37,12 +37,12 @@ public class ReplaceStringInFiles {
     private String ext;
 
     private ExtFileFilter(String extension) {
-      this.ext = extension;
+      ext = extension;
     }
 
     @Override
     public boolean accept(File file) {
-      return (file.isFile() && file.getName().endsWith(this.ext));
+      return (file.isFile() && file.getName().endsWith(ext));
     }
 
   }

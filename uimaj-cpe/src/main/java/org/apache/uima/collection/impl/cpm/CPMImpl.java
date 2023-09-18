@@ -75,11 +75,12 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     if (consumers != null) {
       return consumers;
     }
-    ArrayList consumerList = new ArrayList();
+
+    var consumerList = new ArrayList<CasConsumer>();
     CasProcessor[] casProcs = getCasProcessors();
     for (int i = 0; i < casProcs.length; i++) {
       if (casProcs[i] instanceof CasConsumer) {
-        consumerList.add(casProcs[i]);
+        consumerList.add((CasConsumer) casProcs[i]);
       }
     }
     consumers = new CasConsumer[consumerList.size()];
@@ -120,7 +121,5 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
   public void process(CollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException {
     super.process(aCollectionReader, aBatchSize);
-
   }
-
 }

@@ -265,7 +265,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       this.generator = generator;
       this.jcasClass = jcasClass;
       this.jcasType = jcasType; // typeId for jcas class, **NOT Typecode**
-      this.features = getJCasClassFeatureInfo(jcasClass);
+      features = getJCasClassFeatureInfo(jcasClass);
 
       // System.out.println("debug create jcci, class = " + jcasClass.getName() + ", typeint = " +
       // jcasType);
@@ -1354,10 +1354,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       Parameter[] p = m.getParameters();
       TypeImpl range = fi.getRangeImpl();
 
-      if (p.length > 1) {
-        continue; // not a getter, which has either 0 or 1 arg(the index int for arrays)
-      }
-      if (p.length == 1 && (!range.isArray() || p[0].getType() != int.class)) {
+      if ((p.length > 1) || (p.length == 1 && (!range.isArray() || p[0].getType() != int.class))) {
         continue; // has 1 arg, but is not an array or the arg is not an int
       }
 

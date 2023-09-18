@@ -329,7 +329,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
         // make sure Import's relative path base is set, to allow for users who create
         // new import objects
         if (imports[i] instanceof Import_impl) {
-          ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+          ((Import_impl) imports[i]).setSourceUrlIfNull(getSourceUrl());
         }
         URL url = imports[i].findAbsoluteUrl(aResourceManager);
         if (!aAlreadyImportedURLs.contains(url.toString())) {
@@ -346,9 +346,9 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
     }
 
     // update this object
-    ExternalResourceDescription[] existingResources = this.getExternalResources();
+    ExternalResourceDescription[] existingResources = getExternalResources();
     if (existingResources == null) {
-      this.setExternalResources(
+      setExternalResources(
               existingResources = ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS);
     }
     if (importedResources != null) {
@@ -358,12 +358,12 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
       for (int i = 0; i < importedResources.size(); i++) {
         newResources[existingResources.length + i] = importedResources.get(i);
       }
-      this.setExternalResources(newResources);
+      setExternalResources(newResources);
     }
 
-    ExternalResourceBinding[] existingBindings = this.getExternalResourceBindings();
+    ExternalResourceBinding[] existingBindings = getExternalResourceBindings();
     if (existingBindings == null) {
-      this.setExternalResourceBindings(
+      setExternalResourceBindings(
               existingBindings = ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS);
     }
     if (null != importedBindings) {
@@ -373,10 +373,10 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
       for (int i = 0; i < importedBindings.size(); i++) {
         newBindings[existingBindings.length + i] = importedBindings.get(i);
       }
-      this.setExternalResourceBindings(newBindings);
+      setExternalResourceBindings(newBindings);
     }
     // clear imports
-    this.setImports(Import.EMPTY_IMPORTS);
+    setImports(Import.EMPTY_IMPORTS);
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedURLs,

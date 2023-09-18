@@ -52,7 +52,7 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
 
   @Override
   public void setName(String aName) {
-    this.name = aName;
+    name = aName;
   }
 
   @Override
@@ -62,7 +62,7 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
 
   @Override
   public void setValue(String aValue) {
-    this.value = aValue;
+    value = aValue;
   }
 
   /**

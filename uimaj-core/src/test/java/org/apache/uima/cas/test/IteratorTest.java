@@ -159,11 +159,11 @@ public class IteratorTest {
       XMLParser parser = UIMAFramework.getXMLParser();
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
-      this.cas = (CASImpl) ae.newCAS();
-      this.jcas = cas.getJCas();
-      assertTrue(this.cas != null);
-      this.ts = this.cas.getTypeSystem();
-      assertTrue(this.ts != null);
+      cas = (CASImpl) ae.newCAS();
+      jcas = cas.getJCas();
+      assertTrue(cas != null);
+      ts = cas.getTypeSystem();
+      assertTrue(ts != null);
     } catch (IOException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -175,64 +175,64 @@ public class IteratorTest {
       assertTrue(false);
     }
 
-    this.stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
-    assertTrue(this.stringType != null);
-    this.tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(this.stringType != null);
-    this.intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
-    assertTrue(this.intType != null);
-    this.tokenTypeType = this.ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-    assertTrue(this.tokenTypeType != null);
-    this.wordType = this.ts.getType(CASTestSetup.WORD_TYPE);
-    assertTrue(this.wordType != null);
-    this.tokenTypeFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
-    assertTrue(this.tokenTypeFeat != null);
-    this.lemmaFeat = this.ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
-    assertTrue(this.lemmaFeat != null);
-    this.sentLenFeat = this.ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
-    assertTrue(this.sentLenFeat != null);
-    this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
-    assertTrue(this.tokenFloatFeat != null);
-    this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
-    assertTrue(this.startFeature != null);
-    this.sentenceType = this.ts.getType(CASTestSetup.SENT_TYPE);
-    assertTrue(this.sentenceType != null);
-    this.annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(this.annotationType != null);
-    this.subsentenceType = this.ts.getType("SubTypeOfSentence");
-    assertTrue(this.subsentenceType != null);
+    stringType = ts.getType(CAS.TYPE_NAME_STRING);
+    assertTrue(stringType != null);
+    tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
+    assertTrue(stringType != null);
+    intType = ts.getType(CAS.TYPE_NAME_INTEGER);
+    assertTrue(intType != null);
+    tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    assertTrue(tokenTypeType != null);
+    wordType = ts.getType(CASTestSetup.WORD_TYPE);
+    assertTrue(wordType != null);
+    tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    assertTrue(tokenTypeFeat != null);
+    lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
+    assertTrue(lemmaFeat != null);
+    sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
+    assertTrue(sentLenFeat != null);
+    tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    assertTrue(tokenFloatFeat != null);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    assertTrue(startFeature != null);
+    sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
+    assertTrue(sentenceType != null);
+    annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    assertTrue(annotationType != null);
+    subsentenceType = ts.getType("SubTypeOfSentence");
+    assertTrue(subsentenceType != null);
   }
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
-    this.stringType = null;
-    this.tokenType = null;
-    this.intType = null;
-    this.tokenTypeType = null;
-    this.wordType = null;
-    this.tokenTypeFeat = null;
-    this.lemmaFeat = null;
-    this.sentLenFeat = null;
-    this.tokenFloatFeat = null;
-    this.startFeature = null;
-    this.sentenceType = null;
-    this.annotationType = null;
+    cas = null;
+    ts = null;
+    stringType = null;
+    tokenType = null;
+    intType = null;
+    tokenTypeType = null;
+    wordType = null;
+    tokenTypeFeat = null;
+    lemmaFeat = null;
+    sentLenFeat = null;
+    tokenFloatFeat = null;
+    startFeature = null;
+    sentenceType = null;
+    annotationType = null;
   }
 
   private void setupindexes() {
-    bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
-    setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    bagIndex = cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
+    setIndex = cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    sortedIndex = cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
 
     ssBagIndex = bagIndex.withSnapshotIterators();
     ssSetIndex = setIndex.withSnapshotIterators();
     ssSortedIndex = sortedIndex.withSnapshotIterators();
 
-    jcasBagIndex = this.jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
-    jcasSetIndex = this.jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    jcasSortedIndex = this.jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    jcasBagIndex = jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
+    jcasSetIndex = jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    jcasSortedIndex = jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
 
     jcasSsBagIndex = jcasBagIndex.withSnapshotIterators();
     jcasSsSetIndex = jcasSetIndex.withSnapshotIterators();
@@ -268,7 +268,7 @@ public class IteratorTest {
 
   @Test
   public void testGetIndexes() {
-    Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
+    Iterator<FSIndex<FeatureStructure>> it = cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
       assertNotNull(it.next());
     }
@@ -282,14 +282,14 @@ public class IteratorTest {
     }
     final int start = 5;
     final int end = 7;
-    FSIndexRepository repo = this.cas.getIndexRepository();
+    FSIndexRepository repo = cas.getIndexRepository();
     for (int i = 0; i < 10; i++) {
       // add 10 annotations with start 5, end 7
-      AnnotationFS annotation = this.cas.createAnnotation(this.annotationType, start, end);
+      AnnotationFS annotation = cas.createAnnotation(annotationType, start, end);
       repo.addFS(annotation);
     }
-    AnnotationFS match = this.cas.createAnnotation(this.annotationType, start, end);
-    FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
+    AnnotationFS match = cas.createAnnotation(annotationType, start, end);
+    FSIndex<AnnotationFS> index = cas.getAnnotationIndex();
     FSIndex<AnnotationFS> ssIndex = index.withSnapshotIterators();
     FSIterator<AnnotationFS> it = index.iterator();
     assertEquals(60, it.size());
@@ -309,10 +309,10 @@ public class IteratorTest {
 
   @Test
   public void testMoveToPastEnd() { // https://issues.apache.org/jira/browse/UIMA-4094
-    this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.annotationType, 1, 2));
+    cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, 1, 2));
 
-    AnnotationFS pastEnd = this.cas.createAnnotation(this.annotationType, 2, 3);
-    FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
+    AnnotationFS pastEnd = cas.createAnnotation(annotationType, 2, 3);
+    FSIndex<AnnotationFS> index = cas.getAnnotationIndex();
     FSIterator<AnnotationFS> it = index.iterator();
     it.moveTo(pastEnd);
     assertFalse(it.isValid());
@@ -330,25 +330,25 @@ public class IteratorTest {
     for (int i = 0; i < 2; i++) {
       cas.reset();
       if (i == 0) {
-        this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.subsentenceType, 0, 1));
+        cas.getIndexRepository().addFS(cas.createAnnotation(subsentenceType, 0, 1));
       }
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.subsentenceType, 1, 2));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.subsentenceType, 1, 2));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.subsentenceType, 1, 3));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.subsentenceType, 2, 2));
-      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.subsentenceType, 2, 5));
+      cas.getIndexRepository().addFS(cas.createAnnotation(subsentenceType, 1, 2));
+      cas.getIndexRepository().addFS(cas.createAnnotation(subsentenceType, 1, 2));
+      cas.getIndexRepository().addFS(cas.createAnnotation(subsentenceType, 1, 3));
+      cas.getIndexRepository().addFS(cas.createAnnotation(subsentenceType, 2, 2));
+      cas.getIndexRepository().addFS(cas.createAnnotation(subsentenceType, 2, 5));
 
-      AnnotationFS testAnnot = this.cas.createAnnotation(this.subsentenceType, 1, 2);
+      AnnotationFS testAnnot = cas.createAnnotation(subsentenceType, 1, 2);
 
-      FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex(this.subsentenceType);
+      FSIndex<AnnotationFS> index = cas.getAnnotationIndex(subsentenceType);
       FSIterator<AnnotationFS> it = index.iterator();
       assertEquals((i == 0) ? 6 : 5, it.size());
       it.moveTo(testAnnot);
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
         AnnotationFS fs = it.get();
-        this.cas.getIndexRepository().addFS(testAnnot);
-        this.cas.getIndexRepository().removeFS(testAnnot);
+        cas.getIndexRepository().addFS(testAnnot);
+        cas.getIndexRepository().removeFS(testAnnot);
         assertEquals(1, fs.getBegin());
         assertEquals(2, fs.getEnd());
         it.moveToNext();
@@ -373,26 +373,26 @@ public class IteratorTest {
 
   private void createFSs(int i) {
     FeatureStructureImplC fsi;
-    this.cas.getIndexRepository()
-            .addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-    this.cas.getIndexRepository()
-            .addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-    this.cas.getIndexRepository()
-            .addFS(fsi = this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-    this.cas.getIndexRepository()
-            .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-    this.cas.getIndexRepository()
-            .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository()
+            .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository()
+            .addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository()
+            .addFS(fsi = cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository()
+            .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository()
+            .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     // //debug
     // System.out.format("Token at %,d %n", fsi.getAddress());
   }
 
   private void createFSsU() {
-    this.cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
+    cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
 
     for (int i = 0; i < 5; i++) {
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
     }
   }
 
@@ -406,7 +406,7 @@ public class IteratorTest {
   // }
 
   private void setupFSs() {
-    this.cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
+    cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
 
     for (int i = 0; i < 10; i++) {
       createFSs(i); // i = 0 .. 9, 5 annot per: annotation, sentence, token, token, token
@@ -419,11 +419,11 @@ public class IteratorTest {
   @Test
   public void testMultithreadedIterator() {
     setupFSs();
-    final FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository()
+    final FSIndex<FeatureStructure> bagIndex = cas.getIndexRepository()
             .getIndex(CASTestSetup.ANNOT_BAG_INDEX);
-    final FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository()
+    final FSIndex<FeatureStructure> setIndex = cas.getIndexRepository()
             .getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    final FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository()
+    final FSIndex<FeatureStructure> sortedIndex = cas.getIndexRepository()
             .getIndex(CASTestSetup.ANNOT_SORT_INDEX);
 
     int numberOfCores = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
@@ -563,7 +563,7 @@ public class IteratorTest {
       expected[i++] = fs._id();
     }
 
-    LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
+    LowLevelIndexRepository llir = cas.ll_getIndexRepository();
     LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX,
             ((TypeImpl) tokenType).getCode());
     // int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557,
@@ -848,17 +848,17 @@ public class IteratorTest {
   }
 
   private void setupWords() {
-    wType = this.cas.getTypeSystem().getType("org.apache.uima.cas.test.types.Word");
+    wType = cas.getTypeSystem().getType("org.apache.uima.cas.test.types.Word");
 
     wordFeat = wType.getFeatureByBaseName("word");
 
     for (int i = 0; i < 20; i++) {
-      FeatureStructure fs = this.cas.createFS(wType);
+      FeatureStructure fs = cas.createFS(wType);
       fs.setStringValue(wordFeat, "word" + i);
-      this.cas.getIndexRepository().addFS(fs);
+      cas.getIndexRepository().addFS(fs);
     }
 
-    wordSetIndex = this.cas.getIndexRepository().getIndex("Word Set Index");
+    wordSetIndex = cas.getIndexRepository().getIndex("Word Set Index");
     ssWordSetIndex = wordSetIndex.withSnapshotIterators();
 
   }
@@ -868,7 +868,7 @@ public class IteratorTest {
     assertEquals(20, it.size()); // test size
     it.moveToLast();
 
-    FeatureStructure fs = this.cas.createFS(wType);
+    FeatureStructure fs = cas.createFS(wType);
     fs.setStringValue(wordFeat, "word1");
 
     // TEST moveTo() and get()
@@ -888,13 +888,13 @@ public class IteratorTest {
     // System.out.println("debug");
     // }
     assertNotNull(index.find(annot));
-    assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
+    assertNull(index.find(cas.createAnnotation(annotationType, -1, -1)));
   }
 
   private void findTestJCas(FSIndex<?> index) {
     Annotation annot = (Annotation) index.iterator().get(); // first element
     assertNotNull(index.find(annot));
-    assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
+    assertNull(index.find(cas.createAnnotation(annotationType, -1, -1)));
   }
 
   private void sortedIteratorWithoutMods(FSIndex<FeatureStructure> sortedIndex) {
@@ -935,7 +935,7 @@ public class IteratorTest {
 
     // Test moveTo()
     List<AnnotationFS> list = new ArrayList<>();
-    FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> it2 = cas.getAnnotationIndex().iterator();
     for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
       list.add(it2.get());
     }
@@ -1064,7 +1064,7 @@ public class IteratorTest {
 
     // Test iterator copy.
     FSIterator<AnnotationFS> source, copy;
-    source = this.cas.getAnnotationIndex().iterator();
+    source = cas.getAnnotationIndex().iterator();
     // Count items.
     int count = 0;
     for (source.moveToFirst(); source.isValid(); source.moveToNext()) {
@@ -1091,7 +1091,7 @@ public class IteratorTest {
   }
 
   private void addAnnotations(AnnotationFS[] fsArray, Type type) {
-    FSIndexRepository ir = this.cas.getIndexRepository();
+    FSIndexRepository ir = cas.getIndexRepository();
     for (int i = 0; i < fsArray.length; i++) {
       // key order:
       // 0 ... 50 200 ... 160 66 66 66 ..
@@ -1100,7 +1100,7 @@ public class IteratorTest {
       int j = (i >= 90) ? 66 : // some constant keys
               (i > 50) ? 200 - i : // some decreasing keys
                       i; // some increasing keys
-      fsArray[i] = this.cas.createAnnotation(type, j * 5, (j * 5) + 4);
+      fsArray[i] = cas.createAnnotation(type, j * 5, (j * 5) + 4);
       ir.addFS(fsArray[i]);
     }
   }
@@ -1114,17 +1114,17 @@ public class IteratorTest {
     // have 10% of them be the same key
     // have the order be scrambled somewhat, not strictly increasing
     AnnotationFS[] fsArray = new AnnotationFS[100];
-    FSIndexRepository ir = this.cas.getIndexRepository();
-    addAnnotations(fsArray, this.tokenType);
+    FSIndexRepository ir = cas.getIndexRepository();
+    addAnnotations(fsArray, tokenType);
 
-    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository()
-            .getIndex(CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
+    FSIndex<FeatureStructure> setIndex = cas.getIndexRepository()
+            .getIndex(CASTestSetup.ANNOT_SET_INDEX, tokenType);
     FSIterator<FeatureStructure> set_iterator = setIndex.iterator();
 
-    FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
+    FSIndex<AnnotationFS> sortedIndex = cas.getAnnotationIndex(tokenType);
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
 
-    FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.tokenType);
+    FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, tokenType);
     FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
 
     // verify that the index is the right type https://issues.apache.org/jira/browse/UIMA-2883
@@ -1168,8 +1168,8 @@ public class IteratorTest {
       set_iterator = setIndex.iterator();
       set_iterator.moveTo(fsArray[i]);
       if (set_iterator.isValid()) {
-        int oldRef = this.cas.ll_getFSRef(fsArray[i]);
-        int newRef = this.cas.ll_getFSRef(set_iterator.get());
+        int oldRef = cas.ll_getFSRef(fsArray[i]);
+        int newRef = cas.ll_getFSRef(set_iterator.get());
         assertTrue(oldRef != newRef);
         assertTrue(!set_iterator.get().equals(fsArray[i]));
       }
@@ -1232,22 +1232,22 @@ public class IteratorTest {
   public void testRemoveAll() {
     AnnotationFS[] fsArray = new AnnotationFS[100];
     AnnotationFS[] subFsArray = new AnnotationFS[100];
-    FSIndexRepository ir = this.cas.getIndexRepository();
+    FSIndexRepository ir = cas.getIndexRepository();
 
     addAnnotations(fsArray, ts.getType("Sentence"));
     addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
 
     FSIndex<FeatureStructure> setIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX,
-            this.sentenceType);
+            sentenceType);
     FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX,
-            this.sentenceType);
-    FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.sentenceType);
+            sentenceType);
+    FSIndex<AnnotationFS> sortedIndex = cas.getAnnotationIndex(sentenceType);
 
     FSIndex<FeatureStructure> subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX,
-            this.subsentenceType);
+            subsentenceType);
     FSIndex<FeatureStructure> subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX,
-            this.subsentenceType);
-    FSIndex<AnnotationFS> subsortedIndex = this.cas.getAnnotationIndex(this.subsentenceType);
+            subsentenceType);
+    FSIndex<AnnotationFS> subsortedIndex = cas.getAnnotationIndex(subsentenceType);
 
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
     FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
@@ -1330,7 +1330,7 @@ public class IteratorTest {
     verifyMoveToFirst(subbagIt, true);
     verifyMoveToFirst(subsortedIt, true);
 
-    ir.removeAllExcludingSubtypes(this.sentenceType);
+    ir.removeAllExcludingSubtypes(sentenceType);
 
     // due to copy on write, need to get new iterators
     setIt = setIndex.iterator();
@@ -1394,7 +1394,7 @@ public class IteratorTest {
   public void testInvalidIndexRequest() {
     boolean exc = false;
     try {
-      this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.stringType);
+      cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX, stringType);
     } catch (CASRuntimeException e) {
       exc = true;
     }

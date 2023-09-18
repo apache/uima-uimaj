@@ -193,7 +193,7 @@ public class CPECasPool {
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(checkedOutInstances.size()) });
       }
-      this.notifyAll(); // when CAS becomes available
+      notifyAll(); // when CAS becomes available
     }
 
   }

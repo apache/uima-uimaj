@@ -44,16 +44,16 @@ public class CASCompleteSerializer implements Serializable {
 
   public CASCompleteSerializer(CASImpl cas) {
     this();
-    this.casMgrSer = Serialization.serializeCASMgr(cas);
-    this.casSer = Serialization.serializeCAS(cas);
+    casMgrSer = Serialization.serializeCASMgr(cas);
+    casSer = Serialization.serializeCAS(cas);
   }
 
   public CASMgrSerializer getCASMgrSerializer() {
-    return this.casMgrSer;
+    return casMgrSer;
   }
 
   public CASSerializer getCASSerializer() {
-    return this.casSer;
+    return casSer;
   }
 
   /**

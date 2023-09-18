@@ -301,8 +301,8 @@ public class TypeSystemTest {
   @BeforeEach
   public void setUp() throws Exception {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-      this.ts = this.cas.getTypeSystem();
+      cas = CASInitializer.initCas(new CASTestSetup(), null);
+      ts = cas.getTypeSystem();
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
@@ -311,8 +311,8 @@ public class TypeSystemTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
   }
 
   @Test
@@ -331,22 +331,22 @@ public class TypeSystemTest {
 
   @Test
   public void testGetParent() {
-    assertTrue(this.ts.getParent(this.ts.getType(CAS.TYPE_NAME_TOP)) == null);
-    Type annotBase = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    assertTrue(this.ts.getParent(annotBase) == this.ts.getTopType());
-    Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(this.ts.getParent(annot) == this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE));
-    assertTrue(this.ts.getParent(this.ts.getType(CASTestSetup.TOKEN_TYPE)) == annot);
+    assertTrue(ts.getParent(ts.getType(CAS.TYPE_NAME_TOP)) == null);
+    Type annotBase = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
+    assertTrue(ts.getParent(annotBase) == ts.getTopType());
+    Type annot = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    assertTrue(ts.getParent(annot) == ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE));
+    assertTrue(ts.getParent(ts.getType(CASTestSetup.TOKEN_TYPE)) == annot);
   }
 
   @Test
   public void testGetType() {
-    Type top = this.ts.getTopType();
+    Type top = ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
-    Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    Type annot = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annot != null);
-    Type token = this.ts.getType(CASTestSetup.TOKEN_TYPE);
+    Type token = ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(token != null);
   }
 
@@ -355,24 +355,24 @@ public class TypeSystemTest {
    */
   @Test
   public void testGetFeature() {
-    Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    Feature start = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
-    Feature end = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
-    Type integer = this.ts.getType(CAS.TYPE_NAME_INTEGER);
+    Type annot = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    Feature start = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    Feature end = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
+    Type integer = ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(start.getDomain() == annot);
     assertTrue(end.getDomain() == annot);
     assertTrue(start.getRange() == integer);
     assertTrue(end.getRange() == integer);
     Feature start1 = annot.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start1);
-    Feature start2 = this.ts.getType(CASTestSetup.TOKEN_TYPE)
+    Feature start2 = ts.getType(CASTestSetup.TOKEN_TYPE)
             .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start2);
   }
 
   @Test
   public void testGetTypeIterator() {
-    Iterator<Type> it = this.ts.getTypeIterator();
+    Iterator<Type> it = ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
     List<String> v = new ArrayList<>();
     while (it.hasNext()) {
@@ -387,7 +387,7 @@ public class TypeSystemTest {
 
   @Test
   public void testGetFeatures() {
-    Iterator<Feature> it = this.ts.getFeatures();
+    Iterator<Feature> it = ts.getFeatures();
     // Put feature names in vector and test for some known features.
     List<String> v = new ArrayList<>();
     while (it.hasNext()) {
@@ -405,21 +405,21 @@ public class TypeSystemTest {
 
   @Test
   public void testGetTopType() {
-    Type top = this.ts.getTopType();
+    Type top = ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
   }
 
   @Test
   public void testGetDirectlySubsumedTypes() {
-    List<Type> subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
-    Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
+    List<Type> subTypes = ts.getDirectSubtypes(ts.getType(CAS.TYPE_NAME_TOP));
+    Type intType = ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(subTypes.contains(intType));
-    Type annotBaseType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
+    Type annotBaseType = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     assertTrue(subTypes.contains(annotBaseType));
-    Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(!subTypes.contains(annotType));
-    Type tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
+    Type tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(!subTypes.contains(tokenType));
   }
 
@@ -428,20 +428,20 @@ public class TypeSystemTest {
    */
   @Test
   public void testSubsumes() {
-    Type top = this.ts.getTopType();
-    Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
-    Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    Type tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(this.ts.subsumes(top, intType));
-    assertTrue(this.ts.subsumes(top, annotType));
-    assertTrue(this.ts.subsumes(top, tokenType));
-    assertTrue(this.ts.subsumes(annotType, tokenType));
-    assertTrue(!this.ts.subsumes(tokenType, annotType));
-    assertTrue(!this.ts.subsumes(tokenType, top));
+    Type top = ts.getTopType();
+    Type intType = ts.getType(CAS.TYPE_NAME_INTEGER);
+    Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    Type tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
+    assertTrue(ts.subsumes(top, intType));
+    assertTrue(ts.subsumes(top, annotType));
+    assertTrue(ts.subsumes(top, tokenType));
+    assertTrue(ts.subsumes(annotType, tokenType));
+    assertTrue(!ts.subsumes(tokenType, annotType));
+    assertTrue(!ts.subsumes(tokenType, top));
 
-    Type stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
-    Type substringType = this.ts.getType(CASTestSetup.GROUP_1);
-    assertTrue(this.ts.subsumes(stringType, substringType));
+    Type stringType = ts.getType(CAS.TYPE_NAME_STRING);
+    Type substringType = ts.getType(CASTestSetup.GROUP_1);
+    assertTrue(ts.subsumes(stringType, substringType));
   }
 
   /**
@@ -449,10 +449,10 @@ public class TypeSystemTest {
    */
   @Test
   public void testBuiltinTypes() {
-    assertTrue(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal());
-    assertTrue(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal());
-    assertTrue(this.cas.getTypeSystem().getTopType().isFeatureFinal());
-    assertFalse(this.cas.getTypeSystem().getTopType().isInheritanceFinal());
+    assertTrue(cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal());
+    assertTrue(cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal());
+    assertTrue(cas.getTypeSystem().getTopType().isFeatureFinal());
+    assertFalse(cas.getTypeSystem().getTopType().isInheritanceFinal());
   }
 
   /**
@@ -481,34 +481,34 @@ public class TypeSystemTest {
   public void testArrayTypes() {
     // Our version of object arrays. Type is built-in and has special name,
     // for backwards compatibility.
-    Type fsArrayType = this.ts.getType(CAS.TYPE_NAME_FS_ARRAY);
+    Type fsArrayType = ts.getType(CAS.TYPE_NAME_FS_ARRAY);
     assertNotNull(fsArrayType);
     assertTrue(fsArrayType.isArray());
     assertNotNull(fsArrayType.getComponentType());
-    assertTrue(fsArrayType.getComponentType().equals(this.ts.getTopType()));
-    assertTrue(fsArrayType.equals(this.ts.getArrayType(this.ts.getTopType())));
+    assertTrue(fsArrayType.getComponentType().equals(ts.getTopType()));
+    assertTrue(fsArrayType.equals(ts.getArrayType(ts.getTopType())));
     // Int arrays are also built-in, but are primitive-valued.
-    Type intArrayType = this.ts.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+    Type intArrayType = ts.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
     assertNotNull(intArrayType);
     assertTrue(intArrayType.isArray());
     assertNotNull(intArrayType.getComponentType());
-    assertTrue(intArrayType.getComponentType().equals(this.ts.getType(CAS.TYPE_NAME_INTEGER)));
-    assertTrue(intArrayType.equals(this.ts.getArrayType(this.ts.getType(CAS.TYPE_NAME_INTEGER))));
+    assertTrue(intArrayType.getComponentType().equals(ts.getType(CAS.TYPE_NAME_INTEGER)));
+    assertTrue(intArrayType.equals(ts.getArrayType(ts.getType(CAS.TYPE_NAME_INTEGER))));
     // Negative tests: make sure regular types are not classified as arrays.
-    Type stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
+    Type stringType = ts.getType(CAS.TYPE_NAME_STRING);
     assertFalse(stringType.isArray());
     assertNull(stringType.getComponentType());
-    Type topType = this.ts.getTopType();
+    Type topType = ts.getTopType();
     assertFalse(topType.isArray());
     assertNull(topType.getComponentType());
     // Create an array of arrays.
-    Type intMatrix = this.ts.getArrayType(intArrayType);
+    Type intMatrix = ts.getArrayType(intArrayType);
     assertNotNull(intMatrix);
     assertTrue(intMatrix.isArray());
     assertTrue(intMatrix.getComponentType().equals(intArrayType));
     // Check array inheritance.
-    Type annotationArray = this.ts.getArrayType(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
-    assertTrue(this.ts.subsumes(fsArrayType, annotationArray));
+    Type annotationArray = ts.getArrayType(ts.getType(CAS.TYPE_NAME_ANNOTATION));
+    assertTrue(ts.subsumes(fsArrayType, annotationArray));
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
   }
 

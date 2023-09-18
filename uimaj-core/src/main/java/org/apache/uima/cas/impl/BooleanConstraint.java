@@ -35,12 +35,12 @@ public class BooleanConstraint extends PathConstraint implements FSMatchConstrai
 
   BooleanConstraint(ArrayList<String> path, FSBooleanConstraint constraint) {
     super(path);
-    this.cons = constraint;
+    cons = constraint;
   }
 
   @Override
   public boolean match(FeatureStructure fs) {
-    final int max = this.featNames.size() - 1; // The last position in the
+    final int max = featNames.size() - 1; // The last position in the
     // path!
     if (max < 0) {
       // If the path is empty, we can't get a boolean, and therefore the
@@ -49,17 +49,17 @@ public class BooleanConstraint extends PathConstraint implements FSMatchConstrai
     }
     Feature feat;
     for (int i = 0; i < max; i++) {
-      feat = fs.getType().getFeatureByBaseName(this.featNames.get(i));
+      feat = fs.getType().getFeatureByBaseName(featNames.get(i));
       if (feat == null) {
         return false;
       }
       fs = fs.getFeatureValue(feat);
     }
-    feat = fs.getType().getFeatureByBaseName(this.featNames.get(max));
+    feat = fs.getType().getFeatureByBaseName(featNames.get(max));
     if (feat == null) {
       return false;
     }
-    return this.cons.match(fs.getBooleanValue(feat));
+    return cons.match(fs.getBooleanValue(feat));
   }
 
 }

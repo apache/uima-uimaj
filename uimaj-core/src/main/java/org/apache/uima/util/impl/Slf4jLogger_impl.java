@@ -107,7 +107,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
   private Slf4jLogger_impl(Slf4jLogger_impl l, int limit) {
     super(l, limit);
-    this.logger = l.logger;
+    logger = l.logger;
     isLocationCapable = logger instanceof org.slf4j.spi.LocationAwareLogger;
   }
 
@@ -140,7 +140,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
   @Override
   public Slf4jLogger_impl getLimitedLogger(int aLimit) {
-    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
+    if (aLimit == Integer.MAX_VALUE || aLimit == limit_common) {
       return this;
     }
     return new Slf4jLogger_impl(this, aLimit);

@@ -130,7 +130,7 @@ public class VNSQuery {
       VinciServiceInfo service = (VinciServiceInfo) oldList.get(i);
 
       if (aService.getHost().equals(service.getHost()) && aService.getPort() == service.getPort()
-              && service.isAvailable() == false) {
+              && !service.isAvailable()) {
         return false;
       }
     }

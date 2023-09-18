@@ -82,7 +82,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
     }
 
     // set metadata
-    this.setMetaData(spec.getMetaData());
+    setMetaData(spec.getMetaData());
 
     // now attempt to create a URL, which can actually be used to access the data
     // Get Relative Path Resolver
@@ -158,15 +158,12 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
 
     // URIs must be the same
     URI uri = ((ConfigurableDataResource_impl) obj).getUri();
-    if (uri == null || !uri.equals(this.getUri()))
+    if (uri == null || !uri.equals(getUri()))
       return false;
 
     // Local Cache Files must be the same
     File localCache = ((ConfigurableDataResource_impl) obj).getLocalCache();
-    if (localCache == null && this.getLocalCache() != null)
-      return false;
-
-    if (localCache != null && !localCache.equals(this.getLocalCache()))
+    if ((localCache == null && getLocalCache() != null) || (localCache != null && !localCache.equals(getLocalCache())))
       return false;
 
     return true;

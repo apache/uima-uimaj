@@ -252,7 +252,7 @@ public class ProcessUtil {
         }
       }
       synchronized (this) {
-        this.notifyAll();
+        notifyAll();
       }
     }
 
