@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-@Library('uima-build-jenkins-shared-library') _
+@Library('uima-build-jenkins-shared-library@bugfix/INFRA-24767-Connection-reset-when-accessing-Maven-Central-on-Jenkins-Windows-Build-Nodes') _
 
 defaultPipeline {
   // extraMavenArguments = '-Pjacoco,spotbugs,pmd,run-rat-report -Ddisable-rc-auto-staging'
