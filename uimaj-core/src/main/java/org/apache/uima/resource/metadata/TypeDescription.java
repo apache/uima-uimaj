@@ -109,7 +109,7 @@ public interface TypeDescription extends MetaDataObject {
    * @param aAllowedValues
    *          the allowed values for instances of this Type
    */
-  void setAllowedValues(AllowedValue[] aAllowedValues);
+  void setAllowedValues(AllowedValue... aAllowedValues);
 
   /**
    * Convenience method which adds a FeatureDescription to this TypeDescription.

@@ -206,7 +206,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @param aOverrides
    *          the parameters this this parameter overrides
    */
-  void setOverrides(String[] aOverrides);
+  void setOverrides(String... aOverrides);
 
   /**
    * Adds an override to this configuration parameter.

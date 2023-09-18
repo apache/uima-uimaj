@@ -66,5 +66,5 @@ public interface FixedFlow extends FlowConstraints {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setFixedFlow(String[] aFlow);
+  void setFixedFlow(String... aFlow);
 }

@@ -117,7 +117,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    * @see ConfigurationParameterDeclarations#setCommonParameters(ConfigurationParameter[])
    */
   @Override
-  public void setCommonParameters(ConfigurationParameter[] aParams) {
+  public void setCommonParameters(ConfigurationParameter... aParams) {
     if (aParams == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aParams", "setCommonParameters" });
@@ -129,7 +129,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    * @see ConfigurationParameterDeclarations#setConfigurationGroups(ConfigurationGroup[])
    */
   @Override
-  public void setConfigurationGroups(ConfigurationGroup[] aGroups) {
+  public void setConfigurationGroups(ConfigurationGroup... aGroups) {
     if (aGroups == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aGroups", "setConfigurationGroups" });
@@ -172,8 +172,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
         for (int i = 0; i < groups.length; i++) {
           ConfigurationParameter[] paramsInGroup = groups[i].getConfigurationParameters();
           p = _getConfigurationParameter(paramsInGroup, aParamName);
-          if (p != null)
+          if (p != null) {
             break;
+          }
         }
       }
       return p;
@@ -297,8 +298,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
           String aName) {
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
-        if (aName.equals(aParams[i].getName()))
+        if (aName.equals(aParams[i].getName())) {
           return aParams[i];
+        }
       }
     }
     return null;

@@ -127,7 +127,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    *          an array of {@link ExternalResourceDependency} objects that describe this
    *          <code>ResourceCreationSpecifier</code>'s resource dependencies.
    */
-  void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies);
+  void setExternalResourceDependencies(ExternalResourceDependency... aDependencies);
 
   /**
    * Gets the external resource dependency with the given key.

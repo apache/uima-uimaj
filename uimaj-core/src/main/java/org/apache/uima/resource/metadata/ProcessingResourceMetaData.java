@@ -122,7 +122,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setFsIndexes(FsIndexDescription[] aFSIndexes);
+  void setFsIndexes(FsIndexDescription... aFSIndexes);
 
   /**
    * Retrieves this Processing Resource's {@link Capability Capabilities}. Each capability consists
@@ -144,7 +144,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setCapabilities(Capability[] aCapabilities);
+  void setCapabilities(Capability... aCapabilities);
 
   /**
    * Gets this Processing Resource's {@link OperationalProperties}. This includes information such
