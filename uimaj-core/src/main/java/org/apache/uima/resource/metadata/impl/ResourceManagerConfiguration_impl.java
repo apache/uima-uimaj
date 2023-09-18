@@ -38,10 +38,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.xml.sax.SAXException;
 
-/**
- * 
- * 
- */
 public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
         implements ResourceManagerConfiguration {
   private static final long serialVersionUID = -8326190554827990517L;
@@ -60,89 +56,53 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
 
   private ExternalResourceDescription[] mExternalResources = ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS;
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getVersion()
-   */
   @Override
   public String getVersion() {
     return mVersion;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setVersion(String)
-   */
   @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setDescription(String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getVendor()
-   */
   @Override
   public String getVendor() {
     return mVendor;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setVendor(String)
-   */
   @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
-   */
   @Override
   public Import[] getImports() {
     return mImports;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.
-   * metadata.Import[])
-   */
   @Override
-  public void setImports(Import[] aImports) {
+  public void setImports(Import... aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aImports", "setImports" });
@@ -150,59 +110,27 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
     mImports = aImports;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getExternalResources()
-   */
   @Override
   public ExternalResourceDescription[] getExternalResources() {
     return mExternalResources;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ResourceManagerConfiguration#setExternalResources(org.apache.
-   * uima.resource.ExternalResourceDescription[])
-   */
   @Override
-  public void setExternalResources(ExternalResourceDescription[] aDescriptions) {
+  public void setExternalResources(ExternalResourceDescription... aDescriptions) {
     mExternalResources = (aDescriptions != null) ? aDescriptions
             : ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ResourceManagerConfiguration#getExternalResourceBindings()
-   */
   @Override
   public ExternalResourceBinding[] getExternalResourceBindings() {
     return mBindings;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ResourceManagerConfiguration#setExternalResourceBindings(org.
-   * apache.uima.resource.metadata.ExternalResourceBinding[])
-   */
   @Override
-  public void setExternalResourceBindings(ExternalResourceBinding[] aBindings) {
+  public void setExternalResourceBindings(ExternalResourceBinding... aBindings) {
     mBindings = (aBindings != null) ? aBindings : ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ResourceManagerConfiguration#addExternalResource(org.apache.
-   * uima.resource.ExternalResourceDescription)
-   */
   @Override
   public void addExternalResource(ExternalResourceDescription aExternalResourceDescription) {
     ExternalResourceDescription[] current = getExternalResources();
@@ -212,13 +140,6 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
     setExternalResources(newArr);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ResourceManagerConfiguration#addExternalResourceBinding(org.
-   * apache.uima.resource.metadata.ExternalResourceBinding)
-   */
   @Override
   public void addExternalResourceBinding(ExternalResourceBinding aExternalResourceBinding) {
     ExternalResourceBinding[] current = getExternalResourceBindings();
@@ -228,12 +149,6 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
     setExternalResourceBindings(newArr);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#removeExternalResource(org.
-   * apache.uima.resource.ExternalResourceDescription)
-   */
   @Override
   public void removeExternalResource(ExternalResourceDescription aExternalResourceDescription) {
     ExternalResourceDescription[] current = getExternalResources();
@@ -248,13 +163,6 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ResourceManagerConfiguration#removeExternalResourceBinding(
-   * org.apache.uima.resource.metadata.ExternalResourceBinding)
-   */
   @Override
   public void removeExternalResourceBinding(ExternalResourceBinding aExternalResourceBinding) {
     ExternalResourceBinding[] current = getExternalResourceBindings();
@@ -271,9 +179,10 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
 
   /**
    * @deprecated {@link ResourceManagerConfiguration#getImport()}
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public Import getImport() {
     if (mImports.length > 0) {
       return mImports[0];
@@ -284,18 +193,14 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
 
   /**
    * @deprecated {@link ResourceManagerConfiguration#setImport(Import)}
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void setImport(Import aImport) {
     mImports = new Import[] { aImport };
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
-   */
   // support multi-threading, avoid object creation if no imports
   @Override
   public synchronized void resolveImports() throws InvalidXMLException {
@@ -391,13 +296,6 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
     aResultBindings.addAll(Arrays.asList(desc.getExternalResourceBindings()));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.
-   * uima.resource.metadata.impl.PropertyXmlInfo, java.lang.String, org.xml.sax.ContentHandler)
-   */
   @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
           throws SAXException {
@@ -414,16 +312,15 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "resourceManagerConfiguration",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
-              new PropertyXmlInfo("name", true), new PropertyXmlInfo("description", true),
-              new PropertyXmlInfo("version", true), new PropertyXmlInfo("vendor", true),
-              new PropertyXmlInfo("imports", true), new PropertyXmlInfo("import", true), // for
-                                                                                         // backwards
-                                                                                         // compatibility;
-                                                                                         // not
-              // written to XML
-              new PropertyXmlInfo("externalResources"),
+          "resourceManagerConfiguration", new PropertyXmlInfo[] { //
+              new PropertyXmlInfo("import", null), //
+              new PropertyXmlInfo("name", true), //
+              new PropertyXmlInfo("description", true), //
+              new PropertyXmlInfo("version", true), //
+              new PropertyXmlInfo("vendor", true), //
+              new PropertyXmlInfo("imports", true), //
+              new PropertyXmlInfo("import", true), // for backwards compatibility not written to XML
+              new PropertyXmlInfo("externalResources"), //
               new PropertyXmlInfo("externalResourceBindings"), });
 
 }

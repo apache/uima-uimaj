@@ -109,7 +109,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setCapabilities(Capability[])
    */
   @Override
-  public void setCapabilities(Capability[] aCapabilities) {
+  public void setCapabilities(Capability... aCapabilities) {
     if (aCapabilities == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aCapabilities", "setCapabilities" });
@@ -177,7 +177,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
    * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setFsIndexes(FsIndexDescription[])
    */
   @Override
-  public void setFsIndexes(FsIndexDescription[] aFsIndexes) {
+  public void setFsIndexes(FsIndexDescription... aFsIndexes) {
     if (mFsIndexCollection == null) {
       mFsIndexCollection = new FsIndexCollection_impl();
     }

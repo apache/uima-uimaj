@@ -24,7 +24,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 /**
  * An object that holds configuration that is part of the CPE descriptor. It provides the means of
  * configuring CPE Collection Reader Iterator.
- * 
  */
 public interface CpeCollectionReaderIterator extends MetaDataObject {
   /**

@@ -23,10 +23,6 @@ import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 
-/**
- * 
- * 
- */
 public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIndexDescription {
 
   static final long serialVersionUID = 8939000196947456114L;
@@ -46,67 +42,43 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
     return "fsIndexDescription";
   }
 
-  /**
-   * @see FsIndexDescription#getLabel()
-   */
   @Override
   public String getLabel() {
     return mLabel;
   }
 
-  /**
-   * @see FsIndexDescription#setLabel(String)
-   */
   @Override
   public void setLabel(String aLabel) {
     mLabel = aLabel;
   }
 
-  /**
-   * @see FsIndexDescription#getTypeName()
-   */
   @Override
   public String getTypeName() {
     return mTypeName;
   }
 
-  /**
-   * @see FsIndexDescription#setTypeName(String)
-   */
   @Override
   public void setTypeName(String aTypeName) {
     mTypeName = aTypeName;
   }
 
-  /**
-   * @see FsIndexDescription#getKind
-   */
   @Override
   public String getKind() {
     return mKind;
   }
 
-  /**
-   * @see FsIndexDescription#setKind(String)
-   */
   @Override
   public void setKind(String aKind) {
     mKind = aKind;
   }
 
-  /**
-   * @see FsIndexDescription#getKeys()
-   */
   @Override
   public FsIndexKeyDescription[] getKeys() {
     return mKeys;
   }
 
-  /**
-   * @see FsIndexDescription#setKeys(FsIndexKeyDescription[])
-   */
   @Override
-  public void setKeys(FsIndexKeyDescription[] aKeys) {
+  public void setKeys(FsIndexKeyDescription... aKeys) {
     if (aKeys == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aKeys", "setKeys" });

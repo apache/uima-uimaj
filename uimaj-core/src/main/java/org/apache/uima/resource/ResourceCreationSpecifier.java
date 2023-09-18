@@ -20,15 +20,15 @@
 package org.apache.uima.resource;
 
 import org.apache.uima.Constants;
+import org.apache.uima.UimaContext;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
  * A <code>ResourceCreationSpecifier</code> is the supertype of
  * {@link org.apache.uima.analysis_engine.AnalysisEngineDescription},
- * {@link org.apache.uima.collection.CasConsumerDescription},
- * {@link org.apache.uima.collection.CollectionReaderDescription}, and
- * {@link org.apache.uima.collection.CasInitializerDescription}.
+ * {@link org.apache.uima.collection.CasConsumerDescription}, and
+ * {@link org.apache.uima.collection.CollectionReaderDescription}.
  * <p>
  * All Resource Creation Specifiers must the following:
  * <ul>
@@ -50,8 +50,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * on other resources.</li>
  * <li>A set of {@link ExternalResourceDescription} objects that satisfy the dependencies.</li>
  * </ul>
- * 
- * 
  */
 public interface ResourceCreationSpecifier extends ResourceSpecifier {
   /**
@@ -110,9 +108,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * Retrieves descriptions of this <code>ResourceCreationSpecifier</code>'s dependencies on
    * external resources. Each required external resource is assigned a String identifier. This is
    * the identifier that this <code>ResourceCreationSpecifier</code> can use to locate the Resource
-   * (using the
-   * {@link org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(String)}
-   * method).
+   * (using the {@link UimaContext#getResourceObject(String)} method).
    * 
    * @return an array of {@link ExternalResourceDependency} objects that describe this
    *         AnalysisEngine's resource dependencies.
@@ -127,7 +123,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    *          an array of {@link ExternalResourceDependency} objects that describe this
    *          <code>ResourceCreationSpecifier</code>'s resource dependencies.
    */
-  void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies);
+  void setExternalResourceDependencies(ExternalResourceDependency... aDependencies);
 
   /**
    * Gets the external resource dependency with the given key.

@@ -32,8 +32,6 @@ import org.apache.uima.resource.metadata.LanguagePrecondition;
 
 /**
  * Precondition that tests language of the document.
- * 
- * 
  */
 public class LanguagePrecondition_impl extends SimplePrecondition_impl
         implements LanguagePrecondition {
@@ -48,25 +46,16 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
     super.setPredicate(LANGUAGE_SUBSUMED);
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.LanguagePrecondition#getLanguages()
-   */
   @Override
   public String[] getLanguages() {
     return (String[]) getComparisonValue();
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.LanguagePrecondition#setLanguages(java.lang.String[])
-   */
   @Override
-  public void setLanguages(String[] aLanguages) {
+  public void setLanguages(String... aLanguages) {
     setComparisonValue(aLanguages);
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setComparisonValue(java.lang.Object)
-   */
   @Override
   public void setComparisonValue(Object aValue) {
     // value must be a string array
@@ -88,9 +77,6 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
     super.setComparisonValue(normalizedLanguages);
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
-   */
   @Override
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
@@ -98,9 +84,6 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
             new Object[] { this.getClass().getName(), "setFeatureName" });
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
-   */
   @Override
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
@@ -108,9 +91,6 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
             new Object[] { this.getClass().getName(), "setFsIndexName" });
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
-   */
   @Override
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
@@ -118,9 +98,6 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
             new Object[] { this.getClass().getName(), "setFsMatchConstraint" });
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setPredicate(java.lang.String)
-   */
   @Override
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
@@ -130,16 +107,19 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
 
   @Override
   public boolean equals(Object aObject) {
-    if (!(aObject instanceof LanguagePrecondition))
+    if (!(aObject instanceof LanguagePrecondition)) {
       return false;
+    }
     LanguagePrecondition p = (LanguagePrecondition) aObject;
     Object cv1 = getComparisonValue();
     Object cv2 = p.getComparisonValue();
-    if (cv1.equals(cv2))
+    if (cv1.equals(cv2)) {
       return true;
+    }
     if (cv1 instanceof Object[]) {
-      if (!(cv2 instanceof Object[]) || !Arrays.equals((Object[]) cv1, (Object[]) cv2))
+      if (!(cv2 instanceof Object[]) || !Arrays.equals((Object[]) cv1, (Object[]) cv2)) {
         return false;
+      }
     }
     return true;
   }
@@ -147,8 +127,9 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl
   @Override
   public int hashCode() {
     int h = getFeatureName().hashCode();
-    if (getComparisonValue() != null)
+    if (getComparisonValue() != null) {
       h += getComparisonValue().hashCode();
+    }
     return h;
   }
 

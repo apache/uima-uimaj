@@ -28,8 +28,6 @@ import org.apache.uima.util.InvalidXMLException;
  * An import declaration. These are currently used to import type systems, indexes, and type
  * priorities. Imports may be by location (relative URL) or name (a Java-style compound name, looked
  * up in the classpath), but not both.
- * 
- * 
  */
 public interface Import extends MetaDataObject {
 

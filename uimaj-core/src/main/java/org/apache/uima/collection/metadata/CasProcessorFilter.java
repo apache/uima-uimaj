@@ -35,8 +35,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * 
  * The featurespecs are implicitly connected with and operators and precedence rules are currently
  * not supported.
- * 
- * 
  */
 public interface CasProcessorFilter extends MetaDataObject {
   /**

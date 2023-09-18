@@ -42,14 +42,10 @@ import org.apache.uima.util.InvalidXMLException;
  * {@link #getDescription() description}, {@link #getVendor() vendor}, and {@link #getVersion()
  * version}. It is recommended that these properties be set on any FS Index Collection that is meant
  * to be shared by (imported by) multiple components.
- * 
- * 
  */
 public interface FsIndexCollection extends MetaDataObject {
 
   /**
-   * Gets the name of this FS Index Collection.
-   * 
    * @return the name of this FS Index Collection, null if none has been specified.
    */
   String getName();
@@ -66,8 +62,6 @@ public interface FsIndexCollection extends MetaDataObject {
   void setName(String aName);
 
   /**
-   * Gets the version number of this FS Index Collection.
-   * 
    * @return the version number of this FS Index Collection, as a String, null if none has been
    *         specified.
    */
@@ -136,7 +130,7 @@ public interface FsIndexCollection extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  void setImports(Import[] aImports);
+  void setImports(Import... aImports);
 
   /**
    * Retrieves the FS Index descriptions that are part of this collection. These define the indexes
@@ -156,7 +150,7 @@ public interface FsIndexCollection extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  void setFsIndexes(FsIndexDescription[] aFSIndexes);
+  void setFsIndexes(FsIndexDescription... aFSIndexes);
 
   /**
    * Adds an FS Index description to this collection.

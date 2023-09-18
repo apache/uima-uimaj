@@ -38,63 +38,31 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
 
   private String mAggregateSofaName;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentKey()
-   */
   @Override
   public String getComponentKey() {
     return mComponentKey;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentKey(java.lang.String)
-   */
   @Override
   public void setComponentKey(String aComponentKey) {
     mComponentKey = aComponentKey;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentSofaName()
-   */
   @Override
   public String getComponentSofaName() {
     return mComponentSofaName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentSofaName(java.lang.String)
-   */
   @Override
   public void setComponentSofaName(String aComponentSofaName) {
     mComponentSofaName = aComponentSofaName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getAggregateSofaName()
-   */
   @Override
   public String getAggregateSofaName() {
     return mAggregateSofaName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.analysis_engine.metadata.SofaMapping#setAggregateSofaName(java.lang.String)
-   */
   @Override
   public void setAggregateSofaName(String aAggregateSofaName) {
     mAggregateSofaName = aAggregateSofaName;

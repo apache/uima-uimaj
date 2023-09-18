@@ -41,8 +41,6 @@ import org.apache.uima.util.InvalidXMLException;
  * description}, {@link #getVendor() vendor}, and {@link #getVersion() version}. It is recommended
  * that these properties be set on any type system that is meant to be shared by (imported by)
  * multiple components.
- * 
- * 
  */
 public interface TypeSystemDescription extends MetaDataObject {
 
@@ -133,7 +131,7 @@ public interface TypeSystemDescription extends MetaDataObject {
    * @param aImports
    *          an array of imports declared by this type system.
    */
-  void setImports(Import[] aImports);
+  void setImports(Import... aImports);
 
   /**
    * Gets descriptions of all Types in this TypeSystem fragment.
@@ -148,7 +146,7 @@ public interface TypeSystemDescription extends MetaDataObject {
    * @param aTypes
    *          descriptions of all Types in this TypeSystem fragment
    */
-  void setTypes(TypeDescription[] aTypes);
+  void setTypes(TypeDescription... aTypes);
 
   /**
    * Adds a Type to this TypeSystem fragment.
@@ -194,7 +192,7 @@ public interface TypeSystemDescription extends MetaDataObject {
    * @param aResourceManager
    *          the Resource Manager used to locate type systems imported by name. For example, the
    *          path in which to locate these type systems can be set via the
-   *          {@link ResourceManager#setDataPath(String)} method.
+   *          {@link ResourceManager#setDataPathElements} method.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid

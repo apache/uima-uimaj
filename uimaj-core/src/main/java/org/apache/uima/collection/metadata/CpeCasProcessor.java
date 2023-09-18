@@ -24,9 +24,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 /**
  * An object that holds configuration that is part of the CPE descriptor. It provides the means of
  * configuring behavior that is common to all CasProcessor types.
- * 
- * 
- * 
  */
 public interface CpeCasProcessor extends MetaDataObject {
   /**
@@ -59,7 +56,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    *           tbd
    * @deprecated Doesn't support the new import syntax. Use setCpeComponentDescriptor() instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   void setDescriptor(String aDescriptor) throws CpeDescriptorException;
 
   /**
@@ -69,7 +66,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @deprecated Doesn't support the new import syntax. Use
    *             getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   String getDescriptor();
 
   /**
@@ -230,7 +227,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * Sets a strategy for dealing with exceeding error thresholds. The three supported strategies
    * are:
    * <ul>
-   * <li>terminate - termines the CPE
+   * <li>terminate - terminates the CPE
    * <li>continue - continue despite the error
    * <li>disable - disable CasProcessor
    * </ul>
@@ -244,7 +241,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * Returns strategy for dealing with exceeding error thresholds. The three supported strategies
    * are:
    * <ul>
-   * <li>terminate - termines the CPE
+   * <li>terminate - terminates the CPE
    * <li>continue - continue despite the error
    * <li>disable - disable CasProcessor
    * </ul>
@@ -262,16 +259,14 @@ public interface CpeCasProcessor extends MetaDataObject {
   void setMaxRestartCount(int aErrorCount);
 
   /**
-   * Returns max restarts threshold fro CasProcessor
-   * 
-   * @return - max restart count
+   * @return max restarts threshold from CasProcessor
    */
   int getMaxRestartCount();
 
   /**
    * Sets strategy for dealing with exceeding error thresholds. The three supported strategies are:
    * <ul>
-   * <li>terminate - termines the CPE
+   * <li>terminate - terminates the CPE
    * <li>continue - continue despite the error
    * <li>disable - disable CasProcessor
    * </ul>
@@ -285,7 +280,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * Returns strategy for dealing with exceeding error thresholds. The three supported strategies
    * are:
    * <ul>
-   * <li>terminate - termines the CPE
+   * <li>terminate - terminates the CPE
    * <li>continue - continue despite the error
    * <li>disable - disable CasProcessor
    * </ul>

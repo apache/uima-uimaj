@@ -34,10 +34,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Reference implementation of {@link ConfigurationParameter}.
- * 
- * 
  */
-
 public class ConfigurationParameter_impl extends MetaDataObject_impl
         implements ConfigurationParameter {
 
@@ -67,65 +64,41 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
    */
   private String[] mOverrides = Constants.EMPTY_STRING_ARRAY;
 
-  /**
-   * @see ConfigurationParameter#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see ConfigurationParameter#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see ConfigurationParameter#getExternalOverrideName()
-   */
   @Override
   public String getExternalOverrideName() {
     return mExternalOverrideName;
   }
 
-  /**
-   * @see ConfigurationParameter#setExternalOverrideName(String)
-   */
   @Override
   public void setExternalOverrideName(String aExternalOverrideName) {
     mExternalOverrideName = aExternalOverrideName;
   }
 
-  /**
-   * @see ConfigurationParameter#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see ConfigurationParameter#setDescription(String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see ConfigurationParameter#getType()
-   */
   @Override
   public String getType() {
     return mType;
   }
 
-  /**
-   * @see ConfigurationParameter#setType(String)
-   */
   @Override
   public void setType(String aType) throws UIMA_IllegalArgumentException {
     // check to make sure value is legal
@@ -137,33 +110,21 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
     mType = aType;
   }
 
-  /**
-   * @see ConfigurationParameter#isMultiValued()
-   */
   @Override
   public boolean isMultiValued() {
     return mMultiValued;
   }
 
-  /**
-   * @see ConfigurationParameter#setMultiValued(boolean)
-   */
   @Override
   public void setMultiValued(boolean aMultiValued) {
     mMultiValued = aMultiValued;
   }
 
-  /**
-   * @see ConfigurationParameter#isMandatory()
-   */
   @Override
   public boolean isMandatory() {
     return mMandatory;
   }
 
-  /**
-   * @see ConfigurationParameter#setMandatory(boolean)
-   */
   @Override
   public void setMandatory(boolean aMandatory) {
     mMandatory = aMandatory;
@@ -182,23 +143,13 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
    * public void setPublished(boolean aPublished) { mPublished = aPublished; }
    */
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameter#getOverrides()
-   */
   @Override
   public String[] getOverrides() {
     return mOverrides.clone();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameter#setOverrides(java.lang.String[])
-   */
   @Override
-  public void setOverrides(String[] aOverrides) {
+  public void setOverrides(String... aOverrides) {
     if (aOverrides == null) {
       mOverrides = Constants.EMPTY_STRING_ARRAY;
     } else {
@@ -206,11 +157,6 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameter#addOverride(java.lang.String)
-   */
   @Override
   public void addOverride(String aOverride) {
     String[] current = getOverrides();
@@ -220,11 +166,6 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
     setOverrides(newArr);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameter#removeOverride(java.lang.String)
-   */
   @Override
   public void removeOverride(String aOverride) {
     String[] current = getOverrides();

@@ -26,10 +26,8 @@ import java.util.List;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
-import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.xml.sax.SAXException;
 
@@ -55,83 +53,53 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   // Threading: all access synchronized except initial creation during cloning
   private List<TypePriorityList> mPriorityLists = new ArrayList<>();
 
-  /**
-   * @see ResourceMetaData#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see ResourceMetaData#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see ResourceMetaData#getVersion()
-   */
   @Override
   public String getVersion() {
     return mVersion;
   }
 
-  /**
-   * @see ResourceMetaData#setVersion(String)
-   */
   @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
-  /**
-   * @see ResourceMetaData#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see ResourceMetaData#setDescription(String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see ResourceMetaData#getVendor()
-   */
   @Override
   public String getVendor() {
     return mVendor;
   }
 
-  /**
-   * @see ResourceMetaData#setVendor(String)
-   */
   @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /**
-   * @see TypeSystemDescription#getImports()
-   */
   @Override
   public Import[] getImports() {
     return mImports;
   }
 
-  /**
-   * @see TypeSystemDescription#setImports(Import[])
-   */
   @Override
-  public void setImports(Import[] aImports) {
+  public void setImports(Import... aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aImports", "setImports" });
@@ -139,11 +107,9 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     mImports = aImports;
   }
 
-  /**
-   * @see TypePriorities#getPriorityLists() synchronized to prevent concurrent mod exceptions
-   */
   @Override
   public TypePriorityList[] getPriorityLists() {
+    // synchronized to prevent concurrent mod exceptions
     synchronized (mPriorityLists) { // saw concurrent mod exception 3/2014
       TypePriorityList[] result = new TypePriorityList[mPriorityLists.size()];
       mPriorityLists.toArray(result);
@@ -151,12 +117,9 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     }
   }
 
-  /**
-   * @see TypePriorities#setPriorityLists(TypePriorityList[]) could be called by thread doing
-   *      resolve imports, while another thread was iterating over them
-   */
   @Override
-  public void setPriorityLists(TypePriorityList[] aPriorityLists) {
+  public void setPriorityLists(TypePriorityList... aPriorityLists) {
+    // could be called by thread doing resolve imports, while another thread was iterating over them
     synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014
       mPriorityLists.clear();
       for (int i = 0; i < aPriorityLists.length; i++) {
@@ -165,9 +128,6 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     }
   }
 
-  /**
-   * @see TypePriorities#addPriorityList(TypePriorityList)
-   */
   @Override
   public void addPriorityList(TypePriorityList aPriorityList) {
     synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014
@@ -175,9 +135,6 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     }
   }
 
-  /**
-   * @see TypePriorities#addPriorityList()
-   */
   @Override
   public TypePriorityList addPriorityList() {
     TypePriorityList newPriorityList = new TypePriorityList_impl();
@@ -187,9 +144,6 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     return newPriorityList;
   }
 
-  /**
-   * @see TypePriorities#removePriorityList(TypePriorityList)
-   */
   @Override
   public void removePriorityList(TypePriorityList aPriorityList) {
     synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
@@ -197,9 +151,6 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     }
   }
 
-  /**
-   * @see TypeSystemDescription#resolveImports()
-   */
   // support multithreading,
   // avoid object creation if already resolved
   @Override
@@ -264,10 +215,13 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
-    return new XmlizationInfo("typePriorities",
-            new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
-                new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
-                new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),
-                new PropertyXmlInfo("priorityLists", true) });
+    return new XmlizationInfo("typePriorities", new PropertyXmlInfo[] { //
+        new PropertyXmlInfo("name", true), //
+        new PropertyXmlInfo("description", true), //
+        new PropertyXmlInfo("version", true), //
+        new PropertyXmlInfo("vendor", true), //
+        new PropertyXmlInfo("imports", true), //
+        new PropertyXmlInfo("priorityLists", true) //
+    });
   }
 }

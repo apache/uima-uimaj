@@ -34,10 +34,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-/**
- * 
- * 
- */
 public class Import_impl extends MetaDataObject_impl implements Import {
 
   private static final long serialVersionUID = 6876757002913848998L;
@@ -59,11 +55,6 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * value unmodified if any settings are undefined.
    */
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.Import#getName()
-   */
   @Override
   public String getName() {
     if (mName != null && mName.contains("${")) {
@@ -75,21 +66,11 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     return mName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.Import#setName(java.lang.String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.Import#getLocation()
-   */
   @Override
   public String getLocation() {
     if (mLocation != null && mLocation.contains("${")) {
@@ -101,29 +82,18 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     return mLocation;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.Import#setLocation(java.lang.String)
-   */
   @Override
   public void setLocation(String aUri) {
     mLocation = aUri;
   }
 
-  /*
+  /**
    * Called when importing by name non-xml files, e.g. external override settings
    */
   public void setSuffix(String suffix) {
     byNameSuffix = suffix;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.
-   * ResourceManager)
-   */
   @Override
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
     String location, name;
@@ -189,7 +159,6 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * 
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
-
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
@@ -226,9 +195,6 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     // aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
   }
 
-  /**
-   * @see MetaDataObject_impl#getXmlizationInfo()
-   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);

@@ -25,15 +25,12 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
-import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 
 /**
  * Reference implementation of {@link TypeSystemDescription}.
- * 
- * 
  */
 public class TypeSystemDescription_impl extends MetaDataObject_impl
         implements TypeSystemDescription {
@@ -59,83 +56,53 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   public TypeSystemDescription_impl() {
   }
 
-  /**
-   * @see ResourceMetaData#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see ResourceMetaData#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see ResourceMetaData#getVersion()
-   */
   @Override
   public String getVersion() {
     return mVersion;
   }
 
-  /**
-   * @see ResourceMetaData#setVersion(String)
-   */
   @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
-  /**
-   * @see ResourceMetaData#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see ResourceMetaData#setDescription(String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see ResourceMetaData#getVendor()
-   */
   @Override
   public String getVendor() {
     return mVendor;
   }
 
-  /**
-   * @see ResourceMetaData#setVendor(String)
-   */
   @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /**
-   * @see TypeSystemDescription#getImports()
-   */
   @Override
   public Import[] getImports() {
     return mImports;
   }
 
-  /**
-   * @see TypeSystemDescription#setImports(Import[])
-   */
   @Override
-  public void setImports(Import[] aImports) {
+  public void setImports(Import... aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aImports", "setImports" });
@@ -143,19 +110,13 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     mImports = aImports;
   }
 
-  /**
-   * @see TypeSystemDescription#getTypes()
-   */
   @Override
   public TypeDescription[] getTypes() {
     return mTypes;
   }
 
-  /**
-   * @see TypeSystemDescription#setTypes(TypeDescription[])
-   */
   @Override
-  public void setTypes(TypeDescription[] aTypes) {
+  public void setTypes(TypeDescription... aTypes) {
     if (aTypes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aTypes", "setTypes" });
@@ -163,9 +124,6 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     mTypes = aTypes;
   }
 
-  /**
-   * @see TypeSystemDescription#addType(String, String, String)
-   */
   @Override
   public TypeDescription addType(String aTypeName, String aDescription, String aSupertypeName) {
     // create new type description
@@ -185,9 +143,6 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     return newType;
   }
 
-  /**
-   * @see TypeSystemDescription#getType(java.lang.String)
-   */
   @Override
   public TypeDescription getType(String aTypeName) {
     for (int i = 0; i < mTypes.length; i++) {
@@ -198,9 +153,6 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     return null;
   }
 
-  /**
-   * @see TypeSystemDescription#resolveImports()
-   */
   // allow these calls to be done multiple times on this same object, in different threads
   @Override
   public synchronized void resolveImports() throws InvalidXMLException {
@@ -228,8 +180,12 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
-              new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
-              new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),
-              new PropertyXmlInfo("types", true) });
+          new PropertyXmlInfo[] { //
+              new PropertyXmlInfo("name", true), //
+              new PropertyXmlInfo("description", true), //
+              new PropertyXmlInfo("version", true), //
+              new PropertyXmlInfo("vendor", true), //
+              new PropertyXmlInfo("imports", true), //
+              new PropertyXmlInfo("types", true) //
+          });
 }

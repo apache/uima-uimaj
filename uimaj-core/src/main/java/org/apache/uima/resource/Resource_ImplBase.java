@@ -43,8 +43,6 @@ import org.apache.uima.util.Settings;
  * Implementation base class for {@link org.apache.uima.resource.Resource}s. Provides access to
  * resource metadata and the UIMA Context, which in turn provides access to framework facilities
  * such as logging and resource management.
- * 
- * 
  */
 public abstract class Resource_ImplBase implements Resource {
 
@@ -63,13 +61,10 @@ public abstract class Resource_ImplBase implements Resource {
    */
   private boolean mInitialized = false;
 
-  /**
-   * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
-   *      java.util.Map)
-   * 
-   *      multi-thread safe, given that each instance of this class is only called on one thread,
-   *      once. The critical parts that update shared information (in shared uima context) are
-   *      inside a synchronize block
+  /*
+   * multi-thread safe, given that each instance of this class is only called on one thread, once.
+   * The critical parts that update shared information (in shared uima context) are inside a
+   * synchronize block
    */
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
@@ -244,16 +239,10 @@ public abstract class Resource_ImplBase implements Resource {
     return true;
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#destroy()
-   */
   @Override
   public void destroy() {
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#getMetaData()
-   */
   @Override
   public ResourceMetaData getMetaData() {
     return mMetaData;
@@ -274,8 +263,8 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   /**
-   * Get the logger for this UIMA framework class. Note that this is NOT the user's logger in the
-   * UimaContext
+   * @return the logger for this UIMA framework class. Note that this is NOT the user's logger in
+   *         the UimaContext
    */
   @Override
   public Logger getLogger() {
@@ -292,9 +281,6 @@ public abstract class Resource_ImplBase implements Resource {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#getResourceManager()
-   */
   @Override
   public ResourceManager getResourceManager() {
     if (getUimaContextAdmin() != null) {
@@ -304,18 +290,13 @@ public abstract class Resource_ImplBase implements Resource {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.Resource#getUimaContext()
-   */
   @Override
   public UimaContext getUimaContext() {
     return mUimaContextAdmin;
   }
 
   /**
-   * Gets the Admin interface to this Resource's UimaContext.
+   * @return the Admin interface to this Resource's UimaContext.
    */
   @Override
   public UimaContextAdmin getUimaContextAdmin() {
@@ -323,9 +304,8 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   /**
-   * Get the CasManager for this Resource. The CasManager manages the creation and pooling of CASes.
-   * 
-   * @return the CasManager
+   * @return the CasManager for this Resource. The CasManager manages the creation and pooling of
+   *         CASes.
    */
   public CasManager getCasManager() {
     return getResourceManager().getCasManager();
@@ -363,5 +343,4 @@ public abstract class Resource_ImplBase implements Resource {
   public UimaContext setContextHolder() {
     return UimaContextHolder.setContext(getUimaContext());
   }
-
 }

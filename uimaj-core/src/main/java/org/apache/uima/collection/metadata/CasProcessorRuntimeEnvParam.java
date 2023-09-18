@@ -24,8 +24,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 /**
  * An object that holds configuration that is part of the CPE descriptor. It provides the means of
  * configuring environment variables used when launching local CasProcessors.
- * 
- * 
  */
 public interface CasProcessorRuntimeEnvParam extends MetaDataObject {
   /**

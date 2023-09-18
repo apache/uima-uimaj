@@ -29,8 +29,6 @@ import org.apache.uima.util.InvalidXMLException;
  * 
  * As with all {@link MetaDataObject}s, a <code>ResourceMetaData</code> may or may not be
  * modifiable. An application can find out by calling the {@link #isModifiable()} method.
- * 
- * 
  */
 public interface ResourceMetaData extends MetaDataObject {
 
@@ -207,7 +205,7 @@ public interface ResourceMetaData extends MetaDataObject {
    * @param aResourceManager
    *          the Resource Manager used to locate descriptors imported by name. For example, the
    *          path in which to locate these descriptors can be set via the
-   *          {@link ResourceManager#setDataPath(String)} method.
+   *          {@link ResourceManager#setDataPathElements} method.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid

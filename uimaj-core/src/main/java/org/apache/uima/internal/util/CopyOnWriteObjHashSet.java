@@ -27,7 +27,6 @@ import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 /**
  * implements ObjHashSet partially, for iterator use
  */
-
 public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOnWriteIndexPart<T> {
 
   private ObjHashSet<T> ohs;

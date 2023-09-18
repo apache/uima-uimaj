@@ -30,8 +30,6 @@ import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link FixedFlow}.
- * 
- * 
  */
 public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
 
@@ -60,7 +58,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#setFixedFlow(String[])
    */
   @Override
-  public void setFixedFlow(String[] aFlow) {
+  public void setFixedFlow(String... aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aFlow", "setFixedFlow" });

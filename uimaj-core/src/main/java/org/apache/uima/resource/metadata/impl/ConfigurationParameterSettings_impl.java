@@ -42,8 +42,6 @@ import org.xml.sax.SAXException;
 
 /**
  * Reference implementation of {@link ConfigurationParameterSettings}.
- * 
- * 
  */
 public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
         implements ConfigurationParameterSettings {
@@ -84,7 +82,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
    * @see ConfigurationParameterSettings#setParameterSettings(NameValuePair[])
    */
   @Override
-  public void setParameterSettings(NameValuePair[] aSettings) {
+  public void setParameterSettings(NameValuePair... aSettings) {
     if (aSettings == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aSettings", "setParameterSettings" });
@@ -92,17 +90,11 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     mParameterSettings = aSettings;
   }
 
-  /**
-   * @see ConfigurationParameterSettings#getSettingsForGroups()
-   */
   @Override
   public Map<String, NameValuePair[]> getSettingsForGroups() {
     return mSettingsForGroups;
   }
 
-  /**
-   * @see ConfigurationParameterSettings#getParameterValue(String)
-   */
   @Override
   public Object getParameterValue(String aParamName) {
     NameValuePair[] nvps = getParameterSettings();
@@ -116,9 +108,6 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     return null;
   }
 
-  /**
-   * @see ConfigurationParameterSettings#getParameterValue(java.lang.String, java.lang.String)
-   */
   @Override
   public Object getParameterValue(String aGroupName, String aParamName) {
     if (aGroupName == null) {
@@ -136,9 +125,6 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     }
   }
 
-  /**
-   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String, java.lang.Object)
-   */
   @Override
   public void setParameterValue(String aParamName, Object aValue) {
     if (aValue != null) // setting a value
@@ -179,10 +165,6 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     }
   }
 
-  /**
-   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String, java.lang.String,
-   *      java.lang.Object)
-   */
   @Override
   public void setParameterValue(String aGroupName, String aParamName, Object aValue) {
     if (aGroupName == null) {
@@ -227,9 +209,6 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     }
   }
 
-  /**
-   * @see MetaDataObject_impl#getXmlizationInfo()
-   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;

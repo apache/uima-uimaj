@@ -60,6 +60,6 @@ public interface CapabilityLanguageFlow extends FlowConstraints {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setCapabilityLanguageFlow(String[] aFlow);
+  void setCapabilityLanguageFlow(String... aFlow);
 
 }

@@ -107,9 +107,11 @@ public class Class_TCCL {
   }
 
   /**
-   * @deprecated Method should not be used and will be removed in a future version.
+   * @deprecated Method should not be used because if an extension classloader is set, the thread
+   *             context classloader. It will be ignored and will be removed in a future version.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.5.0")
   static public ClassLoader get_cl(ResourceManager rm) {
 
     ClassLoader cl = (rm == null) ? null : rm.getExtensionClassLoader();
@@ -122,9 +124,11 @@ public class Class_TCCL {
   }
 
   /**
-   * @deprecated Method should not be used and will be removed in a future version.
+   * @deprecated Method should not be used because if a context classloader is set, the fallback
+   *             classloader is not considered. It will be removed in a future version.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.5.0")
   static public ClassLoader get_parent_cl() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     return (cl == null) ? Class_TCCL.class.getClassLoader() : cl;

@@ -35,15 +35,11 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
  * 
  * As with all {@link MetaDataObject}s, a <code>Capability</code> may or may not be modifiable. An
  * application can find out by calling the {@link #isModifiable()} method.
- * 
- * 
  */
 public interface Capability extends MetaDataObject {
   Capability[] EMPTY_CAPABILITIES = new Capability[0];
 
   /**
-   * Gets the description of this Capability.
-   * 
    * @return the description of this Capability.
    */
   String getDescription();
@@ -58,30 +54,26 @@ public interface Capability extends MetaDataObject {
   void setDescription(String aDescription);
 
   /**
-   * Gets the inputs of this Capability.
-   * 
-   * @return an array of references to Types or Features in this Resource's Type System.
+   * @return the inputs of this Capability as an array of references to Types or Features in this
+   *         Resource's Type System.
    */
   TypeOrFeature[] getInputs();
 
   /**
-   * Gets the outputs of this Capability.
-   * 
-   * @return an array of references to Types or Features in this Resource's TypeSystem.
+   * @return the outputs of this Capability as an array of references to Types or Features in this
+   *         Resource's TypeSystem.
    */
   TypeOrFeature[] getOutputs();
 
   /**
-   * Gets the inputs Sofa names of this Capability.
-   * 
-   * @return an array of strings representing the SofAName
+   * @return the inputs Sofa names of this Capability as an array of strings representing the
+   *         SofAName
    */
   String[] getInputSofas();
 
   /**
-   * Gets the output Sofa names of this Capability.
-   * 
-   * @return an array of strings representing output SofA names
+   * @return the output Sofa names of this Capability as an array of strings representing output
+   *         SofA names
    */
   String[] getOutputSofas();
 
@@ -118,7 +110,7 @@ public interface Capability extends MetaDataObject {
    * @param aInputs
    *          an array of references to Types or Features in this Resource's TypeSystem.
    */
-  void setInputs(TypeOrFeature[] aInputs);
+  void setInputs(TypeOrFeature... aInputs);
 
   /**
    * Sets the outputs of this Capability.
@@ -126,7 +118,7 @@ public interface Capability extends MetaDataObject {
    * @param aOutputs
    *          an array of references to Types or Features in this Resource's TypeSystem.
    */
-  void setOutputs(TypeOrFeature[] aOutputs);
+  void setOutputs(TypeOrFeature... aOutputs);
 
   /**
    * Sets the input Sofa names.
@@ -135,7 +127,7 @@ public interface Capability extends MetaDataObject {
    *          an array of strings containing SofA names
    */
   /* Reserved for future use. */
-  void setInputSofas(String[] aInputSofas);
+  void setInputSofas(String... aInputSofas);
 
   /**
    * Sets the output Sofa names of this capability
@@ -143,7 +135,7 @@ public interface Capability extends MetaDataObject {
    * @param aOutputSofas
    *          an array of strings containing SoFA name
    */
-  void setOutputSofas(String[] aOutputSofas);
+  void setOutputSofas(String... aOutputSofas);
 
   /**
    * Sets the <code>Precondition</code>s of this <code>Capability</code>.
@@ -154,7 +146,7 @@ public interface Capability extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setPreconditions(Precondition[] aPreconditions);
+  void setPreconditions(Precondition... aPreconditions);
 
   /**
    * A convenience method that sets the languages that this Resource supports. This is only
@@ -168,7 +160,7 @@ public interface Capability extends MetaDataObject {
    *          an array of ISO language identifiers. An empty array means that the Resource claims to
    *          be language-independent.
    */
-  void setLanguagesSupported(String[] aLanguageIDs);
+  void setLanguagesSupported(String... aLanguageIDs);
 
   /**
    * A convenience method that sets the MIME types that this Resource can take as input.
@@ -180,7 +172,7 @@ public interface Capability extends MetaDataObject {
    *          an array of MIME types. This may be empty if the Resource does not declare MIME type
    *          preconditions.
    */
-  void setMimeTypesSupported(String[] aMimeTypes);
+  void setMimeTypesSupported(String... aMimeTypes);
 
   /**
    * A convenience method that adds an input Type to this Capability.

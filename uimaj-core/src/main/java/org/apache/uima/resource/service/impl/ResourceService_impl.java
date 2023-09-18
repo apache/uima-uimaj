@@ -31,8 +31,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 /**
  * Convenience base class for Resource Service implementations. This class is independent of the
  * deployment technology used to deploy the service.
- * 
- * 
  */
 public class ResourceService_impl {
 

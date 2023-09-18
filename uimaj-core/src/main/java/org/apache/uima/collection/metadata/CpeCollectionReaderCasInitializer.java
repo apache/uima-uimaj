@@ -25,8 +25,8 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * An object that holds configuration that is part of the CPE descriptor. Provides the means of
  * setting descriptor path containing CasInitializer configuration
  * 
- * 
  * @deprecated As of v2.0 CAS Initializers are deprecated.
+ * @forRemoval 4.0.0
  */
 @Deprecated
 public interface CpeCollectionReaderCasInitializer extends MetaDataObject {

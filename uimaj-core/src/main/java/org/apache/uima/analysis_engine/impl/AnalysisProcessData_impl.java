@@ -30,8 +30,9 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * Reference implementation of {@link AnalysisProcessData_impl}.
  * 
  * @deprecated since v2.0
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public class AnalysisProcessData_impl implements AnalysisProcessData {
 
   /**
@@ -74,18 +75,11 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
     mProcessTrace = new ProcessTrace_impl(aPerformanceTuningSettings);
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.AnalysisProcessData#getCAS()
-   */
   @Override
   public CAS getCAS() {
     return mCAS;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.AnalysisProcessData#getProcessTrace()
-   * @return -
-   */
   @Override
   public ProcessTrace getProcessTrace() {
     return mProcessTrace;
@@ -95,7 +89,6 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
    * Sets the ProcessTrace object. This is not available through the AnalysisProcessData interface.
    * 
    * @param aProcessTrace
-   *          -
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;

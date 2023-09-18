@@ -58,7 +58,6 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.FileResourceSpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
@@ -555,11 +554,11 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void thatAggregateWithImportByNameAndConfigParameterOverridesValidates() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
-    XMLInputSource in = new XMLInputSource(
+    var in = new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
-    ResourceManager resMgr = newDefaultResourceManager();
-    File dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
+    var desc = xmlParser.parseAnalysisEngineDescription(in);
+    var resMgr = newDefaultResourceManager();
+    var dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
     desc.doFullValidation(resMgr);
   }
@@ -567,11 +566,11 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void testValidate() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
-    XMLInputSource in = new XMLInputSource(
+    var in = new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
-    ResourceManager resMgr = newDefaultResourceManager();
-    File dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
+    var desc = xmlParser.parseAnalysisEngineDescription(in);
+    var resMgr = newDefaultResourceManager();
+    var dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
     desc.validate(resMgr);
 

@@ -29,7 +29,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * <li>Checkpoint file and frequency of checkpoints
  * <li>Plug-in timer class
  * </ul>
- * 
  */
 public interface CpeConfiguration extends MetaDataObject {
   /**
@@ -83,8 +82,8 @@ public interface CpeConfiguration extends MetaDataObject {
   int getNumToProcess();
 
   /**
-   * Sets id of the first entity the CPE will beging processing. Usefull when starting the CPE from
-   * a known point.
+   * Sets id of the first entity the CPE will begin processing. Useful when starting the CPE from a
+   * known point.
    * 
    * @param aEntityId
    *          - id of first entity
@@ -92,8 +91,8 @@ public interface CpeConfiguration extends MetaDataObject {
   void setStartingEntityId(String aEntityId);
 
   /**
-   * Returns id of the first entity the CPE will beging processing. Usefull when starting the CPE
-   * from a known point.
+   * Returns id of the first entity the CPE will begin processing. Useful when starting the CPE from
+   * a known point.
    * 
    * @return - id of first entity
    */

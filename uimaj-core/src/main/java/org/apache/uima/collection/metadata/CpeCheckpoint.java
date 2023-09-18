@@ -25,8 +25,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * An object that holds configuration that is part of the CPE descriptor. It provides the means of
  * configuring CPE checkpoint. The checkpoint contains a name of the file where the recovery
  * information will be stored and a frequency of checkpoints.
- * 
- * 
  */
 public interface CpeCheckpoint extends MetaDataObject {
   /**
