@@ -56,6 +56,7 @@ import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationPredicates;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
@@ -1018,6 +1019,10 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   // }
 
   private Annotation makePosAnnot(int begin, int end) {
+    return makePosAnnot(jcas, begin, end);
+  }
+
+  static Annotation makePosAnnot(JCas jcas, int begin, int end) {
     if (end < begin) {
       throw new IllegalArgumentException("End value must be >= Begin value");
     }
